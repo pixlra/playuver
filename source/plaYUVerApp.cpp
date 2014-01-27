@@ -47,11 +47,11 @@ plaYUVerApp::plaYUVerApp()
   setWindowModality( Qt::ApplicationModal );
 
   mdiArea = new QMdiArea;
-  mdiArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-  mdiArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
   setCentralWidget( mdiArea );
+  //mdiArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+  //mdiArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 
-  connect( mdiArea, SIGNAL( subWindowActivated(QMdiImageInterface*) ), this, SLOT( updateMenus() ) );
+  connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( updateMenus() ) );
   windowMapper = new QSignalMapper( this );
   connect( windowMapper, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveImageInterface(QWidget*) ) );
 
@@ -108,8 +108,9 @@ void plaYUVerApp::open()
       return;
     }
 
-    ImageInterface *interfaceChild = new ImageInterface; //createImageInterface();
-    if( interfaceChild->loadFile( fileName, 1024, 768 ) )
+
+    ImageInterface *interfaceChild = new ImageInterface(); //createImageInterface();
+    if( interfaceChild->loadFile( fileName ) )
     {
       addImageInterface( interfaceChild );
       statusBar()->showMessage( tr( "File loaded" ), 2000 );
@@ -262,7 +263,7 @@ Void plaYUVerApp::createActions()
   closeAct = new QAction( tr( "Cl&ose" ), this );
   closeAct->setIcon( QIcon( ":/images/close.png" ) );
   closeAct->setStatusTip( tr( "Close the active window" ) );
-  connect( closeAct, SIGNAL( triggered() ), mdiArea, SLOT( closeActiveSubWindows() ) );
+  connect( closeAct, SIGNAL( triggered() ), mdiArea, SLOT( closeActiveSubWindow() ) );
 
   closeAllAct = new QAction( tr( "Close &All" ), this );
   closeAllAct->setStatusTip( tr( "Close all the windows" ) );
@@ -307,12 +308,12 @@ Void plaYUVerApp::createActions()
   nextAct = new QAction( tr( "Ne&xt" ), this );
   nextAct->setShortcuts( QKeySequence::NextChild );
   nextAct->setStatusTip( tr( "Move the focus to the next window" ) );
-  connect( nextAct, SIGNAL( triggered() ), mdiArea, SLOT( activateNextSubWindows() ) );
+  connect( nextAct, SIGNAL( triggered() ), mdiArea, SLOT( activateNextSubWindow() ) );
 
   previousAct = new QAction( tr( "Pre&vious" ), this );
   previousAct->setShortcuts( QKeySequence::PreviousChild );
   previousAct->setStatusTip( tr( "Move the focus to the previous window" ) );
-  connect( previousAct, SIGNAL( triggered() ), mdiArea, SLOT( activatePreviousSubWindows() ) );
+  connect( previousAct, SIGNAL( triggered() ), mdiArea, SLOT( activatePreviousSubWindow() ) );
 
   separatorAct = new QAction( this );
   separatorAct->setSeparator( true );

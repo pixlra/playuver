@@ -32,8 +32,9 @@
 namespace plaYUVer
 {
 
-ImageInterface::ImageInterface( QWidget * parent )
-: QScrollArea( parent )
+
+ImageInterface::ImageInterface( QWidget * parent ) :
+    QScrollArea( parent )
 {
   setParent( parent );
 
@@ -204,7 +205,7 @@ static bool sanityCheck( const QList<QWidget *> &widgets, const int index, const
   return true;
 }
 
-QSize ImageInterface::sizeHint () const
+QSize ImageInterface::sizeHint() const
 {
   QSize maxSize; // The size of the parent (viewport widget
                  // of the QMdiArea).

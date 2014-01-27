@@ -234,7 +234,7 @@ ImageInterface *plaYUVerApp::createImageInterface()
 
 void plaYUVerApp::addImageInterface( ImageInterface *child )
 {
-  connect( child, SIGNAL( areaSelected( QRect ) ), this, SLOT( setSelection( QRect ) ) );
+  //connect( child, SIGNAL( areaSelected( QRect ) ), this, SLOT( setSelection( QRect ) ) );
 
   // Add the interface to the mdiArea
   mdiArea->addSubWindow( child );

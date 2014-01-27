@@ -32,8 +32,10 @@
 namespace plaYUVer
 {
 
-ImageInterface::ImageInterface()
+ImageInterface::ImageInterface( QWidget * parent )
+: QScrollArea( parent )
 {
+  setParent( parent );
 
   setAttribute( Qt::WA_DeleteOnClose );
   isUntitled = true;
@@ -48,7 +50,7 @@ ImageInterface::ImageInterface()
 
   setWidgetResizable( true );
   setAttribute( Qt::WA_DeleteOnClose );
-  setMinimumSize( 150, 150 );
+  setMinimumSize( 200, 200 );
   setBackgroundRole( QPalette::Dark );
   setWidget( m_cViewArea );
 
@@ -63,11 +65,11 @@ ImageInterface::~ImageInterface()
   delete m_cViewArea;
 }
 
-bool ImageInterface::loadFile( const QString &fileName, UInt width, UInt height )
+bool ImageInterface::loadFile( const QString &fileName )
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  m_currStream.init( fileName, width, height );
+  m_currStream.init( fileName, 1024, 768 );
 
   m_currStream.readFrame();
   if( m_currStream.checkErrors( READING ) )
@@ -86,8 +88,6 @@ bool ImageInterface::loadFile( const QString &fileName, UInt width, UInt height 
   normalSize();
 
   m_cCurrFileName = fileName;
-
-  sizeHint();
 
   return true;
 }
@@ -204,7 +204,7 @@ static bool sanityCheck( const QList<QWidget *> &widgets, const int index, const
   return true;
 }
 
-QSize ImageInterface::sizeHint()
+QSize ImageInterface::sizeHint () const
 {
   QSize maxSize; // The size of the parent (viewport widget
                  // of the QMdiArea).
@@ -215,7 +215,7 @@ QSize ImageInterface::sizeHint()
     maxSize = p->size();
   }
 
-  QSize isize = QSize( m_currStream.getWidth() + 50, m_currStream.getHeight() + 50 );
+  QSize isize = QSize( m_currStream.getWidth() + 500, m_currStream.getHeight() + 500 );
 
   // If the ImageInterface needs more space that the avaiable, we'll give
   // to the subwindow a reasonable size preserving the image aspect ratio.

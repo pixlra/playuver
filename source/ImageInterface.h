@@ -61,10 +61,10 @@ private:
   Bool m_firsTime;
 
 public:
-  ImageInterface();
+  ImageInterface( QWidget * parent = 0 );
   ~ImageInterface();
 
-  bool loadFile( const QString &fileName, UInt width, UInt height );
+  bool loadFile( const QString &fileName );
   bool save();
   bool saveAs();
   bool saveFile( const QString &fileName );
@@ -104,7 +104,7 @@ public:
     return m_dScaleFactor;
   }
 
-  QSize sizeHint();
+  QSize sizeHint() const;
 
   /**
    * Arranges all the listed widgets (normaly QMdiImageInterface) in a cascade

@@ -91,11 +91,11 @@ public:
   {
     return m_uiTotalFrameNum;
   }
-  UInt getWidth()
+  UInt getWidth() const
   {
     return m_uiWidth;
   }
-  UInt getHeight()
+  UInt getHeight() const
   {
     return m_uiHeight;
   }

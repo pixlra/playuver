@@ -9,7 +9,7 @@ Usage
 
 Command line interface
 
-./playuver -i [Input File] -w [Width] -h [Height]
+./playuver
 
 
 Install using cmake

@@ -72,7 +72,7 @@ bool ImageInterface::loadFile( const QString &fileName )
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  ConfigureResolutionDialog resolutionDialog;
+  ConfigureResolutionDialog resolutionDialog(this);
 
   if( resolutionDialog.exec() == QDialog::Rejected )
   {

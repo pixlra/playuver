@@ -47,7 +47,7 @@ ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
 
   // headLayout
 
-  headLayout = new QHBoxLayout( this );
+  headLayout = new QHBoxLayout();
   headLayout->setObjectName( QStringLiteral( "headLayout" ) );
 
   dialogTitleLabel = new QLabel( this );
@@ -73,7 +73,7 @@ ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
 
   // standardResolutionLayout
 
-  standardResolutionLayout = new QHBoxLayout( this );
+  standardResolutionLayout = new QHBoxLayout( );
   standardResolutionLayout->setObjectName( QStringLiteral( "standardResolutionLayout" ) );
   standardResolutionLabel = new QLabel( this );
   standardResolutionLabel->setObjectName( QStringLiteral( "standardResolutionLabel" ) );

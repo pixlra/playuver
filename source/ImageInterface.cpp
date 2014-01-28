@@ -44,12 +44,8 @@ ImageInterface::ImageInterface( QWidget * parent ) :
   isUntitled = true;
 
   m_cViewArea = new ViewArea( this );
+  //m_cViewArea = new QLabel( this );
 
-//  m_cViewArea = new QLabel( this );
-//  m_cViewArea->setScaledContents( true );
-//  m_cViewArea->setBackgroundRole( QPalette::Base );
-//  //m_cViewArea->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
-//  m_cViewArea->setScaledContents( false );
 
   setWidgetResizable( true );
   setAttribute( Qt::WA_DeleteOnClose );
@@ -91,8 +87,7 @@ bool ImageInterface::loadFile( const QString &fileName )
   QApplication::restoreOverrideCursor();
 
   //QImage image( fileName );
-  //m_cViewArea->setImage( QPixmap::fromImage( image ) );
-
+  //m_cViewArea->setPixmap( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
   m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
 
   normalSize();
@@ -153,8 +148,8 @@ Void ImageInterface::scaleView( Double factor )
 {
   //Q_ASSERT( m_cViewArea->pixmap() );
   m_dScaleFactor *= factor;
-  m_cViewArea->setZoomFactor( m_dScaleFactor );
   //m_cViewArea->resize( m_dScaleFactor * m_cViewArea->pixmap()->size() );
+  m_cViewArea->setZoomFactor( m_dScaleFactor );
   adjustScrollBar( m_dScaleFactor );
 }
 

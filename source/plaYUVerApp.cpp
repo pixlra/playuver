@@ -103,7 +103,7 @@ void plaYUVerApp::open()
     }
 
 
-    ImageInterface *interfaceChild = new ImageInterface(); //createImageInterface();
+    ImageInterface *interfaceChild = new ImageInterface(this); //createImageInterface();
     if( interfaceChild->loadFile( fileName ) )
     {
       addImageInterface( interfaceChild );

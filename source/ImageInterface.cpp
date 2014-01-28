@@ -70,8 +70,6 @@ ImageInterface::~ImageInterface()
 
 bool ImageInterface::loadFile( const QString &fileName )
 {
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
   ConfigureResolutionDialog resolutionDialog;
 
   if( resolutionDialog.exec() == QDialog::Rejected )
@@ -79,6 +77,8 @@ bool ImageInterface::loadFile( const QString &fileName )
     return false;
   }
   
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
   m_currStream.init( fileName, resolutionDialog.getResolution().width(), resolutionDialog.getResolution().height() );
 
   m_currStream.readFrame();

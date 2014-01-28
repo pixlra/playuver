@@ -16,8 +16,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/** \file     imageinterface.h
- \brief    Sub windows handling
+/**
+ * \file     imageinterface.h
+ * \brief    Sub windows handling
  */
 
 #ifndef __IMAGEINTERFACE_H__

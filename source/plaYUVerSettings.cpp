@@ -16,8 +16,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/** \file     playuversettings.h
- \brief    plaYUVer app settings
+/**
+ * \file     playuversettings.h
+ * \brief    plaYUVer app settings
  */
 
 #include <QDir>

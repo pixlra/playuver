@@ -16,8 +16,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/** \file     LibMemAlloc.h
- \brief    memory allocation functions
+/**
+ * \file     LibMemAlloc.h
+ * \brief    memory allocation functions
  */
 
 #ifndef __LIBMEMALLOC_H__

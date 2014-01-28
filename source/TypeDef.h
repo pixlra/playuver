@@ -16,8 +16,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/** \file     TypeDef.h
- \brief    Define basic types, new types and enumerations
+/**
+ * \file     TypeDef.h
+ * \brief    Define basic types, new types and enumerations
  */
 
 #ifndef __TYPEDEF_H__

@@ -16,8 +16,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/** \file     ConfigureResolutionDialog.cpp
- \brief    Dialog box to set the sequence resolution
+/**
+ * \file     ConfigureResolutionDialog.cpp
+ * \brief    Dialog box to set the sequence resolution
  */
 
 

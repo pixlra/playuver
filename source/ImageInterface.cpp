@@ -16,8 +16,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/** \file     imageinterface.cpp
- \brief    Sub windows handling
+/**
+ * \file     imageinterface.cpp
+ * \brief    Sub windows handling
  */
 
 #include <QtWidgets>

@@ -16,8 +16,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/** \file     LibMemAlloc.cpp
- \brief    memory allocation functions
+/**
+ * \file     LibMemAlloc.cpp
+ * \brief    memory allocation functions
  */
 
 #include "LibMemAlloc.h"

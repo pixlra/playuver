@@ -16,8 +16,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/** \file     InputStream.h
- \brief    Input handling
+/**
+ * \file     InputStream.h
+ * \brief    Input handling
  */
 
 #ifndef __INPUTSTREAM_H__

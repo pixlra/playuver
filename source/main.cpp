@@ -16,8 +16,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/** \file     main.cp
- \brief    main file
+/**
+ * \file     main.cp
+ * \brief    main file
  */
 
 #include <QApplication>

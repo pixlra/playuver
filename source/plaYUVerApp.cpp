@@ -16,8 +16,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/** \file     plaYUVerApp.cpp
- \brief    Main definition of the plaYUVerApp app
+/**
+ * \file     plaYUVerApp.cpp
+ * \brief    Main definition of the plaYUVerApp app
  */
 
 

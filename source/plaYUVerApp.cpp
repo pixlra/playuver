@@ -58,7 +58,7 @@ plaYUVerApp::plaYUVerApp()
   readSettings();
 
   setWindowTitle( tr( "plaYUVerApp" ) );
-  setWindowIcon( QIcon( ":/images/plaYUVerApp.png" ) );
+  setWindowIcon( QIcon( ":/images/playuver.png" ) );
   setUnifiedTitleAndToolBarOnMac( true );
 }
 

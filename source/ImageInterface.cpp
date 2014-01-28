@@ -26,6 +26,7 @@
 #include <QBitmap>
 #include <QColor>
 
+#include "ConfigureResolutionDialog.h"
 #include "ImageInterface.h"
 #include "viewarea.h"
 
@@ -70,7 +71,14 @@ bool ImageInterface::loadFile( const QString &fileName )
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  m_currStream.init( fileName, 1024, 768 );
+  ConfigureResolutionDialog resolutionDialog;
+
+  if( resolutionDialog.exec() == QDialog::Rejected )
+  {
+    return false;
+  }
+  
+  m_currStream.init( fileName, resolutionDialog.getResolution().width(), resolutionDialog.getResolution().height() );
 
   m_currStream.readFrame();
   if( m_currStream.checkErrors( READING ) )

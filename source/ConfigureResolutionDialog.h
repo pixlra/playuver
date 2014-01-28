@@ -57,7 +57,7 @@ public:
     return QSize( widthSpinBox->value(), heightSpinBox->value() );
   }
 
-private slots:
+private Q_SLOTS:
   void StandardResolutionSelection();
 
 private:

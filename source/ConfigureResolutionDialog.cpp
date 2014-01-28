@@ -17,11 +17,11 @@
  */
 
 /** \file     ConfigureResolutionDialog.cpp
- \brief    Dialog box to set the sequence resolution
+ *  \brief    Dialog box to set the sequence resolution
  */
 
-
 #include <QApplication>
+#include <QComboBox>
 #include "ConfigureResolutionDialog.h"
 
 namespace plaYUVer
@@ -91,12 +91,14 @@ ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
   standardResolutionBox->setSizePolicy( sizePolicy );
   standardResolutionBox->setAcceptDrops( true );
 
+
   standardResolutionLayout->addWidget( standardResolutionLabel );
   standardResolutionLayout->addItem( horizontalSpacer );
   standardResolutionLayout->addWidget( standardResolutionBox );
   standardResolutionLabel->setText( QApplication::translate( "ConfigureResolution", "Standard Resolution", 0 ) );
   standardResolutionBox->clear();
   standardResolutionBox->insertItems( 0, standardResolutionNames );
+  standardResolutionBox->setCurrentIndex( -1 );
 
   MainLayout->addLayout( standardResolutionLayout );
 
@@ -154,21 +156,30 @@ ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
 
   MainLayout->addWidget( dialogButtonOkCancel );
 
-  connect( standardResolutionBox, SIGNAL( currentIndexChanged() ), this, SLOT( StandardResolutionSelection() ) );
+  Int idx;
+  connect( standardResolutionBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( StandardResolutionSelection() ) );
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
 }
 
-
 void ConfigureResolutionDialog::StandardResolutionSelection()
 {
   Int currIdx = standardResolutionBox->currentIndex();
-  if( currIdx != 1 )
-  {
-    widthSpinBox->setValue( 0 );
-    heightSpinBox->setValue( 0 );
-  }
+
+  if( currIdx == -1 )
+    return;
+
+  QList<QSize>::iterator iteratorSizes = standardResolutionSizesList.begin();
+
+  for( Int i = 0; i < currIdx; i++ )
+    iteratorSizes++;
+
+  QSize currSize = ( QSize )( *iteratorSizes );
+
+  widthSpinBox->setValue( currSize.width() );
+  heightSpinBox->setValue( currSize.height() );
+
 }
 
-} // Namespace SCode
+}  // Namespace SCode

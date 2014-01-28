@@ -70,7 +70,7 @@ ImageInterface::~ImageInterface()
 
 bool ImageInterface::loadFile( const QString &fileName )
 {
-  ConfigureResolutionDialog resolutionDialog;
+  ConfigureResolutionDialog resolutionDialog(this);
 
   if( resolutionDialog.exec() == QDialog::Rejected )
   {

@@ -34,9 +34,6 @@ ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
 
   setStandardResolutionSizes();
 
-  if( objectName().isEmpty() )
-    setObjectName( QStringLiteral( "ConfigureResolution" ) );
-
   // Config dialog
 
   setObjectName( QStringLiteral( "ConfigureResolution" ) );
@@ -161,6 +158,8 @@ ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
   connect( standardResolutionBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( StandardResolutionSelection() ) );
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
+
+  QMetaObject::connectSlotsByName(this);
 
 }
 

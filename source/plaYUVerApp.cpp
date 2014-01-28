@@ -20,14 +20,7 @@
  \brief    Main definition of the plaYUVerApp app
  */
 
-/*!
- ************************************************************************
- * \file
- *    plaYUVerApp.cpp
- * \brief
- *    Main definition of the plaYUVerApp App
- ************************************************************************
- */
+
 
 #include <QtWidgets>
 #include <QMdiArea>

@@ -19,6 +19,8 @@
 /** \file     ConfigureResolutionDialog.cpp
  \brief    Dialog box to set the sequence resolution
  */
+
+
 #include <QApplication>
 #include "ConfigureResolutionDialog.h"
 

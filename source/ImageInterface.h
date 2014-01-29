@@ -29,9 +29,10 @@
 #include <QLabel>
 #include <QMdiArea>
 #include <QWidget>
-#include <QPixmap>
-#include <QBitmap>
-#include <QColor>
+//#include <QPixmap>
+//#include <QBitmap>
+//#include <QColor>
+
 
 #include "TypeDef.h"
 #include "InputStream.h"
@@ -50,6 +51,7 @@ private:
 
   QScrollArea* m_cScrollArea;
   ViewArea* m_cViewArea;
+
   InputStream m_currStream;
 
 
@@ -109,7 +111,7 @@ public:
    * @Note This function implementation is taken from the Qt source. The
    * QMdiArea only have a function that arranges @b all the child windows.
    */
-  static void cascader( QList<QWidget *> &widgets, const QRect &domain );
+  //static void cascader( QList<QWidget *> &widgets, const QRect &domain );
 
   QString userFriendlyCurrentFile();
   QString strippedName( const QString &fullFileName );

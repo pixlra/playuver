@@ -53,6 +53,7 @@ ImageInterface::ImageInterface( QWidget * parent ) :
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
 
+
   m_cCurrFileName = QString( "" );
   m_dScaleFactor = 1;
 
@@ -90,6 +91,7 @@ bool ImageInterface::loadFile( const QString &fileName )
   normalSize();
 
   m_cCurrFileName = fileName;
+  setWindowTitle( userFriendlyCurrentFile() + "[*]" );
 
   return true;
 }
@@ -117,15 +119,13 @@ bool ImageInterface::saveFile( const QString &fileName )
 Void ImageInterface::normalSize()
 {
   m_dScaleFactor = 1.0;
-  //m_cViewArea->resize( m_dScaleFactor * m_cViewArea->pixmap()->size() );
   m_cViewArea->setZoomFactor( m_dScaleFactor );
 }
 
 Void ImageInterface::zoomToFit()
 {
   // Scale to a smaller size that the real to a nicer look
-  //QSize niceFit( viewport()->size().width() - 10, viewport()->size().height() - 10 );
-  QSize niceFit( 100, 100 );
+  QSize niceFit( m_cScrollArea->viewport()->size().width() - 10, m_cScrollArea->viewport()->size().height() - 10 );
   if( m_currStream.getWidth() <= niceFit.width() && m_currStream.getHeight() <= niceFit.height() )
   {
     normalSize();
@@ -169,33 +169,10 @@ Void ImageInterface::scaleView( const QSize & size )
 
 Void ImageInterface::adjustScrollBar( Double factor )
 {
-//  QScrollBar *scrollBar = horizontalScrollBar();
-//  scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
-//  scrollBar = verticalScrollBar();
-//  scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
-}
-
-/*
- Note: Code imported from Qt4.4
- */
-
-static bool sanityCheck( const QList<QWidget *> &widgets, const int index, const char *where )
-{
-  if( index < 0 || index >= widgets.size() )
-  {
-    const char error[] = "index out of range";
-    Q_ASSERT_X( false, where, error );
-    qWarning( "%s:%s", where, error );
-    return false;
-  }
-  if( !widgets.at( index ) )
-  {
-    const char error[] = "null pointer";
-    Q_ASSERT_X( false, where, error );
-    qWarning( "%s:%s", where, error );
-    return false;
-  }
-  return true;
+  QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
+  scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
+  scrollBar = m_cScrollArea->verticalScrollBar();
+  scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
 }
 
 QSize ImageInterface::sizeHint() const
@@ -226,52 +203,6 @@ QSize ImageInterface::sizeHint() const
   return maxSize;
 }
 
-void ImageInterface::cascader( QList<QWidget *> &widgets, const QRect &domain )
-{
-  if( widgets.isEmpty() )
-    return;
-
-  // Tunables:
-  const int topOffset = 0;
-  const int bottomOffset = 50;
-  const int leftOffset = 0;
-  const int rightOffset = 100;
-  const int dx = 10;
-
-  QStyleOptionTitleBar options;
-  options.initFrom( widgets.at( 0 ) );
-  int titleBarHeight = widgets.at( 0 )->style()->pixelMetric( QStyle::PM_TitleBarHeight, &options, widgets.at( 0 ) );
-#if defined(Q_WS_MAC) && !defined(QT_NO_STYLE_MAC)
-  // ### Remove this after the mac style has been fixed
-  if ( qobject_cast<QMacStyle *>( widgets.at( 0 )->style() ) )
-  titleBarHeight -= 4;
-#endif
-  const QFontMetrics fontMetrics = QFontMetrics( QApplication::font( "QWorkspaceTitleBar" ) );
-  const int dy = qMax( titleBarHeight - ( titleBarHeight - fontMetrics.height() ) / 2, 1 );
-
-  const int n = widgets.size();
-  const int nrows = qMax( ( domain.height() - ( topOffset + bottomOffset ) ) / dy, 1 );
-  const int ncols = qMax( n / nrows + ( ( n % nrows ) ? 1 : 0 ), 1 );
-  const int dcol = ( domain.width() - ( leftOffset + rightOffset ) ) / ncols;
-
-  int i = 0;
-  for( int row = 0; row < nrows; ++row )
-  {
-    for( int col = 0; col < ncols; ++col )
-    {
-      const int x = leftOffset + row * dx + col * dcol;
-      const int y = topOffset + row * dy;
-      if( !sanityCheck( widgets, i, "SimpleCascader" ) )
-        continue;
-      QWidget *widget = widgets.at( i++ );
-      QRect newGeometry = QRect( QPoint( x, y ), widget->sizeHint() );
-      widget->setGeometry( QStyle::visualRect( widget->layoutDirection(), domain, newGeometry ) );
-      if( i == n )
-        return;
-    }
-  }
-}
-
 Void ImageInterface::closeEvent( QCloseEvent *event )
 {
   event->accept();
@@ -279,8 +210,7 @@ Void ImageInterface::closeEvent( QCloseEvent *event )
 
 QString ImageInterface::userFriendlyCurrentFile()
 {
-  return m_cCurrFileName;
-  //return strippedName( m_cCurrFileName );
+  return strippedName( m_cCurrFileName );
 }
 
 QString ImageInterface::strippedName( const QString &fullFileName )

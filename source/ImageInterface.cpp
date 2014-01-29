@@ -34,27 +34,27 @@
 namespace plaYUVer
 {
 
-
 ImageInterface::ImageInterface( QWidget * parent ) :
-    QScrollArea( parent )
+    QMdiSubWindow( parent )
 {
   setParent( parent );
 
   setAttribute( Qt::WA_DeleteOnClose );
-  isUntitled = true;
+  setMinimumSize( 500, 500 );
+  setBackgroundRole( QPalette::Light );
 
-  m_cViewArea = new ViewArea( this );
+  // Create a new scroll area inside the sub-window
+  m_cScrollArea = new QScrollArea( this );
+  setWidget( m_cScrollArea );
+
+  // Create a new interface to show images
+  m_cViewArea = new ViewArea( m_cScrollArea );
   //m_cViewArea = new QLabel( this );
 
+  // Define the cViewArea as the widget inside the scroll area
+  m_cScrollArea->setWidget( m_cViewArea );
 
-  setWidgetResizable( true );
-  setAttribute( Qt::WA_DeleteOnClose );
-  setMinimumSize( 200, 200 );
-  setBackgroundRole( QPalette::Dark );
-  setWidget( m_cViewArea );
-
-  fileExists = false;
-  m_firsTime = true;
+  m_cCurrFileName = QString( "" );
   m_dScaleFactor = 1;
 
 }
@@ -66,13 +66,13 @@ ImageInterface::~ImageInterface()
 
 bool ImageInterface::loadFile( const QString &fileName )
 {
-  ConfigureResolutionDialog resolutionDialog(this);
+  ConfigureResolutionDialog resolutionDialog( this );
 
   if( resolutionDialog.exec() == QDialog::Rejected )
   {
     return false;
   }
-  
+
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   m_currStream.init( fileName, resolutionDialog.getResolution().width(), resolutionDialog.getResolution().height() );
@@ -99,14 +99,7 @@ bool ImageInterface::loadFile( const QString &fileName )
 
 bool ImageInterface::save()
 {
-  if( isUntitled )
-  {
-    return saveAs();
-  }
-  else
-  {
-    return saveFile( m_cCurrFileName );
-  }
+
 }
 
 bool ImageInterface::saveAs()
@@ -134,8 +127,8 @@ Void ImageInterface::normalSize()
 Void ImageInterface::zoomToFit()
 {
   // Scale to a smaller size that the real to a nicer look
-  QSize niceFit( viewport()->size().width() - 10, viewport()->size().height() - 10 );
-
+  //QSize niceFit( viewport()->size().width() - 10, viewport()->size().height() - 10 );
+  QSize niceFit( 100, 100 );
   if( m_currStream.getWidth() <= niceFit.width() && m_currStream.getHeight() <= niceFit.height() )
   {
     normalSize();
@@ -180,10 +173,10 @@ Void ImageInterface::scaleView( const QSize & size )
 
 Void ImageInterface::adjustScrollBar( Double factor )
 {
-  QScrollBar *scrollBar = horizontalScrollBar();
-  scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
-  scrollBar = verticalScrollBar();
-  scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
+//  QScrollBar *scrollBar = horizontalScrollBar();
+//  scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
+//  scrollBar = verticalScrollBar();
+//  scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
 }
 
 /*
@@ -299,4 +292,4 @@ QString ImageInterface::strippedName( const QString &fullFileName )
   return QFileInfo( fullFileName ).fileName();
 }
 
-} // NAMESPACE
+}  // NAMESPACE

@@ -42,24 +42,21 @@ namespace plaYUVer
 
 using namespace SCode;
 
-class ImageInterface: public QScrollArea
+class ImageInterface: public QMdiSubWindow
 {
 Q_OBJECT
 
 private:
 
+  QScrollArea* m_cScrollArea;
   //QLabel* m_cViewArea;
   ViewArea* m_cViewArea;
-
-  QString m_cCurrFileName;
-
   InputStream m_currStream;
 
-  Bool isUntitled;
 
+  QString m_cCurrFileName;
   Double m_dScaleFactor;
-  Bool fileExists;
-  Bool m_firsTime;
+
 
 public:
   ImageInterface( QWidget * parent = 0 );

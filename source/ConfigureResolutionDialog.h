@@ -87,6 +87,9 @@ private:
   Void setStandardResolutionSizes()
   {
 
+    standardResolutionNames.push_back( QString( "CIF (352x288)" ) );
+    standardResolutionSizesList.push_back( QSize( 352, 288 ) );
+
     standardResolutionNames.push_back( QString( "VGA (640x480)" ) );
     standardResolutionSizesList.push_back( QSize( 640, 480 ) );
 

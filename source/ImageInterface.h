@@ -49,7 +49,6 @@ Q_OBJECT
 private:
 
   QScrollArea* m_cScrollArea;
-  //QLabel* m_cViewArea;
   ViewArea* m_cViewArea;
   InputStream m_currStream;
 

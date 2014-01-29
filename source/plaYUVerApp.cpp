@@ -21,8 +21,6 @@
  * \brief    Main definition of the plaYUVerApp app
  */
 
-
-
 #include <QtWidgets>
 #include <QMdiArea>
 #include <QtDebug>
@@ -84,7 +82,7 @@ void plaYUVerApp::open()
   QString formats = InputStream::supportedReadFormats();
   formats.prepend( " (" );
   formats.append( ")" );
-  supported.append( formats ); // supported=="Supported Files (*.pbm *.jpg...)"
+  supported.append( formats );  // supported=="Supported Files (*.pbm *.jpg...)"
 
   QStringList filter;
   filter << supported << InputStream::supportedReadFormatsList() << tr( "All Files (*)" );
@@ -102,8 +100,7 @@ void plaYUVerApp::open()
       return;
     }
 
-
-    ImageInterface *interfaceChild = new ImageInterface(this); //createImageInterface();
+    ImageInterface *interfaceChild = new ImageInterface( this );  //createImageInterface();
     if( interfaceChild->loadFile( fileName ) )
     {
       addImageInterface( interfaceChild );
@@ -199,7 +196,7 @@ void plaYUVerApp::updateWindowMenu()
 
   for( Int i = 0; i < windows.size(); ++i )
   {
-    ImageInterface *child = qobject_cast<ImageInterface *>( windows.at( i )->widget() );
+    ImageInterface *child = qobject_cast<ImageInterface *>( windows.at( i ) );
 
     QString text;
     if( i < 9 )
@@ -390,7 +387,7 @@ Void plaYUVerApp::writeSettings()
 ImageInterface *plaYUVerApp::activeImageInterface()
 {
   if( QMdiSubWindow *activeImageInterface = mdiArea->activeSubWindow() )
-    return qobject_cast<ImageInterface *>( activeImageInterface->widget() );
+    return qobject_cast<ImageInterface *>( activeImageInterface );
   return 0;
 }
 
@@ -399,7 +396,7 @@ QMdiSubWindow *plaYUVerApp::findImageInterface( const QString &fileName )
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
 
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
-  ImageInterface *mdiChild = qobject_cast<ImageInterface *>( window->widget() );
+  ImageInterface *mdiChild = qobject_cast<ImageInterface *>( window);
   if( mdiChild->currentFile() == canonicalFilePath )
   return window;
 }
@@ -413,4 +410,4 @@ void plaYUVerApp::setActiveImageInterface( QWidget *window )
   mdiArea->setActiveSubWindow( qobject_cast<QMdiSubWindow *>( window ) );
 }
 
-} // NAMESPACE
+}  // NAMESPACE

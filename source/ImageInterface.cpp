@@ -49,7 +49,6 @@ ImageInterface::ImageInterface( QWidget * parent ) :
 
   // Create a new interface to show images
   m_cViewArea = new ViewArea( m_cScrollArea );
-  //m_cViewArea = new QLabel( this );
 
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
@@ -86,8 +85,6 @@ bool ImageInterface::loadFile( const QString &fileName )
 
   QApplication::restoreOverrideCursor();
 
-  //QImage image( fileName );
-  //m_cViewArea->setPixmap( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
   m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
 
   normalSize();
@@ -139,9 +136,8 @@ Void ImageInterface::zoomToFit()
 
 Void ImageInterface::scaleView( Double factor )
 {
-  //Q_ASSERT( m_cViewArea->pixmap() );
+  Q_ASSERT( m_cViewArea->image() );
   m_dScaleFactor *= factor;
-  //m_cViewArea->resize( m_dScaleFactor * m_cViewArea->pixmap()->size() );
   m_cViewArea->setZoomFactor( m_dScaleFactor );
   adjustScrollBar( m_dScaleFactor );
 }

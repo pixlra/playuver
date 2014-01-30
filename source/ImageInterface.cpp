@@ -120,6 +120,18 @@ bool ImageInterface::saveFile( const QString &fileName )
   return true;
 }
 
+bool ImageInterface::nextVideoFrame()
+{
+  m_currStream.readFrame();
+  if( m_currStream.checkErrors( READING ) )
+  {
+    QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( m_cCurrFileName ) );
+    return false;
+  }
+  m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
+  return true;
+}
+
 Void ImageInterface::normalSize()
 {
   m_dScaleFactor = 1.0;

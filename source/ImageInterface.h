@@ -68,6 +68,8 @@ public:
   bool saveAs();
   bool saveFile( const QString &fileName );
 
+  bool nextVideoFrame();
+
   /**
    * Show the image at its original size
    */

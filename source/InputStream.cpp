@@ -140,6 +140,7 @@ Void InputStream::init( QString filename, UInt width, UInt height )
     //Error
     return;
   }
+
   m_iStatus = 1;
 
   return;
@@ -233,6 +234,12 @@ Void InputStream::YUV420toRGB()
 Void InputStream::readFrame()
 {
   UInt64 bytes_read = 0;
+
+
+  if( m_iStatus == 0 )
+  {
+    return;
+  }
 
   UInt64 frame_bytes_input = m_uiWidth * m_uiHeight * 1.5;
 

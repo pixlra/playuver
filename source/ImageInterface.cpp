@@ -77,6 +77,11 @@ bool ImageInterface::loadFile( const QString &fileName )
 
   m_currStream.init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height() );
 
+  if( m_currStream.getStatus() == 0 )
+  {
+    return false;
+  }
+
   m_currStream.readFrame();
   if( m_currStream.checkErrors( READING ) )
   {

@@ -27,7 +27,7 @@
 #include <QBitmap>
 #include <QColor>
 
-#include "ConfigureResolutionDialog.h"
+#include "ConfigureFormatDialog.h"
 #include "ImageInterface.h"
 #include "viewarea.h"
 
@@ -66,16 +66,16 @@ ImageInterface::~ImageInterface()
 
 bool ImageInterface::loadFile( const QString &fileName )
 {
-  ConfigureResolutionDialog resolutionDialog( this );
+  ConfigureFormatDialog formatDialog( this );
 
-  if( resolutionDialog.exec() == QDialog::Rejected )
+  if( formatDialog.exec() == QDialog::Rejected )
   {
     return false;
   }
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  m_currStream.init( fileName, resolutionDialog.getResolution().width(), resolutionDialog.getResolution().height() );
+  m_currStream.init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height() );
 
   m_currStream.readFrame();
   if( m_currStream.checkErrors( READING ) )

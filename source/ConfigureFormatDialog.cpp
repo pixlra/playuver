@@ -17,18 +17,18 @@
  */
 
 /**
- * \file     ConfigureResolutionDialog.cpp
+ * \file     ConfigureFormatDialog.cpp
  * \brief    Dialog box to set the sequence resolution
  */
 
 #include <QApplication>
 #include <QComboBox>
-#include "ConfigureResolutionDialog.h"
+#include "ConfigureFormatDialog.h"
 
 namespace plaYUVer
 {
 
-ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
+ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
     QDialog( parent )
 {
 
@@ -36,10 +36,10 @@ ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
 
   // Config dialog
 
-  setObjectName( QStringLiteral( "ConfigureResolution" ) );
+  setObjectName( QStringLiteral( "ConfigureFormat" ) );
   resize( 392, 292 );
 
-  setWindowTitle( QApplication::translate( "ConfigureResolution", "Configure Resolution", 0 ) );
+  setWindowTitle( QApplication::translate( "ConfigureFormat", "Configure Resolution", 0 ) );
   setWindowIcon( QIcon( ":/images/dialogicon-grid.png" ) );
 
   MainLayout = new QVBoxLayout( this );
@@ -57,7 +57,7 @@ ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
   font.setBold( true );
   font.setWeight( 75 );
   dialogTitleLabel->setFont( font );
-  dialogTitleLabel->setText( QApplication::translate( "ConfigureResolution", "Configure Resolution", 0 ) );
+  dialogTitleLabel->setText( QApplication::translate( "ConfigureFormat", "Configure Resolution", 0 ) );
 
   headerSpacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
 
@@ -93,7 +93,7 @@ ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
   standardResolutionLayout->addWidget( standardResolutionLabel );
   standardResolutionLayout->addItem( horizontalSpacer );
   standardResolutionLayout->addWidget( standardResolutionBox );
-  standardResolutionLabel->setText( QApplication::translate( "ConfigureResolution", "Standard Resolution", 0 ) );
+  standardResolutionLabel->setText( QApplication::translate( "ConfigureFormat", "Standard Resolution", 0 ) );
   standardResolutionBox->clear();
   standardResolutionBox->insertItems( 0, standardResolutionNames );
   standardResolutionBox->setCurrentIndex( -1 );
@@ -111,11 +111,11 @@ ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
   font1.setBold( true );
   font1.setWeight( 75 );
   resolutionLabel->setFont( font1 );
-  resolutionLabel->setText( QApplication::translate( "ConfigureResolution", "Resolution chosen", 0 ) );
+  resolutionLabel->setText( QApplication::translate( "ConfigureFormat", "Resolution chosen", 0 ) );
 
   widthLabel = new QLabel( this );
   widthLabel->setObjectName( QStringLiteral( "widthLabel" ) );
-  widthLabel->setText( QApplication::translate( "ConfigureResolution", "Width", 0 ) );
+  widthLabel->setText( QApplication::translate( "ConfigureFormat", "Width", 0 ) );
   widthSpinBox = new QSpinBox( this );
   widthSpinBox->setObjectName( QStringLiteral( "widthSpinBox" ) );
   widthSpinBox->setRange( 0, 5000 );
@@ -123,7 +123,7 @@ ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
 
   heightLabel = new QLabel( this );
   heightLabel->setObjectName( QStringLiteral( "heightLabel" ) );
-  heightLabel->setText( QApplication::translate( "ConfigureResolution", "Height", 0 ) );
+  heightLabel->setText( QApplication::translate( "ConfigureFormat", "Height", 0 ) );
   heightSpinBox = new QSpinBox( this );
   heightSpinBox->setObjectName( QStringLiteral( "heightSpinBox" ) );
   heightSpinBox->setRange( 0, 5000 );
@@ -131,7 +131,7 @@ ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
 
   pixelsLabel = new QLabel( this );
   pixelsLabel->setObjectName( QStringLiteral( "pixelsLabel" ) );
-  pixelsLabel->setText( QApplication::translate( "ConfigureResolution", "Pixels", 0 ) );
+  pixelsLabel->setText( QApplication::translate( "ConfigureFormat", "Pixels", 0 ) );
 
   resolutionGrid->addWidget( resolutionLabel, 0, 0, 1, 1 );
   resolutionGrid->addWidget( widthLabel, 1, 1, 1, 1 );
@@ -163,7 +163,7 @@ ConfigureResolutionDialog::ConfigureResolutionDialog( QWidget *parent ) :
 
 }
 
-void ConfigureResolutionDialog::StandardResolutionSelection()
+void ConfigureFormatDialog::StandardResolutionSelection()
 {
   Int currIdx = standardResolutionBox->currentIndex();
 

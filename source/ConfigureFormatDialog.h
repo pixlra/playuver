@@ -17,7 +17,7 @@
  */
 
 /**
- * \file     ConfigureResolutionDialog.h
+ * \file     ConfigureFormatDialog.h
  * \brief    Dialog box to set the sequence resolution
  */
 
@@ -45,13 +45,13 @@ namespace plaYUVer
 /**
  *
  */
-class ConfigureResolutionDialog: public QDialog
+class ConfigureFormatDialog: public QDialog
 {
 Q_OBJECT
 
 public:
 
-  ConfigureResolutionDialog( QWidget *parent = 0 );
+  ConfigureFormatDialog( QWidget *parent = 0 );
 
   QSize getResolution()
   {

@@ -35,11 +35,6 @@
 namespace plaYUVer
 {
 
-typedef enum YUV_FILE_FORMATS
-{
-  INVALID = 0, YUV_420p = 1,
-} YUVFileFormats;
-
 enum InputStream_Errors
 {
   NO_ERROR = 0, READING = 1,
@@ -54,8 +49,8 @@ private:
 
   QString m_cFilename;
   FILE* m_pFile; /**< The input file pointer >*/
-
-  YUVFileFormats m_eFormat;
+  Int m_iFileFormat;
+  Int m_iPixelFormat;
 
   UInt m_uiWidth;
   UInt m_uiHeight;
@@ -73,7 +68,19 @@ public:
   static QStringList supportedReadFormatsList();
   static QStringList supportedPixelFormatList();
 
-  Void init( QString filename, UInt width, UInt height );
+  enum InputStreamColorSpace
+  {
+    YUV420,
+    YUV400,
+  };
+
+  enum InputStreamFormats
+  {
+    INVALID = -1,
+    YUVFormat = 0, // Use color space.
+  };
+
+  Void init( QString filename, UInt width, UInt height, Int input_format );
 
   Void YUV420toRGB();
 

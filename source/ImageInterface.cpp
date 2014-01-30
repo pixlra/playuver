@@ -53,7 +53,6 @@ ImageInterface::ImageInterface( QWidget * parent ) :
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
 
-
   m_cCurrFileName = QString( "" );
   m_dScaleFactor = 1;
 
@@ -75,7 +74,7 @@ bool ImageInterface::loadFile( const QString &fileName )
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  m_currStream.init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height() );
+  m_currStream.init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height(), formatDialog.getPixelFormat() );
 
   if( m_currStream.getStatus() == 0 )
   {
@@ -182,8 +181,8 @@ Void ImageInterface::adjustScrollBar( Double factor )
 
 QSize ImageInterface::sizeHint() const
 {
-  QSize maxSize; // The size of the parent (viewport widget
-                 // of the QMdiArea).
+  QSize maxSize;  // The size of the parent (viewport widget
+                  // of the QMdiArea).
 
   QWidget *p = parentWidget();
   if( p )

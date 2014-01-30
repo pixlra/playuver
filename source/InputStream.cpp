@@ -42,7 +42,7 @@ InputStream::InputStream()
   m_pppcInputPel[2] = NULL;
   m_pppcRGBPel = NULL;
 
-  m_eFormat = INVALID;
+  m_iFileFormat = INVALID;
 }
 
 InputStream::~InputStream()
@@ -82,11 +82,11 @@ QStringList InputStream::supportedReadFormatsList()
 QStringList InputStream::supportedPixelFormatList()
 {
   QStringList formats;
-  formats << "YUV420" << "YUV444";
+  formats << "YUV420" << "YUV400";
   return formats;
 }
 
-Void InputStream::init( QString filename, UInt width, UInt height )
+Void InputStream::init( QString filename, UInt width, UInt height, Int input_format )
 {
 
   if( width <= 0 || height <= 0 )
@@ -106,7 +106,8 @@ Void InputStream::init( QString filename, UInt width, UInt height )
   m_uiWidth = width;
   m_uiHeight = height;
 
-  m_eFormat = YUV_420p;
+  m_iFileFormat = YUVFormat;
+  m_iPixelFormat = input_format;
 
   UInt64 frame_bytes_input = m_uiWidth * m_uiHeight * 1.5;
   UInt64 alloc_memory;
@@ -115,23 +116,39 @@ Void InputStream::init( QString filename, UInt width, UInt height )
   m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
   fseek( m_pFile, 0, SEEK_SET );
 
-  alloc_memory = get_mem2Dpel( &( m_pppcInputPel[0] ), m_uiHeight, m_uiWidth );
-  if( !alloc_memory )
+  if( m_iFileFormat == YUVFormat )
   {
-    //Error
-    return;
-  }
-  alloc_memory = get_mem2Dpel( &( m_pppcInputPel[1] ), m_uiHeight / 2, m_uiWidth / 2 );
-  if( !alloc_memory )
-  {
-    //Error
-    return;
-  }
-  alloc_memory = get_mem2Dpel( &( m_pppcInputPel[2] ), m_uiHeight / 2, m_uiWidth / 2 );
-  if( !alloc_memory )
-  {
-    //Error
-    return;
+    switch( m_iPixelFormat )
+    {
+    case YUV420:
+      alloc_memory = get_mem2Dpel( &( m_pppcInputPel[0] ), m_uiHeight, m_uiWidth );
+      if( !alloc_memory )
+      {
+        //Error
+        return;
+      }
+      alloc_memory = get_mem2Dpel( &( m_pppcInputPel[1] ), m_uiHeight / 2, m_uiWidth / 2 );
+      if( !alloc_memory )
+      {
+        //Error
+        return;
+      }
+      alloc_memory = get_mem2Dpel( &( m_pppcInputPel[2] ), m_uiHeight / 2, m_uiWidth / 2 );
+      if( !alloc_memory )
+      {
+        //Error
+        return;
+      }
+      break;
+    case YUV400:
+      alloc_memory = get_mem2Dpel( &( m_pppcInputPel[0] ), m_uiHeight, m_uiWidth );
+      if( !alloc_memory )
+      {
+        //Error
+        return;
+      }
+      break;
+    }
   }
 
   get_mem3Dpel( &m_pppcRGBPel, 3, m_uiHeight, m_uiWidth );
@@ -235,37 +252,39 @@ Void InputStream::readFrame()
 {
   UInt64 bytes_read = 0;
 
-
   if( m_iStatus == 0 )
   {
     return;
   }
-
   UInt64 frame_bytes_input = m_uiWidth * m_uiHeight * 1.5;
 
-  bytes_read = fread( &( m_pppcInputPel[0][0][0] ), sizeof(Pel), m_uiWidth * m_uiHeight, m_pFile );
-  if( bytes_read != ( m_uiWidth * m_uiHeight ) )
+  switch( m_iPixelFormat )
   {
-    m_iErrorStatus = READING;
-    qDebug() << " Reading error !!!" << endl;
-    return;
+  case YUV420:
+    bytes_read = fread( &( m_pppcInputPel[0][0][0] ), sizeof(Pel), m_uiWidth * m_uiHeight, m_pFile );
+    if( bytes_read != ( m_uiWidth * m_uiHeight ) )
+    {
+      m_iErrorStatus = READING;
+      qDebug() << " Reading error !!!" << endl;
+      return;
+    }
+    bytes_read = fread( &( m_pppcInputPel[1][0][0] ), sizeof(Pel), m_uiWidth * m_uiHeight / 4, m_pFile );
+    if( bytes_read != ( m_uiWidth * m_uiHeight / 4 ) )
+    {
+      m_iErrorStatus = READING;
+      qDebug() << " Reading error !!!" << endl;
+      return;
+    }
+    bytes_read = fread( &( m_pppcInputPel[2][0][0] ), sizeof(Pel), m_uiWidth * m_uiHeight / 4, m_pFile );
+    if( bytes_read != ( m_uiWidth * m_uiHeight / 4 ) )
+    {
+      m_iErrorStatus = READING;
+      qDebug() << " Reading error !!!" << endl;
+      return;
+    }
+    YUV420toRGB();
+    break;
   }
-  bytes_read = fread( &( m_pppcInputPel[1][0][0] ), sizeof(Pel), m_uiWidth * m_uiHeight / 4, m_pFile );
-  if( bytes_read != ( m_uiWidth * m_uiHeight / 4 ) )
-  {
-    m_iErrorStatus = READING;
-    qDebug() << " Reading error !!!" << endl;
-    return;
-  }
-  bytes_read = fread( &( m_pppcInputPel[2][0][0] ), sizeof(Pel), m_uiWidth * m_uiHeight / 4, m_pFile );
-  if( bytes_read != ( m_uiWidth * m_uiHeight / 4 ) )
-  {
-    m_iErrorStatus = READING;
-    qDebug() << " Reading error !!!" << endl;
-    return;
-  }
-
-  YUV420toRGB();
 
   return;
 }

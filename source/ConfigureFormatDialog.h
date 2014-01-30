@@ -58,6 +58,11 @@ public:
     return QSize( widthSpinBox->value(), heightSpinBox->value() );
   }
 
+  Int getPixelFormat()
+  {
+    pixelFormatBox->currentIndex();
+  }
+
 private Q_SLOTS:
   void StandardResolutionSelection();
 

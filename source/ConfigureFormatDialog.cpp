@@ -106,8 +106,8 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   // resolutionGrid
 
-  *verticalSpacer = QSpacerItem( 10, 20, QSizePolicy::Minimum );
-  MainLayout->addItem( verticalSpacer );
+  resolutionGridVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
+  MainLayout->addItem( resolutionGridVerticalSpacer );
 
   resolutionGrid = new QGridLayout( this );
   resolutionGrid->setObjectName( QStringLiteral( "resolutionGrid" ) );
@@ -151,8 +151,8 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   // Pixel format
 
-  *verticalSpacer = QSpacerItem( 10, 20, QSizePolicy::Minimum );
-  MainLayout->addItem( verticalSpacer );
+  pixelFormatVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
+  MainLayout->addItem( pixelFormatVerticalSpacer );
 
   pixelFormatLayout = new QHBoxLayout( );
   pixelFormatLayout->setObjectName( QStringLiteral( "pixelFormatLayout" ) );

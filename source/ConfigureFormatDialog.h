@@ -74,6 +74,8 @@ private:
   QLabel *standardResolutionLabel;
   QSpacerItem *horizontalSpacer;
   QComboBox *standardResolutionBox;
+
+  QSpacerItem *resolutionGridVerticalSpacer;
   QGridLayout *resolutionGrid;
   QLabel *widthLabel;
   QLabel *pixelsLabel;
@@ -83,10 +85,13 @@ private:
   QLabel *heightLabel;
   QSpacerItem *verticalSpacer;
 
+  QSpacerItem *pixelFormatVerticalSpacer;
   QHBoxLayout *pixelFormatLayout;
   QLabel *pixelFormatLabel;
   QSpacerItem *pixelFormatHorizontalSpacer;
   QComboBox *pixelFormatBox;
+
+
   QSpacerItem *verticalSpacerConfirmation;
   QDialogButtonBox *dialogButtonOkCancel;
 

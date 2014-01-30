@@ -58,6 +58,10 @@ plaYUVerApp::plaYUVerApp()
   setWindowTitle( tr( "plaYUVerApp" ) );
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
   setUnifiedTitleAndToolBarOnMac( true );
+
+  playingTimer = new QTimer( this );
+
+  playingTimer->start( 1000 );
 }
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
@@ -112,10 +116,33 @@ void plaYUVerApp::open()
       interfaceChild->close();
     }
   }
+  play();
 }
 
 void plaYUVerApp::saveAs()
 {
+
+}
+
+// -----------------------  Playing Functions  --------------------
+
+void plaYUVerApp::play()
+{
+
+  connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
+
+}
+
+
+void plaYUVerApp::playEvent()
+{
+  if( activeImageInterface() )
+  {
+    if( !activeImageInterface()->nextVideoFrame() )
+    {
+      playingTimer->stop();
+    }
+  }
 
 }
 
@@ -285,6 +312,9 @@ Void plaYUVerApp::createActions()
   zoomToFitAct->setStatusTip( tr( "Zoom in or out to fit on the window." ) );
   zoomToFitAct->setShortcut( tr( "Ctrl+F" ) );
   connect( zoomToFitAct, SIGNAL( triggered() ), this, SLOT( zoomToFit() ) );
+
+  // ------------ Playing ------------
+
 
   // ------------ Window ------------
 

@@ -54,6 +54,10 @@ private slots:
   void open();
   void saveAs();
 
+  //! Playing functions
+  void play();
+  void playEvent();
+
   //! View functions
   void zoomIn();
   void zoomOut();
@@ -89,6 +93,7 @@ private:
 
   QString m_cLastOpenPath;
 
+  QTimer *playingTimer;
   QMdiArea *mdiArea;
   QSignalMapper *windowMapper;
 

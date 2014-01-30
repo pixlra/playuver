@@ -1,0 +1,19 @@
+/* Input config.h file */
+
+#ifndef __CONFIG_PLAYUVER_H__
+#define __CONFIG_PLAYUVER_H__
+
+
+/* QT definition */
+#cmakedefine USE_QT4
+
+#ifndef USE_QT4
+  #define QT_VERSION_PLAYUVER 5
+#else
+  #define QT_VERSION_PLAYUVER 4
+#endif
+
+#cmakedefine USE_OPENCV
+
+
+#endif // __CONFIG_PLAYUVER_H__

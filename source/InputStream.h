@@ -24,6 +24,8 @@
 #ifndef __INPUTSTREAM_H__
 #define __INPUTSTREAM_H__
 
+#include "config.h"
+
 #include <iostream>
 #include <cstdio>
 

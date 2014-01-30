@@ -24,6 +24,8 @@
 #ifndef __PLAYUVERAPP_H__
 #define __PLAYUVERAPP_H__
 
+#include "config.h"
+
 #include <QMainWindow>
 #include "TypeDef.h"
 

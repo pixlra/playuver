@@ -21,12 +21,6 @@
  * \brief    Sub windows handling
  */
 
-#include <QtWidgets>
-#include <QWidget>
-#include <QPixmap>
-#include <QBitmap>
-#include <QColor>
-
 #include "ConfigureFormatDialog.h"
 #include "ImageInterface.h"
 #include "viewarea.h"

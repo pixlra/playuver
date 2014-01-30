@@ -21,8 +21,11 @@
  * \brief    Main definition of the plaYUVerApp app
  */
 
+#if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
-#include <QMdiArea>
+#elif( QT_VERSION_PLAYUVER == 4 )
+#include <QtGui>
+#endif
 #include <QtDebug>
 
 #include "TypeDef.h"

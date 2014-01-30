@@ -21,8 +21,6 @@
  * \brief    Dialog box to set the sequence resolution
  */
 
-#include <QApplication>
-#include <QComboBox>
 #include "ConfigureFormatDialog.h"
 #include "InputStream.h"
 

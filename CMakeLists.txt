@@ -83,9 +83,11 @@ ADD_OPTION(USE_OPENCV        "Add OpenCV support"       OFF )
 ######################################################################################
 # Dependencies
 ######################################################################################
-IF(HAVE_OpenCV)
-  FIND_PACKAGE( OpenCV REQUIRED   )
-  #CMAKEDEFINE HAVE_MALLOC_H 1
+IF( USE_OPENCV )
+  FIND_PACKAGE( OpenCV QUIET )
+  IF( NOT OpenCV_FOUND)
+      SET(USE_OPENCV FALSE)
+  ENDIF()
 ENDIF()
 
 ######################################################################################
@@ -98,6 +100,10 @@ IF( USE_QT4 )
     ENDIF()
     INCLUDE( ${QT_USE_FILE} )
     ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+    
+    QT4_WRAP_UI( FORMS_HEADERS_FILES ${FORMS_FILES} )
+    QT4_ADD_RESOURCES( RESOURCES_RCC_FILES ${RESOURCES_FILES} )
+    
     SET( CURR_QT_LINKER_LIBS ${QT_LIBRARIES} )
 ENDIF()
 
@@ -119,7 +125,6 @@ IF( NOT USE_QT4 )
     SET( CURR_QT_MODULES Core Gui Widgets )
 ENDIF()
 
-
 ######################################################################################
 # External Libs
 ######################################################################################
@@ -129,6 +134,12 @@ ADD_LIBRARY( Scode ${EXTERNAL_SRC}/scode/viewarea.cpp ${EXTERNAL_SRC}/scode/grid
 
 
 SET( LIST_EXTERNAL_LIBS Scode )
+
+######################################################################################
+# Create config.h
+######################################################################################
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
+
 
 ######################################################################################
 # Target App

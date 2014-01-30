@@ -21,8 +21,6 @@
  * \brief    plaYUVer app settings
  */
 
-#include <QDir>
-
 #include "plaYUVerSettings.h"
 
 namespace plaYUVer

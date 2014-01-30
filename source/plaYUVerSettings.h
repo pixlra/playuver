@@ -24,14 +24,10 @@
 #ifndef __PLAYUVERSETTINGS_H__
 #define __PLAYUVERSETTINGS_H__
 
-#include <QSettings>
-#include <QString>
-#include <QSize>
-#include <QPoint>
-#include <QColor>
-#include <QString>
+#include "config.h"
 
-#include <QBitArray>
+#include <QtCore>
+
 #include "gridmanager.h"
 
 namespace plaYUVer

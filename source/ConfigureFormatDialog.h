@@ -24,15 +24,17 @@
 #ifndef __CONFIGURERESOLUTIONDIALOG_H__
 #define __CONFIGURERESOLUTIONDIALOG_H__
 
+
+#include "config.h"
+
+#if( QT_VERSION_PLAYUVER == 5 )
+#include <QtWidgets>
+#elif( QT_VERSION_PLAYUVER == 4 )
+#include <QtGui>
+#endif
 #include <QtCore>
-#include <QWidget>
-#include <QDialog>
-#include <QDialogButtonBox>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QComboBox>
-#include <QSpinBox>
+
+
 #include "TypeDef.h"
 
 class QPixmap;

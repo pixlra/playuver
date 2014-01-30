@@ -23,7 +23,6 @@
 
 #include <cstdio>
 
-#include <QtCore>
 #include <QtDebug>
 
 #include "InputStream.h"

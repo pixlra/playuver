@@ -24,14 +24,14 @@
 #ifndef __IMAGEINTERFACE_H__
 #define __IMAGEINTERFACE_H__
 
-#include <QMdiSubWindow>
-#include <QScrollArea>
-#include <QLabel>
-#include <QMdiArea>
-#include <QWidget>
-//#include <QPixmap>
-//#include <QBitmap>
-//#include <QColor>
+
+#include "config.h"
+
+#if( QT_VERSION_PLAYUVER == 5 )
+#include <QtWidgets>
+#elif( QT_VERSION_PLAYUVER == 4 )
+#include <QtGui>
+#endif
 
 
 #include "TypeDef.h"

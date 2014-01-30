@@ -24,6 +24,7 @@
 #include <QApplication>
 #include <QComboBox>
 #include "ConfigureFormatDialog.h"
+#include "InputStream.h"
 
 namespace plaYUVer
 {
@@ -37,7 +38,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   // Config dialog
 
   setObjectName( QStringLiteral( "ConfigureFormat" ) );
-  resize( 392, 292 );
+  resize( 392, 350 );
 
   setWindowTitle( QApplication::translate( "ConfigureFormat", "Configure Resolution", 0 ) );
   setWindowIcon( QIcon( ":/images/dialogicon-grid.png" ) );
@@ -73,10 +74,14 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   // standardResolutionLayout
 
+  verticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
+  MainLayout->addItem( verticalSpacer );
+
   standardResolutionLayout = new QHBoxLayout( );
   standardResolutionLayout->setObjectName( QStringLiteral( "standardResolutionLayout" ) );
   standardResolutionLabel = new QLabel( this );
   standardResolutionLabel->setObjectName( QStringLiteral( "standardResolutionLabel" ) );
+  standardResolutionLabel->setText( QApplication::translate( "ConfigureFormat", "Standard Resolution", 0 ) );
 
   horizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
 
@@ -89,18 +94,20 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   standardResolutionBox->setSizePolicy( sizePolicy );
   standardResolutionBox->setAcceptDrops( true );
 
-
-  standardResolutionLayout->addWidget( standardResolutionLabel );
-  standardResolutionLayout->addItem( horizontalSpacer );
-  standardResolutionLayout->addWidget( standardResolutionBox );
-  standardResolutionLabel->setText( QApplication::translate( "ConfigureFormat", "Standard Resolution", 0 ) );
   standardResolutionBox->clear();
   standardResolutionBox->insertItems( 0, standardResolutionNames );
   standardResolutionBox->setCurrentIndex( -1 );
 
+  standardResolutionLayout->addWidget( standardResolutionLabel );
+  standardResolutionLayout->addItem( horizontalSpacer );
+  standardResolutionLayout->addWidget( standardResolutionBox );
+
   MainLayout->addLayout( standardResolutionLayout );
 
   // resolutionGrid
+
+  *verticalSpacer = QSpacerItem( 10, 20, QSizePolicy::Minimum );
+  MainLayout->addItem( verticalSpacer );
 
   resolutionGrid = new QGridLayout( this );
   resolutionGrid->setObjectName( QStringLiteral( "resolutionGrid" ) );
@@ -142,10 +149,42 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   MainLayout->addLayout( resolutionGrid );
 
-  verticalSpacer = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  // Pixel format
+
+  *verticalSpacer = QSpacerItem( 10, 20, QSizePolicy::Minimum );
   MainLayout->addItem( verticalSpacer );
 
+  pixelFormatLayout = new QHBoxLayout( );
+  pixelFormatLayout->setObjectName( QStringLiteral( "pixelFormatLayout" ) );
+
+  pixelFormatLabel = new QLabel( this );
+  pixelFormatLabel->setObjectName( QStringLiteral( "pixelFormatLabel" ) );
+  pixelFormatLabel->setText( QApplication::translate( "pixelFormat", "Pixel FormatBox", 0 ) );
+
+  pixelFormatHorizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+
+  pixelFormatBox = new QComboBox( this );
+  pixelFormatBox->setObjectName( QStringLiteral( "pixelFormatBox" ) );
+  QSizePolicy sizePolicyPixelFormat( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+  sizePolicyPixelFormat.setHorizontalStretch( 0 );
+  sizePolicyPixelFormat.setVerticalStretch( 0 );
+  sizePolicyPixelFormat.setHeightForWidth( pixelFormatBox->sizePolicy().hasHeightForWidth() );
+  pixelFormatBox->setSizePolicy( sizePolicyPixelFormat );
+  pixelFormatBox->setAcceptDrops( true );
+  pixelFormatBox->clear();
+  pixelFormatBox->insertItems( 0, InputStream::supportedPixelFormatList() );
+  pixelFormatBox->setCurrentIndex( 0 );
+
+  pixelFormatLayout->addWidget( pixelFormatLabel );
+  pixelFormatLayout->addItem( pixelFormatHorizontalSpacer );
+  pixelFormatLayout->addWidget( pixelFormatBox );
+
+  MainLayout->addLayout( pixelFormatLayout );
+
   // Confirmation buttons
+
+  verticalSpacerConfirmation = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  MainLayout->addItem( verticalSpacerConfirmation );
 
   dialogButtonOkCancel = new QDialogButtonBox( this );
   dialogButtonOkCancel->setObjectName( QString::fromUtf8( "dialogButtonBox" ) );

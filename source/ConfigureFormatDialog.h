@@ -82,6 +82,12 @@ private:
   QSpinBox *heightSpinBox;
   QLabel *heightLabel;
   QSpacerItem *verticalSpacer;
+
+  QHBoxLayout *pixelFormatLayout;
+  QLabel *pixelFormatLabel;
+  QSpacerItem *pixelFormatHorizontalSpacer;
+  QComboBox *pixelFormatBox;
+  QSpacerItem *verticalSpacerConfirmation;
   QDialogButtonBox *dialogButtonOkCancel;
 
   Void setStandardResolutionSizes()

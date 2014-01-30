@@ -79,6 +79,13 @@ QStringList InputStream::supportedReadFormatsList()
   return formats;
 }
 
+QStringList InputStream::supportedPixelFormatList()
+{
+  QStringList formats;
+  formats << "YUV420" << "YUV444";
+  return formats;
+}
+
 Void InputStream::init( QString filename, UInt width, UInt height )
 {
 
@@ -301,4 +308,4 @@ Bool InputStream::checkErrors( Int error_type )
   return false;
 }
 
-} // NAMESPACE
+}  // NAMESPACE

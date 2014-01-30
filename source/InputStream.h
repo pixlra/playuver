@@ -71,6 +71,7 @@ public:
 
   static QString supportedReadFormats();
   static QStringList supportedReadFormatsList();
+  static QStringList supportedPixelFormatList();
 
   Void init( QString filename, UInt width, UInt height );
 

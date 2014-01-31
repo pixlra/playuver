@@ -122,9 +122,10 @@ void plaYUVerApp::open()
   play();
 }
 
-void plaYUVerApp::saveAs()
+void plaYUVerApp::save()
 {
-
+  if( activeImageInterface() )
+    activeImageInterface()->save();
 }
 
 // -----------------------  Playing Functions  --------------------
@@ -135,7 +136,6 @@ void plaYUVerApp::play()
   connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
 
 }
-
 
 void plaYUVerApp::playEvent()
 {
@@ -195,7 +195,7 @@ void plaYUVerApp::about()
 void plaYUVerApp::updateMenus()
 {
   Bool hasImageInterface = ( activeImageInterface() != 0 );
-  saveAsAct->setEnabled( hasImageInterface );
+  saveAct->setEnabled( hasImageInterface );
   closeAct->setEnabled( hasImageInterface );
   closeAllAct->setEnabled( hasImageInterface );
   tileAct->setEnabled( hasImageInterface );
@@ -271,10 +271,10 @@ Void plaYUVerApp::createActions()
   openAct->setStatusTip( tr( "Open an existing file" ) );
   connect( openAct, SIGNAL( triggered() ), this, SLOT( open() ) );
 
-  saveAsAct = new QAction( QIcon( ":/images/saveas.png" ), tr( "Save &As..." ), this );
-  saveAsAct->setShortcuts( QKeySequence::SaveAs );
-  saveAsAct->setStatusTip( tr( "Save the document under a new name" ) );
-  connect( saveAsAct, SIGNAL( triggered() ), this, SLOT( saveAs() ) );
+  saveAct = new QAction( QIcon( ":/images/save.png" ), tr( "&Save..." ), this );
+  saveAct->setShortcuts( QKeySequence::SaveAs );
+  saveAct->setStatusTip( tr( "Save the document under a new name" ) );
+  connect( saveAct, SIGNAL( triggered() ), this, SLOT( save() ) );
 
   exitAct = new QAction( tr( "E&xit" ), this );
   exitAct->setShortcuts( QKeySequence::Quit );
@@ -318,7 +318,6 @@ Void plaYUVerApp::createActions()
 
   // ------------ Playing ------------
 
-
   // ------------ Window ------------
 
   tileAct = new QAction( tr( "&Tile" ), this );
@@ -359,7 +358,7 @@ Void plaYUVerApp::createMenus()
   fileMenu = menuBar()->addMenu( tr( "&File" ) );
   fileMenu->addAction( openAct );
   fileMenu->addSeparator();
-  fileMenu->addAction( saveAsAct );
+  fileMenu->addAction( saveAct );
   fileMenu->addSeparator();
   fileMenu->addAction( closeAct );
   fileMenu->addAction( exitAct );
@@ -385,7 +384,7 @@ Void plaYUVerApp::createToolBars()
 {
   fileToolBar = addToolBar( tr( "File" ) );
   fileToolBar->addAction( openAct );
-  fileToolBar->addAction( saveAsAct );
+  fileToolBar->addAction( saveAct );
   fileToolBar->addAction( closeAct );
 
   viewToolBar = addToolBar( tr( "Zoom" ) );

@@ -54,7 +54,7 @@ private slots:
 
   //! File functions
   void open();
-  void saveAs();
+  void save();
 
   //! Playing functions
   void play();
@@ -108,7 +108,6 @@ private:
 
   QAction *openAct;
   QAction *saveAct;
-  QAction *saveAsAct;
   QAction *exitAct;
   QAction *closeAct;
   QAction *closeAllAct;

@@ -70,12 +70,40 @@ QString InputStream::supportedReadFormats()
   return formats;
 }
 
+QString InputStream::supportedWriteFormats()
+{
+    QString formats;
+    formats = "*.bmp "   // Windows Bitmap
+              "*.jpg "   // Joint Photographic Experts Group
+              "*.jpeg "  // Joint Photographic Experts Group
+              "*.png "   // Portable Network Graphics
+        ;
+
+    return formats;
+}
+
 QStringList InputStream::supportedReadFormatsList()
 {
   QStringList formats;
   formats << "Raw video (*.yuv)";
 
   return formats;
+}
+
+QStringList InputStream::supportedWriteFormatsList()
+{
+    QStringList formats;
+    formats << "Windows Bitmap (*.bmp)"
+            << "Joint Photographic Experts Group (*.jpg *.jpeg)"
+            << "Portable Network Graphics (*.png)"
+            << "Portable Bitmap (*.pbm)"
+            << "Portable Graymap (*.pgm)"
+            << "Portable Pixmap (*.ppm)"
+            << "Tagged Image File Format (*.tiff)"
+            << "X11 Bitmap (*.xbm)"
+            << "X11 Pixmap (*.xpm)";
+
+    return formats;
 }
 
 QStringList InputStream::supportedPixelFormatList()
@@ -288,6 +316,12 @@ Void InputStream::readFrame()
   return;
 }
 
+Bool InputStream::writeFrame( const QString& filename )
+{
+  getFrameQImage().save(filename);
+  return true;
+}
+
 QImage InputStream::getFrameQImage()
 {
   // Create QImage
@@ -314,6 +348,15 @@ QImage InputStream::getFrameQImage()
   }
   return img;
 }
+
+#ifdef USE_OPENCV
+cv::Mat InputStream::getFrameCvMat()
+{
+  cv::Mat cvMat( m_uiHeight, m_uiWidth, CV_8UC3 );
+
+  return cvMat;
+}
+#endif
 
 Void InputStream::seekInput( Int new_frame_num )
 {

@@ -32,6 +32,10 @@
 #include <QtCore>
 #include <QtGui>
 
+#ifdef USE_OPENCV
+#include <opencv2/opencv.hpp>
+#endif
+
 #include "TypeDef.h"
 
 namespace plaYUVer
@@ -67,8 +71,12 @@ public:
   ~InputStream();
 
   static QString supportedReadFormats();
+  static QString supportedWriteFormats();
   static QStringList supportedReadFormatsList();
+  static QStringList supportedWriteFormatsList();
+
   static QStringList supportedPixelFormatList();
+
 
   enum InputStreamColorSpace
   {
@@ -88,7 +96,12 @@ public:
 
   Void readFrame();
 
+  Bool writeFrame( const QString& filename );
+
   QImage getFrameQImage();
+#ifdef USE_OPENCV
+  cv::Mat getFrameCvMat();
+#endif
 
   Void seekInput( Int new_frame_num );
 

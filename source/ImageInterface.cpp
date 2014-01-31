@@ -96,22 +96,37 @@ bool ImageInterface::loadFile( const QString &fileName )
 
 bool ImageInterface::save()
 {
+    QString supported = tr("Supported Files");
+    QString formats = InputStream::supportedWriteFormats();
+    formats.prepend(" (");
+    formats.append(")");
+    supported.append(formats); // supported=="Supported Files (*.pbm *.jpg...)"
 
-}
+    QStringList filter;
+    filter << supported
+           << InputStream::supportedWriteFormatsList()
+           << tr( "All Files (*)" );
 
-bool ImageInterface::saveAs()
-{
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save As" ), m_cCurrFileName );
-  if( fileName.isEmpty() )
-    return false;
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save As" ),
+        m_cCurrFileName, filter.join(";;") );
 
-  return saveFile( fileName );
-}
+    if ( fileName.isEmpty() )
+        return false;
 
-bool ImageInterface::saveFile( const QString &fileName )
-{
+    QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  return true;
+    if ( !m_currStream.writeFrame( fileName ) )
+    {
+        QApplication::restoreOverrideCursor();
+        QMessageBox::warning( this, tr( "SCode" ),
+                              tr( "Cannot save file %1" )
+                              .arg( fileName ));
+        return false;
+    }
+
+    QApplication::restoreOverrideCursor();
+
+    return true;
 }
 
 bool ImageInterface::nextVideoFrame()

@@ -65,8 +65,6 @@ public:
 
   bool loadFile( const QString &fileName );
   bool save();
-  bool saveAs();
-  bool saveFile( const QString &fileName );
 
   bool nextVideoFrame();
 

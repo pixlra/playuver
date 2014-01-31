@@ -36,6 +36,12 @@ InputStream::InputStream()
   m_iStatus = 0;
 
   m_pFile = NULL;
+  m_uiWidth = 0;
+  m_uiHeight = 0;
+  m_uiTotalFrameNum = 0;
+  m_uiCurrFrameNum = 0;
+  m_iErrorStatus = 0;
+  m_iPixelFormat = -1;
   m_pppcInputPel[0] = NULL;
   m_pppcInputPel[1] = NULL;
   m_pppcInputPel[2] = NULL;
@@ -188,15 +194,6 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
   m_iStatus = 1;
 
   return;
-}
-
-static inline Pel iClip3Pel( Pel pel_value, Pel min_value, Pel max_value )
-{
-  if( pel_value > max_value )
-    return max_value;
-  if( pel_value < min_value )
-    return min_value;
-  return pel_value;
 }
 
 static inline void yuvToRgb( int iY, int iU, int iV, int &iR, int &iG, int &iB )

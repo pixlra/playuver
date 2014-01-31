@@ -87,6 +87,8 @@ IF( USE_OPENCV )
   FIND_PACKAGE( OpenCV QUIET )
   IF( NOT OpenCV_FOUND)
       SET(USE_OPENCV FALSE)
+  ELSE()
+      SET( LINKER_LIBS ${LINKER_LIBS} ${OpenCV_LIBRARIES} )
   ENDIF()
 ENDIF()
 
@@ -104,7 +106,7 @@ IF( USE_QT4 )
     QT4_WRAP_UI( FORMS_HEADERS_FILES ${FORMS_FILES} )
     QT4_ADD_RESOURCES( RESOURCES_RCC_FILES ${RESOURCES_FILES} )
     
-    SET( CURR_QT_LINKER_LIBS ${QT_LIBRARIES} )
+    SET( LINKER_LIBS ${LINKER_LIBS} ${QT_LIBRARIES} )
 ENDIF()
 
 IF( NOT USE_QT4 )
@@ -120,7 +122,7 @@ IF( NOT USE_QT4 )
     # Add compiler flags for building executables (-fPIE)
     SET( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS} )
     
-    SET( CURR_QT_LINKER_LIBS ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5Widgets_LIBRARIES} )
+    SET( LINKER_LIBS ${LINKER_LIBS} ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5Widgets_LIBRARIES} )
     
     SET( CURR_QT_MODULES Core Gui Widgets )
 ENDIF()
@@ -132,9 +134,7 @@ ENDIF()
 INCLUDE_DIRECTORIES( ${EXTERNAL_SRC}/scode )
 ADD_LIBRARY( Scode ${EXTERNAL_SRC}/scode/viewarea.cpp ${EXTERNAL_SRC}/scode/gridmanager.cpp ${EXTERNAL_SRC}/scode/scosettings.cpp )
 
-
-SET( LIST_EXTERNAL_LIBS Scode )
-
+SET( LINKER_LIBS ${LINKER_LIBS} Scode )
 ######################################################################################
 # Create config.h
 ######################################################################################
@@ -145,7 +145,7 @@ CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_D
 # Target App
 ######################################################################################
 ADD_EXECUTABLE( ${PROJECT_NAME} ${SOURCES_FILES} ${HEADERS_MOC_FILES} ${FORMS_HEADERS_FILES} ${RESOURCES_RCC_FILES} )
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${LIST_EXTERNAL_LIBS} ${CURR_QT_LINKER_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${LINKER_LIBS} )
 
 IF( NOT USE_QT4)
     QT5_USE_MODULES( ${PROJECT_NAME} ${CURR_QT_MODULES} )

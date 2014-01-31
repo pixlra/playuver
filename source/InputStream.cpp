@@ -119,6 +119,19 @@ QStringList InputStream::supportedPixelFormatList()
   return formats;
 }
 
+Bool InputStream::needFormatDialog( QString filename )
+{
+  QString fileExtension = QFileInfo(filename).completeSuffix();
+  if( !fileExtension.compare( QString("yuv") ) )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 Void InputStream::init( QString filename, UInt width, UInt height, Int input_format )
 {
 

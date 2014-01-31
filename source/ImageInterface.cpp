@@ -61,9 +61,12 @@ bool ImageInterface::loadFile( const QString &fileName )
 {
   ConfigureFormatDialog formatDialog( this );
 
-  if( formatDialog.exec() == QDialog::Rejected )
+  if( m_currStream.needFormatDialog( fileName ) )
   {
-    return false;
+    if( formatDialog.exec() == QDialog::Rejected )
+    {
+      return false;
+    }
   }
 
   QApplication::setOverrideCursor( Qt::WaitCursor );

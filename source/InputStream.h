@@ -90,6 +90,8 @@ public:
     YUVFormat = 0, // Use color space.
   };
 
+  Bool needFormatDialog( QString filename );
+
   Void init( QString filename, UInt width, UInt height, Int input_format );
 
   Void YUV420toRGB();

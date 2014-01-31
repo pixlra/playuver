@@ -13,7 +13,11 @@
   #define QT_VERSION_PLAYUVER 4
 #endif
 
+/* OpenCV */
 #cmakedefine USE_OPENCV
+
+/* FFMPEG */
+#cmakedefine USE_FFMPEG
 
 
 #endif // __CONFIG_PLAYUVER_H__

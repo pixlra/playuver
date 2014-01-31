@@ -36,6 +36,13 @@
 #include <opencv2/opencv.hpp>
 #endif
 
+#ifdef USE_FFMPEG
+#include "libavutil/imgutils.h"
+#include "libavutil/samplefmt.h"
+#include "libavutil/timestamp.h"
+#include "libavformat/avformat.h"
+#endif
+
 #include "TypeDef.h"
 
 namespace plaYUVer
@@ -45,6 +52,21 @@ enum InputStream_Errors
 {
   NO_ERROR = 0, READING = 1,
 };
+
+#ifdef USE_FFMPEG
+typedef struct __LibAvContext
+{
+  AVFormatContext *fmt_ctx;
+  AVCodecContext *video_dec_ctx;
+  AVStream *video_stream;
+  Int video_stream_idx;
+  AVFrame *frame;
+  AVPacket pkt;
+  uint8_t *video_dst_data[4];
+  int video_dst_linesize[4];
+  int video_dst_bufsize;
+} LibAvContext;
+#endif
 
 class InputStream
 {

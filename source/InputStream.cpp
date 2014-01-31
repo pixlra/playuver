@@ -78,14 +78,14 @@ QString InputStream::supportedReadFormats()
 
 QString InputStream::supportedWriteFormats()
 {
-    QString formats;
-    formats = "*.bmp "   // Windows Bitmap
-              "*.jpg "   // Joint Photographic Experts Group
-              "*.jpeg "  // Joint Photographic Experts Group
-              "*.png "   // Portable Network Graphics
-        ;
+  QString formats;
+  formats = "*.bmp "   // Windows Bitmap
+          "*.jpg "// Joint Photographic Experts Group
+          "*.jpeg "// Joint Photographic Experts Group
+          "*.png "// Portable Network Graphics
+  ;
 
-    return formats;
+  return formats;
 }
 
 QStringList InputStream::supportedReadFormatsList()
@@ -98,18 +98,11 @@ QStringList InputStream::supportedReadFormatsList()
 
 QStringList InputStream::supportedWriteFormatsList()
 {
-    QStringList formats;
-    formats << "Windows Bitmap (*.bmp)"
-            << "Joint Photographic Experts Group (*.jpg *.jpeg)"
-            << "Portable Network Graphics (*.png)"
-            << "Portable Bitmap (*.pbm)"
-            << "Portable Graymap (*.pgm)"
-            << "Portable Pixmap (*.ppm)"
-            << "Tagged Image File Format (*.tiff)"
-            << "X11 Bitmap (*.xbm)"
-            << "X11 Pixmap (*.xpm)";
+  QStringList formats;
+  formats << "Windows Bitmap (*.bmp)" << "Joint Photographic Experts Group (*.jpg *.jpeg)" << "Portable Network Graphics (*.png)" << "Portable Bitmap (*.pbm)"
+      << "Portable Graymap (*.pgm)" << "Portable Pixmap (*.ppm)" << "Tagged Image File Format (*.tiff)" << "X11 Bitmap (*.xbm)" << "X11 Pixmap (*.xpm)";
 
-    return formats;
+  return formats;
 }
 
 QStringList InputStream::supportedPixelFormatList()
@@ -121,8 +114,8 @@ QStringList InputStream::supportedPixelFormatList()
 
 Bool InputStream::needFormatDialog( QString filename )
 {
-  QString fileExtension = QFileInfo(filename).completeSuffix();
-  if( !fileExtension.compare( QString("yuv") ) )
+  QString fileExtension = QFileInfo( filename ).completeSuffix();
+  if( !fileExtension.compare( QString( "yuv" ) ) )
   {
     return true;
   }
@@ -131,6 +124,174 @@ Bool InputStream::needFormatDialog( QString filename )
     return false;
   }
 }
+
+#ifdef USE_FFMPEG
+static int open_codec_context( int *stream_idx, AVFormatContext *fmt_ctx, enum AVMediaType type )
+{
+  int ret;
+  AVStream *st;
+  AVCodecContext *dec_ctx = NULL;
+  AVCodec *dec = NULL;
+
+  ret = av_find_best_stream( fmt_ctx, type, -1, -1, NULL, 0 );
+  if( ret < 0 )
+  {
+    return ret;
+  }
+  else
+  {
+    *stream_idx = ret;
+    st = fmt_ctx->streams[*stream_idx];
+
+    /* find decoder for the stream */
+    dec_ctx = st->codec;
+    dec = avcodec_find_decoder( dec_ctx->codec_id );
+    if( !dec )
+    {
+      printf( "Failed to find %s codec\n", av_get_media_type_string( type ) );
+      return ret;
+    }
+
+    if( ( ret = avcodec_open2( dec_ctx, dec, NULL ) ) < 0 )
+    {
+      printf( "Failed to open %s codec\n", av_get_media_type_string( type ) );
+      return ret;
+    }
+  }
+
+  return 0;
+}
+
+Void closeAvFormat( LibAvContext avContext )
+{
+  if( avContext.video_dec_ctx )
+    avcodec_close( avContext.video_dec_ctx );
+
+  avformat_close_input( &avContext.fmt_ctx );
+
+  av_free( avContext.frame );
+  av_free( avContext.video_dst_data[0] );
+}
+
+Bool initAvFormat( LibAvContext avContext, QString filename, UInt width, UInt height )
+{
+  Bool bRet = true;
+  int ret = 0;
+
+  avContext.video_stream_idx = -1;
+
+  char *src_filename = filename.toLocal8Bit().data();
+
+  FILE *video_dst_file = NULL;
+
+  int video_frame_count = 0;
+  int audio_frame_count = 0;
+
+  /* register all formats and codecs */
+  av_register_all();
+
+  /* open input file, and allocate format context */
+  if( avformat_open_input( &avContext.fmt_ctx, src_filename, NULL, NULL ) < 0 )
+  {
+    qDebug( ) << " Could not open source file %s !!!" << filename << endl;
+    return false;
+  }
+
+  /* retrieve stream information */
+  if( avformat_find_stream_info( avContext.fmt_ctx, NULL ) < 0 )
+  {
+    qDebug( ) << " Could not find stream information !!!" << endl;
+    return false;
+  }
+
+  if( open_codec_context( &avContext.video_stream_idx, avContext.fmt_ctx, AVMEDIA_TYPE_VIDEO ) >= 0 )
+  {
+    avContext.video_stream = avContext.fmt_ctx->streams[avContext.video_stream_idx];
+    avContext.video_dec_ctx = avContext.video_stream->codec;
+
+    /* allocate image where the decoded image will be put */
+    ret = av_image_alloc( avContext.video_dst_data, avContext.video_dst_linesize, avContext.video_dec_ctx->width, avContext.video_dec_ctx->height,
+        avContext.video_dec_ctx->pix_fmt, 1 );
+    if( ret < 0 )
+    {
+      qDebug( ) << " Could not allocate raw video buffer !!!" << endl;
+      closeAvFormat( avContext );
+      return false;
+    }
+    avContext.video_dst_bufsize = ret;
+  }
+
+  /* dump input information to stderr */
+  //av_dump_format(fmt_ctx, 0, src_filename, 0);
+  if( !avContext.video_stream )
+  {
+    qDebug( ) << " Could not find audio or video stream in the input, aborting !!!" << endl;
+    bRet = false;
+    closeAvFormat( avContext );
+    return false;
+  }
+
+  avContext.frame = avcodec_alloc_frame();
+  if( !avContext.frame )
+  {
+    qDebug( ) << " Could not allocate frame !!!" << endl;
+    ret = AVERROR( ENOMEM );
+    closeAvFormat( avContext );
+    return false;
+  }
+
+  /* initialize packet, set data to NULL, let the demuxer fill it */
+  av_init_packet( &avContext.pkt );
+  avContext.pkt.data = NULL;
+  avContext.pkt.size = 0;
+
+  return true;
+}
+
+Bool decodeAvFormat( LibAvContext avContext )
+{
+  Int got_frame;
+  int ret;
+  /* read frames from the file */
+
+  if( av_read_frame( avContext.fmt_ctx, &avContext.pkt ) >= 0 )
+  {
+    if( avContext.pkt.stream_index == avContext.video_stream_idx )
+    {
+      /* decode video frame */
+      ret = avcodec_decode_video2( avContext.video_dec_ctx, avContext.frame, &got_frame, &avContext.pkt );
+      if( ret < 0 )
+      {
+        fprintf( stderr, "Error decoding video frame\n" );
+        return false;
+      }
+
+      if( got_frame )
+      {
+        /* copy decoded frame to destination buffer:
+         * this is required since rawvideo expects non aligned data */
+        av_image_copy( avContext.video_dst_data, avContext.video_dst_linesize, ( const uint8_t ** )( avContext.frame->data ), avContext.frame->linesize,
+            avContext.video_dec_ctx->pix_fmt, avContext.video_dec_ctx->width, avContext.video_dec_ctx->height );
+
+        /* write to rawvideo file */
+        //fwrite( avContext.video_dst_data[0], 1, avContext.video_dst_bufsize, avContext.video_dst_file );
+      }
+    }
+    av_free_packet( &avContext.pkt );
+  }
+
+//  /* flush cached frames */
+//  avContext.pkt.data = NULL;
+//  avContext.pkt.size = 0;
+//  do
+//  {
+//    decode_packet( &got_frame, 1 );
+//  }
+//  while( got_frame );
+
+  true;
+}
+#endif
 
 Void InputStream::init( QString filename, UInt width, UInt height, Int input_format )
 {
@@ -302,21 +463,21 @@ Void InputStream::readFrame()
     if( bytes_read != ( m_uiWidth * m_uiHeight ) )
     {
       m_iErrorStatus = READING;
-      qDebug() << " Reading error !!!" << endl;
+      qDebug( ) << " Reading error !!!" << endl;
       return;
     }
     bytes_read = fread( &( m_pppcInputPel[1][0][0] ), sizeof(Pel), m_uiWidth * m_uiHeight / 4, m_pFile );
     if( bytes_read != ( m_uiWidth * m_uiHeight / 4 ) )
     {
       m_iErrorStatus = READING;
-      qDebug() << " Reading error !!!" << endl;
+      qDebug( ) << " Reading error !!!" << endl;
       return;
     }
     bytes_read = fread( &( m_pppcInputPel[2][0][0] ), sizeof(Pel), m_uiWidth * m_uiHeight / 4, m_pFile );
     if( bytes_read != ( m_uiWidth * m_uiHeight / 4 ) )
     {
       m_iErrorStatus = READING;
-      qDebug() << " Reading error !!!" << endl;
+      qDebug( ) << " Reading error !!!" << endl;
       return;
     }
     YUV420toRGB();
@@ -328,7 +489,7 @@ Void InputStream::readFrame()
 
 Bool InputStream::writeFrame( const QString& filename )
 {
-  getFrameQImage().save(filename);
+  getFrameQImage().save( filename );
   return true;
 }
 

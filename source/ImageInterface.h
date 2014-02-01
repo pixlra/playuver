@@ -24,7 +24,6 @@
 #ifndef __IMAGEINTERFACE_H__
 #define __IMAGEINTERFACE_H__
 
-
 #include "config.h"
 
 #if( QT_VERSION_PLAYUVER == 5 )
@@ -32,7 +31,6 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
-
 
 #include "TypeDef.h"
 #include "InputStream.h"
@@ -54,10 +52,8 @@ private:
 
   InputStream m_currStream;
 
-
   QString m_cCurrFileName;
   Double m_dScaleFactor;
-
 
 public:
   ImageInterface( QWidget * parent = 0 );
@@ -112,7 +108,6 @@ public:
    * QMdiArea only have a function that arranges @b all the child windows.
    */
   //static void cascader( QList<QWidget *> &widgets, const QRect &domain );
-
   QString userFriendlyCurrentFile();
   QString strippedName( const QString &fullFileName );
   QString currentFile()
@@ -127,6 +122,6 @@ private slots:
 
 };
 
-} // NAMESPACE
+}  // NAMESPACE
 
 #endif // __IMAGEINTERFACE_H__

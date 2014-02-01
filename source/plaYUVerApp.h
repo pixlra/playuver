@@ -127,6 +127,6 @@ private:
   QAction *aboutQtAct;
 };
 
-} // NAMESPACE
+}  // NAMESPACE
 
 #endif // __PLAYUVERAPP_H__

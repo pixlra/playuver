@@ -125,6 +125,6 @@ private:
   QSettings m_settings;
 };
 
-} // NAMESPACE
+}  // NAMESPACE
 
 #endif  // __PLAYUVERSETTINGS_H__

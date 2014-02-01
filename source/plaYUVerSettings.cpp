@@ -314,4 +314,4 @@ void PlaYUVerSettings::setImgVDec( QString str )
   m_settings.setValue( "MMPdec/imgV", str );
 }
 
-} // NAMESPACE
+}  // NAMESPACE

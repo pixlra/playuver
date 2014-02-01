@@ -67,11 +67,14 @@ bool ImageInterface::loadFile( const QString &fileName )
     {
       return false;
     }
+    m_currStream.init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height(), formatDialog.getPixelFormat() );
+  }
+  else
+  {
+    m_currStream.init( fileName, 0, 0, 0 );
   }
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  m_currStream.init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height(), formatDialog.getPixelFormat() );
 
   if( m_currStream.getStatus() == 0 )
   {
@@ -99,37 +102,32 @@ bool ImageInterface::loadFile( const QString &fileName )
 
 bool ImageInterface::save()
 {
-    QString supported = tr("Supported Files");
-    QString formats = InputStream::supportedWriteFormats();
-    formats.prepend(" (");
-    formats.append(")");
-    supported.append(formats); // supported=="Supported Files (*.pbm *.jpg...)"
+  QString supported = tr( "Supported Files" );
+  QString formats = InputStream::supportedWriteFormats();
+  formats.prepend( " (" );
+  formats.append( ")" );
+  supported.append( formats );  // supported=="Supported Files (*.pbm *.jpg...)"
 
-    QStringList filter;
-    filter << supported
-           << InputStream::supportedWriteFormatsList()
-           << tr( "All Files (*)" );
+  QStringList filter;
+  filter << supported << InputStream::supportedWriteFormatsList() << tr( "All Files (*)" );
 
-    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save As" ),
-        m_cCurrFileName, filter.join(";;") );
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save As" ), m_cCurrFileName, filter.join( ";;" ) );
 
-    if ( fileName.isEmpty() )
-        return false;
+  if( fileName.isEmpty() )
+    return false;
 
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+  QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    if ( !m_currStream.writeFrame( fileName ) )
-    {
-        QApplication::restoreOverrideCursor();
-        QMessageBox::warning( this, tr( "SCode" ),
-                              tr( "Cannot save file %1" )
-                              .arg( fileName ));
-        return false;
-    }
-
+  if( !m_currStream.writeFrame( fileName ) )
+  {
     QApplication::restoreOverrideCursor();
+    QMessageBox::warning( this, tr( "SCode" ), tr( "Cannot save file %1" ).arg( fileName ) );
+    return false;
+  }
 
-    return true;
+  QApplication::restoreOverrideCursor();
+
+  return true;
 }
 
 bool ImageInterface::nextVideoFrame()

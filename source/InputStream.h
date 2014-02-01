@@ -37,7 +37,8 @@
 #endif
 
 #ifdef USE_FFMPEG
-extern "C" {
+extern "C"
+{
 #include "libavutil/imgutils.h"
 #include "libavutil/samplefmt.h"
 #include "libavutil/timestamp.h"
@@ -56,18 +57,32 @@ enum InputStream_Errors
 };
 
 #ifdef USE_FFMPEG
-typedef struct __LibAvContext
+class LibAvContextHandle
 {
+public:
+  Bool initAvFormat( QString filename, UInt width, UInt height );
+  Void closeAvFormat();
+  Bool decodeAvFormat();
+
+  Bool getStatus()
+  {
+    return m_bHasStream;
+  }
+
+  uint8_t *video_dst_data[4];
+  int video_dst_linesize[4];
+  int video_dst_bufsize;
+
+private:
   AVFormatContext *fmt_ctx;
   AVCodecContext *video_dec_ctx;
   AVStream *video_stream;
   Int video_stream_idx;
   AVFrame *frame;
   AVPacket pkt;
-  uint8_t *video_dst_data[4];
-  int video_dst_linesize[4];
-  int video_dst_bufsize;
-} LibAvContext;
+
+  Bool m_bHasStream;
+};
 #endif
 
 class InputStream
@@ -76,6 +91,10 @@ private:
 
   Int m_iStatus;
   Int m_iErrorStatus;
+
+#ifdef USE_FFMPEG
+  LibAvContextHandle m_cLibAvContext;
+#endif
 
   QString m_cFilename;
   FILE* m_pFile; /**< The input file pointer >*/
@@ -101,17 +120,14 @@ public:
 
   static QStringList supportedPixelFormatList();
 
-
   enum InputStreamColorSpace
   {
-    YUV420,
-    YUV400,
+    YUV420, YUV400,
   };
 
   enum InputStreamFormats
   {
-    INVALID = -1,
-    YUVFormat = 0, // Use color space.
+    INVALID = -1, YUVFormat = 0,  // Use color space.
   };
 
   Bool needFormatDialog( QString filename );
@@ -171,6 +187,6 @@ public:
 
 };
 
-} // NAMESPACE
+}  // NAMESPACE
 
 #endif // __INPUTSTREAM_H__

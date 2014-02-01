@@ -38,7 +38,7 @@ class QSignalMapper;
 namespace plaYUVer
 {
 
-class ImageInterface;
+class SubWindowHandle;
 
 class plaYUVerApp: public QMainWindow
 {
@@ -72,8 +72,8 @@ private slots:
 
   void updateWindowMenu();
 
-  ImageInterface *createImageInterface();
-  void addImageInterface( ImageInterface *child );
+  SubWindowHandle *createImageInterface();
+  void addImageInterface( SubWindowHandle *child );
   void setActiveImageInterface( QWidget *window );
 
 private:
@@ -83,7 +83,7 @@ private:
   Void createStatusBar();
   Void readSettings();
   Void writeSettings();
-  ImageInterface *activeImageInterface();
+  SubWindowHandle *activeImageInterface();
   QMdiSubWindow *findImageInterface( const QString &fileName );
 
   /**

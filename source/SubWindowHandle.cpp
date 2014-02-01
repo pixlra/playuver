@@ -22,13 +22,13 @@
  */
 
 #include "ConfigureFormatDialog.h"
-#include "ImageInterface.h"
+#include "SubWindowHandle.h"
 #include "viewarea.h"
 
 namespace plaYUVer
 {
 
-ImageInterface::ImageInterface( QWidget * parent ) :
+SubWindowHandle::SubWindowHandle( QWidget * parent ) :
     QMdiSubWindow( parent )
 {
   setParent( parent );
@@ -52,12 +52,12 @@ ImageInterface::ImageInterface( QWidget * parent ) :
 
 }
 
-ImageInterface::~ImageInterface()
+SubWindowHandle::~SubWindowHandle()
 {
   delete m_cViewArea;
 }
 
-bool ImageInterface::loadFile( const QString &fileName )
+bool SubWindowHandle::loadFile( const QString &fileName )
 {
   ConfigureFormatDialog formatDialog( this );
 
@@ -100,7 +100,7 @@ bool ImageInterface::loadFile( const QString &fileName )
   return true;
 }
 
-bool ImageInterface::save()
+bool SubWindowHandle::save()
 {
   QString supported = tr( "Supported Files" );
   QString formats = InputStream::supportedWriteFormats();
@@ -130,7 +130,7 @@ bool ImageInterface::save()
   return true;
 }
 
-bool ImageInterface::nextVideoFrame()
+bool SubWindowHandle::nextVideoFrame()
 {
   m_currStream.readFrame();
   if( m_currStream.checkErrors( READING ) )
@@ -142,13 +142,13 @@ bool ImageInterface::nextVideoFrame()
   return true;
 }
 
-Void ImageInterface::normalSize()
+Void SubWindowHandle::normalSize()
 {
   m_dScaleFactor = 1.0;
   m_cViewArea->setZoomFactor( m_dScaleFactor );
 }
 
-Void ImageInterface::zoomToFit()
+Void SubWindowHandle::zoomToFit()
 {
   // Scale to a smaller size that the real to a nicer look
   QSize niceFit( m_cScrollArea->viewport()->size().width() - 10, m_cScrollArea->viewport()->size().height() - 10 );
@@ -160,7 +160,7 @@ Void ImageInterface::zoomToFit()
   scaleView( niceFit );
 }
 
-Void ImageInterface::scaleView( Double factor )
+Void SubWindowHandle::scaleView( Double factor )
 {
   Q_ASSERT( m_cViewArea->image() );
   m_dScaleFactor *= factor;
@@ -168,12 +168,12 @@ Void ImageInterface::scaleView( Double factor )
   adjustScrollBar( m_dScaleFactor );
 }
 
-Void ImageInterface::scaleView( Int width, Int height )
+Void SubWindowHandle::scaleView( Int width, Int height )
 {
   scaleView( QSize( width, height ) );
 }
 
-Void ImageInterface::scaleView( const QSize & size )
+Void SubWindowHandle::scaleView( const QSize & size )
 {
   QSize imgViewSize( m_currStream.getWidth(), m_currStream.getHeight() );
   QSize newSize = imgViewSize;
@@ -193,7 +193,7 @@ Void ImageInterface::scaleView( const QSize & size )
     scaleView( hfactor );
 }
 
-Void ImageInterface::adjustScrollBar( Double factor )
+Void SubWindowHandle::adjustScrollBar( Double factor )
 {
   QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
   scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
@@ -201,7 +201,7 @@ Void ImageInterface::adjustScrollBar( Double factor )
   scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
 }
 
-QSize ImageInterface::sizeHint() const
+QSize SubWindowHandle::sizeHint() const
 {
   QSize maxSize;  // The size of the parent (viewport widget
                   // of the QMdiArea).
@@ -214,7 +214,7 @@ QSize ImageInterface::sizeHint() const
 
   QSize isize = QSize( m_currStream.getWidth() + 500, m_currStream.getHeight() + 500 );
 
-  // If the ImageInterface needs more space that the avaiable, we'll give
+  // If the SubWindowHandle needs more space that the avaiable, we'll give
   // to the subwindow a reasonable size preserving the image aspect ratio.
   if( isize.width() < maxSize.width() && isize.height() < maxSize.height() )
   {
@@ -229,17 +229,17 @@ QSize ImageInterface::sizeHint() const
   return maxSize;
 }
 
-Void ImageInterface::closeEvent( QCloseEvent *event )
+Void SubWindowHandle::closeEvent( QCloseEvent *event )
 {
   event->accept();
 }
 
-QString ImageInterface::userFriendlyCurrentFile()
+QString SubWindowHandle::userFriendlyCurrentFile()
 {
   return strippedName( m_cCurrFileName );
 }
 
-QString ImageInterface::strippedName( const QString &fullFileName )
+QString SubWindowHandle::strippedName( const QString &fullFileName )
 {
   return QFileInfo( fullFileName ).fileName();
 }

@@ -41,7 +41,7 @@ namespace plaYUVer
 
 using namespace SCode;
 
-class ImageInterface: public QMdiSubWindow
+class SubWindowHandle: public QMdiSubWindow
 {
 Q_OBJECT
 
@@ -56,8 +56,8 @@ private:
   Double m_dScaleFactor;
 
 public:
-  ImageInterface( QWidget * parent = 0 );
-  ~ImageInterface();
+  SubWindowHandle( QWidget * parent = 0 );
+  ~SubWindowHandle();
 
   bool loadFile( const QString &fileName );
   bool save();

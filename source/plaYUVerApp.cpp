@@ -30,7 +30,7 @@
 
 #include "TypeDef.h"
 #include "plaYUVerApp.h"
-#include "ImageInterface.h"
+#include "SubWindowHandle.h"
 #include "InputStream.h"
 
 namespace plaYUVer
@@ -107,7 +107,7 @@ void plaYUVerApp::open()
       return;
     }
 
-    ImageInterface *interfaceChild = new ImageInterface( this );  //createImageInterface();
+    SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createImageInterface();
     if( interfaceChild->loadFile( fileName ) )
     {
       addImageInterface( interfaceChild );
@@ -226,7 +226,7 @@ void plaYUVerApp::updateWindowMenu()
 
   for( Int i = 0; i < windows.size(); ++i )
   {
-    ImageInterface *child = qobject_cast<ImageInterface *>( windows.at( i ) );
+    SubWindowHandle *child = qobject_cast<SubWindowHandle *>( windows.at( i ) );
 
     QString text;
     if( i < 9 )
@@ -245,15 +245,15 @@ void plaYUVerApp::updateWindowMenu()
   }
 }
 
-ImageInterface *plaYUVerApp::createImageInterface()
+SubWindowHandle *plaYUVerApp::createImageInterface()
 {
-  ImageInterface *child = new ImageInterface;
+  SubWindowHandle *child = new SubWindowHandle;
   mdiArea->addSubWindow( child );
 
   return child;
 }
 
-void plaYUVerApp::addImageInterface( ImageInterface *child )
+void plaYUVerApp::addImageInterface( SubWindowHandle *child )
 {
   //connect( child, SIGNAL( areaSelected( QRect ) ), this, SLOT( setSelection( QRect ) ) );
 
@@ -416,10 +416,10 @@ Void plaYUVerApp::writeSettings()
   settings.setValue( "size", size() );
 }
 
-ImageInterface *plaYUVerApp::activeImageInterface()
+SubWindowHandle *plaYUVerApp::activeImageInterface()
 {
   if( QMdiSubWindow *activeImageInterface = mdiArea->activeSubWindow() )
-    return qobject_cast<ImageInterface *>( activeImageInterface );
+    return qobject_cast<SubWindowHandle *>( activeImageInterface );
   return 0;
 }
 
@@ -428,7 +428,7 @@ QMdiSubWindow *plaYUVerApp::findImageInterface( const QString &fileName )
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
 
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
-  ImageInterface *mdiChild = qobject_cast<ImageInterface *>( window);
+  SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
   if( mdiChild->currentFile() == canonicalFilePath )
   return window;
 }

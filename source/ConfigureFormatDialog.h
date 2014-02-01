@@ -24,7 +24,6 @@
 #ifndef __CONFIGURERESOLUTIONDIALOG_H__
 #define __CONFIGURERESOLUTIONDIALOG_H__
 
-
 #include "config.h"
 
 #if( QT_VERSION_PLAYUVER == 5 )
@@ -34,7 +33,6 @@
 #endif
 #include <QtCore>
 
-
 #include "TypeDef.h"
 
 class QPixmap;
@@ -43,7 +41,10 @@ class QColor;
 namespace plaYUVer
 {
 
-#define MAX_STANDARD_RESOLUTIONSIZES 10
+#define ADD_STANDARD_RESOLUTION( name, width, height) \
+    standardResolutionNames.push_back( QString( name ) ); \
+    standardResolutionSizesList.push_back( QSize( width, height ) )
+
 /**
  *
  */
@@ -62,7 +63,7 @@ public:
 
   Int getPixelFormat()
   {
-    pixelFormatBox->currentIndex();
+    return pixelFormatBox->currentIndex();
   }
 
 private Q_SLOTS:
@@ -71,7 +72,6 @@ private Q_SLOTS:
 private:
   QStringList standardResolutionNames;
   QList<QSize> standardResolutionSizesList;
-  QSize  standardResolutionSizes[MAX_STANDARD_RESOLUTIONSIZES];
   QVBoxLayout *MainLayout;
   QHBoxLayout *headLayout;
   QLabel *dialogTitleLabel;
@@ -98,29 +98,22 @@ private:
   QSpacerItem *pixelFormatHorizontalSpacer;
   QComboBox *pixelFormatBox;
 
-
   QSpacerItem *verticalSpacerConfirmation;
   QDialogButtonBox *dialogButtonOkCancel;
 
   Void setStandardResolutionSizes()
   {
 
-    standardResolutionNames.push_back( QString( "CIF (352x288)" ) );
-    standardResolutionSizesList.push_back( QSize( 352, 288 ) );
-
-    standardResolutionNames.push_back( QString( "VGA (640x480)" ) );
-    standardResolutionSizesList.push_back( QSize( 640, 480 ) );
-
-    standardResolutionNames.push_back( QString( "HD (1024x768)" ) );
-    standardResolutionSizesList.push_back( QSize( 1024, 768 ) );
-
-    standardResolutionNames.push_back( QString( "Full HD (1920x1080)" ) );
-    standardResolutionSizesList.push_back( QSize( 1920, 1080 ) );
+    ADD_STANDARD_RESOLUTION( "CIF (352x288)", 352, 288 );
+    ADD_STANDARD_RESOLUTION( "VGA (640x480)", 640, 480 );
+    ADD_STANDARD_RESOLUTION( "XVGA (1024x768)", 1024, 768 );
+    ADD_STANDARD_RESOLUTION( "HD (1280x720)", 1280, 720 );
+    ADD_STANDARD_RESOLUTION( "Full HD (1920x1080)", 1920, 1080 );
 
   }
 
 };
 
-} // NAMESPACE
+}  // NAMESPACE
 
 #endif // __CONFIGURERESOLUTIONDIALOG_H__

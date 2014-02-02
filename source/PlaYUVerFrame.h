@@ -17,61 +17,58 @@
  */
 
 /**
- * \file     LibAvContextHandle.h
- * \brief    Interface with libav libs
+ * \file     PlaYUVerFrame.h
+ * \brief    Video Frame handling
  */
 
-#ifndef __LIBAVCONTEXTHANDLE_H__
-#define __LIBAVCONTEXTHANDLE_H__
+#ifndef __PLAYUVERFRAME_H__
+#define __PLAYUVERFRAME_H__
 
 #include "config.h"
 
-#ifdef USE_FFMPEG
-
-#include <QtCore>
-
-extern "C"
-{
-#include "libavutil/imgutils.h"
-#include "libavutil/samplefmt.h"
-#include "libavutil/timestamp.h"
-#include "libavformat/avformat.h"
-}
+#include <iostream>
+#include <cstdio>
 
 #include "TypeDef.h"
 
 namespace plaYUVer
 {
 
-class LibAvContextHandle
+class PlaYUVerFrame
 {
 public:
-  Bool initAvFormat( QString filename, UInt& width, UInt& height, Int& pixel_format );
-  Void closeAvFormat();
-  Bool decodeAvFormat();
+  PlaYUVerFrame( UInt width, UInt height, Int pel_format );
+  ~PlaYUVerFrame();
 
-  Bool getStatus()
+  Void FrameFromBuffer( Pel *input_buffer, Int pel_format );
+
+  enum InputStreamColorSpace
   {
-    return m_bHasStream;
+    YUV420, YUV400, YUV422, RGB,
+  };
+
+  UInt64 getBytesPerFrame();
+
+  Pel*** getPelBufferYUV()
+  {
+    return m_pppcInputPel;
   }
-
-  uint8_t *video_dst_data[4];
-  int video_dst_linesize[4];
-  int video_dst_bufsize;
-
+  Pel*** getPelBufferRGB()
+  {
+    return m_pppcRGBPel;
+  }
 private:
-  AVFormatContext *fmt_ctx;
-  AVCodecContext *video_dec_ctx;
-  AVStream *video_stream;
-  Int video_stream_idx;
-  AVFrame *frame;
-  AVPacket pkt;
 
-  Bool m_bHasStream;
+  Void YUV420toRGB();
+
+  UInt m_uiWidth;
+  UInt m_uiHeight;
+  Int m_iPixelFormat;
+
+  Pel** m_pppcInputPel[3];
+  Pel*** m_pppcRGBPel;
 };
 
 }  // NAMESPACE
 
-#endif
-
-#endif // __LIBAVCONTEXTHANDLE_H__
+#endif // __PLAYUVERFRAME_H__

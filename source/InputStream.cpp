@@ -42,10 +42,6 @@ InputStream::InputStream()
   m_uiCurrFrameNum = 0;
   m_iErrorStatus = 0;
   m_iPixelFormat = -1;
-  m_pppcInputPel[0] = NULL;
-  m_pppcInputPel[1] = NULL;
-  m_pppcInputPel[2] = NULL;
-  m_pppcRGBPel = NULL;
 
   m_iFileFormat = INVALID;
 }
@@ -54,16 +50,6 @@ InputStream::~InputStream()
 {
   if( m_pFile )
     fclose( m_pFile );
-
-  if( m_pppcInputPel[0] )
-    free_mem2Dpel( m_pppcInputPel[0] );
-  if( m_pppcInputPel[1] )
-    free_mem2Dpel( m_pppcInputPel[1] );
-  if( m_pppcInputPel[2] )
-    free_mem2Dpel( m_pppcInputPel[2] );
-
-  if( m_pppcRGBPel )
-    free_mem3Dpel( m_pppcRGBPel );
 
 #ifdef USE_FFMPEG
   m_cLibAvContext.closeAvFormat();
@@ -137,7 +123,6 @@ Bool InputStream::needFormatDialog( QString filename )
 
 Void InputStream::init( QString filename, UInt width, UInt height, Int input_format )
 {
-
   m_uiWidth = width;
   m_uiHeight = height;
 
@@ -145,7 +130,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
   m_iPixelFormat = input_format;
 
 #ifdef USE_FFMPEG
-  Bool avStatus = m_cLibAvContext.initAvFormat( filename, width, height );
+  Bool avStatus = m_cLibAvContext.initAvFormat( filename, width, height, input_format );
 #endif
 
   if( m_uiWidth <= 0 || m_uiHeight <= 0 )
@@ -154,58 +139,25 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
     return;
   }
 
-  m_cFilename = filename;
-  m_pFile = fopen( m_cFilename.toLocal8Bit().data(), "rb" );
-  if( m_pFile == NULL )
-  {
-    // Error
-    return;
-  }
+  m_cCurrFrame = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
 
   UInt64 frame_bytes_input = m_uiWidth * m_uiHeight * 1.5;
-  UInt64 alloc_memory;
-
-  fseek( m_pFile, 0, SEEK_END );
-  m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
-  fseek( m_pFile, 0, SEEK_SET );
 
   if( m_iFileFormat == YUVFormat )
   {
-    switch( m_iPixelFormat )
+    m_cFilename = filename;
+    m_pFile = fopen( m_cFilename.toLocal8Bit().data(), "rb" );
+    if( m_pFile == NULL )
     {
-    case YUV420:
-      alloc_memory = get_mem2Dpel( &( m_pppcInputPel[0] ), m_uiHeight, m_uiWidth );
-      if( !alloc_memory )
-      {
-        //Error
-        return;
-      }
-      alloc_memory = get_mem2Dpel( &( m_pppcInputPel[1] ), m_uiHeight / 2, m_uiWidth / 2 );
-      if( !alloc_memory )
-      {
-        //Error
-        return;
-      }
-      alloc_memory = get_mem2Dpel( &( m_pppcInputPel[2] ), m_uiHeight / 2, m_uiWidth / 2 );
-      if( !alloc_memory )
-      {
-        //Error
-        return;
-      }
-      break;
-    case YUV400:
-      alloc_memory = get_mem2Dpel( &( m_pppcInputPel[0] ), m_uiHeight, m_uiWidth );
-      if( !alloc_memory )
-      {
-        //Error
-        return;
-      }
-      break;
+      // Error
+      return;
     }
+    fseek( m_pFile, 0, SEEK_END );
+    fseek( m_pFile, 0, SEEK_SET );
+    m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
   }
 
-  get_mem3Dpel( &m_pppcRGBPel, 3, m_uiHeight, m_uiWidth );
-  if( !alloc_memory )
+  if( !get_mem1Dpel( &m_pInputBuffer, m_cCurrFrame->getBytesPerFrame() ) )
   {
     //Error
     return;
@@ -216,82 +168,6 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
   return;
 }
 
-static inline void yuvToRgb( int iY, int iU, int iV, int &iR, int &iG, int &iB )
-{
-  iR = iY + 1402 * iV / 1000;
-  iG = iY - ( 101004 * iU + 209599 * iV ) / 293500;
-  iB = iY + 1772 * iU / 1000;
-
-  if( iR < 0 )
-    iR = 0;
-  if( iG < 0 )
-    iG = 0;
-  if( iB < 0 )
-    iB = 0;
-
-  if( iR > 255 )
-    iR = 255;
-  if( iG > 255 )
-    iG = 255;
-  if( iB > 255 )
-    iB = 255;
-}
-
-Void InputStream::YUV420toRGB()
-{
-  Int iY, iU, iV, iR, iG, iB;
-  for( Int y = 0; y < m_uiHeight; y += 2 )
-  {
-    for( Int x = 0; x < m_uiWidth; x += 2 )
-    {
-      // Pixel (x, y).
-
-      iY = m_pppcInputPel[0][y][x];
-      iU = m_pppcInputPel[1][y >> 1][x >> 1];
-      iV = m_pppcInputPel[2][y >> 1][x >> 1];
-      iU -= 128;
-      iV -= 128;
-
-      yuvToRgb( iY, iU, iV, iR, iG, iB );
-
-      m_pppcRGBPel[0][y][x] = iR;
-      m_pppcRGBPel[1][y][x] = iG;
-      m_pppcRGBPel[2][y][x] = iB;
-
-      // Pixel (x+1, y)
-
-      iY = m_pppcInputPel[0][y][x + 1];
-
-      yuvToRgb( iY, iU, iV, iR, iG, iB );
-
-      m_pppcRGBPel[0][y][x + 1] = iR;
-      m_pppcRGBPel[1][y][x + 1] = iG;
-      m_pppcRGBPel[2][y][x + 1] = iB;
-
-      // Pixel (x, y+1)
-
-      iY = m_pppcInputPel[0][y + 1][x];
-
-      yuvToRgb( iY, iU, iV, iR, iG, iB );
-
-      m_pppcRGBPel[0][y + 1][x] = iR;
-      m_pppcRGBPel[1][y + 1][x] = iG;
-      m_pppcRGBPel[2][y + 1][x] = iB;
-
-      // Pixel (x+1, y+1)
-
-      iY = m_pppcInputPel[0][y + 1][x + 1];
-
-      yuvToRgb( iY, iU, iV, iR, iG, iB );
-
-      m_pppcRGBPel[0][y + 1][x + 1] = iR;
-      m_pppcRGBPel[1][y + 1][x + 1] = iG;
-      m_pppcRGBPel[2][y + 1][x + 1] = iB;
-
-    }
-  }
-}
-
 Void InputStream::readFrame()
 {
   UInt64 bytes_read = 0;
@@ -300,48 +176,25 @@ Void InputStream::readFrame()
   {
     return;
   }
-  UInt64 frame_bytes_input = m_uiWidth * m_uiHeight * 1.5;
+  UInt64 frame_bytes_input = m_cCurrFrame->getBytesPerFrame();
 
 #ifdef USE_FFMPEG
   if( m_cLibAvContext.getStatus() )
   {
     m_cLibAvContext.decodeAvFormat();
-    //fwrite( video_dst_data[0], 1, video_dst_bufsize, video_dst_file );
-    memcpy( &( m_pppcInputPel[0][0][0] ), m_cLibAvContext.video_dst_data[0], m_uiWidth * m_uiHeight * sizeof(uint8_t) );
-    memcpy( &( m_pppcInputPel[1][0][0] ), m_cLibAvContext.video_dst_data[1], m_uiWidth * m_uiHeight * sizeof(uint8_t) / 4 );
-    memcpy( &( m_pppcInputPel[2][0][0] ), m_cLibAvContext.video_dst_data[2], m_uiWidth * m_uiHeight * sizeof(uint8_t) / 4 );
-    YUV420toRGB();
+    m_cCurrFrame->FrameFromBuffer( m_cLibAvContext.video_dst_data[0], m_iPixelFormat );
     return;
   }
 #endif
 
-  switch( m_iPixelFormat )
+  bytes_read = fread( m_pInputBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
+  if( bytes_read != frame_bytes_input )
   {
-  case YUV420:
-    bytes_read = fread( &( m_pppcInputPel[0][0][0] ), sizeof(Pel), m_uiWidth * m_uiHeight, m_pFile );
-    if( bytes_read != ( m_uiWidth * m_uiHeight ) )
-    {
-      m_iErrorStatus = READING;
-      qDebug( ) << " Reading error !!!" << endl;
-      return;
-    }
-    bytes_read = fread( &( m_pppcInputPel[1][0][0] ), sizeof(Pel), m_uiWidth * m_uiHeight / 4, m_pFile );
-    if( bytes_read != ( m_uiWidth * m_uiHeight / 4 ) )
-    {
-      m_iErrorStatus = READING;
-      qDebug( ) << " Reading error !!!" << endl;
-      return;
-    }
-    bytes_read = fread( &( m_pppcInputPel[2][0][0] ), sizeof(Pel), m_uiWidth * m_uiHeight / 4, m_pFile );
-    if( bytes_read != ( m_uiWidth * m_uiHeight / 4 ) )
-    {
-      m_iErrorStatus = READING;
-      qDebug( ) << " Reading error !!!" << endl;
-      return;
-    }
-    YUV420toRGB();
-    break;
+    m_iErrorStatus = READING;
+    qDebug() << " Reading error !!!" << endl;
+    return;
   }
+  m_cCurrFrame->FrameFromBuffer( m_pInputBuffer, m_iPixelFormat );
 
   return;
 }
@@ -356,10 +209,7 @@ QImage InputStream::getFrameQImage()
 {
   // Create QImage
   QImage img( m_uiWidth, m_uiHeight, QImage::Format_RGB888 );
-
-  UInt64 frame_bytes = m_uiWidth * m_uiHeight;
-  Pel pelR, pelG, pelB;
-  Pel* bufferRGB = &( m_pppcRGBPel[0][0][0] );
+  Pel*** bufferRGB = m_cCurrFrame->getPelBufferRGB();
 
   if( sizeof(Pel) == sizeof(unsigned char) )
   {
@@ -367,8 +217,7 @@ QImage InputStream::getFrameQImage()
     {
       for( Int x = 0; x < m_uiWidth; x++ )
       {
-        img.setPixel( x, y, qRgb( m_pppcRGBPel[0][y][x], m_pppcRGBPel[1][y][x], m_pppcRGBPel[2][y][x] ) );
-        //img.setPixel( x, y, qRgb( 0, 0, 255 ) );
+        img.setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
       }
     }
   }

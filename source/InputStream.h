@@ -38,6 +38,7 @@
 
 #include "TypeDef.h"
 #include "LibAvContextHandle.h"
+#include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {
@@ -46,7 +47,6 @@ enum InputStream_Errors
 {
   NO_ERROR = 0, READING = 1,
 };
-
 
 class InputStream
 {
@@ -64,13 +64,14 @@ private:
   Int m_iFileFormat;
   Int m_iPixelFormat;
 
+  Pel* m_pInputBuffer;
+
+  PlaYUVerFrame *m_cCurrFrame;
+
   UInt m_uiWidth;
   UInt m_uiHeight;
   UInt m_uiTotalFrameNum;
   UInt m_uiCurrFrameNum;
-
-  Pel** m_pppcInputPel[3];
-  Pel*** m_pppcRGBPel;
 
 public:
   InputStream();
@@ -83,11 +84,6 @@ public:
 
   static QStringList supportedPixelFormatList();
 
-  enum InputStreamColorSpace
-  {
-    YUV420, YUV400,
-  };
-
   enum InputStreamFormats
   {
     INVALID = -1, YUVFormat = 0,  // Use color space.
@@ -96,8 +92,6 @@ public:
   Bool needFormatDialog( QString filename );
 
   Void init( QString filename, UInt width, UInt height, Int input_format );
-
-  Void YUV420toRGB();
 
   Void readFrame();
 

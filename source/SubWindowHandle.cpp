@@ -73,9 +73,8 @@ bool SubWindowHandle::loadFile( const QString &fileName )
   {
     m_currStream.init( fileName, 0, 0, 0 );
   }
-
   QApplication::setOverrideCursor( Qt::WaitCursor );
-
+  QApplication::restoreOverrideCursor();
   if( m_currStream.getStatus() == 0 )
   {
     return false;

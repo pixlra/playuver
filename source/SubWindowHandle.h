@@ -64,6 +64,11 @@ public:
 
   bool playEvent();
 
+  InputStream* getInputStream()
+  {
+    return &m_currStream;
+  }
+
   /**
    * Show the image at its original size
    */

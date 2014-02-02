@@ -132,8 +132,13 @@ void plaYUVerApp::save()
 
 void plaYUVerApp::play()
 {
+  UInt frameRate;
+  UInt timeInterval;
 
-  playingTimer->start( 200 );
+  frameRate = activeImageInterface()->getInputStream()->getFrameRate();
+  timeInterval = (UInt)( 1000.0/frameRate + 0.5 );
+
+  playingTimer->start( timeInterval );
 
 }
 

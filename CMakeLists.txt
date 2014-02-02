@@ -138,30 +138,7 @@ ADD_OPTION(USE_QT4           "Build with QT4"           OFF )
 ADD_OPTION(USE_OPENCV        "Add OpenCV support"       OFF )
 ADD_OPTION(USE_FFMPEG        "Add FFMPEG support"       OFF )
 
-######################################################################################
-# Dependencies
-######################################################################################
-IF( USE_OPENCV )
-    FIND_PACKAGE( OpenCV )
-    IF( NOT OpenCV_FOUND)
-        SET(USE_OPENCV FALSE)
-    ELSE()
-        SET( LINKER_LIBS ${LINKER_LIBS} ${OpenCV_LIBRARIES} )
-    ENDIF()
-ENDIF()
-
-IF( USE_FFMPEG )
-    FIND_PACKAGE( FFmpeg )
-    IF( NOT FFMPEG_FOUND )
-        SET( USE_FFMPEG FALSE )
-    ELSE()
-        SET( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -D__STDC_CONSTANT_MACROS )
-        INCLUDE_DIRECTORIES(${FFMPEG_INCLUDE_DIR} ${FFMPEG_INCLUDE_DIRS})
-        SET( LINKER_LIBS ${LINKER_LIBS} ${FFMPEG_LIBRARIES} )
-    ENDIF()
-ENDIF()
-
-######################################################################################
+#####################################################################################
 # Qt library
 ######################################################################################
 IF( USE_QT4 )
@@ -196,19 +173,40 @@ IF( NOT USE_QT4 )
     SET( CURR_QT_MODULES Core Gui Widgets )
 ENDIF()
 
-######################################################################################
-# External Libs
-######################################################################################
 
+######################################################################################
+# Dependencies
+######################################################################################
 INCLUDE_DIRECTORIES( ${EXTERNAL_SRC}/scode )
 ADD_LIBRARY( Scode ${EXTERNAL_SRC}/scode/viewarea.cpp ${EXTERNAL_SRC}/scode/gridmanager.cpp ${EXTERNAL_SRC}/scode/scosettings.cpp )
-
 SET( LINKER_LIBS ${LINKER_LIBS} Scode )
+
+
+IF( USE_OPENCV )
+    FIND_PACKAGE( OpenCV )
+    IF( NOT OpenCV_FOUND)
+        SET(USE_OPENCV FALSE)
+    ELSE()
+        SET( LINKER_LIBS ${LINKER_LIBS} ${OpenCV_LIBRARIES} )
+    ENDIF()
+ENDIF()
+
+IF( USE_FFMPEG )
+    FIND_PACKAGE( FFmpeg )
+    IF( NOT FFMPEG_FOUND )
+        SET( USE_FFMPEG FALSE )
+    ELSE()
+        SET( CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -D__STDC_CONSTANT_MACROS )
+        INCLUDE_DIRECTORIES(${FFMPEG_INCLUDE_DIR} ${FFMPEG_INCLUDE_DIRS})
+        SET( LINKER_LIBS ${LINKER_LIBS} ${FFMPEG_LIBRARIES} )
+    ENDIF()
+ENDIF()
+
+
 ######################################################################################
 # Create config.h
 ######################################################################################
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
-
 
 ######################################################################################
 # Target App

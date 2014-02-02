@@ -129,7 +129,7 @@ bool SubWindowHandle::save()
   return true;
 }
 
-bool SubWindowHandle::nextVideoFrame()
+bool SubWindowHandle::playEvent()
 {
   m_currStream.readFrame();
   if( m_currStream.checkErrors( READING ) )

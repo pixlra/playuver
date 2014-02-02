@@ -62,7 +62,7 @@ public:
   bool loadFile( const QString &fileName );
   bool save();
 
-  bool nextVideoFrame();
+  bool playEvent();
 
   /**
    * Show the image at its original size

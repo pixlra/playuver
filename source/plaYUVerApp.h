@@ -58,6 +58,8 @@ private slots:
 
   //! Playing functions
   void play();
+  void pause();
+  void stop();
   void playEvent();
 
   //! View functions
@@ -125,15 +127,15 @@ private:
   QAction *separatorAct;
 
   // Video actions.
-  QAction *acVideoPlay;
-  QAction *acVideoPause;
-  QAction *acVideoStop;
-  QAction *acVideoBackward;
-  QAction *acVideoForward;
-  QAction *acVideoLoop;
-  QAction *acVideoLock;
-  QAction *acVideoInterlace;
-  QAction *acVideoCenter;
+  QAction *actionVideoPlay;
+  QAction *actionVideoPause;
+  QAction *actionVideoStop;
+  QAction *actionVideoBackward;
+  QAction *actionVideoForward;
+  QAction *actionVideoLoop;
+  QAction *actionVideoLock;
+  QAction *actionVideoInterlace;
+  QAction *actionVideoCenter;
 
   QAction *aboutAct;
   QAction *aboutQtAct;

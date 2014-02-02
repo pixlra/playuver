@@ -64,7 +64,8 @@ plaYUVerApp::plaYUVerApp()
 
   playingTimer = new QTimer( this );
 
-  playingTimer->start( 1000 );
+  connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
+
 }
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
@@ -119,7 +120,6 @@ void plaYUVerApp::open()
       interfaceChild->close();
     }
   }
-  play();
 }
 
 void plaYUVerApp::save()
@@ -133,15 +133,26 @@ void plaYUVerApp::save()
 void plaYUVerApp::play()
 {
 
-  connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
+  playingTimer->start( 200 );
 
+}
+
+void plaYUVerApp::pause()
+{
+  playingTimer->stop();
+}
+
+void plaYUVerApp::stop()
+{
+  playingTimer->stop();
+  //disconnect( playingTimer, SIGNAL( timeout() ), 0, 0 );
 }
 
 void plaYUVerApp::playEvent()
 {
   if( activeImageInterface() )
   {
-    if( !activeImageInterface()->nextVideoFrame() )
+    if( !activeImageInterface()->playEvent() )
     {
       playingTimer->stop();
     }
@@ -318,6 +329,33 @@ Void plaYUVerApp::createActions()
 
   // ------------ Playing ------------
 
+  actionVideoPlay      = new QAction( "VideoPlay" , this      );
+  actionVideoPause     = new QAction( "VideoPause", this      );
+  actionVideoStop      = new QAction( "VideoStop" , this      );
+  actionVideoBackward  = new QAction( "VideoBackward" , this  );
+  actionVideoForward   = new QAction( "VideoForward" , this   );
+  actionVideoLoop      = new QAction( "VideoLoop" , this      );
+  actionVideoLock      = new QAction( "VideoLock" , this      );
+  actionVideoInterlace = new QAction( "VideoInterlace" , this );
+  actionVideoCenter    = new QAction( "VideoCenter" , this    );
+
+  actionVideoPlay     ->setIcon( QIcon( style()->standardIcon(QStyle::SP_MediaPlay         ) ) );
+  actionVideoPause    ->setIcon( QIcon( style()->standardIcon(QStyle::SP_MediaPause        ) ) );
+  actionVideoStop     ->setIcon( QIcon( style()->standardIcon(QStyle::SP_MediaStop         ) ) );
+  actionVideoBackward ->setIcon( QIcon( style()->standardIcon(QStyle::SP_MediaSeekBackward ) ) );
+  actionVideoForward  ->setIcon( QIcon( style()->standardIcon(QStyle::SP_MediaSeekForward  ) ) );
+ /*
+  actionVideoLoop     ->setIcon( QIcon( ":/images/videoloop.png"  ) );
+  actionVideoLock     ->setIcon( QIcon( ":/images/lock.png"       ) );
+  actionVideoInterlace->setIcon( QIcon( ":/images/interlace.png"  ) );
+  actionVideoCenter   ->setIcon( QIcon( ":/images/center.png"     ) );
+  */
+
+  connect( actionVideoPlay , SIGNAL( triggered() ), this , SLOT ( play() ) );
+  connect( actionVideoPause , SIGNAL( triggered() ), this , SLOT ( pause() ) );
+  connect( actionVideoStop , SIGNAL( triggered() ), this , SLOT ( stop() ) );
+
+
   // ------------ Window ------------
 
   tileAct = new QAction( tr( "&Tile" ), this );
@@ -340,31 +378,6 @@ Void plaYUVerApp::createActions()
 
   separatorAct = new QAction( this );
   separatorAct->setSeparator( true );
-
-
-  // ------------- Video actions --------------
-
-  acVideoPlay      = new QAction( "AC VideoPlay" , this      );
-  acVideoPause     = new QAction( "AC VideoPause", this      );
-  acVideoStop      = new QAction( "AC VideoStop" , this      );
-  acVideoBackward  = new QAction( "AC VideoBackward" , this  );
-  acVideoForward   = new QAction( "AC VideoForward" , this   );
-  acVideoLoop      = new QAction( "AC VideoLoop" , this      );
-  acVideoLock      = new QAction( "AC VideoLock" , this      );
-  acVideoInterlace = new QAction( "AC VideoInterlace" , this );
-  acVideoCenter    = new QAction( "AC VideoCenter" , this    );
-
-/*
-  acVideoPlay     ->setIcon( QIcon( ":/images/videoplay.png"  ) );
-  acVideoPause    ->setIcon( QIcon( ":/images/videopause.png" ) );
-  acVideoStop     ->setIcon( QIcon( ":/images/videostop.png"  ) );
-  acVideoBackward ->setIcon( QIcon( ":/images/videobak.png"   ) );
-  acVideoForward  ->setIcon( QIcon( ":/images/videofwd.png"   ) );
-  acVideoLoop     ->setIcon( QIcon( ":/images/videoloop.png"  ) );
-  acVideoLock     ->setIcon( QIcon( ":/images/lock.png"       ) );
-  acVideoInterlace->setIcon( QIcon( ":/images/interlace.png"  ) );
-  acVideoCenter   ->setIcon( QIcon( ":/images/center.png"     ) );
-*/
 
 
   // ------------ About ------------
@@ -420,15 +433,15 @@ Void plaYUVerApp::createToolBars()
   viewToolBar->addAction( zoomToFitAct );
 
   videoToolBar = addToolBar( tr( "Video" ) );
-  videoToolBar->addAction( acVideoPlay );
-  videoToolBar->addAction( acVideoPause );
-  videoToolBar->addAction( acVideoStop );
-  videoToolBar->addAction( acVideoBackward );
-  videoToolBar->addAction( acVideoForward );
-  videoToolBar->addAction( acVideoLoop );
-  videoToolBar->addAction( acVideoLock );
-  videoToolBar->addAction( acVideoInterlace );
-  videoToolBar->addAction( acVideoCenter );
+  videoToolBar->addAction( actionVideoPlay );
+  videoToolBar->addAction( actionVideoPause );
+  videoToolBar->addAction( actionVideoStop );
+  videoToolBar->addAction( actionVideoBackward );
+  videoToolBar->addAction( actionVideoForward );
+  videoToolBar->addAction( actionVideoLoop );
+  videoToolBar->addAction( actionVideoLock );
+  videoToolBar->addAction( actionVideoInterlace );
+  videoToolBar->addAction( actionVideoCenter );
 
 }
 
@@ -467,8 +480,8 @@ QMdiSubWindow *plaYUVerApp::findImageInterface( const QString &fileName )
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
   SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
   if( mdiChild->currentFile() == canonicalFilePath )
-  return window;
-}
+    return window;
+  }
   return 0;
 }
 

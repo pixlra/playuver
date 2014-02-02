@@ -126,7 +126,7 @@ Bool InputStream::needFormatDialog( QString filename )
 
 Void InputStream::init( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate )
 {
-  Bool avStatus;
+  Bool avStatus = false;
 
   m_uiWidth = width;
   m_uiHeight = height;

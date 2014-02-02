@@ -36,6 +36,7 @@
 namespace plaYUVer
 {
 
+
 plaYUVerApp::plaYUVerApp()
 {
 
@@ -220,6 +221,16 @@ void plaYUVerApp::updateMenus()
   previousAct->setEnabled( hasImageInterface );
   separatorAct->setVisible( hasImageInterface );
 
+  zoomInAct->setEnabled( hasImageInterface );
+  zoomOutAct->setEnabled( hasImageInterface );
+  normalSizeAct->setEnabled( hasImageInterface );
+  zoomToFitAct->setEnabled( hasImageInterface );
+
+  actionVideoPlay->setEnabled( hasImageInterface );
+  actionVideoPause->setEnabled( hasImageInterface );
+  actionVideoStop->setEnabled( hasImageInterface );
+  actionVideoBackward->setEnabled( hasImageInterface );
+  actionVideoForward->setEnabled( hasImageInterface );
 }
 
 void plaYUVerApp::updateWindowMenu()
@@ -447,7 +458,6 @@ Void plaYUVerApp::createToolBars()
   videoToolBar->addAction( actionVideoLock );
   videoToolBar->addAction( actionVideoInterlace );
   videoToolBar->addAction( actionVideoCenter );
-
 }
 
 Void plaYUVerApp::createStatusBar()

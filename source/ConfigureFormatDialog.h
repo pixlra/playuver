@@ -66,6 +66,11 @@ public:
     return pixelFormatBox->currentIndex();
   }
 
+  UInt getFrameRate()
+  {
+    return framerateSpinBox->value();
+  }
+
 private Q_SLOTS:
   void StandardResolutionSelection();
 
@@ -97,6 +102,12 @@ private:
   QLabel *pixelFormatLabel;
   QSpacerItem *pixelFormatHorizontalSpacer;
   QComboBox *pixelFormatBox;
+
+  QSpacerItem *framerateFormatVerticalSpacer;
+  QHBoxLayout *framerateFormatLayout;
+  QLabel *framerateFormatLabel;
+  QSpacerItem *framerateFormatHorizontalSpacer;
+  QSpinBox *framerateSpinBox;
 
   QSpacerItem *verticalSpacerConfirmation;
   QDialogButtonBox *dialogButtonOkCancel;

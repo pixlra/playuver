@@ -92,7 +92,7 @@ public:
 
   Bool needFormatDialog( QString filename );
 
-  Void init( QString filename, UInt width, UInt height, Int input_format );
+  Void init( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate );
 
   Void readFrame();
 

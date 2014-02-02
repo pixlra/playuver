@@ -124,16 +124,17 @@ Bool InputStream::needFormatDialog( QString filename )
   }
 }
 
-Void InputStream::init( QString filename, UInt width, UInt height, Int input_format )
+Void InputStream::init( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate )
 {
   m_uiWidth = width;
   m_uiHeight = height;
+  m_uiFrameRate = frame_rate;
 
   m_iFileFormat = YUVFormat;
   m_iPixelFormat = input_format;
 
 #ifdef USE_FFMPEG
-  Bool avStatus = m_cLibAvContext.initAvFormat( filename, m_uiWidth, m_uiHeight, m_iPixelFormat );
+  Bool avStatus = m_cLibAvContext.initAvFormat( filename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate );
 #endif
 
   if( m_uiWidth <= 0 || m_uiHeight <= 0 )

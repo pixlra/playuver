@@ -137,6 +137,11 @@ bool SubWindowHandle::playEvent()
     QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( m_cCurrFileName ) );
     return false;
   }
+  else if( m_currStream.checkErrors( END_OF_SEQ ) )
+  {
+    m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
+    return false;
+  }
   m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
   return true;
 }

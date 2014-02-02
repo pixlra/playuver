@@ -45,7 +45,7 @@ namespace plaYUVer
 
 enum InputStream_Errors
 {
-  NO_ERROR = 0, READING = 1,
+  NO_ERROR = 0, READING = 1, END_OF_SEQ = 2,
 };
 
 class InputStream

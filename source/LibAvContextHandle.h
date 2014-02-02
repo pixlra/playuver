@@ -46,7 +46,7 @@ namespace plaYUVer
 class LibAvContextHandle
 {
 public:
-  Bool initAvFormat( QString filename, UInt width, UInt height );
+  Bool initAvFormat( QString filename, UInt& width, UInt& height, Int& pixel_format );
   Void closeAvFormat();
   Bool decodeAvFormat();
 

@@ -145,7 +145,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
 
   m_cCurrFrame = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
 
-  UInt64 frame_bytes_input = m_uiWidth * m_uiHeight * 1.5;
+  UInt64 frame_bytes_input = m_cCurrFrame->getBytesPerFrame();
 
   if( m_iFileFormat == YUVFormat )
   {
@@ -157,8 +157,8 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
       return;
     }
     fseek( m_pFile, 0, SEEK_END );
-    fseek( m_pFile, 0, SEEK_SET );
     m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
+    fseek( m_pFile, 0, SEEK_SET );
   }
 
   if( !get_mem1Dpel( &m_pInputBuffer, m_cCurrFrame->getBytesPerFrame() ) )
@@ -166,6 +166,8 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
     //Error
     return;
   }
+
+  m_uiCurrFrameNum = 0;
 
   m_iStatus = 1;
 
@@ -191,6 +193,16 @@ Void InputStream::readFrame()
   }
 #endif
 
+  if( m_uiCurrFrameNum < m_uiTotalFrameNum )
+  {
+    m_uiCurrFrameNum++;
+  }
+  else
+  {
+    m_iErrorStatus = END_OF_SEQ;
+    m_uiCurrFrameNum = 0;
+    seekInput( m_uiCurrFrameNum );
+  }
   bytes_read = fread( m_pInputBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
   if( bytes_read != frame_bytes_input )
   {
@@ -251,6 +263,11 @@ Void InputStream::seekInput( Int new_frame_num )
 
 Bool InputStream::checkErrors( Int error_type )
 {
+  if( m_iErrorStatus == error_type )
+  {
+    m_iErrorStatus = NO_ERROR;
+    return true;
+  }
   if( m_iErrorStatus == error_type )
   {
     m_iErrorStatus = NO_ERROR;

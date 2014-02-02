@@ -149,7 +149,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
 
   UInt64 frame_bytes_input = m_cCurrFrame->getBytesPerFrame();
 
-  if( avStatus )
+  if( !avStatus )
   {
     m_cFilename = filename;
     m_pFile = fopen( m_cFilename.toLocal8Bit().data(), "rb" );

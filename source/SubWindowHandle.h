@@ -24,15 +24,13 @@
 #ifndef __IMAGEINTERFACE_H__
 #define __IMAGEINTERFACE_H__
 
-#include <QMdiSubWindow>
-#include <QScrollArea>
-#include <QLabel>
-#include <QMdiArea>
-#include <QWidget>
-//#include <QPixmap>
-//#include <QBitmap>
-//#include <QColor>
+#include "config.h"
 
+#if( QT_VERSION_PLAYUVER == 5 )
+#include <QtWidgets>
+#elif( QT_VERSION_PLAYUVER == 4 )
+#include <QtGui>
+#endif
 
 #include "TypeDef.h"
 #include "InputStream.h"
@@ -43,7 +41,7 @@ namespace plaYUVer
 
 using namespace SCode;
 
-class ImageInterface: public QMdiSubWindow
+class SubWindowHandle: public QMdiSubWindow
 {
 Q_OBJECT
 
@@ -54,19 +52,17 @@ private:
 
   InputStream m_currStream;
 
-
   QString m_cCurrFileName;
   Double m_dScaleFactor;
 
-
 public:
-  ImageInterface( QWidget * parent = 0 );
-  ~ImageInterface();
+  SubWindowHandle( QWidget * parent = 0 );
+  ~SubWindowHandle();
 
   bool loadFile( const QString &fileName );
   bool save();
-  bool saveAs();
-  bool saveFile( const QString &fileName );
+
+  bool nextVideoFrame();
 
   /**
    * Show the image at its original size
@@ -112,7 +108,6 @@ public:
    * QMdiArea only have a function that arranges @b all the child windows.
    */
   //static void cascader( QList<QWidget *> &widgets, const QRect &domain );
-
   QString userFriendlyCurrentFile();
   QString strippedName( const QString &fullFileName );
   QString currentFile()
@@ -127,6 +122,6 @@ private slots:
 
 };
 
-} // NAMESPACE
+}  // NAMESPACE
 
 #endif // __IMAGEINTERFACE_H__

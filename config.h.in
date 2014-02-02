@@ -1,0 +1,29 @@
+/* Input config.h file */
+
+#ifndef __CONFIG_PLAYUVER_H__
+#define __CONFIG_PLAYUVER_H__
+
+
+/* QT definition */
+#cmakedefine USE_QT4
+
+#ifndef USE_QT4
+  #define QT_VERSION_PLAYUVER 5
+#else
+  #define QT_VERSION_PLAYUVER 4
+#endif
+
+/* OpenCV */
+#cmakedefine USE_OPENCV
+
+/* FFMPEG */
+#cmakedefine USE_FFMPEG
+
+#ifdef USE_FFMPEG
+  #ifndef __STDC_CONSTANT_MACROS
+    //#define __STDC_CONSTANT_MACROS
+    #define smprintf _snprintf
+  #endif
+#endif
+
+#endif // __CONFIG_PLAYUVER_H__

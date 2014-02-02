@@ -21,8 +21,6 @@
  * \brief    plaYUVer app settings
  */
 
-#include <QDir>
-
 #include "plaYUVerSettings.h"
 
 namespace plaYUVer
@@ -316,4 +314,4 @@ void PlaYUVerSettings::setImgVDec( QString str )
   m_settings.setValue( "MMPdec/imgV", str );
 }
 
-} // NAMESPACE
+}  // NAMESPACE

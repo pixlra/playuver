@@ -23,7 +23,6 @@
 
 #include <cstdio>
 
-#include <QtCore>
 #include <QtDebug>
 
 #include "InputStream.h"
@@ -37,6 +36,12 @@ InputStream::InputStream()
   m_iStatus = 0;
 
   m_pFile = NULL;
+  m_uiWidth = 0;
+  m_uiHeight = 0;
+  m_uiTotalFrameNum = 0;
+  m_uiCurrFrameNum = 0;
+  m_iErrorStatus = 0;
+  m_iPixelFormat = -1;
   m_pppcInputPel[0] = NULL;
   m_pppcInputPel[1] = NULL;
   m_pppcInputPel[2] = NULL;
@@ -60,6 +65,10 @@ InputStream::~InputStream()
   if( m_pppcRGBPel )
     free_mem3Dpel( m_pppcRGBPel );
 
+#ifdef USE_FFMPEG
+  m_cLibAvContext.closeAvFormat();
+#endif
+
   m_iStatus = 0;
 }
 
@@ -67,14 +76,40 @@ QString InputStream::supportedReadFormats()
 {
   QString formats;
   formats = "*.yuv "   // Raw video
-      ;
+          "*.avi"// Audio video interleaved
+  ;
+  return formats;
+}
+
+QString InputStream::supportedWriteFormats()
+{
+  QString formats;
+  formats = "*.bmp "   // Windows Bitmap
+          "*.jpg "// Joint Photographic Experts Group
+          "*.jpeg "// Joint Photographic Experts Group
+          "*.png "// Portable Network Graphics
+  ;
+
   return formats;
 }
 
 QStringList InputStream::supportedReadFormatsList()
 {
   QStringList formats;
-  formats << "Raw video (*.yuv)";
+  formats << "Raw video (*.yuv)"  // Raw video
+      << "Audio video interleaved (*.avi)"  // Audio video interleaved
+      ;
+
+  return formats;
+}
+
+QStringList InputStream::supportedWriteFormatsList()
+{
+  QStringList formats;
+  formats << "Windows Bitmap (*.bmp)"  // Windows Bitmap
+      << "Joint Photographic Experts Group (*.jpg *.jpeg)"  // Joint Photographic Experts Group
+      << "Portable Network Graphics (*.png)"  // Portable Network Graphics
+      ;
 
   return formats;
 }
@@ -86,10 +121,34 @@ QStringList InputStream::supportedPixelFormatList()
   return formats;
 }
 
+Bool InputStream::needFormatDialog( QString filename )
+{
+  return true;
+  QString fileExtension = QFileInfo( filename ).completeSuffix();
+  if( !fileExtension.compare( QString( "yuv" ) ) )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 Void InputStream::init( QString filename, UInt width, UInt height, Int input_format )
 {
 
-  if( width <= 0 || height <= 0 )
+  m_uiWidth = width;
+  m_uiHeight = height;
+
+  m_iFileFormat = YUVFormat;
+  m_iPixelFormat = input_format;
+
+#ifdef USE_FFMPEG
+  Bool avStatus = m_cLibAvContext.initAvFormat( filename, width, height );
+#endif
+
+  if( m_uiWidth <= 0 || m_uiHeight <= 0 )
   {
     //Error
     return;
@@ -102,12 +161,6 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
     // Error
     return;
   }
-
-  m_uiWidth = width;
-  m_uiHeight = height;
-
-  m_iFileFormat = YUVFormat;
-  m_iPixelFormat = input_format;
 
   UInt64 frame_bytes_input = m_uiWidth * m_uiHeight * 1.5;
   UInt64 alloc_memory;
@@ -161,15 +214,6 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
   m_iStatus = 1;
 
   return;
-}
-
-static inline Pel iClip3Pel( Pel pel_value, Pel min_value, Pel max_value )
-{
-  if( pel_value > max_value )
-    return max_value;
-  if( pel_value < min_value )
-    return min_value;
-  return pel_value;
 }
 
 static inline void yuvToRgb( int iY, int iU, int iV, int &iR, int &iG, int &iB )
@@ -258,6 +302,19 @@ Void InputStream::readFrame()
   }
   UInt64 frame_bytes_input = m_uiWidth * m_uiHeight * 1.5;
 
+#ifdef USE_FFMPEG
+  if( m_cLibAvContext.getStatus() )
+  {
+    m_cLibAvContext.decodeAvFormat();
+    //fwrite( video_dst_data[0], 1, video_dst_bufsize, video_dst_file );
+    memcpy( &( m_pppcInputPel[0][0][0] ), m_cLibAvContext.video_dst_data[0], m_uiWidth * m_uiHeight * sizeof(uint8_t) );
+    memcpy( &( m_pppcInputPel[1][0][0] ), m_cLibAvContext.video_dst_data[1], m_uiWidth * m_uiHeight * sizeof(uint8_t) / 4 );
+    memcpy( &( m_pppcInputPel[2][0][0] ), m_cLibAvContext.video_dst_data[2], m_uiWidth * m_uiHeight * sizeof(uint8_t) / 4 );
+    YUV420toRGB();
+    return;
+  }
+#endif
+
   switch( m_iPixelFormat )
   {
   case YUV420:
@@ -265,21 +322,21 @@ Void InputStream::readFrame()
     if( bytes_read != ( m_uiWidth * m_uiHeight ) )
     {
       m_iErrorStatus = READING;
-      qDebug() << " Reading error !!!" << endl;
+      qDebug( ) << " Reading error !!!" << endl;
       return;
     }
     bytes_read = fread( &( m_pppcInputPel[1][0][0] ), sizeof(Pel), m_uiWidth * m_uiHeight / 4, m_pFile );
     if( bytes_read != ( m_uiWidth * m_uiHeight / 4 ) )
     {
       m_iErrorStatus = READING;
-      qDebug() << " Reading error !!!" << endl;
+      qDebug( ) << " Reading error !!!" << endl;
       return;
     }
     bytes_read = fread( &( m_pppcInputPel[2][0][0] ), sizeof(Pel), m_uiWidth * m_uiHeight / 4, m_pFile );
     if( bytes_read != ( m_uiWidth * m_uiHeight / 4 ) )
     {
       m_iErrorStatus = READING;
-      qDebug() << " Reading error !!!" << endl;
+      qDebug( ) << " Reading error !!!" << endl;
       return;
     }
     YUV420toRGB();
@@ -287,6 +344,12 @@ Void InputStream::readFrame()
   }
 
   return;
+}
+
+Bool InputStream::writeFrame( const QString& filename )
+{
+  getFrameQImage().save( filename );
+  return true;
 }
 
 QImage InputStream::getFrameQImage()
@@ -315,6 +378,15 @@ QImage InputStream::getFrameQImage()
   }
   return img;
 }
+
+#ifdef USE_OPENCV
+cv::Mat InputStream::getFrameCvMat()
+{
+  cv::Mat cvMat( m_uiHeight, m_uiWidth, CV_8UC3 );
+
+  return cvMat;
+}
+#endif
 
 Void InputStream::seekInput( Int new_frame_num )
 {

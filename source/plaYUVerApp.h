@@ -24,6 +24,8 @@
 #ifndef __PLAYUVERAPP_H__
 #define __PLAYUVERAPP_H__
 
+#include "config.h"
+
 #include <QMainWindow>
 #include "TypeDef.h"
 
@@ -36,7 +38,7 @@ class QSignalMapper;
 namespace plaYUVer
 {
 
-class ImageInterface;
+class SubWindowHandle;
 
 class plaYUVerApp: public QMainWindow
 {
@@ -52,7 +54,11 @@ private slots:
 
   //! File functions
   void open();
-  void saveAs();
+  void save();
+
+  //! Playing functions
+  void play();
+  void playEvent();
 
   //! View functions
   void zoomIn();
@@ -66,8 +72,8 @@ private slots:
 
   void updateWindowMenu();
 
-  ImageInterface *createImageInterface();
-  void addImageInterface( ImageInterface *child );
+  SubWindowHandle *createImageInterface();
+  void addImageInterface( SubWindowHandle *child );
   void setActiveImageInterface( QWidget *window );
 
 private:
@@ -77,7 +83,7 @@ private:
   Void createStatusBar();
   Void readSettings();
   Void writeSettings();
-  ImageInterface *activeImageInterface();
+  SubWindowHandle *activeImageInterface();
   QMdiSubWindow *findImageInterface( const QString &fileName );
 
   /**
@@ -89,6 +95,7 @@ private:
 
   QString m_cLastOpenPath;
 
+  QTimer *playingTimer;
   QMdiArea *mdiArea;
   QSignalMapper *windowMapper;
 
@@ -102,7 +109,6 @@ private:
 
   QAction *openAct;
   QAction *saveAct;
-  QAction *saveAsAct;
   QAction *exitAct;
   QAction *closeAct;
   QAction *closeAllAct;
@@ -134,6 +140,6 @@ private:
 
 };
 
-} // NAMESPACE
+}  // NAMESPACE
 
 #endif // __PLAYUVERAPP_H__

@@ -21,13 +21,16 @@
  * \brief    Main definition of the plaYUVerApp app
  */
 
+#if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
-#include <QMdiArea>
+#elif( QT_VERSION_PLAYUVER == 4 )
+#include <QtGui>
+#endif
 #include <QtDebug>
 
 #include "TypeDef.h"
 #include "plaYUVerApp.h"
-#include "ImageInterface.h"
+#include "SubWindowHandle.h"
 #include "InputStream.h"
 
 namespace plaYUVer
@@ -58,6 +61,10 @@ plaYUVerApp::plaYUVerApp()
   setWindowTitle( tr( "plaYUVerApp" ) );
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
   setUnifiedTitleAndToolBarOnMac( true );
+
+  playingTimer = new QTimer( this );
+
+  playingTimer->start( 1000 );
 }
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
@@ -100,7 +107,7 @@ void plaYUVerApp::open()
       return;
     }
 
-    ImageInterface *interfaceChild = new ImageInterface( this );  //createImageInterface();
+    SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createImageInterface();
     if( interfaceChild->loadFile( fileName ) )
     {
       addImageInterface( interfaceChild );
@@ -112,10 +119,33 @@ void plaYUVerApp::open()
       interfaceChild->close();
     }
   }
+  play();
 }
 
-void plaYUVerApp::saveAs()
+void plaYUVerApp::save()
 {
+  if( activeImageInterface() )
+    activeImageInterface()->save();
+}
+
+// -----------------------  Playing Functions  --------------------
+
+void plaYUVerApp::play()
+{
+
+  connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
+
+}
+
+void plaYUVerApp::playEvent()
+{
+  if( activeImageInterface() )
+  {
+    if( !activeImageInterface()->nextVideoFrame() )
+    {
+      playingTimer->stop();
+    }
+  }
 
 }
 
@@ -165,7 +195,7 @@ void plaYUVerApp::about()
 void plaYUVerApp::updateMenus()
 {
   Bool hasImageInterface = ( activeImageInterface() != 0 );
-  saveAsAct->setEnabled( hasImageInterface );
+  saveAct->setEnabled( hasImageInterface );
   closeAct->setEnabled( hasImageInterface );
   closeAllAct->setEnabled( hasImageInterface );
   tileAct->setEnabled( hasImageInterface );
@@ -196,7 +226,7 @@ void plaYUVerApp::updateWindowMenu()
 
   for( Int i = 0; i < windows.size(); ++i )
   {
-    ImageInterface *child = qobject_cast<ImageInterface *>( windows.at( i ) );
+    SubWindowHandle *child = qobject_cast<SubWindowHandle *>( windows.at( i ) );
 
     QString text;
     if( i < 9 )
@@ -215,15 +245,15 @@ void plaYUVerApp::updateWindowMenu()
   }
 }
 
-ImageInterface *plaYUVerApp::createImageInterface()
+SubWindowHandle *plaYUVerApp::createImageInterface()
 {
-  ImageInterface *child = new ImageInterface;
+  SubWindowHandle *child = new SubWindowHandle;
   mdiArea->addSubWindow( child );
 
   return child;
 }
 
-void plaYUVerApp::addImageInterface( ImageInterface *child )
+void plaYUVerApp::addImageInterface( SubWindowHandle *child )
 {
   //connect( child, SIGNAL( areaSelected( QRect ) ), this, SLOT( setSelection( QRect ) ) );
 
@@ -241,10 +271,10 @@ Void plaYUVerApp::createActions()
   openAct->setStatusTip( tr( "Open an existing file" ) );
   connect( openAct, SIGNAL( triggered() ), this, SLOT( open() ) );
 
-  saveAsAct = new QAction( QIcon( ":/images/saveas.png" ), tr( "Save &As..." ), this );
-  saveAsAct->setShortcuts( QKeySequence::SaveAs );
-  saveAsAct->setStatusTip( tr( "Save the document under a new name" ) );
-  connect( saveAsAct, SIGNAL( triggered() ), this, SLOT( saveAs() ) );
+  saveAct = new QAction( QIcon( ":/images/save.png" ), tr( "&Save..." ), this );
+  saveAct->setShortcuts( QKeySequence::SaveAs );
+  saveAct->setStatusTip( tr( "Save the document under a new name" ) );
+  connect( saveAct, SIGNAL( triggered() ), this, SLOT( save() ) );
 
   exitAct = new QAction( tr( "E&xit" ), this );
   exitAct->setShortcuts( QKeySequence::Quit );
@@ -285,6 +315,8 @@ Void plaYUVerApp::createActions()
   zoomToFitAct->setStatusTip( tr( "Zoom in or out to fit on the window." ) );
   zoomToFitAct->setShortcut( tr( "Ctrl+F" ) );
   connect( zoomToFitAct, SIGNAL( triggered() ), this, SLOT( zoomToFit() ) );
+
+  // ------------ Playing ------------
 
   // ------------ Window ------------
 
@@ -352,7 +384,7 @@ Void plaYUVerApp::createMenus()
   fileMenu = menuBar()->addMenu( tr( "&File" ) );
   fileMenu->addAction( openAct );
   fileMenu->addSeparator();
-  fileMenu->addAction( saveAsAct );
+  fileMenu->addAction( saveAct );
   fileMenu->addSeparator();
   fileMenu->addAction( closeAct );
   fileMenu->addAction( exitAct );
@@ -378,7 +410,7 @@ Void plaYUVerApp::createToolBars()
 {
   fileToolBar = addToolBar( tr( "File" ) );
   fileToolBar->addAction( openAct );
-  fileToolBar->addAction( saveAsAct );
+  fileToolBar->addAction( saveAct );
   fileToolBar->addAction( closeAct );
 
   viewToolBar = addToolBar( tr( "Zoom" ) );
@@ -421,10 +453,10 @@ Void plaYUVerApp::writeSettings()
   settings.setValue( "size", size() );
 }
 
-ImageInterface *plaYUVerApp::activeImageInterface()
+SubWindowHandle *plaYUVerApp::activeImageInterface()
 {
   if( QMdiSubWindow *activeImageInterface = mdiArea->activeSubWindow() )
-    return qobject_cast<ImageInterface *>( activeImageInterface );
+    return qobject_cast<SubWindowHandle *>( activeImageInterface );
   return 0;
 }
 
@@ -433,7 +465,7 @@ QMdiSubWindow *plaYUVerApp::findImageInterface( const QString &fileName )
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
 
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
-  ImageInterface *mdiChild = qobject_cast<ImageInterface *>( window);
+  SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
   if( mdiChild->currentFile() == canonicalFilePath )
   return window;
 }

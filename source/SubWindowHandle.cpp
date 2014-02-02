@@ -21,20 +21,14 @@
  * \brief    Sub windows handling
  */
 
-#include <QtWidgets>
-#include <QWidget>
-#include <QPixmap>
-#include <QBitmap>
-#include <QColor>
-
 #include "ConfigureFormatDialog.h"
-#include "ImageInterface.h"
+#include "SubWindowHandle.h"
 #include "viewarea.h"
 
 namespace plaYUVer
 {
 
-ImageInterface::ImageInterface( QWidget * parent ) :
+SubWindowHandle::SubWindowHandle( QWidget * parent ) :
     QMdiSubWindow( parent )
 {
   setParent( parent );
@@ -58,23 +52,29 @@ ImageInterface::ImageInterface( QWidget * parent ) :
 
 }
 
-ImageInterface::~ImageInterface()
+SubWindowHandle::~SubWindowHandle()
 {
   delete m_cViewArea;
 }
 
-bool ImageInterface::loadFile( const QString &fileName )
+bool SubWindowHandle::loadFile( const QString &fileName )
 {
   ConfigureFormatDialog formatDialog( this );
 
-  if( formatDialog.exec() == QDialog::Rejected )
+  if( m_currStream.needFormatDialog( fileName ) )
   {
-    return false;
+    if( formatDialog.exec() == QDialog::Rejected )
+    {
+      return false;
+    }
+    m_currStream.init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height(), formatDialog.getPixelFormat() );
+  }
+  else
+  {
+    m_currStream.init( fileName, 0, 0, 0 );
   }
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  m_currStream.init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height(), formatDialog.getPixelFormat() );
 
   if( m_currStream.getStatus() == 0 )
   {
@@ -100,33 +100,55 @@ bool ImageInterface::loadFile( const QString &fileName )
   return true;
 }
 
-bool ImageInterface::save()
+bool SubWindowHandle::save()
 {
+  QString supported = tr( "Supported Files" );
+  QString formats = InputStream::supportedWriteFormats();
+  formats.prepend( " (" );
+  formats.append( ")" );
+  supported.append( formats );  // supported=="Supported Files (*.pbm *.jpg...)"
 
-}
+  QStringList filter;
+  filter << supported << InputStream::supportedWriteFormatsList() << tr( "All Files (*)" );
 
-bool ImageInterface::saveAs()
-{
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save As" ), m_cCurrFileName );
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save As" ), m_cCurrFileName, filter.join( ";;" ) );
+
   if( fileName.isEmpty() )
     return false;
 
-  return saveFile( fileName );
-}
+  QApplication::setOverrideCursor( Qt::WaitCursor );
 
-bool ImageInterface::saveFile( const QString &fileName )
-{
+  if( !m_currStream.writeFrame( fileName ) )
+  {
+    QApplication::restoreOverrideCursor();
+    QMessageBox::warning( this, tr( "SCode" ), tr( "Cannot save file %1" ).arg( fileName ) );
+    return false;
+  }
+
+  QApplication::restoreOverrideCursor();
 
   return true;
 }
 
-Void ImageInterface::normalSize()
+bool SubWindowHandle::nextVideoFrame()
+{
+  m_currStream.readFrame();
+  if( m_currStream.checkErrors( READING ) )
+  {
+    QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( m_cCurrFileName ) );
+    return false;
+  }
+  m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
+  return true;
+}
+
+Void SubWindowHandle::normalSize()
 {
   m_dScaleFactor = 1.0;
   m_cViewArea->setZoomFactor( m_dScaleFactor );
 }
 
-Void ImageInterface::zoomToFit()
+Void SubWindowHandle::zoomToFit()
 {
   // Scale to a smaller size that the real to a nicer look
   QSize niceFit( m_cScrollArea->viewport()->size().width() - 10, m_cScrollArea->viewport()->size().height() - 10 );
@@ -138,7 +160,7 @@ Void ImageInterface::zoomToFit()
   scaleView( niceFit );
 }
 
-Void ImageInterface::scaleView( Double factor )
+Void SubWindowHandle::scaleView( Double factor )
 {
   Q_ASSERT( m_cViewArea->image() );
   m_dScaleFactor *= factor;
@@ -146,12 +168,12 @@ Void ImageInterface::scaleView( Double factor )
   adjustScrollBar( m_dScaleFactor );
 }
 
-Void ImageInterface::scaleView( Int width, Int height )
+Void SubWindowHandle::scaleView( Int width, Int height )
 {
   scaleView( QSize( width, height ) );
 }
 
-Void ImageInterface::scaleView( const QSize & size )
+Void SubWindowHandle::scaleView( const QSize & size )
 {
   QSize imgViewSize( m_currStream.getWidth(), m_currStream.getHeight() );
   QSize newSize = imgViewSize;
@@ -171,7 +193,7 @@ Void ImageInterface::scaleView( const QSize & size )
     scaleView( hfactor );
 }
 
-Void ImageInterface::adjustScrollBar( Double factor )
+Void SubWindowHandle::adjustScrollBar( Double factor )
 {
   QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
   scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
@@ -179,7 +201,7 @@ Void ImageInterface::adjustScrollBar( Double factor )
   scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
 }
 
-QSize ImageInterface::sizeHint() const
+QSize SubWindowHandle::sizeHint() const
 {
   QSize maxSize;  // The size of the parent (viewport widget
                   // of the QMdiArea).
@@ -192,7 +214,7 @@ QSize ImageInterface::sizeHint() const
 
   QSize isize = QSize( m_currStream.getWidth() + 500, m_currStream.getHeight() + 500 );
 
-  // If the ImageInterface needs more space that the avaiable, we'll give
+  // If the SubWindowHandle needs more space that the avaiable, we'll give
   // to the subwindow a reasonable size preserving the image aspect ratio.
   if( isize.width() < maxSize.width() && isize.height() < maxSize.height() )
   {
@@ -207,17 +229,17 @@ QSize ImageInterface::sizeHint() const
   return maxSize;
 }
 
-Void ImageInterface::closeEvent( QCloseEvent *event )
+Void SubWindowHandle::closeEvent( QCloseEvent *event )
 {
   event->accept();
 }
 
-QString ImageInterface::userFriendlyCurrentFile()
+QString SubWindowHandle::userFriendlyCurrentFile()
 {
   return strippedName( m_cCurrFileName );
 }
 
-QString ImageInterface::strippedName( const QString &fullFileName )
+QString SubWindowHandle::strippedName( const QString &fullFileName )
 {
   return QFileInfo( fullFileName ).fileName();
 }

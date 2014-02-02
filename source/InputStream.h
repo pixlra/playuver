@@ -24,13 +24,20 @@
 #ifndef __INPUTSTREAM_H__
 #define __INPUTSTREAM_H__
 
+#include "config.h"
+
 #include <iostream>
 #include <cstdio>
 
 #include <QtCore>
 #include <QtGui>
 
+#ifdef USE_OPENCV
+#include <opencv2/opencv.hpp>
+#endif
+
 #include "TypeDef.h"
+#include "LibAvContextHandle.h"
 
 namespace plaYUVer
 {
@@ -40,12 +47,17 @@ enum InputStream_Errors
   NO_ERROR = 0, READING = 1,
 };
 
+
 class InputStream
 {
 private:
 
   Int m_iStatus;
   Int m_iErrorStatus;
+
+#ifdef USE_FFMPEG
+  LibAvContextHandle m_cLibAvContext;
+#endif
 
   QString m_cFilename;
   FILE* m_pFile; /**< The input file pointer >*/
@@ -65,20 +77,23 @@ public:
   ~InputStream();
 
   static QString supportedReadFormats();
+  static QString supportedWriteFormats();
   static QStringList supportedReadFormatsList();
+  static QStringList supportedWriteFormatsList();
+
   static QStringList supportedPixelFormatList();
 
   enum InputStreamColorSpace
   {
-    YUV420,
-    YUV400,
+    YUV420, YUV400,
   };
 
   enum InputStreamFormats
   {
-    INVALID = -1,
-    YUVFormat = 0, // Use color space.
+    INVALID = -1, YUVFormat = 0,  // Use color space.
   };
+
+  Bool needFormatDialog( QString filename );
 
   Void init( QString filename, UInt width, UInt height, Int input_format );
 
@@ -86,7 +101,12 @@ public:
 
   Void readFrame();
 
+  Bool writeFrame( const QString& filename );
+
   QImage getFrameQImage();
+#ifdef USE_OPENCV
+  cv::Mat getFrameCvMat();
+#endif
 
   Void seekInput( Int new_frame_num );
 
@@ -130,6 +150,6 @@ public:
 
 };
 
-} // NAMESPACE
+}  // NAMESPACE
 
 #endif // __INPUTSTREAM_H__

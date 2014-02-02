@@ -24,6 +24,8 @@
 #ifndef __LIBMEMALLOC_H__
 #define __LIBMEMALLOC_H__
 
+#include "config.h"
+
 #include <cstdlib>
 #include <cstring>
 #include "TypeDef.h"

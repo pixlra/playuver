@@ -43,6 +43,8 @@ InputStream::InputStream()
   m_iErrorStatus = 0;
   m_iPixelFormat = -1;
 
+  m_uiFrameRate = 25;
+
   m_iFileFormat = INVALID;
 }
 
@@ -62,7 +64,8 @@ QString InputStream::supportedReadFormats()
 {
   QString formats;
   formats = "*.yuv "   // Raw video
-          "*.avi"// Audio video interleaved
+          "*.avi "// Audio video interleaved
+          "*.wmv "// Windows media video
   ;
   return formats;
 }
@@ -84,6 +87,7 @@ QStringList InputStream::supportedReadFormatsList()
   QStringList formats;
   formats << "Raw video (*.yuv)"  // Raw video
       << "Audio video interleaved (*.avi)"  // Audio video interleaved
+      << "Windows media video (*.wmv)"  // Windows media video
       ;
 
   return formats;
@@ -190,7 +194,7 @@ Void InputStream::readFrame()
   if( bytes_read != frame_bytes_input )
   {
     m_iErrorStatus = READING;
-    qDebug() << " Reading error !!!" << endl;
+    qDebug( ) << " Reading error !!!" << endl;
     return;
   }
   m_cCurrFrame->FrameFromBuffer( m_pInputBuffer, m_iPixelFormat );

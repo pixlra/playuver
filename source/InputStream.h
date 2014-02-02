@@ -70,6 +70,7 @@ private:
 
   UInt m_uiWidth;
   UInt m_uiHeight;
+  UInt m_uiFrameRate;
   UInt m_uiTotalFrameNum;
   UInt m_uiCurrFrameNum;
 
@@ -125,6 +126,10 @@ public:
   UInt getCurrFrameNum()
   {
     return m_uiCurrFrameNum;
+  }
+  UInt getFrameRate()
+  {
+    return m_uiFrameRate;
   }
 
   Void setWidth( UInt new_width )

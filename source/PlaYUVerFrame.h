@@ -44,7 +44,7 @@ public:
 
   enum InputStreamColorSpace
   {
-    YUV420, YUV400, YUV422, RGB,
+    NO_FMT = -1, YUV420, YUV400, YUV422, RGB,
   };
 
   UInt64 getBytesPerFrame();

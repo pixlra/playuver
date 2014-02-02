@@ -50,6 +50,8 @@ public:
   Void closeAvFormat();
   Bool decodeAvFormat();
 
+  Void seekAvFormat( UInt frame_num );
+
   Bool getStatus()
   {
     return m_bHasStream;

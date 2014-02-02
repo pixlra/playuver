@@ -29,8 +29,8 @@
 
 #include <QtDebug>
 
-#include "InputStream.h"
 #include "LibMemAlloc.h"
+#include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {
@@ -73,13 +73,18 @@ static int open_codec_context( int *stream_idx, AVFormatContext *fmt_ctx, enum A
 
 Void LibAvContextHandle::closeAvFormat()
 {
-  if( video_dec_ctx )
-    avcodec_close( video_dec_ctx );
+  if( m_bHasStream )
+  {
+    if( video_dec_ctx )
+      avcodec_close( video_dec_ctx );
 
-  avformat_close_input( &fmt_ctx );
+    if( fmt_ctx )
+      avformat_close_input( &fmt_ctx );
 
-  av_free( frame );
-  av_free( video_dst_data[0] );
+    av_free( frame );
+    av_free( video_dst_data[0] );
+  }
+  m_bHasStream = false;
 }
 
 Bool LibAvContextHandle::initAvFormat( QString filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate )
@@ -99,14 +104,31 @@ Bool LibAvContextHandle::initAvFormat( QString filename, UInt& width, UInt& heig
   m_bHasStream = false;
 
   char *src_filename = filename.toLocal8Bit().data();
-
-  FILE *video_dst_file = NULL;
+  AVDictionary *format_opts = NULL;
 
   /* register all formats and codecs */
   av_register_all();
 
+  if( width >= 0 && height >= 0 )
+  {
+    Char aux_string[10];
+    sprintf( aux_string, "%dx%d", width, height );
+    av_dict_set( &format_opts, "video_size", aux_string, 0 );
+  }
+  switch( pixel_format )
+  {
+  case PlaYUVerFrame::NO_FMT:
+    break;
+  case PlaYUVerFrame::YUV420:
+    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_YUV420P ), 0 );
+    break;
+  case PlaYUVerFrame::YUV400:
+    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_GRAY8 ), 0 );
+    break;
+  }
+
   /* open input file, and allocate format context */
-  if( avformat_open_input( &fmt_ctx, src_filename, NULL, NULL ) < 0 )
+  if( avformat_open_input( &fmt_ctx, src_filename, NULL, &format_opts ) < 0 )
   {
     qDebug( ) << " Could not open source file %s !!!" << filename << endl;
     return false;
@@ -134,6 +156,20 @@ Bool LibAvContextHandle::initAvFormat( QString filename, UInt& width, UInt& heig
     }
     video_dst_bufsize = ret;
   }
+
+  Double fr = 30;
+  if( video_stream->avg_frame_rate.den && video_stream->avg_frame_rate.num )
+    fr = av_q2d( video_stream->avg_frame_rate );
+#if FF_API_R_FRAME_RATE
+  else if( video_stream->r_frame_rate.den && video_stream->r_frame_rate.num )
+    fr = av_q2d( video_stream->r_frame_rate );
+#endif
+  else if( video_stream->time_base.den && video_stream->time_base.num )
+    fr = 1 / av_q2d( video_stream->time_base );
+  else if( video_stream->codec->time_base.den && video_stream->codec->time_base.num )
+    fr = 1 / av_q2d( video_stream->codec->time_base );
+
+  frame_rate = ( UInt )fr;
 
   width = video_dec_ctx->width;
   height = video_dec_ctx->height;
@@ -218,6 +254,11 @@ Bool LibAvContextHandle::decodeAvFormat()
 //  while( got_frame );
 
   true;
+}
+
+Void LibAvContextHandle::seekAvFormat( UInt frame_num )
+{
+  av_seek_frame( fmt_ctx, video_stream_idx, frame_num, AVSEEK_FLAG_ANY );
 }
 
 }  // NAMESPACE

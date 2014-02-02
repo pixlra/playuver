@@ -126,6 +126,8 @@ Bool InputStream::needFormatDialog( QString filename )
 
 Void InputStream::init( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate )
 {
+  Bool avStatus;
+
   m_uiWidth = width;
   m_uiHeight = height;
   m_uiFrameRate = frame_rate;
@@ -134,7 +136,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
   m_iPixelFormat = input_format;
 
 #ifdef USE_FFMPEG
-  Bool avStatus = m_cLibAvContext.initAvFormat( filename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate );
+  avStatus = m_cLibAvContext.initAvFormat( filename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate );
 #endif
 
   if( m_uiWidth <= 0 || m_uiHeight <= 0 )
@@ -147,7 +149,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
 
   UInt64 frame_bytes_input = m_cCurrFrame->getBytesPerFrame();
 
-  if( m_iFileFormat == YUVFormat )
+  if( avStatus )
   {
     m_cFilename = filename;
     m_pFile = fopen( m_cFilename.toLocal8Bit().data(), "rb" );
@@ -182,16 +184,6 @@ Void InputStream::readFrame()
   {
     return;
   }
-  UInt64 frame_bytes_input = m_cCurrFrame->getBytesPerFrame();
-
-#ifdef USE_FFMPEG
-  if( m_cLibAvContext.getStatus() )
-  {
-    m_cLibAvContext.decodeAvFormat();
-    m_cCurrFrame->FrameFromBuffer( m_cLibAvContext.video_dst_data[0], m_iPixelFormat );
-    return;
-  }
-#endif
 
   if( m_uiCurrFrameNum < m_uiTotalFrameNum )
   {
@@ -203,6 +195,17 @@ Void InputStream::readFrame()
     m_uiCurrFrameNum = 0;
     seekInput( m_uiCurrFrameNum );
   }
+
+#ifdef USE_FFMPEG
+  if( m_cLibAvContext.getStatus() )
+  {
+    m_cLibAvContext.decodeAvFormat();
+    m_cCurrFrame->FrameFromBuffer( m_cLibAvContext.video_dst_data[0], m_iPixelFormat );
+    return;
+  }
+#endif
+
+  UInt64 frame_bytes_input = m_cCurrFrame->getBytesPerFrame();
   bytes_read = fread( m_pInputBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
   if( bytes_read != frame_bytes_input )
   {
@@ -255,10 +258,19 @@ cv::Mat InputStream::getFrameCvMat()
 
 Void InputStream::seekInput( Int new_frame_num )
 {
-  UInt64 frame_bytes_input = m_uiWidth * m_uiHeight * 1.5;
-  UInt64 nbytes_seek = frame_bytes_input * new_frame_num;
-  fseek( m_pFile, nbytes_seek, SEEK_SET );
-  m_uiCurrFrameNum = new_frame_num;
+#ifdef USE_FFMPEG
+  if( m_cLibAvContext.getStatus() )
+  {
+    m_cLibAvContext.seekAvFormat( new_frame_num );
+  }
+  else
+#endif
+  {
+    UInt64 frame_bytes_input = m_uiWidth * m_uiHeight * 1.5;
+    UInt64 nbytes_seek = frame_bytes_input * new_frame_num;
+    fseek( m_pFile, nbytes_seek, SEEK_SET );
+    m_uiCurrFrameNum = new_frame_num;
+  }
 }
 
 Bool InputStream::checkErrors( Int error_type )

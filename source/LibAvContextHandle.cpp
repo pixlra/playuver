@@ -24,7 +24,7 @@
 #include "LibAvContextHandle.h"
 
 #ifdef USE_FFMPEG
-  
+
 #include <cstdio>
 
 #include <QtDebug>
@@ -133,6 +133,19 @@ Bool LibAvContextHandle::initAvFormat( QString filename, UInt& width, UInt& heig
       return false;
     }
     video_dst_bufsize = ret;
+  }
+
+  AVCodecContext *in_codec = fmt_ctx->streams[0]->codec;
+  width = in_codec->width;
+  height = in_codec->height;
+  switch( in_codec->pix_fmt )
+  {
+  case AV_PIX_FMT_YUV420P:
+    pixel_format = PlaYUVerFrame::YUV420;
+    break;
+  case AV_PIX_FMT_GRAY8:
+    pixel_format = PlaYUVerFrame::YUV400;
+    break;
   }
 
   /* dump input information to stderr */

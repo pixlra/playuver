@@ -15,7 +15,7 @@ SET( PROJECT_NAME playuver )
 # Project directories 
 SET( SRC_DIR source )
 SET( INC_DIR source )
-SET( LIB_DIR lib )
+SET( LIB_DIR ${SRC_DIR}/lib )
 SET( RSC_DIR resources )
 SET( UI_DIR  ui )
 SET( EXTERNAL_SRC external_lib )

@@ -36,8 +36,12 @@
 #include <opencv2/opencv.hpp>
 #endif
 
-#include "TypeDef.h"
+#ifdef USE_FFMPEG
 #include "LibAvContextHandle.h"
+#endif
+
+#include "TypeDef.h"
+
 #include "PlaYUVerFrame.h"
 
 namespace plaYUVer

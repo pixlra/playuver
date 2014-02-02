@@ -23,12 +23,7 @@
 
 #include "LibAvContextHandle.h"
 
-#ifdef USE_FFMPEG
-
 #include <cstdio>
-
-#include <QtDebug>
-
 #include "LibMemAlloc.h"
 #include "PlaYUVerFrame.h"
 
@@ -87,7 +82,7 @@ namespace plaYUVer
     m_bHasStream = false;
   }
 
-  Bool LibAvContextHandle::initAvFormat( QString filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate )
+  Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate )
   {
     Bool bRet = true;
     int ret = 0;
@@ -103,7 +98,7 @@ namespace plaYUVer
     frame = NULL;
     m_bHasStream = false;
 
-    char *src_filename = filename.toLocal8Bit().data();
+    char *src_filename = filename;
     AVDictionary *format_opts = NULL;
 
     /* register all formats and codecs */
@@ -130,14 +125,14 @@ namespace plaYUVer
     /* open input file, and allocate format context */
     if( avformat_open_input( &fmt_ctx, src_filename, NULL, &format_opts ) < 0 )
     {
-      qDebug( ) << " Could not open source file %s !!!" << filename << endl;
+      //qDebug( ) << " Could not open source file %s !!!" << filename << endl;
       return false;
     }
 
     /* retrieve stream information */
     if( avformat_find_stream_info( fmt_ctx, NULL ) < 0 )
     {
-      qDebug( ) << " Could not find stream information !!!" << endl;
+      //qDebug( ) << " Could not find stream information !!!" << endl;
       return false;
     }
 
@@ -150,7 +145,7 @@ namespace plaYUVer
       ret = av_image_alloc( video_dst_data, video_dst_linesize, video_dec_ctx->width, video_dec_ctx->height, video_dec_ctx->pix_fmt, 1 );
       if( ret < 0 )
       {
-        qDebug( ) << " Could not allocate raw video buffer !!!" << endl;
+        //qDebug( ) << " Could not allocate raw video buffer !!!" << endl;
         closeAvFormat();
         return false;
       }
@@ -187,7 +182,7 @@ namespace plaYUVer
     av_dump_format( fmt_ctx, 0, src_filename, 0 );
     if( !video_stream )
     {
-      qDebug( ) << " Could not find audio or video stream in the input, aborting !!!" << endl;
+      //qDebug( ) << " Could not find audio or video stream in the input, aborting !!!" << endl;
       bRet = false;
       closeAvFormat();
       return false;
@@ -196,7 +191,7 @@ namespace plaYUVer
     frame = avcodec_alloc_frame();
     if( !frame )
     {
-      qDebug( ) << " Could not allocate frame !!!" << endl;
+      //qDebug( ) << " Could not allocate frame !!!" << endl;
       ret = AVERROR( ENOMEM );
       closeAvFormat();
       return false;
@@ -262,5 +257,3 @@ namespace plaYUVer
   }
 
 }  // NAMESPACE
-
-#endif

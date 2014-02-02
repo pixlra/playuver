@@ -24,11 +24,7 @@
 #ifndef __LIBAVCONTEXTHANDLE_H__
 #define __LIBAVCONTEXTHANDLE_H__
 
-#include "config.h"
-
-#ifdef USE_FFMPEG
-
-#include <QtCore>
+//#include "config.h"
 
 extern "C"
 {
@@ -46,7 +42,7 @@ namespace plaYUVer
   class LibAvContextHandle
   {
   public:
-    Bool initAvFormat( QString filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate );
+    Bool initAvFormat( char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate );
     Void closeAvFormat();
     Bool decodeAvFormat();
 
@@ -73,7 +69,5 @@ namespace plaYUVer
   };
 
 }  // NAMESPACE
-
-#endif
 
 #endif // __LIBAVCONTEXTHANDLE_H__

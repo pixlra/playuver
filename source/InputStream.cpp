@@ -43,6 +43,8 @@ InputStream::InputStream()
   m_iErrorStatus = 0;
   m_iPixelFormat = -1;
 
+  m_uiFrameRate = 25;
+
   m_iFileFormat = INVALID;
 }
 

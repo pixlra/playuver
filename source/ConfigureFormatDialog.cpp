@@ -147,7 +147,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   MainLayout->addLayout( resolutionGrid );
 
-  // Pixel format
+
 
   pixelFormatVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
   MainLayout->addItem( pixelFormatVerticalSpacer );
@@ -179,6 +179,31 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   MainLayout->addLayout( pixelFormatLayout );
 
+  // Frame rate format
+
+  framerateFormatVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
+  MainLayout->addItem( pixelFormatVerticalSpacer );
+
+  framerateFormatLayout = new QHBoxLayout();
+  framerateFormatLayout->setObjectName( QStringLiteral( "pixelFormatLayout" ) );
+
+  framerateFormatLabel = new QLabel();
+  framerateFormatLabel->setObjectName( QStringLiteral( "pixelFormatLabel" ) );
+  framerateFormatLabel->setText( QApplication::translate( "pixelFormat", "Pixel FormatBox", 0 ) );
+
+  framerateFormatHorizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+
+  framerateSpinBox = new QSpinBox(  );
+  framerateSpinBox->setObjectName( QStringLiteral( "framerateSpinBox" ) );
+  framerateSpinBox->setRange( 0, 200 );
+  framerateSpinBox->setValue( 30 );
+
+  framerateFormatLayout->addWidget( framerateFormatLabel );
+  framerateFormatLayout->addItem( framerateFormatHorizontalSpacer );
+  framerateFormatLayout->addWidget( framerateSpinBox );
+
+  MainLayout->addLayout( framerateFormatLayout );
+
   // Confirmation buttons
 
   verticalSpacerConfirmation = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
@@ -191,7 +216,6 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   MainLayout->addWidget( dialogButtonOkCancel );
 
-  Int idx;
   connect( standardResolutionBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( StandardResolutionSelection() ) );
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );

@@ -67,11 +67,11 @@ bool SubWindowHandle::loadFile( const QString &fileName )
     {
       return false;
     }
-    m_currStream.init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height(), formatDialog.getPixelFormat() );
+    m_currStream.init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height(), formatDialog.getPixelFormat(), formatDialog.getFrameRate() );
   }
   else
   {
-    m_currStream.init( fileName, 0, 0, 0 );
+    m_currStream.init( fileName, 0, 0, 0, 0 );
   }
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QApplication::restoreOverrideCursor();

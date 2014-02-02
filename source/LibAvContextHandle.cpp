@@ -82,7 +82,7 @@ Void LibAvContextHandle::closeAvFormat()
   av_free( video_dst_data[0] );
 }
 
-Bool LibAvContextHandle::initAvFormat( QString filename, UInt& width, UInt& height, Int& pixel_format )
+Bool LibAvContextHandle::initAvFormat( QString filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate )
 {
   Bool bRet = true;
   int ret = 0;

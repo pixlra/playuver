@@ -42,11 +42,6 @@ public:
 
   Void FrameFromBuffer( Pel *input_buffer, Int pel_format );
 
-  enum InputStreamColorSpace
-  {
-    NO_FMT = -1, YUV420, YUV400, YUV422, RGB,
-  };
-
   UInt64 getBytesPerFrame();
 
   Pel*** getPelBufferYUV()

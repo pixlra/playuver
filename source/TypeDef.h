@@ -24,7 +24,9 @@
 #ifndef __TYPEDEF_H__
 #define __TYPEDEF_H__
 
+#ifndef __MAKE_LIB__
 #include "config.h"
+#endif
 
 namespace plaYUVer
 {
@@ -104,6 +106,18 @@ typedef UChar Pel;        ///< 8-bit pixel type
 #define QStringLiteral QString::fromUtf8
 #endif
 
+// ====================================================================================================================
+// PlaYUVer definitions
+// ====================================================================================================================
+
+enum InputStreamColorSpace
+{
+  NO_FMT = -1, YUV420, YUV400, YUV422, RGB,
+};
+
+
 }
+
+
 
 #endif // __TYPEDEF_H__

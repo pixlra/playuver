@@ -34,39 +34,43 @@ extern "C"
 #include "libavformat/avformat.h"
 }
 
+#ifndef __STDC_CONSTANT_MACROS
+#define smprintf _snprintf
+#endif
+
 #include "TypeDef.h"
 
 namespace plaYUVer
 {
 
-  class LibAvContextHandle
+class LibAvContextHandle
+{
+public:
+  Bool initAvFormat( char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate );
+  Void closeAvFormat();
+  Bool decodeAvFormat();
+
+  Void seekAvFormat( UInt frame_num );
+
+  Bool getStatus()
   {
-  public:
-    Bool initAvFormat( char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate );
-    Void closeAvFormat();
-    Bool decodeAvFormat();
+    return m_bHasStream;
+  }
 
-    Void seekAvFormat( UInt frame_num );
+  uint8_t *video_dst_data[4];
+  int video_dst_linesize[4];
+  int video_dst_bufsize;
 
-    Bool getStatus()
-    {
-      return m_bHasStream;
-    }
+private:
+  AVFormatContext *fmt_ctx;
+  AVCodecContext *video_dec_ctx;
+  AVStream *video_stream;
+  Int video_stream_idx;
+  AVFrame *frame;
+  AVPacket pkt;
 
-    uint8_t *video_dst_data[4];
-    int video_dst_linesize[4];
-    int video_dst_bufsize;
-
-  private:
-    AVFormatContext *fmt_ctx;
-    AVCodecContext *video_dec_ctx;
-    AVStream *video_stream;
-    Int video_stream_idx;
-    AVFrame *frame;
-    AVPacket pkt;
-
-    Bool m_bHasStream;
-  };
+  Bool m_bHasStream;
+};
 
 }  // NAMESPACE
 

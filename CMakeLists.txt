@@ -216,7 +216,6 @@ CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_D
 ######################################################################################
 # Target App
 ######################################################################################
-
 ADD_EXECUTABLE( ${PROJECT_NAME} ${SOURCES_FILES} ${HEADERS_MOC_FILES} ${FORMS_HEADERS_FILES} ${RESOURCES_RCC_FILES} )
 
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${LINKER_LIBS} )

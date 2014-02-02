@@ -19,11 +19,6 @@
 /* FFMPEG */
 #cmakedefine USE_FFMPEG
 
-#ifdef USE_FFMPEG
-  #ifndef __STDC_CONSTANT_MACROS
-    //#define __STDC_CONSTANT_MACROS
-    #define smprintf _snprintf
-  #endif
-#endif
+
 
 #endif // __CONFIG_PLAYUVER_H__

@@ -137,6 +137,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
 
 #ifdef USE_FFMPEG
   avStatus = m_cLibAvContext.initAvFormat( filename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate );
+  m_uiTotalFrameNum = 100;
 #endif
 
   if( m_uiWidth <= 0 || m_uiHeight <= 0 )

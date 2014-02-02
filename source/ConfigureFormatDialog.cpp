@@ -75,7 +75,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   verticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
   MainLayout->addItem( verticalSpacer );
 
-  standardResolutionLayout = new QHBoxLayout( this );
+  standardResolutionLayout = new QHBoxLayout();
   standardResolutionLayout->setObjectName( QStringLiteral( "standardResolutionLayout" ) );
   standardResolutionLabel = new QLabel();
   standardResolutionLabel->setObjectName( QStringLiteral( "standardResolutionLabel" ) );
@@ -107,7 +107,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   resolutionGridVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
   MainLayout->addItem( resolutionGridVerticalSpacer );
 
-  resolutionGrid = new QGridLayout( this );
+  resolutionGrid = new QGridLayout();
   resolutionGrid->setObjectName( QStringLiteral( "resolutionGrid" ) );
 
   resolutionLabel = new QLabel();
@@ -150,7 +150,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   pixelFormatVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
   MainLayout->addItem( pixelFormatVerticalSpacer );
 
-  pixelFormatLayout = new QHBoxLayout( this );
+  pixelFormatLayout = new QHBoxLayout();
   pixelFormatLayout->setObjectName( QStringLiteral( "pixelFormatLayout" ) );
 
   pixelFormatLabel = new QLabel();
@@ -182,7 +182,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   framerateFormatVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
   MainLayout->addItem( framerateFormatVerticalSpacer );
 
-  framerateFormatLayout = new QHBoxLayout( this );
+  framerateFormatLayout = new QHBoxLayout();
   framerateFormatLayout->setObjectName( QStringLiteral( "framerateFormatLayout" ) );
 
   framerateFormatLabel = new QLabel();
@@ -207,7 +207,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   verticalSpacerConfirmation = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
   MainLayout->addItem( verticalSpacerConfirmation );
 
-  dialogButtonOkCancel = new QDialogButtonBox( this );
+  dialogButtonOkCancel = new QDialogButtonBox();
   dialogButtonOkCancel->setObjectName( QString::fromUtf8( "dialogButtonBox" ) );
   dialogButtonOkCancel->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
   dialogButtonOkCancel->setCenterButtons( false );

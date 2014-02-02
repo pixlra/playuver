@@ -135,10 +135,9 @@ Bool LibAvContextHandle::initAvFormat( QString filename, UInt& width, UInt& heig
     video_dst_bufsize = ret;
   }
 
-  AVCodecContext *in_codec = fmt_ctx->streams[0]->codec;
-  width = in_codec->width;
-  height = in_codec->height;
-  switch( in_codec->pix_fmt )
+  width = video_dec_ctx->width;
+  height = video_dec_ctx->height;
+  switch( video_dec_ctx->pix_fmt )
   {
   case AV_PIX_FMT_YUV420P:
     pixel_format = PlaYUVerFrame::YUV420;

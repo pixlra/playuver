@@ -109,7 +109,6 @@ QStringList InputStream::supportedPixelFormatList()
 
 Bool InputStream::needFormatDialog( QString filename )
 {
-  return true;
   QString fileExtension = QFileInfo( filename ).completeSuffix();
   if( !fileExtension.compare( QString( "yuv" ) ) )
   {
@@ -130,7 +129,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
   m_iPixelFormat = input_format;
 
 #ifdef USE_FFMPEG
-  Bool avStatus = m_cLibAvContext.initAvFormat( filename, width, height, input_format );
+  Bool avStatus = m_cLibAvContext.initAvFormat( filename, m_uiWidth, m_uiHeight, m_iPixelFormat );
 #endif
 
   if( m_uiWidth <= 0 || m_uiHeight <= 0 )

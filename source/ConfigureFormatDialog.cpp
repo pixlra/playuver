@@ -46,7 +46,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   // headLayout
 
-  headLayout = new QHBoxLayout();
+  headLayout = new QHBoxLayout( this );
   headLayout->setObjectName( QStringLiteral( "headLayout" ) );
 
   dialogTitleLabel = new QLabel();
@@ -75,7 +75,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   verticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
   MainLayout->addItem( verticalSpacer );
 
-  standardResolutionLayout = new QHBoxLayout();
+  standardResolutionLayout = new QHBoxLayout( this );
   standardResolutionLayout->setObjectName( QStringLiteral( "standardResolutionLayout" ) );
   standardResolutionLabel = new QLabel( );
   standardResolutionLabel->setObjectName( QStringLiteral( "standardResolutionLabel" ) );
@@ -107,7 +107,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   resolutionGridVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
   MainLayout->addItem( resolutionGridVerticalSpacer );
 
-  resolutionGrid = new QGridLayout( );
+  resolutionGrid = new QGridLayout( this );
   resolutionGrid->setObjectName( QStringLiteral( "resolutionGrid" ) );
 
   resolutionLabel = new QLabel( );
@@ -152,7 +152,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   pixelFormatVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
   MainLayout->addItem( pixelFormatVerticalSpacer );
 
-  pixelFormatLayout = new QHBoxLayout( );
+  pixelFormatLayout = new QHBoxLayout( this );
   pixelFormatLayout->setObjectName( QStringLiteral( "pixelFormatLayout" ) );
 
   pixelFormatLabel = new QLabel( );
@@ -182,18 +182,18 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   // Frame rate format
 
   framerateFormatVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
-  MainLayout->addItem( pixelFormatVerticalSpacer );
+  MainLayout->addItem( framerateFormatVerticalSpacer );
 
-  framerateFormatLayout = new QHBoxLayout();
-  framerateFormatLayout->setObjectName( QStringLiteral( "pixelFormatLayout" ) );
+  framerateFormatLayout = new QHBoxLayout( this );
+  framerateFormatLayout->setObjectName( QStringLiteral( "framerateFormatLayout" ) );
 
   framerateFormatLabel = new QLabel();
-  framerateFormatLabel->setObjectName( QStringLiteral( "pixelFormatLabel" ) );
-  framerateFormatLabel->setText( QApplication::translate( "pixelFormat", "Pixel FormatBox", 0 ) );
+  framerateFormatLabel->setObjectName( QStringLiteral( "framerateFormatLabel" ) );
+  framerateFormatLabel->setText( QApplication::translate( "framerateFormatLabel", "framerateFormatLabel", 0 ) );
 
   framerateFormatHorizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
 
-  framerateSpinBox = new QSpinBox(  );
+  framerateSpinBox = new QSpinBox( );
   framerateSpinBox->setObjectName( QStringLiteral( "framerateSpinBox" ) );
   framerateSpinBox->setRange( 0, 200 );
   framerateSpinBox->setValue( 30 );
@@ -209,7 +209,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   verticalSpacerConfirmation = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
   MainLayout->addItem( verticalSpacerConfirmation );
 
-  dialogButtonOkCancel = new QDialogButtonBox(  );
+  dialogButtonOkCancel = new QDialogButtonBox( this );
   dialogButtonOkCancel->setObjectName( QString::fromUtf8( "dialogButtonBox" ) );
   dialogButtonOkCancel->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
   dialogButtonOkCancel->setCenterButtons( false );

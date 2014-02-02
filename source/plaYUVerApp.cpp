@@ -36,7 +36,6 @@
 namespace plaYUVer
 {
 
-
 plaYUVerApp::plaYUVerApp()
 {
 
@@ -137,7 +136,7 @@ void plaYUVerApp::play()
   UInt timeInterval;
 
   frameRate = activeImageInterface()->getInputStream()->getFrameRate();
-  timeInterval = (UInt)( 1000.0/frameRate + 0.5 );
+  timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
 
   playingTimer->start( timeInterval );
 
@@ -345,32 +344,31 @@ Void plaYUVerApp::createActions()
 
   // ------------ Playing ------------
 
-  actionVideoPlay      = new QAction( "VideoPlay" , this      );
-  actionVideoPause     = new QAction( "VideoPause", this      );
-  actionVideoStop      = new QAction( "VideoStop" , this      );
-  actionVideoBackward  = new QAction( "VideoBackward" , this  );
-  actionVideoForward   = new QAction( "VideoForward" , this   );
-  actionVideoLoop      = new QAction( "VideoLoop" , this      );
-  actionVideoLock      = new QAction( "VideoLock" , this      );
-  actionVideoInterlace = new QAction( "VideoInterlace" , this );
-  actionVideoCenter    = new QAction( "VideoCenter" , this    );
+  actionVideoPlay = new QAction( "VideoPlay", this );
+  actionVideoPause = new QAction( "VideoPause", this );
+  actionVideoStop = new QAction( "VideoStop", this );
+  actionVideoBackward = new QAction( "VideoBackward", this );
+  actionVideoForward = new QAction( "VideoForward", this );
+  actionVideoLoop = new QAction( "VideoLoop", this );
+  actionVideoLock = new QAction( "VideoLock", this );
+  actionVideoInterlace = new QAction( "VideoInterlace", this );
+  actionVideoCenter = new QAction( "VideoCenter", this );
 
-  actionVideoPlay     ->setIcon( QIcon( style()->standardIcon(QStyle::SP_MediaPlay         ) ) );
-  actionVideoPause    ->setIcon( QIcon( style()->standardIcon(QStyle::SP_MediaPause        ) ) );
-  actionVideoStop     ->setIcon( QIcon( style()->standardIcon(QStyle::SP_MediaStop         ) ) );
-  actionVideoBackward ->setIcon( QIcon( style()->standardIcon(QStyle::SP_MediaSeekBackward ) ) );
-  actionVideoForward  ->setIcon( QIcon( style()->standardIcon(QStyle::SP_MediaSeekForward  ) ) );
- /*
-  actionVideoLoop     ->setIcon( QIcon( ":/images/videoloop.png"  ) );
-  actionVideoLock     ->setIcon( QIcon( ":/images/lock.png"       ) );
-  actionVideoInterlace->setIcon( QIcon( ":/images/interlace.png"  ) );
-  actionVideoCenter   ->setIcon( QIcon( ":/images/center.png"     ) );
-  */
+  actionVideoPlay->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPlay ) ) );
+  actionVideoPause->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPause ) ) );
+  actionVideoStop->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaStop ) ) );
+  actionVideoBackward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
+  actionVideoForward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
+  /*
+   actionVideoLoop     ->setIcon( QIcon( ":/images/videoloop.png"  ) );
+   actionVideoLock     ->setIcon( QIcon( ":/images/lock.png"       ) );
+   actionVideoInterlace->setIcon( QIcon( ":/images/interlace.png"  ) );
+   actionVideoCenter   ->setIcon( QIcon( ":/images/center.png"     ) );
+   */
 
-  connect( actionVideoPlay , SIGNAL( triggered() ), this , SLOT ( play() ) );
-  connect( actionVideoPause , SIGNAL( triggered() ), this , SLOT ( pause() ) );
-  connect( actionVideoStop , SIGNAL( triggered() ), this , SLOT ( stop() ) );
-
+  connect( actionVideoPlay, SIGNAL( triggered() ), this, SLOT( play() ) );
+  connect( actionVideoPause, SIGNAL( triggered() ), this, SLOT( pause() ) );
+  connect( actionVideoStop, SIGNAL( triggered() ), this, SLOT( stop() ) );
 
   // ------------ Window ------------
 
@@ -394,7 +392,6 @@ Void plaYUVerApp::createActions()
 
   separatorAct = new QAction( this );
   separatorAct->setSeparator( true );
-
 
   // ------------ About ------------
 
@@ -495,8 +492,8 @@ QMdiSubWindow *plaYUVerApp::findImageInterface( const QString &fileName )
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
   SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
   if( mdiChild->currentFile() == canonicalFilePath )
-    return window;
-  }
+  return window;
+}
   return 0;
 }
 

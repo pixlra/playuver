@@ -23,6 +23,9 @@
 
 #include "LibMemAlloc.h"
 
+namespace plaYUVer
+{
+
 /*!
  ************************************************************************
  * \brief
@@ -136,3 +139,5 @@ void free_mem3Dpel( Pel ***array3D )
     mem_free( array3D );
   }
 }
+
+}  // NAMESPACE

@@ -43,34 +43,34 @@ extern "C"
 namespace plaYUVer
 {
 
-class LibAvContextHandle
-{
-public:
-  Bool initAvFormat( QString filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate );
-  Void closeAvFormat();
-  Bool decodeAvFormat();
-
-  Void seekAvFormat( UInt frame_num );
-
-  Bool getStatus()
+  class LibAvContextHandle
   {
-    return m_bHasStream;
-  }
+  public:
+    Bool initAvFormat( QString filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate );
+    Void closeAvFormat();
+    Bool decodeAvFormat();
 
-  uint8_t *video_dst_data[4];
-  int video_dst_linesize[4];
-  int video_dst_bufsize;
+    Void seekAvFormat( UInt frame_num );
 
-private:
-  AVFormatContext *fmt_ctx;
-  AVCodecContext *video_dec_ctx;
-  AVStream *video_stream;
-  Int video_stream_idx;
-  AVFrame *frame;
-  AVPacket pkt;
+    Bool getStatus()
+    {
+      return m_bHasStream;
+    }
 
-  Bool m_bHasStream;
-};
+    uint8_t *video_dst_data[4];
+    int video_dst_linesize[4];
+    int video_dst_bufsize;
+
+  private:
+    AVFormatContext *fmt_ctx;
+    AVCodecContext *video_dec_ctx;
+    AVStream *video_stream;
+    Int video_stream_idx;
+    AVFrame *frame;
+    AVPacket pkt;
+
+    Bool m_bHasStream;
+  };
 
 }  // NAMESPACE
 

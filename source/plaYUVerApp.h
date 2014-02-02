@@ -42,7 +42,7 @@ class SubWindowHandle;
 
 class plaYUVerApp: public QMainWindow
 {
-Q_OBJECT
+  Q_OBJECT
 
 public:
   plaYUVerApp();

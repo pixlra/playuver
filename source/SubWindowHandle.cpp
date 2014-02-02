@@ -67,7 +67,8 @@ bool SubWindowHandle::loadFile( const QString &fileName )
     {
       return false;
     }
-    m_currStream.init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height(), formatDialog.getPixelFormat(), formatDialog.getFrameRate() );
+    m_currStream.init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height(), formatDialog.getPixelFormat(),
+        formatDialog.getFrameRate() );
   }
   else
   {

@@ -30,6 +30,9 @@
 #include <cstring>
 #include "TypeDef.h"
 
+namespace plaYUVer
+{
+
 extern int get_mem1Dpel( Pel **array2D, int dim0 );
 extern int get_mem2Dpel( Pel ***array2D, int dim0, int dim1 );
 extern int get_mem3Dpel( Pel ****array3D, int dim0, int dim1, int dim2 );
@@ -69,5 +72,7 @@ static inline void mem_free( void *ptr )
     ptr = NULL;
   }
 }
+
+}  // NAMESPACE
 
 #endif // __LIBMEMALLOC_H__

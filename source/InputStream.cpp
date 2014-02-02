@@ -277,12 +277,12 @@ Bool InputStream::checkErrors( Int error_type )
 {
   if( m_iErrorStatus == error_type )
   {
-    m_iErrorStatus = NO_ERROR;
+    m_iErrorStatus = NO_STREAM_ERROR;
     return true;
   }
   if( m_iErrorStatus == error_type )
   {
-    m_iErrorStatus = NO_ERROR;
+    m_iErrorStatus = NO_STREAM_ERROR;
     return true;
   }
   return false;

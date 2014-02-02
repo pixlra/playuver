@@ -60,7 +60,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   headerSpacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
 
-  dialogIconLabel = new QLabel( );
+  dialogIconLabel = new QLabel();
   dialogIconLabel->setObjectName( QStringLiteral( "dialogIconLabel" ) );
   dialogIconLabel->setPixmap( QPixmap( ":/images/dialogheader-grid.png" ) );
 
@@ -77,13 +77,13 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   standardResolutionLayout = new QHBoxLayout( this );
   standardResolutionLayout->setObjectName( QStringLiteral( "standardResolutionLayout" ) );
-  standardResolutionLabel = new QLabel( );
+  standardResolutionLabel = new QLabel();
   standardResolutionLabel->setObjectName( QStringLiteral( "standardResolutionLabel" ) );
   standardResolutionLabel->setText( QApplication::translate( "ConfigureFormat", "Standard Resolution", 0 ) );
 
   horizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
 
-  standardResolutionBox = new QComboBox( );
+  standardResolutionBox = new QComboBox();
   standardResolutionBox->setObjectName( QStringLiteral( "standardResolutionBox" ) );
   QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
   sizePolicy.setHorizontalStretch( 0 );
@@ -110,7 +110,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   resolutionGrid = new QGridLayout( this );
   resolutionGrid->setObjectName( QStringLiteral( "resolutionGrid" ) );
 
-  resolutionLabel = new QLabel( );
+  resolutionLabel = new QLabel();
   resolutionLabel->setObjectName( QStringLiteral( "resolutionLabel" ) );
   QFont font1;
   font1.setBold( true );
@@ -118,23 +118,23 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   resolutionLabel->setFont( font1 );
   resolutionLabel->setText( QApplication::translate( "ConfigureFormat", "Resolution chosen", 0 ) );
 
-  widthLabel = new QLabel( );
+  widthLabel = new QLabel();
   widthLabel->setObjectName( QStringLiteral( "widthLabel" ) );
   widthLabel->setText( QApplication::translate( "ConfigureFormat", "Width", 0 ) );
-  widthSpinBox = new QSpinBox( );
+  widthSpinBox = new QSpinBox();
   widthSpinBox->setObjectName( QStringLiteral( "widthSpinBox" ) );
   widthSpinBox->setRange( 0, 5000 );
   widthSpinBox->setValue( 0 );
 
-  heightLabel = new QLabel( );
+  heightLabel = new QLabel();
   heightLabel->setObjectName( QStringLiteral( "heightLabel" ) );
   heightLabel->setText( QApplication::translate( "ConfigureFormat", "Height", 0 ) );
-  heightSpinBox = new QSpinBox(  );
+  heightSpinBox = new QSpinBox();
   heightSpinBox->setObjectName( QStringLiteral( "heightSpinBox" ) );
   heightSpinBox->setRange( 0, 5000 );
   heightSpinBox->setValue( 0 );
 
-  pixelsLabel = new QLabel( );
+  pixelsLabel = new QLabel();
   pixelsLabel->setObjectName( QStringLiteral( "pixelsLabel" ) );
   pixelsLabel->setText( QApplication::translate( "ConfigureFormat", "Pixels", 0 ) );
 
@@ -147,21 +147,19 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   MainLayout->addLayout( resolutionGrid );
 
-
-
   pixelFormatVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
   MainLayout->addItem( pixelFormatVerticalSpacer );
 
   pixelFormatLayout = new QHBoxLayout( this );
   pixelFormatLayout->setObjectName( QStringLiteral( "pixelFormatLayout" ) );
 
-  pixelFormatLabel = new QLabel( );
+  pixelFormatLabel = new QLabel();
   pixelFormatLabel->setObjectName( QStringLiteral( "pixelFormatLabel" ) );
   pixelFormatLabel->setText( QApplication::translate( "pixelFormat", "Pixel FormatBox", 0 ) );
 
   pixelFormatHorizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
 
-  pixelFormatBox = new QComboBox(  );
+  pixelFormatBox = new QComboBox();
   pixelFormatBox->setObjectName( QStringLiteral( "pixelFormatBox" ) );
   QSizePolicy sizePolicyPixelFormat( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
   sizePolicyPixelFormat.setHorizontalStretch( 0 );
@@ -193,7 +191,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   framerateFormatHorizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
 
-  framerateSpinBox = new QSpinBox( );
+  framerateSpinBox = new QSpinBox();
   framerateSpinBox->setObjectName( QStringLiteral( "framerateSpinBox" ) );
   framerateSpinBox->setRange( 0, 200 );
   framerateSpinBox->setValue( 30 );
@@ -220,7 +218,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
-  QMetaObject::connectSlotsByName(this);
+  QMetaObject::connectSlotsByName( this );
 
 }
 

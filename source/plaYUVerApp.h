@@ -98,6 +98,7 @@ private:
   QMenu *helpMenu;
   QToolBar *fileToolBar;
   QToolBar *viewToolBar;
+  QToolBar *videoToolBar;
 
   QAction *openAct;
   QAction *saveAct;
@@ -117,8 +118,20 @@ private:
   QAction *previousAct;
   QAction *separatorAct;
 
+  // Video actions.
+  QAction *acVideoPlay;
+  QAction *acVideoPause;
+  QAction *acVideoStop;
+  QAction *acVideoBackward;
+  QAction *acVideoForward;
+  QAction *acVideoLoop;
+  QAction *acVideoLock;
+  QAction *acVideoInterlace;
+  QAction *acVideoCenter;
+
   QAction *aboutAct;
   QAction *aboutQtAct;
+
 };
 
 } // NAMESPACE

@@ -309,6 +309,32 @@ Void plaYUVerApp::createActions()
   separatorAct = new QAction( this );
   separatorAct->setSeparator( true );
 
+
+  // ------------- Video actions --------------
+
+  acVideoPlay      = new QAction( "AC VideoPlay" , this      );
+  acVideoPause     = new QAction( "AC VideoPause", this      );
+  acVideoStop      = new QAction( "AC VideoStop" , this      );
+  acVideoBackward  = new QAction( "AC VideoBackward" , this  );
+  acVideoForward   = new QAction( "AC VideoForward" , this   );
+  acVideoLoop      = new QAction( "AC VideoLoop" , this      );
+  acVideoLock      = new QAction( "AC VideoLock" , this      );
+  acVideoInterlace = new QAction( "AC VideoInterlace" , this );
+  acVideoCenter    = new QAction( "AC VideoCenter" , this    );
+
+/*
+  acVideoPlay     ->setIcon( QIcon( ":/images/videoplay.png"  ) );
+  acVideoPause    ->setIcon( QIcon( ":/images/videopause.png" ) );
+  acVideoStop     ->setIcon( QIcon( ":/images/videostop.png"  ) );
+  acVideoBackward ->setIcon( QIcon( ":/images/videobak.png"   ) );
+  acVideoForward  ->setIcon( QIcon( ":/images/videofwd.png"   ) );
+  acVideoLoop     ->setIcon( QIcon( ":/images/videoloop.png"  ) );
+  acVideoLock     ->setIcon( QIcon( ":/images/lock.png"       ) );
+  acVideoInterlace->setIcon( QIcon( ":/images/interlace.png"  ) );
+  acVideoCenter   ->setIcon( QIcon( ":/images/center.png"     ) );
+*/
+
+
   // ------------ About ------------
 
   aboutAct = new QAction( tr( "&About" ), this );
@@ -360,6 +386,17 @@ Void plaYUVerApp::createToolBars()
   viewToolBar->addAction( zoomOutAct );
   viewToolBar->addAction( normalSizeAct );
   viewToolBar->addAction( zoomToFitAct );
+
+  videoToolBar = addToolBar( tr( "Video" ) );
+  videoToolBar->addAction( acVideoPlay );
+  videoToolBar->addAction( acVideoPause );
+  videoToolBar->addAction( acVideoStop );
+  videoToolBar->addAction( acVideoBackward );
+  videoToolBar->addAction( acVideoForward );
+  videoToolBar->addAction( acVideoLoop );
+  videoToolBar->addAction( acVideoLock );
+  videoToolBar->addAction( acVideoInterlace );
+  videoToolBar->addAction( acVideoCenter );
 
 }
 

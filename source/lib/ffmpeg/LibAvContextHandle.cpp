@@ -81,7 +81,6 @@ Void LibAvContextHandle::closeAvFormat()
 
 Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate )
 {
-  Bool bRet = true;
   int ret = 0;
 
   fmt_ctx = NULL;
@@ -116,6 +115,8 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
     break;
   case YUV400:
     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_GRAY8 ), 0 );
+    break;
+  default:
     break;
   }
 
@@ -173,6 +174,8 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
   case AV_PIX_FMT_GRAY8:
     pixel_format = YUV400;
     break;
+  default:
+    break;
   }
 
   /* dump input information to stderr */
@@ -180,12 +183,15 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
   if( !video_stream )
   {
     //qDebug( ) << " Could not find audio or video stream in the input, aborting !!!" << endl;
-    bRet = false;
     closeAvFormat();
     return false;
   }
-
+  
+#if( LIBAVFORMAT_VERSION_MAJOR >= 55 )
+  frame = av_frame_alloc();
+#else
   frame = avcodec_alloc_frame();
+#endif
   if( !frame )
   {
     //qDebug( ) << " Could not allocate frame !!!" << endl;
@@ -245,7 +251,7 @@ Bool LibAvContextHandle::decodeAvFormat()
 //  }
 //  while( got_frame );
 
-  true;
+  return true;
 }
 
 Void LibAvContextHandle::seekAvFormat( UInt frame_num )

@@ -24,19 +24,26 @@
 #ifndef __LIBAVCONTEXTHANDLE_H__
 #define __LIBAVCONTEXTHANDLE_H__
 
-//#include "config.h"
+#include <inttypes.h>
+
+#ifndef __PRI64_PREFIX
+#define __PRI64_PREFIX  "l"
+#endif
+
+#ifndef PRId64
+#define PRId64   __PRI64_PREFIX "d"
+#endif
 
 extern "C"
 {
-#include "libavutil/imgutils.h"
-#include "libavutil/samplefmt.h"
-#include "libavutil/timestamp.h"
-#include "libavformat/avformat.h"
+#include <libavutil/avutil.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/samplefmt.h>
+#include <libavutil/timestamp.h>
+#include <libavformat/avformat.h>
 }
 
-#ifndef __STDC_CONSTANT_MACROS
-#define smprintf _snprintf
-#endif
+
 
 #include "TypeDef.h"
 

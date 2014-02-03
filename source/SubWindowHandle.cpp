@@ -34,7 +34,6 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   setParent( parent );
 
   setAttribute( Qt::WA_DeleteOnClose );
-  setMinimumSize( 500, 500 );
   setBackgroundRole( QPalette::Light );
 
   // Create a new scroll area inside the sub-window

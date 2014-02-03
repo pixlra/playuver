@@ -64,6 +64,9 @@ plaYUVerApp::plaYUVerApp()
 
   playingTimer = new QTimer( this );
 
+  setAcceptDrops( true );
+  mdiArea->setAcceptDrops( true );
+
   connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
 
 }
@@ -460,6 +463,48 @@ Void plaYUVerApp::createToolBars()
 Void plaYUVerApp::createStatusBar()
 {
   statusBar()->showMessage( tr( "Ready" ) );
+}
+
+/*
+ * Drag and drop functions
+ */
+void plaYUVerApp::dragEnterEvent( QDragEnterEvent *event )
+{
+  //setText(tr("<drop content>"));
+  setBackgroundRole( QPalette::Highlight );
+
+  event->acceptProposedAction();
+}
+
+void plaYUVerApp::dropEvent( QDropEvent *event )
+{
+
+  const QMimeData *mimeData = event->mimeData();
+
+  QList<QUrl> urlList = mimeData->urls();
+
+  if( urlList.size() == 1 )
+  {
+    QString fileName = urlList.at( 0 ).toLocalFile();
+
+    m_cLastOpenPath = QFileInfo( fileName ).path();
+
+    QMdiSubWindow *existing = findImageInterface( fileName );
+    if( !existing )
+    {
+      SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createImageInterface();
+      if( interfaceChild->loadFile( fileName ) )
+      {
+        addImageInterface( interfaceChild );
+        statusBar()->showMessage( tr( "File loaded" ), 2000 );
+        interfaceChild->show();
+      }
+      else
+      {
+        interfaceChild->close();
+      }
+    }
+  }
 }
 
 Void plaYUVerApp::readSettings()

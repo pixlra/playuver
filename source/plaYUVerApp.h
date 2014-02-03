@@ -74,6 +74,12 @@ private slots:
 
   void updateWindowMenu();
 
+  /*
+   * Drag and drop functions
+   */
+  void dragEnterEvent(QDragEnterEvent *event);
+  void dropEvent(QDropEvent *event);
+
   SubWindowHandle *createImageInterface();
   void addImageInterface( SubWindowHandle *child );
   void setActiveImageInterface( QWidget *window );

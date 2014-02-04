@@ -22,6 +22,7 @@
  */
 
 #include "ConfigureFormatDialog.h"
+#include "PlaYUVerFrame.h"
 #include "InputStream.h"
 
 namespace plaYUVer
@@ -168,7 +169,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   pixelFormatBox->setSizePolicy( sizePolicyPixelFormat );
   pixelFormatBox->setAcceptDrops( true );
   pixelFormatBox->clear();
-  pixelFormatBox->insertItems( 0, InputStream::supportedPixelFormatList() );
+  pixelFormatBox->insertItems( 0, PlaYUVerFrame::supportedPixelFormatList() );
   pixelFormatBox->setCurrentIndex( 0 );
 
   pixelFormatLayout->addWidget( pixelFormatLabel );

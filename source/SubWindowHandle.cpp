@@ -46,7 +46,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
 
-  m_cCurrFileName = QString( "" );
+  m_cWindowName = QString( " " );
   m_dScaleFactor = 1;
 
 }
@@ -93,8 +93,12 @@ bool SubWindowHandle::loadFile( const QString &fileName )
 
   normalSize();
 
+  m_cWindowName =  QString("ola");
+  m_cWindowName = m_currStream.getStreamInformationString();
+
   m_cCurrFileName = fileName;
-  setWindowTitle( userFriendlyCurrentFile() + "[*]" );
+
+  setWindowTitle( m_cWindowName );
 
   return true;
 }
@@ -240,12 +244,7 @@ Void SubWindowHandle::closeEvent( QCloseEvent *event )
 
 QString SubWindowHandle::userFriendlyCurrentFile()
 {
-  return strippedName( m_cCurrFileName );
-}
-
-QString SubWindowHandle::strippedName( const QString &fullFileName )
-{
-  return QFileInfo( fullFileName ).fileName();
+  return m_cWindowName;
 }
 
 }  // NAMESPACE

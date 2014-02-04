@@ -64,6 +64,8 @@ private:
 #endif
 
   QString m_cFilename;
+  QString m_cStreamInformationString;
+
   FILE* m_pFile; /**< The input file pointer >*/
   Int m_iFileFormat;
   Int m_iPixelFormat;
@@ -87,8 +89,6 @@ public:
   static QStringList supportedReadFormatsList();
   static QStringList supportedWriteFormatsList();
 
-  static QStringList supportedPixelFormatList();
-
   enum InputStreamFormats
   {
     INVALID = -1, YUVFormat = 0,  // Use color space.
@@ -97,6 +97,7 @@ public:
   Bool needFormatDialog( QString filename );
 
   Void init( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate );
+  Void close();
 
   Void readFrame();
 
@@ -114,6 +115,14 @@ public:
   Int getStatus()
   {
     return m_iStatus;
+  }
+  QString getFileName()
+  {
+    return m_cFilename;
+  }
+  QString getStreamInformationString()
+  {
+    return m_cStreamInformationString;
   }
   UInt getFrameNum()
   {

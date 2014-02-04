@@ -46,27 +46,25 @@ InputStream::InputStream()
   m_uiFrameRate = 25;
 
   m_iFileFormat = INVALID;
+
+  m_cFilename = QString( "" );
+  m_cStreamInformationString = QString( "" );
 }
 
 InputStream::~InputStream()
 {
-  if( m_pFile )
-    fclose( m_pFile );
-
-#ifdef USE_FFMPEG
-  m_cLibAvContext.closeAvFormat();
-#endif
-
-  m_iStatus = 0;
+  close();
 }
 
 QString InputStream::supportedReadFormats()
 {
   QString formats;
   formats = "*.yuv "   // Raw video
-          "*.avi "// Audio video interleaved
+#ifdef USE_FFMPEG
+          "*.avi "   // Audio video interleaved
           "*.wmv "// Windows media video
-  ;
+#endif
+      ;
   return formats;
 }
 
@@ -86,8 +84,10 @@ QStringList InputStream::supportedReadFormatsList()
 {
   QStringList formats;
   formats << "Raw video (*.yuv)"  // Raw video
+#ifdef USE_FFMPEG
       << "Audio video interleaved (*.avi)"  // Audio video interleaved
       << "Windows media video (*.wmv)"  // Windows media video
+#endif
       ;
 
   return formats;
@@ -101,13 +101,6 @@ QStringList InputStream::supportedWriteFormatsList()
       << "Portable Network Graphics (*.png)"  // Portable Network Graphics
       ;
 
-  return formats;
-}
-
-QStringList InputStream::supportedPixelFormatList()
-{
-  QStringList formats;
-  formats << "YUV420" << "YUV400";
   return formats;
 }
 
@@ -128,6 +121,12 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
 {
   Bool avStatus = false;
 
+  if( m_iStatus == 1 )
+  {
+    close();
+  }
+
+  m_cFilename = filename;
   m_uiWidth = width;
   m_uiHeight = height;
   m_uiFrameRate = frame_rate;
@@ -135,8 +134,11 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
   m_iFileFormat = YUVFormat;
   m_iPixelFormat = input_format;
 
+  m_cStreamInformationString = QString( "[" );
+
 #ifdef USE_FFMPEG
-  avStatus = m_cLibAvContext.initAvFormat( filename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate );
+  avStatus = m_cLibAvContext.initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate );
+  m_cStreamInformationString.append( QString::fromUtf8( m_cLibAvContext.getStreamInformation() ) );
   m_uiTotalFrameNum = 100;
 #endif
 
@@ -152,7 +154,6 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
 
   if( !avStatus )
   {
-    m_cFilename = filename;
     m_pFile = fopen( m_cFilename.toLocal8Bit().data(), "rb" );
     if( m_pFile == NULL )
     {
@@ -162,6 +163,8 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
     fseek( m_pFile, 0, SEEK_END );
     m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
     fseek( m_pFile, 0, SEEK_SET );
+
+    m_cStreamInformationString.append( QString::fromUtf8("rawvideo ") );
   }
 
   if( !get_mem1Dpel( &m_pInputBuffer, m_cCurrFrame->getBytesPerFrame() ) )
@@ -170,11 +173,30 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
     return;
   }
 
-  m_uiCurrFrameNum = 0;
+  m_cStreamInformationString.append( QString("/ "));
 
+  m_cStreamInformationString.append( PlaYUVerFrame::supportedPixelFormatList().at( m_iPixelFormat ) );
+
+  m_cStreamInformationString.append( "] " );
+
+  m_cStreamInformationString.append( QFileInfo( m_cFilename ).fileName() );
+
+  m_uiCurrFrameNum = 0;
   m_iStatus = 1;
 
   return;
+}
+
+Void InputStream::close()
+{
+  if( m_pFile )
+    fclose( m_pFile );
+
+#ifdef USE_FFMPEG
+  m_cLibAvContext.closeAvFormat();
+#endif
+
+  m_iStatus = 0;
 }
 
 Void InputStream::readFrame()

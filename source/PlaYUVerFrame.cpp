@@ -28,6 +28,13 @@
 namespace plaYUVer
 {
 
+QStringList PlaYUVerFrame::supportedPixelFormatList()
+{
+  QStringList formats;
+  formats << "yuv420" << "yuv400";
+  return formats;
+}
+
 PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
 {
   m_pppcInputPel[0] = NULL;

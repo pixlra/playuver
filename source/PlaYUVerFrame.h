@@ -29,6 +29,8 @@
 #include <iostream>
 #include <cstdio>
 
+#include <QtCore>
+
 #include "TypeDef.h"
 
 namespace plaYUVer
@@ -39,6 +41,8 @@ class PlaYUVerFrame
 public:
   PlaYUVerFrame( UInt width, UInt height, Int pel_format );
   ~PlaYUVerFrame();
+
+  static QStringList supportedPixelFormatList();
 
   Void FrameFromBuffer( Pel *input_buffer, Int pel_format );
 

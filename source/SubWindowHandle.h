@@ -52,7 +52,9 @@ private:
 
   InputStream m_currStream;
 
+  QString m_cWindowName;
   QString m_cCurrFileName;
+
   Double m_dScaleFactor;
 
 public:
@@ -114,7 +116,6 @@ public:
    */
   //static void cascader( QList<QWidget *> &widgets, const QRect &domain );
   QString userFriendlyCurrentFile();
-  QString strippedName( const QString &fullFileName );
   QString currentFile()
   {
     return m_cCurrFileName;

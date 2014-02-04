@@ -63,6 +63,10 @@ public:
   {
     return m_bHasStream;
   }
+  Char* getStreamInformation()
+  {
+    return m_acStreamInformationString;
+  }
 
   uint8_t *video_dst_data[4];
   int video_dst_linesize[4];
@@ -77,6 +81,8 @@ private:
   AVPacket pkt;
 
   Bool m_bHasStream;
+
+  Char m_acStreamInformationString[20];
 };
 
 }  // NAMESPACE

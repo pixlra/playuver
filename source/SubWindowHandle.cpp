@@ -48,11 +48,13 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   // Create Layout for the playing config
   QHBoxLayout *pcHeadLayout = new QHBoxLayout;
   pcHeadLayout->setObjectName( QStringLiteral( "HeadLayout" ) );
-  m_pcFrameSlider = new QSlider(this);
   QSpacerItem * headerSpacer0 = new QSpacerItem( 30, 2, QSizePolicy::Fixed, QSizePolicy::Minimum );
+  m_pcFrameSlider = new QSlider( this );
   m_pcFrameSlider->setObjectName( QStringLiteral( "FrameSlider" ) );
   m_pcFrameSlider->setOrientation( Qt::Horizontal );
   m_pcFrameSlider->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
+  m_pcFrameSlider->setEnabled( true );
+  m_pcFrameSlider->setTracking( true );
   QSpacerItem * headerSpacer1 = new QSpacerItem( 30, 2, QSizePolicy::Fixed, QSizePolicy::Minimum );
   pcHeadLayout->addSpacerItem( headerSpacer0 );
   pcHeadLayout->addWidget( m_pcFrameSlider, 5 );
@@ -62,6 +64,8 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   QLayout *pcMainLayout = layout();
   pcMainLayout->addWidget( m_cScrollArea );
   pcMainLayout->addItem( pcHeadLayout );
+
+  connect( m_pcFrameSlider, SIGNAL( valueChanged(int) ), this, SLOT( seekSliderEvent() ) );
 
   m_cWindowName = QString( " " );
   m_dScaleFactor = 1;
@@ -110,9 +114,8 @@ bool SubWindowHandle::loadFile( const QString &fileName )
 
   normalSize();
 
-  m_cWindowName = QString( "ola" );
+  m_pcFrameSlider->setRange( 0, m_currStream.getFrameNum() );
   m_cWindowName = m_currStream.getStreamInformationString();
-
   m_cCurrFileName = fileName;
 
   setWindowTitle( m_cWindowName );
@@ -150,6 +153,13 @@ bool SubWindowHandle::save()
   return true;
 }
 
+void SubWindowHandle::seekSliderEvent()
+{
+  m_currStream.seekInput( m_pcFrameSlider->sliderPosition() );
+  m_currStream.readFrame();
+  m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
+}
+
 bool SubWindowHandle::playEvent()
 {
   m_currStream.readFrame();
@@ -164,6 +174,7 @@ bool SubWindowHandle::playEvent()
     return false;
   }
   m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
+ m_pcFrameSlider->setSliderPosition( m_currStream.getCurrFrameNum() );
   return true;
 }
 

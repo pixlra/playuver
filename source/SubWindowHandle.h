@@ -127,7 +127,7 @@ protected:
   Void closeEvent( QCloseEvent *event );
 
 private slots:
-
+  void seekSliderEvent();
 };
 
 }  // NAMESPACE

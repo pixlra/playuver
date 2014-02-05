@@ -31,20 +31,37 @@ namespace plaYUVer
 SubWindowHandle::SubWindowHandle( QWidget * parent ) :
     QMdiSubWindow( parent )
 {
-  setParent( parent );
 
+  setParent( parent );
   setAttribute( Qt::WA_DeleteOnClose );
   setBackgroundRole( QPalette::Light );
 
   // Create a new scroll area inside the sub-window
-  m_cScrollArea = new QScrollArea( this );
-  setWidget( m_cScrollArea );
+  m_cScrollArea = new QScrollArea;
 
   // Create a new interface to show images
-  m_cViewArea = new ViewArea( m_cScrollArea );
+  m_cViewArea = new ViewArea;
 
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
+
+  // Create Layout for the playing config
+  QHBoxLayout *pcHeadLayout = new QHBoxLayout;
+  pcHeadLayout->setObjectName( QStringLiteral( "HeadLayout" ) );
+  m_pcFrameSlider = new QSlider(this);
+  QSpacerItem * headerSpacer0 = new QSpacerItem( 30, 2, QSizePolicy::Fixed, QSizePolicy::Minimum );
+  m_pcFrameSlider->setObjectName( QStringLiteral( "FrameSlider" ) );
+  m_pcFrameSlider->setOrientation( Qt::Horizontal );
+  m_pcFrameSlider->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
+  QSpacerItem * headerSpacer1 = new QSpacerItem( 30, 2, QSizePolicy::Fixed, QSizePolicy::Minimum );
+  pcHeadLayout->addSpacerItem( headerSpacer0 );
+  pcHeadLayout->addWidget( m_pcFrameSlider, 5 );
+  pcHeadLayout->addSpacerItem( headerSpacer1 );
+
+  //setWidget( m_cScrollArea );
+  QLayout *pcMainLayout = layout();
+  pcMainLayout->addWidget( m_cScrollArea );
+  pcMainLayout->addItem( pcHeadLayout );
 
   m_cWindowName = QString( " " );
   m_dScaleFactor = 1;
@@ -93,7 +110,7 @@ bool SubWindowHandle::loadFile( const QString &fileName )
 
   normalSize();
 
-  m_cWindowName =  QString("ola");
+  m_cWindowName = QString( "ola" );
   m_cWindowName = m_currStream.getStreamInformationString();
 
   m_cCurrFileName = fileName;

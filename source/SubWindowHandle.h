@@ -50,6 +50,8 @@ private:
   QScrollArea* m_cScrollArea;
   ViewArea* m_cViewArea;
 
+  QSlider* m_pcFrameSlider;
+
   InputStream m_currStream;
 
   QString m_cWindowName;

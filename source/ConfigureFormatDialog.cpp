@@ -47,7 +47,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   // headLayout
 
-  headLayout = new QHBoxLayout( this );
+  headLayout = new QHBoxLayout();
   headLayout->setObjectName( QStringLiteral( "headLayout" ) );
 
   dialogTitleLabel = new QLabel();

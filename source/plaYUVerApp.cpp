@@ -46,7 +46,7 @@ plaYUVerApp::plaYUVerApp()
   //mdiArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
   //mdiArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 
-  connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( updateMenus() ) );
+  connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( chageSubWindowSelection() ) );
 
   mapperWindow = new QSignalMapper( this );
   connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
@@ -187,7 +187,7 @@ void plaYUVerApp::scaleFrame( int ratio )
 {
   if( activeSubWindow() )
   {
-    activeSubWindow()->scaleView( (Double)(ratio)/100.0 );
+    activeSubWindow()->scaleView( ( Double )( ratio ) / 100.0 );
 
     actionZoomIn->setEnabled( activeSubWindow()->getScaleFactor() < 3.0 );
     actionZoomOut->setEnabled( activeSubWindow()->getScaleFactor() > 0.333 );
@@ -201,7 +201,13 @@ void plaYUVerApp::about()
   QMessageBox::about( this, tr( "About plaYUVerApp" ), tr( "The <b>plaYUVerApp</b> is an open-source raw video player " ) );
 }
 
-void plaYUVerApp::updateMenus()
+void plaYUVerApp::chageSubWindowSelection()
+{
+  updateMenus();
+  //updateWindowMenu();
+}
+
+Void plaYUVerApp::updateMenus()
 {
   Bool hasSubWindow = ( activeSubWindow() != 0 );
   actionSave->setEnabled( hasSubWindow );
@@ -209,8 +215,6 @@ void plaYUVerApp::updateMenus()
   actionCloseAll->setEnabled( hasSubWindow );
   actionTile->setEnabled( hasSubWindow );
   actionCascade->setEnabled( hasSubWindow );
-  actionNext->setEnabled( hasSubWindow );
-  actionPrevious->setEnabled( hasSubWindow );
   actionSeparator->setVisible( hasSubWindow );
 
   actionZoomIn->setEnabled( hasSubWindow );
@@ -227,13 +231,35 @@ void plaYUVerApp::updateMenus()
 
 void plaYUVerApp::updateWindowMenu()
 {
+  menuWindow->clear();
+  menuWindow->addAction( actionClose );
+  menuWindow->addAction( actionCloseAll );
+  menuWindow->addSeparator();
+  menuWindow->addAction( actionTile );
+  menuWindow->addAction( actionCascade );
+  menuWindow->addSeparator();
+  menuWindow->addAction( actionNext );
+  menuWindow->addAction( actionPrevious );
+  menuWindow->addAction( actionSeparator );
 
-  updateMenus();
+  //updateMenus();
 
   QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
   actionSeparator->setVisible( !windows.isEmpty() );
+  Int number_windows = windows.size();
 
-  for( Int i = 0; i < windows.size(); ++i )
+  if( number_windows > 1 )
+  {
+    actionNext->setEnabled( true );
+      actionPrevious->setEnabled( true );
+  }
+  else
+  {
+    actionNext->setEnabled( false );
+    actionPrevious->setEnabled( false );
+  }
+
+  for( Int i = 0; i < number_windows; ++i )
   {
     SubWindowHandle *child = qobject_cast<SubWindowHandle *>( windows.at( i ) );
 
@@ -308,15 +334,15 @@ Void plaYUVerApp::createActions()
   actionZoomIn->setIcon( QIcon( ":/images/zoomin.png" ) );
   actionZoomIn->setShortcut( tr( "Ctrl++" ) );
   actionZoomIn->setStatusTip( tr( "Scale the image up by 25%" ) );
-  connect (actionZoomIn, SIGNAL(triggered()), mapperZoom, SLOT(map())) ;
-  mapperZoom->setMapping(actionZoomIn, 125 );
+  connect( actionZoomIn, SIGNAL( triggered() ), mapperZoom, SLOT( map() ) );
+  mapperZoom->setMapping( actionZoomIn, 125 );
 
   actionZoomOut = new QAction( tr( "Zoom &Out (25%)" ), this );
   actionZoomOut->setIcon( QIcon( ":/images/zoomout.png" ) );
   actionZoomOut->setShortcut( tr( "Ctrl+-" ) );
   actionZoomOut->setStatusTip( tr( "Scale the image down by 25%" ) );
-  connect (actionZoomOut, SIGNAL(triggered()), mapperZoom, SLOT(map())) ;
-  mapperZoom->setMapping(actionZoomOut, 80 );
+  connect( actionZoomOut, SIGNAL( triggered() ), mapperZoom, SLOT( map() ) );
+  mapperZoom->setMapping( actionZoomOut, 80 );
 
   actionNormalSize = new QAction( tr( "&Normal Size" ), this );
   actionNormalSize->setIcon( QIcon( ":/images/zoomtonormal.png" ) );
@@ -410,16 +436,6 @@ Void plaYUVerApp::createMenus()
   menuView->addAction( actionZoomToFit );
 
   menuWindow = menuBar()->addMenu( tr( "&Window" ) );
-  menuWindow->clear();
-  menuWindow->addAction( actionClose );
-  menuWindow->addAction( actionCloseAll );
-  menuWindow->addSeparator();
-  menuWindow->addAction( actionTile );
-  menuWindow->addAction( actionCascade );
-  menuWindow->addSeparator();
-  menuWindow->addAction( actionNext );
-  menuWindow->addAction( actionPrevious );
-  menuWindow->addAction( actionSeparator );
   updateWindowMenu();
   connect( menuWindow, SIGNAL( aboutToShow() ), this, SLOT( updateWindowMenu() ) );
 

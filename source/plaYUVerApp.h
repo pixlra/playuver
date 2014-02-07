@@ -64,8 +64,8 @@ private slots:
 
   /**
    * Scale the image by a given factor
-   * @param factor factor of scale. Ex: 1.2 scale the image up by 20% and
-   *        0.8 scale the image down by 25%
+   * @param factor factor of scale. Ex: 120 scale the image up by 20% and
+   *        80 scale the image down by 25%
    */
   void scaleFrame( int ratio = 100 );
 
@@ -74,7 +74,9 @@ private slots:
 
   //!  Show a message box with some information about the plaYUVerApp App
   void about();
-  void updateMenus();
+
+
+  void chageSubWindowSelection();
 
   void updateWindowMenu();
 
@@ -84,8 +86,6 @@ private slots:
   void dragEnterEvent(QDragEnterEvent *event);
   void dropEvent(QDropEvent *event);
 
-  SubWindowHandle *createSubWindow();
-  void addSubWindow( SubWindowHandle *child );
   void setActiveSubWindow( QWidget *window );
 
 private:
@@ -94,12 +94,18 @@ private:
   QString m_cLastOpenPath;
   QTimer *playingTimer;
 
+  Void updateMenus();
+
   Void createActions();
   Void createMenus();
   Void createToolBars();
   Void createStatusBar();
+
   Void readSettings();
   Void writeSettings();
+
+  Void addSubWindow( SubWindowHandle *child );
+  SubWindowHandle *createSubWindow();
   SubWindowHandle *activeSubWindow();
   QMdiSubWindow *findSubWindow( const QString &fileName );
 

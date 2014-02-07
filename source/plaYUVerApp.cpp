@@ -48,7 +48,7 @@ plaYUVerApp::plaYUVerApp()
 
   connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( updateMenus() ) );
   windowMapper = new QSignalMapper( this );
-  connect( windowMapper, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveImageInterface(QWidget*) ) );
+  connect( windowMapper, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
 
   createActions();
   createMenus();
@@ -104,17 +104,17 @@ void plaYUVerApp::open()
   {
     m_cLastOpenPath = QFileInfo( fileName ).path();
 
-    QMdiSubWindow *existing = findImageInterface( fileName );
+    QMdiSubWindow *existing = findSubWindow( fileName );
     if( existing )
     {
       mdiArea->setActiveSubWindow( existing );
       return;
     }
 
-    SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createImageInterface();
+    SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
     if( interfaceChild->loadFile( fileName ) )
     {
-      addImageInterface( interfaceChild );
+      addSubWindow( interfaceChild );
       statusBar()->showMessage( tr( "File loaded" ), 2000 );
       interfaceChild->show();
     }
@@ -127,8 +127,8 @@ void plaYUVerApp::open()
 
 void plaYUVerApp::save()
 {
-  if( activeImageInterface() )
-    activeImageInterface()->save();
+  if( activeSubWindow() )
+    activeSubWindow()->save();
 }
 
 // -----------------------  Playing Functions  --------------------
@@ -138,7 +138,7 @@ void plaYUVerApp::play()
   UInt frameRate;
   UInt timeInterval;
 
-  frameRate = activeImageInterface()->getInputStream()->getFrameRate();
+  frameRate = activeSubWindow()->getInputStream()->getFrameRate();
   timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
 
   playingTimer->start( timeInterval );
@@ -158,9 +158,9 @@ void plaYUVerApp::stop()
 
 void plaYUVerApp::playEvent()
 {
-  if( activeImageInterface() )
+  if( activeSubWindow() )
   {
-    if( !activeImageInterface()->playEvent() )
+    if( !activeSubWindow()->playEvent() )
     {
       playingTimer->stop();
     }
@@ -182,25 +182,25 @@ void plaYUVerApp::zoomOut()
 
 void plaYUVerApp::normalSize()
 {
-  if( activeImageInterface() )
-    activeImageInterface()->normalSize();
+  if( activeSubWindow() )
+    activeSubWindow()->normalSize();
 }
 
 void plaYUVerApp::zoomToFit()
 {
-  if( activeImageInterface() )
-    activeImageInterface()->zoomToFit();
+  if( activeSubWindow() )
+    activeSubWindow()->zoomToFit();
 }
 
-Void plaYUVerApp::scaleImage( Double factor )
+void plaYUVerApp::scaleImage( double factor )
 {
 
-  if( activeImageInterface() )
+  if( activeSubWindow() )
   {
-    activeImageInterface()->scaleView( factor );
+    activeSubWindow()->scaleView( factor );
 
-    zoomInAct->setEnabled( activeImageInterface()->getScaleFactor() < 3.0 );
-    zoomOutAct->setEnabled( activeImageInterface()->getScaleFactor() > 0.333 );
+    zoomInAct->setEnabled( activeSubWindow()->getScaleFactor() < 3.0 );
+    zoomOutAct->setEnabled( activeSubWindow()->getScaleFactor() > 0.333 );
   }
 }
 
@@ -213,26 +213,26 @@ void plaYUVerApp::about()
 
 void plaYUVerApp::updateMenus()
 {
-  Bool hasImageInterface = ( activeImageInterface() != 0 );
-  saveAct->setEnabled( hasImageInterface );
-  closeAct->setEnabled( hasImageInterface );
-  closeAllAct->setEnabled( hasImageInterface );
-  tileAct->setEnabled( hasImageInterface );
-  cascadeAct->setEnabled( hasImageInterface );
-  nextAct->setEnabled( hasImageInterface );
-  previousAct->setEnabled( hasImageInterface );
-  separatorAct->setVisible( hasImageInterface );
+  Bool hasSubWindow = ( activeSubWindow() != 0 );
+  saveAct->setEnabled( hasSubWindow );
+  closeAct->setEnabled( hasSubWindow );
+  closeAllAct->setEnabled( hasSubWindow );
+  tileAct->setEnabled( hasSubWindow );
+  cascadeAct->setEnabled( hasSubWindow );
+  nextAct->setEnabled( hasSubWindow );
+  previousAct->setEnabled( hasSubWindow );
+  separatorAct->setVisible( hasSubWindow );
 
-  zoomInAct->setEnabled( hasImageInterface );
-  zoomOutAct->setEnabled( hasImageInterface );
-  normalSizeAct->setEnabled( hasImageInterface );
-  zoomToFitAct->setEnabled( hasImageInterface );
+  zoomInAct->setEnabled( hasSubWindow );
+  zoomOutAct->setEnabled( hasSubWindow );
+  normalSizeAct->setEnabled( hasSubWindow );
+  zoomToFitAct->setEnabled( hasSubWindow );
 
-  actionVideoPlay->setEnabled( hasImageInterface );
-  actionVideoPause->setEnabled( hasImageInterface );
-  actionVideoStop->setEnabled( hasImageInterface );
-  actionVideoBackward->setEnabled( hasImageInterface );
-  actionVideoForward->setEnabled( hasImageInterface );
+  actionVideoPlay->setEnabled( hasSubWindow );
+  actionVideoPause->setEnabled( hasSubWindow );
+  actionVideoStop->setEnabled( hasSubWindow );
+  actionVideoBackward->setEnabled( hasSubWindow );
+  actionVideoForward->setEnabled( hasSubWindow );
 }
 
 void plaYUVerApp::updateWindowMenu()
@@ -268,13 +268,13 @@ void plaYUVerApp::updateWindowMenu()
     }
     QAction *action = windowMenu->addAction( text );
     action->setCheckable( true );
-    action->setChecked( child == activeImageInterface() );
+    action->setChecked( child == activeSubWindow() );
     connect( action, SIGNAL( triggered() ), windowMapper, SLOT( map() ) );
     windowMapper->setMapping( action, windows.at( i ) );
   }
 }
 
-SubWindowHandle *plaYUVerApp::createImageInterface()
+SubWindowHandle *plaYUVerApp::createSubWindow()
 {
   SubWindowHandle *child = new SubWindowHandle;
   mdiArea->addSubWindow( child );
@@ -282,7 +282,7 @@ SubWindowHandle *plaYUVerApp::createImageInterface()
   return child;
 }
 
-void plaYUVerApp::addImageInterface( SubWindowHandle *child )
+void plaYUVerApp::addSubWindow( SubWindowHandle *child )
 {
   //connect( child, SIGNAL( areaSelected( QRect ) ), this, SLOT( setSelection( QRect ) ) );
 
@@ -489,13 +489,13 @@ void plaYUVerApp::dropEvent( QDropEvent *event )
 
     m_cLastOpenPath = QFileInfo( fileName ).path();
 
-    QMdiSubWindow *existing = findImageInterface( fileName );
+    QMdiSubWindow *existing = findSubWindow( fileName );
     if( !existing )
     {
-      SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createImageInterface();
+      SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
       if( interfaceChild->loadFile( fileName ) )
       {
-        addImageInterface( interfaceChild );
+        addSubWindow( interfaceChild );
         statusBar()->showMessage( tr( "File loaded" ), 2000 );
         interfaceChild->show();
       }
@@ -523,14 +523,14 @@ Void plaYUVerApp::writeSettings()
   settings.setValue( "size", size() );
 }
 
-SubWindowHandle *plaYUVerApp::activeImageInterface()
+SubWindowHandle *plaYUVerApp::activeSubWindow()
 {
-  if( QMdiSubWindow *activeImageInterface = mdiArea->activeSubWindow() )
-    return qobject_cast<SubWindowHandle *>( activeImageInterface );
+  if( QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow() )
+    return qobject_cast<SubWindowHandle *>( activeSubWindow );
   return 0;
 }
 
-QMdiSubWindow *plaYUVerApp::findImageInterface( const QString &fileName )
+QMdiSubWindow *plaYUVerApp::findSubWindow( const QString &fileName )
 {
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
 
@@ -542,7 +542,7 @@ QMdiSubWindow *plaYUVerApp::findImageInterface( const QString &fileName )
   return 0;
 }
 
-void plaYUVerApp::setActiveImageInterface( QWidget *window )
+void plaYUVerApp::setActiveSubWindow( QWidget *window )
 {
   if( !window )
     return;

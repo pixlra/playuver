@@ -65,6 +65,13 @@ private slots:
   //! View functions
   void zoomIn();
   void zoomOut();
+  /**
+   * Scale the image by a given factor
+   * @param factor factor of scale. Ex: 1.2 scale the image up by 20% and
+   *        0.8 scale the image down by 25%
+   */
+  void scaleImage( double factor = 1 );
+
   void normalSize();
   void zoomToFit();
 
@@ -80,9 +87,9 @@ private slots:
   void dragEnterEvent(QDragEnterEvent *event);
   void dropEvent(QDropEvent *event);
 
-  SubWindowHandle *createImageInterface();
-  void addImageInterface( SubWindowHandle *child );
-  void setActiveImageInterface( QWidget *window );
+  SubWindowHandle *createSubWindow();
+  void addSubWindow( SubWindowHandle *child );
+  void setActiveSubWindow( QWidget *window );
 
 private:
   Void createActions();
@@ -91,15 +98,8 @@ private:
   Void createStatusBar();
   Void readSettings();
   Void writeSettings();
-  SubWindowHandle *activeImageInterface();
-  QMdiSubWindow *findImageInterface( const QString &fileName );
-
-  /**
-   * Scale the image by a given factor
-   * @param factor factor of scale. Ex: 1.2 scale the image up by 20% and
-   *        0.8 scale the image down by 25%
-   */
-  Void scaleImage( Double factor );
+  SubWindowHandle *activeSubWindow();
+  QMdiSubWindow *findSubWindow( const QString &fileName );
 
   QString m_cLastOpenPath;
 

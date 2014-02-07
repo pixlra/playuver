@@ -201,7 +201,10 @@ UInt64 PlaYUVerFrame::getBytesPerFrame()
   case RGB:
     return m_uiWidth * m_uiHeight * 3;
     break;
+  default:
+    return 0;
   }
+  return 0;
 }
 
 }  // NAMESPACE

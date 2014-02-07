@@ -62,9 +62,6 @@ private slots:
   void stop();
   void playEvent();
 
-  //! Zoom functions
-  void zoomIn();
-  void zoomOut();
   /**
    * Scale the image by a given factor
    * @param factor factor of scale. Ex: 1.2 scale the image up by 20% and

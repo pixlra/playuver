@@ -124,7 +124,7 @@ public:
 protected:
   Void closeEvent( QCloseEvent *event );
 
-private slots:
+private Q_SLOTS:
 
 };
 

@@ -50,7 +50,7 @@ public:
 protected:
   Void closeEvent( QCloseEvent *event );
 
-private slots:
+private Q_SLOTS:
 
   //! File functions
   void open();
@@ -74,7 +74,6 @@ private slots:
 
   //!  Show a message box with some information about the plaYUVerApp App
   void about();
-
 
   void chageSubWindowSelection();
 

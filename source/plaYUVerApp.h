@@ -62,7 +62,7 @@ private slots:
   void stop();
   void playEvent();
 
-  //! View functions
+  //! Zoom functions
   void zoomIn();
   void zoomOut();
   /**
@@ -70,7 +70,7 @@ private slots:
    * @param factor factor of scale. Ex: 1.2 scale the image up by 20% and
    *        0.8 scale the image down by 25%
    */
-  void scaleImage( double factor = 1 );
+  void scaleFrame( int ratio = 100 );
 
   void normalSize();
   void zoomToFit();
@@ -92,6 +92,11 @@ private slots:
   void setActiveSubWindow( QWidget *window );
 
 private:
+  QMdiArea *mdiArea;
+
+  QString m_cLastOpenPath;
+  QTimer *playingTimer;
+
   Void createActions();
   Void createMenus();
   Void createToolBars();
@@ -101,36 +106,34 @@ private:
   SubWindowHandle *activeSubWindow();
   QMdiSubWindow *findSubWindow( const QString &fileName );
 
-  QString m_cLastOpenPath;
+  QSignalMapper *mapperZoom;
+  QSignalMapper *mapperWindow;
 
-  QTimer *playingTimer;
-  QMdiArea *mdiArea;
-  QSignalMapper *windowMapper;
+  QMenu *menuFile;
+  QMenu *menuView;
+  QMenu *menuWindow;
+  QMenu *menuHelp;
 
-  QMenu *fileMenu;
-  QMenu *viewMenu;
-  QMenu *windowMenu;
-  QMenu *helpMenu;
-  QToolBar *fileToolBar;
-  QToolBar *viewToolBar;
-  QToolBar *videoToolBar;
+  QToolBar *toolbarFile;
+  QToolBar *toolbarView;
+  QToolBar *toolbarVideo;
 
-  QAction *openAct;
-  QAction *saveAct;
-  QAction *exitAct;
-  QAction *closeAct;
-  QAction *closeAllAct;
+  QAction *actionOpen;
+  QAction *actionSave;
+  QAction *actionExit;
+  QAction *actionClose;
+  QAction *actionCloseAll;
 
-  QAction *zoomInAct;
-  QAction *zoomOutAct;
-  QAction *normalSizeAct;
-  QAction *zoomToFitAct;
+  QAction *actionZoomIn;
+  QAction *actionZoomOut;
+  QAction *actionNormalSize;
+  QAction *actionZoomToFit;
 
-  QAction *tileAct;
-  QAction *cascadeAct;
-  QAction *nextAct;
-  QAction *previousAct;
-  QAction *separatorAct;
+  QAction *actionTile;
+  QAction *actionCascade;
+  QAction *actionNext;
+  QAction *actionPrevious;
+  QAction *actionSeparator;
 
   // Video actions.
   QAction *actionVideoPlay;
@@ -143,8 +146,8 @@ private:
   QAction *actionVideoInterlace;
   QAction *actionVideoCenter;
 
-  QAction *aboutAct;
-  QAction *aboutQtAct;
+  QAction *actionAbout;
+  QAction *actionAboutQt;
 
 };
 

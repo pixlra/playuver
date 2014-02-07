@@ -47,6 +47,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   m_cScrollArea->setWidget( m_cViewArea );
 
   m_cWindowName = QString( " " );
+  m_bIsPlaying = true;
   m_dScaleFactor = 1;
 
 }
@@ -93,7 +94,7 @@ bool SubWindowHandle::loadFile( const QString &fileName )
 
   normalSize();
 
-  m_cWindowName =  QString("ola");
+  m_cWindowName = QString( "ola" );
   m_cWindowName = m_currStream.getStreamInformationString();
 
   m_cCurrFileName = fileName;
@@ -133,22 +134,34 @@ bool SubWindowHandle::save()
   return true;
 }
 
-bool SubWindowHandle::playEvent()
+int SubWindowHandle::playEvent()
 {
-  m_currStream.readFrame();
-  if( m_currStream.checkErrors( READING ) )
+  if( m_bIsPlaying )
   {
-    QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( m_cCurrFileName ) );
-    return false;
-  }
-  else if( m_currStream.checkErrors( END_OF_SEQ ) )
-  {
+    m_currStream.readFrame();
+    if( m_currStream.checkErrors( READING ) )
+    {
+      QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( m_cCurrFileName ) );
+      return false;
+    }
+    else if( m_currStream.checkErrors( END_OF_SEQ ) )
+    {
+      m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
+      return false;
+    }
     m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
-    return false;
   }
-  m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
   return true;
 }
+
+Void SubWindowHandle::stopEvent()
+{
+  m_currStream.seekInput( 0 );
+  m_currStream.readFrame();
+  m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
+  return;
+}
+
 
 Void SubWindowHandle::normalSize()
 {

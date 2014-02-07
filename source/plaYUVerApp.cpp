@@ -68,8 +68,6 @@ plaYUVerApp::plaYUVerApp()
   setAcceptDrops( true );
   mdiArea->setAcceptDrops( true );
 
-  connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
-
 }
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
@@ -136,14 +134,14 @@ void plaYUVerApp::save()
 
 void plaYUVerApp::play()
 {
-  UInt frameRate;
-  UInt timeInterval;
-
-  frameRate = activeSubWindow()->getInputStream()->getFrameRate();
-  timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
-
-  playingTimer->start( timeInterval );
-
+  if( activeSubWindow() )
+  {
+    UInt frameRate = activeSubWindow()->getInputStream()->getFrameRate();
+    UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
+    playingTimer->start( timeInterval );
+    //connect( playingTimer, SIGNAL( timeout() ), activeSubWindow(), SLOT( playEvent() ) );
+    connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
+  }
 }
 
 void plaYUVerApp::pause()
@@ -153,6 +151,10 @@ void plaYUVerApp::pause()
 
 void plaYUVerApp::stop()
 {
+  if( activeSubWindow() )
+  {
+    activeSubWindow()->stopEvent();
+  }
   playingTimer->stop();
   //disconnect( playingTimer, SIGNAL( timeout() ), 0, 0 );
 }
@@ -251,7 +253,7 @@ void plaYUVerApp::updateWindowMenu()
   if( number_windows > 1 )
   {
     actionNext->setEnabled( true );
-      actionPrevious->setEnabled( true );
+    actionPrevious->setEnabled( true );
   }
   else
   {

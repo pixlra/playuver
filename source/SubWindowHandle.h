@@ -57,6 +57,8 @@ private:
 
   Double m_dScaleFactor;
 
+  Bool m_bIsPlaying;
+
 public:
   SubWindowHandle( QWidget * parent = 0 );
   ~SubWindowHandle();
@@ -64,7 +66,7 @@ public:
   bool loadFile( const QString &fileName );
   bool save();
 
-  bool playEvent();
+  Void stopEvent();
 
   InputStream* getInputStream()
   {
@@ -124,8 +126,8 @@ public:
 protected:
   Void closeEvent( QCloseEvent *event );
 
-private Q_SLOTS:
-
+public Q_SLOTS:
+  int playEvent();
 };
 
 }  // NAMESPACE

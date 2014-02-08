@@ -21,17 +21,16 @@
  * \brief    Main definition of the plaYUVerApp app
  */
 
+#include "plaYUVerApp.h"
+#include "SubWindowHandle.h"
+#include "InputStream.h"
+
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
 #include <QtDebug>
-
-#include "TypeDef.h"
-#include "plaYUVerApp.h"
-#include "SubWindowHandle.h"
-#include "InputStream.h"
 
 namespace plaYUVer
 {
@@ -47,7 +46,7 @@ plaYUVerApp::plaYUVerApp()
   //mdiArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 
   connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( chageSubWindowSelection() ) );
-  connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( updateMenus() ) );
+  //connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( updateMenus() ) );
 
   mapperWindow = new QSignalMapper( this );
   connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
@@ -463,12 +462,20 @@ Void plaYUVerApp::createToolBars()
   toolbarVideo->addAction( actionVideoPlay );
   toolbarVideo->addAction( actionVideoPause );
   toolbarVideo->addAction( actionVideoStop );
+  /*
   toolbarVideo->addAction( actionVideoBackward );
   toolbarVideo->addAction( actionVideoForward );
   toolbarVideo->addAction( actionVideoLoop );
   toolbarVideo->addAction( actionVideoLock );
   toolbarVideo->addAction( actionVideoInterlace );
   toolbarVideo->addAction( actionVideoCenter );
+  */
+  m_pcFrameSlider = new QSlider;
+  m_pcFrameSlider->setOrientation( Qt::Horizontal );
+  m_pcFrameSlider->setMaximumWidth( 100 );
+  m_pcFrameSlider->setMaximumWidth( 100 );
+  m_pcFrameSlider->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
+  toolbarVideo->addWidget( m_pcFrameSlider );
 }
 
 Void plaYUVerApp::createStatusBar()

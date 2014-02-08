@@ -26,14 +26,13 @@
 
 #include "config.h"
 
+#if( QT_VERSION_PLAYUVER == 5 )
+#include <QtWidgets>
+#elif( QT_VERSION_PLAYUVER == 4 )
+#include <QtGui>
+#endif
 #include <QMainWindow>
 #include "TypeDef.h"
-
-class QAction;
-class QMenu;
-class QMdiArea;
-class QMdiSubWindow;
-class QSignalMapper;
 
 namespace plaYUVer
 {
@@ -106,6 +105,8 @@ private:
   SubWindowHandle *createSubWindow();
   SubWindowHandle *activeSubWindow();
   QMdiSubWindow *findSubWindow( const QString &fileName );
+
+  QSlider *m_pcFrameSlider;
 
   QSignalMapper *mapperZoom;
   QSignalMapper *mapperWindow;

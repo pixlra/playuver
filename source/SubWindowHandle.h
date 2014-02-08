@@ -70,6 +70,8 @@ public:
   Void stopEvent();
   Void seekEvent( UInt new_frame_num );
 
+  Void refreshFrame();
+
   InputStream* getInputStream()
   {
     return m_pCurrStream;

@@ -57,6 +57,14 @@ public:
   {
     return m_pppcRGBPel;
   }
+  UInt getWidth()
+  {
+    return m_uiWidth;
+  }
+  UInt getHeight()
+  {
+    return m_uiHeight;
+  }
   Int getPelFormat()
   {
     return m_iPixelFormat;

@@ -94,9 +94,7 @@ bool SubWindowHandle::loadFile( const QString &fileName )
 
   QApplication::restoreOverrideCursor();
 
-  m_pCurrStream->getFrame( m_pCurrFrameQImage );
-  m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
-
+  refreshFrame();
   normalSize();
 
   m_cWindowName = QString( " " );
@@ -107,6 +105,12 @@ bool SubWindowHandle::loadFile( const QString &fileName )
   setWindowTitle( m_cWindowName );
 
   return true;
+}
+
+Void SubWindowHandle::refreshFrame()
+{
+  m_pCurrStream->getFrame( m_pCurrFrameQImage );
+  m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
 }
 
 bool SubWindowHandle::save()
@@ -154,8 +158,7 @@ bool SubWindowHandle::playEvent()
     {
       iRet = false;
     }
-    m_pCurrStream->getFrame( m_pCurrFrameQImage );
-    m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
+    refreshFrame();
     return iRet;
   }
   return false;
@@ -165,16 +168,14 @@ Void SubWindowHandle::seekEvent( UInt new_frame_num )
 {
   m_pCurrStream->seekInput( new_frame_num );
   m_pCurrStream->readFrame();
-  m_pCurrStream->getFrame( m_pCurrFrameQImage );
-  m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
+  refreshFrame();
 }
 
 Void SubWindowHandle::stopEvent()
 {
   m_pCurrStream->seekInput( 0 );
   m_pCurrStream->readFrame();
-  m_pCurrStream->getFrame( m_pCurrFrameQImage );
-  m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
+  refreshFrame();
   return;
 }
 

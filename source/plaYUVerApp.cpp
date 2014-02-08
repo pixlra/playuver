@@ -245,16 +245,16 @@ Void plaYUVerApp::updateMenus()
 
 void plaYUVerApp::updateWindowMenu()
 {
-  menuWindow->clear();
-  menuWindow->addAction( actionClose );
-  menuWindow->addAction( actionCloseAll );
-  menuWindow->addSeparator();
-  menuWindow->addAction( actionTile );
-  menuWindow->addAction( actionCascade );
-  menuWindow->addSeparator();
-  menuWindow->addAction( actionNext );
-  menuWindow->addAction( actionPrevious );
-  menuWindow->addAction( actionSeparator );
+  m_arrayMenu[WINDOW_MENU]->clear();
+  m_arrayMenu[WINDOW_MENU]->addAction( actionClose );
+  m_arrayMenu[WINDOW_MENU]->addAction( actionCloseAll );
+  m_arrayMenu[WINDOW_MENU]->addSeparator();
+  m_arrayMenu[WINDOW_MENU]->addAction( actionTile );
+  m_arrayMenu[WINDOW_MENU]->addAction( actionCascade );
+  m_arrayMenu[WINDOW_MENU]->addSeparator();
+  m_arrayMenu[WINDOW_MENU]->addAction( actionNext );
+  m_arrayMenu[WINDOW_MENU]->addAction( actionPrevious );
+  m_arrayMenu[WINDOW_MENU]->addAction( actionSeparator );
 
   updateMenus();
 
@@ -286,7 +286,7 @@ void plaYUVerApp::updateWindowMenu()
     {
       text = tr( "%1 %2" ).arg( i + 1 ).arg( child->userFriendlyCurrentFile() );
     }
-    QAction *action = menuWindow->addAction( text );
+    QAction *action = m_arrayMenu[WINDOW_MENU]->addAction( text );
     action->setCheckable( true );
     action->setChecked( child == activeSubWindow() );
     connect( action, SIGNAL( triggered() ), mapperWindow, SLOT( map() ) );
@@ -445,29 +445,33 @@ Void plaYUVerApp::createActions()
 
 Void plaYUVerApp::createMenus()
 {
-  menuFile = menuBar()->addMenu( tr( "&File" ) );
-  menuFile->addAction( actionOpen );
-  menuFile->addSeparator();
-  menuFile->addAction( actionSave );
-  menuFile->addSeparator();
-  menuFile->addAction( actionClose );
-  menuFile->addAction( actionExit );
+  m_arrayMenu.resize(4);
 
-  menuView = new QMenu( tr( "&View" ), this );
-  menuView->addAction( actionZoomIn );
-  menuView->addAction( actionZoomOut );
-  menuView->addAction( actionNormalSize );
-  menuView->addAction( actionZoomToFit );
+  m_arrayMenu[OTHER_MENU] = menuBar()->addMenu( tr( "&File" ) );
+  m_arrayMenu[OTHER_MENU]->addAction( actionOpen );
+  m_arrayMenu[OTHER_MENU]->addSeparator();
+  m_arrayMenu[OTHER_MENU]->addAction( actionSave );
+  m_arrayMenu[OTHER_MENU]->addSeparator();
+  m_arrayMenu[OTHER_MENU]->addAction( actionClose );
+  m_arrayMenu[OTHER_MENU]->addAction( actionExit );
 
-  menuWindow = menuBar()->addMenu( tr( "&Window" ) );
+  m_arrayMenu[OTHER_MENU+1] = menuBar()->addMenu( tr( "&View" ) );
+  m_arrayMenu[OTHER_MENU+1]->addAction( actionZoomIn );
+  m_arrayMenu[OTHER_MENU+1]->addAction( actionZoomOut );
+  m_arrayMenu[OTHER_MENU+1]->addAction( actionNormalSize );
+  m_arrayMenu[OTHER_MENU+1]->addAction( actionZoomToFit );
+
+  m_pcModulesHandle->createMenus( menuBar() );
+
+  m_arrayMenu[WINDOW_MENU] = menuBar()->addMenu( tr( "&Window" ) );
   updateWindowMenu();
-  connect( menuWindow, SIGNAL( aboutToShow() ), this, SLOT( updateWindowMenu() ) );
+  connect( m_arrayMenu[WINDOW_MENU], SIGNAL( aboutToShow() ), this, SLOT( updateWindowMenu() ) );
 
   menuBar()->addSeparator();
 
-  menuHelp = menuBar()->addMenu( tr( "&Help" ) );
-  menuHelp->addAction( actionAbout );
-  menuHelp->addAction( actionAboutQt );
+  m_arrayMenu[OTHER_MENU+2] = menuBar()->addMenu( tr( "&Help" ) );
+  m_arrayMenu[OTHER_MENU+2]->addAction( actionAbout );
+  m_arrayMenu[OTHER_MENU+2]->addAction( actionAboutQt );
 }
 
 Void plaYUVerApp::createToolBars()

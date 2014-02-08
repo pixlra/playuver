@@ -34,6 +34,8 @@
 #include <QMainWindow>
 #include "TypeDef.h"
 
+#include "ModulesHandle.h"
+
 namespace plaYUVer
 {
 
@@ -41,7 +43,7 @@ class SubWindowHandle;
 
 class plaYUVerApp: public QMainWindow
 {
-  Q_OBJECT
+Q_OBJECT
 
 public:
   plaYUVerApp();
@@ -60,7 +62,7 @@ private Q_SLOTS:
   void pause();
   void stop();
   void playEvent();
-  void seekSliderEvent(int new_frame_num );
+  void seekSliderEvent( int new_frame_num );
   /**
    * Scale the image by a given factor
    * @param factor factor of scale. Ex: 120 scale the image up by 20% and
@@ -80,13 +82,14 @@ private Q_SLOTS:
   /*
    * Drag and drop functions
    */
-  void dragEnterEvent(QDragEnterEvent *event);
-  void dropEvent(QDropEvent *event);
+  void dragEnterEvent( QDragEnterEvent *event );
+  void dropEvent( QDropEvent *event );
 
   void setActiveSubWindow( QWidget *window );
 
 private:
   QMdiArea *mdiArea;
+  ModulesHandle *m_pcModulesHandle;
 
   QString m_cLastOpenPath;
   QTimer *playingTimer;
@@ -111,10 +114,19 @@ private:
   QSignalMapper *mapperZoom;
   QSignalMapper *mapperWindow;
 
-  QMenu *menuFile;
-  QMenu *menuView;
-  QMenu *menuWindow;
-  QMenu *menuHelp;
+  /**
+   * Array of menus for the main app
+   * @param position description:
+   *          0 - Window
+   *          1 - File
+   *          2 - View
+   *          3 - Help
+   */
+  enum MAIN_APP_MENU_LIST
+  {
+    WINDOW_MENU = 0, OTHER_MENU,
+  };
+  QVector<QMenu*> m_arrayMenu;
 
   QToolBar *toolbarFile;
   QToolBar *toolbarView;

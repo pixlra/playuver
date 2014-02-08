@@ -43,8 +43,6 @@ extern "C"
 #include <libavformat/avformat.h>
 }
 
-
-
 #include "TypeDef.h"
 
 namespace plaYUVer
@@ -53,6 +51,10 @@ namespace plaYUVer
 class LibAvContextHandle
 {
 public:
+  LibAvContextHandle() :
+      m_bHasStream( false )
+  {
+  }
   Bool initAvFormat( char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate );
   Void closeAvFormat();
   Bool decodeAvFormat();

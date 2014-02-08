@@ -76,7 +76,6 @@ private Q_SLOTS:
   void about();
 
   void chageSubWindowSelection();
-
   void updateWindowMenu();
 
   /*

@@ -47,6 +47,7 @@ plaYUVerApp::plaYUVerApp()
   //mdiArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 
   connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( chageSubWindowSelection() ) );
+  connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( updateMenus() ) );
 
   mapperWindow = new QSignalMapper( this );
   connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
@@ -63,11 +64,12 @@ plaYUVerApp::plaYUVerApp()
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
   setUnifiedTitleAndToolBarOnMac( true );
 
-  playingTimer = new QTimer( this );
+  playingTimer = new QTimer;
+  playingTimer->setTimerType( Qt::CoarseTimer );
+  connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
 
   setAcceptDrops( true );
   mdiArea->setAcceptDrops( true );
-
 }
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
@@ -134,26 +136,23 @@ void plaYUVerApp::save()
 
 void plaYUVerApp::play()
 {
+  playingTimer->stop();
   if( activeSubWindow() )
   {
     UInt frameRate = activeSubWindow()->getInputStream()->getFrameRate();
     UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
     playingTimer->start( timeInterval );
-    connect( playingTimer, SIGNAL( timeout() ), activeSubWindow(), SLOT( playEvent() ) );
-    //connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
   }
 }
 
 void plaYUVerApp::pause()
 {
   playingTimer->stop();
-  disconnect( activeSubWindow(), SLOT( playEvent() ) );
 }
 
 void plaYUVerApp::stop()
 {
   activeSubWindow()->stopEvent();
-  disconnect( activeSubWindow(), SLOT( playEvent() ) );
   playingTimer->stop();
 
 }
@@ -167,7 +166,6 @@ void plaYUVerApp::playEvent()
       playingTimer->stop();
     }
   }
-
 }
 
 // -----------------------  Zoom Functions  -----------------------
@@ -204,6 +202,7 @@ void plaYUVerApp::about()
 
 void plaYUVerApp::chageSubWindowSelection()
 {
+  playingTimer->stop();
   updateMenus();
   //updateWindowMenu();
 }
@@ -243,7 +242,7 @@ void plaYUVerApp::updateWindowMenu()
   menuWindow->addAction( actionPrevious );
   menuWindow->addAction( actionSeparator );
 
-  //updateMenus();
+  updateMenus();
 
   QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
   actionSeparator->setVisible( !windows.isEmpty() );
@@ -470,7 +469,6 @@ Void plaYUVerApp::createToolBars()
   toolbarVideo->addAction( actionVideoLock );
   toolbarVideo->addAction( actionVideoInterlace );
   toolbarVideo->addAction( actionVideoCenter );
-
 }
 
 Void plaYUVerApp::createStatusBar()

@@ -103,7 +103,7 @@ public:
 
   Bool writeFrame( const QString& filename );
 
-  QImage getFrameQImage();
+  Void getFrame( QImage *qimage );
 #ifdef USE_OPENCV
   cv::Mat getFrameCvMat();
 #endif

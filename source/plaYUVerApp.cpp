@@ -139,24 +139,23 @@ void plaYUVerApp::play()
     UInt frameRate = activeSubWindow()->getInputStream()->getFrameRate();
     UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
     playingTimer->start( timeInterval );
-    //connect( playingTimer, SIGNAL( timeout() ), activeSubWindow(), SLOT( playEvent() ) );
-    connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
+    connect( playingTimer, SIGNAL( timeout() ), activeSubWindow(), SLOT( playEvent() ) );
+    //connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
   }
 }
 
 void plaYUVerApp::pause()
 {
   playingTimer->stop();
+  disconnect( activeSubWindow(), SLOT( playEvent() ) );
 }
 
 void plaYUVerApp::stop()
 {
-  if( activeSubWindow() )
-  {
-    activeSubWindow()->stopEvent();
-  }
+  activeSubWindow()->stopEvent();
+  disconnect( activeSubWindow(), SLOT( playEvent() ) );
   playingTimer->stop();
-  //disconnect( playingTimer, SIGNAL( timeout() ), 0, 0 );
+
 }
 
 void plaYUVerApp::playEvent()

@@ -50,7 +50,8 @@ private:
   QScrollArea* m_cScrollArea;
   ViewArea* m_cViewArea;
 
-  InputStream m_currStream;
+  InputStream* m_pCurrStream;
+  QImage* m_pCurrFrameQImage;
 
   QString m_cWindowName;
   QString m_cCurrFileName;
@@ -70,7 +71,7 @@ public:
 
   InputStream* getInputStream()
   {
-    return &m_currStream;
+    return m_pCurrStream;
   }
 
   /**
@@ -127,7 +128,7 @@ protected:
   Void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:
-  int playEvent();
+  bool playEvent();
 };
 
 }  // NAMESPACE

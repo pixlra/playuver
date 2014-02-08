@@ -61,28 +61,32 @@ bool SubWindowHandle::loadFile( const QString &fileName )
 {
   ConfigureFormatDialog formatDialog( this );
 
-  if( m_currStream.needFormatDialog( fileName ) )
+  m_pCurrStream = new InputStream;
+
+  if( m_pCurrStream->needFormatDialog( fileName ) )
   {
     if( formatDialog.exec() == QDialog::Rejected )
     {
       return false;
     }
-    m_currStream.init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height(), formatDialog.getPixelFormat(),
+    m_pCurrStream->init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height(), formatDialog.getPixelFormat(),
         formatDialog.getFrameRate() );
   }
   else
   {
-    m_currStream.init( fileName, 0, 0, 0, 0 );
+    m_pCurrStream->init( fileName, 0, 0, 0, 0 );
   }
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QApplication::restoreOverrideCursor();
-  if( m_currStream.getStatus() == 0 )
+  if( m_pCurrStream->getStatus() == 0 )
   {
     return false;
   }
 
-  m_currStream.readFrame();
-  if( m_currStream.checkErrors( READING ) )
+  m_pCurrFrameQImage = new QImage( m_pCurrStream->getWidth(), m_pCurrStream->getHeight(), QImage::Format_RGB888 );
+
+  m_pCurrStream->readFrame();
+  if( m_pCurrStream->checkErrors( READING ) )
   {
     QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( fileName ) );
     return false;
@@ -90,12 +94,13 @@ bool SubWindowHandle::loadFile( const QString &fileName )
 
   QApplication::restoreOverrideCursor();
 
-  m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
+  m_pCurrStream->getFrame( m_pCurrFrameQImage );
+  m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
 
   normalSize();
 
-  m_cWindowName = QString( "ola" );
-  m_cWindowName = m_currStream.getStreamInformationString();
+  m_cWindowName = QString( " " );
+  m_cWindowName = m_pCurrStream->getStreamInformationString();
 
   m_cCurrFileName = fileName;
 
@@ -122,7 +127,7 @@ bool SubWindowHandle::save()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  if( !m_currStream.writeFrame( fileName ) )
+  if( !m_pCurrStream->writeFrame( fileName ) )
   {
     QApplication::restoreOverrideCursor();
     QMessageBox::warning( this, tr( "SCode" ), tr( "Cannot save file %1" ).arg( fileName ) );
@@ -134,31 +139,34 @@ bool SubWindowHandle::save()
   return true;
 }
 
-int SubWindowHandle::playEvent()
+bool SubWindowHandle::playEvent()
 {
+  bool iRet = true;
   if( m_bIsPlaying )
   {
-    m_currStream.readFrame();
-    if( m_currStream.checkErrors( READING ) )
+    m_pCurrStream->readFrame();
+    if( m_pCurrStream->checkErrors( READING ) )
     {
       QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( m_cCurrFileName ) );
       return false;
     }
-    else if( m_currStream.checkErrors( END_OF_SEQ ) )
+    else if( m_pCurrStream->checkErrors( END_OF_SEQ ) )
     {
-      m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
-      return false;
+      iRet = false;
     }
-    m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
+    m_pCurrStream->getFrame( m_pCurrFrameQImage );
+    m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
+    return iRet;
   }
-  return true;
+  return false;
 }
 
 Void SubWindowHandle::stopEvent()
 {
-  m_currStream.seekInput( 0 );
-  m_currStream.readFrame();
-  m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
+  m_pCurrStream->seekInput( 0 );
+  m_pCurrStream->readFrame();
+  m_pCurrStream->getFrame( m_pCurrFrameQImage );
+  m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
   return;
 }
 
@@ -173,7 +181,7 @@ Void SubWindowHandle::zoomToFit()
 {
   // Scale to a smaller size that the real to a nicer look
   QSize niceFit( m_cScrollArea->viewport()->size().width() - 10, m_cScrollArea->viewport()->size().height() - 10 );
-  if( m_currStream.getWidth() <= niceFit.width() && m_currStream.getHeight() <= niceFit.height() )
+  if( m_pCurrStream->getWidth() <= niceFit.width() && m_pCurrStream->getHeight() <= niceFit.height() )
   {
     normalSize();
     return;
@@ -196,7 +204,7 @@ Void SubWindowHandle::scaleView( Int width, Int height )
 
 Void SubWindowHandle::scaleView( const QSize & size )
 {
-  QSize imgViewSize( m_currStream.getWidth(), m_currStream.getHeight() );
+  QSize imgViewSize( m_pCurrStream->getWidth(), m_pCurrStream->getHeight() );
   QSize newSize = imgViewSize;
   newSize.scale( size, Qt::KeepAspectRatio );
 
@@ -233,7 +241,7 @@ QSize SubWindowHandle::sizeHint() const
     maxSize = p->size();
   }
 
-  QSize isize = QSize( m_currStream.getWidth() + 500, m_currStream.getHeight() + 500 );
+  QSize isize = QSize( m_pCurrStream->getWidth() + 500, m_pCurrStream->getHeight() + 500 );
 
   // If the SubWindowHandle needs more space that the avaiable, we'll give
   // to the subwindow a reasonable size preserving the image aspect ratio.

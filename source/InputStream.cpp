@@ -243,14 +243,14 @@ Void InputStream::readFrame()
 
 Bool InputStream::writeFrame( const QString& filename )
 {
-  getFrameQImage().save( filename );
+  QImage img( m_uiWidth, m_uiHeight, QImage::Format_RGB888 );
+  getFrame( &img );
+  img.save( filename );
   return true;
 }
 
-QImage InputStream::getFrameQImage()
+Void InputStream::getFrame( QImage *qimage )
 {
-  // Create QImage
-  QImage img( m_uiWidth, m_uiHeight, QImage::Format_RGB888 );
   Pel*** bufferRGB = m_cCurrFrame->getPelBufferRGB();
 
   if( sizeof(Pel) == sizeof(unsigned char) )
@@ -259,7 +259,7 @@ QImage InputStream::getFrameQImage()
     {
       for( Int x = 0; x < m_uiWidth; x++ )
       {
-        img.setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
+        qimage->setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
       }
     }
   }
@@ -267,7 +267,6 @@ QImage InputStream::getFrameQImage()
   {
     Q_ASSERT( 0 );
   }
-  return img;
 }
 
 #ifdef USE_OPENCV

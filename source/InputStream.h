@@ -78,7 +78,7 @@ private:
   UInt m_uiHeight;
   UInt m_uiFrameRate;
   UInt m_uiTotalFrameNum;
-  UInt m_uiCurrFrameNum;
+  Int m_iCurrFrameNum;
 
 public:
   InputStream();
@@ -103,7 +103,7 @@ public:
 
   Bool writeFrame( const QString& filename );
 
-  QImage getFrameQImage();
+  Void getFrame( QImage *qimage );
 #ifdef USE_OPENCV
   cv::Mat getFrameCvMat();
 #endif
@@ -136,9 +136,9 @@ public:
   {
     return m_uiHeight;
   }
-  UInt getCurrFrameNum()
+  Int getCurrFrameNum()
   {
-    return m_uiCurrFrameNum;
+    return m_iCurrFrameNum;
   }
   UInt getFrameRate()
   {

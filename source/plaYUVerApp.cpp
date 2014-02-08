@@ -21,17 +21,16 @@
  * \brief    Main definition of the plaYUVerApp app
  */
 
+#include "plaYUVerApp.h"
+#include "SubWindowHandle.h"
+#include "InputStream.h"
+
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
 #include <QtDebug>
-
-#include "TypeDef.h"
-#include "plaYUVerApp.h"
-#include "SubWindowHandle.h"
-#include "InputStream.h"
 
 namespace plaYUVer
 {
@@ -46,9 +45,11 @@ plaYUVerApp::plaYUVerApp()
   //mdiArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
   //mdiArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 
-  connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( updateMenus() ) );
-  windowMapper = new QSignalMapper( this );
-  connect( windowMapper, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveImageInterface(QWidget*) ) );
+  connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( chageSubWindowSelection() ) );
+  //connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( updateMenus() ) );
+
+  mapperWindow = new QSignalMapper( this );
+  connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
 
   createActions();
   createMenus();
@@ -62,13 +63,12 @@ plaYUVerApp::plaYUVerApp()
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
   setUnifiedTitleAndToolBarOnMac( true );
 
-  playingTimer = new QTimer( this );
+  playingTimer = new QTimer;
+  playingTimer->setTimerType( Qt::CoarseTimer );
+  connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
 
   setAcceptDrops( true );
   mdiArea->setAcceptDrops( true );
-
-  connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
-
 }
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
@@ -104,17 +104,17 @@ void plaYUVerApp::open()
   {
     m_cLastOpenPath = QFileInfo( fileName ).path();
 
-    QMdiSubWindow *existing = findImageInterface( fileName );
+    QMdiSubWindow *existing = findSubWindow( fileName );
     if( existing )
     {
       mdiArea->setActiveSubWindow( existing );
       return;
     }
 
-    SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createImageInterface();
+    SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
     if( interfaceChild->loadFile( fileName ) )
     {
-      addImageInterface( interfaceChild );
+      addSubWindow( interfaceChild );
       statusBar()->showMessage( tr( "File loaded" ), 2000 );
       interfaceChild->show();
     }
@@ -127,22 +127,21 @@ void plaYUVerApp::open()
 
 void plaYUVerApp::save()
 {
-  if( activeImageInterface() )
-    activeImageInterface()->save();
+  if( activeSubWindow() )
+    activeSubWindow()->save();
 }
 
 // -----------------------  Playing Functions  --------------------
 
 void plaYUVerApp::play()
 {
-  UInt frameRate;
-  UInt timeInterval;
-
-  frameRate = activeImageInterface()->getInputStream()->getFrameRate();
-  timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
-
-  playingTimer->start( timeInterval );
-
+  playingTimer->stop();
+  if( activeSubWindow() )
+  {
+    UInt frameRate = activeSubWindow()->getInputStream()->getFrameRate();
+    UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
+    playingTimer->start( timeInterval );
+  }
 }
 
 void plaYUVerApp::pause()
@@ -152,55 +151,53 @@ void plaYUVerApp::pause()
 
 void plaYUVerApp::stop()
 {
+  activeSubWindow()->stopEvent();
+  m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
   playingTimer->stop();
-  //disconnect( playingTimer, SIGNAL( timeout() ), 0, 0 );
 }
 
 void plaYUVerApp::playEvent()
 {
-  if( activeImageInterface() )
+  if( activeSubWindow() )
   {
-    if( !activeImageInterface()->playEvent() )
+    if( !activeSubWindow()->playEvent() )
     {
-      playingTimer->stop();
+      stop();
     }
+    m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
   }
+}
 
+void plaYUVerApp::seekSliderEvent( int new_frame_num )
+{
+  if( activeSubWindow() )
+  {
+    activeSubWindow()->seekEvent( new_frame_num );
+  }
 }
 
 // -----------------------  Zoom Functions  -----------------------
 
-void plaYUVerApp::zoomIn()
-{
-  scaleImage( 1.25 );
-}
-
-void plaYUVerApp::zoomOut()
-{
-  scaleImage( 0.8 );
-}
-
 void plaYUVerApp::normalSize()
 {
-  if( activeImageInterface() )
-    activeImageInterface()->normalSize();
+  if( activeSubWindow() )
+    activeSubWindow()->normalSize();
 }
 
 void plaYUVerApp::zoomToFit()
 {
-  if( activeImageInterface() )
-    activeImageInterface()->zoomToFit();
+  if( activeSubWindow() )
+    activeSubWindow()->zoomToFit();
 }
 
-Void plaYUVerApp::scaleImage( Double factor )
+void plaYUVerApp::scaleFrame( int ratio )
 {
-
-  if( activeImageInterface() )
+  if( activeSubWindow() )
   {
-    activeImageInterface()->scaleView( factor );
+    activeSubWindow()->scaleView( ( Double )( ratio ) / 100.0 );
 
-    zoomInAct->setEnabled( activeImageInterface()->getScaleFactor() < 3.0 );
-    zoomOutAct->setEnabled( activeImageInterface()->getScaleFactor() > 0.333 );
+    actionZoomIn->setEnabled( activeSubWindow()->getScaleFactor() < 3.0 );
+    actionZoomOut->setEnabled( activeSubWindow()->getScaleFactor() > 0.333 );
   }
 }
 
@@ -211,49 +208,72 @@ void plaYUVerApp::about()
   QMessageBox::about( this, tr( "About plaYUVerApp" ), tr( "The <b>plaYUVerApp</b> is an open-source raw video player " ) );
 }
 
-void plaYUVerApp::updateMenus()
+void plaYUVerApp::chageSubWindowSelection()
 {
-  Bool hasImageInterface = ( activeImageInterface() != 0 );
-  saveAct->setEnabled( hasImageInterface );
-  closeAct->setEnabled( hasImageInterface );
-  closeAllAct->setEnabled( hasImageInterface );
-  tileAct->setEnabled( hasImageInterface );
-  cascadeAct->setEnabled( hasImageInterface );
-  nextAct->setEnabled( hasImageInterface );
-  previousAct->setEnabled( hasImageInterface );
-  separatorAct->setVisible( hasImageInterface );
+  playingTimer->stop();
+  if( activeSubWindow() )
+  {
+    m_pcFrameSlider->setMaximum( activeSubWindow()->getInputStream()->getFrameNum() - 1 );
+    m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
+  }
+  updateMenus();
+  //updateWindowMenu();
+}
 
-  zoomInAct->setEnabled( hasImageInterface );
-  zoomOutAct->setEnabled( hasImageInterface );
-  normalSizeAct->setEnabled( hasImageInterface );
-  zoomToFitAct->setEnabled( hasImageInterface );
+Void plaYUVerApp::updateMenus()
+{
+  Bool hasSubWindow = ( activeSubWindow() != 0 );
+  actionSave->setEnabled( hasSubWindow );
+  actionClose->setEnabled( hasSubWindow );
+  actionCloseAll->setEnabled( hasSubWindow );
+  actionTile->setEnabled( hasSubWindow );
+  actionCascade->setEnabled( hasSubWindow );
+  actionSeparator->setVisible( hasSubWindow );
 
-  actionVideoPlay->setEnabled( hasImageInterface );
-  actionVideoPause->setEnabled( hasImageInterface );
-  actionVideoStop->setEnabled( hasImageInterface );
-  actionVideoBackward->setEnabled( hasImageInterface );
-  actionVideoForward->setEnabled( hasImageInterface );
+  actionZoomIn->setEnabled( hasSubWindow );
+  actionZoomOut->setEnabled( hasSubWindow );
+  actionNormalSize->setEnabled( hasSubWindow );
+  actionZoomToFit->setEnabled( hasSubWindow );
+
+  actionVideoPlay->setEnabled( hasSubWindow );
+  actionVideoPause->setEnabled( hasSubWindow );
+  actionVideoStop->setEnabled( hasSubWindow );
+  actionVideoBackward->setEnabled( hasSubWindow );
+  actionVideoForward->setEnabled( hasSubWindow );
+  m_pcFrameSlider->setEnabled( hasSubWindow );
 }
 
 void plaYUVerApp::updateWindowMenu()
 {
-  windowMenu->clear();
-  windowMenu->addAction( closeAct );
-  windowMenu->addAction( closeAllAct );
-  windowMenu->addSeparator();
-  windowMenu->addAction( tileAct );
-  windowMenu->addAction( cascadeAct );
-  windowMenu->addSeparator();
-  windowMenu->addAction( nextAct );
-  windowMenu->addAction( previousAct );
-  windowMenu->addAction( separatorAct );
+  menuWindow->clear();
+  menuWindow->addAction( actionClose );
+  menuWindow->addAction( actionCloseAll );
+  menuWindow->addSeparator();
+  menuWindow->addAction( actionTile );
+  menuWindow->addAction( actionCascade );
+  menuWindow->addSeparator();
+  menuWindow->addAction( actionNext );
+  menuWindow->addAction( actionPrevious );
+  menuWindow->addAction( actionSeparator );
 
   updateMenus();
 
   QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
-  separatorAct->setVisible( !windows.isEmpty() );
+  actionSeparator->setVisible( !windows.isEmpty() );
+  Int number_windows = windows.size();
 
-  for( Int i = 0; i < windows.size(); ++i )
+  if( number_windows > 1 )
+  {
+    actionNext->setEnabled( true );
+    actionPrevious->setEnabled( true );
+  }
+  else
+  {
+    actionNext->setEnabled( false );
+    actionPrevious->setEnabled( false );
+  }
+
+  for( Int i = 0; i < number_windows; ++i )
   {
     SubWindowHandle *child = qobject_cast<SubWindowHandle *>( windows.at( i ) );
 
@@ -266,15 +286,15 @@ void plaYUVerApp::updateWindowMenu()
     {
       text = tr( "%1 %2" ).arg( i + 1 ).arg( child->userFriendlyCurrentFile() );
     }
-    QAction *action = windowMenu->addAction( text );
+    QAction *action = menuWindow->addAction( text );
     action->setCheckable( true );
-    action->setChecked( child == activeImageInterface() );
-    connect( action, SIGNAL( triggered() ), windowMapper, SLOT( map() ) );
-    windowMapper->setMapping( action, windows.at( i ) );
+    action->setChecked( child == activeSubWindow() );
+    connect( action, SIGNAL( triggered() ), mapperWindow, SLOT( map() ) );
+    mapperWindow->setMapping( action, windows.at( i ) );
   }
 }
 
-SubWindowHandle *plaYUVerApp::createImageInterface()
+SubWindowHandle *plaYUVerApp::createSubWindow()
 {
   SubWindowHandle *child = new SubWindowHandle;
   mdiArea->addSubWindow( child );
@@ -282,7 +302,7 @@ SubWindowHandle *plaYUVerApp::createImageInterface()
   return child;
 }
 
-void plaYUVerApp::addImageInterface( SubWindowHandle *child )
+void plaYUVerApp::addSubWindow( SubWindowHandle *child )
 {
   //connect( child, SIGNAL( areaSelected( QRect ) ), this, SLOT( setSelection( QRect ) ) );
 
@@ -295,73 +315,84 @@ Void plaYUVerApp::createActions()
 {
   // ------------ File ------------
 
-  openAct = new QAction( QIcon( ":/images/open.png" ), tr( "&Open..." ), this );
-  openAct->setShortcuts( QKeySequence::Open );
-  openAct->setStatusTip( tr( "Open an existing file" ) );
-  connect( openAct, SIGNAL( triggered() ), this, SLOT( open() ) );
+  actionOpen = new QAction( QIcon( ":/images/open.png" ), tr( "&Open..." ), this );
+  actionOpen->setShortcuts( QKeySequence::Open );
+  actionOpen->setStatusTip( tr( "Open an existing file" ) );
+  connect( actionOpen, SIGNAL( triggered() ), this, SLOT( open() ) );
 
-  saveAct = new QAction( QIcon( ":/images/save.png" ), tr( "&Save..." ), this );
-  saveAct->setShortcuts( QKeySequence::SaveAs );
-  saveAct->setStatusTip( tr( "Save the document under a new name" ) );
-  connect( saveAct, SIGNAL( triggered() ), this, SLOT( save() ) );
+  actionSave = new QAction( QIcon( ":/images/save.png" ), tr( "&Save..." ), this );
+  actionSave->setShortcuts( QKeySequence::SaveAs );
+  actionSave->setStatusTip( tr( "Save the document under a new name" ) );
+  connect( actionSave, SIGNAL( triggered() ), this, SLOT( save() ) );
 
-  exitAct = new QAction( tr( "E&xit" ), this );
-  exitAct->setShortcuts( QKeySequence::Quit );
-  exitAct->setStatusTip( tr( "Exit the application" ) );
-  connect( exitAct, SIGNAL( triggered() ), qApp, SLOT( closeAllWindows() ) );
+  actionExit = new QAction( tr( "E&xit" ), this );
+  actionExit->setShortcuts( QKeySequence::Quit );
+  actionExit->setStatusTip( tr( "Exit the application" ) );
+  connect( actionExit, SIGNAL( triggered() ), qApp, SLOT( closeAllWindows() ) );
 
-  closeAct = new QAction( tr( "Cl&ose" ), this );
-  closeAct->setIcon( QIcon( ":/images/close.png" ) );
-  closeAct->setStatusTip( tr( "Close the active window" ) );
-  connect( closeAct, SIGNAL( triggered() ), mdiArea, SLOT( closeActiveSubWindow() ) );
+  actionClose = new QAction( tr( "Cl&ose" ), this );
+  actionClose->setIcon( QIcon( ":/images/close.png" ) );
+  actionClose->setStatusTip( tr( "Close the active window" ) );
+  connect( actionClose, SIGNAL( triggered() ), mdiArea, SLOT( closeActiveSubWindow() ) );
 
-  closeAllAct = new QAction( tr( "Close &All" ), this );
-  closeAllAct->setStatusTip( tr( "Close all the windows" ) );
-  connect( closeAllAct, SIGNAL( triggered() ), mdiArea, SLOT( closeAllSubWindows() ) );
+  actionCloseAll = new QAction( tr( "Close &All" ), this );
+  actionCloseAll->setStatusTip( tr( "Close all the windows" ) );
+  connect( actionCloseAll, SIGNAL( triggered() ), mdiArea, SLOT( closeAllSubWindows() ) );
 
   // ------------ View ------------
 
-  zoomInAct = new QAction( tr( "Zoom &In (25%)" ), this );
-  zoomInAct->setIcon( QIcon( ":/images/zoomin.png" ) );
-  zoomInAct->setShortcut( tr( "Ctrl++" ) );
-  zoomInAct->setStatusTip( tr( "Scale the image up by 25%" ) );
-  connect( zoomInAct, SIGNAL( triggered() ), this, SLOT( zoomIn() ) );
+  mapperZoom = new QSignalMapper( this );
+  connect( mapperZoom, SIGNAL( mapped(int) ), this, SLOT( scaleFrame(int) ) );
 
-  zoomOutAct = new QAction( tr( "Zoom &Out (25%)" ), this );
-  zoomOutAct->setIcon( QIcon( ":/images/zoomout.png" ) );
-  zoomOutAct->setShortcut( tr( "Ctrl+-" ) );
-  zoomOutAct->setStatusTip( tr( "Scale the image down by 25%" ) );
-  connect( zoomOutAct, SIGNAL( triggered() ), this, SLOT( zoomOut() ) );
+  actionZoomIn = new QAction( tr( "Zoom &In (25%)" ), this );
+  actionZoomIn->setIcon( QIcon( ":/images/zoomin.png" ) );
+  actionZoomIn->setShortcut( tr( "Ctrl++" ) );
+  actionZoomIn->setStatusTip( tr( "Scale the image up by 25%" ) );
+  connect( actionZoomIn, SIGNAL( triggered() ), mapperZoom, SLOT( map() ) );
+  mapperZoom->setMapping( actionZoomIn, 125 );
 
-  normalSizeAct = new QAction( tr( "&Normal Size" ), this );
-  normalSizeAct->setIcon( QIcon( ":/images/zoomtonormal.png" ) );
-  normalSizeAct->setShortcut( tr( "Ctrl+N" ) );
-  normalSizeAct->setStatusTip( tr( "Show the image at its original size" ) );
-  connect( normalSizeAct, SIGNAL( triggered() ), this, SLOT( normalSize() ) );
+  actionZoomOut = new QAction( tr( "Zoom &Out (25%)" ), this );
+  actionZoomOut->setIcon( QIcon( ":/images/zoomout.png" ) );
+  actionZoomOut->setShortcut( tr( "Ctrl+-" ) );
+  actionZoomOut->setStatusTip( tr( "Scale the image down by 25%" ) );
+  connect( actionZoomOut, SIGNAL( triggered() ), mapperZoom, SLOT( map() ) );
+  mapperZoom->setMapping( actionZoomOut, 80 );
 
-  zoomToFitAct = new QAction( tr( "Zoom to &Fit" ), this );
-  zoomToFitAct->setIcon( QIcon( ":/images/fittowindow.png" ) );
-  zoomToFitAct->setStatusTip( tr( "Zoom in or out to fit on the window." ) );
-  zoomToFitAct->setShortcut( tr( "Ctrl+F" ) );
-  connect( zoomToFitAct, SIGNAL( triggered() ), this, SLOT( zoomToFit() ) );
+  actionNormalSize = new QAction( tr( "&Normal Size" ), this );
+  actionNormalSize->setIcon( QIcon( ":/images/zoomtonormal.png" ) );
+  actionNormalSize->setShortcut( tr( "Ctrl+N" ) );
+  actionNormalSize->setStatusTip( tr( "Show the image at its original size" ) );
+  connect( actionNormalSize, SIGNAL( triggered() ), this, SLOT( normalSize() ) );
+
+  actionZoomToFit = new QAction( tr( "Zoom to &Fit" ), this );
+  actionZoomToFit->setIcon( QIcon( ":/images/fittowindow.png" ) );
+  actionZoomToFit->setStatusTip( tr( "Zoom in or out to fit on the window." ) );
+  actionZoomToFit->setShortcut( tr( "Ctrl+F" ) );
+  connect( actionZoomToFit, SIGNAL( triggered() ), this, SLOT( zoomToFit() ) );
 
   // ------------ Playing ------------
 
   actionVideoPlay = new QAction( "VideoPlay", this );
+  actionVideoPlay->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPlay ) ) );
+  connect( actionVideoPlay, SIGNAL( triggered() ), this, SLOT( play() ) );
+
   actionVideoPause = new QAction( "VideoPause", this );
+  actionVideoPause->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPause ) ) );
+  connect( actionVideoPause, SIGNAL( triggered() ), this, SLOT( pause() ) );
+
   actionVideoStop = new QAction( "VideoStop", this );
+  actionVideoStop->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaStop ) ) );
+  connect( actionVideoStop, SIGNAL( triggered() ), this, SLOT( stop() ) );
+
   actionVideoBackward = new QAction( "VideoBackward", this );
+  actionVideoBackward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
   actionVideoForward = new QAction( "VideoForward", this );
+  actionVideoForward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
+
   actionVideoLoop = new QAction( "VideoLoop", this );
   actionVideoLock = new QAction( "VideoLock", this );
   actionVideoInterlace = new QAction( "VideoInterlace", this );
   actionVideoCenter = new QAction( "VideoCenter", this );
-
-  actionVideoPlay->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPlay ) ) );
-  actionVideoPause->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPause ) ) );
-  actionVideoStop->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaStop ) ) );
-  actionVideoBackward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
-  actionVideoForward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
   /*
    actionVideoLoop     ->setIcon( QIcon( ":/images/videoloop.png"  ) );
    actionVideoLock     ->setIcon( QIcon( ":/images/lock.png"       ) );
@@ -369,95 +400,103 @@ Void plaYUVerApp::createActions()
    actionVideoCenter   ->setIcon( QIcon( ":/images/center.png"     ) );
    */
 
-  connect( actionVideoPlay, SIGNAL( triggered() ), this, SLOT( play() ) );
-  connect( actionVideoPause, SIGNAL( triggered() ), this, SLOT( pause() ) );
-  connect( actionVideoStop, SIGNAL( triggered() ), this, SLOT( stop() ) );
+  m_pcFrameSlider = new QSlider;
+  m_pcFrameSlider->setOrientation( Qt::Horizontal );
+  m_pcFrameSlider->setMaximumWidth( 100 );
+  m_pcFrameSlider->setMaximumWidth( 300 );
+  m_pcFrameSlider->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
+  m_pcFrameSlider->setEnabled( false );
+  connect( m_pcFrameSlider, SIGNAL( valueChanged(int) ), this, SLOT( seekSliderEvent(int) ) );
 
   // ------------ Window ------------
 
-  tileAct = new QAction( tr( "&Tile" ), this );
-  tileAct->setStatusTip( tr( "Tile the windows" ) );
-  connect( tileAct, SIGNAL( triggered() ), mdiArea, SLOT( tileSubWindows() ) );
+  actionTile = new QAction( tr( "&Tile" ), this );
+  actionTile->setStatusTip( tr( "Tile the windows" ) );
+  connect( actionTile, SIGNAL( triggered() ), mdiArea, SLOT( tileSubWindows() ) );
 
-  cascadeAct = new QAction( tr( "&Cascade" ), this );
-  cascadeAct->setStatusTip( tr( "Cascade the windows" ) );
-  connect( cascadeAct, SIGNAL( triggered() ), mdiArea, SLOT( cascadeSubWindows() ) );
+  actionCascade = new QAction( tr( "&Cascade" ), this );
+  actionCascade->setStatusTip( tr( "Cascade the windows" ) );
+  connect( actionCascade, SIGNAL( triggered() ), mdiArea, SLOT( cascadeSubWindows() ) );
 
-  nextAct = new QAction( tr( "Ne&xt" ), this );
-  nextAct->setShortcuts( QKeySequence::NextChild );
-  nextAct->setStatusTip( tr( "Move the focus to the next window" ) );
-  connect( nextAct, SIGNAL( triggered() ), mdiArea, SLOT( activateNextSubWindow() ) );
+  actionNext = new QAction( tr( "Ne&xt" ), this );
+  actionNext->setShortcuts( QKeySequence::NextChild );
+  actionNext->setStatusTip( tr( "Move the focus to the next window" ) );
+  connect( actionNext, SIGNAL( triggered() ), mdiArea, SLOT( activateNextSubWindow() ) );
 
-  previousAct = new QAction( tr( "Pre&vious" ), this );
-  previousAct->setShortcuts( QKeySequence::PreviousChild );
-  previousAct->setStatusTip( tr( "Move the focus to the previous window" ) );
-  connect( previousAct, SIGNAL( triggered() ), mdiArea, SLOT( activatePreviousSubWindow() ) );
+  actionPrevious = new QAction( tr( "Pre&vious" ), this );
+  actionPrevious->setShortcuts( QKeySequence::PreviousChild );
+  actionPrevious->setStatusTip( tr( "Move the focus to the previous window" ) );
+  connect( actionPrevious, SIGNAL( triggered() ), mdiArea, SLOT( activatePreviousSubWindow() ) );
 
-  separatorAct = new QAction( this );
-  separatorAct->setSeparator( true );
+  actionSeparator = new QAction( this );
+  actionSeparator->setSeparator( true );
 
   // ------------ About ------------
 
-  aboutAct = new QAction( tr( "&About" ), this );
-  aboutAct->setStatusTip( tr( "Show the application's About box" ) );
-  connect( aboutAct, SIGNAL( triggered() ), this, SLOT( about() ) );
+  actionAbout = new QAction( tr( "&About" ), this );
+  actionAbout->setStatusTip( tr( "Show the application's About box" ) );
+  connect( actionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
 
-  aboutQtAct = new QAction( tr( "About &Qt" ), this );
-  aboutQtAct->setIcon( QIcon( ":images/qt.png" ) );
-  aboutQtAct->setStatusTip( tr( "Show the Qt library's About box" ) );
-  connect( aboutQtAct, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
+  actionAboutQt = new QAction( tr( "About &Qt" ), this );
+  actionAboutQt->setIcon( QIcon( ":images/qt.png" ) );
+  actionAboutQt->setStatusTip( tr( "Show the Qt library's About box" ) );
+  connect( actionAboutQt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
 }
 
 Void plaYUVerApp::createMenus()
 {
-  fileMenu = menuBar()->addMenu( tr( "&File" ) );
-  fileMenu->addAction( openAct );
-  fileMenu->addSeparator();
-  fileMenu->addAction( saveAct );
-  fileMenu->addSeparator();
-  fileMenu->addAction( closeAct );
-  fileMenu->addAction( exitAct );
+  menuFile = menuBar()->addMenu( tr( "&File" ) );
+  menuFile->addAction( actionOpen );
+  menuFile->addSeparator();
+  menuFile->addAction( actionSave );
+  menuFile->addSeparator();
+  menuFile->addAction( actionClose );
+  menuFile->addAction( actionExit );
 
-  viewMenu = new QMenu( tr( "&View" ), this );
-  viewMenu->addAction( zoomInAct );
-  viewMenu->addAction( zoomOutAct );
-  viewMenu->addAction( normalSizeAct );
-  viewMenu->addAction( zoomToFitAct );
+  menuView = new QMenu( tr( "&View" ), this );
+  menuView->addAction( actionZoomIn );
+  menuView->addAction( actionZoomOut );
+  menuView->addAction( actionNormalSize );
+  menuView->addAction( actionZoomToFit );
 
-  windowMenu = menuBar()->addMenu( tr( "&Window" ) );
+  menuWindow = menuBar()->addMenu( tr( "&Window" ) );
   updateWindowMenu();
-  connect( windowMenu, SIGNAL( aboutToShow() ), this, SLOT( updateWindowMenu() ) );
+  connect( menuWindow, SIGNAL( aboutToShow() ), this, SLOT( updateWindowMenu() ) );
 
   menuBar()->addSeparator();
 
-  helpMenu = menuBar()->addMenu( tr( "&Help" ) );
-  helpMenu->addAction( aboutAct );
-  helpMenu->addAction( aboutQtAct );
+  menuHelp = menuBar()->addMenu( tr( "&Help" ) );
+  menuHelp->addAction( actionAbout );
+  menuHelp->addAction( actionAboutQt );
 }
 
 Void plaYUVerApp::createToolBars()
 {
-  fileToolBar = addToolBar( tr( "File" ) );
-  fileToolBar->addAction( openAct );
-  fileToolBar->addAction( saveAct );
-  fileToolBar->addAction( closeAct );
+  toolbarFile = addToolBar( tr( "File" ) );
+  toolbarFile->addAction( actionOpen );
+  toolbarFile->addAction( actionSave );
+  toolbarFile->addAction( actionClose );
 
-  viewToolBar = addToolBar( tr( "Zoom" ) );
-  viewToolBar->addAction( zoomInAct );
-  viewToolBar->addAction( zoomOutAct );
-  viewToolBar->addAction( normalSizeAct );
-  viewToolBar->addAction( zoomToFitAct );
+  toolbarView = addToolBar( tr( "Zoom" ) );
+  toolbarView->addAction( actionZoomIn );
+  toolbarView->addAction( actionZoomOut );
+  toolbarView->addAction( actionNormalSize );
+  toolbarView->addAction( actionZoomToFit );
 
-  videoToolBar = addToolBar( tr( "Video" ) );
-  videoToolBar->addAction( actionVideoPlay );
-  videoToolBar->addAction( actionVideoPause );
-  videoToolBar->addAction( actionVideoStop );
-  videoToolBar->addAction( actionVideoBackward );
-  videoToolBar->addAction( actionVideoForward );
-  videoToolBar->addAction( actionVideoLoop );
-  videoToolBar->addAction( actionVideoLock );
-  videoToolBar->addAction( actionVideoInterlace );
-  videoToolBar->addAction( actionVideoCenter );
+  toolbarVideo = addToolBar( tr( "Video" ) );
+  toolbarVideo->addAction( actionVideoPlay );
+  toolbarVideo->addAction( actionVideoPause );
+  toolbarVideo->addAction( actionVideoStop );
+  /*
+   toolbarVideo->addAction( actionVideoBackward );
+   toolbarVideo->addAction( actionVideoForward );
+   toolbarVideo->addAction( actionVideoLoop );
+   toolbarVideo->addAction( actionVideoLock );
+   toolbarVideo->addAction( actionVideoInterlace );
+   toolbarVideo->addAction( actionVideoCenter );
+   */
+  toolbarVideo->addWidget( m_pcFrameSlider );
+
 }
 
 Void plaYUVerApp::createStatusBar()
@@ -489,13 +528,13 @@ void plaYUVerApp::dropEvent( QDropEvent *event )
 
     m_cLastOpenPath = QFileInfo( fileName ).path();
 
-    QMdiSubWindow *existing = findImageInterface( fileName );
+    QMdiSubWindow *existing = findSubWindow( fileName );
     if( !existing )
     {
-      SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createImageInterface();
+      SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
       if( interfaceChild->loadFile( fileName ) )
       {
-        addImageInterface( interfaceChild );
+        addSubWindow( interfaceChild );
         statusBar()->showMessage( tr( "File loaded" ), 2000 );
         interfaceChild->show();
       }
@@ -523,14 +562,14 @@ Void plaYUVerApp::writeSettings()
   settings.setValue( "size", size() );
 }
 
-SubWindowHandle *plaYUVerApp::activeImageInterface()
+SubWindowHandle *plaYUVerApp::activeSubWindow()
 {
-  if( QMdiSubWindow *activeImageInterface = mdiArea->activeSubWindow() )
-    return qobject_cast<SubWindowHandle *>( activeImageInterface );
+  if( QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow() )
+    return qobject_cast<SubWindowHandle *>( activeSubWindow );
   return 0;
 }
 
-QMdiSubWindow *plaYUVerApp::findImageInterface( const QString &fileName )
+QMdiSubWindow *plaYUVerApp::findSubWindow( const QString &fileName )
 {
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
 
@@ -542,7 +581,7 @@ QMdiSubWindow *plaYUVerApp::findImageInterface( const QString &fileName )
   return 0;
 }
 
-void plaYUVerApp::setActiveImageInterface( QWidget *window )
+void plaYUVerApp::setActiveSubWindow( QWidget *window )
 {
   if( !window )
     return;

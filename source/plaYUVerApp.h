@@ -26,14 +26,13 @@
 
 #include "config.h"
 
+#if( QT_VERSION_PLAYUVER == 5 )
+#include <QtWidgets>
+#elif( QT_VERSION_PLAYUVER == 4 )
+#include <QtGui>
+#endif
 #include <QMainWindow>
 #include "TypeDef.h"
-
-class QAction;
-class QMenu;
-class QMdiArea;
-class QMdiSubWindow;
-class QSignalMapper;
 
 namespace plaYUVer
 {
@@ -50,7 +49,7 @@ public:
 protected:
   Void closeEvent( QCloseEvent *event );
 
-private slots:
+private Q_SLOTS:
 
   //! File functions
   void open();
@@ -61,17 +60,21 @@ private slots:
   void pause();
   void stop();
   void playEvent();
+  void seekSliderEvent(int new_frame_num );
+  /**
+   * Scale the image by a given factor
+   * @param factor factor of scale. Ex: 120 scale the image up by 20% and
+   *        80 scale the image down by 25%
+   */
+  void scaleFrame( int ratio = 100 );
 
-  //! View functions
-  void zoomIn();
-  void zoomOut();
   void normalSize();
   void zoomToFit();
 
   //!  Show a message box with some information about the plaYUVerApp App
   void about();
-  void updateMenus();
 
+  void chageSubWindowSelection();
   void updateWindowMenu();
 
   /*
@@ -80,57 +83,59 @@ private slots:
   void dragEnterEvent(QDragEnterEvent *event);
   void dropEvent(QDropEvent *event);
 
-  SubWindowHandle *createImageInterface();
-  void addImageInterface( SubWindowHandle *child );
-  void setActiveImageInterface( QWidget *window );
+  void setActiveSubWindow( QWidget *window );
 
 private:
+  QMdiArea *mdiArea;
+
+  QString m_cLastOpenPath;
+  QTimer *playingTimer;
+
+  Void updateMenus();
+
   Void createActions();
   Void createMenus();
   Void createToolBars();
   Void createStatusBar();
+
   Void readSettings();
   Void writeSettings();
-  SubWindowHandle *activeImageInterface();
-  QMdiSubWindow *findImageInterface( const QString &fileName );
 
-  /**
-   * Scale the image by a given factor
-   * @param factor factor of scale. Ex: 1.2 scale the image up by 20% and
-   *        0.8 scale the image down by 25%
-   */
-  Void scaleImage( Double factor );
+  Void addSubWindow( SubWindowHandle *child );
+  SubWindowHandle *createSubWindow();
+  SubWindowHandle *activeSubWindow();
+  QMdiSubWindow *findSubWindow( const QString &fileName );
 
-  QString m_cLastOpenPath;
+  QSlider *m_pcFrameSlider;
 
-  QTimer *playingTimer;
-  QMdiArea *mdiArea;
-  QSignalMapper *windowMapper;
+  QSignalMapper *mapperZoom;
+  QSignalMapper *mapperWindow;
 
-  QMenu *fileMenu;
-  QMenu *viewMenu;
-  QMenu *windowMenu;
-  QMenu *helpMenu;
-  QToolBar *fileToolBar;
-  QToolBar *viewToolBar;
-  QToolBar *videoToolBar;
+  QMenu *menuFile;
+  QMenu *menuView;
+  QMenu *menuWindow;
+  QMenu *menuHelp;
 
-  QAction *openAct;
-  QAction *saveAct;
-  QAction *exitAct;
-  QAction *closeAct;
-  QAction *closeAllAct;
+  QToolBar *toolbarFile;
+  QToolBar *toolbarView;
+  QToolBar *toolbarVideo;
 
-  QAction *zoomInAct;
-  QAction *zoomOutAct;
-  QAction *normalSizeAct;
-  QAction *zoomToFitAct;
+  QAction *actionOpen;
+  QAction *actionSave;
+  QAction *actionExit;
+  QAction *actionClose;
+  QAction *actionCloseAll;
 
-  QAction *tileAct;
-  QAction *cascadeAct;
-  QAction *nextAct;
-  QAction *previousAct;
-  QAction *separatorAct;
+  QAction *actionZoomIn;
+  QAction *actionZoomOut;
+  QAction *actionNormalSize;
+  QAction *actionZoomToFit;
+
+  QAction *actionTile;
+  QAction *actionCascade;
+  QAction *actionNext;
+  QAction *actionPrevious;
+  QAction *actionSeparator;
 
   // Video actions.
   QAction *actionVideoPlay;
@@ -143,8 +148,8 @@ private:
   QAction *actionVideoInterlace;
   QAction *actionVideoCenter;
 
-  QAction *aboutAct;
-  QAction *aboutQtAct;
+  QAction *actionAbout;
+  QAction *actionAboutQt;
 
 };
 

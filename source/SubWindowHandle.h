@@ -50,14 +50,15 @@ private:
   QScrollArea* m_cScrollArea;
   ViewArea* m_cViewArea;
 
-  QSlider* m_pcFrameSlider;
-
-  InputStream m_currStream;
+  InputStream* m_pCurrStream;
+  QImage* m_pCurrFrameQImage;
 
   QString m_cWindowName;
   QString m_cCurrFileName;
 
   Double m_dScaleFactor;
+
+  Bool m_bIsPlaying;
 
 public:
   SubWindowHandle( QWidget * parent = 0 );
@@ -66,11 +67,12 @@ public:
   bool loadFile( const QString &fileName );
   bool save();
 
-  bool playEvent();
+  Void stopEvent();
+  Void seekEvent( UInt new_frame_num );
 
   InputStream* getInputStream()
   {
-    return &m_currStream;
+    return m_pCurrStream;
   }
 
   /**
@@ -126,8 +128,8 @@ public:
 protected:
   Void closeEvent( QCloseEvent *event );
 
-private slots:
-  void seekSliderEvent();
+public Q_SLOTS:
+  bool playEvent();
 };
 
 }  // NAMESPACE

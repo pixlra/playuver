@@ -39,7 +39,7 @@ InputStream::InputStream()
   m_uiWidth = 0;
   m_uiHeight = 0;
   m_uiTotalFrameNum = 0;
-  m_uiCurrFrameNum = 0;
+  m_iCurrFrameNum = -1;
   m_iErrorStatus = 0;
   m_iPixelFormat = -1;
 
@@ -137,9 +137,12 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
   m_cStreamInformationString = QString( "[" );
 
 #ifdef USE_FFMPEG
-  avStatus = m_cLibAvContext.initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate );
-  m_cStreamInformationString.append( QString::fromUtf8( m_cLibAvContext.getStreamInformation() ) );
-  m_uiTotalFrameNum = 100;
+  if( QFileInfo( filename ).completeSuffix().compare( QString( "yuv" ) ) )
+  {
+    avStatus = m_cLibAvContext.initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate );
+    m_cStreamInformationString.append( QString::fromUtf8( m_cLibAvContext.getStreamInformation() ) );
+    m_uiTotalFrameNum = 100;
+  }
 #endif
 
   if( m_uiWidth <= 0 || m_uiHeight <= 0 )
@@ -181,7 +184,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
 
   m_cStreamInformationString.append( QFileInfo( m_cFilename ).fileName() );
 
-  m_uiCurrFrameNum = 0;
+  m_iCurrFrameNum = -1;
   m_iStatus = 1;
 
   return;
@@ -208,15 +211,12 @@ Void InputStream::readFrame()
     return;
   }
 
-  if( m_uiCurrFrameNum < m_uiTotalFrameNum )
-  {
-    m_uiCurrFrameNum++;
-  }
-  else
+  m_iCurrFrameNum++;
+  if( m_iCurrFrameNum >= m_uiTotalFrameNum )
   {
     m_iErrorStatus = END_OF_SEQ;
-    m_uiCurrFrameNum = 0;
-    seekInput( m_uiCurrFrameNum );
+    m_iCurrFrameNum = 0;
+    seekInput( m_iCurrFrameNum );
   }
 
 #ifdef USE_FFMPEG
@@ -243,14 +243,14 @@ Void InputStream::readFrame()
 
 Bool InputStream::writeFrame( const QString& filename )
 {
-  getFrameQImage().save( filename );
+  QImage img( m_uiWidth, m_uiHeight, QImage::Format_RGB888 );
+  getFrame( &img );
+  img.save( filename );
   return true;
 }
 
-QImage InputStream::getFrameQImage()
+Void InputStream::getFrame( QImage *qimage )
 {
-  // Create QImage
-  QImage img( m_uiWidth, m_uiHeight, QImage::Format_RGB888 );
   Pel*** bufferRGB = m_cCurrFrame->getPelBufferRGB();
 
   if( sizeof(Pel) == sizeof(unsigned char) )
@@ -259,7 +259,7 @@ QImage InputStream::getFrameQImage()
     {
       for( Int x = 0; x < m_uiWidth; x++ )
       {
-        img.setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
+        qimage->setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
       }
     }
   }
@@ -267,7 +267,6 @@ QImage InputStream::getFrameQImage()
   {
     Q_ASSERT( 0 );
   }
-  return img;
 }
 
 #ifdef USE_OPENCV
@@ -292,7 +291,7 @@ Void InputStream::seekInput( Int new_frame_num )
     UInt64 frame_bytes_input = m_uiWidth * m_uiHeight * 1.5;
     UInt64 nbytes_seek = frame_bytes_input * new_frame_num;
     fseek( m_pFile, nbytes_seek, SEEK_SET );
-    m_uiCurrFrameNum = new_frame_num;
+    m_iCurrFrameNum = new_frame_num - 1;
   }
 }
 

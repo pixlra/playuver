@@ -152,8 +152,8 @@ void plaYUVerApp::pause()
 void plaYUVerApp::stop()
 {
   activeSubWindow()->stopEvent();
+  m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
   playingTimer->stop();
-
 }
 
 void plaYUVerApp::playEvent()
@@ -162,8 +162,17 @@ void plaYUVerApp::playEvent()
   {
     if( !activeSubWindow()->playEvent() )
     {
-      playingTimer->stop();
+      stop();
     }
+    m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
+  }
+}
+
+void plaYUVerApp::seekSliderEvent( int new_frame_num )
+{
+  if( activeSubWindow() )
+  {
+    activeSubWindow()->seekEvent( new_frame_num );
   }
 }
 
@@ -202,6 +211,11 @@ void plaYUVerApp::about()
 void plaYUVerApp::chageSubWindowSelection()
 {
   playingTimer->stop();
+  if( activeSubWindow() )
+  {
+    m_pcFrameSlider->setMaximum( activeSubWindow()->getInputStream()->getFrameNum() - 1 );
+    m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
+  }
   updateMenus();
   //updateWindowMenu();
 }
@@ -226,6 +240,7 @@ Void plaYUVerApp::updateMenus()
   actionVideoStop->setEnabled( hasSubWindow );
   actionVideoBackward->setEnabled( hasSubWindow );
   actionVideoForward->setEnabled( hasSubWindow );
+  m_pcFrameSlider->setEnabled( hasSubWindow );
 }
 
 void plaYUVerApp::updateWindowMenu()
@@ -358,20 +373,26 @@ Void plaYUVerApp::createActions()
   // ------------ Playing ------------
 
   actionVideoPlay = new QAction( "VideoPlay", this );
+  actionVideoPlay->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPlay ) ) );
+  connect( actionVideoPlay, SIGNAL( triggered() ), this, SLOT( play() ) );
+
   actionVideoPause = new QAction( "VideoPause", this );
+  actionVideoPause->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPause ) ) );
+  connect( actionVideoPause, SIGNAL( triggered() ), this, SLOT( pause() ) );
+
   actionVideoStop = new QAction( "VideoStop", this );
+  actionVideoStop->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaStop ) ) );
+  connect( actionVideoStop, SIGNAL( triggered() ), this, SLOT( stop() ) );
+
   actionVideoBackward = new QAction( "VideoBackward", this );
+  actionVideoBackward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
   actionVideoForward = new QAction( "VideoForward", this );
+  actionVideoForward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
+
   actionVideoLoop = new QAction( "VideoLoop", this );
   actionVideoLock = new QAction( "VideoLock", this );
   actionVideoInterlace = new QAction( "VideoInterlace", this );
   actionVideoCenter = new QAction( "VideoCenter", this );
-
-  actionVideoPlay->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPlay ) ) );
-  actionVideoPause->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPause ) ) );
-  actionVideoStop->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaStop ) ) );
-  actionVideoBackward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
-  actionVideoForward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
   /*
    actionVideoLoop     ->setIcon( QIcon( ":/images/videoloop.png"  ) );
    actionVideoLock     ->setIcon( QIcon( ":/images/lock.png"       ) );
@@ -379,9 +400,13 @@ Void plaYUVerApp::createActions()
    actionVideoCenter   ->setIcon( QIcon( ":/images/center.png"     ) );
    */
 
-  connect( actionVideoPlay, SIGNAL( triggered() ), this, SLOT( play() ) );
-  connect( actionVideoPause, SIGNAL( triggered() ), this, SLOT( pause() ) );
-  connect( actionVideoStop, SIGNAL( triggered() ), this, SLOT( stop() ) );
+  m_pcFrameSlider = new QSlider;
+  m_pcFrameSlider->setOrientation( Qt::Horizontal );
+  m_pcFrameSlider->setMaximumWidth( 100 );
+  m_pcFrameSlider->setMaximumWidth( 300 );
+  m_pcFrameSlider->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
+  m_pcFrameSlider->setEnabled( false );
+  connect( m_pcFrameSlider, SIGNAL( valueChanged(int) ), this, SLOT( seekSliderEvent(int) ) );
 
   // ------------ Window ------------
 
@@ -463,19 +488,15 @@ Void plaYUVerApp::createToolBars()
   toolbarVideo->addAction( actionVideoPause );
   toolbarVideo->addAction( actionVideoStop );
   /*
-  toolbarVideo->addAction( actionVideoBackward );
-  toolbarVideo->addAction( actionVideoForward );
-  toolbarVideo->addAction( actionVideoLoop );
-  toolbarVideo->addAction( actionVideoLock );
-  toolbarVideo->addAction( actionVideoInterlace );
-  toolbarVideo->addAction( actionVideoCenter );
-  */
-  m_pcFrameSlider = new QSlider;
-  m_pcFrameSlider->setOrientation( Qt::Horizontal );
-  m_pcFrameSlider->setMaximumWidth( 100 );
-  m_pcFrameSlider->setMaximumWidth( 100 );
-  m_pcFrameSlider->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
+   toolbarVideo->addAction( actionVideoBackward );
+   toolbarVideo->addAction( actionVideoForward );
+   toolbarVideo->addAction( actionVideoLoop );
+   toolbarVideo->addAction( actionVideoLock );
+   toolbarVideo->addAction( actionVideoInterlace );
+   toolbarVideo->addAction( actionVideoCenter );
+   */
   toolbarVideo->addWidget( m_pcFrameSlider );
+
 }
 
 Void plaYUVerApp::createStatusBar()

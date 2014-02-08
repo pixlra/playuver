@@ -68,6 +68,7 @@ public:
   bool save();
 
   Void stopEvent();
+  Void seekEvent( UInt new_frame_num );
 
   InputStream* getInputStream()
   {

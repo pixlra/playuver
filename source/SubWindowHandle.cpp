@@ -161,6 +161,14 @@ bool SubWindowHandle::playEvent()
   return false;
 }
 
+Void SubWindowHandle::seekEvent( UInt new_frame_num )
+{
+  m_pCurrStream->seekInput( new_frame_num );
+  m_pCurrStream->readFrame();
+  m_pCurrStream->getFrame( m_pCurrFrameQImage );
+  m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
+}
+
 Void SubWindowHandle::stopEvent()
 {
   m_pCurrStream->seekInput( 0 );

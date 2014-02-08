@@ -60,7 +60,7 @@ private Q_SLOTS:
   void pause();
   void stop();
   void playEvent();
-
+  void seekSliderEvent(int new_frame_num );
   /**
    * Scale the image by a given factor
    * @param factor factor of scale. Ex: 120 scale the image up by 20% and

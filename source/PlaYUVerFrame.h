@@ -45,6 +45,7 @@ public:
   static QStringList supportedPixelFormatList();
 
   Void FrameFromBuffer( Pel *input_buffer, Int pel_format );
+  Void CopyFrom( PlaYUVerFrame* );
 
   UInt64 getBytesPerFrame();
 
@@ -55,6 +56,10 @@ public:
   Pel*** getPelBufferRGB()
   {
     return m_pppcRGBPel;
+  }
+  Int getPelFormat()
+  {
+    return m_iPixelFormat;
   }
 private:
 

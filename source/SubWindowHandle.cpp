@@ -31,41 +31,20 @@ namespace plaYUVer
 SubWindowHandle::SubWindowHandle( QWidget * parent ) :
     QMdiSubWindow( parent )
 {
-
   setParent( parent );
+
   setAttribute( Qt::WA_DeleteOnClose );
   setBackgroundRole( QPalette::Light );
 
   // Create a new scroll area inside the sub-window
-  m_cScrollArea = new QScrollArea;
+  m_cScrollArea = new QScrollArea( this );
+  setWidget( m_cScrollArea );
 
   // Create a new interface to show images
-  m_cViewArea = new ViewArea;
+  m_cViewArea = new ViewArea( m_cScrollArea );
 
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
-
-  // Create Layout for the playing config
-  QHBoxLayout *pcHeadLayout = new QHBoxLayout;
-  pcHeadLayout->setObjectName( QStringLiteral( "HeadLayout" ) );
-  QSpacerItem * headerSpacer0 = new QSpacerItem( 30, 2, QSizePolicy::Fixed, QSizePolicy::Minimum );
-  m_pcFrameSlider = new QSlider( this );
-  m_pcFrameSlider->setObjectName( QStringLiteral( "FrameSlider" ) );
-  m_pcFrameSlider->setOrientation( Qt::Horizontal );
-  m_pcFrameSlider->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );
-  m_pcFrameSlider->setEnabled( true );
-  m_pcFrameSlider->setTracking( true );
-  QSpacerItem * headerSpacer1 = new QSpacerItem( 30, 2, QSizePolicy::Fixed, QSizePolicy::Minimum );
-  pcHeadLayout->addSpacerItem( headerSpacer0 );
-  pcHeadLayout->addWidget( m_pcFrameSlider, 5 );
-  pcHeadLayout->addSpacerItem( headerSpacer1 );
-
-  //setWidget( m_cScrollArea );
-  QLayout *pcMainLayout = layout();
-  pcMainLayout->addWidget( m_cScrollArea );
-  pcMainLayout->addItem( pcHeadLayout );
-
-  connect( m_pcFrameSlider, SIGNAL( valueChanged(int) ), this, SLOT( seekSliderEvent() ) );
 
   m_cWindowName = QString( " " );
   m_bIsPlaying = true;
@@ -122,6 +101,7 @@ bool SubWindowHandle::loadFile( const QString &fileName )
 
   m_cWindowName = QString( " " );
   m_cWindowName = m_pCurrStream->getStreamInformationString();
+
   m_cCurrFileName = fileName;
 
   setWindowTitle( m_cWindowName );
@@ -157,13 +137,6 @@ bool SubWindowHandle::save()
   QApplication::restoreOverrideCursor();
 
   return true;
-}
-
-void SubWindowHandle::seekSliderEvent()
-{
-  m_currStream.seekInput( m_pcFrameSlider->sliderPosition() );
-  m_currStream.readFrame();
-  m_cViewArea->setImage( QPixmap::fromImage( m_currStream.getFrameQImage() ) );
 }
 
 bool SubWindowHandle::playEvent()

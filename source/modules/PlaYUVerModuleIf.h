@@ -17,44 +17,38 @@
  */
 
 /**
- * \file     ModulesHandle.h
- * \brief    PlaYUVer modules handle
+ * \file     PlaYUVerModuleIf.h
+ * \brief    PlaYUVer modules interface
  */
 
-#ifndef __MODULESHANDLE_H__
-#define __MODULESHANDLE_H__
+#ifndef __PLAYUVERMODULESIF_H__
+#define __PLAYUVERMODULESIF_H__
 
 #include "config.h"
 
 #include <iostream>
 #include <cstdio>
 
-#include <QtCore>
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
-
 #include "TypeDef.h"
+#include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {
 
-class ModulesHandle
+class PlaYUVerModuleIf
 {
-
 public:
-  ModulesHandle();
-  ~ModulesHandle();
+  virtual Void create();
 
-  Void createMenus( QMenuBar *MainAppMenuBar );
+  virtual Void process();
+  virtual PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
 
-private:
-  
+  virtual Void close();
+
+  virtual ~PlaYUVerModuleIf() {}
 };
 
 }  // NAMESPACE
 
-#endif // __MODULESHANDLE_H__
+#endif // __PLAYUVERMODULESIF_H__
  

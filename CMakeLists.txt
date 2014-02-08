@@ -70,6 +70,8 @@ INCLUDE( cmake/LibFFmpeg.cmake )
 # PlaYUVer modules build
 ######################################################################################
 SET( MODULES_DIR ${SRC_DIR}/modules )
+FILE( GLOB ModuleCMakeFiles cmake/Module*.cmake )
+INCLUDE( ${ModuleCMakeFiles} )
 
 ######################################################################################
 # Create config.h

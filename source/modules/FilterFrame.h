@@ -17,38 +17,32 @@
  */
 
 /**
- * \file     ModulesHandle.h
- * \brief    PlaYUVer modules handle
+ * \file     FilterFrame.h
+ * \brief    Filter frame module
  */
 
-#ifndef __MODULESHANDLE_H__
-#define __MODULESHANDLE_H__
+#ifndef __FILTERFRAME_H__
+#define __FILTERFRAME_H__
 
 #include "config.h"
 
 #include <iostream>
 #include <cstdio>
-
-#include <QtCore>
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
-
 #include "TypeDef.h"
+#include "PlaYUVerFrame.h"
+#include "PlaYUVerModuleIf.h"
+
 
 namespace plaYUVer
 {
 
-class ModulesHandle
+class FilterFrame : public PlaYUVerModuleIf
 {
-
 public:
-  ModulesHandle();
-  ~ModulesHandle();
+  FilterFrame();
+  ~FilterFrame();
 
-  Void createMenus( QMenuBar *MainAppMenuBar );
+  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
 
 private:
   
@@ -56,5 +50,5 @@ private:
 
 }  // NAMESPACE
 
-#endif // __MODULESHANDLE_H__
+#endif // __FILTERFRAME_H__
  

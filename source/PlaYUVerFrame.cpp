@@ -193,7 +193,6 @@ Void PlaYUVerFrame::CopyFrom( PlaYUVerFrame* input_frame )
   switch( m_iPixelFormat )
   {
   case YUV420:
-    input_frame->getPelBufferYUV()
     memcpy( &m_pppcInputPel[0][0][0], &( input_frame->getPelBufferYUV()[0][0][0] ), num_bytes * sizeof(Pel) );
     memcpy( &m_pppcInputPel[1][0][0], &( input_frame->getPelBufferYUV()[1][0][0] ), num_bytes / 4 * sizeof(Pel) );
     memcpy( &m_pppcInputPel[2][0][0], &( input_frame->getPelBufferYUV()[2][0][0] ), num_bytes / 4 * sizeof(Pel) );

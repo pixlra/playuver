@@ -51,6 +51,8 @@ plaYUVerApp::plaYUVerApp()
   mapperWindow = new QSignalMapper( this );
   connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
 
+  m_pcModulesHandle = new ModulesHandle(this);
+
   createActions();
   createMenus();
   createToolBars();

@@ -24,14 +24,18 @@
 #include <cstdio>
 
 #include "ModulesHandle.h"
-
+#include "FilterFrame.h"
 
 namespace plaYUVer
 {
 
-ModulesHandle::ModulesHandle()
+ModulesHandle::ModulesHandle( QWidget * parent )
 {
+  setParent( parent );
+  m_uiModulesCount = 0;
 
+  // Register Modules
+  REGISTER_MODULE( FilterFrame );
 }
 
 ModulesHandle::~ModulesHandle()
@@ -39,11 +43,37 @@ ModulesHandle::~ModulesHandle()
 
 }
 
-Void ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
+Void ModulesHandle::appendModule( PlaYUVerModuleIf* pIfModule )
 {
-  MainAppMenuBar->addMenu( "&Modules" );
+  m_pcPlaYUVerModules.append( pIfModule );
+    m_uiModulesCount++;
+
 }
 
+Void ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
+{
+  PlaYUVerModuleIf* currModuleIf;
+  QAction* currAction;
+
+  m_pcModulesMenu = MainAppMenuBar->addMenu( "&Modules" );
+
+  //m_arrayModulesActions.resize( m_uiModulesCount );
+
+  for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
+  {
+
+    currModuleIf = m_pcPlaYUVerModules.at( i );
+
+    currAction = new QAction( tr( currModuleIf->m_pchModuleName ), parent() );
+    currAction->setStatusTip( tr( currModuleIf->m_pchModuleTooltip ) );
+
+    m_arrayModulesActions.append( currAction );
+
+    m_pcModulesMenu->addAction( currAction );
+  }
+
+  //MainAppMenuBar->
+}
 
 }  // NAMESPACE
- 
+

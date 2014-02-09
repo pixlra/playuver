@@ -32,23 +32,65 @@
 #include "TypeDef.h"
 #include "PlaYUVerFrame.h"
 
+class QImage;
+
 namespace plaYUVer
 {
+
+#define REGISTER_MODULE_NAME( type, name, tooltip ) \
+    m_pchModuleType = type; \
+    m_pchModuleName = name; \
+    m_pchModuleTooltip = tooltip;
+
 
 class PlaYUVerModuleIf
 {
 public:
-  virtual Void create();
+  PlaYUVerModuleIf() :
+      m_pchModuleType( NULL ), m_pchModuleName( NULL ), m_pchModuleTooltip( NULL )
+  {
+  }
+  virtual ~PlaYUVerModuleIf()
+  {
+  }
 
-  virtual Void process();
-  virtual PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
+  const Char* m_pchModuleType;
+  const Char* m_pchModuleName;
+  const Char* m_pchModuleTooltip;
 
-  virtual Void close();
+  virtual Void create()
+  {
+  }
 
-  virtual ~PlaYUVerModuleIf() {}
+  virtual Void create( QImage* )
+  {
+  }
+
+  virtual Void create( PlaYUVerFrame* )
+  {
+  }
+
+  virtual Void process()
+  {
+  }
+
+  virtual QImage* process( QImage* )
+  {
+    return NULL;
+  }
+
+  virtual PlaYUVerFrame* process( PlaYUVerFrame* )
+  {
+    return NULL;
+  }
+
+  virtual Void destroy()
+  {
+  }
+
 };
 
 }  // NAMESPACE
 
 #endif // __PLAYUVERMODULESIF_H__
- 
+

@@ -37,24 +37,39 @@
 #endif
 
 #include "TypeDef.h"
+#include "PlaYUVerModuleIf.h"
 
 namespace plaYUVer
 {
 
-class ModulesHandle
-{
+#define REGISTER_MODULE(X)                      \
+    {                                           \
+      if( USE_##X )                             \
+      {                                         \
+        X *pMod = new X();                      \
+        appendModule( pMod );                   \
+      }                                         \
+    }
 
+class ModulesHandle : public QObject
+{
+ Q_OBJECT
 public:
-  ModulesHandle();
+  ModulesHandle( QWidget * parent = 0 );
   ~ModulesHandle();
 
   Void createMenus( QMenuBar *MainAppMenuBar );
 
 private:
-  
+  QMenu* m_pcModulesMenu;
+  UInt m_uiModulesCount;
+  QList<PlaYUVerModuleIf*> m_pcPlaYUVerModules;
+  QVector<QAction*> m_arrayModulesActions;
+
+  Void appendModule( PlaYUVerModuleIf* );
 };
 
 }  // NAMESPACE
 
 #endif // __MODULESHANDLE_H__
- 
+

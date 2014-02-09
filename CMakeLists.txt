@@ -70,11 +70,12 @@ INCLUDE( cmake/LibFFmpeg.cmake )
 # PlaYUVer modules build
 ######################################################################################
 SET( MODULES_DIR ${SRC_DIR}/modules )
+INCLUDE_DIRECTORIES( ${MODULES_DIR} )
 FILE( GLOB ModuleCMakeFiles cmake/Module*.cmake )
 INCLUDE( ${ModuleCMakeFiles} )
 
 ######################################################################################
-# Create config.h
+# Main config.h
 ######################################################################################
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
@@ -83,7 +84,7 @@ CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_D
 ######################################################################################
 ADD_EXECUTABLE( ${PROJECT_NAME} ${SOURCES_FILES} ${HEADERS_MOC_FILES} ${FORMS_HEADERS_FILES} ${RESOURCES_RCC_FILES} )
 
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${LINKER_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${MODULES_LIBS} ${LINKER_LIBS} )
 
 IF( NOT USE_QT4)
     QT5_USE_MODULES( ${PROJECT_NAME} ${CURR_QT_MODULES} )

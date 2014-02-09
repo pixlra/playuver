@@ -63,6 +63,9 @@ private Q_SLOTS:
   void stop();
   void playEvent();
   void seekSliderEvent( int new_frame_num );
+
+  void selectModule( QAction * );
+
   /**
    * Scale the image by a given factor
    * @param factor factor of scale. Ex: 120 scale the image up by 20% and

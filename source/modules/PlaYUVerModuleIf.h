@@ -58,35 +58,14 @@ public:
   const Char* m_pchModuleName;
   const Char* m_pchModuleTooltip;
 
-  virtual Void create()
-  {
-  }
+  virtual Void create() {};
+  virtual Void process() {};
 
-  virtual Void create( QImage* )
-  {
-  }
+  virtual Void create( PlaYUVerFrame* ) {};
+  virtual PlaYUVerFrame* process( PlaYUVerFrame* ) {};
+  virtual PlaYUVerFrame* getModImage() {};
 
-  virtual Void create( PlaYUVerFrame* )
-  {
-  }
-
-  virtual Void process()
-  {
-  }
-
-  virtual QImage* process( QImage* )
-  {
-    return NULL;
-  }
-
-  virtual PlaYUVerFrame* process( PlaYUVerFrame* )
-  {
-    return NULL;
-  }
-
-  virtual Void destroy()
-  {
-  }
+  virtual Void destroy() {};
 
 };
 

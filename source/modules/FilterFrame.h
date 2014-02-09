@@ -57,8 +57,14 @@ public:
   }
 
   Void create( PlaYUVerFrame* InputFrame );
+
   PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
   Void destroy();
+
+  PlaYUVerFrame* getModImage()
+  {
+    return m_pcFilteredFrame;
+  }
 };
 
 }  // NAMESPACE

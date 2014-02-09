@@ -31,11 +31,15 @@ namespace plaYUVer
 
 ModulesHandle::ModulesHandle( QWidget * parent )
 {
-  setParent( parent );
-  m_uiModulesCount = 0;
-
   // Register Modules
   REGISTER_MODULE( FilterFrame );
+
+
+
+  // configure class
+  setParent( parent );
+  m_uiModulesCount = 0;
+  m_uiModuleSelected= -1;
 }
 
 ModulesHandle::~ModulesHandle()
@@ -46,14 +50,31 @@ ModulesHandle::~ModulesHandle()
 Void ModulesHandle::appendModule( PlaYUVerModuleIf* pIfModule )
 {
   m_pcPlaYUVerModules.append( pIfModule );
-    m_uiModulesCount++;
+  m_uiModulesCount++;
 
 }
 
-Void ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
+void ModulesHandle::selectModule( int index )
+{
+  m_uiModuleSelected = index;
+}
+
+PlaYUVerModuleIf* ModulesHandle::getSelectedModuleIf()
+{
+  PlaYUVerModuleIf* currModuleIf = NULL;
+  if( m_uiModuleSelected >= 0 )
+    return m_pcPlaYUVerModules.at( m_uiModuleSelected );
+  m_uiModuleSelected = -1;
+  return currModuleIf;
+}
+
+QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 {
   PlaYUVerModuleIf* currModuleIf;
   QAction* currAction;
+
+  m_pcActionMapper = new QSignalMapper( this );
+  connect( m_pcActionMapper, SIGNAL( mapped(int) ), this, SLOT( selectModule(int) ) );
 
   m_pcModulesMenu = MainAppMenuBar->addMenu( "&Modules" );
 
@@ -61,17 +82,18 @@ Void ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 
   for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
   {
-
     currModuleIf = m_pcPlaYUVerModules.at( i );
 
     currAction = new QAction( tr( currModuleIf->m_pchModuleName ), parent() );
     currAction->setStatusTip( tr( currModuleIf->m_pchModuleTooltip ) );
-
+    currAction->setCheckable( true );
+    connect( currAction, SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
+    m_pcActionMapper->setMapping( currAction, i );
     m_arrayModulesActions.append( currAction );
 
     m_pcModulesMenu->addAction( currAction );
   }
-
+  return m_pcModulesMenu;
   //MainAppMenuBar->
 }
 

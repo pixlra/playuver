@@ -46,6 +46,8 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
 
+  m_pcCurrentModule = NULL;
+
   m_cWindowName = QString( " " );
   m_bIsPlaying = true;
   m_dScaleFactor = 1;
@@ -107,10 +109,23 @@ bool SubWindowHandle::loadFile( const QString &fileName )
   return true;
 }
 
+Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
+{
+  m_pcCurrentModule = select_module;
+  m_pcCurrentModule->create( m_pCurrStream->getFrame( m_pcCurrentModule->getModImage() ) );
+  refreshFrame();
+}
+
 Void SubWindowHandle::refreshFrame()
 {
-  m_pCurrStream->getFrame( m_pCurrFrameQImage );
-  m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
+  if( m_pcCurrentModule )
+  {
+    m_pcCurrentModule->process( m_pCurrStream->getFrame( m_pcCurrentModule->getModImage() ) );
+  }
+  else
+  {
+    m_cViewArea->setImage( QPixmap::fromImage( *( m_pCurrStream->getFrame( m_pCurrFrameQImage ) ) ) );
+  }
 }
 
 bool SubWindowHandle::save()
@@ -178,7 +193,6 @@ Void SubWindowHandle::stopEvent()
   refreshFrame();
   return;
 }
-
 
 Void SubWindowHandle::normalSize()
 {

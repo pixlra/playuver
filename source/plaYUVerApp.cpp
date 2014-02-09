@@ -51,7 +51,7 @@ plaYUVerApp::plaYUVerApp()
   mapperWindow = new QSignalMapper( this );
   connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
 
-  m_pcModulesHandle = new ModulesHandle(this);
+  m_pcModulesHandle = new ModulesHandle( this );
 
   createActions();
   createMenus();
@@ -131,6 +131,22 @@ void plaYUVerApp::save()
 {
   if( activeSubWindow() )
     activeSubWindow()->save();
+}
+
+// -----------------------  Modules Selection  --------------------
+
+void plaYUVerApp::selectModule( QAction *curr_action )
+{
+  //emit curr_action->triggered();
+
+  if( m_pcModulesHandle->getSelectedModuleIf() )
+  {
+    if( activeSubWindow() )
+    {
+      activeSubWindow()->enableModule( m_pcModulesHandle->getSelectedModuleIf() );
+    }
+  }
+  return;
 }
 
 // -----------------------  Playing Functions  --------------------
@@ -447,7 +463,7 @@ Void plaYUVerApp::createActions()
 
 Void plaYUVerApp::createMenus()
 {
-  m_arrayMenu.resize(4);
+  m_arrayMenu.resize( 4 );
 
   m_arrayMenu[OTHER_MENU] = menuBar()->addMenu( tr( "&File" ) );
   m_arrayMenu[OTHER_MENU]->addAction( actionOpen );
@@ -457,13 +473,14 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[OTHER_MENU]->addAction( actionClose );
   m_arrayMenu[OTHER_MENU]->addAction( actionExit );
 
-  m_arrayMenu[OTHER_MENU+1] = menuBar()->addMenu( tr( "&View" ) );
-  m_arrayMenu[OTHER_MENU+1]->addAction( actionZoomIn );
-  m_arrayMenu[OTHER_MENU+1]->addAction( actionZoomOut );
-  m_arrayMenu[OTHER_MENU+1]->addAction( actionNormalSize );
-  m_arrayMenu[OTHER_MENU+1]->addAction( actionZoomToFit );
+  m_arrayMenu[OTHER_MENU + 1] = menuBar()->addMenu( tr( "&View" ) );
+  m_arrayMenu[OTHER_MENU + 1]->addAction( actionZoomIn );
+  m_arrayMenu[OTHER_MENU + 1]->addAction( actionZoomOut );
+  m_arrayMenu[OTHER_MENU + 1]->addAction( actionNormalSize );
+  m_arrayMenu[OTHER_MENU + 1]->addAction( actionZoomToFit );
 
-  m_pcModulesHandle->createMenus( menuBar() );
+  QMenu* modules_menu = m_pcModulesHandle->createMenus( menuBar() );
+  connect( modules_menu, SIGNAL( triggered(QAction *) ), this, SLOT( selectModule(QAction *) ) );
 
   m_arrayMenu[WINDOW_MENU] = menuBar()->addMenu( tr( "&Window" ) );
   updateWindowMenu();
@@ -471,9 +488,9 @@ Void plaYUVerApp::createMenus()
 
   menuBar()->addSeparator();
 
-  m_arrayMenu[OTHER_MENU+2] = menuBar()->addMenu( tr( "&Help" ) );
-  m_arrayMenu[OTHER_MENU+2]->addAction( actionAbout );
-  m_arrayMenu[OTHER_MENU+2]->addAction( actionAboutQt );
+  m_arrayMenu[OTHER_MENU + 2] = menuBar()->addMenu( tr( "&Help" ) );
+  m_arrayMenu[OTHER_MENU + 2]->addAction( actionAbout );
+  m_arrayMenu[OTHER_MENU + 2]->addAction( actionAboutQt );
 }
 
 Void plaYUVerApp::createToolBars()

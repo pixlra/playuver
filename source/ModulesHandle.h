@@ -58,15 +58,21 @@ public:
   ModulesHandle( QWidget * parent = 0 );
   ~ModulesHandle();
 
-  Void createMenus( QMenuBar *MainAppMenuBar );
+  QMenu* createMenus( QMenuBar *MainAppMenuBar );
+  PlaYUVerModuleIf* getSelectedModuleIf();
 
 private:
-  QMenu* m_pcModulesMenu;
   UInt m_uiModulesCount;
+  Int m_uiModuleSelected;
+  QMenu* m_pcModulesMenu;
   QList<PlaYUVerModuleIf*> m_pcPlaYUVerModules;
+  QSignalMapper* m_pcActionMapper;
   QVector<QAction*> m_arrayModulesActions;
 
   Void appendModule( PlaYUVerModuleIf* );
+
+private Q_SLOTS:
+  void selectModule( int index );
 };
 
 }  // NAMESPACE

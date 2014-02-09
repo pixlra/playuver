@@ -44,6 +44,8 @@ public:
 
   static QStringList supportedPixelFormatList();
 
+  Void YUV420toRGB();
+
   Void FrameFromBuffer( Pel *input_buffer, Int pel_format );
   Void CopyFrom( PlaYUVerFrame* );
 
@@ -70,9 +72,6 @@ public:
     return m_iPixelFormat;
   }
 private:
-
-  Void YUV420toRGB();
-
   UInt m_uiWidth;
   UInt m_uiHeight;
   Int m_iPixelFormat;

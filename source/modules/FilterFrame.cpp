@@ -26,23 +26,26 @@
 #include "FilterFrame.h"
 #include "PlaYUVerFrame.h"
 
+
+
 namespace plaYUVer
 {
 
-FilterFrame::FilterFrame()
+Void FilterFrame::create( PlaYUVerFrame* InputFrame )
 {
-
+  m_pcFilteredFrame = new PlaYUVerFrame( InputFrame->getWidth(), InputFrame->getHeight(), InputFrame->getPelFormat() );
 }
 
-FilterFrame::~FilterFrame()
+PlaYUVerFrame* FilterFrame::process( PlaYUVerFrame* InputFrame )
 {
-
+  m_pcFilteredFrame->CopyFrom( InputFrame );
+  return m_pcFilteredFrame;
 }
 
-PlaYUVerFrame* process( PlaYUVerFrame* InputFrame )
+Void FilterFrame::destroy()
 {
-
+  delete m_pcFilteredFrame;
 }
 
 }  // NAMESPACE
- 
+

@@ -32,23 +32,36 @@
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerModuleIf.h"
 
+#include <cassert>
 
 namespace plaYUVer
 {
 
-class FilterFrame : public PlaYUVerModuleIf
+const Char ModuleType[] = "Filter";
+const Char ModuleName[] = "Y_Filter";
+const Char ModuleTooltip[] = "Filter Y matrix of YUV frame";
+
+class FilterFrame: public PlaYUVerModuleIf
 {
-public:
-  FilterFrame();
-  ~FilterFrame();
-
-  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
-
 private:
-  
+  PlaYUVerFrame* m_pcFilteredFrame;
+
+public:
+  FilterFrame()
+  {
+    REGISTER_MODULE_NAME(ModuleType, ModuleName, ModuleTooltip )
+    m_pcFilteredFrame = NULL;
+  }
+  virtual ~FilterFrame()
+  {
+  }
+
+  Void create( PlaYUVerFrame* InputFrame );
+  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
+  Void destroy();
 };
 
 }  // NAMESPACE
 
 #endif // __FILTERFRAME_H__
- 
+

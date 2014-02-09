@@ -109,6 +109,10 @@ bool SubWindowHandle::loadFile( const QString &fileName )
   return true;
 }
 
+/**
+ * Functions to enable a module in the
+ * current SubWindow
+ */
 Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
 {
   m_pcCurrentModule = select_module;
@@ -116,16 +120,40 @@ Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
   refreshFrame();
 }
 
+Void SubWindowHandle::disableModule()
+{
+  m_pcCurrentModule->destroy();
+  m_pcCurrentModule = NULL;
+  refreshFrame();
+}
+
+QImage* SubWindowHandle::FrameToQImage( PlaYUVerFrame* curr_frame )
+{
+  Pel*** bufferRGB = curr_frame->getPelBufferRGB();
+
+  curr_frame->YUV420toRGB();
+
+  for( Int y = 0; y < curr_frame->getHeight(); y++ )
+  {
+    for( Int x = 0; x < curr_frame->getWidth(); x++ )
+    {
+      m_pCurrFrameQImage->setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
+    }
+  }
+  return m_pCurrFrameQImage;
+}
+
 Void SubWindowHandle::refreshFrame()
 {
   if( m_pcCurrentModule )
   {
-    m_pcCurrentModule->process( m_pCurrStream->getFrame( m_pcCurrentModule->getModImage() ) );
+    FrameToQImage( m_pcCurrentModule->process( m_pCurrStream->getFrame( m_pcCurrentModule->getModImage() ) ) );
   }
   else
   {
-    m_cViewArea->setImage( QPixmap::fromImage( *( m_pCurrStream->getFrame( m_pCurrFrameQImage ) ) ) );
+    FrameToQImage( m_pCurrStream->getFrame( (PlaYUVerFrame*) NULL ) );
   }
+  m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
 }
 
 bool SubWindowHandle::save()

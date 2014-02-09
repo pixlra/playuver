@@ -48,7 +48,7 @@ PlaYUVerFrame* FilterFrame::process( PlaYUVerFrame* InputFrame )
       pppPelYUV[2][y][x] = 128;
     }
   }
-
+  m_pcFilteredFrame->YUV420toRGB();
   return m_pcFilteredFrame;
 }
 

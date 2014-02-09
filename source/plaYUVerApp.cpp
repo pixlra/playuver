@@ -71,6 +71,8 @@ plaYUVerApp::plaYUVerApp()
 
   setAcceptDrops( true );
   mdiArea->setAcceptDrops( true );
+
+  m_pcCurrentSubWindow = NULL;
 }
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
@@ -231,8 +233,12 @@ void plaYUVerApp::chageSubWindowSelection()
   playingTimer->stop();
   if( activeSubWindow() )
   {
+    if( m_pcCurrentSubWindow )
+      m_pcCurrentSubWindow->disableModule();
+
     m_pcFrameSlider->setMaximum( activeSubWindow()->getInputStream()->getFrameNum() - 1 );
     m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
+    m_pcCurrentSubWindow = activeSubWindow();
   }
   updateMenus();
   //updateWindowMenu();

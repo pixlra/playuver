@@ -73,6 +73,7 @@ public:
   Void stopEvent();
   Void seekEvent( UInt new_frame_num );
 
+  QImage* FrameToQImage( PlaYUVerFrame* curr_frame );
   Void refreshFrame();
 
   InputStream* getInputStream()
@@ -81,10 +82,11 @@ public:
   }
 
   /**
-   * Function to enable a module in the
+   * Functions to enable a module in the
    * current SubWindow
    */
   Void enableModule( PlaYUVerModuleIf* select_module );
+  Void disableModule();
 
   /**
    * Show the image at its original size

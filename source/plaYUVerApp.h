@@ -92,6 +92,7 @@ private Q_SLOTS:
 
 private:
   QMdiArea *mdiArea;
+  SubWindowHandle *m_pcCurrentSubWindow;
   ModulesHandle *m_pcModulesHandle;
 
   QString m_cLastOpenPath;

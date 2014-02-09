@@ -249,7 +249,7 @@ Bool InputStream::writeFrame( const QString& filename )
   return true;
 }
 
-Void InputStream::getFrame( QImage *qimage )
+QImage* InputStream::getFrame( QImage *qimage )
 {
   Pel*** bufferRGB = m_cCurrFrame->getPelBufferRGB();
 
@@ -267,6 +267,18 @@ Void InputStream::getFrame( QImage *qimage )
   {
     Q_ASSERT( 0 );
   }
+  return qimage;
+}
+
+PlaYUVerFrame* InputStream::getFrame( PlaYUVerFrame *pyuv_image )
+{
+  Pel*** bufferRGB = m_cCurrFrame->getPelBufferRGB();
+
+  if( pyuv_image == NULL )
+    pyuv_image = new PlaYUVerFrame( m_cCurrFrame->getWidth(), m_cCurrFrame->getHeight(), m_cCurrFrame->getPelFormat() );
+
+  pyuv_image->CopyFrom(m_cCurrFrame);
+  return pyuv_image;
 }
 
 #ifdef USE_OPENCV

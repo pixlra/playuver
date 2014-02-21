@@ -124,7 +124,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   widthLabel->setText( QApplication::translate( "ConfigureFormat", "Width", 0 ) );
   widthSpinBox = new QSpinBox();
   widthSpinBox->setObjectName( QStringLiteral( "widthSpinBox" ) );
-  widthSpinBox->setRange( 0, 5000 );
+  widthSpinBox->setRange( 0, 7240 );
   widthSpinBox->setValue( 0 );
 
   heightLabel = new QLabel();
@@ -132,7 +132,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   heightLabel->setText( QApplication::translate( "ConfigureFormat", "Height", 0 ) );
   heightSpinBox = new QSpinBox();
   heightSpinBox->setObjectName( QStringLiteral( "heightSpinBox" ) );
-  heightSpinBox->setRange( 0, 5000 );
+  heightSpinBox->setRange( 0, 5432 );
   heightSpinBox->setValue( 0 );
 
   pixelsLabel = new QLabel();

@@ -62,8 +62,11 @@ void ModulesHandle::selectModule( int index )
 PlaYUVerModuleIf* ModulesHandle::getSelectedModuleIf()
 {
   PlaYUVerModuleIf* currModuleIf = NULL;
+
   if( m_uiModuleSelected >= 0 )
-    return m_pcPlaYUVerModules.at( m_uiModuleSelected );
+    //if( m_arrayModulesActions.at(m_uiModuleSelected)->isChecked() )
+      currModuleIf =  m_pcPlaYUVerModules.at( m_uiModuleSelected );
+
   m_uiModuleSelected = -1;
   return currModuleIf;
 }
@@ -92,6 +95,8 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
     m_arrayModulesActions.append( currAction );
 
     m_pcModulesMenu->addAction( currAction );
+
+    currModuleIf->m_pcAction = currAction;
   }
   return m_pcModulesMenu;
   //MainAppMenuBar->

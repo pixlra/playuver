@@ -33,6 +33,7 @@
 #include "PlaYUVerFrame.h"
 
 class QImage;
+class QAction;
 
 namespace plaYUVer
 {
@@ -54,6 +55,8 @@ public:
   {
   }
 
+  QAction* m_pcAction;
+
   const Char* m_pchModuleType;
   const Char* m_pchModuleName;
   const Char* m_pchModuleTooltip;
@@ -64,6 +67,8 @@ public:
   virtual Void create( PlaYUVerFrame* ) {};
   virtual PlaYUVerFrame* process( PlaYUVerFrame* ) {};
   virtual PlaYUVerFrame* getModImage() {};
+
+  virtual QImage* process( QImage* ) {};
 
   virtual Void destroy() {};
 

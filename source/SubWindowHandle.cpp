@@ -115,6 +115,11 @@ bool SubWindowHandle::loadFile( const QString &fileName )
  */
 Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
 {
+  if( m_pcCurrentModule == select_module )
+  {
+    disableModule();
+    return;
+  }
   m_pcCurrentModule = select_module;
   m_pcCurrentModule->create( m_pCurrStream->getFrame( m_pcCurrentModule->getModImage() ) );
   refreshFrame();
@@ -122,6 +127,8 @@ Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
 
 Void SubWindowHandle::disableModule()
 {
+  if( !m_pcCurrentModule )
+    return;
   m_pcCurrentModule->destroy();
   m_pcCurrentModule = NULL;
   refreshFrame();

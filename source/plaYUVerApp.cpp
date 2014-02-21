@@ -140,12 +140,12 @@ void plaYUVerApp::save()
 void plaYUVerApp::selectModule( QAction *curr_action )
 {
   //emit curr_action->triggered();
-
-  if( m_pcModulesHandle->getSelectedModuleIf() )
+  if( activeSubWindow() )
   {
-    if( activeSubWindow() )
+    PlaYUVerModuleIf* pcCurrMod = m_pcModulesHandle->getSelectedModuleIf();
+    if( pcCurrMod )
     {
-      activeSubWindow()->enableModule( m_pcModulesHandle->getSelectedModuleIf() );
+      activeSubWindow()->enableModule( pcCurrMod );
     }
   }
   return;

@@ -38,18 +38,20 @@ class QAction;
 namespace plaYUVer
 {
 
-#define REGISTER_MODULE_NAME( type, name, tooltip ) \
-    m_pchModuleType = type; \
-    m_pchModuleName = name; \
-    m_pchModuleTooltip = tooltip;
+typedef struct __PlaYUVerModuleDefinition
+{
+  const char *m_pchModuleType;
+  const char *m_pchModuleName;
+  const char *m_pchModuleTooltip;
+}PlaYUVerModuleDefinition;
 
 
 class PlaYUVerModuleIf
 {
 public:
-  PlaYUVerModuleIf() :
-      m_pchModuleType( NULL ), m_pchModuleName( NULL ), m_pchModuleTooltip( NULL )
+  PlaYUVerModuleIf()
   {
+    m_pcAction = NULL;
   }
   virtual ~PlaYUVerModuleIf()
   {
@@ -57,18 +59,13 @@ public:
 
   QAction* m_pcAction;
 
-  const Char* m_pchModuleType;
-  const Char* m_pchModuleName;
-  const Char* m_pchModuleTooltip;
+  PlaYUVerModuleDefinition m_cModuleDef;
 
   virtual Void create() {};
   virtual Void process() {};
 
   virtual Void create( PlaYUVerFrame* ) {};
   virtual PlaYUVerFrame* process( PlaYUVerFrame* ) {};
-  virtual PlaYUVerFrame* getModImage() {};
-
-  virtual QImage* process( QImage* ) {};
 
   virtual Void destroy() {};
 

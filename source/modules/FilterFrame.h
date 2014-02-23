@@ -37,21 +37,13 @@
 namespace plaYUVer
 {
 
-const Char ModuleType[] = "Filter";
-const Char ModuleName[] = "Y_Filter";
-const Char ModuleTooltip[] = "Filter Y matrix of YUV frame";
-
 class FilterFrame: public PlaYUVerModuleIf
 {
 private:
   PlaYUVerFrame* m_pcFilteredFrame;
 
 public:
-  FilterFrame()
-  {
-    REGISTER_MODULE_NAME(ModuleType, ModuleName, ModuleTooltip )
-    m_pcFilteredFrame = NULL;
-  }
+  FilterFrame();
   virtual ~FilterFrame()
   {
   }

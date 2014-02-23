@@ -29,6 +29,19 @@
 namespace plaYUVer
 {
 
+PlaYUVerModuleDefinition FilterFrameDef = {
+    "FrameLevel",
+    "Y_Filter",
+    "Filter Y matrix of YUV frame",
+};
+
+FilterFrame::FilterFrame()
+{
+  m_cModuleDef = FilterFrameDef;
+
+  m_pcFilteredFrame = NULL;
+}
+
 Void FilterFrame::create( PlaYUVerFrame* InputFrame )
 {
   if( m_pcFilteredFrame )

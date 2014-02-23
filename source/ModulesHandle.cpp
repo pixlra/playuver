@@ -87,8 +87,8 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
   {
     currModuleIf = m_pcPlaYUVerModules.at( i );
 
-    currAction = new QAction( tr( currModuleIf->m_pchModuleName ), parent() );
-    currAction->setStatusTip( tr( currModuleIf->m_pchModuleTooltip ) );
+    currAction = new QAction( tr( currModuleIf->m_cModuleDef.m_pchModuleName ), parent() );
+    currAction->setStatusTip( tr( currModuleIf->m_cModuleDef.m_pchModuleTooltip ) );
     currAction->setCheckable( true );
     connect( currAction, SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
     m_pcActionMapper->setMapping( currAction, i );

@@ -243,31 +243,8 @@ Void InputStream::readFrame()
 
 Bool InputStream::writeFrame( const QString& filename )
 {
-  QImage img( m_uiWidth, m_uiHeight, QImage::Format_RGB888 );
-  getFrame( &img );
-  img.save( filename );
+  m_cCurrFrame->getQimage().save( filename );
   return true;
-}
-
-QImage* InputStream::getFrame( QImage *qimage )
-{
-  Pel*** bufferRGB = m_cCurrFrame->getPelBufferRGB();
-
-  if( sizeof(Pel) == sizeof(unsigned char) )
-  {
-    for( Int y = 0; y < m_uiHeight; y++ )
-    {
-      for( Int x = 0; x < m_uiWidth; x++ )
-      {
-        qimage->setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
-      }
-    }
-  }
-  else
-  {
-    Q_ASSERT( 0 );
-  }
-  return qimage;
 }
 
 PlaYUVerFrame* InputStream::getFrame( PlaYUVerFrame *pyuv_image )
@@ -279,6 +256,11 @@ PlaYUVerFrame* InputStream::getFrame( PlaYUVerFrame *pyuv_image )
 
   pyuv_image->CopyFrom(m_cCurrFrame);
   return pyuv_image;
+}
+
+PlaYUVerFrame* InputStream::getFrame()
+{
+  return m_cCurrFrame;
 }
 
 #ifdef USE_OPENCV

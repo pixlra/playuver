@@ -103,8 +103,8 @@ public:
 
   Bool writeFrame( const QString& filename );
 
-  QImage* getFrame( QImage *qimage );
-  PlaYUVerFrame* getFrame( PlaYUVerFrame *qimage );
+  PlaYUVerFrame* getFrame();
+  PlaYUVerFrame* getFrame( PlaYUVerFrame * );
 #ifdef USE_OPENCV
   cv::Mat getFrameCvMat();
 #endif

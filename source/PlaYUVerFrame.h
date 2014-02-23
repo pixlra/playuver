@@ -33,6 +33,8 @@
 
 #include "TypeDef.h"
 
+class QImage;
+
 namespace plaYUVer
 {
 
@@ -59,6 +61,8 @@ public:
   {
     return m_pppcRGBPel;
   }
+  QImage getQimage();
+
   UInt getWidth()
   {
     return m_uiWidth;

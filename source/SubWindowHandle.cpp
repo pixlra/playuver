@@ -121,7 +121,7 @@ Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
     return;
   }
   m_pcCurrentModule = select_module;
-  m_pcCurrentModule->create( m_pCurrStream->getFrame( m_pcCurrentModule->getModImage() ) );
+  m_pcCurrentModule->create( m_pCurrStream->getFrame() );
   refreshFrame();
 }
 
@@ -154,7 +154,7 @@ Void SubWindowHandle::refreshFrame()
 {
   if( m_pcCurrentModule )
   {
-    FrameToQImage( m_pcCurrentModule->process( m_pCurrStream->getFrame( m_pcCurrentModule->getModImage() ) ) );
+    FrameToQImage( m_pcCurrentModule->process( m_pCurrStream->getFrame() ) );
   }
   else
   {

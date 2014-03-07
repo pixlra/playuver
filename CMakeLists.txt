@@ -91,6 +91,7 @@ IF( NOT USE_QT4)
 ENDIF()
 
 
-status("Using third-party libraries:")
+status("Dependencies:")
+status("    QT:"              USE_QT4             THEN "QT4" ELSE "QT5" )
 status("    Use OpenCV:"      USE_OPENCV          THEN YES ELSE NO)
 status("    FFMPEG:"          USE_FFMPEG          THEN YES ELSE NO)

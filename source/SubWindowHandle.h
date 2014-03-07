@@ -74,6 +74,7 @@ public:
   Void seekEvent( UInt new_frame_num );
 
   QImage* FrameToQImage( PlaYUVerFrame* curr_frame );
+
   Void refreshFrame();
 
   InputStream* getInputStream()

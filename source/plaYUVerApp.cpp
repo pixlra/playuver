@@ -66,7 +66,9 @@ plaYUVerApp::plaYUVerApp()
   setUnifiedTitleAndToolBarOnMac( true );
 
   playingTimer = new QTimer;
+#if( QT_VERSION_PLAYUVER == 5 )
   playingTimer->setTimerType( Qt::CoarseTimer );
+#endif
   connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
 
   setAcceptDrops( true );

@@ -90,7 +90,8 @@ IF( NOT USE_QT4)
     QT5_USE_MODULES( ${PROJECT_NAME} ${CURR_QT_MODULES} )
 ENDIF()
 
-
+status("Configuration:")
+status("    Build type:"           ${CMAKE_BUILD_TYPE} )
 status("Dependencies:")
 status("    QT:"              USE_QT4             THEN "QT4" ELSE "QT5" )
 status("    Use OpenCV:"      USE_OPENCV          THEN YES ELSE NO)

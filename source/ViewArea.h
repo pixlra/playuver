@@ -34,6 +34,8 @@
 namespace plaYUVer
 {
 
+class InputStream;
+
 /**
  *
  */
@@ -98,12 +100,14 @@ public:
     return m_maskColor;
   }
 
+  void setInputStream( InputStream *stream );
+  InputStream* getInputStream();
+
 //     QSize sizeHint() const;
 
 signals:
   void selectionChanged( const QRect &rect );
-  void positionChanged( const QPoint &pos );
-  void updateStatusBar( const QPoint &actualPos, int &luma, int &chromaU, int &chromaV );
+  void positionChanged( const QPoint &pos, InputStream *stream );
   void zoomFactorChanged( double );
 
 public slots:
@@ -156,6 +160,8 @@ private:
   bool m_gridVisible;
   bool m_snapToGrid;
   bool m_cursorInGrid;
+
+  InputStream *m_pStream;
 
 };
 

@@ -38,11 +38,18 @@ class QAction;
 namespace plaYUVer
 {
 
+enum __PlaYUVerModuleTypes
+{
+  FRAME_LEVEL_MODULE,
+  VIDEO_LEVEL_MODULE,
+};
+
 typedef struct __PlaYUVerModuleDefinition
 {
-  const char *m_pchModuleType;
-  const char *m_pchModuleName;
-  const char *m_pchModuleTooltip;
+  int   m_pchModuleType;
+  char* m_pchModuleCategory;
+  char* m_pchModuleName;
+  char* m_pchModuleTooltip;
 }PlaYUVerModuleDefinition;
 
 

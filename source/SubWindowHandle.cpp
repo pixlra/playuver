@@ -57,6 +57,11 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
 SubWindowHandle::~SubWindowHandle()
 {
   delete m_cViewArea;
+  if( !m_pcCurrentModule )
+    return;
+  m_pcCurrentModule->m_pcAction->setChecked( false );
+  m_pcCurrentModule->destroy();
+  m_pcCurrentModule = NULL;
 }
 
 bool SubWindowHandle::loadFile( const QString &fileName )
@@ -129,6 +134,7 @@ Void SubWindowHandle::disableModule()
 {
   if( !m_pcCurrentModule )
     return;
+
   m_pcCurrentModule->destroy();
   m_pcCurrentModule = NULL;
   refreshFrame();

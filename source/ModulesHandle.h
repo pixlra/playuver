@@ -59,6 +59,7 @@ public:
   ~ModulesHandle();
 
   QMenu* createMenus( QMenuBar *MainAppMenuBar );
+  Void updateMenus( Bool hasSubWindow );
   PlaYUVerModuleIf* getSelectedModuleIf();
 
 private:

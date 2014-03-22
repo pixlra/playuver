@@ -128,7 +128,11 @@ private:
    */
   enum MAIN_APP_MENU_LIST
   {
-    WINDOW_MENU = 0, OTHER_MENU,
+    FILE_MENU = 0,
+    VIEW_MENU,
+    WINDOW_MENU,
+    ABOUT_MENU,
+    TOTAL_MENUS,
   };
   QVector<QMenu*> m_arrayMenu;
 

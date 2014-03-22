@@ -30,7 +30,8 @@ namespace plaYUVer
 {
 
 PlaYUVerModuleDefinition FilterFrameDef = {
-    "FrameLevel",
+    FRAME_LEVEL_MODULE,
+    "Filters"
     "Y_Filter",
     "Filter Y matrix of YUV frame",
 };

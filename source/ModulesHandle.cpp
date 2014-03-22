@@ -35,7 +35,6 @@ ModulesHandle::ModulesHandle( QWidget * parent )
   REGISTER_MODULE( FilterFrame );
 
 
-
   // configure class
   setParent( parent );
   m_uiModulesCount = 0;
@@ -51,7 +50,6 @@ Void ModulesHandle::appendModule( PlaYUVerModuleIf* pIfModule )
 {
   m_pcPlaYUVerModules.append( pIfModule );
   m_uiModulesCount++;
-
 }
 
 void ModulesHandle::selectModule( int index )
@@ -75,6 +73,7 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 {
   PlaYUVerModuleIf* currModuleIf;
   QAction* currAction;
+  Bool bCategoryExists = false;
 
   m_pcActionMapper = new QSignalMapper( this );
   connect( m_pcActionMapper, SIGNAL( mapped(int) ), this, SLOT( selectModule(int) ) );
@@ -82,10 +81,15 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
   m_pcModulesMenu = MainAppMenuBar->addMenu( "&Modules" );
 
   //m_arrayModulesActions.resize( m_uiModulesCount );
-
+Int total = 0;
   for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
   {
     currModuleIf = m_pcPlaYUVerModules.at( i );
+
+    for( Int j = 0; j < total; j++ )
+    {
+
+    }
 
     currAction = new QAction( tr( currModuleIf->m_cModuleDef.m_pchModuleName ), parent() );
     currAction->setStatusTip( tr( currModuleIf->m_cModuleDef.m_pchModuleTooltip ) );
@@ -99,7 +103,16 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
     currModuleIf->m_pcAction = currAction;
   }
   return m_pcModulesMenu;
-  //MainAppMenuBar->
+}
+
+Void ModulesHandle::updateMenus( Bool hasSubWindow )
+{
+  QAction* currModuleAction;
+  for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
+  {
+    currModuleAction = m_arrayModulesActions.at( i );
+    currModuleAction->setEnabled( hasSubWindow );
+  }
 }
 
 }  // NAMESPACE

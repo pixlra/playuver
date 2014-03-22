@@ -32,7 +32,7 @@
 #endif
 #include <QtDebug>
 
-#include "plaYUVerSettings.h"
+#include "PlaYUVerSettings.h"
 
 namespace plaYUVer
 {

@@ -32,7 +32,7 @@
 #include <QDebug>
 
 #include "GridManager.h"
-#include "plaYUVerSettings.h"
+#include "PlaYUVerSettings.h"
 
 namespace plaYUVer
 {

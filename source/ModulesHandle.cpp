@@ -73,7 +73,8 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 {
   PlaYUVerModuleIf* currModuleIf;
   QAction* currAction;
-  Bool bCategoryExists = false;
+  QMenu* currSubMenu;
+  Bool bCategoryExists;
   Int iNumberCategories = 0;
 
   m_pcActionMapper = new QSignalMapper( this );
@@ -83,9 +84,29 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 
   //m_arrayModulesActions.resize( m_uiModulesCount );
 
+
+
   for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
   {
     currModuleIf = m_pcPlaYUVerModules.at( i );
+
+    currSubMenu = NULL;
+    if( currModuleIf->m_cModuleDef.m_pchModuleCategory )
+    {
+      for( Int j = 0; j < m_pcModulesSubMenuList.size(); j++ )
+      {
+        if( m_pcModulesSubMenuList.at( j )->title() == QString( currModuleIf->m_cModuleDef.m_pchModuleCategory ) )
+        {
+          currSubMenu = m_pcModulesSubMenuList.at( j );
+          break;
+        }
+      }
+      if( !currSubMenu )
+      {
+        currSubMenu = m_pcModulesMenu->addMenu( currModuleIf->m_cModuleDef.m_pchModuleCategory );
+        m_pcModulesSubMenuList.append( currSubMenu );
+      }
+    }
 
     currAction = new QAction( tr( currModuleIf->m_cModuleDef.m_pchModuleName ), parent() );
     currAction->setStatusTip( tr( currModuleIf->m_cModuleDef.m_pchModuleTooltip ) );
@@ -94,7 +115,10 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
     m_pcActionMapper->setMapping( currAction, i );
     m_arrayModulesActions.append( currAction );
 
-    m_pcModulesMenu->addAction( currAction );
+    if( currSubMenu )
+      currSubMenu->addAction( currAction );
+    else
+      m_pcModulesMenu->addAction( currAction );
 
     currModuleIf->m_pcAction = currAction;
   }

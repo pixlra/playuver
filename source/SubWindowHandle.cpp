@@ -46,6 +46,8 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
 
+  m_pcCurrentModule = NULL;
+
   m_cWindowName = QString( " " );
   m_bIsPlaying = true;
   m_dScaleFactor = 1;
@@ -55,6 +57,11 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
 SubWindowHandle::~SubWindowHandle()
 {
   delete m_cViewArea;
+  if( !m_pcCurrentModule )
+    return;
+  m_pcCurrentModule->m_pcAction->setChecked( false );
+  m_pcCurrentModule->destroy();
+  m_pcCurrentModule = NULL;
 }
 
 bool SubWindowHandle::loadFile( const QString &fileName )
@@ -107,9 +114,58 @@ bool SubWindowHandle::loadFile( const QString &fileName )
   return true;
 }
 
+/**
+ * Functions to enable a module in the
+ * current SubWindow
+ */
+Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
+{
+  if( m_pcCurrentModule == select_module )
+  {
+    disableModule();
+    return;
+  }
+  m_pcCurrentModule = select_module;
+  m_pcCurrentModule->create( m_pCurrStream->getFrame() );
+  refreshFrame();
+}
+
+Void SubWindowHandle::disableModule()
+{
+  if( !m_pcCurrentModule )
+    return;
+
+  m_pcCurrentModule->destroy();
+  m_pcCurrentModule = NULL;
+  refreshFrame();
+}
+
+QImage* SubWindowHandle::FrameToQImage( PlaYUVerFrame* curr_frame )
+{
+  Pel*** bufferRGB = curr_frame->getPelBufferRGB();
+
+  curr_frame->YUV420toRGB();
+
+  for( Int y = 0; y < curr_frame->getHeight(); y++ )
+  {
+    for( Int x = 0; x < curr_frame->getWidth(); x++ )
+    {
+      m_pCurrFrameQImage->setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
+    }
+  }
+  return m_pCurrFrameQImage;
+}
+
 Void SubWindowHandle::refreshFrame()
 {
-  m_pCurrStream->getFrame( m_pCurrFrameQImage );
+  if( m_pcCurrentModule )
+  {
+    FrameToQImage( m_pcCurrentModule->process( m_pCurrStream->getFrame() ) );
+  }
+  else
+  {
+    FrameToQImage( m_pCurrStream->getFrame( (PlaYUVerFrame*) NULL ) );
+  }
   m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
 }
 
@@ -178,7 +234,6 @@ Void SubWindowHandle::stopEvent()
   refreshFrame();
   return;
 }
-
 
 Void SubWindowHandle::normalSize()
 {

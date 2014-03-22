@@ -25,6 +25,8 @@
 #include "PlaYUVerFrame.h"
 #include "LibMemAlloc.h"
 
+#include <QImage>
+
 namespace plaYUVer
 {
 
@@ -165,16 +167,14 @@ Void PlaYUVerFrame::FrameFromBuffer( Pel *input_buffer, Int pel_format )
   {
     return;
   }
-
   UInt64 frame_bytes_input = m_uiWidth * m_uiHeight;
-
   switch( m_iPixelFormat )
   {
   case YUV420:
     memcpy( &m_pppcInputPel[0][0][0], input_buffer, frame_bytes_input * sizeof(Pel) );
     memcpy( &m_pppcInputPel[1][0][0], input_buffer + frame_bytes_input, frame_bytes_input / 4 * sizeof(Pel) );
     memcpy( &m_pppcInputPel[2][0][0], input_buffer + frame_bytes_input * 5 / 4, frame_bytes_input / 4 * sizeof(Pel) );
-    YUV420toRGB();
+    //YUV420toRGB();
     break;
   case YUV422:
     break;
@@ -183,6 +183,52 @@ Void PlaYUVerFrame::FrameFromBuffer( Pel *input_buffer, Int pel_format )
   case RGB:
     break;
   }
+}
+
+Void PlaYUVerFrame::CopyFrom( PlaYUVerFrame* input_frame )
+{
+  if( m_iPixelFormat != input_frame->getPelFormat() )
+  {
+    return;
+  }
+  UInt64 num_bytes = m_uiWidth * m_uiHeight;
+  switch( m_iPixelFormat )
+  {
+  case YUV420:
+    memcpy( &m_pppcInputPel[0][0][0], &( input_frame->getPelBufferYUV()[0][0][0] ), num_bytes * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[1][0][0], &( input_frame->getPelBufferYUV()[1][0][0] ), num_bytes / 4 * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[2][0][0], &( input_frame->getPelBufferYUV()[2][0][0] ), num_bytes / 4 * sizeof(Pel) );
+    //YUV420toRGB();
+    break;
+  case YUV422:
+    break;
+  case YUV400:
+    break;
+  case RGB:
+    break;
+  }
+}
+
+QImage PlaYUVerFrame::getQimage()
+{
+  QImage img( m_uiWidth, m_uiHeight, QImage::Format_RGB888 );
+  Pel*** bufferRGB = getPelBufferRGB();
+
+  if( sizeof(Pel) == sizeof(unsigned char) )
+  {
+    for( Int y = 0; y < m_uiHeight; y++ )
+    {
+      for( Int x = 0; x < m_uiWidth; x++ )
+      {
+        img.setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
+      }
+    }
+  }
+  else
+  {
+    Q_ASSERT( 0 );
+  }
+  return img;
 }
 
 UInt64 PlaYUVerFrame::getBytesPerFrame()

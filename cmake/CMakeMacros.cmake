@@ -95,3 +95,12 @@ function(status text)
     message(STATUS "${text}")
   endif()
 endfunction()
+
+
+macro(ADD_MODULE name files )
+  set(__modulename "Module${name}")
+  add_library( ${__modulename} ${files} )
+  set(MODULES_LIBS ${MODULES_LIBS} ${__modulename})
+  ADD_DEFINITIONS( -DUSE_${name} )
+  unset(__modulename)
+endmacro()

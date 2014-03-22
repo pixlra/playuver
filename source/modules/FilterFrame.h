@@ -17,77 +17,49 @@
  */
 
 /**
- * \file     PlaYUVerFrame.h
- * \brief    Video Frame handling
+ * \file     FilterFrame.h
+ * \brief    Filter frame module
  */
 
-#ifndef __PLAYUVERFRAME_H__
-#define __PLAYUVERFRAME_H__
+#ifndef __FILTERFRAME_H__
+#define __FILTERFRAME_H__
 
 #include "config.h"
 
 #include <iostream>
 #include <cstdio>
-
-#include <QtCore>
-
 #include "TypeDef.h"
+#include "PlaYUVerFrame.h"
+#include "PlaYUVerModuleIf.h"
 
-class QImage;
+#include <cassert>
 
 namespace plaYUVer
 {
 
-class PlaYUVerFrame
+class FilterFrame: public PlaYUVerModuleIf
 {
-public:
-  PlaYUVerFrame( UInt width, UInt height, Int pel_format );
-  ~PlaYUVerFrame();
-
-  static QStringList supportedPixelFormatList();
-
-  Void YUV420toRGB();
-
-  Void FrameFromBuffer( Pel *input_buffer, Int pel_format );
-  Void CopyFrom( PlaYUVerFrame* );
-
-  UInt64 getBytesPerFrame();
-
-  Pel*** getPelBufferYUV()
-  {
-    return m_pppcInputPel;
-  }
-  Pel*** getPelBufferRGB()
-  {
-    return m_pppcRGBPel;
-  }
-
-  Pel getPixelValueFromYUV(const QPoint &pos, YUVcomponent color);
-
-  QImage getQimage();
-
-  UInt getWidth()
-  {
-    return m_uiWidth;
-  }
-  UInt getHeight()
-  {
-    return m_uiHeight;
-  }
-  Int getPelFormat()
-  {
-    return m_iPixelFormat;
-  }
-
 private:
-  UInt m_uiWidth;
-  UInt m_uiHeight;
-  Int m_iPixelFormat;
+  PlaYUVerFrame* m_pcFilteredFrame;
 
-  Pel** m_pppcInputPel[3];
-  Pel*** m_pppcRGBPel;
+public:
+  FilterFrame();
+  virtual ~FilterFrame()
+  {
+  }
+
+  Void create( PlaYUVerFrame* InputFrame );
+
+  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
+  Void destroy();
+
+  PlaYUVerFrame* getModImage()
+  {
+    return m_pcFilteredFrame;
+  }
 };
 
 }  // NAMESPACE
 
-#endif // __PLAYUVERFRAME_H__
+#endif // __FILTERFRAME_H__
+

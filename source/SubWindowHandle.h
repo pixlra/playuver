@@ -35,6 +35,7 @@
 #include "TypeDef.h"
 #include "InputStream.h"
 #include "viewarea.h"
+#include "PlaYUVerModuleIf.h"
 
 namespace plaYUVer
 {
@@ -49,6 +50,8 @@ private:
 
   QScrollArea* m_cScrollArea;
   ViewArea* m_cViewArea;
+
+  PlaYUVerModuleIf* m_pcCurrentModule;
 
   InputStream* m_pCurrStream;
   QImage* m_pCurrFrameQImage;
@@ -70,6 +73,8 @@ public:
   Void stopEvent();
   Void seekEvent( UInt new_frame_num );
 
+  QImage* FrameToQImage( PlaYUVerFrame* curr_frame );
+
   Void refreshFrame();
 
   InputStream* getInputStream()
@@ -81,6 +86,13 @@ public:
   {
     return m_cViewArea;
   }
+
+  /**
+   * Functions to enable a module in the
+   * current SubWindow
+   */
+  Void enableModule( PlaYUVerModuleIf* select_module );
+  Void disableModule();
 
   /**
    * Show the image at its original size

@@ -17,77 +17,68 @@
  */
 
 /**
- * \file     PlaYUVerFrame.h
- * \brief    Video Frame handling
+ * \file     PlaYUVerModuleIf.h
+ * \brief    PlaYUVer modules interface
  */
 
-#ifndef __PLAYUVERFRAME_H__
-#define __PLAYUVERFRAME_H__
+#ifndef __PLAYUVERMODULESIF_H__
+#define __PLAYUVERMODULESIF_H__
 
 #include "config.h"
 
 #include <iostream>
 #include <cstdio>
 
-#include <QtCore>
-
 #include "TypeDef.h"
+#include "PlaYUVerFrame.h"
 
 class QImage;
+class QAction;
 
 namespace plaYUVer
 {
 
-class PlaYUVerFrame
+enum __PlaYUVerModuleTypes
+{
+  FRAME_LEVEL_MODULE,
+  VIDEO_LEVEL_MODULE,
+};
+
+typedef struct __PlaYUVerModuleDefinition
+{
+  int   m_pchModuleType;
+  char* m_pchModuleCategory;
+  char* m_pchModuleName;
+  char* m_pchModuleTooltip;
+}PlaYUVerModuleDefinition;
+
+
+class PlaYUVerModuleIf
 {
 public:
-  PlaYUVerFrame( UInt width, UInt height, Int pel_format );
-  ~PlaYUVerFrame();
-
-  static QStringList supportedPixelFormatList();
-
-  Void YUV420toRGB();
-
-  Void FrameFromBuffer( Pel *input_buffer, Int pel_format );
-  Void CopyFrom( PlaYUVerFrame* );
-
-  UInt64 getBytesPerFrame();
-
-  Pel*** getPelBufferYUV()
+  PlaYUVerModuleIf()
   {
-    return m_pppcInputPel;
+    m_pcAction = NULL;
   }
-  Pel*** getPelBufferRGB()
+  virtual ~PlaYUVerModuleIf()
   {
-    return m_pppcRGBPel;
   }
 
-  Pel getPixelValueFromYUV(const QPoint &pos, YUVcomponent color);
+  QAction* m_pcAction;
 
-  QImage getQimage();
+  PlaYUVerModuleDefinition m_cModuleDef;
 
-  UInt getWidth()
-  {
-    return m_uiWidth;
-  }
-  UInt getHeight()
-  {
-    return m_uiHeight;
-  }
-  Int getPelFormat()
-  {
-    return m_iPixelFormat;
-  }
+  virtual Void create() {};
+  virtual Void process() {};
 
-private:
-  UInt m_uiWidth;
-  UInt m_uiHeight;
-  Int m_iPixelFormat;
+  virtual Void create( PlaYUVerFrame* ) {};
+  virtual PlaYUVerFrame* process( PlaYUVerFrame* ) {};
 
-  Pel** m_pppcInputPel[3];
-  Pel*** m_pppcRGBPel;
+  virtual Void destroy() {};
+
 };
 
 }  // NAMESPACE
 
-#endif // __PLAYUVERFRAME_H__
+#endif // __PLAYUVERMODULESIF_H__
+

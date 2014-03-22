@@ -32,6 +32,8 @@
 #endif
 #include <QtDebug>
 
+#include "plaYUVerSettings.h"
+
 namespace plaYUVer
 {
 
@@ -586,18 +588,20 @@ void plaYUVerApp::dropEvent( QDropEvent *event )
 
 Void plaYUVerApp::readSettings()
 {
-  QSettings settings( "IT", "YUV Player" );
-  QPoint pos = settings.value( "pos", QPoint( 200, 200 ) ).toPoint();
-  QSize size = settings.value( "size", QSize( 400, 400 ) ).toSize();
+  PlaYUVerSettings settings;
+  QPoint pos = settings.mainWindowPos();
+  QSize size = settings.mainWindowSize();
   move( pos );
   resize( size );
+  m_cLastOpenPath = settings.lastOpenPath();
 }
 
 Void plaYUVerApp::writeSettings()
 {
-  QSettings settings( "IT", "YUV Player" );
-  settings.setValue( "pos", pos() );
-  settings.setValue( "size", size() );
+  PlaYUVerSettings settings;
+  settings.setMainWindowPos( pos() );
+  settings.setMainWindowSize( size() );
+  settings.setLastOpenPath( lastOpenPath );
 }
 
 SubWindowHandle *plaYUVerApp::activeSubWindow()

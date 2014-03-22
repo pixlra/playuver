@@ -31,10 +31,10 @@
 #include <QPen>
 #include <QDebug>
 
-#include "gridmanager.h"
-#include "scosettings.h"
+#include "GridManager.h"
+#include "plaYUVerSettings.h"
 
-namespace SCode
+namespace plaYUVer
 {
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ GridManager::GridManager()
 ////////////////////////////////////////////////////////////////////////////////
 void GridManager::drawGrid( QPixmap &image, const QRect& area, QPainter *painter )
 {
-  SCoSettings settings;
+  PlaYUVerSettings settings;
 
   int offsetx = 0;                // Grid offset doesn't applies to SCODE
   int offsety = 0;                // project for now...
@@ -148,7 +148,7 @@ QRect GridManager::rectContains( int x, int y ) const
   int multiPosX;
   int multiPosY;
 
-  SCoSettings settings;
+  PlaYUVerSettings settings;
   int hSpacing = settings.gridHSpacing();
   int vSpacing = settings.gridVSpacing();
 
@@ -175,7 +175,7 @@ bool GridManager::contains( int x, int y )
   int resX;
   int resY;
 
-  SCoSettings settings;
+  PlaYUVerSettings settings;
   int hSpacing = settings.gridHSpacing();
   int vSpacing = settings.gridVSpacing();
 
@@ -214,7 +214,7 @@ bool GridManager::isNear( int x, int y )
   int multiPosX;
   int multiPosY;
 
-  SCoSettings settings;
+  PlaYUVerSettings settings;
   int hSpacing = settings.gridHSpacing();
   int vSpacing = settings.gridVSpacing();
 
@@ -269,4 +269,4 @@ bool GridManager::isNear( const QPoint &pos )
   return isNear( pos.x(), pos.y() );
 }
 
-} // NameSpace SCode
+} // NameSpace plaYUVer

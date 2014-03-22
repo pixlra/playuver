@@ -33,10 +33,10 @@
 #include <QRectF>
 #include <QDebug>
 
-#include "viewarea.h"
-#include "gridmanager.h"
+#include "ViewArea.h"
+#include "GridManager.h"
 
-namespace SCode
+namespace plaYUVer
 {
 
 static const QColor selectionColor = Qt::cyan;
@@ -749,4 +749,4 @@ void ViewArea::updateMask( const QRect &rect )
   }
 }
 
-} // NameSpace SCode
+} // NameSpace plaYUVer

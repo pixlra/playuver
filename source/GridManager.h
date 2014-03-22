@@ -21,8 +21,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SCODEGRID_H
-#define SCODEGRID_H
+#ifndef __GRIDMANAGER_H__
+#define __GRIDMANAGER_H__
 
 #include <QRect>
 #include <QColor>
@@ -32,7 +32,7 @@ class QPoint;
 class QBitmap;
 class QPainter;
 
-namespace SCode
+namespace plaYUVer
 {
 
 /**
@@ -94,6 +94,6 @@ private:
   QPoint m_nearPos;
 };
 
-} // NameSpace SCode
+} // NameSpace plaYUVer
 
-#endif // SCODEGRID_H
+#endif // __GRIDMANAGER_H__

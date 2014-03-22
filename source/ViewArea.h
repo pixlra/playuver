@@ -21,17 +21,17 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef VIEWAREA_H
-#define VIEWAREA_H
+#ifndef __VIEWAREA_H__
+#define __VIEWAREA_H__
 
 #include <QWidget>
 #include <QPixmap>
 #include <QBitmap>
 #include <QColor>
 
-#include "gridmanager.h"
+#include "GridManager.h"
 
-namespace SCode
+namespace plaYUVer
 {
 
 /**
@@ -157,10 +157,8 @@ private:
   bool m_snapToGrid;
   bool m_cursorInGrid;
 
-  bool flag;  //lukas
-
 };
 
-} // NameSpace SCode
+} // NameSpace plaYUVer
 
-#endif // VIEWAREA_H
+#endif // __VIEWAREA_H__

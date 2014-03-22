@@ -23,7 +23,7 @@
 
 #include "ConfigureFormatDialog.h"
 #include "SubWindowHandle.h"
-#include "viewarea.h"
+#include "ViewArea.h"
 
 namespace plaYUVer
 {

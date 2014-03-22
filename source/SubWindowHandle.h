@@ -34,13 +34,11 @@
 
 #include "TypeDef.h"
 #include "InputStream.h"
-#include "viewarea.h"
+#include "ViewArea.h"
 #include "PlaYUVerModuleIf.h"
 
 namespace plaYUVer
 {
-
-using namespace SCode;
 
 class SubWindowHandle: public QMdiSubWindow
 {

@@ -28,7 +28,7 @@
 
 #include <QtCore>
 
-#include "gridmanager.h"
+#include "GridManager.h"
 
 namespace plaYUVer
 {
@@ -48,6 +48,19 @@ public:
 
   QString lastOpenPath();
   void setLastOpenPath( const QString &v );
+
+  // - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - -
+  GridManager::Style gridStyle();
+  void setGridStyle( GridManager::Style v );
+
+  QColor gridColor();
+  void setGridColor( const QColor &v );
+
+  int gridHSpacing();
+  void setGridHSpacing( int v );
+
+  int gridVSpacing();
+  void setGridVSpacing( int v );
 
   // - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - -
   GridManager::Style gridStyle();

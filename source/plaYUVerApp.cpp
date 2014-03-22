@@ -637,16 +637,19 @@ void plaYUVerApp::updatePixelValueStatusBar(const QPoint & pos)
   Int posX = pos.x(), posY = pos.y();
   QString strStatus = QString("X=%1 Y=%2 ").arg(posX).arg(posY);
 
-  SubWindowHandle *currentSubWindow = activeSubWindow();
-  iWidth = currentSubWindow->getInputStream()->getWidth();
-  iHeight = currentSubWindow->getInputStream()->getHeight();
-
-  if( (posX<iWidth) && (posX>=0) && (posY<iHeight) && (posY>=0) )
+  SubWindowHandle *currentSubWindow = m_pcCurrentSubWindow;
+  if(currentSubWindow)
   {
-    pixel = currentSubWindow->getInputStream()->getCurrentFrame()->getPixelValueFromYUV(pos, LUMA);
-    QString strAux = QString("Luma= %1").arg(pixel);
-    strStatus.append(strAux);
-    statusBar()->showMessage( strStatus , 0 );
+    iWidth = currentSubWindow->getInputStream()->getWidth();
+    iHeight = currentSubWindow->getInputStream()->getHeight();
+
+    if( (posX<iWidth) && (posX>=0) && (posY<iHeight) && (posY>=0) )
+    {
+      pixel = currentSubWindow->getInputStream()->getCurrentFrame()->getPixelValueFromYUV(pos, LUMA);
+      QString strAux = QString("Luma= %1").arg(pixel);
+      strStatus.append(strAux);
+      statusBar()->showMessage( strStatus , 0 );
+    }
   }
 }
 

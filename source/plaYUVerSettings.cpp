@@ -104,4 +104,47 @@ void SCoSettings::setGridVSpacing( int v )
   m_settings.setValue( "Grid/vSpacing", v );
 }
 
+
+// - - - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - - - - -
+
+GridManager::Style PlaYUVerSettings::gridStyle()
+{
+  return ( GridManager::Style )m_settings.value( "Grid/style", 0 ).toInt();
+}
+
+void PlaYUVerSettings::setGridStyle( GridManager::Style v )
+{
+  m_settings.setValue( "Grid/style", v );
+}
+
+QColor PlaYUVerSettings::gridColor()
+{
+  return m_settings.value( "Grid/color", QColor( Qt::white ) ).value<QColor>();
+}
+
+void PlaYUVerSettings::setGridColor( const QColor & v )
+{
+  m_settings.setValue( "Grid/color", v );
+}
+
+int PlaYUVerSettings::gridHSpacing()
+{
+  return m_settings.value( "Grid/hSpacing", 16 ).toInt();
+}
+
+void PlaYUVerSettings::setGridHSpacing( int v )
+{
+  m_settings.setValue( "Grid/hSpacing", v );
+}
+
+int PlaYUVerSettings::gridVSpacing()
+{
+  return m_settings.value( "Grid/vSpacing", 16 ).toInt();
+}
+
+void PlaYUVerSettings::setGridVSpacing( int v )
+{
+  m_settings.setValue( "Grid/vSpacing", v );
+}
+
 }  // NAMESPACE

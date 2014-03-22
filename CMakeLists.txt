@@ -50,11 +50,6 @@ ADD_OPTION(USE_FFMPEG        "Add FFMPEG support"       OFF )
 ######################################################################################
 INCLUDE( cmake/LibQT.cmake )
 
-INCLUDE_DIRECTORIES( ${EXTERNAL_SRC}/scode )
-ADD_LIBRARY( Scode ${EXTERNAL_SRC}/scode/viewarea.cpp ${EXTERNAL_SRC}/scode/gridmanager.cpp ${EXTERNAL_SRC}/scode/scosettings.cpp )
-SET( LINKER_LIBS ${LINKER_LIBS} Scode )
-
-
 IF( USE_OPENCV )
     FIND_PACKAGE( OpenCV )
     IF( NOT OpenCV_FOUND)

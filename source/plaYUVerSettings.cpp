@@ -64,49 +64,6 @@ void PlaYUVerSettings::setLastOpenPath( const QString & path )
 
 // - - - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - - - - -
 
-GridManager::Style SCoSettings::gridStyle()
-{
-  return ( GridManager::Style )m_settings.value( "Grid/style", 0 ).toInt();
-}
-
-void SCoSettings::setGridStyle( GridManager::Style v )
-{
-  m_settings.setValue( "Grid/style", v );
-}
-
-QColor SCoSettings::gridColor()
-{
-  return m_settings.value( "Grid/color", QColor( Qt::white ) ).value<QColor>();
-}
-
-void SCoSettings::setGridColor( const QColor & v )
-{
-  m_settings.setValue( "Grid/color", v );
-}
-
-int SCoSettings::gridHSpacing()
-{
-  return m_settings.value( "Grid/hSpacing", 16 ).toInt();
-}
-
-void SCoSettings::setGridHSpacing( int v )
-{
-  m_settings.setValue( "Grid/hSpacing", v );
-}
-
-int SCoSettings::gridVSpacing()
-{
-  return m_settings.value( "Grid/vSpacing", 16 ).toInt();
-}
-
-void SCoSettings::setGridVSpacing( int v )
-{
-  m_settings.setValue( "Grid/vSpacing", v );
-}
-
-
-// - - - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - - - - -
-
 GridManager::Style PlaYUVerSettings::gridStyle()
 {
   return ( GridManager::Style )m_settings.value( "Grid/style", 0 ).toInt();

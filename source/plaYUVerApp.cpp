@@ -601,7 +601,7 @@ Void plaYUVerApp::writeSettings()
   PlaYUVerSettings settings;
   settings.setMainWindowPos( pos() );
   settings.setMainWindowSize( size() );
-  settings.setLastOpenPath( lastOpenPath );
+  settings.setLastOpenPath( m_cLastOpenPath );
 }
 
 SubWindowHandle *plaYUVerApp::activeSubWindow()

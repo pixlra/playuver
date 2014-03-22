@@ -62,256 +62,46 @@ void PlaYUVerSettings::setLastOpenPath( const QString & path )
   m_settings.setValue( "MainWindow/lastOpenPath", path );
 }
 
-// - - - - - - - - - - - - - Segmentation Settings - - - - - - - - - - - - - - 
+// - - - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - - - - -
 
-QBitArray PlaYUVerSettings::results2show()
+GridManager::Style SCoSettings::gridStyle()
 {
-  QBitArray vectorRes( 20, false );
-  vectorRes.setBit( 16, true );
-  vectorRes.setBit( 17, true );
-  return m_settings.value( "Segmentation/vectorResults", vectorRes ).toBitArray();
+  return ( GridManager::Style )m_settings.value( "Grid/style", 0 ).toInt();
 }
 
-void PlaYUVerSettings::setResults2show( QBitArray vectorRes )
+void SCoSettings::setGridStyle( GridManager::Style v )
 {
-  m_settings.setValue( "Segmentation/vectorResults", vectorRes );
+  m_settings.setValue( "Grid/style", v );
 }
 
-// - - - - - - - - - - - - - MMP-compound Encoder settings - - - - - - - - - - - - - - -
-
-QString PlaYUVerSettings::binaryPath()
+QColor SCoSettings::gridColor()
 {
-  return m_settings.value( "MMP/binaryPath", QDir::currentPath() ).toString();
+  return m_settings.value( "Grid/color", QColor( Qt::white ) ).value<QColor>();
 }
 
-void PlaYUVerSettings::setBinaryPath( QString binaryPath )
+void SCoSettings::setGridColor( const QColor & v )
 {
-  m_settings.setValue( "MMP/binaryPath", binaryPath );
+  m_settings.setValue( "Grid/color", v );
 }
 
-QString PlaYUVerSettings::oimagePath()
+int SCoSettings::gridHSpacing()
 {
-  return m_settings.value( "MMP/oimagePath", QDir::currentPath() ).toString();
+  return m_settings.value( "Grid/hSpacing", 16 ).toInt();
 }
 
-void PlaYUVerSettings::setOimagePath( QString oimagePath )
+void SCoSettings::setGridHSpacing( int v )
 {
-  m_settings.setValue( "MMP/oimagePath", oimagePath );
+  m_settings.setValue( "Grid/hSpacing", v );
 }
 
-int PlaYUVerSettings::blockSize()
+int SCoSettings::gridVSpacing()
 {
-  return m_settings.value( "MMP/blockSize", 8 ).toInt();
+  return m_settings.value( "Grid/vSpacing", 16 ).toInt();
 }
 
-void PlaYUVerSettings::setBlockSize( int blockSize )
+void SCoSettings::setGridVSpacing( int v )
 {
-  m_settings.setValue( "MMP/blockSize", blockSize );
-}
-
-int PlaYUVerSettings::quantization()
-{
-  return m_settings.value( "MMP/quantization", 4 ).toInt();
-}
-
-void PlaYUVerSettings::setQuantization( int quantization )
-{
-  m_settings.setValue( "MMP/quantization", quantization );
-}
-
-int PlaYUVerSettings::predictionLevel()
-{
-  return m_settings.value( "MMP/predictionLevel", 0 ).toInt();
-}
-
-void PlaYUVerSettings::setPredictionLevel( int predictionlevel )
-{
-  m_settings.setValue( "MMP/predictionLevel", predictionlevel );
-}
-
-int PlaYUVerSettings::defineBounds()
-{
-  return m_settings.value( "MMP/defineBounds", 1 ).toInt();
-}
-
-void PlaYUVerSettings::setDefineBounds( int definebounds )
-{
-  m_settings.setValue( "MMP/defineBounds", definebounds );
-}
-
-int PlaYUVerSettings::lambda()
-{
-  return m_settings.value( "MMP/lambda", 1000 ).toInt();
-}
-
-void PlaYUVerSettings::setLambda( int lambda )
-{
-  m_settings.setValue( "MMP/lambda", lambda );
-}
-
-int PlaYUVerSettings::dictionary()
-{
-  return m_settings.value( "MMP/dictionary", 5000 ).toInt();
-}
-
-void PlaYUVerSettings::setDictionary( int dictionary )
-{
-  m_settings.setValue( "MMP/dictionary", dictionary );
-}
-
-int PlaYUVerSettings::radiusDistortion()
-{
-  return m_settings.value( "MMP/radiusDistortion", 100 ).toInt();
-}
-
-void PlaYUVerSettings::setRadiusDistortion( int distortion )
-{
-  m_settings.setValue( "MMP/radiusDistortion", distortion );
-}
-
-int PlaYUVerSettings::losslessDistance()
-{
-  return m_settings.value( "MMP/losslessDistance", 0 ).toInt();
-}
-
-void PlaYUVerSettings::setLosslessDistance( int distance )
-{
-  m_settings.setValue( "MMP/losslessDistance", distance );
-}
-
-int PlaYUVerSettings::mmpAutoSeg()
-{
-  return m_settings.value( "MMP/autoSeg", 1 ).toInt();
-}
-
-void PlaYUVerSettings::setMmpAutoSeg( int autoSeg )
-{
-  m_settings.setValue( "MMP/autoSeg", autoSeg );
-}
-
-/*
- bool PlaYUVerSettings::fastMode()
- {
- return m_settings.value("MMP/fastMode", 1).toBool();
- }
-
- void PlaYUVerSettings::setFastMode( bool fastmode )
- {
- m_settings.setValue("MMP/fastMode" , fastmode);
- }
- */
-
-QBitArray PlaYUVerSettings::mmpTenCheckBoxs()
-{
-  QBitArray bitArray( 10, false );
-  return m_settings.value( "MMP/tenCheckBoxs", bitArray ).toBitArray();
-}
-
-void PlaYUVerSettings::setMmpTenCheckBoxs( QBitArray tenCheckBoxs )
-{
-  m_settings.setValue( "MMP/tenCheckBoxs", tenCheckBoxs );
-}
-
-// - - - - - - - - - - - - - MMP-compound Decoder settings - - - - - - - - - - - - - - -
-
-QString PlaYUVerSettings::binaryPathDec()
-{
-  return m_settings.value( "MMPdec/binaryPath", QDir::currentPath() ).toString();
-}
-
-void PlaYUVerSettings::setBinaryPathDec( QString binaryPath )
-{
-  m_settings.setValue( "MMPdec/binaryPath", binaryPath );
-}
-
-QString PlaYUVerSettings::oimagePathDec()
-{
-  return m_settings.value( "MMPdec/oimagePath", QDir::currentPath() ).toString();
-}
-
-void PlaYUVerSettings::setOimagePathDec( QString oimagePath )
-{
-  m_settings.setValue( "MMPdec/oimagePath", oimagePath );
-}
-
-bool PlaYUVerSettings::optOutResDec()
-{
-  return m_settings.value( "MMPdec/optOutRes", 0 ).toBool();
-}
-
-void PlaYUVerSettings::setOptOutResDec( bool par )
-{
-  m_settings.setValue( "MMPdec/optOutRes", par );
-}
-
-QString PlaYUVerSettings::outResDec()
-{
-  return m_settings.value( "MMPdec/outRes", "" ).toString();
-}
-
-void PlaYUVerSettings::setOutResDec( QString str )
-{
-  m_settings.setValue( "MMPdec/outRes", str );
-}
-
-bool PlaYUVerSettings::optImgYDec()
-{
-  return m_settings.value( "MMPdec/optImgY", 0 ).toBool();
-}
-
-void PlaYUVerSettings::setOptImgYDec( bool par )
-{
-  m_settings.setValue( "MMPdec/optImgY", par );
-}
-
-QString PlaYUVerSettings::imgYDec()
-{
-  return m_settings.value( "MMPdec/imgY", "" ).toString();
-}
-
-void PlaYUVerSettings::setImgYDec( QString str )
-{
-  m_settings.setValue( "MMPdec/imgY", str );
-}
-
-bool PlaYUVerSettings::optImgUDec()
-{
-  return m_settings.value( "MMPdec/optImgU", 0 ).toBool();
-}
-
-void PlaYUVerSettings::setOptImgUDec( bool par )
-{
-  m_settings.setValue( "MMPdec/optImgU", par );
-}
-
-QString PlaYUVerSettings::imgUDec()
-{
-  return m_settings.value( "MMPdec/imgU", "" ).toString();
-}
-
-void PlaYUVerSettings::setImgUDec( QString str )
-{
-  m_settings.setValue( "MMPdec/imgU", str );
-}
-
-bool PlaYUVerSettings::optImgVDec()
-{
-  return m_settings.value( "MMPdec/optImgV", 0 ).toBool();
-}
-
-void PlaYUVerSettings::setOptImgVDec( bool par )
-{
-  m_settings.setValue( "MMPdec/optImgV", par );
-}
-
-QString PlaYUVerSettings::imgVDec()
-{
-  return m_settings.value( "MMPdec/imgV", "" ).toString();
-}
-
-void PlaYUVerSettings::setImgVDec( QString str )
-{
-  m_settings.setValue( "MMPdec/imgV", str );
+  m_settings.setValue( "Grid/vSpacing", v );
 }
 
 }  // NAMESPACE

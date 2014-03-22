@@ -49,77 +49,18 @@ public:
   QString lastOpenPath();
   void setLastOpenPath( const QString &v );
 
-  // - - - - - - - - - - - Segmentation Settings - - - - - - - - - - - -
-  QBitArray results2show();
-  void setResults2show( QBitArray vectorRes );
+  // - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - -
+  GridManager::Style gridStyle();
+  void setGridStyle( GridManager::Style v );
 
-  // - - - - - - - - - - - - MMP-compound Encoder settings - - - - - - - - - - - - 
-  QString binaryPath();
-  void setBinaryPath( QString binaryPath );
+  QColor gridColor();
+  void setGridColor( const QColor &v );
 
-  QString oimagePath();
-  void setOimagePath( QString binaryPath );
+  int gridHSpacing();
+  void setGridHSpacing( int v );
 
-  int blockSize();
-  void setBlockSize( int blockSize );
-
-  int quantization();
-  void setQuantization( int quantization );
-
-  int predictionLevel();
-  void setPredictionLevel( int predictionlevel );
-
-  int defineBounds();
-  void setDefineBounds( int definebounds );
-
-  int lambda();
-  void setLambda( int lambda );
-
-  int dictionary();
-  void setDictionary( int dictionary );
-
-  int radiusDistortion();
-  void setRadiusDistortion( int distortion );
-
-  int losslessDistance();
-  void setLosslessDistance( int distance );
-
-  QBitArray mmpTenCheckBoxs();
-  void setMmpTenCheckBoxs( QBitArray tenCheckBoxs );
-
-  int mmpAutoSeg();
-  void setMmpAutoSeg( int autoSeg );
-
-  // - - - - - - - - - - - - MMP-compound Decoder settings - - - - - - - - - - - - 
-  QString binaryPathDec();
-  void setBinaryPathDec( QString binaryPath );
-
-  QString oimagePathDec();
-  void setOimagePathDec( QString binaryPath );
-
-  bool optOutResDec();
-  void setOptOutResDec( bool par );
-
-  QString outResDec();
-  void setOutResDec( QString str );
-
-  bool optImgYDec();
-  void setOptImgYDec( bool par );
-
-  QString imgYDec();
-  void setImgYDec( QString str );
-
-  bool optImgUDec();
-  void setOptImgUDec( bool par );
-
-  QString imgUDec();
-  void setImgUDec( QString str );
-
-  bool optImgVDec();
-  void setOptImgVDec( bool par );
-
-  QString imgVDec();
-  void setImgVDec( QString str );
+  int gridVSpacing();
+  void setGridVSpacing( int v );
 
 private:
   QSettings m_settings;

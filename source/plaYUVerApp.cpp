@@ -126,7 +126,7 @@ void plaYUVerApp::open()
       statusBar()->showMessage( tr( "File loaded" ), 2000 );
       interfaceChild->show();
       connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &) ), this, SLOT( updatePixelValueStatusBar(const QPoint &) ) );
-
+      interfaceChild->zoomToFit();
     }
     else
     {

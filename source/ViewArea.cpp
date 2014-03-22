@@ -99,8 +99,8 @@ void ViewArea::clearMask()
 
 void ViewArea::setZoomFactor( double f )
 {
-  if( f == m_zoomFactor )
-    return;
+  //if( f == m_zoomFactor )
+    //return;
 
   m_zoomFactor = f;
   emit( zoomFactorChanged( m_zoomFactor ) );

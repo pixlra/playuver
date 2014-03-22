@@ -102,7 +102,7 @@ bool SubWindowHandle::loadFile( const QString &fileName )
   QApplication::restoreOverrideCursor();
 
   refreshFrame();
-  normalSize();
+  //normalSize();
 
   m_cWindowName = QString( " " );
   m_cWindowName = m_pCurrStream->getStreamInformationString();

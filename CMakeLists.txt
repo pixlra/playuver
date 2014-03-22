@@ -39,12 +39,11 @@ FILE( GLOB RESOURCES_FILES ${RSC_DIR}/*.qrc )
 ######################################################################################
 # Variables
 ######################################################################################
-ADD_OPTION(CMAKE_BUILD_TYPE  "Build type"               "Release" )
+ADD_OPTION(CMAKE_BUILD_TYPE  "Build type"               "Debug" )
+ADD_OPTION(USE_WERROR        "Warnings as errors"       OFF )
 ADD_OPTION(USE_QT4           "Build with QT4"           OFF )
 ADD_OPTION(USE_OPENCV        "Add OpenCV support"       OFF )
 ADD_OPTION(USE_FFMPEG        "Add FFMPEG support"       OFF )
-
-SET(CMAKE_BUILD_TYPE Release)
 
 ######################################################################################
 # Dependencies
@@ -83,6 +82,11 @@ CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_D
 ######################################################################################
 # Target App
 ######################################################################################
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" )
+IF( USE_WERROR )
+  SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
+ENDIF()
+
 ADD_EXECUTABLE( ${PROJECT_NAME} ${SOURCES_FILES} ${HEADERS_MOC_FILES} ${FORMS_HEADERS_FILES} ${RESOURCES_RCC_FILES} )
 
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${MODULES_LIBS} ${LINKER_LIBS} )
@@ -93,6 +97,7 @@ ENDIF()
 
 status("Configuration:")
 status("    Build type:"           ${CMAKE_BUILD_TYPE} )
+status("    Warnings as errors:" USE_WERROR       THEN YES ELSE NO)
 status("Dependencies:")
 status("    QT:"              USE_QT4             THEN "QT4" ELSE "QT5" )
 status("    Use OpenCV:"      USE_OPENCV          THEN YES ELSE NO)

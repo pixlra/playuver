@@ -98,6 +98,7 @@ bool SubWindowHandle::loadFile( const QString &fileName )
     QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( fileName ) );
     return false;
   }
+  m_cViewArea->setInputStream(m_pCurrStream);
 
   QApplication::restoreOverrideCursor();
 

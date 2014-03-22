@@ -63,6 +63,7 @@ ViewArea::ViewArea( QWidget *parent ) :
   m_gridVisible = false;
   m_snapToGrid = false;
   m_blockTrackEnable = false;
+  m_pStream = NULL;
 }
 
 void ViewArea::setImage( const QPixmap &pixmap )
@@ -501,7 +502,7 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
   QPoint actualPos = windowToView( event->pos() );
   QRect updateRect;
 
-  emit positionChanged( actualPos );
+  emit positionChanged( actualPos , getInputStream() );
 
   // If mouse left button pressed
   if( event->buttons() == Qt::LeftButton && m_lastPos != QPoint( -1, -1 ) )
@@ -749,5 +750,17 @@ void ViewArea::updateMask( const QRect &rect )
     ;
   }
 }
+
+
+void ViewArea::setInputStream( InputStream *stream )
+{
+  m_pStream = stream;
+}
+
+InputStream* ViewArea::getInputStream()
+{
+  return m_pStream;
+}
+
 
 } // NameSpace plaYUVer

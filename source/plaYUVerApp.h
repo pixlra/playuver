@@ -40,6 +40,7 @@ namespace plaYUVer
 {
 
 class SubWindowHandle;
+class InputStream;
 
 class plaYUVerApp: public QMainWindow
 {
@@ -89,7 +90,7 @@ private Q_SLOTS:
   void dropEvent( QDropEvent *event );
 
   void setActiveSubWindow( QWidget *window );
-  void updatePixelValueStatusBar(const QPoint & pos);
+  void updatePixelValueStatusBar(const QPoint & pos, InputStream* stream);
 
 private:
   QMdiArea *mdiArea;

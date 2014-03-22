@@ -109,9 +109,9 @@ static inline void yuvToRgb( int iY, int iU, int iV, int &iR, int &iG, int &iB )
 Void PlaYUVerFrame::YUV420toRGB()
 {
   Int iY, iU, iV, iR, iG, iB;
-  for( Int y = 0; y < m_uiHeight; y += 2 )
+  for( UInt y = 0; y < m_uiHeight; y += 2 )
   {
-    for( Int x = 0; x < m_uiWidth; x += 2 )
+    for( UInt x = 0; x < m_uiWidth; x += 2 )
     {
       // Pixel (x, y).
 
@@ -216,9 +216,9 @@ QImage PlaYUVerFrame::getQimage()
 
   if( sizeof(Pel) == sizeof(unsigned char) )
   {
-    for( Int y = 0; y < m_uiHeight; y++ )
+    for( UInt y = 0; y < m_uiHeight; y++ )
     {
-      for( Int x = 0; x < m_uiWidth; x++ )
+      for( UInt x = 0; x < m_uiWidth; x++ )
       {
         img.setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
       }

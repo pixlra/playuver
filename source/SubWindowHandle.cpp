@@ -146,9 +146,9 @@ QImage* SubWindowHandle::FrameToQImage( PlaYUVerFrame* curr_frame )
 
   curr_frame->YUV420toRGB();
 
-  for( Int y = 0; y < curr_frame->getHeight(); y++ )
+  for( UInt y = 0; y < curr_frame->getHeight(); y++ )
   {
-    for( Int x = 0; x < curr_frame->getWidth(); x++ )
+    for( UInt x = 0; x < curr_frame->getWidth(); x++ )
     {
       m_pCurrFrameQImage->setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
     }
@@ -245,7 +245,7 @@ Void SubWindowHandle::zoomToFit()
 {
   // Scale to a smaller size that the real to a nicer look
   QSize niceFit( m_cScrollArea->viewport()->size().width() - 10, m_cScrollArea->viewport()->size().height() - 10 );
-  if( m_pCurrStream->getWidth() <= niceFit.width() && m_pCurrStream->getHeight() <= niceFit.height() )
+  if( (Int)m_pCurrStream->getWidth() <= niceFit.width() && (Int)m_pCurrStream->getHeight() <= niceFit.height() )
   {
     normalSize();
     return;

@@ -56,9 +56,9 @@ PlaYUVerFrame* FilterFrame::process( PlaYUVerFrame* InputFrame )
 
   m_pcFilteredFrame->CopyFrom( InputFrame );
 
-  for( Int y = 0; y < m_pcFilteredFrame->getHeight() / 2; y++ )
+  for( UInt y = 0; y < m_pcFilteredFrame->getHeight() / 2; y++ )
   {
-    for( Int x = 0; x < m_pcFilteredFrame->getWidth() / 2; x++ )
+    for( UInt x = 0; x < m_pcFilteredFrame->getWidth() / 2; x++ )
     {
       pppPelYUV[1][y][x] = 128;
       pppPelYUV[2][y][x] = 128;

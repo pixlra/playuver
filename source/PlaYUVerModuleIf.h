@@ -47,9 +47,9 @@ enum __PlaYUVerModuleTypes
 typedef struct __PlaYUVerModuleDefinition
 {
   int   m_pchModuleType;
-  char* m_pchModuleCategory;
-  char* m_pchModuleName;
-  char* m_pchModuleTooltip;
+  const char* m_pchModuleCategory;
+  const char* m_pchModuleName;
+  const char* m_pchModuleTooltip;
 }PlaYUVerModuleDefinition;
 
 
@@ -72,7 +72,7 @@ public:
   virtual Void process() {};
 
   virtual Void create( PlaYUVerFrame* ) {};
-  virtual PlaYUVerFrame* process( PlaYUVerFrame* ) {};
+  virtual PlaYUVerFrame* process( PlaYUVerFrame* ) { return NULL; };
 
   virtual Void destroy() {};
 

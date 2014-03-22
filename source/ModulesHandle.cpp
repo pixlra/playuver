@@ -74,8 +74,6 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
   PlaYUVerModuleIf* currModuleIf;
   QAction* currAction;
   QMenu* currSubMenu;
-  Bool bCategoryExists;
-  Int iNumberCategories = 0;
 
   m_pcActionMapper = new QSignalMapper( this );
   connect( m_pcActionMapper, SIGNAL( mapped(int) ), this, SLOT( selectModule(int) ) );

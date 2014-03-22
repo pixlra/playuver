@@ -212,7 +212,7 @@ Void InputStream::readFrame()
   }
 
   m_iCurrFrameNum++;
-  if( m_iCurrFrameNum >= m_uiTotalFrameNum )
+  if( m_iCurrFrameNum >= (Int)m_uiTotalFrameNum )
   {
     m_iErrorStatus = END_OF_SEQ;
     m_iCurrFrameNum = 0;
@@ -249,8 +249,6 @@ Bool InputStream::writeFrame( const QString& filename )
 
 PlaYUVerFrame* InputStream::getFrame( PlaYUVerFrame *pyuv_image )
 {
-  Pel*** bufferRGB = m_cCurrFrame->getPelBufferRGB();
-
   if( pyuv_image == NULL )
     pyuv_image = new PlaYUVerFrame( m_cCurrFrame->getWidth(), m_cCurrFrame->getHeight(), m_cCurrFrame->getPelFormat() );
 

@@ -249,7 +249,7 @@ QSize SubWindowHandle::sizeHint() const
     maxSize = p->size();
   }
 
-  QSize isize = QSize( m_pCurrStream->getWidth() + 500, m_pCurrStream->getHeight() + 500 );
+  QSize isize = QSize( m_pCurrStream->getWidth() + 50, m_pCurrStream->getHeight() + 50 );
 
   // If the SubWindowHandle needs more space that the avaiable, we'll give
   // to the subwindow a reasonable size preserving the image aspect ratio.

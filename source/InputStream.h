@@ -160,6 +160,11 @@ public:
     }
   }
 
+  PlaYUVerFrame *getCurrentFrame()
+  {
+    return m_cCurrFrame;
+  }
+
 };
 
 }  // NAMESPACE

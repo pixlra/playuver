@@ -117,6 +117,8 @@ void plaYUVerApp::open()
       addSubWindow( interfaceChild );
       statusBar()->showMessage( tr( "File loaded" ), 2000 );
       interfaceChild->show();
+      connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &) ), this, SLOT( updatePixelValueStatusBar(const QPoint &) ) );
+
     }
     else
     {
@@ -576,8 +578,8 @@ QMdiSubWindow *plaYUVerApp::findSubWindow( const QString &fileName )
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
   SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
   if( mdiChild->currentFile() == canonicalFilePath )
-  return window;
-}
+    return window;
+  }
   return 0;
 }
 
@@ -586,6 +588,26 @@ void plaYUVerApp::setActiveSubWindow( QWidget *window )
   if( !window )
     return;
   mdiArea->setActiveSubWindow( qobject_cast<QMdiSubWindow *>( window ) );
+}
+
+void plaYUVerApp::updatePixelValueStatusBar(const QPoint & pos)
+{
+  Pel pixel;
+  Int iWidth, iHeight;
+  Int posX = pos.x(), posY = pos.y();
+  QString strStatus = QString("X=%1 Y=%2 ").arg(posX).arg(posY);
+
+  SubWindowHandle *currentSubWindow = activeSubWindow();
+  iWidth = currentSubWindow->getInputStream()->getWidth();
+  iHeight = currentSubWindow->getInputStream()->getHeight();
+
+  if( (posX<iWidth) && (posX>=0) && (posY<iHeight) && (posY>=0) )
+  {
+    pixel = currentSubWindow->getInputStream()->getCurrentFrame()->getPixelValueFromYUV(pos, LUMA);
+    QString strAux = QString("Luma= %1").arg(pixel);
+    strStatus.append(strAux);
+    statusBar()->showMessage( strStatus , 0 );
+  }
 }
 
 }  // NAMESPACE

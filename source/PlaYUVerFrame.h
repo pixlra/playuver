@@ -56,6 +56,9 @@ public:
   {
     return m_pppcRGBPel;
   }
+
+  Pel getPixelValueFromYUV(const QPoint &pos, YUVcomponent color);
+
 private:
 
   Void YUV420toRGB();

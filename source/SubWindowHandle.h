@@ -75,6 +75,11 @@ public:
     return m_pCurrStream;
   }
 
+  ViewArea* getViewArea()
+  {
+    return m_cViewArea;
+  }
+
   /**
    * Show the image at its original size
    */

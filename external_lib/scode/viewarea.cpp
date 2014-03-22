@@ -220,7 +220,6 @@ void ViewArea::updateSize()
     // perform the necessary updates (updateOffset). 
     resize( p->width(), p->height() );
   }
-
   if( w <= width() && h <= height() )
     updateOffset();
 }

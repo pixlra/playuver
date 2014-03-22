@@ -207,4 +207,10 @@ UInt64 PlaYUVerFrame::getBytesPerFrame()
   return 0;
 }
 
+Pel PlaYUVerFrame::getPixelValueFromYUV(const QPoint &pos, YUVcomponent color)
+{
+  return m_pppcInputPel[color][0][pos.y()*m_uiWidth+pos.x()];
+}
+
+
 }  // NAMESPACE

@@ -84,6 +84,7 @@ private Q_SLOTS:
   void dropEvent(QDropEvent *event);
 
   void setActiveSubWindow( QWidget *window );
+  void updatePixelValueStatusBar(const QPoint & pos);
 
 private:
   QMdiArea *mdiArea;

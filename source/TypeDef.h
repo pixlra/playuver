@@ -115,6 +115,21 @@ enum InputStreamColorSpace
   NO_FMT = -1, YUV420, YUV400, YUV422, RGB,
 };
 
+enum YUVcomponent
+{
+  LUMA = 0,
+  CHROMA_U,
+  CHROMA_V,
+};
+
+enum RGBcomponent
+{
+  COLOR_R = 0,
+  COLOR_G,
+  COLOR_B,
+};
+
+
 
 }
 

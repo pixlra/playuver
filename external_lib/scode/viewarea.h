@@ -103,6 +103,7 @@ public:
 signals:
   void selectionChanged( const QRect &rect );
   void positionChanged( const QPoint &pos );
+  void updateStatusBar( const QPoint &actualPos, int &luma, int &chromaU, int &chromaV );
   void zoomFactorChanged( double );
 
 public slots:

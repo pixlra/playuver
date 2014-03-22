@@ -17,11 +17,11 @@
  */
 
 /**
- * \file     playuversettings.h
+ * \file     PlaYUVerSettings.h
  * \brief    plaYUVer app settings
  */
 
-#include "plaYUVerSettings.h"
+#include "PlaYUVerSettings.h"
 
 namespace plaYUVer
 {

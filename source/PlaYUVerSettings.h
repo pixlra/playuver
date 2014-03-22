@@ -17,7 +17,7 @@
  */
 
 /**
- * \file     playuversettings.h
+ * \file     PlaYUVerSettings.h
  * \brief    plaYUVer app settings
  */
 

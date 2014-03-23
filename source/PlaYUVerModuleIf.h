@@ -44,6 +44,13 @@ enum __PlaYUVerModuleTypes
   VIDEO_LEVEL_MODULE,
 };
 
+enum __PlaYUVerModuleRequirements
+{
+  MODULE_REQUIRES_FRAME = 1,
+  MODULE_REQUIRES_TWOFRAMES = 2,
+  MODULE_REQUIRES_SIDEBAR = 4,
+};
+
 #define REGISTER_MODULE(X)                      \
     {                                           \
       if( USE_##X )                             \

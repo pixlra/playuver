@@ -184,7 +184,6 @@ Void PlaYUVerFrame::FrameFromBuffer( Pel *input_buffer, Int pel_format )
     memcpy( &m_pppcInputPel[0][0][0], input_buffer, frame_bytes_input * sizeof(Pel) );
     memcpy( &m_pppcInputPel[1][0][0], input_buffer + frame_bytes_input, frame_bytes_input / 4 * sizeof(Pel) );
     memcpy( &m_pppcInputPel[2][0][0], input_buffer + frame_bytes_input * 5 / 4, frame_bytes_input / 4 * sizeof(Pel) );
-    //YUV420toRGB();
     break;
   case YUV422:
     break;
@@ -319,11 +318,5 @@ Pixel PlaYUVerFrame::getPixelValue(const QPoint &pos, ColorSpace space)
   ConvertPixel( pixel_value, space );
   return pixel_value;
 }
-
-Pel PlaYUVerFrame::getPixelValueFromYUV(const QPoint &pos, YUVcomponent color)
-{
-  return m_pppcInputPel[color][0][pos.y()*m_uiWidth+pos.x()];
-}
-
 
 }  // NAMESPACE

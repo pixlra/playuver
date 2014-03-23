@@ -29,11 +29,18 @@
 namespace plaYUVer
 {
 
-ModulesHandle::ModulesHandle( QWidget * parent )
+Void ModulesHandle::ModulesList( Bool bCreate )
 {
   // Register Modules
   REGISTER_MODULE( FilterFrame );
 
+
+}
+
+
+ModulesHandle::ModulesHandle( QWidget * parent )
+{
+  ModulesList( true );
 
   // configure class
   setParent( parent );
@@ -43,7 +50,6 @@ ModulesHandle::ModulesHandle( QWidget * parent )
 
 ModulesHandle::~ModulesHandle()
 {
-
 }
 
 Void ModulesHandle::appendModule( PlaYUVerModuleIf* pIfModule )

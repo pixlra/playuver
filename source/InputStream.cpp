@@ -47,6 +47,9 @@ InputStream::InputStream()
 
   m_iFileFormat = INVALID;
 
+  m_cCurrFrame = NULL;
+  m_pInputBuffer = NULL;
+
   m_cFilename = QString( "" );
   m_cStreamInformationString = QString( "" );
 }
@@ -199,8 +202,11 @@ Void InputStream::close()
   m_cLibAvContext.closeAvFormat();
 #endif
 
-  if(m_cCurrFrame)
+  if( m_cCurrFrame )
     delete m_cCurrFrame;
+
+  if( m_pInputBuffer )
+    free_mem1Dpel( m_pInputBuffer );
 
   m_iStatus = 0;
 }

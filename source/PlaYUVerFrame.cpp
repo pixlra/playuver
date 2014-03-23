@@ -85,7 +85,9 @@ PlaYUVerFrame::~PlaYUVerFrame()
     free_mem3Dpel( m_pppcRGBPel );
 }
 
-static inline void yuvToRgb( int iY, int iU, int iV, int &iR, int &iG, int &iB )
+
+template<typename T>
+Void yuvToRgb( T iY, T iU, T iV, T &iR, T &iG, T &iB )
 {
   iR = iY + 1402 * iV / 1000;
   iG = iY - ( 101004 * iU + 209599 * iV ) / 293500;
@@ -104,6 +106,14 @@ static inline void yuvToRgb( int iY, int iU, int iV, int &iR, int &iG, int &iB )
     iG = 255;
   if( iB > 255 )
     iB = 255;
+}
+
+template<typename T>
+Void rgbToyuv( T iR, T iG, T iB, T &iY, T &iU, T &iV )
+{
+  iY = 0;
+  iU = 0;
+  iV = 0;
 }
 
 Void PlaYUVerFrame::YUV420toRGB()
@@ -251,6 +261,63 @@ UInt64 PlaYUVerFrame::getBytesPerFrame()
     return 0;
   }
   return 0;
+}
+
+Pixel PlaYUVerFrame::ConvertPixel( Pixel sInputPixel, ColorSpace eOutputSpace )
+{
+  Pixel sOutputPixel = {COLOR_INVALID,0,0,0};
+
+  if( sInputPixel.color_space == eOutputSpace )
+    return sInputPixel;
+
+  if( eOutputSpace == COLOR_RGB )
+  {
+    yuvToRgb( sInputPixel.Luma, sInputPixel.ChromaU, sInputPixel.ChromaU,
+        sOutputPixel.ColorR, sOutputPixel.ColorG, sOutputPixel.ColorB );
+  }
+  if( eOutputSpace == COLOR_YUV )
+  {
+    rgbToyuv( sInputPixel.ColorR, sInputPixel.ColorG, sInputPixel.ColorB,
+        sOutputPixel.Luma, sOutputPixel.ChromaU, sOutputPixel.ChromaU );
+  }
+  return sOutputPixel;
+}
+
+
+Pixel PlaYUVerFrame::getPixelValue(const QPoint &pos, ColorSpace space)
+{
+  Pixel pixel_value;
+  switch( m_iPixelFormat )
+  {
+  case YUV420:
+    pixel_value.color_space = COLOR_YUV;
+    pixel_value.Luma = m_pppcInputPel[LUMA][pos.y()][pos.x()];
+    pixel_value.ChromaU = m_pppcInputPel[CHROMA_U][pos.y()>>1][pos.x()>>1];
+    pixel_value.ChromaV = m_pppcInputPel[CHROMA_V][pos.y()>>1][pos.x()>>1];
+    break;
+  case YUV422:
+    pixel_value.color_space = COLOR_YUV;
+    pixel_value.Luma = m_pppcInputPel[LUMA][pos.y()][pos.x()];
+    pixel_value.ChromaU = m_pppcInputPel[CHROMA_U][pos.y()][pos.x()>>1];
+    pixel_value.ChromaV = m_pppcInputPel[CHROMA_V][pos.y()][pos.x()>>1];
+    break;
+  case YUV400:
+    pixel_value.color_space = COLOR_YUV;
+    pixel_value.Luma = m_pppcInputPel[LUMA][pos.y()][pos.x()];
+    pixel_value.ChromaU = 0;
+    pixel_value.ChromaV = 0;
+    break;
+  case RGB:
+    pixel_value.color_space = COLOR_RGB;
+    pixel_value.ColorR = m_pppcInputPel[COLOR_R][pos.y()][pos.x()];
+    pixel_value.ColorG = m_pppcInputPel[COLOR_G][pos.y()][pos.x()];
+    pixel_value.ColorB = m_pppcInputPel[COLOR_B][pos.y()][pos.x()];
+    break;
+  default:
+    break;
+  }
+  ConvertPixel( pixel_value, space );
+  return pixel_value;
 }
 
 Pel PlaYUVerFrame::getPixelValueFromYUV(const QPoint &pos, YUVcomponent color)

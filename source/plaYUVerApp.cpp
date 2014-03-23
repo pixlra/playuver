@@ -125,7 +125,7 @@ void plaYUVerApp::open()
       addSubWindow( interfaceChild );
       statusBar()->showMessage( tr( "File loaded" ), 2000 );
       interfaceChild->show();
-      connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &) ), this, SLOT( updatePixelValueStatusBar(const QPoint &) ) );
+      connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this, SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
       interfaceChild->zoomToFit();
     }
     else
@@ -630,27 +630,31 @@ void plaYUVerApp::setActiveSubWindow( QWidget *window )
   mdiArea->setActiveSubWindow( qobject_cast<QMdiSubWindow *>( window ) );
 }
 
-void plaYUVerApp::updatePixelValueStatusBar(const QPoint & pos)
+void plaYUVerApp::updatePixelValueStatusBar(const QPoint & pos, InputStream* stream)
 {
-  Pel pixel;
+  Pel luma, chromaU, chromaV;
   Int iWidth, iHeight;
   Int posX = pos.x(), posY = pos.y();
-  QString strStatus = QString("X=%1 Y=%2 ").arg(posX).arg(posY);
+  QString strPixel;
+  QString strStatus = QString("(%1,%2)   ").arg(posX).arg(posY);
+  PlaYUVerFrame *curFrame = stream->getCurrentFrame();
 
-  SubWindowHandle *currentSubWindow = m_pcCurrentSubWindow;
-  if(currentSubWindow)
+  iWidth = stream->getWidth();
+  iHeight = stream->getHeight();
+
+  if( (posX<iWidth) && (posX>=0) && (posY<iHeight) && (posY>=0) )
   {
-    iWidth = currentSubWindow->getInputStream()->getWidth();
-    iHeight = currentSubWindow->getInputStream()->getHeight();
-
-    if( (posX<iWidth) && (posX>=0) && (posY<iHeight) && (posY>=0) )
-    {
-      pixel = currentSubWindow->getInputStream()->getCurrentFrame()->getPixelValueFromYUV(pos, LUMA);
-      QString strAux = QString("Luma= %1").arg(pixel);
-      strStatus.append(strAux);
-      statusBar()->showMessage( strStatus , 0 );
-    }
+    luma = curFrame->getPixelValueFromYUV(pos, LUMA);
+    chromaU = curFrame->getPixelValueFromYUV(pos, CHROMA_U);
+    chromaV = curFrame->getPixelValueFromYUV(pos, CHROMA_V);
+    strPixel = QString("Y: %1   U: %2   V: %3").arg(luma).arg(chromaU).arg(chromaV);
   }
+  else
+  {
+    strPixel = QString("Y:    U:    V: ");
+  }
+  strStatus.append(strPixel);
+  statusBar()->showMessage( strStatus , 0 );
 }
 
 }  // NAMESPACE

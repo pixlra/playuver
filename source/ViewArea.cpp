@@ -63,6 +63,7 @@ ViewArea::ViewArea( QWidget *parent ) :
   m_gridVisible = false;
   m_snapToGrid = false;
   m_blockTrackEnable = false;
+  m_pStream = NULL;
 }
 
 void ViewArea::setImage( const QPixmap &pixmap )
@@ -103,11 +104,10 @@ void ViewArea::setZoomFactor( double f )
     //return;
 
   m_zoomFactor = f;
-  emit( zoomFactorChanged( m_zoomFactor ) );
+  //emit( zoomFactorChanged( m_zoomFactor ) );
 
   updateSize();
-  repaint();
-  updateGeometry();
+  update();
 }
 
 void ViewArea::setMode( ViewMode mode )
@@ -213,16 +213,7 @@ void ViewArea::updateSize()
   int h = m_pixmap.height() * m_zoomFactor;
   setMinimumSize( w, h );
 
-  QWidget *p = parentWidget();
-  if( p )
-  {
-    // If the parent size is bigger than the minimum area to view the 
-    // image, resize() will call resizeEvent(); otherwise, we need to 
-    // perform the necessary updates (updateOffset). 
-    resize( p->width(), p->height() );
-  }
-  if( w <= width() && h <= height() )
-    updateOffset();
+  updateOffset();
 }
 
 void ViewArea::updateOffset()
@@ -249,12 +240,13 @@ void ViewArea::updateOffset()
 ////////////////////////////////////////////////////////////////////////////////
 //                              Resize Event  
 ////////////////////////////////////////////////////////////////////////////////
-void ViewArea::resizeEvent( QResizeEvent */* event */)
+void ViewArea::resizeEvent( QResizeEvent *event )
 {
   if( size().isEmpty() || m_pixmap.isNull() )
     return;
 
   updateOffset();
+  update();
 }
 ////////////////////////////////////////////////////////////////////////////////
 //                              Paint Event  
@@ -501,7 +493,7 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
   QPoint actualPos = windowToView( event->pos() );
   QRect updateRect;
 
-  emit positionChanged( actualPos );
+  emit positionChanged( actualPos , getInputStream() );
 
   // If mouse left button pressed
   if( event->buttons() == Qt::LeftButton && m_lastPos != QPoint( -1, -1 ) )
@@ -749,5 +741,17 @@ void ViewArea::updateMask( const QRect &rect )
     ;
   }
 }
+
+
+void ViewArea::setInputStream( InputStream *stream )
+{
+  m_pStream = stream;
+}
+
+InputStream* ViewArea::getInputStream()
+{
+  return m_pStream;
+}
+
 
 } // NameSpace plaYUVer

@@ -45,6 +45,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
 
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
+  m_cScrollArea->setWidgetResizable(true);
 
   m_pcCurrentModule = NULL;
 
@@ -98,6 +99,7 @@ bool SubWindowHandle::loadFile( const QString &fileName )
     QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( fileName ) );
     return false;
   }
+  m_cViewArea->setInputStream(m_pCurrStream);
 
   QApplication::restoreOverrideCursor();
 

@@ -152,7 +152,7 @@ QImage* SubWindowHandle::FrameToQImage( PlaYUVerFrame* curr_frame )
 {
   Pel*** bufferRGB = curr_frame->getPelBufferRGB();
 
-  curr_frame->YUV420toRGB();
+  curr_frame->FrametoRGB8();
 
   for( UInt y = 0; y < curr_frame->getHeight(); y++ )
   {

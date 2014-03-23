@@ -110,7 +110,7 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
   {
   case NO_FMT:
     break;
-  case YUV420:
+  case YUV420p:
     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_YUV420P ), 0 );
     break;
   case YUV400:
@@ -174,7 +174,7 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
   switch( video_dec_ctx->pix_fmt )
   {
   case AV_PIX_FMT_YUV420P:
-    pixel_format = YUV420;
+    pixel_format = YUV420p;
     break;
   case AV_PIX_FMT_GRAY8:
     pixel_format = YUV400;

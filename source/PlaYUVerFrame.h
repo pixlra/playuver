@@ -46,7 +46,7 @@ public:
 
   static QStringList supportedPixelFormatList();
 
-  Void YUV420toRGB();
+  Void FrametoRGB8();
 
   Void FrameFromBuffer( Pel *input_buffer, Int pel_format );
   Void CopyFrom( PlaYUVerFrame* );

@@ -246,7 +246,6 @@ Void InputStream::readFrame()
     return;
   }
   m_cCurrFrame->FrameFromBuffer( m_pInputBuffer, m_iPixelFormat );
-
   return;
 }
 
@@ -289,7 +288,7 @@ Void InputStream::seekInput( Int new_frame_num )
   else
 #endif
   {
-    UInt64 frame_bytes_input = m_uiWidth * m_uiHeight * 1.5;
+    UInt64 frame_bytes_input = m_cCurrFrame->getBytesPerFrame();
     UInt64 nbytes_seek = frame_bytes_input * new_frame_num;
     fseek( m_pFile, nbytes_seek, SEEK_SET );
     m_iCurrFrameNum = new_frame_num - 1;

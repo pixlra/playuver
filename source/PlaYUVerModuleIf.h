@@ -44,6 +44,15 @@ enum __PlaYUVerModuleTypes
   VIDEO_LEVEL_MODULE,
 };
 
+#define REGISTER_MODULE(X)                      \
+    {                                           \
+      if( USE_##X )                             \
+      {                                         \
+        X *pMod = new X();                      \
+        appendModule( pMod );                   \
+      }                                         \
+    }
+
 typedef struct __PlaYUVerModuleDefinition
 {
   int   m_pchModuleType;

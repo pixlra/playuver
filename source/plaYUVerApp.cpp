@@ -632,12 +632,12 @@ void plaYUVerApp::setActiveSubWindow( QWidget *window )
 
 void plaYUVerApp::updatePixelValueStatusBar(const QPoint & pos, InputStream* stream)
 {
-  Pel luma, chromaU, chromaV;
+  Pel luma, chromaU = 0, chromaV = 0;
   Int iWidth, iHeight;
   Int posX = pos.x(), posY = pos.y();
   QString strPixel;
   QString strStatus = QString("(%1,%2)   ").arg(posX).arg(posY);
-  PlaYUVerFrame *curFrame = stream->getCurrentFrame();
+  PlaYUVerFrame *curFrame = stream->getFrame();
 
   iWidth = stream->getWidth();
   iHeight = stream->getHeight();
@@ -645,8 +645,8 @@ void plaYUVerApp::updatePixelValueStatusBar(const QPoint & pos, InputStream* str
   if( (posX<iWidth) && (posX>=0) && (posY<iHeight) && (posY>=0) )
   {
     luma = curFrame->getPixelValueFromYUV(pos, LUMA);
-    chromaU = curFrame->getPixelValueFromYUV(pos, CHROMA_U);
-    chromaV = curFrame->getPixelValueFromYUV(pos, CHROMA_V);
+    //chromaU = curFrame->getPixelValueFromYUV(pos, CHROMA_U);
+    //chromaV = curFrame->getPixelValueFromYUV(pos, CHROMA_V);
     strPixel = QString("Y: %1   U: %2   V: %3").arg(luma).arg(chromaU).arg(chromaV);
   }
   else

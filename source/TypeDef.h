@@ -116,8 +116,8 @@ enum InputStreamColorSpace
   YUV420p,
   YUV444p,
   YUV422p,
-  YUV410p,
   YUV411p,
+  YUV410p,
   GRAY,
   RGB8,
 };

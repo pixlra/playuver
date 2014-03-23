@@ -299,8 +299,7 @@ UInt64 PlaYUVerFrame::getBytesPerFrame()
     return m_uiWidth * m_uiHeight * 2;
     break;
   case YUV410p:
-  case YUV411p:
-    return 0;
+    return m_uiWidth * m_uiHeight * 1.25;
     break;
   case GRAY:
     return m_uiWidth * m_uiHeight;
@@ -356,6 +355,12 @@ Pixel PlaYUVerFrame::getPixelValue(const QPoint &pos, ColorSpace space)
     pixel_value.Luma = m_pppcInputPel[LUMA][pos.y()][pos.x()];
     pixel_value.ChromaU = m_pppcInputPel[CHROMA_U][pos.y()][pos.x()>>1];
     pixel_value.ChromaV = m_pppcInputPel[CHROMA_V][pos.y()][pos.x()>>1];
+    break;
+  case YUV410p:
+    pixel_value.color_space = COLOR_YUV;
+    pixel_value.Luma = m_pppcInputPel[LUMA][pos.y()][pos.x()];
+    pixel_value.ChromaU = m_pppcInputPel[CHROMA_U][pos.y()>>2][pos.x()>>2];
+    pixel_value.ChromaV = m_pppcInputPel[CHROMA_V][pos.y()>>2][pos.x()>>2];
     break;
   case GRAY:
     pixel_value.color_space = COLOR_YUV;

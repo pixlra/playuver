@@ -63,6 +63,8 @@ public:
   }
 
   Pel getPixelValueFromYUV(const QPoint &pos, YUVcomponent color);
+  Pixel ConvertPixel( Pixel sInputPixel, ColorSpace eOutputSpace );
+  Pixel getPixelValue(const QPoint &pos, ColorSpace color);
 
   QImage getQimage();
 

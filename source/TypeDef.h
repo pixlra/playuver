@@ -115,6 +115,14 @@ enum InputStreamColorSpace
   NO_FMT = -1, YUV420, YUV400, YUV422, RGB,
 };
 
+enum ColorSpace
+{
+  COLOR_INVALID = -1,
+  COLOR_YUV = 0,
+  COLOR_RGB,
+};
+
+
 enum YUVcomponent
 {
   LUMA = 0,
@@ -129,10 +137,26 @@ enum RGBcomponent
   COLOR_B,
 };
 
+typedef struct __pixel_definition
+{
+  ColorSpace color_space;
+  union
+  {
+    Pel Luma;
+    Pel ColorR;
+  };
+  union
+  {
+    Pel ChromaU;
+    Pel ColorG;
+  };
+  union
+  {
+    Pel ChromaV;
+    Pel ColorB;
+  };
+}Pixel;
 
-
-}
-
-
+}  // NAMESPACE
 
 #endif // __TYPEDEF_H__

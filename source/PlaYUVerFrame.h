@@ -67,6 +67,11 @@ public:
 
   QImage getQimage();
 
+  UChar* getQImageBuffer()
+  {
+    return m_pcRGBPelInterlaced;
+  }
+
   UInt getWidth()
   {
     return m_uiWidth;
@@ -88,6 +93,7 @@ private:
   Bool m_bHasRGBPel;
   Pel** m_pppcInputPel[3];
   Pel*** m_pppcRGBPel;
+  UChar* m_pcRGBPelInterlaced;
 };
 
 }  // NAMESPACE

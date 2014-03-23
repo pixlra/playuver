@@ -95,7 +95,7 @@ bool SubWindowHandle::loadFile( const QString &fileName )
     return false;
   }
 
-  m_pCurrFrameQImage = new QImage( m_pCurrStream->getWidth(), m_pCurrStream->getHeight(), QImage::Format_RGB888 );
+  m_pCurrFrameQImage = new QImage( m_pCurrStream->getFrame()->getQImageBuffer(), m_pCurrStream->getWidth(), m_pCurrStream->getHeight(), QImage::Format_RGB888 );
 
   m_pCurrStream->readFrame();
   if( m_pCurrStream->checkErrors( READING ) )
@@ -148,17 +148,15 @@ Void SubWindowHandle::disableModule()
 
 QImage* SubWindowHandle::FrameToQImage( PlaYUVerFrame* curr_frame )
 {
-  Pel*** bufferRGB = curr_frame->getPelBufferRGB();
-
   curr_frame->FrametoRGB8();
-
-  for( UInt y = 0; y < curr_frame->getHeight(); y++ )
-  {
-    for( UInt x = 0; x < curr_frame->getWidth(); x++ )
-    {
-      m_pCurrFrameQImage->setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
-    }
-  }
+//  Pel*** bufferRGB = curr_frame->getPelBufferRGB();
+//  for( UInt y = 0; y < curr_frame->getHeight(); y++ )
+//  {
+//    for( UInt x = 0; x < curr_frame->getWidth(); x++ )
+//    {
+//      m_pCurrFrameQImage->setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
+//    }
+//  }
   return m_pCurrFrameQImage;
 }
 

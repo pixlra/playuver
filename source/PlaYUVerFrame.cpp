@@ -24,6 +24,7 @@
 
 #include "PlaYUVerFrame.h"
 #include "LibMemAlloc.h"
+#include "LibMemory.h"
 
 #include <QImage>
 
@@ -59,25 +60,25 @@ PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
   switch( m_iPixelFormat )
   {
   case YUV420p:
-    get_mem2Dpel( &( m_pppcInputPel[0] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[1] ), m_uiHeight / 2, m_uiWidth / 2 );
-    get_mem2Dpel( &( m_pppcInputPel[2] ), m_uiHeight / 2, m_uiWidth / 2 );
+    get_mem2Dpel( &( m_pppcInputPel[LUMA] ), m_uiHeight, m_uiWidth );
+    get_mem2Dpel( &( m_pppcInputPel[CHROMA_U] ), m_uiHeight / 2, m_uiWidth / 2 );
+    get_mem2Dpel( &( m_pppcInputPel[CHROMA_V] ), m_uiHeight / 2, m_uiWidth / 2 );
     break;
   case YUV444p:
-    get_mem2Dpel( &( m_pppcInputPel[0] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[1] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[2] ), m_uiHeight, m_uiWidth );
+    get_mem2Dpel( &( m_pppcInputPel[LUMA] ), m_uiHeight, m_uiWidth );
+    get_mem2Dpel( &( m_pppcInputPel[CHROMA_U] ), m_uiHeight, m_uiWidth );
+    get_mem2Dpel( &( m_pppcInputPel[CHROMA_V] ), m_uiHeight, m_uiWidth );
     break;
   case YUV422p:
-    get_mem2Dpel( &( m_pppcInputPel[0] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[1] ), m_uiHeight / 2, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[2] ), m_uiHeight / 2, m_uiWidth );
+    get_mem2Dpel( &( m_pppcInputPel[LUMA] ), m_uiHeight, m_uiWidth );
+    get_mem2Dpel( &( m_pppcInputPel[CHROMA_U] ), m_uiHeight / 2, m_uiWidth );
+    get_mem2Dpel( &( m_pppcInputPel[CHROMA_V] ), m_uiHeight / 2, m_uiWidth );
     break;
   case YUV410p:
   case YUV411p:
-    get_mem2Dpel( &( m_pppcInputPel[0] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[1] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[2] ), m_uiHeight, m_uiWidth );
+    get_mem2Dpel( &( m_pppcInputPel[LUMA] ), m_uiHeight, m_uiWidth );
+    get_mem2Dpel( &( m_pppcInputPel[CHROMA_U] ), m_uiHeight, m_uiWidth );
+    get_mem2Dpel( &( m_pppcInputPel[CHROMA_V] ), m_uiHeight, m_uiWidth );
     break;
   case GRAY:
     get_mem2Dpel( &( m_pppcInputPel[0] ), m_uiHeight, m_uiWidth );
@@ -87,21 +88,26 @@ PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
     break;
   }
   if( m_iPixelFormat != RGB8 )
+  {
     get_mem3Dpel( &m_pppcRGBPel, 3, m_uiHeight, m_uiWidth );
-
+    getMem1D<UChar>( &m_pcRGBPelInterlaced, m_uiHeight * m_uiWidth * 3 );
+  }
 }
 
 PlaYUVerFrame::~PlaYUVerFrame()
 {
   if( m_pppcInputPel[0] )
-    free_mem2Dpel( m_pppcInputPel[0] );
+    free_mem2Dpel( m_pppcInputPel[LUMA] );
   if( m_pppcInputPel[1] )
-    free_mem2Dpel( m_pppcInputPel[1] );
+    free_mem2Dpel( m_pppcInputPel[CHROMA_U] );
   if( m_pppcInputPel[2] )
-    free_mem2Dpel( m_pppcInputPel[2] );
+    free_mem2Dpel( m_pppcInputPel[CHROMA_V] );
 
   if( m_pppcRGBPel )
     free_mem3Dpel( m_pppcRGBPel );
+
+  if( m_pcRGBPelInterlaced )
+    freeMem1D<UChar>( m_pcRGBPelInterlaced );
 }
 
 
@@ -141,13 +147,15 @@ Void PlaYUVerFrame::FrametoRGB8()
     return;
 
   Int iY, iU, iV, iR, iG, iB;
-  Pel** ppInputPelY = m_pppcInputPel[0];
-  Pel* pInputPelY = &(m_pppcInputPel[0][0][0]);
-  Pel* pInputPelU = &(m_pppcInputPel[1][0][0]);
-  Pel* pInputPelV = &(m_pppcInputPel[2][0][0]);
-  Pel* pRGBPelR = &(m_pppcRGBPel[0][0][0]);
-  Pel* pRGBPelG = &(m_pppcRGBPel[1][0][0]);
-  Pel* pRGBPelB = &(m_pppcRGBPel[2][0][0]);
+  Pel** ppInputPelY = m_pppcInputPel[LUMA];
+  Pel* pInputPelY = &(m_pppcInputPel[LUMA][0][0]);
+  Pel* pInputPelU = &(m_pppcInputPel[CHROMA_U][0][0]);
+  Pel* pInputPelV = &(m_pppcInputPel[CHROMA_V][0][0]);
+  Pel* pRGBPelR = &(m_pppcRGBPel[COLOR_R][0][0]);
+  Pel* pRGBPelG = &(m_pppcRGBPel[COLOR_G][0][0]);
+  Pel* pRGBPelB = &(m_pppcRGBPel[COLOR_B][0][0]);
+
+  Pel* pcRGBPelInterlaced = m_pcRGBPelInterlaced;
 
   switch( m_iPixelFormat )
   {
@@ -157,47 +165,54 @@ Void PlaYUVerFrame::FrametoRGB8()
       {
         // Pixel (x, y).
         iY = ppInputPelY[y][x];
-        iU = *pInputPelU++;
-        iV = *pInputPelV++;
-        iU -= 128;
-        iV -= 128;
+        iU = *pInputPelU++ - 128;
+        iV = *pInputPelV++ - 128;
         yuvToRgb( iY, iU, iV, iR, iG, iB );
-        m_pppcRGBPel[0][y][x] = iR;
-        m_pppcRGBPel[1][y][x] = iG;
-        m_pppcRGBPel[2][y][x] = iB;
+        m_pppcRGBPel[COLOR_R][y][x] = iR;
+        m_pppcRGBPel[COLOR_G][y][x] = iG;
+        m_pppcRGBPel[COLOR_B][y][x] = iB;
         // Pixel (x+1, y)
         iY = ppInputPelY[y][x+1];
         yuvToRgb( iY, iU, iV, iR, iG, iB );
-        m_pppcRGBPel[0][y][x + 1] = iR;
-        m_pppcRGBPel[1][y][x + 1] = iG;
-        m_pppcRGBPel[2][y][x + 1] = iB;
+        m_pppcRGBPel[COLOR_R][y][x + 1] = iR;
+        m_pppcRGBPel[COLOR_G][y][x + 1] = iG;
+        m_pppcRGBPel[COLOR_B][y][x + 1] = iB;
         // Pixel (x, y+1)
         iY = ppInputPelY[y+1][x];
         yuvToRgb( iY, iU, iV, iR, iG, iB );
         m_pppcRGBPel[0][y + 1][x] = iR;
-        m_pppcRGBPel[1][y + 1][x] = iG;
-        m_pppcRGBPel[2][y + 1][x] = iB;
+        m_pppcRGBPel[COLOR_G][y + 1][x] = iG;
+        m_pppcRGBPel[COLOR_B][y + 1][x] = iB;
         // Pixel (x+1, y+1)
         iY = ppInputPelY[y+1][x+1];
         yuvToRgb( iY, iU, iV, iR, iG, iB );
-        m_pppcRGBPel[0][y + 1][x + 1] = iR;
-        m_pppcRGBPel[1][y + 1][x + 1] = iG;
-        m_pppcRGBPel[2][y + 1][x + 1] = iB;
+        m_pppcRGBPel[COLOR_R][y + 1][x + 1] = iR;
+        m_pppcRGBPel[COLOR_G][y + 1][x + 1] = iG;
+        m_pppcRGBPel[COLOR_B][y + 1][x + 1] = iB;
       }
+    for( UInt y = 0; y < m_uiHeight; y++ )
+      for( UInt x = 0; x < m_uiWidth; x++ )
+      {
+        *pcRGBPelInterlaced++ = m_pppcRGBPel[COLOR_R][y][x];
+        *pcRGBPelInterlaced++ = m_pppcRGBPel[COLOR_G][y][x];
+        *pcRGBPelInterlaced++ = m_pppcRGBPel[COLOR_B][y][x];
+      }
+
     break;
   case YUV444p:
     for( UInt y = 0; y < m_uiHeight; y++ )
       for( UInt x = 0; x < m_uiWidth; x++ )
       {
         iY = *pInputPelY++;
-        iU = *pInputPelU++;
-        iV = *pInputPelV++;
-        iU -= 128;
-        iV -= 128;
+        iU = *pInputPelU++ - 128;
+        iV = *pInputPelV++ - 128;
         yuvToRgb( iY, iU, iV, iR, iG, iB );
         *pRGBPelR++ = iR;
         *pRGBPelG++ = iG;
         *pRGBPelB++ = iB;
+        *pcRGBPelInterlaced++ = iR;
+        *pcRGBPelInterlaced++ = iG;
+        *pcRGBPelInterlaced++ = iB;
       }
     break;
   case YUV422p:
@@ -222,14 +237,14 @@ Void PlaYUVerFrame::FrameFromBuffer( Pel *input_buffer, Int pel_format )
   switch( m_iPixelFormat )
   {
   case YUV420p:
-    memcpy( &m_pppcInputPel[0][0][0], input_buffer + frame_bytes_input * 0, frame_bytes_input * sizeof(Pel) );
-    memcpy( &m_pppcInputPel[1][0][0], input_buffer + frame_bytes_input * 1, frame_bytes_input / 4 * sizeof(Pel) );
-    memcpy( &m_pppcInputPel[2][0][0], input_buffer + frame_bytes_input * 5 / 4, frame_bytes_input / 4 * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[LUMA][0][0], input_buffer + frame_bytes_input * 0, frame_bytes_input * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[CHROMA_U][0][0], input_buffer + frame_bytes_input * 1, frame_bytes_input / 4 * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[CHROMA_V][0][0], input_buffer + frame_bytes_input * 5 / 4, frame_bytes_input / 4 * sizeof(Pel) );
     break;
   case YUV444p:
-    memcpy( &m_pppcInputPel[0][0][0], input_buffer + frame_bytes_input * 0, frame_bytes_input * sizeof(Pel) );
-    memcpy( &m_pppcInputPel[1][0][0], input_buffer + frame_bytes_input * 1, frame_bytes_input * sizeof(Pel) );
-    memcpy( &m_pppcInputPel[2][0][0], input_buffer + frame_bytes_input * 2, frame_bytes_input * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[LUMA][0][0], input_buffer + frame_bytes_input * 0, frame_bytes_input * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[CHROMA_U][0][0], input_buffer + frame_bytes_input * 1, frame_bytes_input * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[CHROMA_V][0][0], input_buffer + frame_bytes_input * 2, frame_bytes_input * sizeof(Pel) );
     break;
   case YUV422p:
   case YUV410p:
@@ -251,14 +266,14 @@ Void PlaYUVerFrame::CopyFrom( PlaYUVerFrame* input_frame )
   switch( m_iPixelFormat )
   {
   case YUV420p:
-    memcpy( &m_pppcInputPel[0][0][0], &( input_frame->getPelBufferYUV()[0][0][0] ), num_bytes * sizeof(Pel) );
-    memcpy( &m_pppcInputPel[1][0][0], &( input_frame->getPelBufferYUV()[1][0][0] ), num_bytes / 4 * sizeof(Pel) );
-    memcpy( &m_pppcInputPel[2][0][0], &( input_frame->getPelBufferYUV()[2][0][0] ), num_bytes / 4 * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[LUMA][0][0], &( input_frame->getPelBufferYUV()[LUMA][0][0] ), num_bytes * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[CHROMA_U][0][0], &( input_frame->getPelBufferYUV()[CHROMA_U][0][0] ), num_bytes / 4 * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[CHROMA_V][0][0], &( input_frame->getPelBufferYUV()[CHROMA_V][0][0] ), num_bytes / 4 * sizeof(Pel) );
     break;
   case YUV444p:
-    memcpy( &m_pppcInputPel[0][0][0], &( input_frame->getPelBufferYUV()[0][0][0] ), num_bytes * sizeof(Pel) );
-    memcpy( &m_pppcInputPel[1][0][0], &( input_frame->getPelBufferYUV()[1][0][0] ), num_bytes * sizeof(Pel) );
-    memcpy( &m_pppcInputPel[2][0][0], &( input_frame->getPelBufferYUV()[2][0][0] ), num_bytes * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[LUMA][0][0], &( input_frame->getPelBufferYUV()[LUMA][0][0] ), num_bytes * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[CHROMA_U][0][0], &( input_frame->getPelBufferYUV()[CHROMA_U][0][0] ), num_bytes * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[CHROMA_V][0][0], &( input_frame->getPelBufferYUV()[CHROMA_V][0][0] ), num_bytes * sizeof(Pel) );
     break;
   case YUV422p:
   case YUV410p:
@@ -281,7 +296,7 @@ QImage PlaYUVerFrame::getQimage()
     {
       for( UInt x = 0; x < m_uiWidth; x++ )
       {
-        img.setPixel( x, y, qRgb( bufferRGB[0][y][x], bufferRGB[1][y][x], bufferRGB[2][y][x] ) );
+        img.setPixel( x, y, qRgb( bufferRGB[COLOR_R][y][x], bufferRGB[COLOR_G][y][x], bufferRGB[COLOR_B][y][x] ) );
       }
     }
   }

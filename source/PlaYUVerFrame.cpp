@@ -54,6 +54,8 @@ PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
   m_uiHeight = height;
   m_iPixelFormat = pel_format;
 
+  m_bHasRGBPel = false;
+
   switch( m_iPixelFormat )
   {
   case YUV420p:
@@ -135,8 +137,10 @@ Void rgbToyuv( T iR, T iG, T iB, T &iY, T &iU, T &iV )
 
 Void PlaYUVerFrame::FrametoRGB8()
 {
-  Int iY, iU, iV, iR, iG, iB;
+  if( m_bHasRGBPel )
+    return;
 
+  Int iY, iU, iV, iR, iG, iB;
   Pel** ppInputPelY = m_pppcInputPel[0];
   Pel* pInputPelY = &(m_pppcInputPel[0][0][0]);
   Pel* pInputPelU = &(m_pppcInputPel[1][0][0]);
@@ -205,6 +209,7 @@ Void PlaYUVerFrame::FrametoRGB8()
     // No action.
     break;
   }
+  m_bHasRGBPel = true;
 }
 
 Void PlaYUVerFrame::FrameFromBuffer( Pel *input_buffer, Int pel_format )
@@ -233,6 +238,7 @@ Void PlaYUVerFrame::FrameFromBuffer( Pel *input_buffer, Int pel_format )
   case RGB8:
     break;
   }
+  m_bHasRGBPel = false;
 }
 
 Void PlaYUVerFrame::CopyFrom( PlaYUVerFrame* input_frame )
@@ -261,6 +267,7 @@ Void PlaYUVerFrame::CopyFrom( PlaYUVerFrame* input_frame )
   case RGB8:
     break;
   }
+  m_bHasRGBPel = false;
 }
 
 QImage PlaYUVerFrame::getQimage()

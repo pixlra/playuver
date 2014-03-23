@@ -85,6 +85,7 @@ private:
   UInt m_uiHeight;
   Int m_iPixelFormat;
 
+  Bool m_bHasRGBPel;
   Pel** m_pppcInputPel[3];
   Pel*** m_pppcRGBPel;
 };

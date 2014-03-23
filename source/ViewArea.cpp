@@ -104,11 +104,10 @@ void ViewArea::setZoomFactor( double f )
     //return;
 
   m_zoomFactor = f;
-  emit( zoomFactorChanged( m_zoomFactor ) );
+  //emit( zoomFactorChanged( m_zoomFactor ) );
 
   updateSize();
-  repaint();
-  updateGeometry();
+  update();
 }
 
 void ViewArea::setMode( ViewMode mode )
@@ -214,16 +213,7 @@ void ViewArea::updateSize()
   int h = m_pixmap.height() * m_zoomFactor;
   setMinimumSize( w, h );
 
-  QWidget *p = parentWidget();
-  if( p )
-  {
-    // If the parent size is bigger than the minimum area to view the 
-    // image, resize() will call resizeEvent(); otherwise, we need to 
-    // perform the necessary updates (updateOffset). 
-    resize( p->width(), p->height() );
-  }
-  if( w <= width() && h <= height() )
-    updateOffset();
+  updateOffset();
 }
 
 void ViewArea::updateOffset()
@@ -250,12 +240,13 @@ void ViewArea::updateOffset()
 ////////////////////////////////////////////////////////////////////////////////
 //                              Resize Event  
 ////////////////////////////////////////////////////////////////////////////////
-void ViewArea::resizeEvent( QResizeEvent */* event */)
+void ViewArea::resizeEvent( QResizeEvent *event )
 {
   if( size().isEmpty() || m_pixmap.isNull() )
     return;
 
   updateOffset();
+  update();
 }
 ////////////////////////////////////////////////////////////////////////////////
 //                              Paint Event  

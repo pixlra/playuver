@@ -45,6 +45,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
 
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
+  m_cScrollArea->setWidgetResizable(true);
 
   m_pcCurrentModule = NULL;
 

@@ -57,8 +57,6 @@ private:
   QString m_cWindowName;
   QString m_cCurrFileName;
 
-  Double m_dScaleFactor;
-
   Bool m_bIsPlaying;
 
 public:
@@ -124,7 +122,7 @@ public:
 
   Double getScaleFactor()
   {
-    return m_dScaleFactor;
+    return m_cViewArea->getZoomFactor();
   }
 
   QSize sizeHint() const;

@@ -30,6 +30,7 @@
 #include <QBitmap>
 #include <QColor>
 
+#include "TypeDef.h"
 #include "GridManager.h"
 
 namespace plaYUVer
@@ -103,6 +104,8 @@ public:
 
   void setInputStream( InputStream *stream );
   InputStream* getInputStream();
+
+  Double getZoomFactor();
 
 //     QSize sizeHint() const;
 

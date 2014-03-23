@@ -54,8 +54,6 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
 
   m_cWindowName = QString( " " );
   m_bIsPlaying = true;
-  m_dScaleFactor = 1;
-
 }
 
 SubWindowHandle::~SubWindowHandle()
@@ -245,8 +243,8 @@ Void SubWindowHandle::stopEvent()
 
 Void SubWindowHandle::normalSize()
 {
-  m_dScaleFactor = 1.0;
-  m_cViewArea->setZoomFactor( m_dScaleFactor );
+  Double scaleFactor = 1.0;
+  m_cViewArea->setZoomFactor( scaleFactor );
 }
 
 Void SubWindowHandle::zoomToFit()
@@ -264,9 +262,10 @@ Void SubWindowHandle::zoomToFit()
 Void SubWindowHandle::scaleView( Double factor )
 {
   Q_ASSERT( m_cViewArea->image() );
-  m_dScaleFactor *= factor;
-  m_cViewArea->setZoomFactor( m_dScaleFactor );
-  adjustScrollBar( m_dScaleFactor );
+  Double scaleFactor = m_cViewArea->getZoomFactor();
+  scaleFactor *= factor;
+  m_cViewArea->setZoomFactor( scaleFactor );
+  adjustScrollBar( scaleFactor );
 }
 
 Void SubWindowHandle::scaleView( Int width, Int height )
@@ -283,7 +282,6 @@ Void SubWindowHandle::scaleView( const QSize & size )
   // Calc the zoom factor
   Double wfactor = 1;
   Double hfactor = 1;
-  m_dScaleFactor = 1;
 
   wfactor = ( Double )newSize.width() / imgViewSize.width();
   hfactor = ( Double )newSize.height() / imgViewSize.height();

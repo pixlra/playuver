@@ -91,6 +91,12 @@ void ViewArea::clearMask()
   m_mask.clear();
 }
 
+Double ViewArea::getZoomFactor()
+{
+  return m_zoomFactor;
+}
+
+
 // QSize ViewArea::sizeHint() const
 // {
 //     int w = m_pixmap.width()*m_zoomFactor;
@@ -102,6 +108,12 @@ void ViewArea::setZoomFactor( double f )
 {
   //if( f == m_zoomFactor )
     //return;
+
+  if( f < ( 32.0 / m_pixmap.width() ) )
+    f = 32.0 / m_pixmap.width();
+
+  if( f > 10.0 )
+    f = 10.0;
 
   m_zoomFactor = f;
   //emit( zoomFactorChanged( m_zoomFactor ) );
@@ -423,8 +435,6 @@ void ViewArea::wheelEvent( QWheelEvent *event )
   double f;
 
   f = m_zoomFactor + 0.001 * event->delta();
-  if( f < ( 32.0 / m_pixmap.width() ) )
-    f = 32.0 / m_pixmap.width();
 
   setZoomFactor( f );
 

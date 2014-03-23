@@ -47,6 +47,9 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   m_cScrollArea->setWidget( m_cViewArea );
   m_cScrollArea->setWidgetResizable(true);
 
+  m_pCurrStream = new InputStream;
+
+  m_pCurrFrameQImage = NULL;
   m_pcCurrentModule = NULL;
 
   m_cWindowName = QString( " " );
@@ -58,18 +61,21 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
 SubWindowHandle::~SubWindowHandle()
 {
   delete m_cViewArea;
-  if( !m_pcCurrentModule )
-    return;
-  m_pcCurrentModule->m_pcAction->setChecked( false );
-  m_pcCurrentModule->destroy();
-  m_pcCurrentModule = NULL;
+  delete m_cScrollArea;
+  delete m_pCurrStream;
+  if( m_pCurrFrameQImage )
+    delete m_pCurrFrameQImage;
+  if( m_pcCurrentModule )
+  {
+    m_pcCurrentModule->m_pcAction->setChecked( false );
+    m_pcCurrentModule->destroy();
+    m_pcCurrentModule = NULL;
+  }
 }
 
 bool SubWindowHandle::loadFile( const QString &fileName )
 {
   ConfigureFormatDialog formatDialog( this );
-
-  m_pCurrStream = new InputStream;
 
   if( m_pCurrStream->needFormatDialog( fileName ) )
   {
@@ -166,7 +172,7 @@ Void SubWindowHandle::refreshFrame()
   }
   else
   {
-    FrameToQImage( m_pCurrStream->getFrame( (PlaYUVerFrame*) NULL ) );
+    FrameToQImage( m_pCurrStream->getFrame() );
   }
   m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
 }

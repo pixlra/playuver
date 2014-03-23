@@ -42,15 +42,6 @@
 namespace plaYUVer
 {
 
-#define REGISTER_MODULE(X)                      \
-    {                                           \
-      if( USE_##X )                             \
-      {                                         \
-        X *pMod = new X();                      \
-        appendModule( pMod );                   \
-      }                                         \
-    }
-
 class ModulesHandle : public QObject
 {
  Q_OBJECT

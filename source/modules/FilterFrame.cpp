@@ -39,14 +39,11 @@ PlaYUVerModuleDefinition FilterFrameDef = {
 FilterFrame::FilterFrame()
 {
   m_cModuleDef = FilterFrameDef;
-
-  m_pcFilteredFrame = NULL;
 }
 
 Void FilterFrame::create( PlaYUVerFrame* InputFrame )
 {
-  if( m_pcFilteredFrame )
-    delete m_pcFilteredFrame;
+  m_pcFilteredFrame = NULL;
   m_pcFilteredFrame = new PlaYUVerFrame( InputFrame->getWidth(), InputFrame->getHeight(), InputFrame->getPelFormat() );
 }
 

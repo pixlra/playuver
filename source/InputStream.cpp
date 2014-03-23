@@ -199,6 +199,9 @@ Void InputStream::close()
   m_cLibAvContext.closeAvFormat();
 #endif
 
+  if(m_cCurrFrame)
+    delete m_cCurrFrame;
+
   m_iStatus = 0;
 }
 

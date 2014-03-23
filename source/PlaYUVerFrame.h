@@ -46,7 +46,7 @@ public:
 
   static QStringList supportedPixelFormatList();
 
-  Void YUV420toRGB();
+  Void FrametoRGB8();
 
   Void FrameFromBuffer( Pel *input_buffer, Int pel_format );
   Void CopyFrom( PlaYUVerFrame* );
@@ -62,8 +62,7 @@ public:
     return m_pppcRGBPel;
   }
 
-  Pel getPixelValueFromYUV(const QPoint &pos, YUVcomponent color);
-  Pixel ConvertPixel( Pixel sInputPixel, ColorSpace eOutputSpace );
+  static Pixel ConvertPixel( Pixel sInputPixel, ColorSpace eOutputSpace );
   Pixel getPixelValue(const QPoint &pos, ColorSpace color);
 
   QImage getQimage();

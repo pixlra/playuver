@@ -112,7 +112,14 @@ typedef UChar Pel;        ///< 8-bit pixel type
 
 enum InputStreamColorSpace
 {
-  NO_FMT = -1, YUV420, YUV400, YUV422, RGB,
+  NO_FMT = -1,
+  YUV420p,
+  YUV444p,
+  YUV422p,
+  YUV410p,
+  YUV411p,
+  GRAY,
+  RGB8,
 };
 
 enum ColorSpace

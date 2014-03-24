@@ -35,12 +35,12 @@ QStringList PlaYUVerFrame::supportedPixelFormatList()
 {
   QStringList formats;
   formats << "yuv420p"
-      << "yuv444p";
-     /* << "yuv422p"
+      << "yuv444p"
+      << "yuv422p"
       << "yuv410p"
       << "yuv411p"
       << "gray"
-      << "rgb8"; */
+      << "rgb24";
   return formats;
 }
 
@@ -84,14 +84,16 @@ PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
     get_mem2Dpel( &( m_pppcInputPel[0] ), m_uiHeight, m_uiWidth );
     break;
   case RGB8:
-    get_mem3Dpel( &m_pppcRGBPel, 3, m_uiHeight, m_uiWidth );
+    get_mem2Dpel( &( m_pppcInputPel[COLOR_R] ), m_uiHeight, m_uiWidth );
+    get_mem2Dpel( &( m_pppcInputPel[COLOR_G] ), m_uiHeight, m_uiWidth );
+    get_mem2Dpel( &( m_pppcInputPel[COLOR_B] ), m_uiHeight, m_uiWidth );
     break;
   }
   if( m_iPixelFormat != RGB8 )
   {
     get_mem3Dpel( &m_pppcRGBPel, 3, m_uiHeight, m_uiWidth );
-    getMem1D<UChar>( &m_pcRGBPelInterlaced, m_uiHeight * m_uiWidth * 3 );
   }
+  getMem1D<UChar>( &m_pcRGBPelInterlaced, m_uiHeight * m_uiWidth * 3 );
 }
 
 PlaYUVerFrame::~PlaYUVerFrame()
@@ -151,9 +153,16 @@ Void PlaYUVerFrame::FrametoRGB8()
   Pel* pInputPelY = &(m_pppcInputPel[LUMA][0][0]);
   Pel* pInputPelU = &(m_pppcInputPel[CHROMA_U][0][0]);
   Pel* pInputPelV = &(m_pppcInputPel[CHROMA_V][0][0]);
-  Pel* pRGBPelR = &(m_pppcRGBPel[COLOR_R][0][0]);
-  Pel* pRGBPelG = &(m_pppcRGBPel[COLOR_G][0][0]);
-  Pel* pRGBPelB = &(m_pppcRGBPel[COLOR_B][0][0]);
+  Pel* pRGBPelR;
+  Pel* pRGBPelG;
+  Pel* pRGBPelB;
+
+  if( m_iPixelFormat != RGB8)
+  {
+    pRGBPelR = &(m_pppcRGBPel[COLOR_R][0][0]);
+    pRGBPelG = &(m_pppcRGBPel[COLOR_G][0][0]);
+    pRGBPelB = &(m_pppcRGBPel[COLOR_B][0][0]);
+  }
 
   Pel* pcRGBPelInterlaced = m_pcRGBPelInterlaced;
 
@@ -197,7 +206,6 @@ Void PlaYUVerFrame::FrametoRGB8()
         *pcRGBPelInterlaced++ = m_pppcRGBPel[COLOR_G][y][x];
         *pcRGBPelInterlaced++ = m_pppcRGBPel[COLOR_B][y][x];
       }
-
     break;
   case YUV444p:
     for( UInt y = 0; y < m_uiHeight; y++ )
@@ -220,6 +228,13 @@ Void PlaYUVerFrame::FrametoRGB8()
   case YUV411p:
   case GRAY:
   case RGB8:
+    for( UInt y = 0; y < m_uiHeight; y++ )
+      for( UInt x = 0; x < m_uiWidth; x++ )
+      {
+        *pcRGBPelInterlaced++ = m_pppcInputPel[COLOR_R][y][x];
+        *pcRGBPelInterlaced++ = m_pppcInputPel[COLOR_G][y][x];
+        *pcRGBPelInterlaced++ = m_pppcInputPel[COLOR_B][y][x];
+      }
   default:
     // No action.
     break;
@@ -229,10 +244,12 @@ Void PlaYUVerFrame::FrametoRGB8()
 
 Void PlaYUVerFrame::FrameFromBuffer( Pel *input_buffer, Int pel_format )
 {
+  Pel* pcRGBPelInterlaced = m_pcRGBPelInterlaced;
   if( m_iPixelFormat != pel_format )
   {
     return;
   }
+  m_bHasRGBPel = false;
   UInt64 frame_bytes_input = m_uiWidth * m_uiHeight;
   switch( m_iPixelFormat )
   {
@@ -251,9 +268,16 @@ Void PlaYUVerFrame::FrameFromBuffer( Pel *input_buffer, Int pel_format )
   case YUV411p:
   case GRAY:
   case RGB8:
+    for( UInt y = 0; y < m_uiHeight; y++ )
+      for( UInt x = 0; x < m_uiWidth; x++ )
+      {
+        m_pppcInputPel[COLOR_R][y][x] = *pcRGBPelInterlaced++ = *input_buffer++;
+        m_pppcInputPel[COLOR_G][y][x] = *pcRGBPelInterlaced++ = *input_buffer++;
+        m_pppcInputPel[COLOR_B][y][x] = *pcRGBPelInterlaced++ = *input_buffer++;
+      }
+    m_bHasRGBPel = true;
     break;
   }
-  m_bHasRGBPel = false;
 }
 
 Void PlaYUVerFrame::CopyFrom( PlaYUVerFrame* input_frame )
@@ -262,6 +286,7 @@ Void PlaYUVerFrame::CopyFrom( PlaYUVerFrame* input_frame )
   {
     return;
   }
+  m_bHasRGBPel = false;
   UInt64 num_bytes = m_uiWidth * m_uiHeight;
   switch( m_iPixelFormat )
   {
@@ -280,9 +305,12 @@ Void PlaYUVerFrame::CopyFrom( PlaYUVerFrame* input_frame )
   case YUV411p:
   case GRAY:
   case RGB8:
+    memcpy( &m_pppcInputPel[COLOR_R][0][0], &( input_frame->getPelBufferYUV()[COLOR_R][0][0] ), num_bytes * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[COLOR_G][0][0], &( input_frame->getPelBufferYUV()[COLOR_G][0][0] ), num_bytes * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[COLOR_B][0][0], &( input_frame->getPelBufferYUV()[COLOR_B][0][0] ), num_bytes * sizeof(Pel) );
     break;
   }
-  m_bHasRGBPel = false;
+
 }
 
 QImage PlaYUVerFrame::getQimage()

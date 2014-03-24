@@ -105,6 +105,7 @@ public:
   void setInputStream( InputStream *stream );
   InputStream* getInputStream();
 
+  Void zoomChangeEvent(Double factor);
   Double getZoomFactor();
 
 //     QSize sizeHint() const;

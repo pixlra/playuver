@@ -41,7 +41,8 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   setWidget( m_cScrollArea );
 
   // Create a new interface to show images
-  m_cViewArea = new ViewArea( m_cScrollArea );
+  m_cViewArea = new ViewArea( this );
+  connect(m_cViewArea, SIGNAL(zoomFactorChanged(double)), this, SLOT(adjustScrollBar(double)));
 
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
@@ -262,10 +263,7 @@ Void SubWindowHandle::zoomToFit()
 Void SubWindowHandle::scaleView( Double factor )
 {
   Q_ASSERT( m_cViewArea->image() );
-  Double scaleFactor = m_cViewArea->getZoomFactor();
-  scaleFactor *= factor;
-  m_cViewArea->setZoomFactor( scaleFactor );
-  adjustScrollBar( scaleFactor );
+  m_cViewArea->zoomChangeEvent(factor);
 }
 
 Void SubWindowHandle::scaleView( Int width, Int height )
@@ -292,7 +290,7 @@ Void SubWindowHandle::scaleView( const QSize & size )
     scaleView( hfactor );
 }
 
-Void SubWindowHandle::adjustScrollBar( Double factor )
+void SubWindowHandle::adjustScrollBar( double factor )
 {
   QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
   scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );

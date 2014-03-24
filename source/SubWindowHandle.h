@@ -59,6 +59,9 @@ private:
 
   Bool m_bIsPlaying;
 
+private slots:
+  void adjustScrollBar( double factor );
+
 public:
   SubWindowHandle( QWidget * parent = 0 );
   ~SubWindowHandle();
@@ -118,8 +121,6 @@ public:
    */
   Void scaleView( const QSize & size );
 
-  Void adjustScrollBar( Double factor );
-
   Double getScaleFactor()
   {
     return m_cViewArea->getZoomFactor();
@@ -145,6 +146,7 @@ protected:
 
 public Q_SLOTS:
   bool playEvent();
+
 };
 
 }  // NAMESPACE

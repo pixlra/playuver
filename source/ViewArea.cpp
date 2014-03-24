@@ -104,19 +104,34 @@ Double ViewArea::getZoomFactor()
 //     return QSize( w, h );
 // }
 
+Void ViewArea::zoomChangeEvent(Double factor)
+{
+  Double zoomFactor;
+  Double maxZoom = 10.0;
+  Double minZoom = ( 32.0 / m_pixmap.width() );
+
+  if( ( m_zoomFactor == minZoom ) && (factor < 1 ) )
+    return;
+
+  if( ( m_zoomFactor == maxZoom ) && (factor > 1 ) )
+    return;
+
+  zoomFactor = m_zoomFactor * factor;
+
+  if( zoomFactor < minZoom )
+    zoomFactor = minZoom;
+
+  if( zoomFactor > maxZoom )
+    zoomFactor = maxZoom;
+
+  setZoomFactor( zoomFactor );
+  emit zoomFactorChanged(factor);
+
+}
+
 void ViewArea::setZoomFactor( double f )
 {
-  //if( f == m_zoomFactor )
-    //return;
-
-  if( f < ( 32.0 / m_pixmap.width() ) )
-    f = 32.0 / m_pixmap.width();
-
-  if( f > 10.0 )
-    f = 10.0;
-
   m_zoomFactor = f;
-  //emit( zoomFactorChanged( m_zoomFactor ) );
 
   updateSize();
   update();
@@ -432,12 +447,15 @@ void ViewArea::paintEvent( QPaintEvent *event )
 ////////////////////////////////////////////////////////////////////////////////
 void ViewArea::wheelEvent( QWheelEvent *event )
 {
-  double f;
+  Double factor;
 
-  f = m_zoomFactor + 0.001 * event->delta();
+  factor = 0.001 * event->delta();
+  if(factor>0)
+    factor=1.25;
+  else
+    factor=0.8;
 
-  setZoomFactor( f );
-
+  zoomChangeEvent( factor );
 }
 
 void ViewArea::mousePressEvent( QMouseEvent *event )

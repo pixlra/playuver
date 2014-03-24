@@ -27,6 +27,7 @@
 #ifndef __MAKE_LIB__
 #include "config.h"
 #endif
+#include <string>
 
 namespace plaYUVer
 {
@@ -110,7 +111,7 @@ typedef UChar Pel;        ///< 8-bit pixel type
 // PlaYUVer definitions
 // ====================================================================================================================
 
-enum InputStreamColorSpace
+enum InputStreamFormats
 {
   NO_FMT = -1,
   YUV420p,
@@ -120,6 +121,18 @@ enum InputStreamColorSpace
   YUV410p,
   GRAY,
   RGB8,
+  NUMBER_FORMATS
+};
+
+const std::string gInputStreamFormatsNames[] =
+{
+    "YUV420p",
+    "YUV444p",
+    "YUV422p",
+    "YUV411p",
+    "YUV410p",
+    "GRAY",
+    "RGB8",
 };
 
 enum ColorSpace

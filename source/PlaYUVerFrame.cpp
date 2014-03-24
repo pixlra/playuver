@@ -34,13 +34,10 @@ namespace plaYUVer
 QStringList PlaYUVerFrame::supportedPixelFormatList()
 {
   QStringList formats;
-  formats << "yuv420p"
-      << "yuv444p"
-      << "yuv422p"
-      << "yuv410p"
-      << "yuv411p"
-      << "gray"
-      << "rgb24";
+  for( Int i = 0; i < NUMBER_FORMATS; i++ )
+  {
+    formats.append(gInputStreamFormatsNames[i].data());
+  }
   return formats;
 }
 

@@ -27,6 +27,7 @@
 
 #include "InputStream.h"
 #include "LibMemAlloc.h"
+#include "LibMemory.h"
 
 namespace plaYUVer
 {
@@ -47,11 +48,14 @@ InputStream::InputStream()
 
   m_iFileFormat = INVALID;
 
-  m_cCurrFrame = NULL;
   m_pInputBuffer = NULL;
 
   m_cFilename = QString( "" );
   m_cStreamInformationString = QString( "" );
+
+  m_pcCurrFrame = NULL;
+  m_ppcFrameBuffer = NULL;
+  m_uiFrameBufferSize = 2;
 }
 
 InputStream::~InputStream()
@@ -154,9 +158,15 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
     return;
   }
 
-  m_cCurrFrame = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
+  getMem1D<PlaYUVerFrame*>( &m_ppcFrameBuffer, m_uiFrameBufferSize );
+  for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
+  {
+    m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
+  }
+  m_pcCurrFrame = m_ppcFrameBuffer[0];
+  m_uiFrameBufferIndex = 1;
 
-  UInt64 frame_bytes_input = m_cCurrFrame->getBytesPerFrame();
+  UInt64 frame_bytes_input = m_pcCurrFrame->getBytesPerFrame();
 
   if( !avStatus )
   {
@@ -173,7 +183,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
     m_cStreamInformationString.append( QString::fromUtf8("rawvideo ") );
   }
 
-  if( !get_mem1Dpel( &m_pInputBuffer, m_cCurrFrame->getBytesPerFrame() ) )
+  if( !getMem1D<Pel>( &m_pInputBuffer, m_pcCurrFrame->getBytesPerFrame() ) )
   {
     //Error
     return;
@@ -190,6 +200,9 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
   m_iCurrFrameNum = -1;
   m_iStatus = 1;
 
+  readNextFrame();
+  setNextFrame();
+  readNextFrame();
   return;
 }
 
@@ -202,16 +215,22 @@ Void InputStream::close()
   m_cLibAvContext.closeAvFormat();
 #endif
 
-  if( m_cCurrFrame )
-    delete m_cCurrFrame;
+  if( m_ppcFrameBuffer )
+  {
+    for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
+    {
+      delete m_ppcFrameBuffer[i];
+    }
+    freeMem1D<PlaYUVerFrame*>( m_ppcFrameBuffer );
+  }
 
   if( m_pInputBuffer )
-    free_mem1Dpel( m_pInputBuffer );
+    freeMem1D<Pel>( m_pInputBuffer );
 
   m_iStatus = 0;
 }
 
-Void InputStream::readFrame()
+Void InputStream::readNextFrame()
 {
   UInt64 bytes_read = 0;
 
@@ -220,8 +239,7 @@ Void InputStream::readFrame()
     return;
   }
 
-  m_iCurrFrameNum++;
-  if( m_iCurrFrameNum >= (Int)m_uiTotalFrameNum )
+  if( m_iCurrFrameNum + 1 >= (Int)m_uiTotalFrameNum )
   {
     m_iErrorStatus = END_OF_SEQ;
     m_iCurrFrameNum = 0;
@@ -232,12 +250,12 @@ Void InputStream::readFrame()
   if( m_cLibAvContext.getStatus() )
   {
     m_cLibAvContext.decodeAvFormat();
-    m_cCurrFrame->FrameFromBuffer( m_cLibAvContext.video_dst_data[0], m_iPixelFormat );
+    m_ppcFrameBuffer[!m_uiFrameBufferIndex]->FrameFromBuffer( m_cLibAvContext.video_dst_data[0], m_iPixelFormat );
     return;
   }
 #endif
 
-  UInt64 frame_bytes_input = m_cCurrFrame->getBytesPerFrame();
+  UInt64 frame_bytes_input = m_ppcFrameBuffer[0]->getBytesPerFrame();
   bytes_read = fread( m_pInputBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
   if( bytes_read != frame_bytes_input )
   {
@@ -245,28 +263,35 @@ Void InputStream::readFrame()
     qDebug( ) << " Reading error !!!" << endl;
     return;
   }
-  m_cCurrFrame->FrameFromBuffer( m_pInputBuffer, m_iPixelFormat );
+  m_ppcFrameBuffer[!m_uiFrameBufferIndex]->FrameFromBuffer( m_pInputBuffer, m_iPixelFormat );
+  m_uiFrameBufferIndex = !m_uiFrameBufferIndex;
   return;
 }
 
 Bool InputStream::writeFrame( const QString& filename )
 {
-  m_cCurrFrame->getQimage().save( filename );
+  m_pcCurrFrame->getQimage().save( filename );
   return true;
 }
 
-PlaYUVerFrame* InputStream::getFrame( PlaYUVerFrame *pyuv_image )
+Void InputStream::setNextFrame()
+{
+  m_pcCurrFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
+  m_iCurrFrameNum++;
+}
+
+PlaYUVerFrame* InputStream::getCurrFrame( PlaYUVerFrame *pyuv_image )
 {
   if( pyuv_image == NULL )
-    pyuv_image = new PlaYUVerFrame( m_cCurrFrame->getWidth(), m_cCurrFrame->getHeight(), m_cCurrFrame->getPelFormat() );
+    pyuv_image = new PlaYUVerFrame( m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), m_pcCurrFrame->getPelFormat() );
 
-  pyuv_image->CopyFrom(m_cCurrFrame);
+  pyuv_image->CopyFrom(m_pcCurrFrame);
   return pyuv_image;
 }
 
-PlaYUVerFrame* InputStream::getFrame()
+PlaYUVerFrame* InputStream::getCurrFrame()
 {
-  return m_cCurrFrame;
+  return m_pcCurrFrame;
 }
 
 #ifdef USE_OPENCV
@@ -288,11 +313,14 @@ Void InputStream::seekInput( Int new_frame_num )
   else
 #endif
   {
-    UInt64 frame_bytes_input = m_cCurrFrame->getBytesPerFrame();
+    UInt64 frame_bytes_input = m_ppcFrameBuffer[0]->getBytesPerFrame();
     UInt64 nbytes_seek = frame_bytes_input * new_frame_num;
     fseek( m_pFile, nbytes_seek, SEEK_SET );
     m_iCurrFrameNum = new_frame_num - 1;
   }
+  readNextFrame();
+  setNextFrame();
+  readNextFrame();
 }
 
 Bool InputStream::checkErrors( Int error_type )

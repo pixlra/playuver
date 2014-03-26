@@ -188,7 +188,7 @@ void plaYUVerApp::playEvent()
   {
     if( !activeSubWindow()->playEvent() )
     {
-      stop();
+      //stop();
     }
     m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
   }
@@ -637,7 +637,7 @@ void plaYUVerApp::updatePixelValueStatusBar(const QPoint & pos, InputStream* str
   Int posX = pos.x(), posY = pos.y();
   QString strPixel;
   QString strStatus = QString("(%1,%2)   ").arg(posX).arg(posY);
-  PlaYUVerFrame *curFrame = stream->getFrame();
+  PlaYUVerFrame *curFrame = stream->getCurrFrame();
 
   iWidth = stream->getWidth();
   iHeight = stream->getHeight();

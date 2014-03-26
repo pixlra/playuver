@@ -96,14 +96,8 @@ bool SubWindowHandle::loadFile( const QString &fileName )
     return false;
   }
 
-  m_pCurrFrameQImage = new QImage( m_pCurrStream->getFrame()->getQImageBuffer(), m_pCurrStream->getWidth(), m_pCurrStream->getHeight(), QImage::Format_RGB888 );
+  m_pCurrFrameQImage = new QImage( m_pCurrStream->getCurrFrame()->getQImageBuffer(), m_pCurrStream->getWidth(), m_pCurrStream->getHeight(), QImage::Format_RGB888 );
 
-  m_pCurrStream->readFrame();
-  if( m_pCurrStream->checkErrors( READING ) )
-  {
-    QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( fileName ) );
-    return false;
-  }
   m_cViewArea->setInputStream(m_pCurrStream);
 
   QApplication::restoreOverrideCursor();
@@ -133,7 +127,7 @@ Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
     return;
   }
   m_pcCurrentModule = select_module;
-  m_pcCurrentModule->create( m_pCurrStream->getFrame() );
+  m_pcCurrentModule->create( m_pCurrStream->getCurrFrame() );
   refreshFrame();
 }
 
@@ -165,11 +159,11 @@ Void SubWindowHandle::refreshFrame()
 {
   if( m_pcCurrentModule )
   {
-    FrameToQImage( m_pcCurrentModule->process( m_pCurrStream->getFrame() ) );
+    FrameToQImage( m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() ) );
   }
   else
   {
-    FrameToQImage( m_pCurrStream->getFrame() );
+    FrameToQImage( m_pCurrStream->getCurrFrame() );
   }
   m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
 }
@@ -209,7 +203,9 @@ bool SubWindowHandle::playEvent()
   bool iRet = true;
   if( m_bIsPlaying )
   {
-    m_pCurrStream->readFrame();
+    m_pCurrStream->setNextFrame();
+    refreshFrame();
+    m_pCurrStream->readNextFrame();
     if( m_pCurrStream->checkErrors( READING ) )
     {
       QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( m_cCurrFileName ) );
@@ -219,7 +215,6 @@ bool SubWindowHandle::playEvent()
     {
       iRet = false;
     }
-    refreshFrame();
     return iRet;
   }
   return false;
@@ -228,15 +223,12 @@ bool SubWindowHandle::playEvent()
 Void SubWindowHandle::seekEvent( UInt new_frame_num )
 {
   m_pCurrStream->seekInput( new_frame_num );
-  m_pCurrStream->readFrame();
   refreshFrame();
 }
 
 Void SubWindowHandle::stopEvent()
 {
-  m_pCurrStream->seekInput( 0 );
-  m_pCurrStream->readFrame();
-  refreshFrame();
+  seekEvent( 0 );
   return;
 }
 

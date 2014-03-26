@@ -72,7 +72,10 @@ private:
 
   Pel* m_pInputBuffer;
 
-  PlaYUVerFrame *m_cCurrFrame;
+  UInt m_uiFrameBufferSize;
+  PlaYUVerFrame **m_ppcFrameBuffer;
+  PlaYUVerFrame *m_pcCurrFrame;
+  UInt m_uiFrameBufferIndex;
 
   UInt m_uiWidth;
   UInt m_uiHeight;
@@ -99,12 +102,13 @@ public:
   Void init( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate );
   Void close();
 
-  Void readFrame();
+  Void readNextFrame();
 
   Bool writeFrame( const QString& filename );
 
-  PlaYUVerFrame* getFrame();
-  PlaYUVerFrame* getFrame( PlaYUVerFrame * );
+  Void setNextFrame();
+  PlaYUVerFrame* getCurrFrame();
+  PlaYUVerFrame* getCurrFrame( PlaYUVerFrame * );
 #ifdef USE_OPENCV
   cv::Mat getFrameCvMat();
 #endif
@@ -160,12 +164,6 @@ public:
       m_uiHeight = new_height;
     }
   }
-
-  PlaYUVerFrame *getCurrentFrame()
-  {
-    return m_cCurrFrame;
-  }
-
 };
 
 }  // NAMESPACE

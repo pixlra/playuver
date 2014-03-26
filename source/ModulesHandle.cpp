@@ -41,7 +41,6 @@ Void ModulesHandle::ModulesList( Bool bCreate )
 ModulesHandle::ModulesHandle( QWidget * parent )
 {
   ModulesList( true );
-
   // configure class
   setParent( parent );
   m_uiModulesCount = 0;

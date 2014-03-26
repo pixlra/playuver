@@ -149,8 +149,8 @@ Void PlaYUVerFrame::FrametoRGB8()
   Pel** ppInputPelY = m_pppcInputPel[LUMA];
   Pel* pInputPelY = &( m_pppcInputPel[LUMA][0][0] );
 
-  Pel *pInputPelU, *pInputPelV;
-  Pel *pRGBPelR, *pRGBPelG, *pRGBPelB;
+  Pel *pInputPelU = NULL, *pInputPelV = NULL;
+  Pel *pRGBPelR = NULL, *pRGBPelG = NULL, *pRGBPelB = NULL;
 
   if( m_pppcRGBPel )
   {

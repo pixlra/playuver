@@ -83,13 +83,12 @@ private Q_SLOTS:
   void chageSubWindowSelection();
   void updateWindowMenu();
 
-  /*
-   * Drag and drop functions
-   */
+  //! Drag and drop functions
   void dragEnterEvent( QDragEnterEvent *event );
   void dropEvent( QDropEvent *event );
 
   void setActiveSubWindow( QWidget *window );
+
   void updatePixelValueStatusBar(const QPoint & pos, InputStream* stream);
 
 private:

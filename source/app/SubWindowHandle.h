@@ -59,15 +59,12 @@ private:
 
   Bool m_bIsPlaying;
 
-private slots:
-  void adjustScrollBar( double factor );
-
 public:
   SubWindowHandle( QWidget * parent = 0 );
   ~SubWindowHandle();
 
-  bool loadFile( const QString &fileName );
-  bool save();
+  Bool loadFile( const QString &fileName );
+  Bool save();
 
   Void stopEvent();
   Void seekEvent( UInt new_frame_num );
@@ -128,14 +125,11 @@ public:
 
   QSize sizeHint() const;
 
-  /**
-   * Arranges all the listed widgets (normaly QMdiImageInterface) in a cascade
-   * pattern.
-   * @Note This function implementation is taken from the Qt source. The
-   * QMdiArea only have a function that arranges @b all the child windows.
-   */
-  //static void cascader( QList<QWidget *> &widgets, const QRect &domain );
-  QString userFriendlyCurrentFile();
+  QString userFriendlyCurrentFile()
+  {
+    return m_cWindowName;
+  }
+
   QString currentFile()
   {
     return m_cCurrFileName;
@@ -146,7 +140,7 @@ protected:
 
 public Q_SLOTS:
   bool playEvent();
-
+  void adjustScrollBar( double factor );
 };
 
 }  // NAMESPACE

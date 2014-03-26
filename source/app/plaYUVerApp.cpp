@@ -271,6 +271,119 @@ void plaYUVerApp::chageSubWindowSelection()
   //updateWindowMenu();
 }
 
+// -----------------------  Status bar Functions  -----------------------
+
+void plaYUVerApp::updatePixelValueStatusBar(const QPoint & pos, InputStream* stream)
+{
+  Pixel sPixelValue;
+  Int iWidth, iHeight;
+  Int posX = pos.x(), posY = pos.y();
+  QString strPixel;
+  QString strStatus = QString("(%1,%2)   ").arg(posX).arg(posY);
+  PlaYUVerFrame *curFrame = stream->getCurrFrame();
+
+  iWidth = stream->getWidth();
+  iHeight = stream->getHeight();
+
+  if( (posX<iWidth) && (posX>=0) && (posY<iHeight) && (posY>=0) )
+  {
+    sPixelValue = curFrame->getPixelValue(pos,COLOR_YUV);
+    strPixel = QString("Y: %1   U: %2   V: %3").arg(sPixelValue.Luma).arg(sPixelValue.ChromaU).arg(sPixelValue.ChromaV);
+  }
+  else
+  {
+    strPixel = QString("Y:    U:    V: ");
+  }
+  strStatus.append(strPixel);
+  statusBar()->showMessage( strStatus , 0 );
+}
+
+// -----------------------  Drag and drop functions  ----------------------
+
+void plaYUVerApp::dragEnterEvent( QDragEnterEvent *event )
+{
+  //setText(tr("<drop content>"));
+  setBackgroundRole( QPalette::Highlight );
+
+  event->acceptProposedAction();
+}
+
+void plaYUVerApp::dropEvent( QDropEvent *event )
+{
+
+  const QMimeData *mimeData = event->mimeData();
+
+  QList<QUrl> urlList = mimeData->urls();
+
+  if( urlList.size() == 1 )
+  {
+    QString fileName = urlList.at( 0 ).toLocalFile();
+
+    m_cLastOpenPath = QFileInfo( fileName ).path();
+
+    QMdiSubWindow *existing = findSubWindow( fileName );
+    if( !existing )
+    {
+      SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
+      if( interfaceChild->loadFile( fileName ) )
+      {
+        addSubWindow( interfaceChild );
+        statusBar()->showMessage( tr( "File loaded" ), 2000 );
+        interfaceChild->show();
+      }
+      else
+      {
+        interfaceChild->close();
+      }
+    }
+  }
+}
+
+// -----------------------  Gui Functions  -----------------------
+
+SubWindowHandle *plaYUVerApp::createSubWindow()
+{
+  SubWindowHandle *child = new SubWindowHandle;
+  mdiArea->addSubWindow( child );
+
+  return child;
+}
+
+void plaYUVerApp::addSubWindow( SubWindowHandle *child )
+{
+  //connect( child, SIGNAL( areaSelected( QRect ) ), this, SLOT( setSelection( QRect ) ) );
+
+  // Add the interface to the mdiArea
+  mdiArea->addSubWindow( child );
+  return;
+}
+
+SubWindowHandle *plaYUVerApp::activeSubWindow()
+{
+  if( QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow() )
+    return qobject_cast<SubWindowHandle *>( activeSubWindow );
+  return 0;
+}
+
+QMdiSubWindow *plaYUVerApp::findSubWindow( const QString &fileName )
+{
+  QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
+
+  foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
+  SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
+  if( mdiChild->currentFile() == canonicalFilePath )
+    return window;
+  }
+  return 0;
+}
+
+void plaYUVerApp::setActiveSubWindow( QWidget *window )
+{
+  if( !window )
+    return;
+  mdiArea->setActiveSubWindow( qobject_cast<QMdiSubWindow *>( window ) );
+}
+
 Void plaYUVerApp::updateMenus()
 {
   Bool hasSubWindow = ( activeSubWindow() != 0 );
@@ -345,23 +458,6 @@ void plaYUVerApp::updateWindowMenu()
     connect( action, SIGNAL( triggered() ), mapperWindow, SLOT( map() ) );
     mapperWindow->setMapping( action, windows.at( i ) );
   }
-}
-
-SubWindowHandle *plaYUVerApp::createSubWindow()
-{
-  SubWindowHandle *child = new SubWindowHandle;
-  mdiArea->addSubWindow( child );
-
-  return child;
-}
-
-void plaYUVerApp::addSubWindow( SubWindowHandle *child )
-{
-  //connect( child, SIGNAL( areaSelected( QRect ) ), this, SLOT( setSelection( QRect ) ) );
-
-  // Add the interface to the mdiArea
-  mdiArea->addSubWindow( child );
-  return;
 }
 
 Void plaYUVerApp::createActions()
@@ -562,48 +658,6 @@ Void plaYUVerApp::createStatusBar()
   statusBar()->showMessage( tr( "Ready" ) );
 }
 
-/*
- * Drag and drop functions
- */
-void plaYUVerApp::dragEnterEvent( QDragEnterEvent *event )
-{
-  //setText(tr("<drop content>"));
-  setBackgroundRole( QPalette::Highlight );
-
-  event->acceptProposedAction();
-}
-
-void plaYUVerApp::dropEvent( QDropEvent *event )
-{
-
-  const QMimeData *mimeData = event->mimeData();
-
-  QList<QUrl> urlList = mimeData->urls();
-
-  if( urlList.size() == 1 )
-  {
-    QString fileName = urlList.at( 0 ).toLocalFile();
-
-    m_cLastOpenPath = QFileInfo( fileName ).path();
-
-    QMdiSubWindow *existing = findSubWindow( fileName );
-    if( !existing )
-    {
-      SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
-      if( interfaceChild->loadFile( fileName ) )
-      {
-        addSubWindow( interfaceChild );
-        statusBar()->showMessage( tr( "File loaded" ), 2000 );
-        interfaceChild->show();
-      }
-      else
-      {
-        interfaceChild->close();
-      }
-    }
-  }
-}
-
 Void plaYUVerApp::readSettings()
 {
   PlaYUVerSettings settings;
@@ -620,57 +674,6 @@ Void plaYUVerApp::writeSettings()
   settings.setMainWindowPos( pos() );
   settings.setMainWindowSize( size() );
   settings.setLastOpenPath( m_cLastOpenPath );
-}
-
-SubWindowHandle *plaYUVerApp::activeSubWindow()
-{
-  if( QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow() )
-    return qobject_cast<SubWindowHandle *>( activeSubWindow );
-  return 0;
-}
-
-QMdiSubWindow *plaYUVerApp::findSubWindow( const QString &fileName )
-{
-  QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
-
-  foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
-  SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
-  if( mdiChild->currentFile() == canonicalFilePath )
-    return window;
-  }
-  return 0;
-}
-
-void plaYUVerApp::setActiveSubWindow( QWidget *window )
-{
-  if( !window )
-    return;
-  mdiArea->setActiveSubWindow( qobject_cast<QMdiSubWindow *>( window ) );
-}
-
-void plaYUVerApp::updatePixelValueStatusBar(const QPoint & pos, InputStream* stream)
-{
-  Pixel sPixelValue;
-  Int iWidth, iHeight;
-  Int posX = pos.x(), posY = pos.y();
-  QString strPixel;
-  QString strStatus = QString("(%1,%2)   ").arg(posX).arg(posY);
-  PlaYUVerFrame *curFrame = stream->getCurrFrame();
-
-  iWidth = stream->getWidth();
-  iHeight = stream->getHeight();
-
-  if( (posX<iWidth) && (posX>=0) && (posY<iHeight) && (posY>=0) )
-  {
-    sPixelValue = curFrame->getPixelValue(pos,COLOR_YUV);
-    strPixel = QString("Y: %1   U: %2   V: %3").arg(sPixelValue.Luma).arg(sPixelValue.ChromaU).arg(sPixelValue.ChromaV);
-  }
-  else
-  {
-    strPixel = QString("Y:    U:    V: ");
-  }
-  strStatus.append(strPixel);
-  statusBar()->showMessage( strStatus , 0 );
 }
 
 }  // NAMESPACE

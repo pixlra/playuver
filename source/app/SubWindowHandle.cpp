@@ -72,7 +72,7 @@ SubWindowHandle::~SubWindowHandle()
   }
 }
 
-bool SubWindowHandle::loadFile( const QString &fileName )
+Bool SubWindowHandle::loadFile( const QString &fileName )
 {
   ConfigureFormatDialog formatDialog( this );
 
@@ -168,7 +168,7 @@ Void SubWindowHandle::refreshFrame()
   m_cViewArea->setImage( QPixmap::fromImage( *m_pCurrFrameQImage ) );
 }
 
-bool SubWindowHandle::save()
+Bool SubWindowHandle::save()
 {
   QString supported = tr( "Supported Files" );
   QString formats = InputStream::supportedWriteFormats();
@@ -186,10 +186,10 @@ bool SubWindowHandle::save()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  if( !m_pCurrStream->writeFrame( fileName ) )
+  if( m_pCurrFrameQImage->save( fileName ) )
   {
     QApplication::restoreOverrideCursor();
-    QMessageBox::warning( this, tr( "SCode" ), tr( "Cannot save file %1" ).arg( fileName ) );
+    QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot save file %1" ).arg( fileName ) );
     return false;
   }
 
@@ -319,11 +319,6 @@ QSize SubWindowHandle::sizeHint() const
 void SubWindowHandle::closeEvent( QCloseEvent *event )
 {
   event->accept();
-}
-
-QString SubWindowHandle::userFriendlyCurrentFile()
-{
-  return m_cWindowName;
 }
 
 }  // NAMESPACE

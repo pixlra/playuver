@@ -81,15 +81,33 @@ plaYUVerApp::plaYUVerApp()
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
 {
-  mdiArea->closeAllSubWindows();
-  if( mdiArea->currentSubWindow() )
+  Int msgBoxCloseRet = QMessageBox::Yes;
+  if( mdiArea->subWindowList().size() >= 1 )
   {
-    event->ignore();
+    QMessageBox msgBoxClose;
+    msgBoxClose.setText( "There are sub windows opened." );
+    msgBoxClose.setInformativeText( "Close all?" );
+    msgBoxClose.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+    msgBoxClose.setDefaultButton( QMessageBox::No );
+    msgBoxCloseRet = msgBoxClose.exec();
   }
-  else
+  switch( msgBoxCloseRet )
   {
-    writeSettings();
-    event->accept();
+  case QMessageBox::Yes:
+    mdiArea->closeAllSubWindows();
+    if( mdiArea->subWindowList().isEmpty() )
+    {
+      writeSettings();
+      event->accept();
+    }
+    else
+    {
+      event->ignore();
+    }
+    break;
+  case QMessageBox::No:
+  default:
+    event->ignore();
   }
 }
 

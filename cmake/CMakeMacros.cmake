@@ -97,10 +97,16 @@ function(status text)
 endfunction()
 
 
-macro(ADD_MODULE name files )
+macro(ADD_MODULE name file )
   set(__modulename "Module${name}")
-  add_library( ${__modulename} ${files} )
+  add_library( ${__modulename} ${SRC_DIR}/modules/${file} )
   set(MODULES_LIBS ${MODULES_LIBS} ${__modulename})
   ADD_DEFINITIONS( -DUSE_${name} )
   unset(__modulename)
+endmacro()
+
+macro(ADD_LIB name )
+  include_directories( ${SRC_DIR}/lib/${name} )
+  add_library( ${name} ${SRC_DIR}/lib/${files} )
+  set(PLAYUVER_LIBS ${PLAYUVER_LIBS} ${name})
 endmacro()

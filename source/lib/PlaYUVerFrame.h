@@ -65,8 +65,6 @@ public:
   static Pixel ConvertPixel( Pixel sInputPixel, ColorSpace eOutputSpace );
   Pixel getPixelValue(const QPoint &pos, ColorSpace color);
 
-  QImage getQimage();
-
   UChar* getQImageBuffer()
   {
     return m_pcRGBPelInterlaced;

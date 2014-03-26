@@ -26,8 +26,6 @@
 #include "LibMemAlloc.h"
 #include "LibMemory.h"
 
-#include <QImage>
-
 namespace plaYUVer
 {
 
@@ -366,28 +364,6 @@ Void PlaYUVerFrame::CopyFrom( PlaYUVerFrame* input_frame )
     break;
   }
 
-}
-
-QImage PlaYUVerFrame::getQimage()
-{
-  QImage img( m_uiWidth, m_uiHeight, QImage::Format_RGB888 );
-  Pel*** bufferRGB = getPelBufferRGB();
-
-  if( sizeof(Pel) == sizeof(unsigned char) )
-  {
-    for( UInt y = 0; y < m_uiHeight; y++ )
-    {
-      for( UInt x = 0; x < m_uiWidth; x++ )
-      {
-        img.setPixel( x, y, qRgb( bufferRGB[COLOR_R][y][x], bufferRGB[COLOR_G][y][x], bufferRGB[COLOR_B][y][x] ) );
-      }
-    }
-  }
-  else
-  {
-    Q_ASSERT( 0 );
-  }
-  return img;
 }
 
 UInt64 PlaYUVerFrame::getBytesPerFrame()

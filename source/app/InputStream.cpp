@@ -270,7 +270,7 @@ Void InputStream::readNextFrame()
 
 Bool InputStream::writeFrame( const QString& filename )
 {
-  m_pcCurrFrame->getQimage().save( filename );
+  //m_pcCurrFrame->getQimage().save( filename );
   return true;
 }
 

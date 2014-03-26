@@ -241,7 +241,7 @@ Void SubWindowHandle::normalSize()
 Void SubWindowHandle::zoomToFit()
 {
   // Scale to a smaller size that the real to a nicer look
-  QSize niceFit( m_cScrollArea->viewport()->size().width() - 10, m_cScrollArea->viewport()->size().height() - 10 );
+  QSize niceFit( m_cScrollArea->viewport()->size().width() - 5, m_cScrollArea->viewport()->size().height() - 5 );
   if( (Int)m_pCurrStream->getWidth() <= niceFit.width() && (Int)m_pCurrStream->getHeight() <= niceFit.height() )
   {
     normalSize();
@@ -316,7 +316,7 @@ QSize SubWindowHandle::sizeHint() const
   return maxSize;
 }
 
-Void SubWindowHandle::closeEvent( QCloseEvent *event )
+void SubWindowHandle::closeEvent( QCloseEvent *event )
 {
   event->accept();
 }

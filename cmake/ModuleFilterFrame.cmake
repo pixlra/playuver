@@ -2,5 +2,5 @@
 # Filter frame module
 ######################################################################################
 
-ADD_MODULE( FilterFrame "${MODULES_DIR}/FilterFrame.cpp" )
+ADD_MODULE( FilterFrame "FilterFrame.cpp" )
 

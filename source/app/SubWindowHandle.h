@@ -142,7 +142,7 @@ public:
   }
 
 protected:
-  Void closeEvent( QCloseEvent *event );
+  void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:
   bool playEvent();

@@ -208,15 +208,21 @@ bool SubWindowHandle::playEvent()
   return false;
 }
 
-Void SubWindowHandle::seekEvent( UInt new_frame_num )
+Void SubWindowHandle::seekAbsoluteEvent( UInt new_frame_num )
 {
   m_pCurrStream->seekInput( new_frame_num );
   refreshFrame();
 }
 
+Void SubWindowHandle::seekRelativeEvent( Bool bIsFoward )
+{
+  m_pCurrStream->seekInput( m_pCurrStream->getCurrFrameNum() + ( bIsFoward ? 1 : -1 ) );
+  refreshFrame();
+}
+
 Void SubWindowHandle::stopEvent()
 {
-  seekEvent( 0 );
+  seekAbsoluteEvent( 0 );
   return;
 }
 

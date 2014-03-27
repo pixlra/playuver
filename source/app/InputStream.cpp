@@ -304,6 +304,8 @@ cv::Mat InputStream::getFrameCvMat()
 
 Void InputStream::seekInput( Int new_frame_num )
 {
+  if( new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum )
+    return;
 #ifdef USE_FFMPEG
   if( m_cLibAvContext.getStatus() )
   {

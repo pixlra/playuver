@@ -67,7 +67,8 @@ public:
   Bool save();
 
   Void stopEvent();
-  Void seekEvent( UInt new_frame_num );
+  Void seekAbsoluteEvent( UInt new_frame_num );
+  Void seekRelativeEvent( Bool bIsFoward );
 
   QImage* FrameToQImage( PlaYUVerFrame* curr_frame );
 

@@ -220,11 +220,19 @@ void plaYUVerApp::playEvent()
   }
 }
 
+void plaYUVerApp::seekEvent( int direction )
+{
+  if( activeSubWindow() )
+  {
+    activeSubWindow()->seekRelativeEvent( direction > 0 ? true : false );
+  }
+}
+
 void plaYUVerApp::seekSliderEvent( int new_frame_num )
 {
   if( activeSubWindow() )
   {
-    activeSubWindow()->seekEvent( new_frame_num );
+    activeSubWindow()->seekAbsoluteEvent( (UInt)new_frame_num );
   }
 }
 
@@ -543,10 +551,17 @@ Void plaYUVerApp::createActions()
   actionVideoStop->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaStop ) ) );
   connect( actionVideoStop, SIGNAL( triggered() ), this, SLOT( stop() ) );
 
+  mapperSeekVideo = new QSignalMapper( this );
+  connect( mapperSeekVideo, SIGNAL( mapped(int) ), this, SLOT( seekEvent(int) ) );
+
   actionVideoBackward = new QAction( "VideoBackward", this );
   actionVideoBackward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
+  connect( actionVideoBackward, SIGNAL( triggered() ), mapperSeekVideo, SLOT( map() ) );
+  mapperSeekVideo->setMapping( actionVideoBackward, 0 );
   actionVideoForward = new QAction( "VideoForward", this );
   actionVideoForward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
+  connect( actionVideoForward, SIGNAL( triggered() ), mapperSeekVideo, SLOT( map() ) );
+  mapperSeekVideo->setMapping( actionVideoForward, 1 );
 
   actionVideoLoop = new QAction( "Repeat", this );
   actionVideoLoop->setCheckable( true );

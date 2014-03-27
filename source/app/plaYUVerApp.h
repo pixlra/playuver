@@ -65,6 +65,7 @@ private Q_SLOTS:
   void stop();
   void playEvent();
   void seekSliderEvent( int new_frame_num );
+  void seekEvent( int direction );
 
   void selectModule( QAction * );
 
@@ -118,6 +119,7 @@ private:
   QSlider *m_pcFrameSlider;
 
   QSignalMapper *mapperZoom;
+  QSignalMapper *mapperSeekVideo;
   QSignalMapper *mapperWindow;
 
   /**

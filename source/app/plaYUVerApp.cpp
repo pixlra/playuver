@@ -211,7 +211,10 @@ void plaYUVerApp::playEvent()
   {
     if( !activeSubWindow()->playEvent() )
     {
-      //stop();
+      if( !actionVideoLoop->isChecked() )
+      {
+        stop();
+      }
     }
     m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
   }
@@ -273,6 +276,7 @@ void plaYUVerApp::chageSubWindowSelection()
     m_pcCurrentSubWindow = NULL;
   }
   updateMenus();
+  createStatusBar();
   //updateWindowMenu();
 }
 
@@ -294,13 +298,13 @@ void plaYUVerApp::updatePixelValueStatusBar(const QPoint & pos, InputStream* str
   {
     sPixelValue = curFrame->getPixelValue(pos,COLOR_YUV);
     strPixel = QString("Y: %1   U: %2   V: %3").arg(sPixelValue.Luma).arg(sPixelValue.ChromaU).arg(sPixelValue.ChromaV);
+    strStatus.append(strPixel);
+    statusBar()->showMessage( strStatus , 0 );
   }
   else
   {
-    strPixel = QString("Y:    U:    V: ");
+    statusBar()->showMessage( " " );
   }
-  strStatus.append(strPixel);
-  statusBar()->showMessage( strStatus , 0 );
 }
 
 // -----------------------  Drag and drop functions  ----------------------
@@ -409,6 +413,7 @@ Void plaYUVerApp::updateMenus()
   actionVideoStop->setEnabled( hasSubWindow );
   actionVideoBackward->setEnabled( hasSubWindow );
   actionVideoForward->setEnabled( hasSubWindow );
+  actionVideoLoop->setEnabled( hasSubWindow );
   m_pcFrameSlider->setEnabled( hasSubWindow );
 
   m_pcModulesHandle->updateMenus( hasSubWindow );
@@ -526,15 +531,15 @@ Void plaYUVerApp::createActions()
 
   // ------------ Playing ------------
 
-  actionVideoPlay = new QAction( "VideoPlay", this );
+  actionVideoPlay = new QAction( "Play", this );
   actionVideoPlay->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPlay ) ) );
   connect( actionVideoPlay, SIGNAL( triggered() ), this, SLOT( play() ) );
 
-  actionVideoPause = new QAction( "VideoPause", this );
+  actionVideoPause = new QAction( "Pause", this );
   actionVideoPause->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPause ) ) );
   connect( actionVideoPause, SIGNAL( triggered() ), this, SLOT( pause() ) );
 
-  actionVideoStop = new QAction( "VideoStop", this );
+  actionVideoStop = new QAction( "Stop", this );
   actionVideoStop->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaStop ) ) );
   connect( actionVideoStop, SIGNAL( triggered() ), this, SLOT( stop() ) );
 
@@ -543,12 +548,15 @@ Void plaYUVerApp::createActions()
   actionVideoForward = new QAction( "VideoForward", this );
   actionVideoForward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
 
-  actionVideoLoop = new QAction( "VideoLoop", this );
+  actionVideoLoop = new QAction( "Repeat", this );
+  actionVideoLoop->setCheckable( true );
+  actionVideoLoop->setChecked( false );
+
   actionVideoLock = new QAction( "VideoLock", this );
   actionVideoInterlace = new QAction( "VideoInterlace", this );
   actionVideoCenter = new QAction( "VideoCenter", this );
   /*
-   actionVideoLoop     ->setIcon( QIcon( ":/images/videoloop.png"  ) );
+
    actionVideoLock     ->setIcon( QIcon( ":/images/lock.png"       ) );
    actionVideoInterlace->setIcon( QIcon( ":/images/interlace.png"  ) );
    actionVideoCenter   ->setIcon( QIcon( ":/images/center.png"     ) );
@@ -609,11 +617,22 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[FILE_MENU]->addAction( actionClose );
   m_arrayMenu[FILE_MENU]->addAction( actionExit );
 
+
+
   m_arrayMenu[VIEW_MENU] = menuBar()->addMenu( tr( "&View" ) );
   m_arrayMenu[VIEW_MENU]->addAction( actionZoomIn );
   m_arrayMenu[VIEW_MENU]->addAction( actionZoomOut );
   m_arrayMenu[VIEW_MENU]->addAction( actionNormalSize );
   m_arrayMenu[VIEW_MENU]->addAction( actionZoomToFit );
+
+
+  m_arrayMenu[VIDEO_MENU] = menuBar()->addMenu( tr( "Video" ) );
+  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoPlay );
+  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoPause );
+  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoStop );
+  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoBackward );
+  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoForward );
+  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoLoop );
 
   QMenu* modules_menu = m_pcModulesHandle->createMenus( menuBar() );
   connect( modules_menu, SIGNAL( triggered(QAction *) ), this, SLOT( selectModule(QAction *) ) );

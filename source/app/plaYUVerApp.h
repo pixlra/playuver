@@ -35,6 +35,7 @@
 #include "TypeDef.h"
 
 #include "ModulesHandle.h"
+#include "PropertiesSidebar.h"
 
 namespace plaYUVer
 {
@@ -102,10 +103,12 @@ private:
   QTimer *playingTimer;
 
   Void updateMenus();
+  Void updateProperties();
 
   Void createActions();
   Void createMenus();
   Void createToolBars();
+  Void createDockWidgets();
   Void createStatusBar();
 
   Void readSettings();
@@ -140,6 +143,9 @@ private:
     TOTAL_MENUS,
   };
   QVector<QMenu*> m_arrayMenu;
+
+  PropertiesSidebar *m_pcPropertiesSidebar;
+  QDockWidget *m_pcDockPropertiesSidebar;
 
   QToolBar *toolbarFile;
   QToolBar *toolbarView;

@@ -58,6 +58,7 @@ plaYUVerApp::plaYUVerApp()
   createActions();
   createMenus();
   createToolBars();
+  createDockWidgets();
   createStatusBar();
   updateMenus();
 
@@ -143,7 +144,8 @@ void plaYUVerApp::open()
       addSubWindow( interfaceChild );
       statusBar()->showMessage( tr( "File loaded" ), 2000 );
       interfaceChild->show();
-      connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this, SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
+      connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
+          SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
       interfaceChild->zoomToFit();
     }
     else
@@ -178,6 +180,19 @@ void plaYUVerApp::selectModule( QAction *curr_action )
     }
   }
   return;
+}
+
+// -----------------------  Update Properties   --------------------
+
+void plaYUVerApp::updateProperties()
+{
+  SubWindowHandle *subWindow = activeSubWindow();
+
+  if( subWindow )
+  {
+    m_pcPropertiesSidebar->setData( subWindow->getInputStream() );
+    //m_pcPropertiesSidebar->setSelection( iface->currentViewArea()->selectedArea() );
+  }
 }
 
 // -----------------------  Playing Functions  --------------------
@@ -232,7 +247,7 @@ void plaYUVerApp::seekSliderEvent( int new_frame_num )
 {
   if( activeSubWindow() )
   {
-    activeSubWindow()->seekAbsoluteEvent( (UInt)new_frame_num );
+    activeSubWindow()->seekAbsoluteEvent( ( UInt )new_frame_num );
   }
 }
 
@@ -286,28 +301,29 @@ void plaYUVerApp::chageSubWindowSelection()
   updateMenus();
   createStatusBar();
   //updateWindowMenu();
+  updateProperties();
 }
 
 // -----------------------  Status bar Functions  -----------------------
 
-void plaYUVerApp::updatePixelValueStatusBar(const QPoint & pos, InputStream* stream)
+void plaYUVerApp::updatePixelValueStatusBar( const QPoint & pos, InputStream* stream )
 {
   Pixel sPixelValue;
   Int iWidth, iHeight;
   Int posX = pos.x(), posY = pos.y();
   QString strPixel;
-  QString strStatus = QString("(%1,%2)   ").arg(posX).arg(posY);
+  QString strStatus = QString( "(%1,%2)   " ).arg( posX ).arg( posY );
   PlaYUVerFrame *curFrame = stream->getCurrFrame();
 
   iWidth = stream->getWidth();
   iHeight = stream->getHeight();
 
-  if( (posX<iWidth) && (posX>=0) && (posY<iHeight) && (posY>=0) )
+  if( ( posX < iWidth ) && ( posX >= 0 ) && ( posY < iHeight ) && ( posY >= 0 ) )
   {
-    sPixelValue = curFrame->getPixelValue(pos,COLOR_YUV);
-    strPixel = QString("Y: %1   U: %2   V: %3").arg(sPixelValue.Luma).arg(sPixelValue.ChromaU).arg(sPixelValue.ChromaV);
-    strStatus.append(strPixel);
-    statusBar()->showMessage( strStatus , 0 );
+    sPixelValue = curFrame->getPixelValue( pos, COLOR_YUV );
+    strPixel = QString( "Y: %1   U: %2   V: %3" ).arg( sPixelValue.Luma ).arg( sPixelValue.ChromaU ).arg( sPixelValue.ChromaV );
+    strStatus.append( strPixel );
+    statusBar()->showMessage( strStatus, 0 );
   }
   else
   {
@@ -389,8 +405,8 @@ QMdiSubWindow *plaYUVerApp::findSubWindow( const QString &fileName )
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
   SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
   if( mdiChild->currentFile() == canonicalFilePath )
-    return window;
-  }
+  return window;
+}
   return 0;
 }
 
@@ -632,14 +648,11 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[FILE_MENU]->addAction( actionClose );
   m_arrayMenu[FILE_MENU]->addAction( actionExit );
 
-
-
   m_arrayMenu[VIEW_MENU] = menuBar()->addMenu( tr( "&View" ) );
   m_arrayMenu[VIEW_MENU]->addAction( actionZoomIn );
   m_arrayMenu[VIEW_MENU]->addAction( actionZoomOut );
   m_arrayMenu[VIEW_MENU]->addAction( actionNormalSize );
   m_arrayMenu[VIEW_MENU]->addAction( actionZoomToFit );
-
 
   m_arrayMenu[VIDEO_MENU] = menuBar()->addMenu( tr( "Video" ) );
   m_arrayMenu[VIDEO_MENU]->addAction( actionVideoPlay );
@@ -689,6 +702,19 @@ Void plaYUVerApp::createToolBars()
    toolbarVideo->addAction( actionVideoCenter );
    */
   toolbarVideo->addWidget( m_pcFrameSlider );
+
+}
+
+Void plaYUVerApp::createDockWidgets()
+{
+  // Image Properties Dock Window
+
+  m_pcPropertiesSidebar = new PropertiesSidebar( this );
+
+  m_pcDockPropertiesSidebar = new QDockWidget( tr( "Image Properties" ), this );
+  m_pcDockPropertiesSidebar->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  m_pcDockPropertiesSidebar->setWidget( m_pcPropertiesSidebar );
+  addDockWidget( Qt::RightDockWidgetArea, m_pcDockPropertiesSidebar );
 
 }
 

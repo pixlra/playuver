@@ -54,6 +54,7 @@ InputStream::InputStream()
   m_cStreamInformationString = QString( "" );
 
   m_pcCurrFrame = NULL;
+  m_pcNextFrame = NULL;
   m_ppcFrameBuffer = NULL;
   m_uiFrameBufferSize = 2;
 }
@@ -163,8 +164,8 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
   {
     m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
   }
-  m_pcCurrFrame = m_ppcFrameBuffer[0];
-  m_uiFrameBufferIndex = 1;
+  m_uiFrameBufferIndex = 0;
+  m_pcCurrFrame = m_pcNextFrame =  m_ppcFrameBuffer[m_uiFrameBufferIndex];
 
   UInt64 frame_bytes_input = m_pcCurrFrame->getBytesPerFrame();
 
@@ -190,11 +191,8 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
   }
 
   m_cStreamInformationString.append( QString("/ "));
-
   m_cStreamInformationString.append( PlaYUVerFrame::supportedPixelFormatList().at( m_iPixelFormat ) );
-
   m_cStreamInformationString.append( "] " );
-
   m_cStreamInformationString.append( QFileInfo( m_cFilename ).fileName() );
 
   m_iCurrFrameNum = -1;
@@ -250,7 +248,7 @@ Void InputStream::readNextFrame()
   if( m_cLibAvContext.getStatus() )
   {
     m_cLibAvContext.decodeAvFormat();
-    m_ppcFrameBuffer[!m_uiFrameBufferIndex]->FrameFromBuffer( m_cLibAvContext.video_dst_data[0], m_iPixelFormat );
+    m_pcNextFrame->FrameFromBuffer( m_cLibAvContext.video_dst_data[0], m_iPixelFormat );
     return;
   }
 #endif
@@ -263,8 +261,7 @@ Void InputStream::readNextFrame()
     qDebug( ) << " Reading error !!!" << endl;
     return;
   }
-  m_ppcFrameBuffer[!m_uiFrameBufferIndex]->FrameFromBuffer( m_pInputBuffer, m_iPixelFormat );
-  m_uiFrameBufferIndex = !m_uiFrameBufferIndex;
+  m_pcNextFrame->FrameFromBuffer( m_pInputBuffer, m_iPixelFormat );
   return;
 }
 
@@ -277,6 +274,8 @@ Bool InputStream::writeFrame( const QString& filename )
 Void InputStream::setNextFrame()
 {
   m_pcCurrFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
+  m_pcNextFrame = m_ppcFrameBuffer[!m_uiFrameBufferIndex];
+  m_uiFrameBufferIndex = !m_uiFrameBufferIndex;
   m_iCurrFrameNum++;
 }
 

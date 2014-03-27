@@ -75,6 +75,7 @@ private:
   UInt m_uiFrameBufferSize;
   PlaYUVerFrame **m_ppcFrameBuffer;
   PlaYUVerFrame *m_pcCurrFrame;
+  PlaYUVerFrame *m_pcNextFrame;
   UInt m_uiFrameBufferIndex;
 
   UInt m_uiWidth;

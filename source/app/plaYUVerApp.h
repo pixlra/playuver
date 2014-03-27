@@ -57,6 +57,7 @@ private Q_SLOTS:
   //! File functions
   void open();
   void save();
+  void closeAll();
 
   //! Playing functions
   void play();

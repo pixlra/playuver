@@ -94,7 +94,7 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
   switch( msgBoxCloseRet )
   {
   case QMessageBox::Yes:
-    mdiArea->closeAllSubWindows();
+    closeAll();
     if( mdiArea->subWindowList().isEmpty() )
     {
       writeSettings();
@@ -157,6 +157,11 @@ void plaYUVerApp::save()
 {
   if( activeSubWindow() )
     activeSubWindow()->save();
+}
+
+void plaYUVerApp::closeAll()
+{
+  mdiArea->closeAllSubWindows();
 }
 
 // -----------------------  Modules Selection  --------------------
@@ -486,7 +491,7 @@ Void plaYUVerApp::createActions()
 
   actionCloseAll = new QAction( tr( "Close &All" ), this );
   actionCloseAll->setStatusTip( tr( "Close all the windows" ) );
-  connect( actionCloseAll, SIGNAL( triggered() ), mdiArea, SLOT( closeAllSubWindows() ) );
+  connect( actionCloseAll, SIGNAL( triggered() ), this, SLOT( closeAll() ) );
 
   // ------------ View ------------
 

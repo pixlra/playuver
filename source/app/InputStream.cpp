@@ -21,13 +21,18 @@
  * \brief    Input handling
  */
 
-#include <cstdio>
+#include "config.h"
 
+#include <cstdio>
 #include <QtDebug>
 
 #include "InputStream.h"
 #include "LibMemAlloc.h"
 #include "LibMemory.h"
+
+#ifdef USE_FFMPEG
+#include "LibAvContextHandle.h"
+#endif
 
 namespace plaYUVer
 {
@@ -142,13 +147,12 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
   m_iFileFormat = YUVFormat;
   m_iPixelFormat = input_format;
 
-  m_cStreamInformationString = QString( "[" );
-
 #ifdef USE_FFMPEG
   if( QFileInfo( filename ).completeSuffix().compare( QString( "yuv" ) ) )
   {
     avStatus = m_cLibAvContext.initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate );
-    m_cStreamInformationString.append( QString::fromUtf8( m_cLibAvContext.getStreamInformation() ) );
+    m_cFormatName = QString::fromUtf8( m_cLibAvContext.getCodecName() );
+
     m_uiTotalFrameNum = 100;
   }
 #endif
@@ -181,15 +185,17 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
     m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
     fseek( m_pFile, 0, SEEK_SET );
 
-    m_cStreamInformationString.append( QString::fromUtf8("rawvideo ") );
-  }
+    m_cFormatName = QString::fromUtf8("rawvideo ");
 
+  }
   if( !getMem1D<Pel>( &m_pInputBuffer, m_pcCurrFrame->getBytesPerFrame() ) )
   {
     //Error
     return;
   }
 
+  m_cStreamInformationString = QString( "[" );
+  m_cStreamInformationString.append( m_cFormatName );
   m_cStreamInformationString.append( QString("/ "));
   m_cStreamInformationString.append( PlaYUVerFrame::supportedPixelFormatList().at( m_iPixelFormat ) );
   m_cStreamInformationString.append( "] " );
@@ -304,7 +310,7 @@ cv::Mat InputStream::getFrameCvMat()
 
 Void InputStream::seekInput( Int new_frame_num )
 {
-  if( new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum )
+  if( new_frame_num < 0 || new_frame_num >= (Int)m_uiTotalFrameNum )
     return;
 #ifdef USE_FFMPEG
   if( m_cLibAvContext.getStatus() )

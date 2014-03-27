@@ -124,17 +124,6 @@ enum InputStreamFormats
   NUMBER_FORMATS
 };
 
-const std::string gInputStreamFormatsNames[] =
-{
-    "YUV420p",
-    "YUV444p",
-    "YUV422p",
-    "YUV411p",
-    "YUV410p",
-    "GRAY",
-    "RGB8",
-};
-
 enum ColorSpace
 {
   COLOR_INVALID = -1,

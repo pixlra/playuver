@@ -38,13 +38,46 @@ class QImage;
 namespace plaYUVer
 {
 
+
+static const QString gInputStreamFormatsNames[] =
+{
+    "YUV420p",
+    "YUV444p",
+    "YUV422p",
+    "YUV411p",
+    "YUV410p",
+    "GRAY",
+    "RGB8",
+};
+
 class PlaYUVerFrame
 {
 public:
   PlaYUVerFrame( UInt width, UInt height, Int pel_format );
   ~PlaYUVerFrame();
 
-  static QStringList supportedPixelFormatList();
+  enum PixelFormats
+  {
+    NO_FMT = -1,
+    YUV420p = 0,
+    YUV444p,
+    YUV422p,
+    YUV411p,
+    YUV410p,
+    GRAY,
+    RGB8,
+    NUMBER_FORMATS
+  };
+
+  static QStringList supportedPixelFormatList()
+  {
+    QStringList formats;
+    for( Int i = 0; i < NUMBER_FORMATS; i++ )
+    {
+      formats.append(gInputStreamFormatsNames[i]);
+    }
+    return formats;
+  }
 
   Void FrametoRGB8();
 

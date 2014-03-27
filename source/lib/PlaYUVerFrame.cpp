@@ -29,16 +29,6 @@
 namespace plaYUVer
 {
 
-QStringList PlaYUVerFrame::supportedPixelFormatList()
-{
-  QStringList formats;
-  for( Int i = 0; i < NUMBER_FORMATS; i++ )
-  {
-    formats.append(gInputStreamFormatsNames[i].data());
-  }
-  return formats;
-}
-
 PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
 {
   m_pppcInputPel[0] = NULL;

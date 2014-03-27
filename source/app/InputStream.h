@@ -64,6 +64,7 @@ private:
 #endif
 
   QString m_cFilename;
+  QString m_cFormatName;
   QString m_cStreamInformationString;
 
   FILE* m_pFile; /**< The input file pointer >*/
@@ -127,8 +128,12 @@ public:
     return m_cFilename;
   }
   QString getStreamInformationString()
+    {
+      return m_cStreamInformationString;
+    }
+  QString getFormatName()
   {
-    return m_cStreamInformationString;
+    return m_cFormatName;
   }
   UInt getFrameNum()
   {

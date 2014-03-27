@@ -65,9 +65,9 @@ public:
   {
     return m_bHasStream;
   }
-  Char* getStreamInformation()
+  Char* getCodecName()
   {
-    return m_acStreamInformationString;
+    return m_acCodecName;
   }
 
   uint8_t *video_dst_data[4];
@@ -84,7 +84,7 @@ private:
 
   Bool m_bHasStream;
 
-  Char m_acStreamInformationString[20];
+  Char m_acCodecName[20];
 };
 
 }  // NAMESPACE

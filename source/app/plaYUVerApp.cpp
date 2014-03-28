@@ -56,9 +56,9 @@ plaYUVerApp::plaYUVerApp()
   m_pcModulesHandle = new ModulesHandle( this );
 
   createActions();
-  createMenus();
   createToolBars();
   createDockWidgets();
+  createMenus();
   createStatusBar();
   updateMenus();
 
@@ -666,6 +666,17 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[VIEW_MENU]->addAction( actionNormalSize );
   m_arrayMenu[VIEW_MENU]->addAction( actionZoomToFit );
 
+  m_arrayMenu[VIEW_MENU]->addSeparator();
+
+  // createPopupMenu() Returns a popup menu containing checkable entries for
+  // the toolbars and dock widgets present in the main window.
+  QMenu *viewsSub = createPopupMenu();
+  if ( viewsSub )
+  {
+    actionPopupMenu = m_arrayMenu[VIEW_MENU]->addMenu( viewsSub );
+    actionPopupMenu->setText( tr("&Toolbars/Docks") );
+  }
+
   m_arrayMenu[VIDEO_MENU] = menuBar()->addMenu( tr( "Video" ) );
   m_arrayMenu[VIDEO_MENU]->addAction( actionVideoPlay );
   m_arrayMenu[VIDEO_MENU]->addAction( actionVideoPause );
@@ -723,7 +734,7 @@ Void plaYUVerApp::createDockWidgets()
 
   m_pcPropertiesSidebar = new PropertiesSidebar( this );
 
-  m_pcDockPropertiesSidebar = new QDockWidget( tr( "Image Properties" ), this );
+  m_pcDockPropertiesSidebar = new QDockWidget( tr( "Steam Information" ), this );
   m_pcDockPropertiesSidebar->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   m_pcDockPropertiesSidebar->setWidget( m_pcPropertiesSidebar );
   addDockWidget( Qt::RightDockWidgetArea, m_pcDockPropertiesSidebar );

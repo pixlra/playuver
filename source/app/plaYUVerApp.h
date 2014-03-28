@@ -162,6 +162,8 @@ private:
   QAction *actionNormalSize;
   QAction *actionZoomToFit;
 
+  QAction *actionPopupMenu;
+
   QAction *actionTile;
   QAction *actionCascade;
   QAction *actionNext;

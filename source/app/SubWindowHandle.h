@@ -63,6 +63,7 @@ public:
   SubWindowHandle( QWidget * parent = 0 );
   ~SubWindowHandle();
 
+  Bool mayClose();
   Bool loadFile( const QString &fileName );
   Bool save();
 

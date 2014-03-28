@@ -310,6 +310,11 @@ QSize SubWindowHandle::sizeHint() const
   return maxSize;
 }
 
+Bool SubWindowHandle::mayClose()
+{
+  return true;
+}
+
 void SubWindowHandle::closeEvent( QCloseEvent *event )
 {
   event->accept();

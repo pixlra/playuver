@@ -82,11 +82,14 @@ plaYUVerApp::plaYUVerApp()
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
 {
+  Int mayCloseAll=true;
   Int msgBoxCloseRet = QMessageBox::Yes;
+  SubWindowHandle *imageInterface;
+
   if( mdiArea->subWindowList().size() >= 1 )
   {
     QMessageBox msgBoxClose;
-    msgBoxClose.setText( "There are sub windows opened." );
+    msgBoxClose.setText( "There are open files." );
     msgBoxClose.setInformativeText( "Close all?" );
     msgBoxClose.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
     msgBoxClose.setDefaultButton( QMessageBox::No );
@@ -95,8 +98,17 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
   switch( msgBoxCloseRet )
   {
   case QMessageBox::Yes:
+
     closeAll();
-    if( mdiArea->subWindowList().isEmpty() )
+
+    mayCloseAll=true;
+    for( Int i=0 ; i<mdiArea->subWindowList().size() ; i++ )
+    {
+      imageInterface = qobject_cast<SubWindowHandle *>(mdiArea->subWindowList().at(i));
+      mayCloseAll &= imageInterface->mayClose();
+    }
+
+    if( mayCloseAll )
     {
       writeSettings();
       event->accept();

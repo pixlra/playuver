@@ -153,7 +153,7 @@ void plaYUVerApp::open()
     SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
     if( interfaceChild->loadFile( fileName ) )
     {
-      addSubWindow( interfaceChild );
+      mdiArea->addSubWindow( interfaceChild );
       statusBar()->showMessage( tr( "File loaded" ), 2000 );
       interfaceChild->show();
       connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
@@ -372,7 +372,7 @@ void plaYUVerApp::dropEvent( QDropEvent *event )
       SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
       if( interfaceChild->loadFile( fileName ) )
       {
-        addSubWindow( interfaceChild );
+        mdiArea->addSubWindow( interfaceChild );
         statusBar()->showMessage( tr( "File loaded" ), 2000 );
         interfaceChild->show();
       }
@@ -385,23 +385,6 @@ void plaYUVerApp::dropEvent( QDropEvent *event )
 }
 
 // -----------------------  Gui Functions  -----------------------
-
-SubWindowHandle *plaYUVerApp::createSubWindow()
-{
-  SubWindowHandle *child = new SubWindowHandle;
-  mdiArea->addSubWindow( child );
-
-  return child;
-}
-
-void plaYUVerApp::addSubWindow( SubWindowHandle *child )
-{
-  //connect( child, SIGNAL( areaSelected( QRect ) ), this, SLOT( setSelection( QRect ) ) );
-
-  // Add the interface to the mdiArea
-  mdiArea->addSubWindow( child );
-  return;
-}
 
 SubWindowHandle *plaYUVerApp::activeSubWindow()
 {

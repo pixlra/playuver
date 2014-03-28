@@ -114,8 +114,6 @@ private:
   Void readSettings();
   Void writeSettings();
 
-  Void addSubWindow( SubWindowHandle *child );
-  SubWindowHandle *createSubWindow();
   SubWindowHandle *activeSubWindow();
   QMdiSubWindow *findSubWindow( const QString &fileName );
 

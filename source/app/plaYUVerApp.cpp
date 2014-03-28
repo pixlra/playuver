@@ -202,7 +202,8 @@ void plaYUVerApp::updateProperties()
 
   if( subWindow )
   {
-    m_pcPropertiesSidebar->setData( subWindow->getInputStream() );
+    m_pcStreamProperties->setData( subWindow->getInputStream() );
+    m_pcFrameProperties->setData( subWindow->getInputStream()->getCurrFrame() );
     //m_pcPropertiesSidebar->setSelection( iface->currentViewArea()->selectedArea() );
   }
 }
@@ -713,14 +714,20 @@ Void plaYUVerApp::createToolBars()
 
 Void plaYUVerApp::createDockWidgets()
 {
-  // Image Properties Dock Window
+  // Properties Dock Window
+  m_arraySideBars.resize( TOTAL_SIDEBAR );
 
-  m_pcPropertiesSidebar = new PropertiesSidebar( this );
+  m_pcStreamProperties = new StreamPropertiesSideBar( this );
+  m_arraySideBars[STREAM_SIDEBAR] = new QDockWidget( tr( "Steam Information" ), this );
+  m_arraySideBars[STREAM_SIDEBAR]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  m_arraySideBars[STREAM_SIDEBAR]->setWidget( m_pcStreamProperties );
+  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[STREAM_SIDEBAR] );
 
-  m_pcDockPropertiesSidebar = new QDockWidget( tr( "Steam Information" ), this );
-  m_pcDockPropertiesSidebar->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  m_pcDockPropertiesSidebar->setWidget( m_pcPropertiesSidebar );
-  addDockWidget( Qt::RightDockWidgetArea, m_pcDockPropertiesSidebar );
+  m_pcFrameProperties = new FramePropertiesSideBar( this );
+  m_arraySideBars[FRAME_SIDEBAR] = new QDockWidget( tr( "Frame Information" ), this );
+  m_arraySideBars[FRAME_SIDEBAR]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  m_arraySideBars[FRAME_SIDEBAR]->setWidget( m_pcFrameProperties );
+  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[FRAME_SIDEBAR] );
 
 }
 

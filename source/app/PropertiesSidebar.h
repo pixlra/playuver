@@ -21,7 +21,6 @@
  * \brief    Main side bar definition
  */
 
-
 #ifndef PROPERTIESSIDEBAR_H
 #define PROPERTIESSIDEBAR_H
 
@@ -31,66 +30,51 @@
 #include <QtGui>
 #include <QWidget>
 #endif
-
 #include "InputStream.h"
-
-class QRect;
+#include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {
 
-class PropertiesSidebarPrivate;
-
-class PropertiesSidebar: public QWidget
+class StreamPropertiesSideBar: public QWidget
 {
-  Q_OBJECT
-
+Q_OBJECT
 public:
+  StreamPropertiesSideBar( QWidget* parent );
+  ~StreamPropertiesSideBar();
 
-  PropertiesSidebar( QWidget* parent );
-  ~PropertiesSidebar();
+  QSize sizeHint() const;
 
-  //  void setData( SImage &img, const QRect &selectionArea = QRect() );   (Bug) Correction:
-      void setData( InputStream* m_pcStream  );
+  Void setData( InputStream* m_pcStream );
 
+private:
+  InputStream* m_pcStream;
 
-  public slots:
+  QLabel* labelFormatValue;
+  QLabel* labelSizeValue;
+  QLabel* labelColorSpaceValue;
+};
 
+class FramePropertiesSideBar: public QWidget
+{
+Q_OBJECT
+public:
+  FramePropertiesSideBar( QWidget* parent );
+  ~FramePropertiesSideBar();
 
-  private:
+  QSize sizeHint() const;
 
-      void updateInformations();
-      void updateStatistiques();
-      void setStopButton();
-      void setOkButton();
+  Void setData( PlaYUVerFrame* m_pcStream );
 
+private:
+  PlaYUVerFrame *m_pcFrame;
 
-  private slots:
-    void slotMinValueChanged( int min );
-    void  slotMaxValueChanged( int max );
-      void slotUpdateInterval( int min, int max );
-      void slotUpdateIntervRange( int range );
-
-  private:
-
-      enum ColorChannel
-      {
-          LuminosityChannel=0,
-          RedChannel,
-          GreenChannel,
-          BlueChannel,
-          AlphaChannel,
-          ColorChannels
-      };
-
-      enum AllColorsColorType
-      {
-          AllColorsRed=0,
-          AllColorsGreen,
-          AllColorsBlue
-      };
-
-  PropertiesSidebarPrivate* d;
+  QLabel *labelMeanValue;
+  QLabel *labelPixelsValue;
+  QLabel *labelStdDevValue;
+  QLabel *labelCountValue;
+  QLabel *labelMedianValue;
+  QLabel *labelPercentileValue;
 };
 
 }   // NAMESPACE

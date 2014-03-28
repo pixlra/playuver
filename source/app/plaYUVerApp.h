@@ -142,8 +142,16 @@ private:
   };
   QVector<QMenu*> m_arrayMenu;
 
-  PropertiesSidebar *m_pcPropertiesSidebar;
-  QDockWidget *m_pcDockPropertiesSidebar;
+  enum SIDEBAR_LIST
+  {
+    STREAM_SIDEBAR = 0,
+    FRAME_SIDEBAR,
+    TOTAL_SIDEBAR,
+  };
+  QVector<QDockWidget*> m_arraySideBars;
+
+  StreamPropertiesSideBar* m_pcStreamProperties;
+  FramePropertiesSideBar* m_pcFrameProperties;
 
   QToolBar *toolbarFile;
   QToolBar *toolbarView;

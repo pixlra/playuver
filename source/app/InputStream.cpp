@@ -185,7 +185,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
     m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
     fseek( m_pFile, 0, SEEK_SET );
 
-    m_cFormatName = QString::fromUtf8("rawvideo ");
+    m_cFormatName = QString::fromUtf8("Raw Video");
 
   }
   if( !getMem1D<Pel>( &m_pInputBuffer, m_pcCurrFrame->getBytesPerFrame() ) )
@@ -196,7 +196,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
 
   m_cStreamInformationString = QString( "[" );
   m_cStreamInformationString.append( m_cFormatName );
-  m_cStreamInformationString.append( QString("/ "));
+  m_cStreamInformationString.append( QString(" / "));
   m_cStreamInformationString.append( PlaYUVerFrame::supportedPixelFormatList().at( m_iPixelFormat ) );
   m_cStreamInformationString.append( "] " );
   m_cStreamInformationString.append( QFileInfo( m_cFilename ).fileName() );

@@ -117,17 +117,15 @@ QStringList InputStream::supportedWriteFormatsList()
   return formats;
 }
 
-Bool InputStream::needFormatDialog( QString filename )
+Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
 {
+  Bool bRet = false;
   QString fileExtension = QFileInfo( filename ).completeSuffix();
   if( !fileExtension.compare( QString( "yuv" ) ) )
   {
-    return true;
+    bRet = true;
   }
-  else
-  {
-    return false;
-  }
+  return bRet;
 }
 
 Void InputStream::init( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate )

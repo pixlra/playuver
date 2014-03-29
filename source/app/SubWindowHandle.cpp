@@ -74,9 +74,11 @@ SubWindowHandle::~SubWindowHandle()
 
 Bool SubWindowHandle::loadFile( const QString &fileName )
 {
+  UInt Width, Height, rFrameRate;
+  Int InputFormat;
   ConfigureFormatDialog formatDialog( this );
 
-  if( m_pCurrStream->needFormatDialog( fileName ) )
+  if( m_pCurrStream->guessFormat( fileName, Width, Height, InputFormat, rFrameRate ) )
   {
     if( formatDialog.exec() == QDialog::Rejected )
     {

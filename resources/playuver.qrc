@@ -1,19 +1,22 @@
 <RCC>
     <qresource>
-        <file alias="images/copy.png">icons/copy.png</file>
+        <file alias="images/playuver.png">icons/playuver.png</file>
         <file alias="images/open.png">icons/open.png</file>
-        <file alias="images/paste.png">icons/paste.png</file>
         <file alias="images/save.png">icons/save.png</file>
-        <file alias="images/saveas.png">icons/saveas.png</file>
         <file alias="images/close.png">icons/close.png</file>
         <file alias="images/exit.png">icons/exit.png</file>
-        <file alias="images/print.png">icons/print.png</file>
+        
         <file alias="images/zoomin.png">icons/zoomin.png</file>
         <file alias="images/zoomout.png">icons/zoomout.png</file>
         <file alias="images/zoomtonormal.png">icons/zoomtonormal.png</file>
         <file alias="images/fittowindow.png">icons/fittowindow.png</file>
+        
+        <file alias="images/copy.png">icons/copy.png</file>
+        <file alias="images/paste.png">icons/paste.png</file>
+        <file alias="images/saveas.png">icons/saveas.png</file>
+        <file alias="images/print.png">icons/print.png</file>
         <file alias="images/qt.png">icons/qt.png</file>
-        <file alias="images/playuver.png">icons/playuver.png</file>
+        
         <file alias="images/image-selection.png">icons/image-selection.png</file>
         <file alias="images/image-full.png">icons/image-full.png</file>
         <file alias="images/histogram-log.png">icons/histogram-log.png</file>

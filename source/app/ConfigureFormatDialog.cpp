@@ -48,8 +48,8 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   setObjectName( QStringLiteral( "ConfigureFormat" ) );
   resize( 392, 350 );
 
-  setWindowTitle( QApplication::translate( "ConfigureFormat", "Configure Resolution", 0 ) );
-  setWindowIcon( QIcon( ":/images/dialogicon-grid.png" ) );
+  setWindowTitle( "Configure Resolution" );
+  setWindowIcon( QIcon( ":/images/configureformat.png" ) );
 
   QVBoxLayout* MainLayout = new QVBoxLayout( this );
   MainLayout->setObjectName( QStringLiteral( "MainLayout" ) );

@@ -718,7 +718,7 @@ Void plaYUVerApp::createDockWidgets()
   m_arraySideBars.resize( TOTAL_SIDEBAR );
 
   m_pcStreamProperties = new StreamPropertiesSideBar( this );
-  m_arraySideBars[STREAM_SIDEBAR] = new QDockWidget( tr( "Steam Information" ), this );
+  m_arraySideBars[STREAM_SIDEBAR] = new QDockWidget( tr( "Stream Information" ), this );
   m_arraySideBars[STREAM_SIDEBAR]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   m_arraySideBars[STREAM_SIDEBAR]->setWidget( m_pcStreamProperties );
   addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[STREAM_SIDEBAR] );

@@ -734,7 +734,7 @@ Void plaYUVerApp::createDockWidgets()
 
   m_pcPropertiesSidebar = new PropertiesSidebar( this );
 
-  m_pcDockPropertiesSidebar = new QDockWidget( tr( "Steam Information" ), this );
+  m_pcDockPropertiesSidebar = new QDockWidget( tr( "Stream Information" ), this );
   m_pcDockPropertiesSidebar->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   m_pcDockPropertiesSidebar->setWidget( m_pcPropertiesSidebar );
   addDockWidget( Qt::RightDockWidgetArea, m_pcDockPropertiesSidebar );

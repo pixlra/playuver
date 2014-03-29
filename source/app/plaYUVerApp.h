@@ -1,5 +1,6 @@
-/*    This file is a part of plaYUVerApp project
- *    Copyright (C) 2014  by plaYUVerApp developers
+/*    This file is a part of plaYUVer project
+ *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                           Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -114,8 +115,6 @@ private:
   Void readSettings();
   Void writeSettings();
 
-  Void addSubWindow( SubWindowHandle *child );
-  SubWindowHandle *createSubWindow();
   SubWindowHandle *activeSubWindow();
   QMdiSubWindow *findSubWindow( const QString &fileName );
 
@@ -144,8 +143,16 @@ private:
   };
   QVector<QMenu*> m_arrayMenu;
 
-  PropertiesSidebar *m_pcPropertiesSidebar;
-  QDockWidget *m_pcDockPropertiesSidebar;
+  enum SIDEBAR_LIST
+  {
+    STREAM_SIDEBAR = 0,
+    FRAME_SIDEBAR,
+    TOTAL_SIDEBAR,
+  };
+  QVector<QDockWidget*> m_arraySideBars;
+
+  StreamPropertiesSideBar* m_pcStreamProperties;
+  FramePropertiesSideBar* m_pcFrameProperties;
 
   QToolBar *toolbarFile;
   QToolBar *toolbarView;

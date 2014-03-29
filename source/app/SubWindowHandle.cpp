@@ -1,5 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by plaYUVer developers
+ *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                           Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -17,7 +18,7 @@
  */
 
 /**
- * \file     imageinterface.cpp
+ * \file     SubWindowHandle.cpp
  * \brief    Sub windows handling
  */
 
@@ -74,9 +75,11 @@ SubWindowHandle::~SubWindowHandle()
 
 Bool SubWindowHandle::loadFile( const QString &fileName )
 {
+  UInt Width, Height, rFrameRate;
+  Int InputFormat;
   ConfigureFormatDialog formatDialog( this );
 
-  if( m_pCurrStream->needFormatDialog( fileName ) )
+  if( m_pCurrStream->guessFormat( fileName, Width, Height, InputFormat, rFrameRate ) )
   {
     if( formatDialog.exec() == QDialog::Rejected )
     {

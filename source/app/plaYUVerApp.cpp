@@ -1,5 +1,6 @@
-/*    This file is a part of plaYUVerApp project
- *    Copyright (C) 2014  by plaYUVerApp developers
+/*    This file is a part of plaYUVer project
+ *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                           Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -88,11 +89,10 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
 
   if( mdiArea->subWindowList().size() >= 1 )
   {
-    QMessageBox msgBoxClose;
-    msgBoxClose.setText( "There are open files." );
-    msgBoxClose.setInformativeText( "Close all?" );
-    msgBoxClose.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+    QMessageBox msgBoxClose( QMessageBox::Question, "PlaYUVer",
+        "There are open files!", QMessageBox::Yes | QMessageBox::No, this );
     msgBoxClose.setDefaultButton( QMessageBox::No );
+    msgBoxClose.setInformativeText( "Close all?" );
     msgBoxCloseRet = msgBoxClose.exec();
   }
   switch( msgBoxCloseRet )
@@ -153,7 +153,7 @@ void plaYUVerApp::open()
     SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
     if( interfaceChild->loadFile( fileName ) )
     {
-      addSubWindow( interfaceChild );
+      mdiArea->addSubWindow( interfaceChild );
       statusBar()->showMessage( tr( "File loaded" ), 2000 );
       interfaceChild->show();
       connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
@@ -202,7 +202,8 @@ void plaYUVerApp::updateProperties()
 
   if( subWindow )
   {
-    m_pcPropertiesSidebar->setData( subWindow->getInputStream() );
+    m_pcStreamProperties->setData( subWindow->getInputStream() );
+    m_pcFrameProperties->setData( subWindow->getInputStream()->getCurrFrame() );
     //m_pcPropertiesSidebar->setSelection( iface->currentViewArea()->selectedArea() );
   }
 }
@@ -372,7 +373,7 @@ void plaYUVerApp::dropEvent( QDropEvent *event )
       SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
       if( interfaceChild->loadFile( fileName ) )
       {
-        addSubWindow( interfaceChild );
+        mdiArea->addSubWindow( interfaceChild );
         statusBar()->showMessage( tr( "File loaded" ), 2000 );
         interfaceChild->show();
       }
@@ -385,23 +386,6 @@ void plaYUVerApp::dropEvent( QDropEvent *event )
 }
 
 // -----------------------  Gui Functions  -----------------------
-
-SubWindowHandle *plaYUVerApp::createSubWindow()
-{
-  SubWindowHandle *child = new SubWindowHandle;
-  mdiArea->addSubWindow( child );
-
-  return child;
-}
-
-void plaYUVerApp::addSubWindow( SubWindowHandle *child )
-{
-  //connect( child, SIGNAL( areaSelected( QRect ) ), this, SLOT( setSelection( QRect ) ) );
-
-  // Add the interface to the mdiArea
-  mdiArea->addSubWindow( child );
-  return;
-}
 
 SubWindowHandle *plaYUVerApp::activeSubWindow()
 {
@@ -730,14 +714,20 @@ Void plaYUVerApp::createToolBars()
 
 Void plaYUVerApp::createDockWidgets()
 {
-  // Image Properties Dock Window
+  // Properties Dock Window
+  m_arraySideBars.resize( TOTAL_SIDEBAR );
 
-  m_pcPropertiesSidebar = new PropertiesSidebar( this );
+  m_pcStreamProperties = new StreamPropertiesSideBar( this );
+  m_arraySideBars[STREAM_SIDEBAR] = new QDockWidget( tr( "Stream Information" ), this );
+  m_arraySideBars[STREAM_SIDEBAR]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  m_arraySideBars[STREAM_SIDEBAR]->setWidget( m_pcStreamProperties );
+  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[STREAM_SIDEBAR] );
 
-  m_pcDockPropertiesSidebar = new QDockWidget( tr( "Stream Information" ), this );
-  m_pcDockPropertiesSidebar->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  m_pcDockPropertiesSidebar->setWidget( m_pcPropertiesSidebar );
-  addDockWidget( Qt::RightDockWidgetArea, m_pcDockPropertiesSidebar );
+  m_pcFrameProperties = new FramePropertiesSideBar( this );
+  m_arraySideBars[FRAME_SIDEBAR] = new QDockWidget( tr( "Frame Information" ), this );
+  m_arraySideBars[FRAME_SIDEBAR]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  m_arraySideBars[FRAME_SIDEBAR]->setWidget( m_pcFrameProperties );
+  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[FRAME_SIDEBAR] );
 
 }
 

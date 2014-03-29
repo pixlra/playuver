@@ -1,5 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by plaYUVer developers
+ *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                           Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -18,7 +19,7 @@
 
 /**
  * \file     InputStream.cpp
- * \brief    Input handling
+ * \brief    Input stream handling
  */
 
 #include "config.h"
@@ -117,17 +118,15 @@ QStringList InputStream::supportedWriteFormatsList()
   return formats;
 }
 
-Bool InputStream::needFormatDialog( QString filename )
+Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
 {
+  Bool bRet = false;
   QString fileExtension = QFileInfo( filename ).completeSuffix();
   if( !fileExtension.compare( QString( "yuv" ) ) )
   {
-    return true;
+    bRet = true;
   }
-  else
-  {
-    return false;
-  }
+  return bRet;
 }
 
 Void InputStream::init( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate )
@@ -185,7 +184,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
     m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
     fseek( m_pFile, 0, SEEK_SET );
 
-    m_cFormatName = QString::fromUtf8("rawvideo ");
+    m_cFormatName = QString::fromUtf8("Raw Video");
 
   }
   if( !getMem1D<Pel>( &m_pInputBuffer, m_pcCurrFrame->getBytesPerFrame() ) )
@@ -196,7 +195,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
 
   m_cStreamInformationString = QString( "[" );
   m_cStreamInformationString.append( m_cFormatName );
-  m_cStreamInformationString.append( QString("/ "));
+  m_cStreamInformationString.append( QString(" / "));
   m_cStreamInformationString.append( PlaYUVerFrame::supportedPixelFormatList().at( m_iPixelFormat ) );
   m_cStreamInformationString.append( "] " );
   m_cStreamInformationString.append( QFileInfo( m_cFilename ).fileName() );

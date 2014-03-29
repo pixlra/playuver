@@ -1,5 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by plaYUVer developers
+ *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                           Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -153,7 +154,7 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
 
   const char *codec_name = avcodec_get_name(video_dec_ctx->codec_id);
 
-  sprintf(m_acCodecName, "%s ", codec_name);
+  sprintf(m_acCodecName, "%s", codec_name);
 
   Double fr = 30;
   if( video_stream->avg_frame_rate.den && video_stream->avg_frame_rate.num )

@@ -424,6 +424,7 @@ Void plaYUVerApp::updateMenus()
 {
   Bool hasSubWindow = ( activeSubWindow() != 0 );
   m_arrayActions[SAVE_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[FORMAT_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSE_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSEALL_ACT]->setEnabled( hasSubWindow );
   actionTile->setEnabled( hasSubWindow );
@@ -513,7 +514,7 @@ Void plaYUVerApp::createActions()
   connect( m_arrayActions[SAVE_ACT], SIGNAL( triggered() ), this, SLOT( save() ) );
 
   m_arrayActions[FORMAT_ACT] = new QAction( tr( "&Format" ), this );
-  m_arrayActions[FORMAT_ACT]->setIcon( QIcon( ":/images/configureformat.png" ) );
+  m_arrayActions[FORMAT_ACT]->setIcon( QIcon( ":/images/configuredialog.png" ) );
   m_arrayActions[FORMAT_ACT]->setStatusTip( tr( "Open format dialog" ) );
   connect( m_arrayActions[FORMAT_ACT], SIGNAL( triggered() ), this, SLOT( format() ) );
 
@@ -700,6 +701,7 @@ Void plaYUVerApp::createToolBars()
   toolbarFile = addToolBar( tr( "File" ) );
   toolbarFile->addAction( m_arrayActions[OPEN_ACT] );
   toolbarFile->addAction( m_arrayActions[SAVE_ACT] );
+  toolbarFile->addAction( m_arrayActions[FORMAT_ACT] );
   toolbarFile->addAction( m_arrayActions[CLOSE_ACT] );
 
   toolbarView = addToolBar( tr( "Zoom" ) );

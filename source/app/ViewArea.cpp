@@ -37,6 +37,8 @@
 
 #include "ViewArea.h"
 #include "GridManager.h"
+#include "PlaYUVerFrame.h"
+#include "InputStream.h"
 
 namespace plaYUVer
 {
@@ -108,7 +110,7 @@ Double ViewArea::getZoomFactor()
 Void ViewArea::zoomChangeEvent(Double factor)
 {
   Double zoomFactor;
-  Double maxZoom = 10.0;
+  Double maxZoom = 100.0;
   Double minZoom = ( 32.0 / m_pixmap.width() );
 
   if( ( m_zoomFactor == minZoom ) && (factor < 1 ) )
@@ -323,6 +325,60 @@ void ViewArea::paintEvent( QPaintEvent *event )
   }
 
   painter.restore();
+
+
+  if(m_zoomFactor>=25.0)
+  {
+    Int imageWidth = m_pixmap.width();
+    Int imageHeight = m_pixmap.height();
+    PlaYUVerFrame *curFrame = getInputStream()->getCurrFrame();
+    Pixel sPixelValue;
+
+    QFont font("Helvetica");
+    font.setPixelSize(m_zoomFactor/4);
+    painter.setFont(font);
+
+    QRect vr = windowToView( winRect );
+    vr &= QRect( 0, 0, imageWidth, imageHeight );
+
+    for(Int i=vr.x() ; i<=vr.right() ; i++)
+    {
+      for(Int j=vr.y() ; j<=vr.bottom() ; j++)
+      {
+        QPoint pixelTopLeft(i,j);
+        sPixelValue = curFrame->getPixelValue( pixelTopLeft, COLOR_YUV );
+
+        QRect pixelRect(viewToWindow(pixelTopLeft), QSize(m_zoomFactor,m_zoomFactor));
+        if( sPixelValue.Luma < 128 )
+          painter.setPen(QColor(Qt::white));
+        else
+          painter.setPen(QColor(Qt::black));
+        painter.drawText(pixelRect, Qt::AlignCenter, QString::number(sPixelValue.Luma));
+      }
+    }
+
+    QColor color( Qt::white );
+    QPen mainPen = QPen( color, 1, Qt::SolidLine );
+    painter.setPen(mainPen);
+
+    // Draw vertical line
+    for( Int x = vr.x(); x <= vr.right(); x ++ )
+    {
+      // Always draw the full line otherwise the line stippling
+      // varies with the location of view area and we get glitchy
+      // patterns.
+      painter.drawLine( viewToWindow(QPoint(x,0)), viewToWindow(QPoint(x,imageHeight)) );
+      qDebug() << "Line " << viewToWindow(QPoint(x,0)) << viewToWindow(QPoint(x,imageHeight)) << m_zoomFactor;
+    }
+    // Draw horizontal line
+    for( Int y = vr.y(); y <= vr.bottom(); y ++ )
+    {
+      painter.drawLine( viewToWindow(QPoint(0,y)), viewToWindow(QPoint(imageWidth,y)) );
+    }
+  }
+
+
+
 
   // Draw a border around the image.
   if( m_xOffset || m_yOffset )

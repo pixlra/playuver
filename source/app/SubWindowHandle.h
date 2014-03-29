@@ -106,7 +106,7 @@ public:
    * @param factor factor of scale. Ex: 1.2 scale the image up by 20% and
    *        0.8 scale the image down by 25%
    */
-  Void scaleView( Double factor );
+  Void scaleView( Double scale );
 
   /**
    * The current image size is scaled to a rectangle as large as possible
@@ -120,6 +120,8 @@ public:
    * aspect ratio.
    */
   Void scaleView( const QSize & size );
+
+  Void scaleViewFactor( Double factor );
 
   Double getScaleFactor()
   {

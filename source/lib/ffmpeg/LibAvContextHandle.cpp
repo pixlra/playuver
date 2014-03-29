@@ -24,6 +24,7 @@
 
 #include <cstdio>
 #include "LibAvContextHandle.h"
+#include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {
@@ -109,12 +110,12 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
   }
   switch( pixel_format )
   {
-  case NO_FMT:
+  case PlaYUVerFrame::NO_FMT:
     break;
-  case YUV420p:
+  case PlaYUVerFrame::YUV420p:
     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_YUV420P ), 0 );
     break;
-  case GRAY:
+  case PlaYUVerFrame::GRAY:
     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_GRAY8 ), 0 );
     break;
   default:
@@ -175,10 +176,10 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
   switch( video_dec_ctx->pix_fmt )
   {
   case AV_PIX_FMT_YUV420P:
-    pixel_format = YUV420p;
+    pixel_format = PlaYUVerFrame::YUV420p;
     break;
   case AV_PIX_FMT_GRAY8:
-    pixel_format = GRAY;
+    pixel_format = PlaYUVerFrame::GRAY;
     break;
   default:
     break;

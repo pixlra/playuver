@@ -30,7 +30,7 @@ namespace plaYUVer
 {
 
 SubWindowHandle::SubWindowHandle( QWidget * parent ) :
-    QMdiSubWindow( parent )
+        QMdiSubWindow( parent )
 {
   setParent( parent );
 
@@ -43,11 +43,11 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
 
   // Create a new interface to show images
   m_cViewArea = new ViewArea( this );
-  connect(m_cViewArea, SIGNAL(zoomFactorChanged(double)), this, SLOT(adjustScrollBar(double)));
+  connect( m_cViewArea, SIGNAL( zoomFactorChanged(double) ), this, SLOT( adjustScrollBar(double) ) );
 
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
-  m_cScrollArea->setWidgetResizable(true);
+  m_cScrollArea->setWidgetResizable( true );
 
   m_pCurrStream = new InputStream;
 
@@ -75,18 +75,17 @@ SubWindowHandle::~SubWindowHandle()
 
 Bool SubWindowHandle::loadFile( const QString &fileName )
 {
-  UInt Width, Height, rFrameRate;
-  Int InputFormat;
-  ConfigureFormatDialog formatDialog( this );
+  UInt Width = 0, Height = 0, FrameRate = 30;
+  Int InputFormat = 0;
 
-  if( m_pCurrStream->guessFormat( fileName, Width, Height, InputFormat, rFrameRate ) )
+  if( m_pCurrStream->guessFormat( fileName, Width, Height, InputFormat, FrameRate ) )
   {
-    if( formatDialog.exec() == QDialog::Rejected )
+    ConfigureFormatDialog formatDialog( this );
+    if( formatDialog.runConfigureFormatDialog( Width, Height, InputFormat, FrameRate ) == QDialog::Rejected )
     {
       return false;
     }
-    m_pCurrStream->init( fileName, formatDialog.getResolution().width(), formatDialog.getResolution().height(), formatDialog.getPixelFormat(),
-        formatDialog.getFrameRate() );
+    m_pCurrStream->init( fileName, Width, Height, InputFormat, FrameRate );
   }
   else
   {
@@ -99,9 +98,10 @@ Bool SubWindowHandle::loadFile( const QString &fileName )
     return false;
   }
 
-  m_pCurrFrameQImage = new QImage( m_pCurrStream->getCurrFrame()->getQImageBuffer(), m_pCurrStream->getWidth(), m_pCurrStream->getHeight(), QImage::Format_RGB888 );
+  m_pCurrFrameQImage = new QImage( m_pCurrStream->getCurrFrame()->getQImageBuffer(), m_pCurrStream->getWidth(), m_pCurrStream->getHeight(),
+      QImage::Format_RGB888 );
 
-  m_cViewArea->setInputStream(m_pCurrStream);
+  m_cViewArea->setInputStream( m_pCurrStream );
 
   QApplication::restoreOverrideCursor();
 
@@ -156,7 +156,8 @@ Void SubWindowHandle::refreshFrame()
     CurrSubWindowFrame = m_pCurrStream->getCurrFrame();
   }
   CurrSubWindowFrame->FrametoRGB8();
-  m_cViewArea->setImage( QPixmap::fromImage( QImage( CurrSubWindowFrame->getQImageBuffer(), CurrSubWindowFrame->getWidth(), CurrSubWindowFrame->getHeight(), QImage::Format_RGB888 ) ) );
+  QImage qimg = QImage( CurrSubWindowFrame->getQImageBuffer(), CurrSubWindowFrame->getWidth(), CurrSubWindowFrame->getHeight(), QImage::Format_RGB888 );
+  m_cViewArea->setImage( QPixmap::fromImage( qimg ) );
 }
 
 Bool SubWindowHandle::save()
@@ -168,7 +169,9 @@ Bool SubWindowHandle::save()
   supported.append( formats );  // supported=="Supported Files (*.pbm *.jpg...)"
 
   QStringList filter;
-  filter << supported << InputStream::supportedWriteFormatsList() << tr( "All Files (*)" );
+  filter << supported
+         << InputStream::supportedWriteFormatsList()
+         << tr( "All Files (*)" );
 
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save As" ), m_cCurrFileName, filter.join( ";;" ) );
 
@@ -239,7 +242,7 @@ Void SubWindowHandle::zoomToFit()
 {
   // Scale to a smaller size that the real to a nicer look
   QSize niceFit( m_cScrollArea->viewport()->size().width() - 5, m_cScrollArea->viewport()->size().height() - 5 );
-  if( (Int)m_pCurrStream->getWidth() <= niceFit.width() && (Int)m_pCurrStream->getHeight() <= niceFit.height() )
+  if( ( Int )m_pCurrStream->getWidth() <= niceFit.width() && ( Int )m_pCurrStream->getHeight() <= niceFit.height() )
   {
     normalSize();
     return;
@@ -250,7 +253,7 @@ Void SubWindowHandle::zoomToFit()
 Void SubWindowHandle::scaleView( Double factor )
 {
   Q_ASSERT( m_cViewArea->image() );
-  m_cViewArea->zoomChangeEvent(factor);
+  m_cViewArea->zoomChangeEvent( factor );
 }
 
 Void SubWindowHandle::scaleView( Int width, Int height )

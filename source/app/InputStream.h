@@ -116,9 +116,6 @@ public:
   Void setNextFrame();
   PlaYUVerFrame* getCurrFrame();
   PlaYUVerFrame* getCurrFrame( PlaYUVerFrame * );
-#ifdef USE_OPENCV
-  cv::Mat getFrameCvMat();
-#endif
 
   Void seekInput( Int new_frame_num );
 

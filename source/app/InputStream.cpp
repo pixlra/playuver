@@ -118,9 +118,36 @@ Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, In
 {
   Bool bRet = false;
   QString fileExtension = QFileInfo( filename ).completeSuffix();
-  if( !fileExtension.compare( QString( "yuv" ) ) )
+  if( !fileExtension.compare( "yuv" ) )
   {
     bRet = true;
+    // Guess resolution - match %dx%d
+    QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*_" ).match( filename );
+    if( resolutionMatch.hasMatch() )
+    {
+      QString resolutionString = resolutionMatch.captured( 0 );
+      if( resolutionString.startsWith( "_" ) && resolutionString.endsWith( "_" ) )
+      {
+        resolutionString.remove( "_" );
+        QStringList resolutionArgs = resolutionString.split( "x" );
+        qDebug( ) << "Found resolution = " << resolutionArgs;
+        if( resolutionArgs.size() == 2 )
+        {
+          rWidth = resolutionArgs.at( 0 ).toUInt();
+          rHeight = resolutionArgs.at( 1 ).toUInt();
+        }
+      }
+    }
+    // Guess pixel format
+    QStringList formats_list = PlaYUVerFrame::supportedPixelFormatList();
+    for( Int i = 0; i < formats_list.size(); i++ )
+    {
+      if( filename.contains( formats_list.at( i ), Qt::CaseInsensitive ) )
+      {
+        rInputFormat = i;
+        break;
+      }
+    }
   }
   return bRet;
 }

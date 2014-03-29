@@ -30,12 +30,20 @@ namespace plaYUVer
 {
 
 ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
-    QDialog( parent )
+        QDialog( parent )
 {
+  QFont titleFont, menusFont;
 
-  setStandardResolutionSizes();
+  titleFont.setPointSize( 14 );
+  titleFont.setBold( true );
+  titleFont.setWeight( 75 );
+
+  menusFont.setBold( true );
+  menusFont.setWeight( 75 );
 
   // Config dialog
+
+  setStandardResolutionSizes();
 
   setObjectName( QStringLiteral( "ConfigureFormat" ) );
   resize( 392, 350 );
@@ -43,180 +51,125 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   setWindowTitle( QApplication::translate( "ConfigureFormat", "Configure Resolution", 0 ) );
   setWindowIcon( QIcon( ":/images/dialogicon-grid.png" ) );
 
-  MainLayout = new QVBoxLayout( this );
+  QVBoxLayout* MainLayout = new QVBoxLayout( this );
   MainLayout->setObjectName( QStringLiteral( "MainLayout" ) );
 
   // headLayout
-
-  headLayout = new QHBoxLayout();
-  headLayout->setObjectName( QStringLiteral( "headLayout" ) );
-
-  dialogTitleLabel = new QLabel();
-  dialogTitleLabel->setObjectName( QStringLiteral( "dialogTitleLabel" ) );
-  QFont font;
-  font.setPointSize( 11 );
-  font.setBold( true );
-  font.setWeight( 75 );
-  dialogTitleLabel->setFont( font );
-  dialogTitleLabel->setText( QApplication::translate( "ConfigureFormat", "Configure Resolution", 0 ) );
-
-  headerSpacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
-
-  dialogIconLabel = new QLabel();
+  QHBoxLayout* headLayout = new QHBoxLayout();
+  QLabel* dialogTitleLabel = new QLabel();
+  dialogTitleLabel->setFont( titleFont );
+  dialogTitleLabel->setText( "Configure Resolution" );
+  QLabel* dialogIconLabel = new QLabel();
   dialogIconLabel->setObjectName( QStringLiteral( "dialogIconLabel" ) );
   dialogIconLabel->setPixmap( QPixmap( ":/images/dialogheader-grid.png" ) );
-
   headLayout->addWidget( dialogTitleLabel );
-  headLayout->addItem( headerSpacer );
+  headLayout->addItem( new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
   headLayout->addWidget( dialogIconLabel );
 
   MainLayout->addLayout( headLayout );
 
   // standardResolutionLayout
-
-  verticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
-  MainLayout->addItem( verticalSpacer );
-
-  standardResolutionLayout = new QHBoxLayout();
-  standardResolutionLayout->setObjectName( QStringLiteral( "standardResolutionLayout" ) );
-  standardResolutionLabel = new QLabel();
-  standardResolutionLabel->setObjectName( QStringLiteral( "standardResolutionLabel" ) );
-  standardResolutionLabel->setText( QApplication::translate( "ConfigureFormat", "Standard Resolution", 0 ) );
-
-  horizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
-
-  standardResolutionBox = new QComboBox();
-  standardResolutionBox->setObjectName( QStringLiteral( "standardResolutionBox" ) );
+  MainLayout->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum ) );
+  QHBoxLayout* standardResolutionLayout = new QHBoxLayout();
+  QLabel* standardResolutionLabel = new QLabel();
+  standardResolutionLabel->setText( "Standard Resolution" );
+  standardResolutionLabel->setFont( menusFont );
+  m_comboBoxStandardResolution = new QComboBox();
   QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
   sizePolicy.setHorizontalStretch( 0 );
   sizePolicy.setVerticalStretch( 0 );
-  sizePolicy.setHeightForWidth( standardResolutionBox->sizePolicy().hasHeightForWidth() );
-  standardResolutionBox->setSizePolicy( sizePolicy );
-  standardResolutionBox->setAcceptDrops( true );
-
-  standardResolutionBox->clear();
-  standardResolutionBox->insertItems( 0, standardResolutionNames );
-  standardResolutionBox->setCurrentIndex( -1 );
-
+  sizePolicy.setHeightForWidth( m_comboBoxStandardResolution->sizePolicy().hasHeightForWidth() );
+  m_comboBoxStandardResolution->setSizePolicy( sizePolicy );
+  m_comboBoxStandardResolution->setAcceptDrops( true );
+  m_comboBoxStandardResolution->clear();
+  m_comboBoxStandardResolution->insertItems( 0, standardResolutionNames );
+  m_comboBoxStandardResolution->setCurrentIndex( -1 );
   standardResolutionLayout->addWidget( standardResolutionLabel );
-  standardResolutionLayout->addItem( horizontalSpacer );
-  standardResolutionLayout->addWidget( standardResolutionBox );
+  standardResolutionLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  standardResolutionLayout->addWidget( m_comboBoxStandardResolution );
 
   MainLayout->addLayout( standardResolutionLayout );
 
-  // resolutionGrid
+  // Resolution Grid
+  //resolutionGridVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
+  MainLayout->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum ) );
 
-  resolutionGridVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
-  MainLayout->addItem( resolutionGridVerticalSpacer );
+  QGridLayout* resolutionGrid = new QGridLayout();
 
-  resolutionGrid = new QGridLayout();
-  resolutionGrid->setObjectName( QStringLiteral( "resolutionGrid" ) );
+  QLabel* resolutionLabel = new QLabel();
+  resolutionLabel->setFont( menusFont );
+  resolutionLabel->setText( "Resolution chosen" );
+  QLabel* widthLabel = new QLabel( "Width" );
+  m_spinBoxWidth = new QSpinBox();
+  m_spinBoxWidth->setRange( 0, 7240 );
+  m_spinBoxWidth->setValue( 0 );
 
-  resolutionLabel = new QLabel();
-  resolutionLabel->setObjectName( QStringLiteral( "resolutionLabel" ) );
-  QFont font1;
-  font1.setBold( true );
-  font1.setWeight( 75 );
-  resolutionLabel->setFont( font1 );
-  resolutionLabel->setText( QApplication::translate( "ConfigureFormat", "Resolution chosen", 0 ) );
+  QLabel* heightLabel = new QLabel( "Height" );
+  m_spinBoxheight = new QSpinBox();
+  m_spinBoxheight->setRange( 0, 5432 );
+  m_spinBoxheight->setValue( 0 );
 
-  widthLabel = new QLabel();
-  widthLabel->setObjectName( QStringLiteral( "widthLabel" ) );
-  widthLabel->setText( QApplication::translate( "ConfigureFormat", "Width", 0 ) );
-  widthSpinBox = new QSpinBox();
-  widthSpinBox->setObjectName( QStringLiteral( "widthSpinBox" ) );
-  widthSpinBox->setRange( 0, 7240 );
-  widthSpinBox->setValue( 0 );
-
-  heightLabel = new QLabel();
-  heightLabel->setObjectName( QStringLiteral( "heightLabel" ) );
-  heightLabel->setText( QApplication::translate( "ConfigureFormat", "Height", 0 ) );
-  heightSpinBox = new QSpinBox();
-  heightSpinBox->setObjectName( QStringLiteral( "heightSpinBox" ) );
-  heightSpinBox->setRange( 0, 5432 );
-  heightSpinBox->setValue( 0 );
-
-  pixelsLabel = new QLabel();
-  pixelsLabel->setObjectName( QStringLiteral( "pixelsLabel" ) );
-  pixelsLabel->setText( QApplication::translate( "ConfigureFormat", "Pixels", 0 ) );
+  QLabel* pixelsLabel = new QLabel();
+  pixelsLabel->setText( "Pixels" );
 
   resolutionGrid->addWidget( resolutionLabel, 0, 0, 1, 1 );
   resolutionGrid->addWidget( widthLabel, 1, 1, 1, 1 );
-  resolutionGrid->addWidget( widthSpinBox, 2, 1, 1, 1 );
+  resolutionGrid->addWidget( m_spinBoxWidth, 2, 1, 1, 1 );
   resolutionGrid->addWidget( heightLabel, 1, 2, 1, 1 );
-  resolutionGrid->addWidget( heightSpinBox, 2, 2, 1, 1 );
+  resolutionGrid->addWidget( m_spinBoxheight, 2, 2, 1, 1 );
   resolutionGrid->addWidget( pixelsLabel, 2, 3, 1, 1 );
-
   MainLayout->addLayout( resolutionGrid );
 
-  pixelFormatVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
-  MainLayout->addItem( pixelFormatVerticalSpacer );
-
-  pixelFormatLayout = new QHBoxLayout();
-  pixelFormatLayout->setObjectName( QStringLiteral( "pixelFormatLayout" ) );
-
-  pixelFormatLabel = new QLabel();
-  pixelFormatLabel->setObjectName( QStringLiteral( "pixelFormatLabel" ) );
-  pixelFormatLabel->setText( QApplication::translate( "pixelFormat", "Pixel FormatBox", 0 ) );
-
-  pixelFormatHorizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
-
-  pixelFormatBox = new QComboBox();
-  pixelFormatBox->setObjectName( QStringLiteral( "pixelFormatBox" ) );
+  // Pixel format
+  QHBoxLayout* pixelFormatLayout = new QHBoxLayout();
+  QLabel* pixelFormatLabel = new QLabel();
+  pixelFormatLabel->setText( "Pixel FormatBox" );
+  pixelFormatLabel->setFont( menusFont );
+  m_comboBoxPixelFormat = new QComboBox();
   QSizePolicy sizePolicyPixelFormat( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
   sizePolicyPixelFormat.setHorizontalStretch( 0 );
   sizePolicyPixelFormat.setVerticalStretch( 0 );
-  sizePolicyPixelFormat.setHeightForWidth( pixelFormatBox->sizePolicy().hasHeightForWidth() );
-  pixelFormatBox->setSizePolicy( sizePolicyPixelFormat );
-  pixelFormatBox->setAcceptDrops( true );
-  pixelFormatBox->clear();
-  pixelFormatBox->insertItems( 0, PlaYUVerFrame::supportedPixelFormatList() );
-  pixelFormatBox->setCurrentIndex( 0 );
+  sizePolicyPixelFormat.setHeightForWidth( m_comboBoxPixelFormat->sizePolicy().hasHeightForWidth() );
+  m_comboBoxPixelFormat->setSizePolicy( sizePolicyPixelFormat );
+  m_comboBoxPixelFormat->setAcceptDrops( true );
+  m_comboBoxPixelFormat->clear();
+  m_comboBoxPixelFormat->insertItems( 0, PlaYUVerFrame::supportedPixelFormatList() );
+  m_comboBoxPixelFormat->setCurrentIndex( 0 );
 
+  MainLayout->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum ) );
   pixelFormatLayout->addWidget( pixelFormatLabel );
-  pixelFormatLayout->addItem( pixelFormatHorizontalSpacer );
-  pixelFormatLayout->addWidget( pixelFormatBox );
-
+  pixelFormatLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  pixelFormatLayout->addWidget( m_comboBoxPixelFormat );
   MainLayout->addLayout( pixelFormatLayout );
 
   // Frame rate format
+  QHBoxLayout* framerateFormatLayout = new QHBoxLayout();
+  QLabel* framerateFormatLabel = new QLabel();
+  framerateFormatLabel->setFont( menusFont );
+  framerateFormatLabel->setText( "Frame Rate" );
+  m_spinBoxFrameRate = new QSpinBox();
+  m_spinBoxFrameRate->setRange( 0, 200 );
+  m_spinBoxFrameRate->setValue( 30 );
 
-  framerateFormatVerticalSpacer = new QSpacerItem( 10, 20, QSizePolicy::Minimum );
-  MainLayout->addItem( framerateFormatVerticalSpacer );
-
-  framerateFormatLayout = new QHBoxLayout();
-  framerateFormatLayout->setObjectName( QStringLiteral( "framerateFormatLayout" ) );
-
-  framerateFormatLabel = new QLabel();
-  framerateFormatLabel->setObjectName( QStringLiteral( "framerateFormatLabel" ) );
-  framerateFormatLabel->setText( QApplication::translate( "framerateFormatLabel", "framerateFormatLabel", 0 ) );
-
-  framerateFormatHorizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
-
-  framerateSpinBox = new QSpinBox();
-  framerateSpinBox->setObjectName( QStringLiteral( "framerateSpinBox" ) );
-  framerateSpinBox->setRange( 0, 200 );
-  framerateSpinBox->setValue( 30 );
-
+  MainLayout->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum ) );
   framerateFormatLayout->addWidget( framerateFormatLabel );
-  framerateFormatLayout->addItem( framerateFormatHorizontalSpacer );
-  framerateFormatLayout->addWidget( framerateSpinBox );
+  framerateFormatLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  framerateFormatLayout->addWidget( m_spinBoxFrameRate );
 
   MainLayout->addLayout( framerateFormatLayout );
 
   // Confirmation buttons
 
-  verticalSpacerConfirmation = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
-  MainLayout->addItem( verticalSpacerConfirmation );
+  MainLayout->addItem( new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
 
-  dialogButtonOkCancel = new QDialogButtonBox();
+  QDialogButtonBox* dialogButtonOkCancel = new QDialogButtonBox();
   dialogButtonOkCancel->setObjectName( QString::fromUtf8( "dialogButtonBox" ) );
   dialogButtonOkCancel->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
   dialogButtonOkCancel->setCenterButtons( false );
 
   MainLayout->addWidget( dialogButtonOkCancel );
 
-  connect( standardResolutionBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( StandardResolutionSelection() ) );
+  connect( m_comboBoxStandardResolution, SIGNAL( currentIndexChanged(int) ), this, SLOT( StandardResolutionSelection() ) );
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
@@ -224,23 +177,40 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
 }
 
+Int ConfigureFormatDialog::runConfigureFormatDialog( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
+{
+  // Set default values
+  m_spinBoxWidth->setValue( rWidth );
+  m_spinBoxheight->setValue( rHeight );
+  m_comboBoxPixelFormat->setCurrentIndex( rInputFormat );
+  m_spinBoxFrameRate->setValue( rFrameRate );
+  for( Int i = 0; i < standardResolutionSizesList.size(); i++ )
+  {
+    if( standardResolutionSizesList.at( i ) == QSize( rWidth, rHeight ) )
+    {
+      m_comboBoxStandardResolution->setCurrentIndex( i );
+    }
+  }
+  if( exec() == QDialog::Rejected )
+  {
+    return QDialog::Rejected;
+  }
+  rWidth = m_spinBoxWidth->value();
+  rHeight = m_spinBoxheight->value();
+  rInputFormat = m_comboBoxPixelFormat->currentIndex();
+  rFrameRate = m_spinBoxFrameRate->value();
+  return QDialog::Accepted;
+}
+
 void ConfigureFormatDialog::StandardResolutionSelection()
 {
-  Int currIdx = standardResolutionBox->currentIndex();
-
+  Int currIdx = m_comboBoxStandardResolution->currentIndex();
   if( currIdx == -1 )
     return;
 
-  QList<QSize>::iterator iteratorSizes = standardResolutionSizesList.begin();
-
-  for( Int i = 0; i < currIdx; i++ )
-    iteratorSizes++;
-
-  QSize currSize = ( QSize )( *iteratorSizes );
-
-  widthSpinBox->setValue( currSize.width() );
-  heightSpinBox->setValue( currSize.height() );
-
+  QSize currSize = standardResolutionSizesList.at( currIdx );
+  m_spinBoxWidth->setValue( currSize.width() );
+  m_spinBoxheight->setValue( currSize.height() );
 }
 
 }  // Namespace SCode

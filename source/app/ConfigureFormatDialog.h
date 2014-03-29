@@ -56,21 +56,7 @@ Q_OBJECT
 public:
 
   ConfigureFormatDialog( QWidget *parent = 0 );
-
-  QSize getResolution()
-  {
-    return QSize( widthSpinBox->value(), heightSpinBox->value() );
-  }
-
-  Int getPixelFormat()
-  {
-    return pixelFormatBox->currentIndex();
-  }
-
-  UInt getFrameRate()
-  {
-    return framerateSpinBox->value();
-  }
+  Int runConfigureFormatDialog ( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
 
 private Q_SLOTS:
   void StandardResolutionSelection();
@@ -78,50 +64,20 @@ private Q_SLOTS:
 private:
   QStringList standardResolutionNames;
   QList<QSize> standardResolutionSizesList;
-  QVBoxLayout *MainLayout;
-  QHBoxLayout *headLayout;
-  QLabel *dialogTitleLabel;
-  QSpacerItem *headerSpacer;
-  QLabel *dialogIconLabel;
-  QHBoxLayout *standardResolutionLayout;
-  QLabel *standardResolutionLabel;
-  QSpacerItem *horizontalSpacer;
-  QComboBox *standardResolutionBox;
 
-  QSpacerItem *resolutionGridVerticalSpacer;
-  QGridLayout *resolutionGrid;
-  QLabel *widthLabel;
-  QLabel *pixelsLabel;
-  QSpinBox *widthSpinBox;
-  QLabel *resolutionLabel;
-  QSpinBox *heightSpinBox;
-  QLabel *heightLabel;
-  QSpacerItem *verticalSpacer;
-
-  QSpacerItem *pixelFormatVerticalSpacer;
-  QHBoxLayout *pixelFormatLayout;
-  QLabel *pixelFormatLabel;
-  QSpacerItem *pixelFormatHorizontalSpacer;
-  QComboBox *pixelFormatBox;
-
-  QSpacerItem *framerateFormatVerticalSpacer;
-  QHBoxLayout *framerateFormatLayout;
-  QLabel *framerateFormatLabel;
-  QSpacerItem *framerateFormatHorizontalSpacer;
-  QSpinBox *framerateSpinBox;
-
-  QSpacerItem *verticalSpacerConfirmation;
-  QDialogButtonBox *dialogButtonOkCancel;
+  QComboBox *m_comboBoxStandardResolution;
+  QSpinBox *m_spinBoxWidth;
+  QSpinBox *m_spinBoxheight;
+  QComboBox *m_comboBoxPixelFormat;
+  QSpinBox *m_spinBoxFrameRate;
 
   Void setStandardResolutionSizes()
   {
-
     ADD_STANDARD_RESOLUTION( "CIF (352x288)", 352, 288 );
     ADD_STANDARD_RESOLUTION( "VGA (640x480)", 640, 480 );
     ADD_STANDARD_RESOLUTION( "XVGA (1024x768)", 1024, 768 );
     ADD_STANDARD_RESOLUTION( "HD (1280x720)", 1280, 720 );
     ADD_STANDARD_RESOLUTION( "Full HD (1920x1080)", 1920, 1080 );
-
   }
 
 };

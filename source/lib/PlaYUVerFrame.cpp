@@ -453,4 +453,13 @@ Pixel PlaYUVerFrame::getPixelValue(const QPoint &pos, ColorSpace space)
   return pixel_value;
 }
 
+
+// Format conversion
+
+#ifdef USE_OPENCV
+cv::Mat PlaYUVerFrame::getCvMat()
+{
+  return cv::Mat();
+}
+#endif
 }  // NAMESPACE

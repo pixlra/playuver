@@ -29,7 +29,7 @@
 
 #include <iostream>
 #include <cstdio>
-
+#include <cassert>
 #include <QtCore>
 
 #include "TypeDef.h"
@@ -70,10 +70,15 @@ public:
   static QStringList supportedPixelFormatList()
   {
     QStringList formats;
-    for( Int i = 0; i < NUMBER_FORMATS; i++ )
-    {
-      formats.append( gInputStreamFormatsNames[i] );
-    }
+    formats << "YUV420p"
+            << "YUV444p"
+            << "YUV411p"
+            << "YUV411p"
+            << "YUV410p"
+            << "GRAY"
+            << "RGB8"  // RGB 3*8 bits per pixel
+            ;
+    assert( formats.size() == NUMBER_FORMATS );
     return formats;
   }
 
@@ -100,6 +105,10 @@ public:
   {
     return m_pcRGBPelInterlaced;
   }
+
+#ifdef USE_OPENCV
+  cv::Mat getCvMat();
+#endif
 
   UInt getWidth()
   {

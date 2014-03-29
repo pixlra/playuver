@@ -250,10 +250,16 @@ Void SubWindowHandle::zoomToFit()
   scaleView( niceFit );
 }
 
-Void SubWindowHandle::scaleView( Double factor )
+Void SubWindowHandle::scaleViewFactor( Double factor )
 {
   Q_ASSERT( m_cViewArea->image() );
   m_cViewArea->zoomChangeEvent( factor );
+}
+
+Void SubWindowHandle::scaleView( Double scale )
+{
+  Q_ASSERT( m_cViewArea->image() );
+  m_cViewArea->setZoomFactor( scale );
 }
 
 Void SubWindowHandle::scaleView( Int width, Int height )

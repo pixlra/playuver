@@ -32,6 +32,8 @@
 namespace plaYUVer
 {
 
+static inline QSize bestSize( QSize currSize );
+
 ////////////////////////////////////////////////////////////////////////////////
 //                       StreamPropertiesSideBar
 ////////////////////////////////////////////////////////////////////////////////
@@ -86,9 +88,7 @@ StreamPropertiesSideBar::~StreamPropertiesSideBar()
 
 QSize StreamPropertiesSideBar::sizeHint() const
 {
-  QSize isize = QSize( size().width(), size().height() );
-  isize += QSize( 80, 0 );
-  return isize;
+  return bestSize( size() );
 }
 
 Void StreamPropertiesSideBar::setData( InputStream* pcStream )
@@ -198,9 +198,7 @@ FramePropertiesSideBar::~FramePropertiesSideBar()
 
 QSize FramePropertiesSideBar::sizeHint() const
 {
-  QSize isize = QSize( size().width(), size().height() );
-  isize += QSize( 80, 0 );
-  return isize;
+  return bestSize( size() );
 }
 
 Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
@@ -224,6 +222,16 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
     setEnabled( true );
   }
 }
+
+static inline QSize bestSize( QSize currSize )
+{
+  QSize bestSize( 180, currSize.height() );
+  if( currSize.width() < bestSize.width() )
+    return bestSize;
+  else
+    return currSize;
+}
+
 
 }   // NAMESPACE
 

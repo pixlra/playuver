@@ -88,11 +88,10 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
 
   if( mdiArea->subWindowList().size() >= 1 )
   {
-    QMessageBox msgBoxClose;
-    msgBoxClose.setText( "There are open files." );
-    msgBoxClose.setInformativeText( "Close all?" );
-    msgBoxClose.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+    QMessageBox msgBoxClose( QMessageBox::Question, "PlaYUVer",
+        "There are open files!", QMessageBox::Yes | QMessageBox::No, this );
     msgBoxClose.setDefaultButton( QMessageBox::No );
+    msgBoxClose.setInformativeText( "Close all?" );
     msgBoxCloseRet = msgBoxClose.exec();
   }
   switch( msgBoxCloseRet )

@@ -339,13 +339,6 @@ void ViewArea::paintEvent( QPaintEvent *event )
     painter.setFont(font);
 
     QRect vr = windowToView( winRect );
-    qDebug() << "Info";
-    qDebug() << winRect;
-    qDebug() << vr << vr.right();
-    qDebug() << painter.window();
-    qDebug() << painter.viewport();
-    qDebug();
-
     vr &= QRect( 0, 0, imageWidth, imageHeight );
 
     for(Int i=vr.x() ; i<=vr.right() ; i++)
@@ -361,7 +354,6 @@ void ViewArea::paintEvent( QPaintEvent *event )
         else
           painter.setPen(QColor(Qt::black));
         painter.drawText(pixelRect, Qt::AlignCenter, QString::number(sPixelValue.Luma));
-        qDebug() << pixelTopLeft << viewToWindow(pixelTopLeft);
       }
     }
 

@@ -1,5 +1,6 @@
-/*    This file is a part of plaYUVerApp project
- *    Copyright (C) 2014  by plaYUVerApp developers
+/*    This file is a part of plaYUVer project
+ *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                           Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -21,8 +22,8 @@
  * \brief    Main side bar definition
  */
 
-#ifndef PROPERTIESSIDEBAR_H
-#define PROPERTIESSIDEBAR_H
+#ifndef __PROPERTIESSIDEBAR_H__
+#define __PROPERTIESSIDEBAR_H__
 
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
@@ -79,4 +80,4 @@ private:
 
 }   // NAMESPACE
 
-#endif
+#endif // __PROPERTIESSIDEBAR_H__

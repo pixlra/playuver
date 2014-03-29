@@ -1,5 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by plaYUVer developers
+ *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                           Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -21,8 +22,8 @@
  * \brief    Dialog box to set the sequence resolution
  */
 
-#ifndef __CONFIGURERESOLUTIONDIALOG_H__
-#define __CONFIGURERESOLUTIONDIALOG_H__
+#ifndef __CONFIGUREFORMATDIALOG_H__
+#define __CONFIGUREFORMATDIALOG_H__
 
 #include "config.h"
 
@@ -127,4 +128,4 @@ private:
 
 }  // NAMESPACE
 
-#endif // __CONFIGURERESOLUTIONDIALOG_H__
+#endif // __CONFIGUREFORMATDIALOG_H__

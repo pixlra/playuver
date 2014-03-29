@@ -5,6 +5,7 @@
         <file alias="images/save.png">icons/save.png</file>
         <file alias="images/close.png">icons/close.png</file>
         <file alias="images/exit.png">icons/exit.png</file>
+        <file alias="images/configuredialog.png">icons/configure-grid-22.png</file>
         
         <file alias="images/zoomin.png">icons/zoomin.png</file>
         <file alias="images/zoomout.png">icons/zoomout.png</file>

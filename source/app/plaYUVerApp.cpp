@@ -173,6 +173,13 @@ void plaYUVerApp::save()
     activeSubWindow()->save();
 }
 
+void plaYUVerApp::format()
+{
+  SubWindowHandle *subWindow = activeSubWindow();
+  if( subWindow )
+    subWindow->loadFile( subWindow->currentFile() );
+}
+
 void plaYUVerApp::closeAll()
 {
   mdiArea->closeAllSubWindows();
@@ -416,9 +423,9 @@ void plaYUVerApp::setActiveSubWindow( QWidget *window )
 Void plaYUVerApp::updateMenus()
 {
   Bool hasSubWindow = ( activeSubWindow() != 0 );
-  actionSave->setEnabled( hasSubWindow );
-  actionClose->setEnabled( hasSubWindow );
-  actionCloseAll->setEnabled( hasSubWindow );
+  m_arrayActions[SAVE_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[CLOSE_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[CLOSEALL_ACT]->setEnabled( hasSubWindow );
   actionTile->setEnabled( hasSubWindow );
   actionCascade->setEnabled( hasSubWindow );
   actionSeparator->setVisible( hasSubWindow );
@@ -442,8 +449,8 @@ Void plaYUVerApp::updateMenus()
 void plaYUVerApp::updateWindowMenu()
 {
   m_arrayMenu[WINDOW_MENU]->clear();
-  m_arrayMenu[WINDOW_MENU]->addAction( actionClose );
-  m_arrayMenu[WINDOW_MENU]->addAction( actionCloseAll );
+  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[CLOSE_ACT] );
+  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[CLOSEALL_ACT] );
   m_arrayMenu[WINDOW_MENU]->addSeparator();
   m_arrayMenu[WINDOW_MENU]->addAction( actionTile );
   m_arrayMenu[WINDOW_MENU]->addAction( actionCascade );
@@ -492,34 +499,39 @@ void plaYUVerApp::updateWindowMenu()
 
 Void plaYUVerApp::createActions()
 {
+  m_arrayActions.resize( TOTAL_ACT );
+
   // ------------ File ------------
+  m_arrayActions[OPEN_ACT] = new QAction( QIcon( ":/images/open.png" ), tr( "&Open..." ), this );
+  m_arrayActions[OPEN_ACT]->setShortcuts( QKeySequence::Open );
+  m_arrayActions[OPEN_ACT]->setStatusTip( tr( "Open stream" ) );
+  connect( m_arrayActions[OPEN_ACT], SIGNAL( triggered() ), this, SLOT( open() ) );
 
-  actionOpen = new QAction( QIcon( ":/images/open.png" ), tr( "&Open..." ), this );
-  actionOpen->setShortcuts( QKeySequence::Open );
-  actionOpen->setStatusTip( tr( "Open an existing file" ) );
-  connect( actionOpen, SIGNAL( triggered() ), this, SLOT( open() ) );
+  m_arrayActions[SAVE_ACT] = new QAction( QIcon( ":/images/save.png" ), tr( "&Save..." ), this );
+  m_arrayActions[SAVE_ACT]->setShortcuts( QKeySequence::SaveAs );
+  m_arrayActions[SAVE_ACT]->setStatusTip( tr( "Save current frame" ) );
+  connect( m_arrayActions[SAVE_ACT], SIGNAL( triggered() ), this, SLOT( save() ) );
 
-  actionSave = new QAction( QIcon( ":/images/save.png" ), tr( "&Save..." ), this );
-  actionSave->setShortcuts( QKeySequence::SaveAs );
-  actionSave->setStatusTip( tr( "Save the document under a new name" ) );
-  connect( actionSave, SIGNAL( triggered() ), this, SLOT( save() ) );
+  m_arrayActions[FORMAT_ACT] = new QAction( tr( "&Format" ), this );
+  m_arrayActions[FORMAT_ACT]->setIcon( QIcon( ":/images/configureformat.png" ) );
+  m_arrayActions[FORMAT_ACT]->setStatusTip( tr( "Open format dialog" ) );
+  connect( m_arrayActions[FORMAT_ACT], SIGNAL( triggered() ), this, SLOT( format() ) );
 
-  actionExit = new QAction( tr( "E&xit" ), this );
-  actionExit->setShortcuts( QKeySequence::Quit );
-  actionExit->setStatusTip( tr( "Exit the application" ) );
-  connect( actionExit, SIGNAL( triggered() ), qApp, SLOT( closeAllWindows() ) );
+  m_arrayActions[CLOSE_ACT] = new QAction( tr( "Cl&ose" ), this );
+  m_arrayActions[CLOSE_ACT]->setIcon( QIcon( ":/images/close.png" ) );
+  m_arrayActions[CLOSE_ACT]->setStatusTip( tr( "Close the active window" ) );
+  connect(  m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), mdiArea, SLOT( closeActiveSubWindow() ) );
 
-  actionClose = new QAction( tr( "Cl&ose" ), this );
-  actionClose->setIcon( QIcon( ":/images/close.png" ) );
-  actionClose->setStatusTip( tr( "Close the active window" ) );
-  connect( actionClose, SIGNAL( triggered() ), mdiArea, SLOT( closeActiveSubWindow() ) );
+  m_arrayActions[CLOSEALL_ACT] = new QAction( tr( "Close &All" ), this );
+  m_arrayActions[CLOSEALL_ACT]->setStatusTip( tr( "Close all the windows" ) );
+  connect( m_arrayActions[CLOSEALL_ACT], SIGNAL( triggered() ), this, SLOT( closeAll() ) );
 
-  actionCloseAll = new QAction( tr( "Close &All" ), this );
-  actionCloseAll->setStatusTip( tr( "Close all the windows" ) );
-  connect( actionCloseAll, SIGNAL( triggered() ), this, SLOT( closeAll() ) );
+  m_arrayActions[EXIT_ACT] = new QAction( tr( "E&xit" ), this );
+  m_arrayActions[EXIT_ACT]->setShortcuts( QKeySequence::Quit );
+  m_arrayActions[EXIT_ACT]->setStatusTip( tr( "Exit the application" ) );
+  connect( m_arrayActions[EXIT_ACT], SIGNAL( triggered() ), qApp, SLOT( closeAllWindows() ) );
 
   // ------------ View ------------
-
   mapperZoom = new QSignalMapper( this );
   connect( mapperZoom, SIGNAL( mapped(int) ), this, SLOT( scaleFrame(int) ) );
 
@@ -637,12 +649,12 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu.resize( TOTAL_MENUS );
 
   m_arrayMenu[FILE_MENU] = menuBar()->addMenu( tr( "&File" ) );
-  m_arrayMenu[FILE_MENU]->addAction( actionOpen );
+  m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[OPEN_ACT] );
+  m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[SAVE_ACT] );
+  m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[FORMAT_ACT] );
   m_arrayMenu[FILE_MENU]->addSeparator();
-  m_arrayMenu[FILE_MENU]->addAction( actionSave );
-  m_arrayMenu[FILE_MENU]->addSeparator();
-  m_arrayMenu[FILE_MENU]->addAction( actionClose );
-  m_arrayMenu[FILE_MENU]->addAction( actionExit );
+  m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[CLOSE_ACT] );
+  m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[EXIT_ACT] );
 
   m_arrayMenu[VIEW_MENU] = menuBar()->addMenu( tr( "&View" ) );
   m_arrayMenu[VIEW_MENU]->addAction( actionZoomIn );
@@ -686,9 +698,9 @@ Void plaYUVerApp::createMenus()
 Void plaYUVerApp::createToolBars()
 {
   toolbarFile = addToolBar( tr( "File" ) );
-  toolbarFile->addAction( actionOpen );
-  toolbarFile->addAction( actionSave );
-  toolbarFile->addAction( actionClose );
+  toolbarFile->addAction( m_arrayActions[OPEN_ACT] );
+  toolbarFile->addAction( m_arrayActions[SAVE_ACT] );
+  toolbarFile->addAction( m_arrayActions[CLOSE_ACT] );
 
   toolbarView = addToolBar( tr( "Zoom" ) );
   toolbarView->addAction( actionZoomIn );

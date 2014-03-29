@@ -59,6 +59,7 @@ private Q_SLOTS:
   //! File functions
   void open();
   void save();
+  void format();
   void closeAll();
 
   //! Playing functions
@@ -158,6 +159,17 @@ private:
   QToolBar *toolbarView;
   QToolBar *toolbarVideo;
 
+  enum APP_ACTION_LIST
+  {
+    OPEN_ACT = 0,
+    SAVE_ACT,
+    FORMAT_ACT,
+    CLOSE_ACT,
+    CLOSEALL_ACT,
+    EXIT_ACT,
+    TOTAL_ACT,
+  };
+  QVector<QAction*> m_arrayActions;
   QAction *actionOpen;
   QAction *actionSave;
   QAction *actionExit;

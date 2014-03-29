@@ -117,6 +117,7 @@ Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, In
   {
     bRet = true;
     // Guess resolution - match %dx%d
+#if( QT_VERSION_PLAYUVER == 5 )
     QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*_" ).match( filename );
     if( resolutionMatch.hasMatch() )
     {
@@ -133,6 +134,7 @@ Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, In
         }
       }
     }
+#endif
     // Guess pixel format
     QStringList formats_list = PlaYUVerFrame::supportedPixelFormatList();
     for( Int i = 0; i < formats_list.size(); i++ )

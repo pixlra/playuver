@@ -1,15 +1,18 @@
 plaYUVer
 ========
 
-plaYUVer is an open-source raw video player
+plaYUVer is an open-source video player with the following features:
+- support for libavformat and libavcodec;
+- support for wide range of raw video formats;
+- zoom and pixel information
+- API for frame processing algorithms
 
 
-Usage
+Developers
 ----------------------------------------------------------------
 
-Command line interface
-
-./playuver
+- João Carreira     (jfmcarreira@gmail.com)
+- Luís Lucas        (luisfrlucas@gmail.com) 
 
 
 Install using cmake

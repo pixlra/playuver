@@ -39,7 +39,6 @@ class QImage;
 namespace plaYUVer
 {
 
-
 static const QString gInputStreamFormatsNames[] =
 {
     "YUV420p",
@@ -47,9 +46,7 @@ static const QString gInputStreamFormatsNames[] =
     "YUV422p",
     "YUV411p",
     "YUV410p",
-    "GRAY",
-    "RGB8",
-};
+    "GRAY" };
 
 class PlaYUVerFrame
 {
@@ -75,7 +72,7 @@ public:
     QStringList formats;
     for( Int i = 0; i < NUMBER_FORMATS; i++ )
     {
-      formats.append(gInputStreamFormatsNames[i]);
+      formats.append( gInputStreamFormatsNames[i] );
     }
     return formats;
   }
@@ -97,7 +94,7 @@ public:
   }
 
   static Pixel ConvertPixel( Pixel sInputPixel, ColorSpace eOutputSpace );
-  Pixel getPixelValue(const QPoint &pos, ColorSpace color);
+  Pixel getPixelValue( const QPoint &pos, ColorSpace color );
 
   UChar* getQImageBuffer()
   {

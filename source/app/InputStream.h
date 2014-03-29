@@ -50,7 +50,9 @@ namespace plaYUVer
 
 enum InputStream_Errors
 {
-  NO_STREAM_ERROR = 0, READING = 1, END_OF_SEQ = 2,
+  NO_STREAM_ERROR = 0,
+  READING = 1,
+  END_OF_SEQ = 2,
 };
 
 class InputStream
@@ -97,7 +99,8 @@ public:
 
   enum InputStreamFormats
   {
-    INVALID = -1, YUVFormat = 0,  // Use color space.
+    INVALID = -1,
+    YUVFormat = 0,  // Use color space.
   };
 
   Bool needFormatDialog( QString filename );
@@ -130,9 +133,9 @@ public:
     return m_cFilename;
   }
   QString getStreamInformationString()
-    {
-      return m_cStreamInformationString;
-    }
+  {
+    return m_cStreamInformationString;
+  }
   QString getFormatName()
   {
     return m_cFormatName;

@@ -73,7 +73,7 @@ InputStream::~InputStream()
 QString InputStream::supportedReadFormats()
 {
   QString formats;
-  formats = "*.yuv "   // Raw video
+  formats = "*.yuv "  // Raw video
 #ifdef USE_FFMPEG
           "*.avi "   // Audio video interleaved
           "*.wmv "// Windows media video
@@ -90,31 +90,27 @@ QString InputStream::supportedWriteFormats()
           "*.jpeg "// Joint Photographic Experts Group
           "*.png "// Portable Network Graphics
   ;
-
   return formats;
 }
 
 QStringList InputStream::supportedReadFormatsList()
 {
   QStringList formats;
-  formats << "Raw video (*.yuv)"  // Raw video
+  formats << "Raw video (*.yuv)"
 #ifdef USE_FFMPEG
-      << "Audio video interleaved (*.avi)"  // Audio video interleaved
-      << "Windows media video (*.wmv)"  // Windows media video
+          << "Audio video interleaved (*.avi)"
+          << "Windows media video (*.wmv)"
 #endif
-      ;
-
+          ;
   return formats;
 }
 
 QStringList InputStream::supportedWriteFormatsList()
 {
   QStringList formats;
-  formats << "Windows Bitmap (*.bmp)"  // Windows Bitmap
-      << "Joint Photographic Experts Group (*.jpg *.jpeg)"  // Joint Photographic Experts Group
-      << "Portable Network Graphics (*.png)"  // Portable Network Graphics
-      ;
-
+  formats << "Windows Bitmap (*.bmp)"
+          << "Joint Photographic Experts Group (*.jpg *.jpeg)"
+          << "Portable Network Graphics (*.png)";
   return formats;
 }
 
@@ -168,7 +164,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
     m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
   }
   m_uiFrameBufferIndex = 0;
-  m_pcCurrFrame = m_pcNextFrame =  m_ppcFrameBuffer[m_uiFrameBufferIndex];
+  m_pcCurrFrame = m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
 
   UInt64 frame_bytes_input = m_pcCurrFrame->getBytesPerFrame();
 
@@ -184,7 +180,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
     m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
     fseek( m_pFile, 0, SEEK_SET );
 
-    m_cFormatName = QString::fromUtf8("Raw Video");
+    m_cFormatName = QString::fromUtf8( "Raw Video" );
 
   }
   if( !getMem1D<Pel>( &m_pInputBuffer, m_pcCurrFrame->getBytesPerFrame() ) )
@@ -195,7 +191,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
 
   m_cStreamInformationString = QString( "[" );
   m_cStreamInformationString.append( m_cFormatName );
-  m_cStreamInformationString.append( QString(" / "));
+  m_cStreamInformationString.append( QString( " / " ) );
   m_cStreamInformationString.append( PlaYUVerFrame::supportedPixelFormatList().at( m_iPixelFormat ) );
   m_cStreamInformationString.append( "] " );
   m_cStreamInformationString.append( QFileInfo( m_cFilename ).fileName() );
@@ -242,7 +238,7 @@ Void InputStream::readNextFrame()
     return;
   }
 
-  if( m_iCurrFrameNum + 1 >= (Int)m_uiTotalFrameNum )
+  if( m_iCurrFrameNum + 1 >= ( Int )m_uiTotalFrameNum )
   {
     m_iErrorStatus = END_OF_SEQ;
     m_iCurrFrameNum = 0;
@@ -263,7 +259,8 @@ Void InputStream::readNextFrame()
   if( bytes_read != frame_bytes_input )
   {
     m_iErrorStatus = READING;
-    qDebug( ) << " Reading error !!!" << endl;
+    qDebug( ) << " Reading error !!!"
+              << endl;
     return;
   }
   m_pcNextFrame->FrameFromBuffer( m_pInputBuffer, m_iPixelFormat );
@@ -289,7 +286,7 @@ PlaYUVerFrame* InputStream::getCurrFrame( PlaYUVerFrame *pyuv_image )
   if( pyuv_image == NULL )
     pyuv_image = new PlaYUVerFrame( m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), m_pcCurrFrame->getPelFormat() );
 
-  pyuv_image->CopyFrom(m_pcCurrFrame);
+  pyuv_image->CopyFrom( m_pcCurrFrame );
   return pyuv_image;
 }
 
@@ -309,7 +306,7 @@ cv::Mat InputStream::getFrameCvMat()
 
 Void InputStream::seekInput( Int new_frame_num )
 {
-  if( new_frame_num < 0 || new_frame_num >= (Int)m_uiTotalFrameNum )
+  if( new_frame_num < 0 || new_frame_num >= ( Int )m_uiTotalFrameNum )
     return;
 #ifdef USE_FFMPEG
   if( m_cLibAvContext.getStatus() )

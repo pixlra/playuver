@@ -1,5 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by plaYUVer developers
+ *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                           Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -18,7 +19,7 @@
 
 /**
  * \file     InputStream.h
- * \brief    Input handling
+ * \brief    Input stream handling
  */
 
 #ifndef __INPUTSTREAM_H__

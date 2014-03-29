@@ -40,25 +40,20 @@ namespace plaYUVer
 
 InputStream::InputStream()
 {
-  m_iStatus = 0;
+  m_bInit = false;
+  m_iErrorStatus = 0;
 
   m_pFile = NULL;
   m_uiWidth = 0;
   m_uiHeight = 0;
   m_uiTotalFrameNum = 0;
   m_iCurrFrameNum = -1;
-  m_iErrorStatus = 0;
   m_iPixelFormat = -1;
-
-  m_uiFrameRate = 25;
-
+  m_uiFrameRate = 30;
   m_iFileFormat = INVALID;
-
   m_pInputBuffer = NULL;
-
   m_cFilename = QString( "" );
   m_cStreamInformationString = QString( "" );
-
   m_pcCurrFrame = NULL;
   m_pcNextFrame = NULL;
   m_ppcFrameBuffer = NULL;
@@ -152,15 +147,16 @@ Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, In
   return bRet;
 }
 
-Void InputStream::init( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate )
+Bool InputStream::open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate )
 {
   Bool avStatus = false;
 
-  if( m_iStatus == 1 )
+  if( m_bInit )
   {
     close();
   }
 
+  m_bInit = false;
   m_cFilename = filename;
   m_uiWidth = width;
   m_uiHeight = height;
@@ -181,8 +177,7 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
 
   if( m_uiWidth <= 0 || m_uiHeight <= 0 )
   {
-    //Error
-    return;
+    return m_bInit;
   }
 
   getMem1D<PlaYUVerFrame*>( &m_ppcFrameBuffer, m_uiFrameBufferSize );
@@ -200,20 +195,18 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
     m_pFile = fopen( m_cFilename.toLocal8Bit().data(), "rb" );
     if( m_pFile == NULL )
     {
-      // Error
-      return;
+      close();
+      return m_bInit;
     }
     fseek( m_pFile, 0, SEEK_END );
     m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
     fseek( m_pFile, 0, SEEK_SET );
-
     m_cFormatName = QString::fromUtf8( "Raw Video" );
-
   }
   if( !getMem1D<Pel>( &m_pInputBuffer, m_pcCurrFrame->getBytesPerFrame() ) )
   {
-    //Error
-    return;
+    close();
+    return m_bInit;
   }
 
   m_cStreamInformationString = QString( "[" );
@@ -224,12 +217,14 @@ Void InputStream::init( QString filename, UInt width, UInt height, Int input_for
   m_cStreamInformationString.append( QFileInfo( m_cFilename ).fileName() );
 
   m_iCurrFrameNum = -1;
-  m_iStatus = 1;
-
   readNextFrame();
   setNextFrame();
-  readNextFrame();
-  return;
+  if( m_uiTotalFrameNum > 1 )
+    readNextFrame();
+
+  m_bInit = true;
+
+  return m_bInit;
 }
 
 Void InputStream::close()

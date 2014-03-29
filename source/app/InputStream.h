@@ -59,6 +59,7 @@ class InputStream
 {
 private:
 
+  Bool m_bInit;
   Int m_iStatus;
   Int m_iErrorStatus;
 
@@ -106,7 +107,7 @@ public:
   Bool needFormatDialog( QString filename );
   Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
 
-  Void init( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate );
+  Bool open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate );
   Void close();
 
   Void readNextFrame();
@@ -121,9 +122,9 @@ public:
 
   Bool checkErrors( Int error_type );
 
-  Int getStatus()
+  Bool isInit()
   {
-    return m_iStatus;
+    return m_bInit;
   }
   QString getFileName()
   {

@@ -85,15 +85,10 @@ Bool SubWindowHandle::loadFile( const QString &fileName )
     {
       return false;
     }
-    m_pCurrStream->init( fileName, Width, Height, InputFormat, FrameRate );
-  }
-  else
-  {
-    m_pCurrStream->init( fileName, 0, 0, 0, 0 );
   }
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QApplication::restoreOverrideCursor();
-  if( m_pCurrStream->getStatus() == 0 )
+  if( !m_pCurrStream->open( fileName, Width, Height, InputFormat, FrameRate ) )
   {
     return false;
   }
@@ -108,13 +103,9 @@ Bool SubWindowHandle::loadFile( const QString &fileName )
   refreshFrame();
   //normalSize();
 
-  m_cWindowName = QString( " " );
-  m_cWindowName = m_pCurrStream->getStreamInformationString();
-
   m_cCurrFileName = fileName;
-
+  m_cWindowName = m_pCurrStream->getStreamInformationString();
   setWindowTitle( m_cWindowName );
-
   return true;
 }
 
@@ -146,17 +137,17 @@ Void SubWindowHandle::disableModule()
 
 Void SubWindowHandle::refreshFrame()
 {
-  PlaYUVerFrame* CurrSubWindowFrame;
+  PlaYUVerFrame* currFrame;
   if( m_pcCurrentModule )
   {
-    CurrSubWindowFrame = m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() );
+    currFrame = m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() );
   }
   else
   {
-    CurrSubWindowFrame = m_pCurrStream->getCurrFrame();
+    currFrame = m_pCurrStream->getCurrFrame();
   }
-  CurrSubWindowFrame->FrametoRGB8();
-  QImage qimg = QImage( CurrSubWindowFrame->getQImageBuffer(), CurrSubWindowFrame->getWidth(), CurrSubWindowFrame->getHeight(), QImage::Format_RGB888 );
+  currFrame->FrametoRGB8();
+  QImage qimg = QImage( currFrame->getQImageBuffer(), currFrame->getWidth(), currFrame->getHeight(), QImage::Format_RGB888 );
   m_cViewArea->setImage( QPixmap::fromImage( qimg ) );
 }
 
@@ -167,28 +158,22 @@ Bool SubWindowHandle::save()
   formats.prepend( " (" );
   formats.append( ")" );
   supported.append( formats );  // supported=="Supported Files (*.pbm *.jpg...)"
-
   QStringList filter;
   filter << supported
          << InputStream::supportedWriteFormatsList()
          << tr( "All Files (*)" );
-
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save As" ), m_cCurrFileName, filter.join( ";;" ) );
-
   if( fileName.isEmpty() )
     return false;
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-
   if( m_pCurrFrameQImage->save( fileName ) )
   {
     QApplication::restoreOverrideCursor();
     QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot save file %1" ).arg( fileName ) );
     return false;
   }
-
   QApplication::restoreOverrideCursor();
-
   return true;
 }
 

@@ -368,7 +368,6 @@ void ViewArea::paintEvent( QPaintEvent *event )
       // varies with the location of view area and we get glitchy
       // patterns.
       painter.drawLine( viewToWindow(QPoint(x,0)), viewToWindow(QPoint(x,imageHeight)) );
-      qDebug() << "Line " << viewToWindow(QPoint(x,0)) << viewToWindow(QPoint(x,imageHeight)) << m_zoomFactor;
     }
     // Draw horizontal line
     for( Int y = vr.y(); y <= vr.bottom(); y ++ )

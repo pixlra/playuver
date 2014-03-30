@@ -180,8 +180,9 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
   }
 #endif
 
-  if( m_uiWidth <= 0 || m_uiHeight <= 0 )
+  if( m_uiWidth <= 0 || m_uiHeight <= 0 || m_iPixelFormat < 0 )
   {
+    close();
     return m_bInit;
   }
 
@@ -189,6 +190,11 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
   for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
   {
     m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
+    if( !m_ppcFrameBuffer[i] )
+    {
+      close();
+      return m_bInit;
+    }
   }
   m_uiFrameBufferIndex = 0;
   m_pcCurrFrame = m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
@@ -246,7 +252,8 @@ Void InputStream::close()
   {
     for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
     {
-      delete m_ppcFrameBuffer[i];
+      if( m_ppcFrameBuffer[i] )
+        delete m_ppcFrameBuffer[i];
     }
     freeMem1D<PlaYUVerFrame*>( m_ppcFrameBuffer );
   }

@@ -86,7 +86,7 @@ private:
   UInt m_uiWidth;
   UInt m_uiHeight;
   UInt m_uiFrameRate;
-  UInt m_uiTotalFrameNum;
+  UInt64 m_uiTotalFrameNum;
   Int m_iCurrFrameNum;
 
 public:
@@ -118,7 +118,7 @@ public:
   PlaYUVerFrame* getCurrFrame();
   PlaYUVerFrame* getCurrFrame( PlaYUVerFrame * );
 
-  Void seekInput( Int new_frame_num );
+  Void seekInput( UInt64 new_frame_num );
 
   Bool checkErrors( Int error_type );
 

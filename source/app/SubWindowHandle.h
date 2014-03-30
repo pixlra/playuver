@@ -53,7 +53,6 @@ private:
   PlaYUVerModuleIf* m_pcCurrentModule;
 
   InputStream* m_pCurrStream;
-  QImage* m_pCurrFrameQImage;
 
   QString m_cWindowName;
   QString m_cCurrFileName;

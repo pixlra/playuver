@@ -51,7 +51,6 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
 
   m_pCurrStream = new InputStream;
 
-  m_pCurrFrameQImage = NULL;
   m_pcCurrentModule = NULL;
 
   m_cWindowName = QString( " " );
@@ -63,8 +62,6 @@ SubWindowHandle::~SubWindowHandle()
   delete m_cViewArea;
   delete m_cScrollArea;
   delete m_pCurrStream;
-  if( m_pCurrFrameQImage )
-    delete m_pCurrFrameQImage;
   if( m_pcCurrentModule )
   {
     m_pcCurrentModule->m_pcAction->setChecked( false );
@@ -76,7 +73,7 @@ SubWindowHandle::~SubWindowHandle()
 Bool SubWindowHandle::loadFile( const QString &fileName )
 {
   UInt Width = 0, Height = 0, FrameRate = 30;
-  Int InputFormat = 0;
+  Int InputFormat = -1;
 
   if( m_pCurrStream->guessFormat( fileName, Width, Height, InputFormat, FrameRate ) )
   {
@@ -92,9 +89,6 @@ Bool SubWindowHandle::loadFile( const QString &fileName )
   {
     return false;
   }
-
-  m_pCurrFrameQImage = new QImage( m_pCurrStream->getCurrFrame()->getQImageBuffer(), m_pCurrStream->getWidth(), m_pCurrStream->getHeight(),
-      QImage::Format_RGB888 );
 
   m_cViewArea->setInputStream( m_pCurrStream );
 
@@ -167,7 +161,9 @@ Bool SubWindowHandle::save()
     return false;
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  if( m_pCurrFrameQImage->save( fileName ) )
+  m_pCurrStream->getCurrFrame()->FrametoRGB8();
+  QImage qimg = QImage( m_pCurrStream->getCurrFrame()->getQImageBuffer(), m_pCurrStream->getCurrFrame()->getWidth(), m_pCurrStream->getCurrFrame()->getHeight(), QImage::Format_RGB888 );
+  if( qimg.save( fileName ) )
   {
     QApplication::restoreOverrideCursor();
     QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot save file %1" ).arg( fileName ) );

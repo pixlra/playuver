@@ -60,7 +60,7 @@ public:
   Void closeAvFormat();
   Bool decodeAvFormat();
 
-  Void seekAvFormat( UInt frame_num );
+  Void seekAvFormat( UInt64 frame_num );
 
   Bool getStatus()
   {

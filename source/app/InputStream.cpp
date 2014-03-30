@@ -194,6 +194,7 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
 
   if( !avStatus )
   {
+    m_pFile = NULL;
     m_pFile = fopen( m_cFilename.toLocal8Bit().data(), "rb" );
     if( m_pFile == NULL )
     {
@@ -250,7 +251,7 @@ Void InputStream::close()
   if( m_pInputBuffer )
     freeMem1D<Pel>( m_pInputBuffer );
 
-  m_iStatus = 0;
+  m_bInit = false;
 }
 
 Void InputStream::readNextFrame()

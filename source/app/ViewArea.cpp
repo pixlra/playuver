@@ -296,8 +296,16 @@ void ViewArea::paintEvent( QPaintEvent *event )
   painter.translate( m_xOffset, m_yOffset );
   painter.scale( m_zoomFactor, m_zoomFactor );
 
+  // This line is for fast paiting. Only visible area of the image is painted.
+  // We take the exposed rect from the event (that gives us scroll/expose optimizations for free – no need
+  // to draw the whole pixmap if your widget is only partially exposed), and reverse map it with the painter matrix.
+  // That gives us the part of the pixmap that has actually been exposed.
+  // See: http://blog.qt.digia.com/blog/2006/05/13/fast-transformed-pixmapimage-drawing/
+  QRect exposedRect = painter.worldTransform().inverted()
+                       .mapRect(event->rect())
+                       .adjusted(-1, -1, 1, 1);
   // Draw the pixmap.
-  painter.drawPixmap( QPoint( 0, 0 ), m_pixmap );
+  painter.drawPixmap( exposedRect, m_pixmap, exposedRect );
 
   // Draw the Grid if it's visible.
   if( m_gridVisible )
@@ -327,6 +335,14 @@ void ViewArea::paintEvent( QPaintEvent *event )
   painter.restore();
 
 
+  // Draw a border around the image.
+  if( m_xOffset || m_yOffset )
+  {
+    painter.setPen( Qt::black );
+    painter.drawRect( m_xOffset - 1, m_yOffset - 1, m_pixmap.width() * m_zoomFactor + 1, m_pixmap.height() * m_zoomFactor + 1 );
+  }
+
+  // Draw pixel values in grid
   if(m_zoomFactor>=25.0)
   {
     Int imageWidth = m_pixmap.width();
@@ -362,7 +378,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
     painter.setPen(mainPen);
 
     // Draw vertical line
-    for( Int x = vr.x(); x <= vr.right(); x ++ )
+    for( Int x = vr.x(); x <= (vr.right()+1); x ++ )
     {
       // Always draw the full line otherwise the line stippling
       // varies with the location of view area and we get glitchy
@@ -370,21 +386,12 @@ void ViewArea::paintEvent( QPaintEvent *event )
       painter.drawLine( viewToWindow(QPoint(x,0)), viewToWindow(QPoint(x,imageHeight)) );
     }
     // Draw horizontal line
-    for( Int y = vr.y(); y <= vr.bottom(); y ++ )
+    for( Int y = vr.y(); y <= (vr.bottom()+1); y ++ )
     {
       painter.drawLine( viewToWindow(QPoint(0,y)), viewToWindow(QPoint(imageWidth,y)) );
     }
   }
 
-
-
-
-  // Draw a border around the image.
-  if( m_xOffset || m_yOffset )
-  {
-    painter.setPen( Qt::black );
-    painter.drawRect( m_xOffset - 1, m_yOffset - 1, m_pixmap.width() * m_zoomFactor + 1, m_pixmap.height() * m_zoomFactor + 1 );
-  }
 
   QRect sr = viewToWindow( m_selectedArea );
   QRect ir = sr & winRect;

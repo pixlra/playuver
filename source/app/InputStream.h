@@ -104,11 +104,11 @@ public:
     YUVFormat = 0,  // Use color space.
   };
 
-  Bool needFormatDialog( QString filename );
-  Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
-
   Bool open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate );
   Void close();
+
+  Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
+  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
 
   Void readNextFrame();
 

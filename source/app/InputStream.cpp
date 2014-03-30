@@ -111,47 +111,6 @@ QStringList InputStream::supportedWriteFormatsList()
   return formats;
 }
 
-Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
-{
-  Bool bRet = false;
-  QString fileExtension = QFileInfo( filename ).completeSuffix();
-  if( !fileExtension.compare( "yuv" ) )
-  {
-    bRet = true;
-    // Guess resolution - match %dx%d
-#if( QT_VERSION_PLAYUVER == 5 )
-    QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*_" ).match( filename );
-    if( resolutionMatch.hasMatch() )
-    {
-      QString resolutionString = resolutionMatch.captured( 0 );
-      if( resolutionString.startsWith( "_" ) && resolutionString.endsWith( "_" ) )
-      {
-        resolutionString.remove( "_" );
-        QStringList resolutionArgs = resolutionString.split( "x" );
-        qDebug( ) << "Found resolution = "
-                  << resolutionArgs;
-        if( resolutionArgs.size() == 2 )
-        {
-          rWidth = resolutionArgs.at( 0 ).toUInt();
-          rHeight = resolutionArgs.at( 1 ).toUInt();
-        }
-      }
-    }
-#endif
-    // Guess pixel format
-    QStringList formats_list = PlaYUVerFrame::supportedPixelFormatList();
-    for( Int i = 0; i < formats_list.size(); i++ )
-    {
-      if( filename.contains( formats_list.at( i ), Qt::CaseInsensitive ) )
-      {
-        rInputFormat = i;
-        break;
-      }
-    }
-  }
-  return bRet;
-}
-
 Bool InputStream::open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate )
 {
   Bool avStatus = false;
@@ -262,6 +221,65 @@ Void InputStream::close()
     freeMem1D<Pel>( m_pInputBuffer );
 
   m_bInit = false;
+}
+
+Void InputStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
+{
+  if( m_bInit )
+  {
+    rWidth = m_uiWidth;
+    rHeight = m_uiHeight;
+    rInputFormat = m_iPixelFormat;
+    rFrameRate = m_uiFrameRate;
+  }
+  else
+  {
+    rWidth = 0;
+    rHeight = 0;
+    rInputFormat = -1;
+    rFrameRate = 30;
+  }
+}
+
+Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
+{
+  Bool bRet = false;
+  QString fileExtension = QFileInfo( filename ).completeSuffix();
+  if( !fileExtension.compare( "yuv" ) )
+  {
+    bRet = true;
+    // Guess resolution - match %dx%d
+#if( QT_VERSION_PLAYUVER == 5 )
+    QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*_" ).match( filename );
+    if( resolutionMatch.hasMatch() )
+    {
+      QString resolutionString = resolutionMatch.captured( 0 );
+      if( resolutionString.startsWith( "_" ) && resolutionString.endsWith( "_" ) )
+      {
+        resolutionString.remove( "_" );
+        QStringList resolutionArgs = resolutionString.split( "x" );
+        qDebug( ) << "Found resolution = "
+                  << resolutionArgs;
+        if( resolutionArgs.size() == 2 )
+        {
+          rWidth = resolutionArgs.at( 0 ).toUInt();
+          rHeight = resolutionArgs.at( 1 ).toUInt();
+        }
+      }
+    }
+#endif
+    // Guess pixel format
+    QStringList formats_list = PlaYUVerFrame::supportedPixelFormatList();
+    for( Int i = 0; i < formats_list.size(); i++ )
+    {
+      if( filename.contains( formats_list.at( i ), Qt::CaseInsensitive ) )
+      {
+        rInputFormat = i;
+        break;
+      }
+    }
+  }
+  return bRet;
 }
 
 Void InputStream::readNextFrame()

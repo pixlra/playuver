@@ -75,6 +75,8 @@ Bool SubWindowHandle::loadFile( const QString &fileName )
   UInt Width = 0, Height = 0, FrameRate = 30;
   Int InputFormat = -1;
 
+  m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
+
   if( m_pCurrStream->guessFormat( fileName, Width, Height, InputFormat, FrameRate ) )
   {
     ConfigureFormatDialog formatDialog( this );

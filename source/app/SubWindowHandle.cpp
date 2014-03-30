@@ -73,7 +73,7 @@ SubWindowHandle::~SubWindowHandle()
 Bool SubWindowHandle::loadFile( const QString &fileName )
 {
   UInt Width = 0, Height = 0, FrameRate = 30;
-  Int InputFormat = 0;
+  Int InputFormat = -1;
 
   if( m_pCurrStream->guessFormat( fileName, Width, Height, InputFormat, FrameRate ) )
   {

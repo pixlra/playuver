@@ -71,6 +71,7 @@ QString InputStream::supportedReadFormats()
   formats = "*.yuv "  // Raw video
 #ifdef USE_FFMPEG
           "*.avi "   // Audio video interleaved
+          "*.mp4 "
           "*.wmv "// Windows media video
 #endif
       ;
@@ -94,6 +95,7 @@ QStringList InputStream::supportedReadFormatsList()
   formats << "Raw video (*.yuv)"
 #ifdef USE_FFMPEG
           << "Audio video interleaved (*.avi)"
+          << "MPEG4 (*.mp4)"
           << "Windows media video (*.wmv)"
 #endif
           ;
@@ -126,7 +128,8 @@ Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, In
       {
         resolutionString.remove( "_" );
         QStringList resolutionArgs = resolutionString.split( "x" );
-        qDebug( ) << "Found resolution = " << resolutionArgs;
+        qDebug( ) << "Found resolution = "
+                  << resolutionArgs;
         if( resolutionArgs.size() == 2 )
         {
           rWidth = resolutionArgs.at( 0 ).toUInt();
@@ -329,9 +332,9 @@ cv::Mat InputStream::getFrameCvMat()
 }
 #endif
 
-Void InputStream::seekInput( Int new_frame_num )
+Void InputStream::seekInput( UInt64 new_frame_num )
 {
-  if( new_frame_num < 0 || new_frame_num >= ( Int )m_uiTotalFrameNum )
+  if( new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum )
     return;
 #ifdef USE_FFMPEG
   if( m_cLibAvContext.getStatus() )
@@ -344,8 +347,8 @@ Void InputStream::seekInput( Int new_frame_num )
     UInt64 frame_bytes_input = m_ppcFrameBuffer[0]->getBytesPerFrame();
     UInt64 nbytes_seek = frame_bytes_input * new_frame_num;
     fseek( m_pFile, nbytes_seek, SEEK_SET );
-    m_iCurrFrameNum = new_frame_num - 1;
   }
+  m_iCurrFrameNum = new_frame_num - 1;
   readNextFrame();
   setNextFrame();
   readNextFrame();

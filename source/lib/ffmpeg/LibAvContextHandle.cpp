@@ -102,7 +102,7 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
   /* register all formats and codecs */
   av_register_all();
 
-  if( width >= 0 && height >= 0 )
+  if( width > 0 && height > 0 )
   {
     Char aux_string[10];
     sprintf( aux_string, "%dx%d", width, height );
@@ -220,19 +220,19 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
 Bool LibAvContextHandle::decodeAvFormat()
 {
   Int got_frame;
-  int ret;
+  Bool bRet = false;
   /* read frames from the file */
 
-  if( av_read_frame( fmt_ctx, &pkt ) >= 0 )
+  while( av_read_frame( fmt_ctx, &pkt ) >= 0 && !bRet )
   {
     if( pkt.stream_index == video_stream_idx )
     {
       /* decode video frame */
-      ret = avcodec_decode_video2( video_dec_ctx, frame, &got_frame, &pkt );
+      Int ret = avcodec_decode_video2( video_dec_ctx, frame, &got_frame, &pkt );
       if( ret < 0 )
       {
         fprintf( stderr, "Error decoding video frame\n" );
-        return false;
+        return bRet;
       }
 
       if( got_frame )
@@ -242,13 +242,12 @@ Bool LibAvContextHandle::decodeAvFormat()
         av_image_copy( video_dst_data, video_dst_linesize, ( const uint8_t ** )( frame->data ), frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
             video_dec_ctx->height );
 
-        /* write to rawvideo file */
-        //fwrite( video_dst_data[0], 1, video_dst_bufsize, video_dst_file );
+        bRet = true;
       }
     }
     av_free_packet( &pkt );
   }
-
+  return bRet;
 //  /* flush cached frames */
 //  pkt.data = NULL;
 //  pkt.size = 0;
@@ -261,7 +260,7 @@ Bool LibAvContextHandle::decodeAvFormat()
   return true;
 }
 
-Void LibAvContextHandle::seekAvFormat( UInt frame_num )
+Void LibAvContextHandle::seekAvFormat( UInt64 frame_num )
 {
   av_seek_frame( fmt_ctx, video_stream_idx, frame_num, AVSEEK_FLAG_ANY );
 }

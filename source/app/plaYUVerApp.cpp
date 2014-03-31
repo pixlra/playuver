@@ -220,11 +220,14 @@ void plaYUVerApp::updateProperties()
 void plaYUVerApp::play()
 {
   playingTimer->stop();
-  if( activeSubWindow() )
+  m_uiAveragePlayInterval = 0;
+  if( m_pcCurrentSubWindow )
   {
     UInt frameRate = activeSubWindow()->getInputStream()->getFrameRate();
     UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
+    qDebug() << "Desired frame rate: " << QString::number( 1000 / timeInterval ) << " fps";
     playingTimer->start( timeInterval );
+    m_cTimer.start();
   }
 }
 
@@ -235,23 +238,33 @@ void plaYUVerApp::pause()
 
 void plaYUVerApp::stop()
 {
-  activeSubWindow()->stopEvent();
-  m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
-  playingTimer->stop();
+  if( m_pcCurrentSubWindow )
+  {
+    m_pcCurrentSubWindow->stopEvent();
+    m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
+    playingTimer->stop();
+    if( m_uiAveragePlayInterval )
+      qDebug() << "Real display time: " << QString::number( 1000 / m_uiAveragePlayInterval ) << " fps";
+    m_uiAveragePlayInterval = 0;
+  }
 }
 
 void plaYUVerApp::playEvent()
 {
-  if( activeSubWindow() )
+  //m_cTimer.restart();
+  if( m_pcCurrentSubWindow )
   {
-    if( !activeSubWindow()->playEvent() )
+    UInt time = m_cTimer.elapsed();
+    m_cTimer.restart();
+    m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time) / 2;
+    if( !m_pcCurrentSubWindow->playEvent() )
     {
       if( !actionVideoLoop->isChecked() )
       {
         stop();
       }
     }
-    m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
+    m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
   }
 }
 

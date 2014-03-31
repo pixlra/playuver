@@ -103,6 +103,8 @@ private:
 
   QString m_cLastOpenPath;
   QTimer *playingTimer;
+  QTime m_cTimer;
+  UInt m_uiAveragePlayInterval;
 
   Void updateMenus();
   Void updateProperties();

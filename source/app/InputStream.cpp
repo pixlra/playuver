@@ -307,7 +307,7 @@ Void InputStream::readNextFrame()
   }
 #endif
 
-  UInt64 frame_bytes_input = m_ppcFrameBuffer[0]->getBytesPerFrame();
+  UInt64 frame_bytes_input = m_pcNextFrame->getBytesPerFrame();
   bytes_read = fread( m_pInputBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
   if( bytes_read != frame_bytes_input )
   {

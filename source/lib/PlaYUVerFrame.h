@@ -31,8 +31,11 @@
 #include <cstdio>
 #include <cassert>
 #include <QtCore>
-
+#ifdef USE_PIXFC
+#include "pixfc-sse.h"
+#endif
 #include "TypeDef.h"
+
 
 class QImage;
 
@@ -132,6 +135,13 @@ private:
   Pel** m_pppcInputPel[3];
   Pel*** m_pppcRGBPel;
   UChar* m_pcRGBPelInterlaced;
+
+  Void openPixfc();
+  Void closePixfc();
+#ifdef USE_PIXFC
+  PixFcSSE* m_pcPixfc;
+  inline Void FrametoRGB8Pixfc();
+#endif
 };
 
 }  // NAMESPACE

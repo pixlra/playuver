@@ -41,6 +41,7 @@ ADD_OPTION(CMAKE_BUILD_TYPE  "Build type"               "Debug" )
 ADD_OPTION(USE_WERROR        "Warnings as errors"       OFF )
 ADD_OPTION(USE_QT4           "Build with QT4"           OFF )
 ADD_OPTION(USE_OPENCV        "Add OpenCV support"       OFF )
+ADD_OPTION(USE_PIXFC         "Add PIXFC support"        OFF )
 ADD_OPTION(USE_FFMPEG        "Add FFMPEG support"       OFF )
 
 ######################################################################################
@@ -53,10 +54,10 @@ IF( USE_OPENCV )
     IF( NOT OpenCV_FOUND)
         SET(USE_OPENCV FALSE)
     ELSE()
-        SET( LINKER_LIBS ${LINKER_LIBS} ${OpenCV_LIBRARIES} )
+        LIST(APPEND LINKER_LIBS ${OpenCV_LIBRARIES} )
     ENDIF()
 ENDIF()
-
+INCLUDE( cmake/LibPixfc.cmake )
 INCLUDE( cmake/LibFFmpeg.cmake )
 
 ######################################################################################
@@ -75,7 +76,7 @@ CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_D
 ######################################################################################
 # Target App
 ######################################################################################
-SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" )
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g" )
 IF( USE_WERROR )
   SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
 ENDIF()

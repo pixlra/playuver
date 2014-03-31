@@ -15,11 +15,11 @@ PROJECT( playuver )
 SET( PROJECT_NAME playuver )
 
 # Project directories 
-SET( SRC_DIR source )
-SET( LIB_DIR ${SRC_DIR}/lib )
-SET( RSC_DIR resources )
-SET( UI_DIR  ui )
-SET( EXTERNAL_SRC external_lib )
+SET( SRC_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/source )
+SET( LIB_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/source/lib )
+SET( RSC_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/resources )
+SET( UI_DIR       ${CMAKE_CURRENT_SOURCE_DIR}/ui )
+SET( EXTERNAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/external )
 
 SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 # Find includes in corresponding build directories
@@ -41,7 +41,7 @@ ADD_OPTION(CMAKE_BUILD_TYPE  "Build type"               "Debug" )
 ADD_OPTION(USE_WERROR        "Warnings as errors"       OFF )
 ADD_OPTION(USE_QT4           "Build with QT4"           OFF )
 ADD_OPTION(USE_OPENCV        "Add OpenCV support"       OFF )
-ADD_OPTION(USE_PIXFC         "Add PIXFC support"        OFF )
+ADD_OPTION(USE_PIXFC         "Add PIXFC support"        ON )
 ADD_OPTION(USE_FFMPEG        "Add FFMPEG support"       OFF )
 
 ######################################################################################

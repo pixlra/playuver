@@ -71,6 +71,9 @@ private:
   QString m_cFormatName;
   QString m_cStreamInformationString;
 
+  QTime m_cTimer;
+  UInt m_uiAveragePlayInterval;
+
   FILE* m_pFile; /**< The input file pointer >*/
   Int m_iFileFormat;
   Int m_iPixelFormat;

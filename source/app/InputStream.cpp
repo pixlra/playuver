@@ -58,6 +58,7 @@ InputStream::InputStream()
   m_pcNextFrame = NULL;
   m_ppcFrameBuffer = NULL;
   m_uiFrameBufferSize = 2;
+  m_uiAveragePlayInterval = 0;
 }
 
 InputStream::~InputStream()
@@ -193,8 +194,10 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
   if( m_uiTotalFrameNum > 1 )
     readNextFrame();
 
-  m_bInit = true;
+  m_cTimer.start();
+  m_uiAveragePlayInterval = 0;
 
+  m_bInit = true;
   return m_bInit;
 }
 
@@ -219,6 +222,8 @@ Void InputStream::close()
 
   if( m_pInputBuffer )
     freeMem1D<Pel>( m_pInputBuffer );
+
+  qDebug() << "Frame read time: " << QString::number( 1000 / (m_uiAveragePlayInterval+1) ) << " fps";
 
   m_bInit = false;
 }
@@ -285,7 +290,7 @@ Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, In
 Void InputStream::readNextFrame()
 {
   UInt64 bytes_read = 0;
-
+  m_cTimer.restart();
   if( m_iStatus == 0 )
   {
     return;
@@ -303,20 +308,24 @@ Void InputStream::readNextFrame()
   {
     m_cLibAvContext.decodeAvFormat();
     m_pcNextFrame->FrameFromBuffer( m_cLibAvContext.video_dst_data[0], m_iPixelFormat );
-    return;
   }
+  else
 #endif
-
-  UInt64 frame_bytes_input = m_pcNextFrame->getBytesPerFrame();
-  bytes_read = fread( m_pInputBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
-  if( bytes_read != frame_bytes_input )
   {
-    m_iErrorStatus = READING;
-    qDebug( ) << " Reading error !!!"
-              << endl;
-    return;
+    UInt64 frame_bytes_input = m_pcNextFrame->getBytesPerFrame();
+    bytes_read = fread( m_pInputBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
+    if( bytes_read != frame_bytes_input )
+    {
+      m_iErrorStatus = READING;
+      qDebug( ) << " Reading error !!!"
+                << endl;
+      return;
+    }
+    m_pcNextFrame->FrameFromBuffer( m_pInputBuffer, m_iPixelFormat );
   }
-  m_pcNextFrame->FrameFromBuffer( m_pInputBuffer, m_iPixelFormat );
+  Int time = m_cTimer.elapsed();
+  m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time) / 2;
+  m_pcNextFrame->FrametoRGB8();
   return;
 }
 

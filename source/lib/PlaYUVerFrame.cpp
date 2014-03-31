@@ -121,6 +121,28 @@ Void yuvToRgb( T iY, T iU, T iV, T &iR, T &iG, T &iB )
     iB = 255;
 }
 
+static inline Void yuvToRgb( Int iY, Int iU, Int iV, Int &iR, Int &iG, Int &iB )
+{
+  iR = iY + 1402 * iV / 1000;
+  iG = iY - ( 101004 * iU + 209599 * iV ) / 293500;
+  iB = iY + 1772 * iU / 1000;
+
+  if( iR < 0 )
+    iR = 0;
+  if( iG < 0 )
+    iG = 0;
+  if( iB < 0 )
+    iB = 0;
+
+  if( iR > 255 )
+    iR = 255;
+  if( iG > 255 )
+    iG = 255;
+  if( iB > 255 )
+    iB = 255;
+}
+
+
 template<typename T>
 Void rgbToyuv( T iR, T iG, T iB, T &iY, T &iU, T &iV )
 {
@@ -191,9 +213,9 @@ Void PlaYUVerFrame::FrametoRGB8()
     for( UInt y = 0; y < m_uiHeight; y++ )
       for( UInt x = 0; x < m_uiWidth; x++ )
       {
-        *pcRGBPelInterlaced++ = m_pppcRGBPel[COLOR_R][y][x];
-        *pcRGBPelInterlaced++ = m_pppcRGBPel[COLOR_G][y][x];
-        *pcRGBPelInterlaced++ = m_pppcRGBPel[COLOR_B][y][x];
+        *pcRGBPelInterlaced++ = *pRGBPelR++;
+        *pcRGBPelInterlaced++ = *pRGBPelG++;
+        *pcRGBPelInterlaced++ = *pRGBPelB++;
       }
     break;
   case YUV422p:
@@ -218,9 +240,9 @@ Void PlaYUVerFrame::FrametoRGB8()
     for( UInt y = 0; y < m_uiHeight; y++ )
       for( UInt x = 0; x < m_uiWidth; x++ )
       {
-        *pcRGBPelInterlaced++ = m_pppcRGBPel[COLOR_R][y][x];
-        *pcRGBPelInterlaced++ = m_pppcRGBPel[COLOR_G][y][x];
-        *pcRGBPelInterlaced++ = m_pppcRGBPel[COLOR_B][y][x];
+        *pcRGBPelInterlaced++ = *pRGBPelR++;
+        *pcRGBPelInterlaced++ = *pRGBPelG++;
+        *pcRGBPelInterlaced++ = *pRGBPelB++;
       }
     break;
   case YUV444p:
@@ -261,9 +283,9 @@ Void PlaYUVerFrame::FrametoRGB8()
     for( UInt y = 0; y < m_uiHeight; y++ )
       for( UInt x = 0; x < m_uiWidth; x++ )
       {
-        *pcRGBPelInterlaced++ = m_pppcInputPel[COLOR_R][y][x];
-        *pcRGBPelInterlaced++ = m_pppcInputPel[COLOR_G][y][x];
-        *pcRGBPelInterlaced++ = m_pppcInputPel[COLOR_B][y][x];
+        *pcRGBPelInterlaced++ = *pRGBPelR++;
+        *pcRGBPelInterlaced++ = *pRGBPelG++;
+        *pcRGBPelInterlaced++ = *pRGBPelB++;
       }
     break;
   default:

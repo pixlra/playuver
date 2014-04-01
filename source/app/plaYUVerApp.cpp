@@ -169,15 +169,14 @@ void plaYUVerApp::open()
 
 void plaYUVerApp::save()
 {
-  if( activeSubWindow() )
-    activeSubWindow()->save();
+  if( m_pcCurrentSubWindow )
+    m_pcCurrentSubWindow->save();
 }
 
 void plaYUVerApp::format()
 {
-  SubWindowHandle *subWindow = activeSubWindow();
-  if( subWindow )
-    subWindow->loadFile( subWindow->currentFile() );
+  if( m_pcCurrentSubWindow )
+    m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->currentFile() );
 }
 
 void plaYUVerApp::closeAll()
@@ -190,12 +189,12 @@ void plaYUVerApp::closeAll()
 void plaYUVerApp::selectModule( QAction *curr_action )
 {
   //emit curr_action->triggered();
-  if( activeSubWindow() )
+  if( m_pcCurrentSubWindow )
   {
     PlaYUVerModuleIf* pcCurrMod = m_pcModulesHandle->getSelectedModuleIf();
     if( pcCurrMod )
     {
-      activeSubWindow()->enableModule( pcCurrMod );
+      m_pcCurrentSubWindow->enableModule( pcCurrMod );
     }
   }
   return;
@@ -205,12 +204,10 @@ void plaYUVerApp::selectModule( QAction *curr_action )
 
 void plaYUVerApp::updateProperties()
 {
-  SubWindowHandle *subWindow = activeSubWindow();
-
-  if( subWindow )
+  if( m_pcCurrentSubWindow )
   {
-    m_pcStreamProperties->setData( subWindow->getInputStream() );
-    m_pcFrameProperties->setData( subWindow->getInputStream()->getCurrFrame() );
+    m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
+    m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
     //m_pcPropertiesSidebar->setSelection( iface->currentViewArea()->selectedArea() );
   }
 }

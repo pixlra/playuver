@@ -32,10 +32,7 @@ namespace plaYUVer
 
 PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
 {
-  m_pppcInputPel[0] = NULL;
-  m_pppcInputPel[1] = NULL;
-  m_pppcInputPel[2] = NULL;
-
+  m_pppcInputPel = NULL;
   m_uiWidth = width;
   m_uiHeight = height;
   m_iPixelFormat = pel_format;
@@ -45,48 +42,32 @@ PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
   switch( m_iPixelFormat )
   {
   case YUV420p:
-    get_mem2Dpel( &( m_pppcInputPel[LUMA] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[CHROMA_U] ), m_uiHeight / 2, m_uiWidth / 2 );
-    get_mem2Dpel( &( m_pppcInputPel[CHROMA_V] ), m_uiHeight / 2, m_uiWidth / 2 );
+    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 2, 2 );
     break;
   case YUV444p:
-    get_mem2Dpel( &( m_pppcInputPel[LUMA] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[CHROMA_U] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[CHROMA_V] ), m_uiHeight, m_uiWidth );
+    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 1 );
     break;
   case YUV422p:
-    get_mem2Dpel( &( m_pppcInputPel[LUMA] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[CHROMA_U] ), m_uiHeight, m_uiWidth / 2);
-    get_mem2Dpel( &( m_pppcInputPel[CHROMA_V] ), m_uiHeight, m_uiWidth / 2 );
+    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 2 );
     break;
   case YUV410p:
   case YUV411p:
-    get_mem2Dpel( &( m_pppcInputPel[LUMA] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[CHROMA_U] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[CHROMA_V] ), m_uiHeight, m_uiWidth );
     break;
   case GRAY:
-    get_mem2Dpel( &( m_pppcInputPel[0] ), m_uiHeight, m_uiWidth );
+    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 4, 4 );
     break;
   case RGB8:
-    get_mem2Dpel( &( m_pppcInputPel[COLOR_R] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[COLOR_G] ), m_uiHeight, m_uiWidth );
-    get_mem2Dpel( &( m_pppcInputPel[COLOR_B] ), m_uiHeight, m_uiWidth );
+    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 1 );
     break;
   }
   getMem1D<Pel>( &m_pcRGBPelInterlaced, m_uiHeight * m_uiWidth * 3 );
-
   openPixfc();
 }
 
 PlaYUVerFrame::~PlaYUVerFrame()
 {
-  if( m_pppcInputPel[0] )
-    free_mem2Dpel( m_pppcInputPel[LUMA] );
-  if( m_pppcInputPel[1] )
-    free_mem2Dpel( m_pppcInputPel[CHROMA_U] );
-  if( m_pppcInputPel[2] )
-    free_mem2Dpel( m_pppcInputPel[CHROMA_V] );
+  if( m_pppcInputPel )
+    freeMem3ImageComponents<Pel>( m_pppcInputPel );
 
   if( m_pcRGBPelInterlaced )
     freeMem1D<UChar>( m_pcRGBPelInterlaced );
@@ -94,15 +75,15 @@ PlaYUVerFrame::~PlaYUVerFrame()
   closePixfc();
 }
 
-
 Void PlaYUVerFrame::openPixfc()
 {
 #ifdef USE_PIXFC
   m_pcPixfc = NULL;
   PixFcPixelFormat input_format = PixFcYUV420P;
   PixFcFlag flags = (PixFcFlag)(PixFcFlag_Default + PixFcFlag_NNbResamplingOnly);
-  UInt  input_row_size = m_uiWidth * 1.5;  // size of each row in ARGB output buffer (in bytes)
-  if (create_pixfc(&m_pcPixfc, input_format, PixFcRGB24, m_uiWidth, m_uiHeight, input_row_size, m_uiWidth * 3, flags ) != 0) {
+  UInt input_row_size = m_uiWidth;
+  if (create_pixfc(&m_pcPixfc, input_format, PixFcRGB24, m_uiWidth, m_uiHeight, input_row_size, m_uiWidth * 3, flags ) != 0)
+  {
     fprintf(stderr, "Error creating struct pixfc\n");
     m_pcPixfc = NULL;
     return;
@@ -114,57 +95,31 @@ Void PlaYUVerFrame::closePixfc()
 {
 #ifdef USE_PIXFC
   if( m_pcPixfc )
-    destroy_pixfc(m_pcPixfc);
+  destroy_pixfc(m_pcPixfc);
 #endif
 }
 
 #ifdef USE_PIXFC
 inline Void PlaYUVerFrame::FrametoRGB8Pixfc()
 {
-  Pel* pInputPelY = &( m_pppcInputPel[LUMA][0][0] );
-  Pel *pRGBPelR = NULL, *pRGBPelG = NULL, *pRGBPelB = NULL;
-
-  if( m_pppcRGBPel )
-  {
-    pRGBPelR = &( m_pppcRGBPel[COLOR_R][0][0] );
-    pRGBPelG = &( m_pppcRGBPel[COLOR_G][0][0] );
-    pRGBPelB = &( m_pppcRGBPel[COLOR_B][0][0] );
-  }
-
-  Pel* pcRGBPelInterlaced = m_pcRGBPelInterlaced;
-
   switch( m_iPixelFormat )
   {
-  case YUV420p:
-    m_pcPixfc->convert(m_pcPixfc, pInputPelY, pRGBPelR);
-    for( UInt y = 0; y < m_uiHeight; y++ )
-      for( UInt x = 0; x < m_uiWidth; x++ )
-      {
-        *pcRGBPelInterlaced++ = *pRGBPelR++;
-        *pcRGBPelInterlaced++ = *pRGBPelG++;
-        *pcRGBPelInterlaced++ = *pRGBPelB++;
-      }
+    case YUV420p:
+      m_pcPixfc->convert(m_pcPixfc, m_pppcInputPel, m_pcRGBPelInterlaced);
     break;
-  case YUV422p:
+    case YUV422p:
     break;
-  case YUV444p:
-    m_pcPixfc->convert(m_pcPixfc, pInputPelY, pRGBPelR);
-    for( UInt y = 0; y < m_uiHeight; y++ )
-      for( UInt x = 0; x < m_uiWidth; x++ )
-      {
-        *pcRGBPelInterlaced++ = *pRGBPelR++;
-        *pcRGBPelInterlaced++ = *pRGBPelG++;
-        *pcRGBPelInterlaced++ = *pRGBPelB++;
-      }
+    case YUV444p:
+      m_pcPixfc->convert(m_pcPixfc, m_pppcInputPel, m_pcRGBPelInterlaced);
     break;
-  case YUV410p:
-  case YUV411p:
+    case YUV410p:
+    case YUV411p:
     break;
-  case GRAY:
+    case GRAY:
     break;
-  case RGB8:
+    case RGB8:
     break;
-  default:
+    default:
     // No action.
     break;
   }
@@ -215,7 +170,6 @@ static inline Void yuvToRgb( Int iY, Int iU, Int iV, Int &iR, Int &iG, Int &iB )
   if( iB > 255 )
     iB = 255;
 }
-
 
 template<typename T>
 Void rgbToyuv( T iR, T iG, T iB, T &iY, T &iU, T &iV )
@@ -461,26 +415,28 @@ UInt64 PlaYUVerFrame::getBytesPerFrame()
 
 Pixel PlaYUVerFrame::ConvertPixel( Pixel sInputPixel, ColorSpace eOutputSpace )
 {
-  Pixel sOutputPixel = {COLOR_INVALID,0,0,0};
+  Pixel sOutputPixel =
+  {
+      COLOR_INVALID,
+      0,
+      0,
+      0 };
 
   if( sInputPixel.color_space == eOutputSpace )
     return sInputPixel;
 
   if( eOutputSpace == COLOR_RGB )
   {
-    yuvToRgb( sInputPixel.Luma, sInputPixel.ChromaU, sInputPixel.ChromaU,
-        sOutputPixel.ColorR, sOutputPixel.ColorG, sOutputPixel.ColorB );
+    yuvToRgb( sInputPixel.Luma, sInputPixel.ChromaU, sInputPixel.ChromaU, sOutputPixel.ColorR, sOutputPixel.ColorG, sOutputPixel.ColorB );
   }
   if( eOutputSpace == COLOR_YUV )
   {
-    rgbToyuv( sInputPixel.ColorR, sInputPixel.ColorG, sInputPixel.ColorB,
-        sOutputPixel.Luma, sOutputPixel.ChromaU, sOutputPixel.ChromaU );
+    rgbToyuv( sInputPixel.ColorR, sInputPixel.ColorG, sInputPixel.ColorB, sOutputPixel.Luma, sOutputPixel.ChromaU, sOutputPixel.ChromaU );
   }
   return sOutputPixel;
 }
 
-
-Pixel PlaYUVerFrame::getPixelValue(const QPoint &pos, ColorSpace space)
+Pixel PlaYUVerFrame::getPixelValue( const QPoint &pos, ColorSpace space )
 {
   Pixel pixel_value;
   switch( m_iPixelFormat )
@@ -488,8 +444,8 @@ Pixel PlaYUVerFrame::getPixelValue(const QPoint &pos, ColorSpace space)
   case YUV420p:
     pixel_value.color_space = COLOR_YUV;
     pixel_value.Luma = m_pppcInputPel[LUMA][pos.y()][pos.x()];
-    pixel_value.ChromaU = m_pppcInputPel[CHROMA_U][pos.y()>>1][pos.x()>>1];
-    pixel_value.ChromaV = m_pppcInputPel[CHROMA_V][pos.y()>>1][pos.x()>>1];
+    pixel_value.ChromaU = m_pppcInputPel[CHROMA_U][pos.y() >> 1][pos.x() >> 1];
+    pixel_value.ChromaV = m_pppcInputPel[CHROMA_V][pos.y() >> 1][pos.x() >> 1];
     break;
   case YUV444p:
     pixel_value.Luma = m_pppcInputPel[LUMA][pos.y()][pos.x()];
@@ -499,14 +455,14 @@ Pixel PlaYUVerFrame::getPixelValue(const QPoint &pos, ColorSpace space)
   case YUV422p:
     pixel_value.color_space = COLOR_YUV;
     pixel_value.Luma = m_pppcInputPel[LUMA][pos.y()][pos.x()];
-    pixel_value.ChromaU = m_pppcInputPel[CHROMA_U][pos.y()][pos.x()>>1];
-    pixel_value.ChromaV = m_pppcInputPel[CHROMA_V][pos.y()][pos.x()>>1];
+    pixel_value.ChromaU = m_pppcInputPel[CHROMA_U][pos.y()][pos.x() >> 1];
+    pixel_value.ChromaV = m_pppcInputPel[CHROMA_V][pos.y()][pos.x() >> 1];
     break;
   case YUV410p:
     pixel_value.color_space = COLOR_YUV;
     pixel_value.Luma = m_pppcInputPel[LUMA][pos.y()][pos.x()];
-    pixel_value.ChromaU = m_pppcInputPel[CHROMA_U][pos.y()>>2][pos.x()>>2];
-    pixel_value.ChromaV = m_pppcInputPel[CHROMA_V][pos.y()>>2][pos.x()>>2];
+    pixel_value.ChromaU = m_pppcInputPel[CHROMA_U][pos.y() >> 2][pos.x() >> 2];
+    pixel_value.ChromaV = m_pppcInputPel[CHROMA_V][pos.y() >> 2][pos.x() >> 2];
     break;
   case GRAY:
     pixel_value.color_space = COLOR_YUV;
@@ -527,7 +483,6 @@ Pixel PlaYUVerFrame::getPixelValue(const QPoint &pos, ColorSpace space)
   return pixel_value;
 }
 
-
 // Format conversion
 
 #ifdef USE_OPENCV
@@ -536,4 +491,5 @@ cv::Mat PlaYUVerFrame::getCvMat()
   return cv::Mat();
 }
 #endif
-}  // NAMESPACE
+}
+  // NAMESPACE

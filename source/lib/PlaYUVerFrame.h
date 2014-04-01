@@ -128,7 +128,7 @@ private:
   Int m_iPixelFormat;
 
   Bool m_bHasRGBPel;
-  Pel** m_pppcInputPel[3];
+  Pel*** m_pppcInputPel;
   UChar* m_pcRGBPelInterlaced;
 
   Void openPixfc();

@@ -76,7 +76,9 @@ CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_D
 ######################################################################################
 # Target App
 ######################################################################################
-SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O3" )
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" )
+SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g" )
+SET( CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3" )
 IF( USE_WERROR )
   SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
 ENDIF()

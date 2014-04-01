@@ -35,7 +35,6 @@ PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
   m_pppcInputPel[0] = NULL;
   m_pppcInputPel[1] = NULL;
   m_pppcInputPel[2] = NULL;
-  m_pppcRGBPel = NULL;
 
   m_uiWidth = width;
   m_uiHeight = height;
@@ -75,11 +74,7 @@ PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
     get_mem2Dpel( &( m_pppcInputPel[COLOR_B] ), m_uiHeight, m_uiWidth );
     break;
   }
-  if( m_iPixelFormat != RGB8 )
-  {
-    get_mem3Dpel( &m_pppcRGBPel, 3, m_uiHeight, m_uiWidth );
-  }
-  getMem1D<UChar>( &m_pcRGBPelInterlaced, m_uiHeight * m_uiWidth * 3 );
+  getMem1D<Pel>( &m_pcRGBPelInterlaced, m_uiHeight * m_uiWidth * 3 );
 
   openPixfc();
 }
@@ -92,9 +87,6 @@ PlaYUVerFrame::~PlaYUVerFrame()
     free_mem2Dpel( m_pppcInputPel[CHROMA_U] );
   if( m_pppcInputPel[2] )
     free_mem2Dpel( m_pppcInputPel[CHROMA_V] );
-
-  if( m_pppcRGBPel )
-    free_mem3Dpel( m_pppcRGBPel );
 
   if( m_pcRGBPelInterlaced )
     freeMem1D<UChar>( m_pcRGBPelInterlaced );
@@ -249,14 +241,6 @@ Void PlaYUVerFrame::FrametoRGB8()
     Pel* pInputPelY = &( m_pppcInputPel[LUMA][0][0] );
 
     Pel *pInputPelU = NULL, *pInputPelV = NULL;
-    Pel *pRGBPelR = NULL, *pRGBPelG = NULL, *pRGBPelB = NULL;
-
-    if( m_pppcRGBPel )
-    {
-      pRGBPelR = &( m_pppcRGBPel[COLOR_R][0][0] );
-      pRGBPelG = &( m_pppcRGBPel[COLOR_G][0][0] );
-      pRGBPelB = &( m_pppcRGBPel[COLOR_B][0][0] );
-    }
     if( m_pppcInputPel[CHROMA_U] )
     {
       pInputPelU = m_pppcInputPel[CHROMA_U][0];
@@ -264,47 +248,45 @@ Void PlaYUVerFrame::FrametoRGB8()
     }
 
     Pel* pcRGBPelInterlaced = m_pcRGBPelInterlaced;
+    Pel* pcRGBPelInterlacedl1 = m_pcRGBPelInterlaced + m_uiWidth * 3;
 
     switch( m_iPixelFormat )
     {
     case YUV420p:
       for( UInt y = 0; y < m_uiHeight; y += 2 )
+      {
         for( UInt x = 0; x < m_uiWidth; x += 2 )
         {
           // Pixel (x, y).
           iY = ppInputPelY[y][x];
           iU = *pInputPelU++ - 128;
           iV = *pInputPelV++ - 128;
-          yuvToRgb( iY, iU, iV, iR, iG, iB );
-          m_pppcRGBPel[COLOR_R][y][x] = iR;
-          m_pppcRGBPel[COLOR_G][y][x] = iG;
-          m_pppcRGBPel[COLOR_B][y][x] = iB;
+          yuvToRgb<Int>( iY, iU, iV, iR, iG, iB );
+          *pcRGBPelInterlaced++ = iR;
+          *pcRGBPelInterlaced++ = iG;
+          *pcRGBPelInterlaced++ = iB;
           // Pixel (x+1, y)
           iY = ppInputPelY[y][x + 1];
-          yuvToRgb( iY, iU, iV, iR, iG, iB );
-          m_pppcRGBPel[COLOR_R][y][x + 1] = iR;
-          m_pppcRGBPel[COLOR_G][y][x + 1] = iG;
-          m_pppcRGBPel[COLOR_B][y][x + 1] = iB;
+          yuvToRgb<Int>( iY, iU, iV, iR, iG, iB );
+          *pcRGBPelInterlaced++ = iR;
+          *pcRGBPelInterlaced++ = iG;
+          *pcRGBPelInterlaced++ = iB;
           // Pixel (x, y+1)
           iY = ppInputPelY[y + 1][x];
-          yuvToRgb( iY, iU, iV, iR, iG, iB );
-          m_pppcRGBPel[0][y + 1][x] = iR;
-          m_pppcRGBPel[COLOR_G][y + 1][x] = iG;
-          m_pppcRGBPel[COLOR_B][y + 1][x] = iB;
+          yuvToRgb<Int>( iY, iU, iV, iR, iG, iB );
+          *pcRGBPelInterlacedl1++ = iR;
+          *pcRGBPelInterlacedl1++ = iG;
+          *pcRGBPelInterlacedl1++ = iB;
           // Pixel (x+1, y+1)
           iY = ppInputPelY[y + 1][x + 1];
-          yuvToRgb( iY, iU, iV, iR, iG, iB );
-          m_pppcRGBPel[COLOR_R][y + 1][x + 1] = iR;
-          m_pppcRGBPel[COLOR_G][y + 1][x + 1] = iG;
-          m_pppcRGBPel[COLOR_B][y + 1][x + 1] = iB;
+          yuvToRgb<Int>( iY, iU, iV, iR, iG, iB );
+          *pcRGBPelInterlacedl1++ = iR;
+          *pcRGBPelInterlacedl1++ = iG;
+          *pcRGBPelInterlacedl1++ = iB;
         }
-      for( UInt y = 0; y < m_uiHeight; y++ )
-        for( UInt x = 0; x < m_uiWidth; x++ )
-        {
-          *pcRGBPelInterlaced++ = *pRGBPelR++;
-          *pcRGBPelInterlaced++ = *pRGBPelG++;
-          *pcRGBPelInterlaced++ = *pRGBPelB++;
-        }
+        pcRGBPelInterlaced += m_uiWidth * 3;
+        pcRGBPelInterlacedl1 += m_uiWidth * 3;
+      }
       break;
     case YUV422p:
       for( UInt y = 0; y < m_uiHeight; y += 1 )
@@ -314,23 +296,16 @@ Void PlaYUVerFrame::FrametoRGB8()
           iY = ppInputPelY[y][x];
           iU = *pInputPelU++ - 128;
           iV = *pInputPelV++ - 128;
-          yuvToRgb( iY, iU, iV, iR, iG, iB );
-          m_pppcRGBPel[COLOR_R][y][x] = iR;
-          m_pppcRGBPel[COLOR_G][y][x] = iG;
-          m_pppcRGBPel[COLOR_B][y][x] = iB;
+          yuvToRgb<Int>( iY, iU, iV, iR, iG, iB );
+          *pcRGBPelInterlaced++ = iR;
+          *pcRGBPelInterlaced++ = iG;
+          *pcRGBPelInterlaced++ = iB;
           // Pixel (x+1, y)
           iY = ppInputPelY[y][x + 1];
-          yuvToRgb( iY, iU, iV, iR, iG, iB );
-          m_pppcRGBPel[COLOR_R][y][x + 1] = iR;
-          m_pppcRGBPel[COLOR_G][y][x + 1] = iG;
-          m_pppcRGBPel[COLOR_B][y][x + 1] = iB;
-        }
-      for( UInt y = 0; y < m_uiHeight; y++ )
-        for( UInt x = 0; x < m_uiWidth; x++ )
-        {
-          *pcRGBPelInterlaced++ = *pRGBPelR++;
-          *pcRGBPelInterlaced++ = *pRGBPelG++;
-          *pcRGBPelInterlaced++ = *pRGBPelB++;
+          yuvToRgb<Int>( iY, iU, iV, iR, iG, iB );
+          *pcRGBPelInterlaced++ = iR;
+          *pcRGBPelInterlaced++ = iG;
+          *pcRGBPelInterlaced++ = iB;
         }
       break;
     case YUV444p:
@@ -340,10 +315,7 @@ Void PlaYUVerFrame::FrametoRGB8()
           iY = *pInputPelY++;
           iU = *pInputPelU++ - 128;
           iV = *pInputPelV++ - 128;
-          yuvToRgb( iY, iU, iV, iR, iG, iB );
-          *pRGBPelR++ = iR;
-          *pRGBPelG++ = iG;
-          *pRGBPelB++ = iB;
+          yuvToRgb<Int>( iY, iU, iV, iR, iG, iB );
           *pcRGBPelInterlaced++ = iR;
           *pcRGBPelInterlaced++ = iG;
           *pcRGBPelInterlaced++ = iB;
@@ -359,22 +331,12 @@ Void PlaYUVerFrame::FrametoRGB8()
           iY = *pInputPelY++;
           //yuvToRgb( iY, iY, iY, iR, iG, iB );
           iR = iG = iB = iY;
-          *pRGBPelR++ = iR;
-          *pRGBPelG++ = iG;
-          *pRGBPelB++ = iB;
           *pcRGBPelInterlaced++ = iR;
           *pcRGBPelInterlaced++ = iG;
           *pcRGBPelInterlaced++ = iB;
         }
       break;
     case RGB8:
-      for( UInt y = 0; y < m_uiHeight; y++ )
-        for( UInt x = 0; x < m_uiWidth; x++ )
-        {
-          *pcRGBPelInterlaced++ = *pRGBPelR++;
-          *pcRGBPelInterlaced++ = *pRGBPelG++;
-          *pcRGBPelInterlaced++ = *pRGBPelB++;
-        }
       break;
     default:
       // No action.
@@ -417,12 +379,13 @@ Void PlaYUVerFrame::FrameFromBuffer( Pel *input_buffer, Int pel_format )
     memcpy( &m_pppcInputPel[LUMA][0][0], input_buffer + frame_bytes_input * 0, frame_bytes_input * sizeof(Pel) );
     break;
   case RGB8:
+    memcpy( pcRGBPelInterlaced, input_buffer, frame_bytes_input * sizeof(Pel) * 3 );
     for( UInt y = 0; y < m_uiHeight; y++ )
       for( UInt x = 0; x < m_uiWidth; x++ )
       {
-        m_pppcInputPel[COLOR_R][y][x] = *pcRGBPelInterlaced++ = *input_buffer++;
-        m_pppcInputPel[COLOR_G][y][x] = *pcRGBPelInterlaced++ = *input_buffer++;
-        m_pppcInputPel[COLOR_B][y][x] = *pcRGBPelInterlaced++ = *input_buffer++;
+        m_pppcInputPel[COLOR_R][y][x] = *pcRGBPelInterlaced++;
+        m_pppcInputPel[COLOR_G][y][x] = *pcRGBPelInterlaced++;
+        m_pppcInputPel[COLOR_B][y][x] = *pcRGBPelInterlaced++;
       }
     m_bHasRGBPel = true;
     break;

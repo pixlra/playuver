@@ -96,10 +96,6 @@ public:
   {
     return m_pppcInputPel;
   }
-  Pel*** getPelBufferRGB()
-  {
-    return m_pppcRGBPel;
-  }
 
   static Pixel ConvertPixel( Pixel sInputPixel, ColorSpace eOutputSpace );
   Pixel getPixelValue( const QPoint &pos, ColorSpace color );
@@ -133,7 +129,6 @@ private:
 
   Bool m_bHasRGBPel;
   Pel** m_pppcInputPel[3];
-  Pel*** m_pppcRGBPel;
   UChar* m_pcRGBPelInterlaced;
 
   Void openPixfc();

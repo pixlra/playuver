@@ -69,6 +69,7 @@ plaYUVerApp::plaYUVerApp()
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
   setUnifiedTitleAndToolBarOnMac( true );
 
+  m_bIsPlaying = false;
   playingTimer = new QTimer;
 #if( QT_VERSION_PLAYUVER == 5 )
   playingTimer->setTimerType( Qt::CoarseTimer );
@@ -83,14 +84,13 @@ plaYUVerApp::plaYUVerApp()
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
 {
-  Int mayCloseAll=true;
+  Int mayCloseAll = true;
   Int msgBoxCloseRet = QMessageBox::Yes;
   SubWindowHandle *imageInterface;
 
   if( mdiArea->subWindowList().size() >= 1 )
   {
-    QMessageBox msgBoxClose( QMessageBox::Question, "PlaYUVer",
-        "There are open files!", QMessageBox::Yes | QMessageBox::No, this );
+    QMessageBox msgBoxClose( QMessageBox::Question, "PlaYUVer", "There are open files!", QMessageBox::Yes | QMessageBox::No, this );
     msgBoxClose.setDefaultButton( QMessageBox::No );
     msgBoxClose.setInformativeText( "Close all?" );
     msgBoxCloseRet = msgBoxClose.exec();
@@ -101,10 +101,10 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
 
     closeAll();
 
-    mayCloseAll=true;
-    for( Int i=0 ; i<mdiArea->subWindowList().size() ; i++ )
+    mayCloseAll = true;
+    for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
     {
-      imageInterface = qobject_cast<SubWindowHandle *>(mdiArea->subWindowList().at(i));
+      imageInterface = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
       mayCloseAll &= imageInterface->mayClose();
     }
 
@@ -135,7 +135,9 @@ void plaYUVerApp::open()
   supported.append( formats );  // supported=="Supported Files (*.pbm *.jpg...)"
 
   QStringList filter;
-  filter << supported << InputStream::supportedReadFormatsList() << tr( "All Files (*)" );
+  filter << supported
+         << InputStream::supportedReadFormatsList()
+         << tr( "All Files (*)" );
 
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );
 
@@ -169,15 +171,14 @@ void plaYUVerApp::open()
 
 void plaYUVerApp::save()
 {
-  if( activeSubWindow() )
-    activeSubWindow()->save();
+  if( m_pcCurrentSubWindow )
+    m_pcCurrentSubWindow->save();
 }
 
 void plaYUVerApp::format()
 {
-  SubWindowHandle *subWindow = activeSubWindow();
-  if( subWindow )
-    subWindow->loadFile( subWindow->currentFile() );
+  if( m_pcCurrentSubWindow )
+    m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->currentFile() );
 }
 
 void plaYUVerApp::closeAll()
@@ -190,12 +191,12 @@ void plaYUVerApp::closeAll()
 void plaYUVerApp::selectModule( QAction *curr_action )
 {
   //emit curr_action->triggered();
-  if( activeSubWindow() )
+  if( m_pcCurrentSubWindow )
   {
     PlaYUVerModuleIf* pcCurrMod = m_pcModulesHandle->getSelectedModuleIf();
     if( pcCurrMod )
     {
-      activeSubWindow()->enableModule( pcCurrMod );
+      m_pcCurrentSubWindow->enableModule( pcCurrMod );
     }
   }
   return;
@@ -205,12 +206,10 @@ void plaYUVerApp::selectModule( QAction *curr_action )
 
 void plaYUVerApp::updateProperties()
 {
-  SubWindowHandle *subWindow = activeSubWindow();
-
-  if( subWindow )
+  if( m_pcCurrentSubWindow )
   {
-    m_pcStreamProperties->setData( subWindow->getInputStream() );
-    m_pcFrameProperties->setData( subWindow->getInputStream()->getCurrFrame() );
+    m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
+    m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
     //m_pcPropertiesSidebar->setSelection( iface->currentViewArea()->selectedArea() );
   }
 }
@@ -219,13 +218,41 @@ void plaYUVerApp::updateProperties()
 
 void plaYUVerApp::play()
 {
-  playingTimer->stop();
-  m_uiAveragePlayInterval = 0;
-  if( m_pcCurrentSubWindow )
+  Bool bFind = false;
+
+  if( actionVideoLock->isChecked() )
   {
-    UInt frameRate = activeSubWindow()->getInputStream()->getFrameRate();
+    if( m_pcCurrentSubWindow )
+    {
+      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      {
+        if( m_acPlayingSubWindows.at( i ) == m_pcCurrentSubWindow )
+        {
+          bFind = true;
+          break;
+        }
+      }
+      if( !bFind )
+      {
+        m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
+        m_pcCurrentSubWindow->seekAbsoluteEvent( m_pcFrameSlider->value() );
+        m_pcFrameSlider->setMaximum( qMin( m_pcFrameSlider->value(), ( Int )m_pcCurrentSubWindow->getInputStream()->getFrameNum() - 1 ) );
+      }
+    }
+  }
+  else
+  {
+    playingTimer->stop();
+    m_uiAveragePlayInterval = 0;
+    m_bIsPlaying = false;
+  }
+  if( !m_bIsPlaying )
+  {
+    UInt frameRate = m_pcCurrentSubWindow->getInputStream()->getFrameRate();
     UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
-    qDebug() << "Desired frame rate: " << QString::number( 1000 / timeInterval ) << " fps";
+    qDebug( ) << "Desired frame rate: "
+              << QString::number( 1000 / timeInterval )
+              << " fps";
     playingTimer->start( timeInterval );
     m_cTimer.start();
   }
@@ -238,33 +265,61 @@ void plaYUVerApp::pause()
 
 void plaYUVerApp::stop()
 {
-  if( m_pcCurrentSubWindow )
+  if( actionVideoLock->isChecked() )
   {
-    m_pcCurrentSubWindow->stopEvent();
-    m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
-    playingTimer->stop();
-    if( m_uiAveragePlayInterval )
-      qDebug() << "Real display time: " << QString::number( 1000 / m_uiAveragePlayInterval ) << " fps";
-    m_uiAveragePlayInterval = 0;
+    m_acPlayingSubWindows.clear();
   }
+  else
+  {
+    if( m_pcCurrentSubWindow )
+    {
+      m_pcCurrentSubWindow->stopEvent();
+      m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
+      playingTimer->stop();
+      if( m_uiAveragePlayInterval )
+        qDebug( ) << "Real display time: "
+                  << QString::number( 1000 / m_uiAveragePlayInterval )
+                  << " fps";
+      m_uiAveragePlayInterval = 0;
+    }
+  }
+
 }
 
 void plaYUVerApp::playEvent()
 {
   //m_cTimer.restart();
-  if( m_pcCurrentSubWindow )
+  if( actionVideoLock->isChecked() )
   {
-    UInt time = m_cTimer.elapsed();
-    m_cTimer.restart();
-    m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time) / 2;
-    if( !m_pcCurrentSubWindow->playEvent() )
+    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
     {
-      if( !actionVideoLoop->isChecked() )
+      if( !m_acPlayingSubWindows.at( i )->playEvent() )
       {
-        stop();
+        if( !actionVideoLoop->isChecked() )
+        {
+          stop();
+        }
       }
     }
-    m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
+    m_pcFrameSlider->setValue( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
+  }
+  else
+  {
+    if( m_pcCurrentSubWindow )
+    {
+      UInt time = m_cTimer.elapsed();
+      m_cTimer.restart();
+      m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time ) / 2;
+
+      if( !m_pcCurrentSubWindow->playEvent() )
+      {
+        if( !actionVideoLoop->isChecked() )
+        {
+          stop();
+        }
+      }
+      m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
+    }
   }
 }
 
@@ -283,6 +338,16 @@ void plaYUVerApp::seekSliderEvent( int new_frame_num )
     activeSubWindow()->seekAbsoluteEvent( ( UInt )new_frame_num );
   }
 }
+
+void plaYUVerApp::lockButtonEvent()
+{
+  if( !actionVideoLock->isChecked() )
+  {
+    stop();
+    m_acPlayingSubWindows.clear();
+  }
+}
+
 
 // -----------------------  Zoom Functions  -----------------------
 
@@ -318,14 +383,18 @@ void plaYUVerApp::about()
 
 void plaYUVerApp::chageSubWindowSelection()
 {
-  playingTimer->stop();
   if( activeSubWindow() )
   {
+    playingTimer->stop();
     if( m_pcCurrentSubWindow )
       m_pcCurrentSubWindow->disableModule();
-    m_pcFrameSlider->setMaximum( activeSubWindow()->getInputStream()->getFrameNum() - 1 );
-    m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
+    if( !actionVideoLock->isChecked() )
+    {
+      m_pcFrameSlider->setMaximum( activeSubWindow()->getInputStream()->getFrameNum() - 1 );
+      m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
+    }
     m_pcCurrentSubWindow = activeSubWindow();
+    updateProperties();
   }
   else
   {
@@ -333,8 +402,6 @@ void plaYUVerApp::chageSubWindowSelection()
   }
   updateMenus();
   createStatusBar();
-  //updateWindowMenu();
-  updateProperties();
 }
 
 // -----------------------  Status bar Functions  -----------------------
@@ -534,7 +601,7 @@ Void plaYUVerApp::createActions()
   m_arrayActions[CLOSE_ACT] = new QAction( tr( "Cl&ose" ), this );
   m_arrayActions[CLOSE_ACT]->setIcon( QIcon( ":/images/close.png" ) );
   m_arrayActions[CLOSE_ACT]->setStatusTip( tr( "Close the active window" ) );
-  connect(  m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), mdiArea, SLOT( closeActiveSubWindow() ) );
+  connect( m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), mdiArea, SLOT( closeActiveSubWindow() ) );
 
   m_arrayActions[CLOSEALL_ACT] = new QAction( tr( "Close &All" ), this );
   m_arrayActions[CLOSEALL_ACT]->setStatusTip( tr( "Close all the windows" ) );
@@ -606,14 +673,11 @@ Void plaYUVerApp::createActions()
   actionVideoLoop->setChecked( false );
 
   actionVideoLock = new QAction( "VideoLock", this );
+  actionVideoLock->setCheckable( true );
+  actionVideoLock->setChecked( false );
+
   actionVideoInterlace = new QAction( "VideoInterlace", this );
   actionVideoCenter = new QAction( "VideoCenter", this );
-  /*
-
-   actionVideoLock     ->setIcon( QIcon( ":/images/lock.png"       ) );
-   actionVideoInterlace->setIcon( QIcon( ":/images/interlace.png"  ) );
-   actionVideoCenter   ->setIcon( QIcon( ":/images/center.png"     ) );
-   */
 
   m_pcFrameSlider = new QSlider;
   m_pcFrameSlider->setOrientation( Qt::Horizontal );
@@ -681,10 +745,10 @@ Void plaYUVerApp::createMenus()
   // createPopupMenu() Returns a popup menu containing checkable entries for
   // the toolbars and dock widgets present in the main window.
   QMenu *viewsSub = createPopupMenu();
-  if ( viewsSub )
+  if( viewsSub )
   {
     actionPopupMenu = m_arrayMenu[VIEW_MENU]->addMenu( viewsSub );
-    actionPopupMenu->setText( tr("&Toolbars/Docks") );
+    actionPopupMenu->setText( tr( "&Toolbars/Docks" ) );
   }
 
   m_arrayMenu[VIDEO_MENU] = menuBar()->addMenu( tr( "Video" ) );
@@ -694,6 +758,7 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[VIDEO_MENU]->addAction( actionVideoBackward );
   m_arrayMenu[VIDEO_MENU]->addAction( actionVideoForward );
   m_arrayMenu[VIDEO_MENU]->addAction( actionVideoLoop );
+  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoLock );
 
   QMenu* modules_menu = m_pcModulesHandle->createMenus( menuBar() );
   connect( modules_menu, SIGNAL( triggered(QAction *) ), this, SLOT( selectModule(QAction *) ) );

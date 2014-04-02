@@ -290,7 +290,7 @@ Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, In
 Void InputStream::readNextFrame()
 {
   UInt64 bytes_read = 0;
-  m_cTimer.restart();
+  //m_cTimer.restart();
   if( m_iStatus == 0 )
   {
     return;
@@ -323,8 +323,8 @@ Void InputStream::readNextFrame()
     }
     m_pcNextFrame->FrameFromBuffer( m_pInputBuffer, m_iPixelFormat );
   }
-  Int time = m_cTimer.elapsed();
-  m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time) / 2;
+  //Int time = m_cTimer.elapsed();
+  //m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time) / 2;
   m_pcNextFrame->FrametoRGB8();
   return;
 }

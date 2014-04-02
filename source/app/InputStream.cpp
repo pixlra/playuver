@@ -157,7 +157,7 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
     }
   }
   m_uiFrameBufferIndex = 0;
-  m_pcCurrFrame = m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
+  m_pcCurrFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
 
   UInt64 frame_bytes_input = m_pcCurrFrame->getBytesPerFrame();
 
@@ -188,11 +188,7 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
   m_cStreamInformationString.append( "] " );
   m_cStreamInformationString.append( QFileInfo( m_cFilename ).fileName() );
 
-  m_iCurrFrameNum = -1;
-  readNextFrame();
-  setNextFrame();
-  if( m_uiTotalFrameNum > 1 )
-    readNextFrame();
+  seekInput( 0 );
 
   m_cTimer.start();
   m_uiAveragePlayInterval = 0;
@@ -298,9 +294,9 @@ Void InputStream::readNextFrame()
 
   if( m_iCurrFrameNum + 1 >= ( Int )m_uiTotalFrameNum )
   {
-    m_iErrorStatus = END_OF_SEQ;
-    m_iCurrFrameNum = 0;
-    seekInput( m_iCurrFrameNum );
+    m_iErrorStatus = LAST_FRAME;
+    m_pcNextFrame = NULL;
+    return;
   }
 
 #ifdef USE_FFMPEG
@@ -337,10 +333,19 @@ Bool InputStream::writeFrame( const QString& filename )
 
 Void InputStream::setNextFrame()
 {
-  m_pcCurrFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
-  m_pcNextFrame = m_ppcFrameBuffer[!m_uiFrameBufferIndex];
-  m_uiFrameBufferIndex = !m_uiFrameBufferIndex;
-  m_iCurrFrameNum++;
+  if( m_pcNextFrame )
+  {
+    m_pcCurrFrame = m_pcNextFrame;
+    m_iCurrFrameNum++;
+    m_pcNextFrame = m_ppcFrameBuffer[!m_uiFrameBufferIndex];
+    m_uiFrameBufferIndex = !m_uiFrameBufferIndex;
+  }
+  else
+  {
+    m_iErrorStatus = END_OF_SEQ;
+    m_iCurrFrameNum = 0;
+    seekInput( m_iCurrFrameNum );
+  }
 }
 
 PlaYUVerFrame* InputStream::getCurrFrame( PlaYUVerFrame *pyuv_image )
@@ -382,10 +387,13 @@ Void InputStream::seekInput( UInt64 new_frame_num )
     UInt64 nbytes_seek = frame_bytes_input * new_frame_num;
     fseek( m_pFile, nbytes_seek, SEEK_SET );
   }
+  m_uiFrameBufferIndex = 0;
+  m_pcCurrFrame = m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
   m_iCurrFrameNum = new_frame_num - 1;
   readNextFrame();
   setNextFrame();
-  readNextFrame();
+  if( m_uiTotalFrameNum > 1 )
+      readNextFrame();
 }
 
 Bool InputStream::checkErrors( Int error_type )

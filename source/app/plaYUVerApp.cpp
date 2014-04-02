@@ -218,12 +218,11 @@ void plaYUVerApp::updateProperties()
 
 void plaYUVerApp::play()
 {
-  Bool bFind = false;
-
-  if( actionVideoLock->isChecked() )
+  if( m_pcCurrentSubWindow )
   {
-    if( m_pcCurrentSubWindow )
+    if( actionVideoLock->isChecked() && m_acPlayingSubWindows.size() )
     {
+      Bool bFind = false;
       for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
       {
         if( m_acPlayingSubWindows.at( i ) == m_pcCurrentSubWindow )
@@ -235,26 +234,28 @@ void plaYUVerApp::play()
       if( !bFind )
       {
         m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
-        m_pcCurrentSubWindow->seekAbsoluteEvent( m_pcFrameSlider->value() );
-        m_pcFrameSlider->setMaximum( qMin( m_pcFrameSlider->value(), ( Int )m_pcCurrentSubWindow->getInputStream()->getFrameNum() - 1 ) );
+        m_pcCurrentSubWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
+        m_pcFrameSlider->setMaximum( qMin( m_pcFrameSlider->maximum(), ( Int )m_pcCurrentSubWindow->getInputStream()->getFrameNum() - 1 ) );
       }
     }
-  }
-  else
-  {
-    playingTimer->stop();
-    m_uiAveragePlayInterval = 0;
-    m_bIsPlaying = false;
-  }
-  if( !m_bIsPlaying )
-  {
-    UInt frameRate = m_pcCurrentSubWindow->getInputStream()->getFrameRate();
-    UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
-    qDebug( ) << "Desired frame rate: "
-              << QString::number( 1000 / timeInterval )
-              << " fps";
-    playingTimer->start( timeInterval );
-    m_cTimer.start();
+    else
+    {
+      playingTimer->stop();
+      m_acPlayingSubWindows.clear();
+      m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
+      m_uiAveragePlayInterval = 0;
+      m_bIsPlaying = false;
+    }
+    if( !m_bIsPlaying )
+    {
+      UInt frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
+      UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
+      qDebug( ) << "Desired frame rate: "
+                << QString::number( 1000 / timeInterval )
+                << " fps";
+      playingTimer->start( timeInterval );
+      m_cTimer.start();
+    }
   }
 }
 
@@ -265,77 +266,90 @@ void plaYUVerApp::pause()
 
 void plaYUVerApp::stop()
 {
-  if( actionVideoLock->isChecked() )
+  if( m_acPlayingSubWindows.size() )
   {
+    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+    {
+      m_acPlayingSubWindows.at( i )->stopEvent();
+    }
     m_acPlayingSubWindows.clear();
+    playingTimer->stop();
+    m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
+
+    if( m_uiAveragePlayInterval )
+      qDebug( ) << "Real display time: "
+                << QString::number( 1000 / m_uiAveragePlayInterval )
+                << " fps";
+    m_uiAveragePlayInterval = 0;
   }
   else
   {
-    if( m_pcCurrentSubWindow )
-    {
-      m_pcCurrentSubWindow->stopEvent();
-      m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
-      playingTimer->stop();
-      if( m_uiAveragePlayInterval )
-        qDebug( ) << "Real display time: "
-                  << QString::number( 1000 / m_uiAveragePlayInterval )
-                  << " fps";
-      m_uiAveragePlayInterval = 0;
-    }
+    m_pcCurrentSubWindow->stopEvent();
+    playingTimer->stop();
+    m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
   }
-
 }
 
 void plaYUVerApp::playEvent()
 {
-  //m_cTimer.restart();
-  if( actionVideoLock->isChecked() )
+  UInt time = m_cTimer.elapsed();
+  m_cTimer.restart();
+  for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
   {
-    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+    switch( m_acPlayingSubWindows.at( i )->playEvent() )
     {
-      if( !m_acPlayingSubWindows.at( i )->playEvent() )
+    case -1:
+      stop();
+      m_pcFrameSlider->setValue( m_pcCurrentSubWindow ? m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() : 0 );
+      break;
+    case -2:
+      if( !actionVideoLoop->isChecked() )
       {
-        if( !actionVideoLoop->isChecked() )
-        {
-          stop();
-        }
+        stop();
+        m_pcFrameSlider->setValue( m_pcCurrentSubWindow ? m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() : 0 );
+        return;
       }
-    }
-    m_pcFrameSlider->setValue( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
-  }
-  else
-  {
-    if( m_pcCurrentSubWindow )
-    {
-      UInt time = m_cTimer.elapsed();
-      m_cTimer.restart();
-      m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time ) / 2;
-
-      if( !m_pcCurrentSubWindow->playEvent() )
-      {
-        if( !actionVideoLoop->isChecked() )
-        {
-          stop();
-        }
-      }
-      m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
+      break;
+    case -3:
+      m_acPlayingSubWindows.at( i )->close();
+      break;
+    default:
+      break;
     }
   }
+  m_pcFrameSlider->setValue( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
+  m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time ) / 2;
 }
 
 void plaYUVerApp::seekEvent( int direction )
 {
-  if( activeSubWindow() )
+  if( m_acPlayingSubWindows.size() )
   {
-    activeSubWindow()->seekRelativeEvent( direction > 0 ? true : false );
+    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+    {
+      m_acPlayingSubWindows.at( i )->seekRelativeEvent( direction > 0 ? true : false );
+    }
+  }
+  else
+  {
+    if( m_pcCurrentSubWindow )
+      m_pcCurrentSubWindow->seekRelativeEvent( direction > 0 ? true : false );
   }
 }
 
 void plaYUVerApp::seekSliderEvent( int new_frame_num )
 {
-  if( activeSubWindow() )
+  if( m_acPlayingSubWindows.size() )
   {
-    activeSubWindow()->seekAbsoluteEvent( ( UInt )new_frame_num );
+    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+    {
+      m_acPlayingSubWindows.at( i )->seekAbsoluteEvent( ( UInt )new_frame_num );
+    }
+  }
+  else
+  {
+    if( m_pcCurrentSubWindow )
+      m_pcCurrentSubWindow->seekAbsoluteEvent( ( UInt )new_frame_num );
   }
 }
 
@@ -347,7 +361,6 @@ void plaYUVerApp::lockButtonEvent()
     m_acPlayingSubWindows.clear();
   }
 }
-
 
 // -----------------------  Zoom Functions  -----------------------
 
@@ -385,11 +398,11 @@ void plaYUVerApp::chageSubWindowSelection()
 {
   if( activeSubWindow() )
   {
-    playingTimer->stop();
     if( m_pcCurrentSubWindow )
       m_pcCurrentSubWindow->disableModule();
-    if( !actionVideoLock->isChecked() )
+    if( m_acPlayingSubWindows.size() < 2 )
     {
+      playingTimer->stop();
       m_pcFrameSlider->setMaximum( activeSubWindow()->getInputStream()->getFrameNum() - 1 );
       m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
     }

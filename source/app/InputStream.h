@@ -48,13 +48,6 @@
 namespace plaYUVer
 {
 
-enum InputStream_Errors
-{
-  NO_STREAM_ERROR = 0,
-  READING = 1,
-  END_OF_SEQ = 2,
-};
-
 class InputStream
 {
 private:
@@ -105,6 +98,14 @@ public:
   {
     INVALID = -1,
     YUVFormat = 0,  // Use color space.
+  };
+
+  enum InputStreamErrors
+  {
+    NO_STREAM_ERROR = 0,
+    READING,
+    LAST_FRAME,
+    END_OF_SEQ,
   };
 
   Bool open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate );

@@ -175,26 +175,25 @@ Bool SubWindowHandle::save()
   return true;
 }
 
-bool SubWindowHandle::playEvent()
+Int SubWindowHandle::playEvent()
 {
-  bool iRet = true;
   if( m_bIsPlaying )
   {
     m_pCurrStream->setNextFrame();
     refreshFrame();
+    if( m_pCurrStream->checkErrors( InputStream::END_OF_SEQ ) )
+    {
+      return -2;
+    }
     m_pCurrStream->readNextFrame();
-    if( m_pCurrStream->checkErrors( READING ) )
+    if( m_pCurrStream->checkErrors( InputStream::READING ) )
     {
       QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( m_cCurrFileName ) );
-      return false;
+      return -3;
     }
-    else if( m_pCurrStream->checkErrors( END_OF_SEQ ) )
-    {
-      iRet = false;
-    }
-    return iRet;
+    return 0;
   }
-  return false;
+  return -1;
 }
 
 Void SubWindowHandle::seekAbsoluteEvent( UInt new_frame_num )

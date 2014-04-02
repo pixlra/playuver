@@ -67,7 +67,9 @@ public:
   Bool loadFile( const QString &fileName );
   Bool save();
 
+  Int playEvent();
   Void stopEvent();
+
   Void seekAbsoluteEvent( UInt new_frame_num );
   Void seekRelativeEvent( Bool bIsFoward );
 
@@ -143,7 +145,6 @@ protected:
   void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:
-  bool playEvent();
   void adjustScrollBar( double factor );
 };
 

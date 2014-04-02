@@ -69,6 +69,7 @@ private Q_SLOTS:
   void playEvent();
   void seekSliderEvent( int new_frame_num );
   void seekEvent( int direction );
+  void lockButtonEvent();
 
   void selectModule( QAction * );
 
@@ -121,7 +122,10 @@ private:
   SubWindowHandle *activeSubWindow();
   QMdiSubWindow *findSubWindow( const QString &fileName );
 
+  Bool m_bIsPlaying;
+  QVector<SubWindowHandle*> m_acPlayingSubWindows;
   QSlider *m_pcFrameSlider;
+
 
   QSignalMapper *mapperZoom;
   QSignalMapper *mapperSeekVideo;

@@ -37,7 +37,7 @@ FILE( GLOB RESOURCES_FILES ${RSC_DIR}/*.qrc )
 ######################################################################################
 # Variables
 ######################################################################################
-ADD_OPTION(CMAKE_BUILD_TYPE  "Build type"               "Debug" )
+ADD_OPTION(CMAKE_BUILD_TYPE  "Build type"               "Release" )
 ADD_OPTION(USE_WERROR        "Warnings as errors"       OFF )
 ADD_OPTION(USE_QT4           "Build with QT4"           OFF )
 ADD_OPTION(USE_OPENCV        "Add OpenCV support"       OFF )
@@ -76,6 +76,11 @@ CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_D
 ######################################################################################
 # Target App
 ######################################################################################
+IF (NOT CMAKE_BUILD_TYPE)
+    message(STATUS "No build type selected, default to Release")
+    set(CMAKE_BUILD_TYPE "Release")
+ENDIF()
+s
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" )
 SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g" )
 SET( CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3" )

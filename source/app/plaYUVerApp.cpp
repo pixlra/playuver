@@ -621,7 +621,7 @@ Void plaYUVerApp::createActions()
   m_pcFrameSlider->setMaximumWidth( 300 );
   m_pcFrameSlider->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
   m_pcFrameSlider->setEnabled( false );
-  connect( m_pcFrameSlider, SIGNAL( valueChanged(int) ), this, SLOT( seekSliderEvent(int) ) );
+  connect( m_pcFrameSlider, SIGNAL( sliderMoved(int) ), this, SLOT( seekSliderEvent(int) ) );
 
   // ------------ Window ------------
 

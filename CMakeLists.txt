@@ -34,16 +34,14 @@ FILE( GLOB FORMS_FILES     ${UI_DIR}/*.ui   )
 FILE( GLOB RESOURCES_FILES ${RSC_DIR}/*.qrc )
 
 # must go before the project command
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
-if(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")
-  set_property( CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES} )
-endif()
+SET(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
+IF(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")
+  SET_PROPERTY( CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES} )
+ENDIF()
 
 ######################################################################################
 # Variables
 ######################################################################################
-OPTION(QT_DIR                "QT install dir on Windows" "" )
-ADD_OPTION(USE_QT4           "Build with QT4"           OFF )
 ADD_OPTION(USE_WERROR        "Warnings as errors"       OFF )
 ADD_OPTION(USE_QT4           "Build with QT4"           OFF )
 ADD_OPTION(USE_OPENCV        "Add OpenCV support"       OFF )
@@ -83,8 +81,8 @@ CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_D
 # Target App
 ######################################################################################
 IF (NOT CMAKE_BUILD_TYPE)
-    message(STATUS "No build type selected, default to Release")
-    set(CMAKE_BUILD_TYPE "Release")
+    MESSAGE(STATUS "No build type selected, default to Release")
+    SET(CMAKE_BUILD_TYPE "Release")
 ENDIF()
 
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" )

@@ -3,6 +3,7 @@
 ######################################################################################
 
 IF( WIN32 )
+  SET(QT_DIR "QT-Dir" CACHE PATH "Where to find QT Lib on Windows")
 	SET (CMAKE_PREFIX_PATH ${QT_DIR} )
 ENDIF()
 

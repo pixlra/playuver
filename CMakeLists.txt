@@ -33,11 +33,17 @@ FILE( GLOB SOURCES_FILES   ${SRC_DIR}/app/*.cpp ${SRC_DIR}/lib/*.cpp )
 FILE( GLOB FORMS_FILES     ${UI_DIR}/*.ui   )
 FILE( GLOB RESOURCES_FILES ${RSC_DIR}/*.qrc )
 
+# must go before the project command
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
+if(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")
+  set_property( CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES} )
+endif()
 
 ######################################################################################
 # Variables
 ######################################################################################
-# ADD_OPTION(CMAKE_BUILD_TYPE  "Build type"               "Release" )
+OPTION(QT_DIR                "QT install dir on Windows" "" )
+ADD_OPTION(USE_QT4           "Build with QT4"           OFF )
 ADD_OPTION(USE_WERROR        "Warnings as errors"       OFF )
 ADD_OPTION(USE_QT4           "Build with QT4"           OFF )
 ADD_OPTION(USE_OPENCV        "Add OpenCV support"       OFF )

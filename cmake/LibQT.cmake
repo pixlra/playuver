@@ -2,6 +2,10 @@
 # Qt library cmake file
 ######################################################################################
 
+IF( WIN32 )
+	SET (CMAKE_PREFIX_PATH ${QT_DIR} )
+ENDIF()
+
 IF( USE_QT4 )
     FIND_PACKAGE( Qt4 REQUIRED QtCore QtGui )
     IF( NOT QT4_FOUND)

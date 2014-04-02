@@ -37,7 +37,7 @@ FILE( GLOB RESOURCES_FILES ${RSC_DIR}/*.qrc )
 ######################################################################################
 # Variables
 ######################################################################################
-ADD_OPTION(CMAKE_BUILD_TYPE  "Build type"               "Release" )
+# ADD_OPTION(CMAKE_BUILD_TYPE  "Build type"               "Release" )
 ADD_OPTION(USE_WERROR        "Warnings as errors"       OFF )
 ADD_OPTION(USE_QT4           "Build with QT4"           OFF )
 ADD_OPTION(USE_OPENCV        "Add OpenCV support"       OFF )

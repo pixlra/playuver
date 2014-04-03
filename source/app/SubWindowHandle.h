@@ -68,6 +68,7 @@ public:
   Bool save();
 
   Void play();
+  Void pause();
   Int playEvent();
   Void stop();
 

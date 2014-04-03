@@ -202,6 +202,12 @@ Int SubWindowHandle::playEvent()
   return -1;
 }
 
+Void SubWindowHandle::pause()
+{
+  m_bIsPlaying = false;
+  return;
+}
+
 Void SubWindowHandle::seekAbsoluteEvent( UInt new_frame_num )
 {
   m_pCurrStream->seekInput( new_frame_num );

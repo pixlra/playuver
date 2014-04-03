@@ -263,33 +263,30 @@ void plaYUVerApp::play()
 
 void plaYUVerApp::pause()
 {
+  for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+  {
+    m_acPlayingSubWindows.at( i )->pause();
+  }
   playingTimer->stop();
 }
 
 void plaYUVerApp::stop()
 {
-  if( m_acPlayingSubWindows.size() )
+  for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
   {
-    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-    {
-      m_acPlayingSubWindows.at( i )->stop();
-    }
-    m_acPlayingSubWindows.clear();
-    playingTimer->stop();
-    m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
+    m_acPlayingSubWindows.at( i )->stop();
+  }
+  m_acPlayingSubWindows.clear();
+  playingTimer->stop();
+  m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
 
-    if( m_uiAveragePlayInterval )
-      qDebug( ) << "Real display time: "
-                << QString::number( 1000 / m_uiAveragePlayInterval )
-                << " fps";
-    m_uiAveragePlayInterval = 0;
-  }
-  else
-  {
-    m_pcCurrentSubWindow->stop();
-    playingTimer->stop();
-    m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
-  }
+  if( m_uiAveragePlayInterval )
+    qDebug( ) << "Real display time: "
+              << QString::number( 1000 / m_uiAveragePlayInterval )
+              << " fps";
+  m_uiAveragePlayInterval = 0;
+
+
 }
 
 void plaYUVerApp::playEvent()

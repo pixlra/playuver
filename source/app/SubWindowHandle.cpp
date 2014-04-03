@@ -176,6 +176,11 @@ Bool SubWindowHandle::save()
   return true;
 }
 
+Void SubWindowHandle::play()
+{
+  m_bIsPlaying = true;
+}
+
 Int SubWindowHandle::playEvent()
 {
   if( m_bIsPlaying )
@@ -209,8 +214,9 @@ Void SubWindowHandle::seekRelativeEvent( Bool bIsFoward )
   refreshFrame();
 }
 
-Void SubWindowHandle::stopEvent()
+Void SubWindowHandle::stop()
 {
+  m_bIsPlaying = false;
   seekAbsoluteEvent( 0 );
   return;
 }
@@ -321,7 +327,12 @@ Bool SubWindowHandle::mayClose()
 
 void SubWindowHandle::closeEvent( QCloseEvent *event )
 {
-  event->accept();
+  Bool bAccept = true;
+  bAccept = m_bIsPlaying ? false : bAccept;
+  if( bAccept )
+    event->accept();
+  else
+    event->ignore();
 }
 
 }  // NAMESPACE

@@ -67,8 +67,9 @@ public:
   Bool loadFile( const QString &fileName );
   Bool save();
 
+  Void play();
   Int playEvent();
-  Void stopEvent();
+  Void stop();
 
   Void seekAbsoluteEvent( UInt new_frame_num );
   Void seekRelativeEvent( Bool bIsFoward );

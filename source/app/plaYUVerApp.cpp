@@ -235,6 +235,7 @@ void plaYUVerApp::play()
       {
         m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
         m_pcCurrentSubWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
+        m_pcCurrentSubWindow->play();
         m_pcFrameSlider->setMaximum( qMin( m_pcFrameSlider->maximum(), ( Int )m_pcCurrentSubWindow->getInputStream()->getFrameNum() - 1 ) );
       }
     }
@@ -243,6 +244,7 @@ void plaYUVerApp::play()
       playingTimer->stop();
       m_acPlayingSubWindows.clear();
       m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
+      m_pcCurrentSubWindow->play();
       m_uiAveragePlayInterval = 0;
       m_bIsPlaying = false;
     }
@@ -270,7 +272,7 @@ void plaYUVerApp::stop()
   {
     for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
     {
-      m_acPlayingSubWindows.at( i )->stopEvent();
+      m_acPlayingSubWindows.at( i )->stop();
     }
     m_acPlayingSubWindows.clear();
     playingTimer->stop();
@@ -284,7 +286,7 @@ void plaYUVerApp::stop()
   }
   else
   {
-    m_pcCurrentSubWindow->stopEvent();
+    m_pcCurrentSubWindow->stop();
     playingTimer->stop();
     m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
   }

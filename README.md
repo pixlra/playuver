@@ -4,7 +4,8 @@ plaYUVer
 plaYUVer is an open-source video player with the following features:
 - support for libavformat and libavcodec;
 - support for wide range of raw video formats;
-- zoom and pixel information
+- advanced frame zoom with easy to use pan function
+- usefull information in status bar, *e.g.*, pixel information
 - API for frame processing algorithms
 
 

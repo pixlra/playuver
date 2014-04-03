@@ -138,6 +138,11 @@ void ViewArea::setZoomFactor( double f )
 
   updateSize();
   update();
+
+  if( !(m_xOffset && m_yOffset) )
+    setCursor( Qt::OpenHandCursor );
+  else
+    unsetCursor();
 }
 
 void ViewArea::setMode( ViewMode mode )
@@ -243,7 +248,17 @@ void ViewArea::updateSize()
   int h = m_pixmap.height() * m_zoomFactor;
   setMinimumSize( w, h );
 
-  updateOffset();
+  QWidget *p = parentWidget();
+  if( p )
+  {
+    // If the parent size is bigger than the minimum area to view the
+    // image, resize() will call resizeEvent(); otherwise, we need to
+    // perform the necessary updates (updateOffset).
+    resize( p->width(), p->height() );
+  }
+
+  if( w <= width() && h <= height() )
+    updateOffset();
 }
 
 void ViewArea::updateOffset()
@@ -531,6 +546,9 @@ void ViewArea::mousePressEvent( QMouseEvent *event )
   {
     if( tool() == NavigationTool )
     {
+      if( !(m_xOffset && m_yOffset) )
+        setCursor( Qt::ClosedHandCursor );
+
       m_lastWindowPos = event->pos();
     }
     // Is the mouse over the image? If yes, save the mouse position; 
@@ -721,6 +739,14 @@ void ViewArea::mouseReleaseEvent( QMouseEvent *event )
 
   if( event->button() == Qt::LeftButton && m_lastPos != QPoint( -1, -1 ) )
   {
+    if( tool() == NavigationTool )
+    {
+      if( !(m_xOffset && m_yOffset) )
+        setCursor( Qt::OpenHandCursor );
+      else
+        unsetCursor();
+    }
+
     // Normal Mode ------------------------------------------------------
     if( mode() == NormalMode )
     {
@@ -748,7 +774,6 @@ void ViewArea::mouseReleaseEvent( QMouseEvent *event )
     }
     m_newShape = false;
     update();
-    unsetCursor();
     m_lastPos = QPoint( -1, -1 );
   }
 }

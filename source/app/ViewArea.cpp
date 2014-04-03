@@ -138,11 +138,6 @@ void ViewArea::setZoomFactor( double f )
 
   updateSize();
   update();
-
-  if( !(m_xOffset && m_yOffset) )
-    setCursor( Qt::OpenHandCursor );
-  else
-    unsetCursor();
 }
 
 void ViewArea::setMode( ViewMode mode )
@@ -741,9 +736,6 @@ void ViewArea::mouseReleaseEvent( QMouseEvent *event )
   {
     if( tool() == NavigationTool )
     {
-      if( !(m_xOffset && m_yOffset) )
-        setCursor( Qt::OpenHandCursor );
-      else
         unsetCursor();
     }
 

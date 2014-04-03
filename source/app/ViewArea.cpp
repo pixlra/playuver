@@ -62,7 +62,7 @@ ViewArea::ViewArea( QWidget *parent ) :
   m_xOffset = 0;
   m_yOffset = 0;
   m_mode = NormalMode;
-  m_tool = NormalSelectionTool;
+  m_tool = NavigationTool;
   m_gridVisible = false;
   m_snapToGrid = false;
   m_blockTrackEnable = false;
@@ -529,6 +529,10 @@ void ViewArea::mousePressEvent( QMouseEvent *event )
 
   if( event->button() == Qt::LeftButton )
   {
+    if( tool() == NavigationTool )
+    {
+      m_lastWindowPos = event->pos();
+    }
     // Is the mouse over the image? If yes, save the mouse position; 
     // otherwise, QPoint( -1, -1 ) indicates an invalid position.
     if( isPosValid( vpos ) )
@@ -569,7 +573,7 @@ void ViewArea::mousePressEvent( QMouseEvent *event )
     }
 
     // Block selection 
-    m_selectedArea = m_grid.rectContains( m_lastPos );
+//    m_selectedArea = m_grid.rectContains( m_lastPos );
 
     QRect updateRect = viewToWindow( m_selectedArea );
     updateRect.adjust( 0, 0, 1, 1 );
@@ -600,6 +604,12 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
         // Return the last grid near intersection found
         actualPos = m_grid.nearPos();
       }
+    }
+
+    if( tool() == NavigationTool )
+    {
+      QPoint offset = m_lastWindowPos - event->pos() ;
+      emit moveScroll( offset );
     }
 
     updateRect = viewToWindow( m_selectedArea );
@@ -648,7 +658,7 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
         }
       }
     }
-    else // if tool() == BlockSelectionTool || MaskTool || EraserTool
+/*    else // if tool() == BlockSelectionTool || MaskTool || EraserTool
     {
       m_blockTrackEnable = false;
       // If cursor is inside the selected area, we most redraw 
@@ -660,22 +670,25 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
 
       m_selectedArea = m_selectedArea.united( m_grid.rectContains( actualPos ) );
     }
+*/
+    if( tool() == NormalSelectionTool )
+    {
+      // Intercept the selected area with the image area to limit the
+      // selection only to the image area, preventing it to come outside
+      // the image.
+      m_selectedArea &= QRect( 0, 0, m_pixmap.width(), m_pixmap.height() );
 
-    // Intercept the selected area with the image area to limit the 
-    // selection only to the image area, preventing it to come outside 
-    // the image.
-    m_selectedArea &= QRect( 0, 0, m_pixmap.width(), m_pixmap.height() );
+      // Update only the united area
+      updateRect = updateRect.united( viewToWindow( m_selectedArea ) );
 
-    // Update only the united area
-    updateRect = updateRect.united( viewToWindow( m_selectedArea ) );
+      // "When rendering with a one pixel wide pen the QRect's
+      // boundary line will be rendered to the right and below the
+      // mathematical rectangle's boundary line.", in QT4 doc.
+      // Our selection pen width is 1, let's adjust the rendering area.
+      updateRect.adjust( 0, 0, 1, 1 );
 
-    // "When rendering with a one pixel wide pen the QRect's
-    // boundary line will be rendered to the right and below the 
-    // mathematical rectangle's boundary line.", in QT4 doc.
-    // Our selection pen width is 1, let's adjust the rendering area.             
-    updateRect.adjust( 0, 0, 1, 1 );
-
-    update( updateRect.normalized() );
+      update( updateRect.normalized() );
+    }
     return;
   }
 

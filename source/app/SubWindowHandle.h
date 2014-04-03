@@ -145,7 +145,8 @@ protected:
   void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:
-  void adjustScrollBar( double factor );
+  void adjustScrollBarByZoom( double factor );
+  void adjustScrollBarByOffset( QPoint Offset );
 };
 
 }  // NAMESPACE

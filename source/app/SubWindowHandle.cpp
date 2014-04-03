@@ -43,7 +43,8 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
 
   // Create a new interface to show images
   m_cViewArea = new ViewArea( this );
-  connect( m_cViewArea, SIGNAL( zoomFactorChanged(double) ), this, SLOT( adjustScrollBar(double) ) );
+  connect( m_cViewArea, SIGNAL( zoomFactorChanged( double ) ), this, SLOT( adjustScrollBarByZoom(double) ) );
+  connect( m_cViewArea, SIGNAL( moveScroll( QPoint ) ), this, SLOT( adjustScrollBarByOffset(QPoint) ) );
 
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
@@ -268,13 +269,22 @@ Void SubWindowHandle::scaleView( const QSize & size )
     scaleView( hfactor );
 }
 
-void SubWindowHandle::adjustScrollBar( double factor )
+void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
+{
+  QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
+  scrollBar->setValue( int( scrollBar->value() + Offset.x()  ) );
+  scrollBar = m_cScrollArea->verticalScrollBar();
+  scrollBar->setValue( int( scrollBar->value() + Offset.y() ) );
+}
+
+void SubWindowHandle::adjustScrollBarByZoom( double factor )
 {
   QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
   scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
   scrollBar = m_cScrollArea->verticalScrollBar();
   scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
 }
+
 
 QSize SubWindowHandle::sizeHint() const
 {

@@ -55,7 +55,7 @@ public:
 
   enum Tool
   {
-    NormalSelectionTool, BlockSelectionTool, MaskTool, EraserTool
+    NavigationTool, NormalSelectionTool, BlockSelectionTool, MaskTool, EraserTool
   };
 
   ViewArea( QWidget *parent = 0 );
@@ -114,6 +114,7 @@ public:
 signals:
   void selectionChanged( const QRect &rect );
   void positionChanged( const QPoint &pos, InputStream *stream );
+  void moveScroll( QPoint offset );
   void zoomFactorChanged( double );
 
 public slots:
@@ -154,6 +155,7 @@ private:
   QBitmap m_mask;
   QRect m_selectedArea;
   QPoint m_lastPos;
+  QPoint m_lastWindowPos;
   GridManager m_grid;
   ViewMode m_mode;
   Tool m_tool;

@@ -225,11 +225,6 @@ Void SubWindowHandle::zoomToFit()
 {
   // Scale to a smaller size that the real to a nicer look
   QSize niceFit( m_cScrollArea->viewport()->size().width() - 5, m_cScrollArea->viewport()->size().height() - 5 );
-  if( ( Int )m_pCurrStream->getWidth() <= niceFit.width() && ( Int )m_pCurrStream->getHeight() <= niceFit.height() )
-  {
-    normalSize();
-    return;
-  }
   scaleView( niceFit );
 }
 

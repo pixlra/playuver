@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Name=plaYUVer
+Exec=playuver
+Icon=playuver
+Terminal=false
+MimeType=text/x-pgf
+Categories=Qt;Multimedia
+GenericName=raw video player

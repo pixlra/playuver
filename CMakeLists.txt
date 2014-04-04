@@ -101,7 +101,7 @@ IF( NOT USE_QT4)
 ENDIF()
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION bin )
-INSTALL(TARGETS resources/playuver.desktop DESTINATION share/applications )
+INSTALL(FILES resources/playuver.desktop DESTINATION share/applications )
 
 
 status("Configuration:")

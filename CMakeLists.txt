@@ -102,7 +102,7 @@ ENDIF()
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION bin )
 INSTALL(FILES resources/playuver.desktop DESTINATION share/applications )
-INSTALL(FILES resources/playuver.ico DESTINATION share/icons )
+INSTALL(FILES resources/playuver.png DESTINATION share/icons )
 
 
 status("Configuration:")

@@ -3,7 +3,7 @@
 Type=Application
 Name=plaYUVer
 Exec=playuver
-Icon=playuver
+Icon=playuver.png
 Terminal=false
 #MimeType=text/x-pgf
 Categories=Multimedia;

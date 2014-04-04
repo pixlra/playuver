@@ -6,5 +6,5 @@ Exec=playuver
 Icon=playuver.png
 Terminal=false
 #MimeType=text/x-pgf
-Categories=Multimedia;
+Categories=AudioVideo;Video;Player;
 GenericName=raw video player

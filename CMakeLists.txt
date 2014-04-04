@@ -101,6 +101,8 @@ IF( NOT USE_QT4)
 ENDIF()
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION bin )
+INSTALL(TARGETS resources/playuver.desktop DESTINATION share/applications )
+
 
 status("Configuration:")
 status("    Build type:"           ${CMAKE_BUILD_TYPE} )

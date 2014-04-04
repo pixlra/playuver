@@ -60,6 +60,7 @@ private Q_SLOTS:
   void open();
   void save();
   void format();
+  void closeActiveWindow();
   void closeAll();
 
   //! Playing functions
@@ -106,6 +107,9 @@ private:
   QTimer *playingTimer;
   QTime m_cTimer;
   UInt m_uiAveragePlayInterval;
+
+  //! Playing functions
+  Void setTimerStatus();
 
   Void updateMenus();
   Void updateProperties();

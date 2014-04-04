@@ -72,6 +72,11 @@ public:
   Int playEvent();
   Void stop();
 
+  Bool isPlaying()
+  {
+    return m_bIsPlaying;
+  }
+
   Void seekAbsoluteEvent( UInt new_frame_num );
   Void seekRelativeEvent( Bool bIsFoward );
 

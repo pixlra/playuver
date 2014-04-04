@@ -55,7 +55,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   m_pcCurrentModule = NULL;
 
   m_cWindowName = QString( " " );
-  m_bIsPlaying = true;
+  m_bIsPlaying = false;
 }
 
 SubWindowHandle::~SubWindowHandle()
@@ -199,7 +199,7 @@ Int SubWindowHandle::playEvent()
     }
     return 0;
   }
-  return -1;
+  return -4;
 }
 
 Void SubWindowHandle::pause()
@@ -328,12 +328,16 @@ Bool SubWindowHandle::mayClose()
 
 void SubWindowHandle::closeEvent( QCloseEvent *event )
 {
-  Bool bAccept = true;
+  Bool bAccept = mayClose();
   bAccept = m_bIsPlaying ? false : bAccept;
   if( bAccept )
+  {
     event->accept();
+  }
   else
+  {
     event->ignore();
+  }
 }
 
 }  // NAMESPACE

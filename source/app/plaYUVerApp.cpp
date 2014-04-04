@@ -99,8 +99,6 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
   {
   case QMessageBox::Yes:
 
-    closeAll();
-
     mayCloseAll = true;
     for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
     {
@@ -110,6 +108,8 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
 
     if( mayCloseAll )
     {
+      playingTimer->stop();
+      closeAll();
       writeSettings();
       event->accept();
     }
@@ -181,6 +181,21 @@ void plaYUVerApp::format()
     m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->currentFile() );
 }
 
+void plaYUVerApp::closeActiveWindow()
+{
+  SubWindowHandle *currSubWindow = activeSubWindow();
+  if( currSubWindow )
+  {
+    if( m_acPlayingSubWindows.contains( currSubWindow ) )
+    {
+      Int pos = m_acPlayingSubWindows.indexOf( currSubWindow );
+      m_acPlayingSubWindows.at( pos )->stop();
+      m_acPlayingSubWindows.remove( pos );
+    }
+  }
+  mdiArea->closeActiveSubWindow();
+}
+
 void plaYUVerApp::closeAll()
 {
   mdiArea->closeAllSubWindows();
@@ -215,6 +230,23 @@ void plaYUVerApp::updateProperties()
 }
 
 // -----------------------  Playing Functions  --------------------
+
+Void plaYUVerApp::setTimerStatus()
+{
+  Bool status = false;
+  for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+  {
+    status |= m_acPlayingSubWindows.at( i )->isPlaying();
+  }
+  if( status )
+  {
+    m_cTimer.start();
+  }
+  else
+  {
+    playingTimer->stop();
+  }
+}
 
 void plaYUVerApp::play()
 {
@@ -263,11 +295,22 @@ void plaYUVerApp::play()
 
 void plaYUVerApp::pause()
 {
-  for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+  if( m_pcCurrentSubWindow )
   {
-    m_acPlayingSubWindows.at( i )->pause();
+    if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
+    {
+      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      {
+        m_acPlayingSubWindows.at( i )->pause();
+      }
+    }
+    else
+    {
+      m_pcCurrentSubWindow->pause();
+    }
+    m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
   }
-  playingTimer->stop();
+  setTimerStatus();
 }
 
 void plaYUVerApp::stop()
@@ -277,7 +320,7 @@ void plaYUVerApp::stop()
     m_acPlayingSubWindows.at( i )->stop();
   }
   m_acPlayingSubWindows.clear();
-  playingTimer->stop();
+  setTimerStatus();
   m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
 
   if( m_uiAveragePlayInterval )
@@ -285,8 +328,6 @@ void plaYUVerApp::stop()
               << QString::number( 1000 / m_uiAveragePlayInterval )
               << " fps";
   m_uiAveragePlayInterval = 0;
-
-
 }
 
 void plaYUVerApp::playEvent()
@@ -312,43 +353,54 @@ void plaYUVerApp::playEvent()
     case -3:
       m_acPlayingSubWindows.at( i )->close();
       break;
+    case -4:
+      m_acPlayingSubWindows.remove( i );
+      break;
     default:
       break;
     }
   }
-  m_pcFrameSlider->setValue( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
+  if( m_pcCurrentSubWindow )
+    m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
+
   m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time ) / 2;
 }
 
 void plaYUVerApp::seekEvent( int direction )
 {
-  if( m_acPlayingSubWindows.size() )
+  if( m_pcCurrentSubWindow )
   {
-    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+    if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
-      m_acPlayingSubWindows.at( i )->seekRelativeEvent( direction > 0 ? true : false );
+      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      {
+        m_acPlayingSubWindows.at( i )->seekRelativeEvent( direction > 0 ? true : false );
+      }
     }
-  }
-  else
-  {
-    if( m_pcCurrentSubWindow )
+    else
+    {
       m_pcCurrentSubWindow->seekRelativeEvent( direction > 0 ? true : false );
+      m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
+    }
   }
 }
 
 void plaYUVerApp::seekSliderEvent( int new_frame_num )
 {
-  if( m_acPlayingSubWindows.size() )
+  if( m_pcCurrentSubWindow )
   {
-    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+    if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
-      m_acPlayingSubWindows.at( i )->seekAbsoluteEvent( ( UInt )new_frame_num );
+      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      {
+        m_acPlayingSubWindows.at( i )->seekAbsoluteEvent( ( UInt )new_frame_num );
+      }
     }
-  }
-  else
-  {
-    if( m_pcCurrentSubWindow )
+    else
+    {
       m_pcCurrentSubWindow->seekAbsoluteEvent( ( UInt )new_frame_num );
+      m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
+    }
   }
 }
 
@@ -356,8 +408,15 @@ void plaYUVerApp::lockButtonEvent()
 {
   if( !actionVideoLock->isChecked() )
   {
-    stop();
-    m_acPlayingSubWindows.clear();
+    if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
+    {
+      stop();
+      play();
+    }
+    else
+    {
+      stop();
+    }
   }
 }
 
@@ -399,12 +458,12 @@ void plaYUVerApp::chageSubWindowSelection()
   {
     if( m_pcCurrentSubWindow )
       m_pcCurrentSubWindow->disableModule();
-    if( m_acPlayingSubWindows.size() < 2 )
-    {
-      playingTimer->stop();
-      m_pcFrameSlider->setMaximum( activeSubWindow()->getInputStream()->getFrameNum() - 1 );
-      m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
-    }
+//    if( m_acPlayingSubWindows.size() < 2 )
+//    {
+//      playingTimer->stop();
+//    }
+    m_pcFrameSlider->setMaximum( activeSubWindow()->getInputStream()->getFrameNum() - 1 );
+    m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
     m_pcCurrentSubWindow = activeSubWindow();
     updateProperties();
   }
@@ -535,6 +594,10 @@ Void plaYUVerApp::updateMenus()
   actionVideoForward->setEnabled( hasSubWindow );
   actionVideoLoop->setEnabled( hasSubWindow );
   m_pcFrameSlider->setEnabled( hasSubWindow );
+  if( !hasSubWindow )
+  {
+    m_pcFrameSlider->setValue( 0 );
+  }
 
   m_pcModulesHandle->updateMenus( hasSubWindow );
 }
@@ -613,7 +676,7 @@ Void plaYUVerApp::createActions()
   m_arrayActions[CLOSE_ACT] = new QAction( tr( "Cl&ose" ), this );
   m_arrayActions[CLOSE_ACT]->setIcon( QIcon( ":/images/close.png" ) );
   m_arrayActions[CLOSE_ACT]->setStatusTip( tr( "Close the active window" ) );
-  connect( m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), mdiArea, SLOT( closeActiveSubWindow() ) );
+  connect( m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), this, SLOT( closeActiveWindow() ) );
 
   m_arrayActions[CLOSEALL_ACT] = new QAction( tr( "Close &All" ), this );
   m_arrayActions[CLOSEALL_ACT]->setStatusTip( tr( "Close all the windows" ) );
@@ -687,6 +750,7 @@ Void plaYUVerApp::createActions()
   actionVideoLock = new QAction( "VideoLock", this );
   actionVideoLock->setCheckable( true );
   actionVideoLock->setChecked( false );
+  connect( actionVideoLock, SIGNAL( triggered() ), this, SLOT( lockButtonEvent() ) );
 
   actionVideoInterlace = new QAction( "VideoInterlace", this );
   actionVideoCenter = new QAction( "VideoCenter", this );

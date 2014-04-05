@@ -225,7 +225,11 @@ void plaYUVerApp::updateProperties()
   {
     m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
     m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
-    //m_pcPropertiesSidebar->setSelection( iface->currentViewArea()->selectedArea() );
+  }
+  else
+  {
+    m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
+    m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
   }
 }
 
@@ -465,11 +469,14 @@ void plaYUVerApp::chageSubWindowSelection()
     m_pcFrameSlider->setMaximum( activeSubWindow()->getInputStream()->getFrameNum() - 1 );
     m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
     m_pcCurrentSubWindow = activeSubWindow();
-    updateProperties();
+    m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
+    m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
   }
   else
   {
     m_pcCurrentSubWindow = NULL;
+    m_pcStreamProperties->setData( NULL );
+    m_pcFrameProperties->setData( NULL );
   }
   updateMenus();
   createStatusBar();

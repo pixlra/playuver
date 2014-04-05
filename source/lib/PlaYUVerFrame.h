@@ -126,7 +126,6 @@ public:
   {
     return m_iBitsChannels;
   }
-
   Bool isValid() const
   {
     return ( m_uiWidth > 0 ) && ( m_uiHeight > 0 ) && ( m_iPixelFormat >= 0 );
@@ -137,7 +136,7 @@ private:
   UInt m_uiHeight;
   Int m_iPixelFormat;
   Int m_iNumberChannels;
-  Int m_iBitsChannels
+  Int m_iBitsChannels;
 
   Bool m_bHasRGBPel;
   Pel*** m_pppcInputPel;

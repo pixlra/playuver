@@ -39,9 +39,9 @@ PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
   m_iPixelFormat = pel_format;
   m_iNumberChannels = 3;
   Int max_bits_per_pel = sizeof( Pel ) * 8;
-  m_iBitsChannels = assert( 8 <= max_bits_per_pel );
+  m_iBitsChannels = 8;
 
-  if( m_uiWidth == 0 || m_uiWidth == 0 || m_iPixelFormat == -1 )
+  if( m_uiWidth == 0 || m_uiHeight == 0 || m_iPixelFormat == -1 || m_iBitsChannels > max_bits_per_pel )
   {
     return;
   }

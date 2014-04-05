@@ -29,6 +29,7 @@
 
 #include <QtGui>
 #include "PlaYUVerFrameStatistics.h"
+#include "LibMemory.h"
 
 namespace plaYUVer
 {
@@ -64,7 +65,7 @@ public:
   }
 
   /** The histogram data.*/
-  double *histogram;
+  Double *histogram;
 
   /** If true, calc the luminosity channel histogram when the image is RGB */
   bool calcLuma;
@@ -93,16 +94,18 @@ public:
 //                       Constructors and Destructor
 ////////////////////////////////////////////////////////////////////////////////
 
-PlaYUVerFrameStatistics::PlaYUVerFrameStatistics( const PlaYUVerFrame& image, QObject *parent, Options options ) :
+PlaYUVerFrameStatistics::PlaYUVerFrameStatistics( const PlaYUVerFrame& playuver_frame, QObject *parent, Options options ) :
         QThread()
 {
-  setup( image.getQImageBuffer(), image.getWidth(), image.getHeight(), image.getBitsChannel(), image.getPelFormat(), parent, options );
+  // TODO: check the correct pel_format
+  setup( playuver_frame.getQImageBuffer(), playuver_frame.getWidth(), playuver_frame.getHeight(), playuver_frame.getBitsChannel(), PlaYUVerFrame::RGB8, parent, options );
 }
 
-PlaYUVerFrameStatistics::PlaYUVerFrameStatistics( uchar *data, uint width, uint height, int bitsPerChannel, Int pixel_format, QObject *parent, Options options ) :
+PlaYUVerFrameStatistics::PlaYUVerFrameStatistics( Pel *data, uint width, uint height, int bitsPerChannel, Int pixel_format, QObject *parent, Options options ) :
         QThread()
 {
-  setup( data, width, height, bitsPerChannel, pixel_format, parent, options );
+  // TODO: check the correct pel_format
+  setup( data, width, height, bitsPerChannel, PlaYUVerFrame::RGB8, parent, options );
 }
 
 PlaYUVerFrameStatistics::~PlaYUVerFrameStatistics()
@@ -118,7 +121,7 @@ PlaYUVerFrameStatistics::~PlaYUVerFrameStatistics()
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setup Function 
 ////////////////////////////////////////////////////////////////////////////////
-void PlaYUVerFrameStatistics::setup( uchar *data, uint width, uint height, int bitsPerChannel, Int pixel_format, QObject *parent, Options options )
+void PlaYUVerFrameStatistics::setup( Pel *data, uint width, uint height, int bitsPerChannel, Int pixel_format, QObject *parent, Options options )
 {
   d = new PlaYUVerFrameStatisticsPrivate;
   d->imageData = data;
@@ -287,10 +290,7 @@ void PlaYUVerFrameStatistics::calcHistogramValues()
   if( d->parent )
     postProgress( true, false );
 
-  d->histogram = new double[d->histoSegments * d->histoChannels];
-
-// Initialize the histogram
-  memset( d->histogram, 0, d->histoSegments * d->histoChannels * sizeof(double) );
+  getMem1D<Double>( &(d->histogram ), d->histoSegments * d->histoChannels);
 
   if( !d->histogram )
   {
@@ -335,8 +335,8 @@ void PlaYUVerFrameStatistics::calcHistogramValues()
 // 8 bits images.
   else
   {
-    uchar *data = d->imageData;
-    uchar luma;
+    Pel *data = d->imageData;
+    Pel luma;
     for( i = 0; ( i < d->imageHeight * d->imageWidth ) && d->runningFlag; i++ )
     {
       for( j = 0; j < d->imageChannels; j++ )

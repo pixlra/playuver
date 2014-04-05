@@ -362,11 +362,12 @@ void HistogramWidget::updateData( uchar *imageData, uint imageWidth, uint imageH
     m_selectionHistogram = 0L;
 }
 
-void HistogramWidget::updateData( const PlaYUVerFrame &image, const PlaYUVerFrame &selection )
+void HistogramWidget::updateData( const PlaYUVerFrame &playuver_frame, const PlaYUVerFrame &playuver_selection )
 {
   d->sixteenBits = false;
-  d->imageColorSpace = image.getPelFormat();
-  d->imageChannels = image.getNumberChannels();
+  //d->imageColorSpace = image.getPelFormat();
+  d->imageColorSpace = PlaYUVerFrame::RGB8;
+  d->imageChannels = playuver_frame.getNumberChannels();
 
   // We are deleting the histogram data,
   // so we must not use it to draw any more.
@@ -386,12 +387,12 @@ void HistogramWidget::updateData( const PlaYUVerFrame &image, const PlaYUVerFram
     delete m_selectionHistogram;
 
   // Calc new histogram data
-  m_imageHistogram = new PlaYUVerFrameStatistics( image, this );
+  m_imageHistogram = new PlaYUVerFrameStatistics( playuver_frame, this );
 
-  if( !selection.isValid() )
-    m_selectionHistogram = new PlaYUVerFrameStatistics( selection, this );
+  if( playuver_selection.isValid() )
+    m_selectionHistogram = new PlaYUVerFrameStatistics( playuver_selection, this );
   else
-    m_selectionHistogram = 0L;
+    m_selectionHistogram = NULL;
 
 }
 

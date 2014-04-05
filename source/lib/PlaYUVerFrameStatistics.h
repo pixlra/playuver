@@ -87,11 +87,11 @@ public:
 
   PlaYUVerFrameStatistics( uchar *data, uint width, uint height, int bitsPerChannel, Int pixel_format, QObject *parent = 0, Options options = CalcLumaWhenRGB );
 
-  PlaYUVerFrameStatistics( const PlaYUVerFrame& image, QObject *parent = 0, Options options = CalcLumaWhenRGB );
+  PlaYUVerFrameStatistics( const PlaYUVerFrame& playuver_frame, QObject *parent = 0, Options options = CalcLumaWhenRGB );
 
   ~PlaYUVerFrameStatistics();
 
-  void setup( uchar *data, uint width, uint height, int bitsPerChannel, Int pixel_format, QObject *parent = 0, Options options = CalcLumaWhenRGB );
+  void setup( Pel *data, uint width, uint height, int bitsPerChannel, Int pixel_format, QObject *parent = 0, Options options = CalcLumaWhenRGB );
 
   /** Method to stop threaded computations.*/
   void stopCalcHistogramValues( void );

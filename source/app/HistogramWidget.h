@@ -126,7 +126,7 @@ public  :
       uchar *selData = 0, uint selWidth = 0, uint selHeight = 0);
 
   /** Update full image histogram data from SImage.*/
-  void updateData( const PlaYUVerFrame &image, const PlaYUVerFrame &selection );
+  void updateData( const PlaYUVerFrame &playuver_frame, const PlaYUVerFrame &playuver_selection );
 
   /** Update image selection histogram data methods.*/
   void updateSelectionData( uchar *selData, uint selWidth, uint selHeight,

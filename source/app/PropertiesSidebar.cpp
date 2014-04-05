@@ -120,6 +120,9 @@ Void StreamPropertiesSideBar::setData( InputStream* pcStream )
 {
   // Clear information.
   labelFormatValue->clear();
+  labelCodecValue->clear();
+  labelDurationValueTime->clear();
+  labelDurationValueFrames->clear();
   labelSizeValue->clear();
   labelColorSpaceValue->clear();
 
@@ -409,8 +412,10 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
   }
   else
   {
-    if( ( PlaYUVerFrame::isRGBorYUVorGray( pcFrame->getPelFormat() ) == PlaYUVerFrame::COLOR_RGB
-        || PlaYUVerFrame::isRGBorYUVorGray( pcFrame->getPelFormat() ) == PlaYUVerFrame::COLOR_ARGB ) && ( channelCB->count() == 1 ) )
+    Int pel_fmt = pcFrame->getPelFormat();
+    pel_fmt = PlaYUVerFrame::RGB8;
+    if( ( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_RGB
+        || PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_ARGB ) && ( channelCB->count() == 1 ) )
     {
       channelCB->addItem( tr( "Red" ) );
       channelCB->setItemIcon( 1, QIcon( ":/images/channel-red.png" ) );
@@ -419,7 +424,7 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
       channelCB->addItem( tr( "Blue" ) );
       channelCB->setItemIcon( 3, QIcon( ":/images/channel-blue.png" ) );
 
-      if( PlaYUVerFrame::isRGBorYUVorGray( pcFrame->getPelFormat() ) == PlaYUVerFrame::COLOR_ARGB )
+      if( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_ARGB )
       {
         channelCB->addItem( tr( "Alpha" ) );
         channelCB->setItemIcon( 4, QIcon( ":/images/channel-alpha.png" ) );
@@ -442,7 +447,7 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
 
     m_pcFrame = pcFrame;
 
-    if( !m_pcFrame->isValid() )
+    if( m_pcFrame->isValid() )
     {
       // If a selection area is done in Image Editor and if the current
       // image is the same in Image Viewer, then compute too the histogram

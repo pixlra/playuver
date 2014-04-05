@@ -33,9 +33,16 @@ namespace plaYUVer
 PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
 {
   m_pppcInputPel = NULL;
+  m_pcRGBPelInterlaced = NULL;
   m_uiWidth = width;
   m_uiHeight = height;
   m_iPixelFormat = pel_format;
+  m_iNumberChannels = 3;
+
+  if( m_uiWidth == 0 || m_uiWidth == 0 || m_iPixelFormat == -1 )
+  {
+    return;
+  }
 
   m_bHasRGBPel = false;
 
@@ -56,6 +63,9 @@ PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
     break;
   case RGB8:
     getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 1 );
+    break;
+  default:
+    m_pppcInputPel = NULL;
     break;
   }
   getMem1D<Pel>( &m_pcRGBPelInterlaced, m_uiHeight * m_uiWidth * 3 );

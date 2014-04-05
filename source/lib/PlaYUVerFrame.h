@@ -36,7 +36,6 @@
 #endif
 #include "TypeDef.h"
 
-
 class QImage;
 
 namespace plaYUVer
@@ -54,7 +53,7 @@ static const QString gInputStreamFormatsNames[] =
 class PlaYUVerFrame
 {
 public:
-  PlaYUVerFrame( UInt width, UInt height, Int pel_format );
+  PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );
   ~PlaYUVerFrame();
 
   enum PixelFormats
@@ -119,11 +118,21 @@ public:
   {
     return m_iPixelFormat;
   }
+  Int getNumberChannels()
+  {
+    return m_iNumberChannels;
+  }
+
+  Bool isValid()
+  {
+    return ( m_uiWidth > 0 ) && ( m_uiHeight > 0 ) && ( m_iPixelFormat >= 0 );
+  }
 
 private:
   UInt m_uiWidth;
   UInt m_uiHeight;
   Int m_iPixelFormat;
+  Int m_iNumberChannels;
 
   Bool m_bHasRGBPel;
   Pel*** m_pppcInputPel;
@@ -135,7 +144,8 @@ private:
   PixFcSSE* m_pcPixfc;
   inline Void FrametoRGB8Pixfc();
 #endif
-};
+}
+;
 
 }  // NAMESPACE
 

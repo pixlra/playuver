@@ -32,6 +32,7 @@ Install using cmake
 ```
 mkdir build
 cd build
-cmake ../
+cmake -DUSE_FFMPEG=ON ..  (for FFmpeg support)
 make
+make install 
 ```

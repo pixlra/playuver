@@ -33,6 +33,7 @@
 #endif
 #include "InputStream.h"
 #include "PlaYUVerFrame.h"
+#include "HistogramWidget.h"
 
 namespace plaYUVer
 {
@@ -69,16 +70,80 @@ public:
   QSize sizeHint() const;
 
   Void setData( PlaYUVerFrame* m_pcStream );
+  Void setSelection( const QRect &selectionArea );
 
 private:
-  PlaYUVerFrame *m_pcFrame;
+  enum ColorChannel
+  {
+      LuminosityChannel=0,
+      RedChannel,
+      GreenChannel,
+      BlueChannel,
+      AlphaChannel,
+      ColorChannels
+  };
 
+  enum AllColorsColorType
+  {
+      AllColorsRed=0,
+      AllColorsGreen,
+      AllColorsBlue
+  };
+
+  PlaYUVerFrame *m_pcFrame;
+  PlaYUVerFrame *m_pcFrameSelection;
+  Bool inLoadingProcess;
+
+  QComboBox *channelCB;
+  QComboBox *colorsCB;
+  QComboBox *renderingCB;
+
+  QPushButton *linHistoButton;
+  QPushButton *logHistoButton;
+  QPushButton *fullImageButton;
+  QPushButton *selectionImageButton;
+
+  QButtonGroup *scaleButtonGroup;
+  QButtonGroup *renderingButtonGroup;
+
+  QSpinBox *minInterv;
+  QSpinBox *maxInterv;
+
+  QLabel *colorsLabel;
   QLabel *labelMeanValue;
   QLabel *labelPixelsValue;
   QLabel *labelStdDevValue;
   QLabel *labelCountValue;
   QLabel *labelMedianValue;
   QLabel *labelPercentileValue;
+  QLabel *formatValueLabel;
+  QLabel *sizeValueLabel;
+  QLabel *colorSpaceValueLabel;
+  QLabel *colorModeValueLabel;
+  QLabel *depthValueLabel;
+  QLabel *alphaValueLabel;
+
+  QRect m_cSelectionArea;
+
+  HistogramWidget *histogramWidget;
+
+private:
+    void updateInformations();
+    void updateStatistiques();
+
+private Q_SLOTS:
+    void slotRefreshOptions( bool sixteenBit );
+    void slotHistogramComputationFailed( void );
+    void slotChannelChanged( int channel );
+    void slotScaleChanged( int scale );
+    void slotColorsChanged( int color );
+    void slotRenderingChanged( int rendering );
+    void slotMinValueChanged( int );
+    void slotMaxValueChanged( int );
+
+    void slotUpdateInterval( int min, int max );
+    void slotUpdateIntervRange( int range );
+
 };
 
 }   // NAMESPACE

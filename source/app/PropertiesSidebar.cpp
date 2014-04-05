@@ -162,9 +162,148 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent ) :
   // -------------- Variables definition --------------
   m_pcFrame = NULL;
 
-  // ----------------- GUI definition -----------------
+  // Histogram area -----------------------------------------------------
+
+  QLabel *channelLabel = new QLabel( tr( "Channel:" ) );
+  channelLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
+
+  channelCB = new QComboBox;
+  channelCB->addItem( tr( "Luminance" ) );
+  channelCB->setItemIcon( 0, QIcon( ":/images/channel-luma.png" ) );
+
+  channelCB->setWhatsThis( tr( "<p>Select here the histogram channel to display:<p>"
+      "<b>Luminance</b>: Display luminance (perceived brightness).<p>"
+      "<b>Red</b>: Display the red image channel.<p>"
+      "<b>Green</b>: Display the green image channel.<p>"
+      "<b>Blue</b>: Display the blue image channel.<p>"
+      "<b>Alpha</b>: Display the alpha image channel. "
+      "This channel corresponds to the transparency value and "
+      "is supported by some image formats such as PNG or TIFF.<p>"
+      "<b>Colors</b>: Display all color channel values at "
+      "the same time." ) );
+
+  QString scaleWhatsThis( tr( "<p>Select here the histogram scale.<p>"
+      "If the image's maximal values are small, you can use the "
+      "linear scale.<p>Logarithmic scale can be used when the maximal"
+      " values are big; if it is used, all values (small and large) "
+      "will be visible on the graph." ) );
+
+  linHistoButton = new QPushButton;
+  linHistoButton->setToolTip( tr( "Linear" ) );
+  linHistoButton->setIcon( QIcon( ":/images/histogram-lin.png" ) );
+  linHistoButton->setWhatsThis( scaleWhatsThis );
+  linHistoButton->setCheckable( true );
+  linHistoButton->setAutoExclusive( true );
+  linHistoButton->setChecked( true );
+
+  logHistoButton = new QPushButton;
+  logHistoButton->setToolTip( tr( "Logarithmic" ) );
+  logHistoButton->setIcon( QIcon( ":/images/histogram-log.png" ) );
+  logHistoButton->setWhatsThis( scaleWhatsThis );
+  logHistoButton->setCheckable( true );
+  logHistoButton->setAutoExclusive( true );
+
+  scaleButtonGroup = new QButtonGroup( this );
+  scaleButtonGroup->addButton( linHistoButton, HistogramWidget::LinScaleHistogram );
+  scaleButtonGroup->addButton( logHistoButton, HistogramWidget::LogScaleHistogram );
+
+  QHBoxLayout *scaleLayout = new QHBoxLayout;
+  scaleLayout->addWidget( linHistoButton );
+  scaleLayout->addWidget( logHistoButton );
+
+  colorsLabel = new QLabel( tr( "Colors:" ) );
+  colorsLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+
+  colorsCB = new QComboBox;
+  colorsCB->addItem( tr( "Red" ) );
+  colorsCB->addItem( tr( "Green" ) );
+  colorsCB->addItem( tr( "Blue" ) );
+  colorsCB->setEnabled( false );
+  colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
+      "<p><b>Red</b>: Draw the red image channel in the foreground.<p>"
+      "<b>Green</b>: Draw the green image channel in the foreground.<p>"
+      "<b>Blue</b>: Draw the blue image channel in the foreground.<p>" ) );
+
+  colorsCB->hide();
+  colorsLabel->hide();
+
+  QString regionWhatsThis( tr( "<p>Select here from which region the histogram will be computed:"
+      "<p><b>Full Image</b>: Compute histogram using the full image."
+      "<p><b>Selection</b>: Compute histogram using the current image "
+      "selection." ) );
+
+  fullImageButton = new QPushButton;
+  fullImageButton->setToolTip( tr( "Full Image" ) );
+  fullImageButton->setIcon( QIcon( ":/images/image-full.png" ) );
+  fullImageButton->setWhatsThis( regionWhatsThis );
+  fullImageButton->setCheckable( true );
+  fullImageButton->setAutoExclusive( true );
+  fullImageButton->setChecked( true );
+
+  selectionImageButton = new QPushButton;
+  selectionImageButton->setToolTip( tr( "Selection" ) );
+  selectionImageButton->setIcon( QIcon( ":/images/image-selection.png" ) );
+  selectionImageButton->setWhatsThis( regionWhatsThis );
+  selectionImageButton->setCheckable( true );
+  selectionImageButton->setAutoExclusive( true );
+
+  renderingButtonGroup = new QButtonGroup( this );
+  renderingButtonGroup->addButton( fullImageButton, HistogramWidget::FullImageHistogram );
+  renderingButtonGroup->addButton( selectionImageButton, HistogramWidget::ImageSelectionHistogram );
+
+  QHBoxLayout *regionLayout = new QHBoxLayout;
+  regionLayout->addWidget( fullImageButton );
+  regionLayout->addWidget( selectionImageButton );
 
   QGridLayout *mainLayout = new QGridLayout;
+  mainLayout->addWidget( channelLabel, 1, 0 );
+  mainLayout->addWidget( channelCB, 1, 1 );
+  mainLayout->addLayout( scaleLayout, 1, 3 );
+  mainLayout->addWidget( colorsLabel, 2, 0 );
+  mainLayout->addWidget( colorsCB, 2, 1 );
+  mainLayout->addLayout( regionLayout, 2, 3 );
+  mainLayout->setColumnStretch( 2, 10 );
+
+  // -------------------------------------------------------------
+
+  histogramWidget = new HistogramWidget( 256, 140 );
+  histogramWidget->setOptions( HistogramWidget::BlinkComputation | HistogramWidget::SelectMode | HistogramWidget::ShowLumaChannel );
+  histogramWidget->setWhatsThis( tr( "<p>This is the histogram drawing of "
+      "the selected image channel" ) );
+
+  QVBoxLayout *histogramLayout = new QVBoxLayout;
+  histogramLayout->setSpacing( 1 );
+  histogramLayout->addWidget( histogramWidget );
+
+  mainLayout->addLayout( histogramLayout, 3, 0, 1, 4 );
+
+  // -------------------------------------------------------------
+
+  QLabel *rangeLabel = new QLabel( tr( "Range:" ) );
+  rangeLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+
+  minInterv = new QSpinBox;
+  minInterv->setRange( 0, 255 );
+  minInterv->setSingleStep( 1 );
+  minInterv->setValue( 0 );
+  minInterv->setWhatsThis( tr( "<p>Select here the minimal intensity "
+      "value of the histogram selection." ) );
+
+  maxInterv = new QSpinBox;
+  maxInterv->setRange( 0, 255 );
+  maxInterv->setSingleStep( 1 );
+  maxInterv->setValue( 0 );
+  minInterv->setWhatsThis( tr( "<p>Select here the maximal intensity value"
+      " of the histogram selection." ) );
+
+  QHBoxLayout *rangeLayout = new QHBoxLayout;
+  rangeLayout->addWidget( rangeLabel );
+  rangeLayout->addWidget( minInterv );
+  rangeLayout->addWidget( maxInterv );
+
+  mainLayout->addLayout( rangeLayout, 4, 0, 1, 4 );
+
+  // ----------------- GUI definition -----------------
 
   QLabel *pixelsLabel = new QLabel( tr( "Pixels:" ) );
   pixelsLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
@@ -222,10 +361,27 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent ) :
   setLayout( mainLayout );
   setEnabled( false );
 
+  connect( channelCB, SIGNAL( activated(int) ), this, SLOT( slotChannelChanged(int) ) );
+  connect( scaleButtonGroup, SIGNAL( buttonClicked(int) ), this, SLOT( slotScaleChanged(int) ) );
+  connect( colorsCB, SIGNAL( activated(int) ), this, SLOT( slotColorsChanged(int) ) );
+  connect( renderingButtonGroup, SIGNAL( buttonClicked(int) ), this, SLOT( slotRenderingChanged(int) ) );
+  connect( histogramWidget, SIGNAL( signalIntervalChanged( int, int ) ), this, SLOT( slotUpdateInterval(int, int) ) );
+  connect( histogramWidget, SIGNAL( signalMaximumValueChanged(int) ), this, SLOT( slotUpdateIntervRange(int) ) );
+  connect( histogramWidget, SIGNAL( signalHistogramComputationDone(bool) ), this, SLOT( slotRefreshOptions(bool) ) );
+  connect( histogramWidget, SIGNAL( signalHistogramComputationFailed(void) ), this, SLOT( slotHistogramComputationFailed(void) ) );
+  connect( minInterv, SIGNAL( valueChanged (int) ), this, SLOT( slotMinValueChanged(int) ) );
+  connect( maxInterv, SIGNAL( valueChanged (int) ), this, SLOT( slotMaxValueChanged(int) ) );
+
 }
 
 FramePropertiesSideBar::~FramePropertiesSideBar()
 {
+  // If there is a currently histogram computation when dialog is closed,
+  // stop it before the image data are deleted automatically!
+  histogramWidget->stopHistogramComputation();
+
+  if( histogramWidget )
+    delete histogramWidget;
 
 }
 
@@ -246,14 +402,307 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
 
   if( !pcFrame )
   {
+    // Remove the histogram data from memory
+    histogramWidget->reset();
     setEnabled( false );
     return;
   }
   else
   {
-    m_pcFrame = pcFrame;
+    if( ( PlaYUVerFrame::isRGBorYUVorGray( pcFrame->getPelFormat() ) == PlaYUVerFrame::COLOR_RGB
+        || PlaYUVerFrame::isRGBorYUVorGray( pcFrame->getPelFormat() ) == PlaYUVerFrame::COLOR_ARGB ) && ( channelCB->count() == 1 ) )
+    {
+      channelCB->addItem( tr( "Red" ) );
+      channelCB->setItemIcon( 1, QIcon( ":/images/channel-red.png" ) );
+      channelCB->addItem( tr( "Green" ) );
+      channelCB->setItemIcon( 2, QIcon( ":/images/channel-green.png" ) );
+      channelCB->addItem( tr( "Blue" ) );
+      channelCB->setItemIcon( 3, QIcon( ":/images/channel-blue.png" ) );
+
+      if( PlaYUVerFrame::isRGBorYUVorGray( pcFrame->getPelFormat() ) == PlaYUVerFrame::COLOR_ARGB )
+      {
+        channelCB->addItem( tr( "Alpha" ) );
+        channelCB->setItemIcon( 4, QIcon( ":/images/channel-alpha.png" ) );
+      }
+
+      channelCB->addItem( QIcon( ":/images/channel-all.png" ), tr( "Colors" ) );
+      colorsCB->show();
+      colorsLabel->show();
+    }
+    else if( channelCB->count() != 1 )
+    {
+      channelCB->clear();
+      channelCB->addItem( tr( "Luminance" ) );
+      channelCB->setItemIcon( 0, QIcon( ":/images/channel-luma.png" ) );
+      colorsCB->hide();
+      colorsLabel->hide();
+    }
+
     setEnabled( true );
+
+    m_pcFrame = pcFrame;
+
+    if( !m_pcFrame->isValid() )
+    {
+      // If a selection area is done in Image Editor and if the current
+      // image is the same in Image Viewer, then compute too the histogram
+      // for this selection.
+      histogramWidget->updateData( *m_pcFrame, PlaYUVerFrame() );
+      fullImageButton->hide();
+      selectionImageButton->hide();
+      updateInformations();
+    }
+    else
+    {
+      histogramWidget->setLoadingFailed();
+      slotHistogramComputationFailed();
+    }
   }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                              Set Selection
+////////////////////////////////////////////////////////////////////////////////
+
+Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
+{
+  // This is necessary to stop computation because image.bits() is
+  // currently used by threaded histogram algorithm.
+
+  m_cSelectionArea = selectionArea;
+
+  if( selectionArea.isValid() )
+  {
+
+    histogramWidget->stopHistogramComputation();
+
+    m_pcFrame->CopyFrom( m_pcFrameSelection );
+//         histogramWidget->updateSelectionData( imageSelection.bits(),
+//                                                  imageSelection.width(),
+//                                                  imageSelection.height(),
+//                                                  imageSelection.bitsPerChannel(),
+//                                                  imageSelection.colorSpace() );
+    histogramWidget->updateSelectionData( *m_pcFrameSelection );
+    fullImageButton->show();
+    selectionImageButton->show();
+    selectionImageButton->click();
+  }
+  else
+  {
+    fullImageButton->hide();
+    selectionImageButton->hide();
+    slotRenderingChanged( HistogramWidget::FullImageHistogram );
+  }
+}
+////////////////////////////////////////////////////////////////////////////////
+//                                  SLOTS
+////////////////////////////////////////////////////////////////////////////////
+
+void FramePropertiesSideBar::slotRefreshOptions( bool /*depth*/)
+{
+  slotChannelChanged( channelCB->currentIndex() );
+
+  if( linHistoButton->isChecked() )
+    slotScaleChanged( HistogramWidget::LinScaleHistogram );
+  else if( logHistoButton->isChecked() )
+    slotScaleChanged( HistogramWidget::LogScaleHistogram );
+
+  slotColorsChanged( colorsCB->currentIndex() );
+
+  if( m_cSelectionArea.isValid() )
+  {
+    if( fullImageButton->isChecked() )
+      slotRenderingChanged( HistogramWidget::FullImageHistogram );
+    else if( selectionImageButton->isChecked() )
+      slotRenderingChanged( HistogramWidget::ImageSelectionHistogram );
+
+  }
+}
+
+void FramePropertiesSideBar::slotHistogramComputationFailed()
+{
+  m_pcFrame = NULL;
+  m_pcFrameSelection = NULL;
+}
+
+void FramePropertiesSideBar::slotChannelChanged( int channel )
+{
+  switch( channel )
+  {
+  case RedChannel:
+    histogramWidget->m_channelType = HistogramWidget::RedChannelHistogram;
+    colorsCB->setEnabled( false );
+    break;
+  case GreenChannel:
+    histogramWidget->m_channelType = HistogramWidget::GreenChannelHistogram;
+    colorsCB->setEnabled( false );
+    break;
+  case BlueChannel:
+    histogramWidget->m_channelType = HistogramWidget::BlueChannelHistogram;
+    colorsCB->setEnabled( false );
+    break;
+  case AlphaChannel:
+    histogramWidget->m_channelType = HistogramWidget::AlphaChannelHistogram;
+    colorsCB->setEnabled( false );
+    break;
+  case ColorChannels:
+    histogramWidget->m_channelType = HistogramWidget::ColorChannelsHistogram;
+    colorsCB->setEnabled( true );
+    break;
+  default:          // Luminance.
+    histogramWidget->m_channelType = HistogramWidget::LumaHistogram;
+    colorsCB->setEnabled( false );
+    break;
+  }
+  histogramWidget->update();
+  updateStatistiques();
+}
+
+void FramePropertiesSideBar::slotScaleChanged( int scale )
+{
+  histogramWidget->m_scaleType = scale;
+  histogramWidget->update();
+}
+
+void FramePropertiesSideBar::slotColorsChanged( int color )
+{
+  switch( color )
+  {
+  case AllColorsGreen:
+    histogramWidget->m_colorType = HistogramWidget::GreenColor;
+    break;
+  case AllColorsBlue:
+    histogramWidget->m_colorType = HistogramWidget::BlueColor;
+    break;
+  default:          // Red.
+    histogramWidget->m_colorType = HistogramWidget::RedColor;
+    break;
+  }
+
+  histogramWidget->update();
+  updateStatistiques();
+}
+
+void FramePropertiesSideBar::slotRenderingChanged( int rendering )
+{
+  histogramWidget->m_renderingType = rendering;
+  histogramWidget->update();
+  updateStatistiques();
+}
+
+void FramePropertiesSideBar::slotMinValueChanged( int min )
+{
+  // Called when user changes values of spin box.
+  // Communicate the change to histogram widget.
+
+  // make the one control "push" the other
+  if( min == maxInterv->value() + 1 )
+    maxInterv->setValue( min );
+
+  maxInterv->setMinimum( min - 1 );
+  histogramWidget->slotMinValueChanged( min );
+  updateStatistiques();
+}
+
+void FramePropertiesSideBar::slotMaxValueChanged( int max )
+{
+  if( max == minInterv->value() - 1 )
+    minInterv->setValue( max );
+
+  minInterv->setMaximum( max + 1 );
+  histogramWidget->slotMaxValueChanged( max );
+  updateStatistiques();
+}
+
+void FramePropertiesSideBar::slotUpdateInterval( int min, int max )
+{
+  // Called when value is set from within histogram widget.
+  // Block signals to prevent slotMinValueChanged and
+  // slotMaxValueChanged being called.
+  minInterv->blockSignals( true );
+  minInterv->setMaximum( max + 1 );
+  minInterv->setValue( min );
+  minInterv->blockSignals( false );
+
+  maxInterv->blockSignals( true );
+  maxInterv->setMinimum( min - 1 );
+  maxInterv->setValue( max );
+  maxInterv->blockSignals( false );
+
+  updateStatistiques();
+}
+
+void FramePropertiesSideBar::slotUpdateIntervRange( int range )
+{
+  maxInterv->blockSignals( true );
+  maxInterv->setMaximum( range );
+  maxInterv->blockSignals( false );
+}
+////////////////////////////////////////////////////////////////////////////////
+//                             Informations
+////////////////////////////////////////////////////////////////////////////////
+
+void FramePropertiesSideBar::updateInformations()
+{
+#if 0
+  QString value;
+  switch( image.colorMode() )
+  {
+    case SImage::BlackWhite:
+    value = tr( "Black and White" );
+    break;
+    case SImage::Gray:
+    value = tr( "Grayscale" );
+    break;
+    default:
+    value = tr( "Color" );
+    break;
+  }
+  colorModeValueLabel->setText( value );
+  value = tr( "%n bit(s)", "", image.depth() );
+  depthValueLabel->setText( value );
+  alphaValueLabel->setText( image.hasAlpha() ? tr( "Yes" ) : tr( "No" ) );
+#endif
+}
+////////////////////////////////////////////////////////////////////////////////
+//                                Statistiques
+////////////////////////////////////////////////////////////////////////////////
+
+void FramePropertiesSideBar::updateStatistiques()
+{
+  QString value;
+
+  int min = minInterv->value();
+  int max = maxInterv->value();
+  int channel = channelCB->currentIndex();
+
+  if( channel == HistogramWidget::ColorChannelsHistogram )
+    channel = colorsCB->currentIndex() + 1;
+
+  PlaYUVerFrameStatistics *histogram;
+
+  if( histogramWidget->m_renderingType == HistogramWidget::FullImageHistogram )
+    histogram = histogramWidget->m_imageHistogram;
+  else
+    histogram = histogramWidget->m_selectionHistogram;
+
+  double mean = histogram->getMean( channel, min, max );
+  labelMeanValue->setText( value.setNum( mean, 'f', 1 ) );
+
+  double pixels = histogram->getPixels();
+  labelPixelsValue->setText( value.setNum( ( float )pixels, 'f', 0 ) );
+
+  double stddev = histogram->getStdDev( channel, min, max );
+  labelStdDevValue->setText( value.setNum( stddev, 'f', 1 ) );
+
+  double counts = histogram->getCount( channel, min, max );
+  labelCountValue->setText( value.setNum( ( float )counts, 'f', 0 ) );
+
+  double median = histogram->getMedian( channel, min, max );
+  labelMedianValue->setText( value.setNum( median, 'f', 1 ) );
+
+  double percentile = ( pixels > 0 ? ( 100.0 * counts / pixels ) : 0.0 );
+  labelPercentileValue->setText( value.setNum( percentile, 'f', 1 ) );
 }
 
 static inline QSize bestSize( QSize currSize )

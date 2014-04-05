@@ -133,10 +133,9 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
 #ifdef USE_FFMPEG
   if( QFileInfo( filename ).completeSuffix().compare( QString( "yuv" ) ) )
   {
-    avStatus = m_cLibAvContext.initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate );
+    avStatus = m_cLibAvContext.initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum );
     m_cFormatName = QFileInfo( filename ).completeSuffix().toUpper();
     m_cCodedName = QString::fromUtf8( m_cLibAvContext.getCodecName() ).toUpper();
-    m_uiTotalFrameNum = 100;
   }
 #endif
 
@@ -222,7 +221,9 @@ Void InputStream::close()
   if( m_pInputBuffer )
     freeMem1D<Pel>( m_pInputBuffer );
 
-  qDebug() << "Frame read time: " << QString::number( 1000 / (m_uiAveragePlayInterval+1) ) << " fps";
+  qDebug( ) << "Frame read time: "
+            << QString::number( 1000 / ( m_uiAveragePlayInterval + 1 ) )
+            << " fps";
 
   m_bInit = false;
 }
@@ -284,6 +285,28 @@ Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, In
     }
   }
   return bRet;
+}
+
+Void InputStream::getDuration( Int* duration_array )
+{
+  Int hours, mins, secs;
+#ifdef USE_FFMPEG
+  if( m_cLibAvContext.getStatus() )
+  {
+    secs = m_cLibAvContext.getStreamDuration();
+  }
+  else
+#endif
+  {
+    secs = m_uiTotalFrameNum * m_uiFrameRate;
+  }
+  mins = secs / 60;
+  secs %= 60;
+  hours = mins / 60;
+  mins %= 60;
+  *duration_array++ = hours;
+  *duration_array++ = mins;
+  *duration_array++ = secs;
 }
 
 Void InputStream::readNextFrame()
@@ -396,7 +419,7 @@ Void InputStream::seekInput( UInt64 new_frame_num )
   readNextFrame();
   setNextFrame();
   if( m_uiTotalFrameNum > 1 )
-      readNextFrame();
+    readNextFrame();
 }
 
 Bool InputStream::checkErrors( Int error_type )

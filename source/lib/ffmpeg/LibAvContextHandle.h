@@ -53,10 +53,10 @@ class LibAvContextHandle
 {
 public:
   LibAvContextHandle() :
-      m_bHasStream( false )
+          m_bHasStream( false )
   {
   }
-  Bool initAvFormat( char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate );
+  Bool initAvFormat( char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate, UInt64& num_frames );
   Void closeAvFormat();
   Bool decodeAvFormat();
 
@@ -69,6 +69,10 @@ public:
   Char* getCodecName()
   {
     return m_acCodecName;
+  }
+  UInt getStreamDuration( )
+  {
+    return m_uiSecs;
   }
 
   uint8_t *video_dst_data[4];
@@ -86,6 +90,8 @@ private:
   Bool m_bHasStream;
 
   Char m_acCodecName[20];
+  UInt m_uiSecs;
+  UInt m_uiMicroSec;
 };
 
 }  // NAMESPACE

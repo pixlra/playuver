@@ -118,8 +118,9 @@ public:
   Void CopyFrom( PlaYUVerFrame* );
 
   UInt64 getBytesPerFrame();
+  UInt getChromaLength() const;
 
-  Pel*** getPelBufferYUV()
+  Pel*** getPelBufferYUV() const
   {
     return m_pppcInputPel;
   }

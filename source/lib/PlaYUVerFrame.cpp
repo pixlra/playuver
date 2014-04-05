@@ -182,9 +182,9 @@ static inline Void yuvToRgb( Int iY, Int iU, Int iV, Int &iR, Int &iG, Int &iB )
 template<typename T>
 Void rgbToyuv( T iR, T iG, T iB, T &iY, T &iU, T &iV )
 {
-  iY = 0;
-  iU = 0;
-  iV = 0;
+  iY = ( 299*iR + 587*iG + 114*iB + 500 )/1000;
+  iU = ( 1000*( iB - iY ) + 226816 )/1772;
+  iV = ( 1000*( iR - iY ) + 179456 )/1402;
 }
 
 Void PlaYUVerFrame::FrametoRGB8()
@@ -394,6 +394,32 @@ UInt64 PlaYUVerFrame::getBytesPerFrame()
     break;
   case RGB8:
     return m_uiWidth * m_uiHeight * 3;
+    break;
+  default:
+    return 0;
+  }
+  return 0;
+}
+
+UInt PlaYUVerFrame::getChromaLength() const
+{
+  switch( m_iPixelFormat )
+  {
+  case YUV420p:
+    return m_uiWidth * m_uiHeight / 4;
+    break;
+  case YUV444p:
+    return m_uiWidth * m_uiHeight;
+    break;
+  case YUV422p:
+  case YUYV422:
+    return m_uiWidth * m_uiHeight / 2;
+    break;
+  case GRAY:
+    return 0;
+    break;
+  case RGB8:
+    return m_uiWidth * m_uiHeight;
     break;
   default:
     return 0;

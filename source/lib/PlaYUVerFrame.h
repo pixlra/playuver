@@ -63,8 +63,7 @@ public:
     YUV420p = 0,
     YUV444p,
     YUV422p,
-    YUV411p,
-    YUV410p,
+    YUYV422,
     GRAY,
     RGB8,
     NUMBER_FORMATS
@@ -75,9 +74,8 @@ public:
     QStringList formats;
     formats << "YUV420p"
             << "YUV444p"
-            << "YUV411p"
-            << "YUV411p"
-            << "YUV410p"
+            << "YUV422p"
+            << "YUYV422"
             << "GRAY"
             << "RGB8"  // RGB 3*8 bits per pixel
             ;

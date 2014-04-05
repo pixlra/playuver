@@ -39,7 +39,7 @@ static inline QSize bestSize( QSize currSize );
 ////////////////////////////////////////////////////////////////////////////////
 
 StreamPropertiesSideBar::StreamPropertiesSideBar( QWidget* parent ) :
-    QWidget( parent )
+        QWidget( parent )
 {
   // -------------- Variables definition --------------
   m_pcStream = NULL;
@@ -58,12 +58,20 @@ StreamPropertiesSideBar::StreamPropertiesSideBar( QWidget* parent ) :
   labelCodecValue = new QLabel;
   labelCodecValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
-  QLabel *sizeLabel = new QLabel( tr( "Size (pixels):" ) );
+  QLabel *durationLabel = new QLabel( tr( "Duration:" ) );
+  durationLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+  labelDurationValueTime = new QLabel;
+  labelDurationValueTime->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+
+  labelDurationValueFrames = new QLabel;
+  labelDurationValueFrames->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+
+  QLabel *sizeLabel = new QLabel( tr( "Resolution:" ) );
   sizeLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
   labelSizeValue = new QLabel;
   labelSizeValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
-  QLabel *colorSpaceLabel = new QLabel( tr( "Colorspace:" ) );
+  QLabel *colorSpaceLabel = new QLabel( tr( "Color Space:" ) );
   colorSpaceLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
   labelColorSpaceValue = new QLabel;
   labelColorSpaceValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
@@ -76,20 +84,26 @@ StreamPropertiesSideBar::StreamPropertiesSideBar( QWidget* parent ) :
   propertiesLayout->addWidget( codecLabel, layout_line, 0 );
   propertiesLayout->addWidget( labelCodecValue, layout_line, 1 );
   layout_line++;
+  propertiesLayout->addWidget( durationLabel, layout_line, 0 );
+  propertiesLayout->addWidget( labelDurationValueTime, layout_line, 1 );
+  layout_line++;
+  propertiesLayout->addWidget( labelDurationValueFrames, layout_line, 1 );
+  layout_line++;
   propertiesLayout->addWidget( sizeLabel, layout_line, 0 );
   propertiesLayout->addWidget( labelSizeValue, layout_line, 1 );
   layout_line++;
   propertiesLayout->addWidget( colorSpaceLabel, layout_line, 0 );
   propertiesLayout->addWidget( labelColorSpaceValue, layout_line, 1 );
 
-  QGroupBox *propertiesGroup = new QGroupBox( tr( "Properties" ) );
-  propertiesGroup->setLayout( propertiesLayout );
-  mainLayout->addWidget( propertiesGroup, 6, 0, 1, 4 );
+//  QGroupBox *propertiesGroup = new QGroupBox;
+//  propertiesGroup->setLayout( propertiesLayout );
+//  mainLayout->addWidget( propertiesGroup );
+//  mainLayout->setRowStretch( 8, 10 );
 
-  mainLayout->setRowStretch( 8, 10 );
-  setLayout( mainLayout );
+  propertiesLayout->setRowStretch( 8, 10 );
+  setLayout( propertiesLayout );
+  //setLayout( mainLayout );
   setEnabled( false );
-
 }
 
 StreamPropertiesSideBar::~StreamPropertiesSideBar()
@@ -122,9 +136,16 @@ Void StreamPropertiesSideBar::setData( InputStream* pcStream )
     QString value;
     labelFormatValue->setText( m_pcStream->getFormatName() );
     labelCodecValue->setText( m_pcStream->getCodecName() );
-    uint width = m_pcStream->getWidth();
-    uint height = m_pcStream->getHeight();
-    value = QString( tr( "%1 x %2" ) ).arg( width ).arg( height );
+    Int duration[3];
+    m_pcStream->getDuration( duration );
+    value = QString( tr( "%1h:%2m:%3s" ) ).arg( duration[0] ).arg( duration[1] ).arg( duration[2] );
+    labelDurationValueTime->setText( value );
+    value = QString( tr( "%1 frms" ) ).arg( m_pcStream->getFrameNum() );
+    labelDurationValueFrames->setText( value );
+    UInt width = m_pcStream->getWidth();
+    UInt height = m_pcStream->getHeight();
+    UInt fps = m_pcStream->getFrameRate();
+    value = QString( tr( "%1 x %2 @ %3 Hz" ) ).arg( width ).arg( height ).arg( fps );
     labelSizeValue->setText( value );
     value = QString( PlaYUVerFrame::supportedPixelFormatList().at( m_pcStream->getCurrFrame()->getPelFormat() ) );
     labelColorSpaceValue->setText( value );
@@ -136,7 +157,7 @@ Void StreamPropertiesSideBar::setData( InputStream* pcStream )
 ////////////////////////////////////////////////////////////////////////////////
 
 FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent ) :
-    QWidget( parent )
+        QWidget( parent )
 {
   // -------------- Variables definition --------------
   m_pcFrame = NULL;
@@ -243,7 +264,6 @@ static inline QSize bestSize( QSize currSize )
   else
     return currSize;
 }
-
 
 }   // NAMESPACE
 

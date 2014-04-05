@@ -81,7 +81,7 @@ Void LibAvContextHandle::closeAvFormat()
   m_bHasStream = false;
 }
 
-Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate )
+Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate, UInt64& num_frames )
 {
   int ret = 0;
 
@@ -152,9 +152,7 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
     video_dst_bufsize = ret;
   }
 
-
   const char *codec_name = avcodec_get_name(video_dec_ctx->codec_id);
-
   sprintf(m_acCodecName, "%s", codec_name);
 
   Double fr = 30;
@@ -170,6 +168,18 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
     fr = 1 / av_q2d( video_stream->codec->time_base );
 
   frame_rate = ( UInt )fr;
+
+  if( fmt_ctx->duration != AV_NOPTS_VALUE )
+  {
+    Int64 duration = fmt_ctx->duration + 5000;
+    m_uiSecs = duration / AV_TIME_BASE;
+    num_frames = m_uiSecs * frame_rate;
+    m_uiMicroSec = duration % AV_TIME_BASE;
+  }
+  else
+  {
+    num_frames = 0;
+  }
 
   width = video_dec_ctx->width;
   height = video_dec_ctx->height;
@@ -191,6 +201,7 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
     pixel_format = PlaYUVerFrame::RGB8;
     break;
   default:
+    pixel_format = PlaYUVerFrame::NO_FMT;
     break;
   }
 
@@ -269,7 +280,7 @@ Bool LibAvContextHandle::decodeAvFormat()
 
 Void LibAvContextHandle::seekAvFormat( UInt64 frame_num )
 {
-  av_seek_frame( fmt_ctx, video_stream_idx, frame_num, AVSEEK_FLAG_ANY );
+  av_seek_frame( fmt_ctx, video_stream_idx, frame_num, AVSEEK_FLAG_FRAME );
 }
 
 }  // NAMESPACE

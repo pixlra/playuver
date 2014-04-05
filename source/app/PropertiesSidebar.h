@@ -53,6 +53,8 @@ private:
 
   QLabel* labelFormatValue;
   QLabel* labelCodecValue;
+  QLabel* labelDurationValueTime;
+  QLabel* labelDurationValueFrames;
   QLabel* labelSizeValue;
   QLabel* labelColorSpaceValue;
 };

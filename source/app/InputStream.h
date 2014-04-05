@@ -167,6 +167,7 @@ public:
   {
     return m_uiFrameRate;
   }
+  Void getDuration( Int* duration_array );
 
   Void setWidth( UInt new_width )
   {

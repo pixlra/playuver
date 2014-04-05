@@ -52,6 +52,7 @@ private:
   InputStream* m_pcStream;
 
   QLabel* labelFormatValue;
+  QLabel* labelCodecValue;
   QLabel* labelSizeValue;
   QLabel* labelColorSpaceValue;
 };

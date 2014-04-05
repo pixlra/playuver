@@ -1,9 +1,0 @@
-language: c
-compiler:
-  - gcc
-  - clang
-before_script:
-  - mkdir build
-  - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DUSE_QT4=OFF -DUSE_FFMPEG=ON ..
-script: make

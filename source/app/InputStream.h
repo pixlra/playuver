@@ -62,6 +62,7 @@ private:
 
   QString m_cFilename;
   QString m_cFormatName;
+  QString m_cCodedName;
   QString m_cStreamInformationString;
 
   QTime m_cTimer;
@@ -141,6 +142,10 @@ public:
   QString getFormatName()
   {
     return m_cFormatName;
+  }
+  QString getCodecName()
+  {
+    return m_cCodedName;
   }
   UInt getFrameNum()
   {

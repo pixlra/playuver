@@ -134,8 +134,8 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
   if( QFileInfo( filename ).completeSuffix().compare( QString( "yuv" ) ) )
   {
     avStatus = m_cLibAvContext.initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate );
-    m_cFormatName = QString::fromUtf8( m_cLibAvContext.getCodecName() );
-
+    m_cFormatName = QFileInfo( filename ).completeSuffix().toUpper();
+    m_cCodedName = QString::fromUtf8( m_cLibAvContext.getCodecName() ).toUpper();
     m_uiTotalFrameNum = 100;
   }
 #endif
@@ -173,7 +173,8 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
     fseek( m_pFile, 0, SEEK_END );
     m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
     fseek( m_pFile, 0, SEEK_SET );
-    m_cFormatName = QString::fromUtf8( "Raw Video" );
+    m_cFormatName = QString::fromUtf8( "YUV" );
+    m_cCodedName = QString::fromUtf8( "Raw Video" );
   }
   if( !getMem1D<Pel>( &m_pInputBuffer, m_pcCurrFrame->getBytesPerFrame() ) )
   {
@@ -183,6 +184,8 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
 
   m_cStreamInformationString = QString( "[" );
   m_cStreamInformationString.append( m_cFormatName );
+  m_cStreamInformationString.append( QString( " / " ) );
+  m_cStreamInformationString.append( m_cCodedName );
   m_cStreamInformationString.append( QString( " / " ) );
   m_cStreamInformationString.append( PlaYUVerFrame::supportedPixelFormatList().at( m_iPixelFormat ) );
   m_cStreamInformationString.append( "] " );

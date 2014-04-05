@@ -53,6 +53,11 @@ StreamPropertiesSideBar::StreamPropertiesSideBar( QWidget* parent ) :
   labelFormatValue = new QLabel;
   labelFormatValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
+  QLabel *codecLabel = new QLabel( tr( "Codec:" ) );
+  codecLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+  labelCodecValue = new QLabel;
+  labelCodecValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+
   QLabel *sizeLabel = new QLabel( tr( "Size (pixels):" ) );
   sizeLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
   labelSizeValue = new QLabel;
@@ -64,12 +69,18 @@ StreamPropertiesSideBar::StreamPropertiesSideBar( QWidget* parent ) :
   labelColorSpaceValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
   QGridLayout *propertiesLayout = new QGridLayout;
-  propertiesLayout->addWidget( formatLabel, 0, 0 );
-  propertiesLayout->addWidget( labelFormatValue, 0, 1 );
-  propertiesLayout->addWidget( sizeLabel, 1, 0 );
-  propertiesLayout->addWidget( labelSizeValue, 1, 1 );
-  propertiesLayout->addWidget( colorSpaceLabel, 2, 0 );
-  propertiesLayout->addWidget( labelColorSpaceValue, 2, 1 );
+  Int layout_line = 0;
+  propertiesLayout->addWidget( formatLabel, layout_line, 0 );
+  propertiesLayout->addWidget( labelFormatValue, layout_line, 1 );
+  layout_line++;
+  propertiesLayout->addWidget( codecLabel, layout_line, 0 );
+  propertiesLayout->addWidget( labelCodecValue, layout_line, 1 );
+  layout_line++;
+  propertiesLayout->addWidget( sizeLabel, layout_line, 0 );
+  propertiesLayout->addWidget( labelSizeValue, layout_line, 1 );
+  layout_line++;
+  propertiesLayout->addWidget( colorSpaceLabel, layout_line, 0 );
+  propertiesLayout->addWidget( labelColorSpaceValue, layout_line, 1 );
 
   QGroupBox *propertiesGroup = new QGroupBox( tr( "Properties" ) );
   propertiesGroup->setLayout( propertiesLayout );
@@ -110,6 +121,7 @@ Void StreamPropertiesSideBar::setData( InputStream* pcStream )
 
     QString value;
     labelFormatValue->setText( m_pcStream->getFormatName() );
+    labelCodecValue->setText( m_pcStream->getCodecName() );
     uint width = m_pcStream->getWidth();
     uint height = m_pcStream->getHeight();
     value = QString( tr( "%1 x %2" ) ).arg( width ).arg( height );

@@ -178,8 +178,17 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
   case AV_PIX_FMT_YUV420P:
     pixel_format = PlaYUVerFrame::YUV420p;
     break;
+  case AV_PIX_FMT_YUV422P:
+    pixel_format = PlaYUVerFrame::YUV422p;
+    break;
+  case AV_PIX_FMT_YUYV422:
+    pixel_format = PlaYUVerFrame::YUYV422;
+    break;
   case AV_PIX_FMT_GRAY8:
     pixel_format = PlaYUVerFrame::GRAY;
+    break;
+  case AV_PIX_FMT_RGB24:
+    pixel_format = PlaYUVerFrame::RGB8;
     break;
   default:
     break;
@@ -220,10 +229,8 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
 Bool LibAvContextHandle::decodeAvFormat()
 {
   Int got_frame;
-  Bool bRet = false;
   /* read frames from the file */
-
-  while( av_read_frame( fmt_ctx, &pkt ) >= 0 && !bRet )
+  while( av_read_frame( fmt_ctx, &pkt ) >= 0 )
   {
     if( pkt.stream_index == video_stream_idx )
     {
@@ -232,7 +239,7 @@ Bool LibAvContextHandle::decodeAvFormat()
       if( ret < 0 )
       {
         fprintf( stderr, "Error decoding video frame\n" );
-        return bRet;
+        return false;
       }
 
       if( got_frame )
@@ -241,13 +248,13 @@ Bool LibAvContextHandle::decodeAvFormat()
          * this is required since rawvideo expects non aligned data */
         av_image_copy( video_dst_data, video_dst_linesize, ( const uint8_t ** )( frame->data ), frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
             video_dec_ctx->height );
-
-        bRet = true;
       }
     }
     av_free_packet( &pkt );
+    if( got_frame )
+      return true;
   }
-  return bRet;
+  return false;
 //  /* flush cached frames */
 //  pkt.data = NULL;
 //  pkt.size = 0;

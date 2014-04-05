@@ -83,9 +83,9 @@ static inline Void xFreeMem( Void *mem )
 }
 
 template<typename T>
-Int getMem1D( T **array1D, int dim0 )
+Int getMem1D( T **array1D, Int dim0 )
 {
-  if( ( *array1D = ( T* )mem_calloc( dim0, sizeof(T) ) ) == NULL )
+  if( ( *array1D = ( T* )xCallocMem( dim0, sizeof(T) ) ) == NULL )
     return 0;
 
   return ( sizeof(T*) + dim0 * sizeof(T) );

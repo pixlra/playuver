@@ -68,26 +68,27 @@ public:
   Double *histogram;
 
   /** If true, calc the luminosity channel histogram when the image is RGB */
-  bool calcLuma;
+  Bool calcLuma;
 
   /** If the image is RGB and calcLuma is true, we have 1 more channel */
-  int histoChannels;
+  Int histoChannels;
 
   /** Image information.*/
-  uchar *imageData;
-  uint imageWidth;
-  uint imageHeight;
-  int imageChannels;
+  Pel ***imageData;
+  UInt imageWidth;
+  UInt imageHeight;
+  Int imageChannels;
   Int imageColorSpace;
+  UInt imageChromaSize;
 
   /** Numbers of histogram segments dependaing of image bytes depth*/
-  int histoSegments;
+  Int histoSegments;
 
   /** To post event from thread to parent.*/
   QObject *parent;
 
   /** Used to stop thread during calculations.*/
-  bool runningFlag;
+  Bool runningFlag;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -97,15 +98,15 @@ public:
 PlaYUVerFrameStatistics::PlaYUVerFrameStatistics( const PlaYUVerFrame& playuver_frame, QObject *parent, Options options ) :
         QThread()
 {
-  // TODO: check the correct pel_format
-  setup( playuver_frame.getQImageBuffer(), playuver_frame.getWidth(), playuver_frame.getHeight(), playuver_frame.getBitsChannel(), PlaYUVerFrame::RGB8, parent, options );
+  setup( playuver_frame.getPelBufferYUV(), playuver_frame.getWidth(), playuver_frame.getHeight(), playuver_frame.getBitsChannel(),
+      playuver_frame.getPelFormat(), playuver_frame.getChromaLength(), parent, options );
 }
 
-PlaYUVerFrameStatistics::PlaYUVerFrameStatistics( Pel *data, uint width, uint height, int bitsPerChannel, Int pixel_format, QObject *parent, Options options ) :
+PlaYUVerFrameStatistics::PlaYUVerFrameStatistics( Pel ***data, UInt width, UInt height, Int bitsPerChannel, Int pixel_format, UInt chroma_size, QObject *parent,
+    Options options ) :
         QThread()
 {
-  // TODO: check the correct pel_format
-  setup( data, width, height, bitsPerChannel, PlaYUVerFrame::RGB8, parent, options );
+  setup( data, width, height, bitsPerChannel, pixel_format, chroma_size, parent, options );
 }
 
 PlaYUVerFrameStatistics::~PlaYUVerFrameStatistics()
@@ -121,7 +122,8 @@ PlaYUVerFrameStatistics::~PlaYUVerFrameStatistics()
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setup Function 
 ////////////////////////////////////////////////////////////////////////////////
-void PlaYUVerFrameStatistics::setup( Pel *data, uint width, uint height, int bitsPerChannel, Int pixel_format, QObject *parent, Options options )
+void PlaYUVerFrameStatistics::setup( Pel ***data, UInt width, UInt height, Int bitsPerChannel, Int pixel_format, UInt chroma_size, QObject *parent,
+    Options options )
 {
   d = new PlaYUVerFrameStatisticsPrivate;
   d->imageData = data;
@@ -130,6 +132,7 @@ void PlaYUVerFrameStatistics::setup( Pel *data, uint width, uint height, int bit
   d->parent = parent;
   d->histoSegments = ( bitsPerChannel == 16 ) ? 65536 : 256;
   d->imageColorSpace = PlaYUVerFrame::isRGBorYUVorGray( pixel_format );
+  d->imageChromaSize = chroma_size;
 
   if( options == CalcLumaWhenRGB )
     d->calcLuma = true;
@@ -235,13 +238,13 @@ int PlaYUVerFrameStatistics::getRealHistoChannel( int channel )
     }
     break;
   case PlaYUVerFrame::COLOR_YUV:
-    if( channel != YChannel && channel != CbChannel && channel != CrChannel )
+    if( channel != LumaChannel && channel != YChannel && channel != CbChannel && channel != CrChannel )
     {
       return -1;
     }
     else
     {
-      if( channel == YChannel )
+      if( channel == YChannel || channel == LumaChannel)
         histoChannel = 0;
 
       if( channel == CbChannel )
@@ -290,7 +293,7 @@ void PlaYUVerFrameStatistics::calcHistogramValues()
   if( d->parent )
     postProgress( true, false );
 
-  getMem1D<Double>( &(d->histogram ), d->histoSegments * d->histoChannels);
+  getMem1D<Double>( &( d->histogram ), d->histoSegments * d->histoChannels );
 
   if( !d->histogram )
   {
@@ -304,64 +307,59 @@ void PlaYUVerFrameStatistics::calcHistogramValues()
     return;
   }
 
-// 16 bits image.
-  if( d->histoSegments == 65536 )
+  if( d->imageColorSpace == PlaYUVerFrame::COLOR_YUV )
   {
-    unsigned short *data = ( unsigned short* )d->imageData;
-    unsigned short luma;
-
+    Pel *data[3];
+    data[LUMA] = d->imageData[LUMA][0];
+    data[CHROMA_U] = d->imageData[CHROMA_U][0];
+    data[CHROMA_V] = d->imageData[CHROMA_V][0];
     for( i = 0; ( i < d->imageHeight * d->imageWidth ) && d->runningFlag; i++ )
     {
-      for( j = 0; j < d->imageChannels; j++ )
+      d->histogram[*( data[LUMA] ) + LUMA * d->histoSegments]++;
+      data[LUMA] += 1;
+    }
+    for( i = 0; ( i < d->imageChromaSize ) && d->runningFlag; i++ )
+    {
+      for( j = 1; j < d->imageChannels; j++ )
       {
-        d->histogram[data[j] + j * d->histoSegments]++;
+        d->histogram[*( data[j] ) + j * d->histoSegments]++;
       }
-
-      // Calc the luminosity when it's applicable
-      if( d->calcLuma && d->imageColorSpace == PlaYUVerFrame::COLOR_RGB )
-      {
-        luma = ( unsigned short )( 0.299 * data[0] + 0.587 * data[1] + 0.114 * data[2] );
-        d->histogram[luma + j * d->histoSegments]++;
-      }
-      if( d->calcLuma && d->imageColorSpace == PlaYUVerFrame::COLOR_ARGB )
-      {
-        luma = ( unsigned short )( 0.299 * data[1] + 0.587 * data[2] + 0.114 * data[3] );
-        d->histogram[luma + j * d->histoSegments]++;
-      }
-
-      data += d->imageChannels;
+      for( j = 1; j < d->imageChannels; j++ )
+        data[j] += 1;
     }
   }
-// 8 bits images.
   else
   {
-    Pel *data = d->imageData;
-    Pel luma;
+    Pel *data[3], luma;
+    data[COLOR_R] = d->imageData[COLOR_R][0];
+    data[COLOR_G] = d->imageData[COLOR_G][0];
+    data[COLOR_B] = d->imageData[COLOR_B][0];
+
     for( i = 0; ( i < d->imageHeight * d->imageWidth ) && d->runningFlag; i++ )
     {
       for( j = 0; j < d->imageChannels; j++ )
       {
-        d->histogram[data[j] + j * d->histoSegments]++;
+        d->histogram[*( data[j] ) + j * d->histoSegments]++;
       }
-
-      // Calc the luminosity when it's applicable
-      if( d->calcLuma && d->imageColorSpace == PlaYUVerFrame::COLOR_RGB )
+      if( d->calcLuma && ( d->imageColorSpace == PlaYUVerFrame::COLOR_RGB || d->imageColorSpace == PlaYUVerFrame::COLOR_ARGB ) )
       {
-        luma = ( uchar )( 0.299 * data[0] + 0.587 * data[1] + 0.114 * data[2] );
+        Pixel pixel_value =
+        {
+            d->imageColorSpace,
+            *( data[COLOR_R] ),
+            *( data[COLOR_G] ),
+            *( data[COLOR_B] ) };
+        luma = PlaYUVerFrame::ConvertPixel( pixel_value, PlaYUVerFrame::COLOR_YUV ).Luma;
         d->histogram[luma + j * d->histoSegments]++;
       }
-      if( d->calcLuma && d->imageColorSpace == PlaYUVerFrame::COLOR_ARGB )
-      {
-        luma = ( uchar )( 0.299 * data[1] + 0.587 * data[2] + 0.114 * data[3] );
-        d->histogram[luma + j * d->histoSegments]++;
-      }
-
-      data += d->imageChannels;
+      for( j = 0; j < d->imageChannels; j++ )
+        data[j] += 1;
     }
   }
 
   if( d->parent && d->runningFlag )
     postProgress( false, true );
+
 }
 
 double PlaYUVerFrameStatistics::getCount( int channel, int start, int end )

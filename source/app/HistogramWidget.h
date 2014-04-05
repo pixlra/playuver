@@ -49,16 +49,14 @@ public:
   {
     /** Luminance */
     LumaHistogram = 0,
-    /** Red channel */
+    /** RGB channels */
     RedChannelHistogram,
-    /** Green channel */
     GreenChannelHistogram,
-    /** Blue channel */
     BlueChannelHistogram,
     /** Alpha channel */
     AlphaChannelHistogram,
     /** All color channels */
-    ColorChannelsHistogram
+    ColorChannelsHistogram,
   };
 
   enum HistogramScale
@@ -121,16 +119,16 @@ public  :
   void stopHistogramComputation( void );
 
   /** Update full image histogram data methods.*/
-  void updateData( uchar *imageData, uint imageWidth, uint imageHeight,
-      int bitsPerChannel, Int pixel_format,
-      uchar *selData = 0, uint selWidth = 0, uint selHeight = 0);
+  void updateData( Pel ***imageData, UInt imageWidth, UInt imageHeight,
+      Int bitsPerChannel, Int pixel_format, UInt chroma_size,
+      Pel ***selData = 0, UInt selWidth = 0, UInt selHeight = 0);
 
   /** Update full image histogram data from SImage.*/
   void updateData( const PlaYUVerFrame &playuver_frame, const PlaYUVerFrame &playuver_selection );
 
   /** Update image selection histogram data methods.*/
-  void updateSelectionData( uchar *selData, uint selWidth, uint selHeight,
-      int bitsPerChannel, Int colorSpace );
+  void updateSelectionData( Pel ***selData, uint selWidth, uint selHeight,
+      Int bitsPerChannel, Int pixel_format, UInt chroma_size );
 
   /** Update image selection histogram data from SImage.*/
   void updateSelectionData( const PlaYUVerFrame &imageSelection );

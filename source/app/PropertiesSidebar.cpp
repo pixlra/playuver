@@ -413,28 +413,33 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
   else
   {
     Int pel_fmt = pcFrame->getPelFormat();
-    pel_fmt = PlaYUVerFrame::RGB8;
-    if( ( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_RGB
-        || PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_ARGB ) && ( channelCB->count() == 1 ) )
+    if( ( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_RGB || PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_ARGB ) )
     {
-      channelCB->addItem( tr( "Red" ) );
-      channelCB->setItemIcon( 1, QIcon( ":/images/channel-red.png" ) );
-      channelCB->addItem( tr( "Green" ) );
-      channelCB->setItemIcon( 2, QIcon( ":/images/channel-green.png" ) );
-      channelCB->addItem( tr( "Blue" ) );
-      channelCB->setItemIcon( 3, QIcon( ":/images/channel-blue.png" ) );
-
+      channelCB->clear();
+      channelCB->clear();
+      channelCB->insertItem( LuminosityChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
+      channelCB->insertItem( RedChannel, QIcon( ":/images/channel-red.png" ), "Red" );
+      channelCB->insertItem( GreenChannel, QIcon( ":/images/channel-green.png" ), "Green" );
+      channelCB->insertItem( BlueChannel, QIcon( ":/images/channel-blue.png" ), "Blue" );
       if( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_ARGB )
       {
-        channelCB->addItem( tr( "Alpha" ) );
-        channelCB->setItemIcon( 4, QIcon( ":/images/channel-alpha.png" ) );
+        channelCB->insertItem( AlphaChannel, QIcon( ":/images/channel-alpha.png" ), "Alpha" );
       }
-
-      channelCB->addItem( QIcon( ":/images/channel-all.png" ), tr( "Colors" ) );
+      channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "Colors" );
       colorsCB->show();
       colorsLabel->show();
     }
-    else if( channelCB->count() != 1 )
+    else if( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_YUV )
+    {
+      channelCB->clear();
+      channelCB->insertItem( LuminosityChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
+      channelCB->insertItem( ChromaUhannel, QIcon( ":/images/channel-red.png" ), "Chroma U" );
+      channelCB->insertItem( ChromaVhannel, QIcon( ":/images/channel-green.png" ), "Chroma V" );
+      channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "All Channels" );
+      colorsCB->show();
+      colorsLabel->show();
+    }
+    else
     {
       channelCB->clear();
       channelCB->addItem( tr( "Luminance" ) );
@@ -532,6 +537,11 @@ void FramePropertiesSideBar::slotHistogramComputationFailed()
 
 void FramePropertiesSideBar::slotChannelChanged( int channel )
 {
+  if( PlaYUVerFrame::isRGBorYUVorGray( m_pcFrame->getPelFormat() ) == PlaYUVerFrame::COLOR_YUV )
+    channel += 1;
+  if( channel == AlphaChannel && PlaYUVerFrame::isRGBorYUVorGray( m_pcFrame->getPelFormat() ) != PlaYUVerFrame::COLOR_ARGB )
+    channel = ColorChannels;
+
   switch( channel )
   {
   case RedChannel:
@@ -679,7 +689,8 @@ void FramePropertiesSideBar::updateStatistiques()
 
   int min = minInterv->value();
   int max = maxInterv->value();
-  int channel = channelCB->currentIndex();
+  int channel = histogramWidget->m_channelType;
+  //int channel = channelCB->currentIndex();
 
   if( channel == HistogramWidget::ColorChannelsHistogram )
     channel = colorsCB->currentIndex() + 1;

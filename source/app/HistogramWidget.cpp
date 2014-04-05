@@ -314,8 +314,8 @@ void HistogramWidget::stopHistogramComputation( void )
 //                          Update Data Methods  
 ////////////////////////////////////////////////////////////////////////////////
 
-void HistogramWidget::updateData( uchar *imageData, uint imageWidth, uint imageHeight, int bitsPerChannel, Int pixel_format, uchar *selData, uint selWidth,
-    uint selHeight )
+void HistogramWidget::updateData( Pel ***imageData, UInt imageWidth, UInt imageHeight, Int bitsPerChannel, Int pixel_format, UInt chroma_size, Pel ***selData,
+    UInt selWidth, UInt selHeight )
 {
   Int colorSpace = PlaYUVerFrame::isRGBorYUVorGray( pixel_format );
   d->sixteenBits = ( bool )( bitsPerChannel == 16 );
@@ -323,10 +323,10 @@ void HistogramWidget::updateData( uchar *imageData, uint imageWidth, uint imageH
 
   switch( colorSpace )
   {
-  case PlaYUVerFrame::COLOR_YUV:
   case PlaYUVerFrame::COLOR_GRAY:
     d->imageChannels = 1;
     break;
+  case PlaYUVerFrame::COLOR_YUV:
   case PlaYUVerFrame::COLOR_RGB:
     d->imageChannels = 3;
     break;
@@ -354,10 +354,10 @@ void HistogramWidget::updateData( uchar *imageData, uint imageWidth, uint imageH
     delete m_selectionHistogram;
 
   // Calc new histogram data
-  m_imageHistogram = new PlaYUVerFrameStatistics( imageData, imageWidth, imageHeight, bitsPerChannel, colorSpace, this );
+  m_imageHistogram = new PlaYUVerFrameStatistics( imageData, imageWidth, imageHeight, bitsPerChannel, pixel_format, chroma_size, this );
 
   if( selData && selWidth && selHeight )
-    m_selectionHistogram = new PlaYUVerFrameStatistics( selData, selWidth, selHeight, bitsPerChannel, colorSpace, this );
+    m_selectionHistogram = new PlaYUVerFrameStatistics( selData, selWidth, selHeight, bitsPerChannel, pixel_format, chroma_size, this );
   else
     m_selectionHistogram = 0L;
 }
@@ -366,7 +366,7 @@ void HistogramWidget::updateData( const PlaYUVerFrame &playuver_frame, const Pla
 {
   d->sixteenBits = false;
   //d->imageColorSpace = image.getPelFormat();
-  d->imageColorSpace = PlaYUVerFrame::RGB8;
+  d->imageColorSpace = PlaYUVerFrame::isRGBorYUVorGray( playuver_frame.getPelFormat() );
   d->imageChannels = playuver_frame.getNumberChannels();
 
   // We are deleting the histogram data,
@@ -396,7 +396,7 @@ void HistogramWidget::updateData( const PlaYUVerFrame &playuver_frame, const Pla
 
 }
 
-void HistogramWidget::updateSelectionData( uchar *selData, uint selWidth, uint selHeight, int bitsPerChannel, Int colorSpace )
+void HistogramWidget::updateSelectionData( Pel ***selData, UInt selWidth, UInt selHeight, Int bitsPerChannel, Int pixel_format, UInt chroma_size )
 {
   // Remove old histogram data from memory.
 
@@ -404,7 +404,7 @@ void HistogramWidget::updateSelectionData( uchar *selData, uint selWidth, uint s
     delete m_selectionHistogram;
 
   // Calc new histogram data
-  m_selectionHistogram = new PlaYUVerFrameStatistics( selData, selWidth, selHeight, bitsPerChannel, colorSpace, this );
+  m_selectionHistogram = new PlaYUVerFrameStatistics( selData, selWidth, selHeight, bitsPerChannel, pixel_format, chroma_size, this );
 }
 
 void HistogramWidget::updateSelectionData( const PlaYUVerFrame &selection )
@@ -507,18 +507,15 @@ void HistogramWidget::paintEvent( QPaintEvent * )
 
   switch( m_channelType )
   {
-  case HistogramWidget::GreenChannelHistogram:    // Green channel.
-    max = histogram->getMaximum( PlaYUVerFrameStatistics::GreenChannel );
-    break;
-
-  case HistogramWidget::BlueChannelHistogram:     // Blue channel.
-    max = histogram->getMaximum( PlaYUVerFrameStatistics::BlueChannel );
-    break;
-
   case HistogramWidget::RedChannelHistogram:      // Red channel.
     max = histogram->getMaximum( PlaYUVerFrameStatistics::RedChannel );
     break;
-
+  case HistogramWidget::GreenChannelHistogram:    // Green channel.
+    max = histogram->getMaximum( PlaYUVerFrameStatistics::GreenChannel );
+    break;
+  case HistogramWidget::BlueChannelHistogram:     // Blue channel.
+    max = histogram->getMaximum( PlaYUVerFrameStatistics::BlueChannel );
+    break;
   case HistogramWidget::AlphaChannelHistogram:    // Alpha channel.
     max = histogram->getMaximum( PlaYUVerFrameStatistics::AlphaChannel );
     break;
@@ -527,7 +524,6 @@ void HistogramWidget::paintEvent( QPaintEvent * )
     max = qMax( qMax( histogram->getMaximum( PlaYUVerFrameStatistics::RedChannel ), histogram->getMaximum( PlaYUVerFrameStatistics::GreenChannel ) ),
         histogram->getMaximum( PlaYUVerFrameStatistics::BlueChannel ) );
     break;
-
   case HistogramWidget::LumaHistogram:            // Luminance.
     max = histogram->getMaximum( PlaYUVerFrameStatistics::LumaChannel );
     break;
@@ -574,31 +570,27 @@ void HistogramWidget::paintEvent( QPaintEvent * )
 
       switch( m_channelType )
       {
-      case HistogramWidget::GreenChannelHistogram:  // Green channel.
-        v = histogram->getValue( PlaYUVerFrameStatistics::GreenChannel, i++ );
-        break;
-
-      case HistogramWidget::BlueChannelHistogram:   // Blue channel.
-        v = histogram->getValue( PlaYUVerFrameStatistics::BlueChannel, i++ );
-        break;
-
       case HistogramWidget::RedChannelHistogram:    // Red channel.
         v = histogram->getValue( PlaYUVerFrameStatistics::RedChannel, i++ );
         break;
-
+      case HistogramWidget::GreenChannelHistogram:  // Green channel.
+        v = histogram->getValue( PlaYUVerFrameStatistics::GreenChannel, i++ );
+        break;
+      case HistogramWidget::BlueChannelHistogram:   // Blue channel.
+        v = histogram->getValue( PlaYUVerFrameStatistics::BlueChannel, i++ );
+        break;
       case HistogramWidget::AlphaChannelHistogram:  // Alpha channel.
         v = histogram->getValue( PlaYUVerFrameStatistics::AlphaChannel, i++ );
         break;
-
       case HistogramWidget::ColorChannelsHistogram:  // All color.
         vr = histogram->getValue( PlaYUVerFrameStatistics::RedChannel, i );
         vg = histogram->getValue( PlaYUVerFrameStatistics::GreenChannel, i );
         vb = histogram->getValue( PlaYUVerFrameStatistics::BlueChannel, i++ );
         break;
-
       case HistogramWidget::LumaHistogram:           // Luminance.
         v = histogram->getValue( PlaYUVerFrameStatistics::LumaChannel, i++ );
         break;
+
       }
 
       if( m_channelType != HistogramWidget::ColorChannelsHistogram )

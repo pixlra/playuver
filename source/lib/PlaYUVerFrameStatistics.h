@@ -52,9 +52,9 @@ public:
     GreenChannel,
     BlueChannel,
     AlphaChannel,
-    YChannel,
-    CbChannel,
-    CrChannel
+    YChannel = 1,
+    CbChannel = 2,
+    CrChannel = 3
   };
 
   enum Options
@@ -85,13 +85,14 @@ public:
 
 public:
 
-  PlaYUVerFrameStatistics( uchar *data, uint width, uint height, int bitsPerChannel, Int pixel_format, QObject *parent = 0, Options options = CalcLumaWhenRGB );
+  PlaYUVerFrameStatistics( Pel ***data, UInt width, UInt height, Int bitsPerChannel, Int pixel_format, UInt chroma_size,
+      QObject *parent = 0, Options options = CalcLumaWhenRGB );
 
   PlaYUVerFrameStatistics( const PlaYUVerFrame& playuver_frame, QObject *parent = 0, Options options = CalcLumaWhenRGB );
 
   ~PlaYUVerFrameStatistics();
 
-  void setup( Pel *data, uint width, uint height, int bitsPerChannel, Int pixel_format, QObject *parent = 0, Options options = CalcLumaWhenRGB );
+  void setup( Pel ***data, UInt width, UInt height, Int bitsPerChannel, Int pixel_format, UInt chroma_size, QObject *parent = 0, Options options = CalcLumaWhenRGB );
 
   /** Method to stop threaded computations.*/
   void stopCalcHistogramValues( void );

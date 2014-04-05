@@ -75,19 +75,21 @@ public:
 private:
   enum ColorChannel
   {
-      LuminosityChannel=0,
-      RedChannel,
-      GreenChannel,
-      BlueChannel,
-      AlphaChannel,
-      ColorChannels
+    LuminosityChannel = 0,
+    RedChannel = 1,
+    ChromaUhannel = 1,
+    GreenChannel = 2,
+    ChromaVhannel = 2,
+    BlueChannel = 3,
+    AlphaChannel = 5,
+    ColorChannels = 4,
   };
 
   enum AllColorsColorType
   {
-      AllColorsRed=0,
-      AllColorsGreen,
-      AllColorsBlue
+    AllColorsRed = 0,
+    AllColorsGreen,
+    AllColorsBlue
   };
 
   PlaYUVerFrame *m_pcFrame;
@@ -128,21 +130,21 @@ private:
   HistogramWidget *histogramWidget;
 
 private:
-    void updateInformations();
-    void updateStatistiques();
+  void updateInformations();
+  void updateStatistiques();
 
 private Q_SLOTS:
-    void slotRefreshOptions( bool sixteenBit );
-    void slotHistogramComputationFailed( void );
-    void slotChannelChanged( int channel );
-    void slotScaleChanged( int scale );
-    void slotColorsChanged( int color );
-    void slotRenderingChanged( int rendering );
-    void slotMinValueChanged( int );
-    void slotMaxValueChanged( int );
+  void slotRefreshOptions( bool sixteenBit );
+  void slotHistogramComputationFailed( void );
+  void slotChannelChanged( int channel );
+  void slotScaleChanged( int scale );
+  void slotColorsChanged( int color );
+  void slotRenderingChanged( int rendering );
+  void slotMinValueChanged( int );
+  void slotMaxValueChanged( int );
 
-    void slotUpdateInterval( int min, int max );
-    void slotUpdateIntervRange( int range );
+  void slotUpdateInterval( int min, int max );
+  void slotUpdateIntervRange( int range );
 
 };
 

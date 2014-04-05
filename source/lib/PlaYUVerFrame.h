@@ -114,6 +114,7 @@ public:
   Void FrametoRGB8();
 
   Void FrameFromBuffer( Pel *input_buffer, Int pel_format );
+
   Void CopyFrom( PlaYUVerFrame* );
 
   UInt64 getBytesPerFrame();

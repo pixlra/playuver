@@ -107,7 +107,7 @@ Double ViewArea::getZoomFactor()
 //     return QSize( w, h );
 // }
 
-Void ViewArea::zoomChangeEvent(Double factor)
+Void ViewArea::zoomChangeEvent(Double factor, QPoint center )
 {
   Double zoomFactor;
   Double maxZoom = 100.0;
@@ -128,7 +128,7 @@ Void ViewArea::zoomChangeEvent(Double factor)
     zoomFactor = maxZoom;
 
   setZoomFactor( zoomFactor );
-  emit zoomFactorChanged(factor);
+  emit zoomFactorChanged(factor, center);
 
 }
 
@@ -528,7 +528,7 @@ void ViewArea::wheelEvent( QWheelEvent *event )
   else
     factor=0.8;
 
-  zoomChangeEvent( factor );
+  zoomChangeEvent( factor , event->pos() );
 }
 
 void ViewArea::mousePressEvent( QMouseEvent *event )

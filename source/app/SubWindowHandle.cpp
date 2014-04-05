@@ -43,7 +43,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
 
   // Create a new interface to show images
   m_cViewArea = new ViewArea( this );
-  connect( m_cViewArea, SIGNAL( zoomFactorChanged( double ) ), this, SLOT( adjustScrollBarByZoom(double) ) );
+  connect( m_cViewArea, SIGNAL( zoomFactorChanged( double , QPoint) ), this, SLOT( adjustScrollBarByZoom(double, QPoint) ) );
   connect( m_cViewArea, SIGNAL( moveScroll( QPoint ) ), this, SLOT( adjustScrollBarByOffset(QPoint) ) );
 
   // Define the cViewArea as the widget inside the scroll area
@@ -56,6 +56,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
 
   m_cWindowName = QString( " " );
   m_bIsPlaying = false;
+  m_cLastScroll = QPoint();
 }
 
 SubWindowHandle::~SubWindowHandle()
@@ -243,7 +244,7 @@ Void SubWindowHandle::zoomToFit()
 Void SubWindowHandle::scaleViewFactor( Double factor )
 {
   Q_ASSERT( m_cViewArea->image() );
-  m_cViewArea->zoomChangeEvent( factor );
+  m_cViewArea->zoomChangeEvent( factor , QPoint() );
 }
 
 Void SubWindowHandle::scaleView( Double scale )
@@ -280,16 +281,49 @@ void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
 {
   QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
   scrollBar->setValue( int( scrollBar->value() + Offset.x()  ) );
+  m_cLastScroll.setX( scrollBar->value() );
   scrollBar = m_cScrollArea->verticalScrollBar();
   scrollBar->setValue( int( scrollBar->value() + Offset.y() ) );
+  m_cLastScroll.setY( scrollBar->value() );
 }
 
-void SubWindowHandle::adjustScrollBarByZoom( double factor )
+// This function was developed with help of the schematics presented in
+// http://stackoverflow.com/questions/13155382/jscrollpane-zoom-relative-to-mouse-position
+void SubWindowHandle::adjustScrollBarByZoom( double factor , QPoint center )
 {
   QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
-  scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
+  if( center.isNull() )
+  {
+    scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
+  }
+  else
+  {
+    Int x = center.x() - m_cLastScroll.x();
+    Int value = int( factor * m_cLastScroll.x() + ( ( factor - 1 ) * x ) );
+    if ( value > scrollBar->maximum() )
+      value = scrollBar->maximum();
+    if ( value < scrollBar->minimum() )
+      value = scrollBar->minimum();
+    scrollBar->setValue( value );
+    m_cLastScroll.setX( value );
+  }
+
   scrollBar = m_cScrollArea->verticalScrollBar();
-  scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
+  if( center.isNull() )
+  {
+    scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
+  }
+  else
+  {
+    Int y = center.y() - m_cLastScroll.y();
+    Int value = int( factor * m_cLastScroll.y() + ( ( factor - 1 ) * y ) );
+    if ( value > scrollBar->maximum() )
+      value = scrollBar->maximum();
+    if ( value < scrollBar->minimum() )
+      value = scrollBar->minimum();
+    scrollBar->setValue( value );
+    m_cLastScroll.setY( value );
+  }
 }
 
 

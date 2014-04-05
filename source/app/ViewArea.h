@@ -106,7 +106,7 @@ public:
   void setInputStream( InputStream *stream );
   InputStream* getInputStream();
 
-  Void zoomChangeEvent(Double factor);
+  Void zoomChangeEvent(Double factor, QPoint center);
   Double getZoomFactor();
 
 //     QSize sizeHint() const;
@@ -115,7 +115,7 @@ signals:
   void selectionChanged( const QRect &rect );
   void positionChanged( const QPoint &pos, InputStream *stream );
   void moveScroll( QPoint offset );
-  void zoomFactorChanged( double );
+  void zoomFactorChanged( double factor , QPoint center);
 
 public slots:
   void setNormalMode();

@@ -59,6 +59,8 @@ private:
 
   Bool m_bIsPlaying;
 
+  QPoint m_cLastScroll;
+
 public:
   SubWindowHandle( QWidget * parent = 0 );
   ~SubWindowHandle();
@@ -152,7 +154,7 @@ protected:
   void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:
-  void adjustScrollBarByZoom( double factor );
+  void adjustScrollBarByZoom( double factor , QPoint center );
   void adjustScrollBarByOffset( QPoint Offset );
 };
 

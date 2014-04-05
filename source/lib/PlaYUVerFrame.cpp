@@ -430,7 +430,7 @@ UInt64 PlaYUVerFrame::getBytesPerFrame()
   return 0;
 }
 
-Pixel PlaYUVerFrame::ConvertPixel( Pixel sInputPixel, ColorSpace eOutputSpace )
+Pixel PlaYUVerFrame::ConvertPixel( Pixel sInputPixel, Int eOutputSpace )
 {
   Pixel sOutputPixel =
   {
@@ -453,7 +453,7 @@ Pixel PlaYUVerFrame::ConvertPixel( Pixel sInputPixel, ColorSpace eOutputSpace )
   return sOutputPixel;
 }
 
-Pixel PlaYUVerFrame::getPixelValue( const QPoint &pos, ColorSpace space )
+Pixel PlaYUVerFrame::getPixelValue( const QPoint &pos, Int color_space )
 {
   Pixel pixel_value;
   switch( m_iPixelFormat )
@@ -491,7 +491,7 @@ Pixel PlaYUVerFrame::getPixelValue( const QPoint &pos, ColorSpace space )
   default:
     break;
   }
-  ConvertPixel( pixel_value, space );
+  ConvertPixel( pixel_value, color_space );
   return pixel_value;
 }
 

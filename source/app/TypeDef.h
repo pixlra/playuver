@@ -112,14 +112,6 @@ typedef UChar Pel;        ///< 8-bit pixel type
 // PlaYUVer definitions
 // ====================================================================================================================
 
-enum ColorSpace
-{
-  COLOR_INVALID = -1,
-  COLOR_YUV = 0,
-  COLOR_RGB,
-};
-
-
 enum YUVcomponent
 {
   LUMA = 0,
@@ -136,7 +128,7 @@ enum RGBcomponent
 
 typedef struct __pixel_definition
 {
-  ColorSpace color_space;
+  Int color_space;
   union
   {
     Pel Luma;

@@ -372,7 +372,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
       for(Int j=vr.y() ; j<=vr.bottom() ; j++)
       {
         QPoint pixelTopLeft(i,j);
-        sPixelValue = curFrame->getPixelValue( pixelTopLeft, COLOR_YUV );
+        sPixelValue = curFrame->getPixelValue( pixelTopLeft, PlaYUVerFrame::COLOR_YUV );
 
         QRect pixelRect(viewToWindow(pixelTopLeft), QSize(m_zoomFactor,m_zoomFactor));
         if( sPixelValue.Luma < 128 )

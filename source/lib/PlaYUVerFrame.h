@@ -97,7 +97,7 @@ public:
   static Pixel ConvertPixel( Pixel sInputPixel, ColorSpace eOutputSpace );
   Pixel getPixelValue( const QPoint &pos, ColorSpace color );
 
-  UChar* getQImageBuffer()
+  UChar* getQImageBuffer() const
   {
     return m_pcRGBPelInterlaced;
   }
@@ -106,24 +106,28 @@ public:
   cv::Mat getCvMat();
 #endif
 
-  UInt getWidth()
+  UInt getWidth() const
   {
     return m_uiWidth;
   }
-  UInt getHeight()
+  UInt getHeight() const
   {
     return m_uiHeight;
   }
-  Int getPelFormat()
+  Int getPelFormat() const
   {
     return m_iPixelFormat;
   }
-  Int getNumberChannels()
+  Int getNumberChannels() const
   {
     return m_iNumberChannels;
   }
+  Int getBitsChannel() const
+  {
+    return m_iBitsChannels;
+  }
 
-  Bool isValid()
+  Bool isValid() const
   {
     return ( m_uiWidth > 0 ) && ( m_uiHeight > 0 ) && ( m_iPixelFormat >= 0 );
   }
@@ -133,6 +137,7 @@ private:
   UInt m_uiHeight;
   Int m_iPixelFormat;
   Int m_iNumberChannels;
+  Int m_iBitsChannels
 
   Bool m_bHasRGBPel;
   Pel*** m_pppcInputPel;

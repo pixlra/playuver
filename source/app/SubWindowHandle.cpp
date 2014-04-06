@@ -42,9 +42,11 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   setWidget( m_cScrollArea );
 
   // Create a new interface to show images
-  m_cViewArea = new ViewArea( this );
+  m_cViewArea = new ViewArea( m_cScrollArea );
   connect( m_cViewArea, SIGNAL( zoomFactorChanged( double , QPoint) ), this, SLOT( adjustScrollBarByZoom(double, QPoint) ) );
   connect( m_cViewArea, SIGNAL( moveScroll( QPoint ) ), this, SLOT( adjustScrollBarByOffset(QPoint) ) );
+  connect( m_cScrollArea->horizontalScrollBar() , SIGNAL( actionTriggered( int ) ), this, SLOT ( updateLastScrollValue() ) );
+  connect( m_cScrollArea->verticalScrollBar() , SIGNAL( actionTriggered( int ) ), this, SLOT ( updateLastScrollValue() ) );
 
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
@@ -232,6 +234,7 @@ Void SubWindowHandle::normalSize()
 {
   Double scaleFactor = 1.0;
   m_cViewArea->setZoomFactor( scaleFactor );
+  updateLastScrollValue();
 }
 
 Void SubWindowHandle::zoomToFit()
@@ -241,16 +244,11 @@ Void SubWindowHandle::zoomToFit()
   scaleView( niceFit );
 }
 
-Void SubWindowHandle::scaleViewFactor( Double factor )
-{
-  Q_ASSERT( m_cViewArea->image() );
-  m_cViewArea->zoomChangeEvent( factor , QPoint() );
-}
-
 Void SubWindowHandle::scaleView( Double scale )
 {
   Q_ASSERT( m_cViewArea->image() );
   m_cViewArea->setZoomFactor( scale );
+  updateLastScrollValue();
 }
 
 Void SubWindowHandle::scaleView( Int width, Int height )
@@ -277,6 +275,12 @@ Void SubWindowHandle::scaleView( const QSize & size )
     scaleView( hfactor );
 }
 
+Void SubWindowHandle::scaleViewByRatio( Double ratio )
+{
+  Q_ASSERT( m_cViewArea->image() );
+  m_cViewArea->zoomChangeEvent( ratio , QPoint() );
+}
+
 void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
 {
   QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
@@ -285,6 +289,8 @@ void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
   scrollBar = m_cScrollArea->verticalScrollBar();
   scrollBar->setValue( int( scrollBar->value() + Offset.y() ) );
   m_cLastScroll.setY( scrollBar->value() );
+
+  updateLastScrollValue();
 }
 
 // This function was developed with help of the schematics presented in
@@ -305,7 +311,6 @@ void SubWindowHandle::adjustScrollBarByZoom( double factor , QPoint center )
     if ( value < scrollBar->minimum() )
       value = scrollBar->minimum();
     scrollBar->setValue( value );
-    m_cLastScroll.setX( value );
   }
 
   scrollBar = m_cScrollArea->verticalScrollBar();
@@ -322,8 +327,17 @@ void SubWindowHandle::adjustScrollBarByZoom( double factor , QPoint center )
     if ( value < scrollBar->minimum() )
       value = scrollBar->minimum();
     scrollBar->setValue( value );
-    m_cLastScroll.setY( value );
   }
+
+  updateLastScrollValue();
+}
+
+void SubWindowHandle::updateLastScrollValue( )
+{
+  QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
+  m_cLastScroll.setX( scrollBar->value() );
+  scrollBar = m_cScrollArea->verticalScrollBar();
+  m_cLastScroll.setY( scrollBar->value() );
 }
 
 

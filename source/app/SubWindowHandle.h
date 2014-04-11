@@ -131,8 +131,7 @@ public:
    */
   Void scaleView( const QSize & size );
 
-  Void scaleViewFactor( Double factor );
-
+  Void scaleViewByRatio( Double ratio );
   Double getScaleFactor()
   {
     return m_cViewArea->getZoomFactor();
@@ -156,6 +155,7 @@ protected:
 public Q_SLOTS:
   void adjustScrollBarByZoom( double factor , QPoint center );
   void adjustScrollBarByOffset( QPoint Offset );
+  void updateLastScrollValue( );
 };
 
 }  // NAMESPACE

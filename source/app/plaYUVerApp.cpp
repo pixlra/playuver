@@ -442,7 +442,7 @@ void plaYUVerApp::scaleFrame( int ratio )
 {
   if( activeSubWindow() )
   {
-    activeSubWindow()->scaleViewFactor( ( Double )( ratio ) / 100.0 );
+    activeSubWindow()->scaleViewByRatio( ( Double )( ratio ) / 100.0 );
 
 //    actionZoomIn->setEnabled( activeSubWindow()->getScaleFactor() < 3.0 );
 //    actionZoomOut->setEnabled( activeSubWindow()->getScaleFactor() > 0.333 );

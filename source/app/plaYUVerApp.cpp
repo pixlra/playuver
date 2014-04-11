@@ -82,6 +82,14 @@ plaYUVerApp::plaYUVerApp()
   m_pcCurrentSubWindow = NULL;
 }
 
+Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
+{
+  if( argc == 2 )
+  {
+    loadFile( argv[1] );
+  }
+}
+
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
 {
   Int mayCloseAll = true;
@@ -124,6 +132,32 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
   }
 }
 
+Void plaYUVerApp::loadFile( QString fileName )
+{
+  QMdiSubWindow *existing = findSubWindow( fileName );
+  if( existing )
+  {
+    mdiArea->setActiveSubWindow( existing );
+    return;
+  }
+
+  SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
+  if( interfaceChild->loadFile( fileName ) )
+  {
+    mdiArea->addSubWindow( interfaceChild );
+    statusBar()->showMessage( tr( "File loaded" ), 2000 );
+    interfaceChild->show();
+    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
+        SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
+    interfaceChild->zoomToFit();
+  }
+  else
+  {
+    interfaceChild->close();
+  }
+}
+
+
 // -----------------------  File Functions  -----------------------
 
 void plaYUVerApp::open()
@@ -144,28 +178,7 @@ void plaYUVerApp::open()
   if( !fileName.isEmpty() )
   {
     m_cLastOpenPath = QFileInfo( fileName ).path();
-
-    QMdiSubWindow *existing = findSubWindow( fileName );
-    if( existing )
-    {
-      mdiArea->setActiveSubWindow( existing );
-      return;
-    }
-
-    SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
-    if( interfaceChild->loadFile( fileName ) )
-    {
-      mdiArea->addSubWindow( interfaceChild );
-      statusBar()->showMessage( tr( "File loaded" ), 2000 );
-      interfaceChild->show();
-      connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
-          SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
-      interfaceChild->zoomToFit();
-    }
-    else
-    {
-      interfaceChild->close();
-    }
+    loadFile( fileName );
   }
 }
 
@@ -522,24 +535,8 @@ void plaYUVerApp::dropEvent( QDropEvent *event )
   if( urlList.size() == 1 )
   {
     QString fileName = urlList.at( 0 ).toLocalFile();
-
     m_cLastOpenPath = QFileInfo( fileName ).path();
-
-    QMdiSubWindow *existing = findSubWindow( fileName );
-    if( !existing )
-    {
-      SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
-      if( interfaceChild->loadFile( fileName ) )
-      {
-        mdiArea->addSubWindow( interfaceChild );
-        statusBar()->showMessage( tr( "File loaded" ), 2000 );
-        interfaceChild->show();
-      }
-      else
-      {
-        interfaceChild->close();
-      }
-    }
+    loadFile( fileName );
   }
 }
 

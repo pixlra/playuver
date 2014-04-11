@@ -50,6 +50,7 @@ Q_OBJECT
 
 public:
   plaYUVerApp();
+  Void parseArgs( Int argc, Char *argv[] );
 
 protected:
   Void closeEvent( QCloseEvent *event );
@@ -108,6 +109,7 @@ private:
   QTime m_cTimer;
   UInt m_uiAveragePlayInterval;
 
+  Void loadFile( QString fileName );
   //! Playing functions
   Void setTimerStatus();
 

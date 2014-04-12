@@ -53,16 +53,10 @@ public:
     NormalMode, MaskMode,
   };
 
-  enum Tool
-  {
-    NavigationTool, NormalSelectionTool, BlockSelectionTool, MaskTool, EraserTool
-  };
-
   ViewArea( QWidget *parent = 0 );
 
   void setImage( const QPixmap &pixmap );
   void setMode( ViewMode mode );
-  void setTool( Tool tool );
   void setMaskColor( const QColor &color = QColor() );
 
   /**
@@ -94,7 +88,7 @@ public:
   {
     return m_mode;
   }
-  Tool tool() const
+  enum eTool tool() const
   {
     return m_tool;
   }
@@ -108,6 +102,7 @@ public:
 
   Void zoomChangeEvent(Double factor, QPoint center);
   Double getZoomFactor();
+  void setTool( enum eTool tool );
 
 //     QSize sizeHint() const;
 
@@ -158,7 +153,7 @@ private:
   QPoint m_lastWindowPos;
   GridManager m_grid;
   ViewMode m_mode;
-  Tool m_tool;
+  enum eTool m_tool;
   QColor m_maskColor;
   double m_zoomFactor;
   int m_xOffset;

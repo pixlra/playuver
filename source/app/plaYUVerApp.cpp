@@ -150,6 +150,7 @@ Void plaYUVerApp::loadFile( QString fileName )
     connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
         SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
     interfaceChild->zoomToFit();
+    interfaceChild->getViewArea()->setTool( m_appTool );
   }
   else
   {
@@ -554,11 +555,31 @@ QMdiSubWindow *plaYUVerApp::findSubWindow( const QString &fileName )
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
 
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
-  SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
-  if( mdiChild->currentFile() == canonicalFilePath )
-  return window;
-}
+    SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
+    if( mdiChild->currentFile() == canonicalFilePath )
+    return window;
+  }
   return 0;
+}
+
+void plaYUVerApp::setNavigationTool( )
+{
+  m_appTool = NavigationTool;
+  setAllSubWindowTool( );
+}
+
+void plaYUVerApp::setSelectionTool( )
+{
+  m_appTool = NormalSelectionTool;
+  setAllSubWindowTool( );
+}
+
+void plaYUVerApp::setAllSubWindowTool( )
+{
+  foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
+    SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
+    mdiChild->getViewArea()->setTool( m_appTool );
+  }
 }
 
 void plaYUVerApp::setActiveSubWindow( QWidget *window )
@@ -595,6 +616,9 @@ Void plaYUVerApp::updateMenus()
   {
     m_pcFrameSlider->setValue( 0 );
   }
+
+  actionNavigationTool->setEnabled( hasSubWindow );
+  actionSelectionTool->setEnabled( hasSubWindow );
 
   m_pcModulesHandle->updateMenus( hasSubWindow );
 }
@@ -760,6 +784,24 @@ Void plaYUVerApp::createActions()
   m_pcFrameSlider->setEnabled( false );
   connect( m_pcFrameSlider, SIGNAL( sliderMoved(int) ), this, SLOT( seekSliderEvent(int) ) );
 
+  // ------------ Tools ------------
+  actionGroupTools = new QActionGroup( this );
+  actionGroupTools->setExclusive(true);
+
+  m_appTool = NavigationTool;
+
+  actionNavigationTool = new QAction( tr( "&Navigation Tool" ), this );
+  actionNavigationTool->setCheckable( true );
+  actionNavigationTool->setChecked( true );
+  actionGroupTools->addAction( actionNavigationTool );
+  connect( actionNavigationTool, SIGNAL( triggered() ), this, SLOT( setNavigationTool() ) );
+
+  actionSelectionTool = new QAction( "&Selection Tool", this );
+  actionSelectionTool->setCheckable( true );
+  actionSelectionTool->setChecked( false );
+  actionGroupTools->addAction( actionSelectionTool );
+  connect( actionSelectionTool, SIGNAL( triggered() ), this, SLOT( setSelectionTool() ) );
+
   // ------------ Window ------------
 
   actionTile = new QAction( tr( "&Tile" ), this );
@@ -835,6 +877,10 @@ Void plaYUVerApp::createMenus()
 
   QMenu* modules_menu = m_pcModulesHandle->createMenus( menuBar() );
   connect( modules_menu, SIGNAL( triggered(QAction *) ), this, SLOT( selectModule(QAction *) ) );
+
+  m_arrayMenu[TOOLS_MENU] = menuBar()->addMenu( tr( "Tools" ) );
+  m_arrayMenu[TOOLS_MENU]->addAction( actionNavigationTool );
+  m_arrayMenu[TOOLS_MENU]->addAction( actionSelectionTool );
 
   m_arrayMenu[WINDOW_MENU] = menuBar()->addMenu( tr( "&Window" ) );
   updateWindowMenu();

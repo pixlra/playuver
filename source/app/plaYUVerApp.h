@@ -99,6 +99,10 @@ private Q_SLOTS:
 
   void updatePixelValueStatusBar(const QPoint & pos, InputStream* stream);
 
+  void setAllSubWindowTool( );
+  void setNavigationTool( );
+  void setSelectionTool( );
+
 private:
   QMdiArea *mdiArea;
   SubWindowHandle *m_pcCurrentSubWindow;
@@ -140,16 +144,16 @@ private:
   /**
    * Array of menus for the main app
    * @param position description:
-   *          0 - Window
-   *          1 - File
-   *          2 - View
-   *          3 - Help
+   *          0 - File
+   *          1 - View
+   *          2 - ...
    */
   enum MAIN_APP_MENU_LIST
   {
     FILE_MENU = 0,
     VIEW_MENU,
     VIDEO_MENU,
+    TOOLS_MENU,
     WINDOW_MENU,
     ABOUT_MENU,
     TOTAL_MENUS,
@@ -214,6 +218,12 @@ private:
 
   QAction *actionAbout;
   QAction *actionAboutQt;
+
+  // Tools Actions;
+  QActionGroup *actionGroupTools;
+  QAction *actionNavigationTool;
+  QAction *actionSelectionTool;
+  enum eTool m_appTool;
 
 };
 

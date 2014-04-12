@@ -154,6 +154,11 @@ typedef struct __pixel_definition
   };
 }Pixel;
 
+enum eTool
+{
+  NavigationTool, NormalSelectionTool, BlockSelectionTool, MaskTool, EraserTool
+};
+
 }  // NAMESPACE
 
 #endif // __TYPEDEF_H__

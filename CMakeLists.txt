@@ -100,19 +100,7 @@ IF( NOT USE_QT4)
     QT5_USE_MODULES( ${PROJECT_NAME} ${CURR_QT_MODULES} )
 ENDIF()
 
-######################################################################################
-# Install
-######################################################################################
-INSTALL(TARGETS ${PROJECT_NAME} DESTINATION bin )
-INSTALL(FILES resources/playuver.desktop DESTINATION share/applications )
-INSTALL(FILES resources/playuver.png DESTINATION share/icons )
-INSTALL(FILES resources/x-raw.xml DESTINATION share/mime/video )
-
-# # try to set up the menu system
-# find_program(XDG-MIME_EXECUTABLE xdg-mime)
-# # find_program(XDG-DESKTOP-MENU_EXECUTABLE xdg-desktop-menu)
-# INSTALL(CODE "execute_process(COMMAND ${XDG-MIME_EXECUTABLE} install --novendor resources/)" )
-
+INCLUDE(cmake/Install.cmake)
 
 ######################################################################################
 # Final information dump

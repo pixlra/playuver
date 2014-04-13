@@ -5,6 +5,6 @@ Name=plaYUVer
 Exec=playuver
 Icon=playuver.png
 Terminal=false
-#MimeType=text/x-pgf
+MimeType=video/x-raw
 Categories=AudioVideo;Video;Player;
 GenericName=raw video player

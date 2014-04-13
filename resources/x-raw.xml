@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mime-type xmlns="http://www.freedesktop.org/standards/shared-mime-info" type="video/x-raw">
+  <comment>Raw YUV file</comment>
+  <icon name="video-x-generic"/>
+  <glob-deleteall/>
+  <glob pattern="*.yuv"/>
+</mime-type>

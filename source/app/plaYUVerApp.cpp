@@ -82,6 +82,14 @@ plaYUVerApp::plaYUVerApp()
   m_pcCurrentSubWindow = NULL;
 }
 
+Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
+{
+  if( argc == 2 )
+  {
+    loadFile( argv[1] );
+  }
+}
+
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
 {
   Int mayCloseAll = true;
@@ -124,6 +132,33 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
   }
 }
 
+Void plaYUVerApp::loadFile( QString fileName )
+{
+  QMdiSubWindow *existing = findSubWindow( fileName );
+  if( existing )
+  {
+    mdiArea->setActiveSubWindow( existing );
+    return;
+  }
+
+  SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
+  if( interfaceChild->loadFile( fileName ) )
+  {
+    mdiArea->addSubWindow( interfaceChild );
+    statusBar()->showMessage( tr( "File loaded" ), 2000 );
+    interfaceChild->show();
+    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
+        SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
+    interfaceChild->zoomToFit();
+    interfaceChild->getViewArea()->setTool( m_appTool );
+  }
+  else
+  {
+    interfaceChild->close();
+  }
+}
+
+
 // -----------------------  File Functions  -----------------------
 
 void plaYUVerApp::open()
@@ -144,28 +179,7 @@ void plaYUVerApp::open()
   if( !fileName.isEmpty() )
   {
     m_cLastOpenPath = QFileInfo( fileName ).path();
-
-    QMdiSubWindow *existing = findSubWindow( fileName );
-    if( existing )
-    {
-      mdiArea->setActiveSubWindow( existing );
-      return;
-    }
-
-    SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
-    if( interfaceChild->loadFile( fileName ) )
-    {
-      mdiArea->addSubWindow( interfaceChild );
-      statusBar()->showMessage( tr( "File loaded" ), 2000 );
-      interfaceChild->show();
-      connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
-          SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
-      interfaceChild->zoomToFit();
-    }
-    else
-    {
-      interfaceChild->close();
-    }
+    loadFile( fileName );
   }
 }
 
@@ -529,24 +543,8 @@ void plaYUVerApp::dropEvent( QDropEvent *event )
   if( urlList.size() == 1 )
   {
     QString fileName = urlList.at( 0 ).toLocalFile();
-
     m_cLastOpenPath = QFileInfo( fileName ).path();
-
-    QMdiSubWindow *existing = findSubWindow( fileName );
-    if( !existing )
-    {
-      SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
-      if( interfaceChild->loadFile( fileName ) )
-      {
-        mdiArea->addSubWindow( interfaceChild );
-        statusBar()->showMessage( tr( "File loaded" ), 2000 );
-        interfaceChild->show();
-      }
-      else
-      {
-        interfaceChild->close();
-      }
-    }
+    loadFile( fileName );
   }
 }
 
@@ -564,11 +562,31 @@ QMdiSubWindow *plaYUVerApp::findSubWindow( const QString &fileName )
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
 
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
-  SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
-  if( mdiChild->currentFile() == canonicalFilePath )
-  return window;
-}
+    SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
+    if( mdiChild->currentFile() == canonicalFilePath )
+    return window;
+  }
   return 0;
+}
+
+void plaYUVerApp::setNavigationTool( )
+{
+  m_appTool = NavigationTool;
+  setAllSubWindowTool( );
+}
+
+void plaYUVerApp::setSelectionTool( )
+{
+  m_appTool = NormalSelectionTool;
+  setAllSubWindowTool( );
+}
+
+void plaYUVerApp::setAllSubWindowTool( )
+{
+  foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
+    SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
+    mdiChild->getViewArea()->setTool( m_appTool );
+  }
 }
 
 void plaYUVerApp::setActiveSubWindow( QWidget *window )
@@ -605,6 +623,9 @@ Void plaYUVerApp::updateMenus()
   {
     m_pcFrameSlider->setValue( 0 );
   }
+
+  actionNavigationTool->setEnabled( hasSubWindow );
+  actionSelectionTool->setEnabled( hasSubWindow );
 
   m_pcModulesHandle->updateMenus( hasSubWindow );
 }
@@ -770,6 +791,24 @@ Void plaYUVerApp::createActions()
   m_pcFrameSlider->setEnabled( false );
   connect( m_pcFrameSlider, SIGNAL( sliderMoved(int) ), this, SLOT( seekSliderEvent(int) ) );
 
+  // ------------ Tools ------------
+  actionGroupTools = new QActionGroup( this );
+  actionGroupTools->setExclusive(true);
+
+  m_appTool = NavigationTool;
+
+  actionNavigationTool = new QAction( tr( "&Navigation Tool" ), this );
+  actionNavigationTool->setCheckable( true );
+  actionNavigationTool->setChecked( true );
+  actionGroupTools->addAction( actionNavigationTool );
+  connect( actionNavigationTool, SIGNAL( triggered() ), this, SLOT( setNavigationTool() ) );
+
+  actionSelectionTool = new QAction( "&Selection Tool", this );
+  actionSelectionTool->setCheckable( true );
+  actionSelectionTool->setChecked( false );
+  actionGroupTools->addAction( actionSelectionTool );
+  connect( actionSelectionTool, SIGNAL( triggered() ), this, SLOT( setSelectionTool() ) );
+
   // ------------ Window ------------
 
   actionTile = new QAction( tr( "&Tile" ), this );
@@ -845,6 +884,10 @@ Void plaYUVerApp::createMenus()
 
   QMenu* modules_menu = m_pcModulesHandle->createMenus( menuBar() );
   connect( modules_menu, SIGNAL( triggered(QAction *) ), this, SLOT( selectModule(QAction *) ) );
+
+  m_arrayMenu[TOOLS_MENU] = menuBar()->addMenu( tr( "Tools" ) );
+  m_arrayMenu[TOOLS_MENU]->addAction( actionNavigationTool );
+  m_arrayMenu[TOOLS_MENU]->addAction( actionSelectionTool );
 
   m_arrayMenu[WINDOW_MENU] = menuBar()->addMenu( tr( "&Window" ) );
   updateWindowMenu();

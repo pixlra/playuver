@@ -165,7 +165,7 @@ void ViewArea::setMaskColor( const QColor &color )
   update();
 }
 
-void ViewArea::setTool( Tool tool )
+void ViewArea::setTool( eTool tool )
 {
   m_tool = tool;
 }
@@ -873,6 +873,5 @@ InputStream* ViewArea::getInputStream()
 {
   return m_pStream;
 }
-
 
 } // NameSpace plaYUVer

@@ -100,11 +100,11 @@ IF( NOT USE_QT4)
     QT5_USE_MODULES( ${PROJECT_NAME} ${CURR_QT_MODULES} )
 ENDIF()
 
-INSTALL(TARGETS ${PROJECT_NAME} DESTINATION bin )
-INSTALL(FILES resources/playuver.desktop DESTINATION share/applications )
-INSTALL(FILES resources/playuver.png DESTINATION share/icons )
+INCLUDE(cmake/Install.cmake)
 
-
+######################################################################################
+# Final information dump
+######################################################################################
 status("Configuration:")
 status("    Build type:"           ${CMAKE_BUILD_TYPE} )
 status("    Warnings as errors:" USE_WERROR       THEN YES ELSE NO)

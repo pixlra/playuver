@@ -46,8 +46,6 @@ StreamPropertiesSideBar::StreamPropertiesSideBar( QWidget* parent ) :
 
   // ----------------- GUI definition -----------------
 
-  QGridLayout *mainLayout = new QGridLayout;
-
   QLabel *formatLabel = new QLabel( tr( "File Format:" ) );
   formatLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
   labelFormatValue = new QLabel;
@@ -95,14 +93,16 @@ StreamPropertiesSideBar::StreamPropertiesSideBar( QWidget* parent ) :
   propertiesLayout->addWidget( colorSpaceLabel, layout_line, 0 );
   propertiesLayout->addWidget( labelColorSpaceValue, layout_line, 1 );
 
-//  QGroupBox *propertiesGroup = new QGroupBox;
-//  propertiesGroup->setLayout( propertiesLayout );
-//  mainLayout->addWidget( propertiesGroup );
-//  mainLayout->setRowStretch( 8, 10 );
-
   propertiesLayout->setRowStretch( 8, 10 );
   setLayout( propertiesLayout );
+
+  //QGroupBox *propertiesGroup = new QGroupBox;
+  //propertiesGroup->setLayout( propertiesLayout );
+  //QGridLayout *mainLayout = new QGridLayout;
+  //mainLayout->addWidget( propertiesGroup );
+  //mainLayout->setRowStretch( 8, 10 );
   //setLayout( mainLayout );
+
   setEnabled( false );
 }
 

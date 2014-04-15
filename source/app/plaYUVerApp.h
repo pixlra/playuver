@@ -116,6 +116,8 @@ private:
   Void loadFile( QString fileName );
   //! Playing functions
   Void setTimerStatus();
+  Void updateCurrFrameNum();
+  Void updateTotalFrameNum( UInt total_frame_num = 0 );
 
   Void updateMenus();
   Void updateProperties();
@@ -135,6 +137,8 @@ private:
   Bool m_bIsPlaying;
   QVector<SubWindowHandle*> m_acPlayingSubWindows;
   QSlider *m_pcFrameSlider;
+  QLabel  *m_pcCurrFrameNumLabel;
+  QLabel  *m_pcTotalFrameNumLabel;
 
 
   QSignalMapper *mapperZoom;

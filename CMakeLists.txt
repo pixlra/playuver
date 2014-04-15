@@ -107,6 +107,7 @@ INCLUDE(cmake/Install.cmake)
 ######################################################################################
 status("Configuration:")
 status("    Build type:"           ${CMAKE_BUILD_TYPE} )
+status("    Build flags:"          ${CMAKE_CXX_FLAGS_DEBUG} )
 status("    Warnings as errors:" USE_WERROR       THEN YES ELSE NO)
 status("Dependencies:")
 status("    QT:"              USE_QT4             THEN "QT4" ELSE "QT5" )

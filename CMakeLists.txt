@@ -2,17 +2,18 @@
 ### CMakeLists for playuver
 ###
 
+cmake_minimum_required( VERSION 2.8.9 )
+
 ######################################################################################
 # Project Definition
 ######################################################################################
-
-cmake_minimum_required( VERSION 2.8.9 )
+SET( PROJECT_NAME playuver )
+SET( PLAYUVER_VERSION_MAJOR "0" )
+SET( PLAYUVER_VERSION_MINOR "1" )
+SET( PLAYUVER_VERSION_PATH  "0" )
+PROJECT( ${PROJECT_NAME} )
 
 INCLUDE( cmake/CMakeMacros.cmake )
-
-PROJECT( playuver )
-
-SET( PROJECT_NAME playuver )
 
 # Project directories 
 SET( SRC_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/source )

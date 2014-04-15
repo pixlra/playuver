@@ -326,26 +326,35 @@ void plaYUVerApp::pause()
     {
       m_pcCurrentSubWindow->pause();
     }
-    m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
+    updateCurrFrameNum();
   }
   setTimerStatus();
 }
 
 void plaYUVerApp::stop()
 {
+  if( m_acPlayingSubWindows.size() > 0 )
+  {
   for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
   {
     m_acPlayingSubWindows.at( i )->stop();
   }
   m_acPlayingSubWindows.clear();
   setTimerStatus();
-  m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
-
+  updateCurrFrameNum();
   if( m_uiAveragePlayInterval )
     qDebug( ) << "Real display time: "
               << QString::number( 1000 / m_uiAveragePlayInterval )
               << " fps";
   m_uiAveragePlayInterval = 0;
+  }
+  else
+  {
+    if( m_pcCurrentSubWindow )
+    {
+      seekSliderEvent( 0 );
+    }
+  }
 }
 
 void plaYUVerApp::playEvent()
@@ -358,13 +367,13 @@ void plaYUVerApp::playEvent()
     {
     case -1:
       stop();
-      m_pcFrameSlider->setValue( m_pcCurrentSubWindow ? m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() : 0 );
+      updateCurrFrameNum();
       break;
     case -2:
       if( !actionVideoLoop->isChecked() )
       {
         stop();
-        m_pcFrameSlider->setValue( m_pcCurrentSubWindow ? m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() : 0 );
+        updateCurrFrameNum();
         return;
       }
       break;
@@ -378,10 +387,27 @@ void plaYUVerApp::playEvent()
       break;
     }
   }
-  if( m_pcCurrentSubWindow )
-    m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
-
+  updateCurrFrameNum();
   m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time ) / 2;
+}
+
+Void plaYUVerApp::updateCurrFrameNum()
+{
+  if( m_pcCurrentSubWindow )
+  {
+    Int frame_num = m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum();
+    m_pcFrameSlider->setValue( frame_num );
+    m_pcCurrFrameNumLabel->setText( QString( tr( "%1" ) ).arg( frame_num ) );
+  }
+}
+Void plaYUVerApp::updateTotalFrameNum( UInt total_frame_num )
+{
+  if( m_pcCurrentSubWindow && total_frame_num == 0 )
+  {
+    total_frame_num = m_pcCurrentSubWindow->getInputStream()->getFrameNum();
+  }
+  m_pcFrameSlider->setMaximum( total_frame_num - 1 );
+  m_pcTotalFrameNumLabel->setText( QString( tr( "%1" ) ).arg( total_frame_num ) );
 }
 
 void plaYUVerApp::seekEvent( int direction )
@@ -398,8 +424,9 @@ void plaYUVerApp::seekEvent( int direction )
     else
     {
       m_pcCurrentSubWindow->seekRelativeEvent( direction > 0 ? true : false );
-      m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
+
     }
+    updateCurrFrameNum();
   }
 }
 
@@ -417,8 +444,8 @@ void plaYUVerApp::seekSliderEvent( int new_frame_num )
     else
     {
       m_pcCurrentSubWindow->seekAbsoluteEvent( ( UInt )new_frame_num );
-      m_pcFrameSlider->setValue( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() );
     }
+    updateCurrFrameNum();
   }
 }
 
@@ -480,11 +507,12 @@ void plaYUVerApp::chageSubWindowSelection()
 //    {
 //      playingTimer->stop();
 //    }
-    m_pcFrameSlider->setMaximum( activeSubWindow()->getInputStream()->getFrameNum() - 1 );
-    m_pcFrameSlider->setValue( activeSubWindow()->getInputStream()->getCurrFrameNum() );
     m_pcCurrentSubWindow = activeSubWindow();
     m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
     m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
+    updateCurrFrameNum();
+    updateTotalFrameNum();
+    updateProperties();
   }
   else
   {
@@ -622,8 +650,9 @@ Void plaYUVerApp::updateMenus()
   if( !hasSubWindow )
   {
     m_pcFrameSlider->setValue( 0 );
+    m_pcCurrFrameNumLabel->setText("-");
+    m_pcTotalFrameNumLabel->setText("-");
   }
-
   actionNavigationTool->setEnabled( hasSubWindow );
   actionSelectionTool->setEnabled( hasSubWindow );
 
@@ -927,7 +956,16 @@ Void plaYUVerApp::createToolBars()
    toolbarVideo->addAction( actionVideoCenter );
    */
   toolbarVideo->addWidget( m_pcFrameSlider );
-
+  toolbarVideo->addWidget( new QLabel );
+  m_pcCurrFrameNumLabel = new QLabel;
+  m_pcCurrFrameNumLabel->setText("-");
+  toolbarVideo->addWidget( m_pcCurrFrameNumLabel );
+  QLabel *forwardslash = new QLabel;
+  forwardslash->setText("/");
+  toolbarVideo->addWidget( forwardslash );
+  m_pcTotalFrameNumLabel = new QLabel;
+  m_pcTotalFrameNumLabel->setText("-");
+  toolbarVideo->addWidget( m_pcTotalFrameNumLabel );
 }
 
 Void plaYUVerApp::createDockWidgets()

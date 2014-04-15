@@ -298,7 +298,7 @@ Void InputStream::getDuration( Int* duration_array )
   else
 #endif
   {
-    secs = m_uiTotalFrameNum * m_uiFrameRate;
+    secs = m_uiTotalFrameNum / m_uiFrameRate;
   }
   mins = secs / 60;
   secs %= 60;

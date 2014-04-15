@@ -218,15 +218,6 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent ) :
   colorsLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
   colorsCB = new QComboBox;
-  colorsCB->addItem( tr( "Red" ) );
-  colorsCB->addItem( tr( "Green" ) );
-  colorsCB->addItem( tr( "Blue" ) );
-  colorsCB->setEnabled( false );
-  colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
-      "<p><b>Red</b>: Draw the red image channel in the foreground.<p>"
-      "<b>Green</b>: Draw the green image channel in the foreground.<p>"
-      "<b>Blue</b>: Draw the blue image channel in the foreground.<p>" ) );
-
   colorsCB->hide();
   colorsLabel->hide();
 
@@ -426,6 +417,16 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
         channelCB->insertItem( AlphaChannel, QIcon( ":/images/channel-alpha.png" ), "Alpha" );
       }
       channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "Colors" );
+
+      colorsCB->clear();
+      colorsCB->addItem( "Red" );
+      colorsCB->addItem( "Green" );
+      colorsCB->addItem( "Blue" );
+      colorsCB->setEnabled( false );
+      colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
+          "<p><b>Red</b>: Draw the Red image channel in the foreground.<p>"
+          "<b>Green</b>: Draw the Green image channel in the foreground.<p>"
+          "<b>Blue</b>: Draw the Blue image channel in the foreground.<p>" ) );
       colorsCB->show();
       colorsLabel->show();
     }
@@ -436,6 +437,16 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
       channelCB->insertItem( ChromaUhannel, QIcon( ":/images/channel-red.png" ), "Chroma U" );
       channelCB->insertItem( ChromaVhannel, QIcon( ":/images/channel-green.png" ), "Chroma V" );
       channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "All Channels" );
+
+      colorsCB->clear();
+       colorsCB->addItem( "Luminance" );
+       colorsCB->addItem( "Chroma U" );
+       colorsCB->addItem( "Chroma V" );
+       colorsCB->setEnabled( false );
+       colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
+           "<p><b>Luminance</b>: Draw the Luminance channel in the foreground.<p>"
+           "<b>Chroma U</b>: Draw the Chroma U channel in the foreground.<p>"
+           "<b>Chroma V</b>: Draw the Chroma V channel in the foreground.<p>" ) );
       colorsCB->show();
       colorsLabel->show();
     }

@@ -149,6 +149,9 @@ Void plaYUVerApp::loadFile( QString fileName )
     interfaceChild->show();
     connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
         SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
+//    connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this,
+//            SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
+
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
   }
@@ -239,11 +242,33 @@ void plaYUVerApp::updateProperties()
   {
     m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
     m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
+    //m_pcFrameProperties->setSelection( m_pcCurrentSubWindow->getViewArea()->selectedArea() );
   }
   else
   {
     m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
     m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
+    //m_pcFrameProperties->setSelection( m_pcCurrentSubWindow->getViewArea()->selectedArea() );
+  }
+}
+
+void plaYUVerApp::updatePropertiesSelectedArea( QRect area )
+{
+  if( m_pcCurrentSubWindow )
+  {
+    if( area.isNull() )
+    {
+      m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
+      m_pcFrameProperties->setSelection( area );
+    }
+    else
+    {
+      m_pcFrameProperties->setSelection( area );
+    }
+  }
+  else
+  {
+    m_pcFrameProperties->setData( NULL );
   }
 }
 

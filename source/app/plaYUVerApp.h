@@ -99,6 +99,8 @@ private Q_SLOTS:
 
   void updatePixelValueStatusBar(const QPoint & pos, InputStream* stream);
 
+  void updatePropertiesSelectedArea( QRect area );
+
   void setAllSubWindowTool( );
   void setNavigationTool( );
   void setSelectionTool( );

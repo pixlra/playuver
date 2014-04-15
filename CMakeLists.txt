@@ -39,6 +39,8 @@ IF(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")
   SET_PROPERTY( CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES} )
 ENDIF()
 
+SET( CMAKE_CXX_FLAGS "" )
+
 ######################################################################################
 # Variables
 ######################################################################################
@@ -87,10 +89,13 @@ ENDIF()
 
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" )
 SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g" )
-SET( CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3" )
+SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3" )
+
 IF( USE_WERROR )
   SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
 ENDIF()
+
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" )
 
 ADD_EXECUTABLE( ${PROJECT_NAME} ${SOURCES_FILES} ${HEADERS_MOC_FILES} ${FORMS_HEADERS_FILES} ${RESOURCES_RCC_FILES} )
 
@@ -107,7 +112,7 @@ INCLUDE(cmake/Install.cmake)
 ######################################################################################
 status("Configuration:")
 status("    Build type:"           ${CMAKE_BUILD_TYPE} )
-status("    Build flags:"          ${CMAKE_CXX_FLAGS} )
+status("    Build flags:"          "${CMAKE_CXX_FLAGS}" )
 status("    Warnings as errors:" USE_WERROR       THEN YES ELSE NO)
 status("Dependencies:")
 status("    QT:"              USE_QT4             THEN "QT4" ELSE "QT5" )

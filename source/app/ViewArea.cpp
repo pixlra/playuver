@@ -598,6 +598,10 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
 {
   event->accept();
 
+  // Add this code line to avoid slow navigation with some specific mouses
+  if(qApp->hasPendingEvents())
+    return;
+
   QPoint actualPos = windowToView( event->pos() );
   QRect updateRect;
 

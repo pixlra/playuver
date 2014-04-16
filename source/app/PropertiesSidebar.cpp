@@ -355,6 +355,8 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent ) :
   setLayout( mainLayout );
   setEnabled( false );
 
+
+  connect( this, SIGNAL( visibilityChanged(bool) ), this, SLOT( slotUpdateHistogram() ) );
   connect( channelCB, SIGNAL( activated(int) ), this, SLOT( slotChannelChanged(int) ) );
   connect( scaleButtonGroup, SIGNAL( buttonClicked(int) ), this, SLOT( slotScaleChanged(int) ) );
   connect( colorsCB, SIGNAL( activated(int) ), this, SLOT( slotColorsChanged(int) ) );
@@ -382,6 +384,25 @@ FramePropertiesSideBar::~FramePropertiesSideBar()
 QSize FramePropertiesSideBar::sizeHint() const
 {
   return bestSize( size() );
+}
+
+void FramePropertiesSideBar::slotUpdateHistogram()
+{
+  if( m_pcFrame->isValid() && isVisible() )
+  {
+    // If a selection area is done in Image Editor and if the current
+    // image is the same in Image Viewer, then compute too the histogram
+    // for this selection.
+    histogramWidget->updateData( *m_pcFrame, PlaYUVerFrame() );
+    fullImageButton->hide();
+    selectionImageButton->hide();
+    updateInformations();
+  }
+  else
+  {
+    histogramWidget->setLoadingFailed();
+    slotHistogramComputationFailed();
+  }
 }
 
 Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
@@ -463,21 +484,7 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
 
     m_pcFrame = pcFrame;
 
-    if( m_pcFrame->isValid() )
-    {
-      // If a selection area is done in Image Editor and if the current
-      // image is the same in Image Viewer, then compute too the histogram
-      // for this selection.
-      histogramWidget->updateData( *m_pcFrame, PlaYUVerFrame() );
-      fullImageButton->hide();
-      selectionImageButton->hide();
-      updateInformations();
-    }
-    else
-    {
-      histogramWidget->setLoadingFailed();
-      slotHistogramComputationFailed();
-    }
+    slotUpdateHistogram();
   }
 }
 

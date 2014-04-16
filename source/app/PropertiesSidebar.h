@@ -52,6 +52,7 @@ public:
 private:
   InputStream* m_pcStream;
 
+  Bool m_bIsVisible;
   QLabel* labelFormatValue;
   QLabel* labelCodecValue;
   QLabel* labelDurationValueTime;
@@ -134,6 +135,7 @@ private:
   void updateStatistiques();
 
 private Q_SLOTS:
+  void slotUpdateHistogram();
   void slotRefreshOptions( bool sixteenBit );
   void slotHistogramComputationFailed( void );
   void slotChannelChanged( int channel );

@@ -459,6 +459,7 @@ void plaYUVerApp::seekEvent( int direction )
       m_pcCurrentSubWindow->seekRelativeEvent( direction > 0 ? true : false );
 
     }
+    updateFrameProperties();
     updateCurrFrameNum();
   }
 }
@@ -478,6 +479,7 @@ void plaYUVerApp::seekSliderEvent( int new_frame_num )
     {
       m_pcCurrentSubWindow->seekAbsoluteEvent( ( UInt )new_frame_num );
     }
+    updateFrameProperties();
     updateCurrFrameNum();
   }
 }
@@ -984,15 +986,10 @@ Void plaYUVerApp::createToolBars()
   toolbarVideo->addAction( actionVideoPlay );
   toolbarVideo->addAction( actionVideoPause );
   toolbarVideo->addAction( actionVideoStop );
-  /*
-   toolbarVideo->addAction( actionVideoBackward );
-   toolbarVideo->addAction( actionVideoForward );
-   toolbarVideo->addAction( actionVideoLoop );
-   toolbarVideo->addAction( actionVideoLock );
-   toolbarVideo->addAction( actionVideoInterlace );
-   toolbarVideo->addAction( actionVideoCenter );
-   */
+  toolbarVideo->addAction( actionVideoBackward );
   toolbarVideo->addWidget( m_pcFrameSlider );
+  toolbarVideo->addAction( actionVideoForward );
+
   toolbarVideo->addWidget( new QLabel );
   m_pcCurrFrameNumLabel = new QLabel;
   m_pcCurrFrameNumLabel->setText( "-" );

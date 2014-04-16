@@ -122,7 +122,8 @@ private:
   Void updateTotalFrameNum( UInt total_frame_num = 0 );
 
   Void updateMenus();
-  Void updateProperties();
+  Void updateStreamProperties();
+  Void updateFrameProperties();
 
   Void createActions();
   Void createMenus();

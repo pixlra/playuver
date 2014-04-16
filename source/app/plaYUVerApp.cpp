@@ -161,7 +161,6 @@ Void plaYUVerApp::loadFile( QString fileName )
   }
 }
 
-
 // -----------------------  File Functions  -----------------------
 
 void plaYUVerApp::open()
@@ -236,19 +235,28 @@ void plaYUVerApp::selectModule( QAction *curr_action )
 
 // -----------------------  Update Properties   --------------------
 
-void plaYUVerApp::updateProperties()
+void plaYUVerApp::updateStreamProperties()
 {
   if( m_pcCurrentSubWindow )
   {
     m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
+  }
+  else
+  {
+    m_pcStreamProperties->setData( NULL );
+  }
+}
+
+Void plaYUVerApp::updateFrameProperties()
+{
+  if( m_pcCurrentSubWindow )
+  {
     m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
     //m_pcFrameProperties->setSelection( m_pcCurrentSubWindow->getViewArea()->selectedArea() );
   }
   else
   {
-    m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
-    m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
-    //m_pcFrameProperties->setSelection( m_pcCurrentSubWindow->getViewArea()->selectedArea() );
+    m_pcFrameProperties->setData( NULL );
   }
 }
 
@@ -360,18 +368,18 @@ void plaYUVerApp::stop()
 {
   if( m_acPlayingSubWindows.size() > 0 )
   {
-  for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-  {
-    m_acPlayingSubWindows.at( i )->stop();
-  }
-  m_acPlayingSubWindows.clear();
-  setTimerStatus();
-  updateCurrFrameNum();
-  if( m_uiAveragePlayInterval )
-    qDebug( ) << "Real display time: "
-              << QString::number( 1000 / m_uiAveragePlayInterval )
-              << " fps";
-  m_uiAveragePlayInterval = 0;
+    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+    {
+      m_acPlayingSubWindows.at( i )->stop();
+    }
+    m_acPlayingSubWindows.clear();
+    setTimerStatus();
+    updateCurrFrameNum();
+    if( m_uiAveragePlayInterval )
+      qDebug( ) << "Real display time: "
+                << QString::number( 1000 / m_uiAveragePlayInterval )
+                << " fps";
+    m_uiAveragePlayInterval = 0;
   }
   else
   {
@@ -392,7 +400,6 @@ void plaYUVerApp::playEvent()
     {
     case -1:
       stop();
-      updateCurrFrameNum();
       break;
     case -2:
       if( !actionVideoLoop->isChecked() )
@@ -413,6 +420,7 @@ void plaYUVerApp::playEvent()
     }
   }
   updateCurrFrameNum();
+  updateFrameProperties();
   m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time ) / 2;
 }
 
@@ -422,7 +430,7 @@ Void plaYUVerApp::updateCurrFrameNum()
   {
     Int frame_num = m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum();
     m_pcFrameSlider->setValue( frame_num );
-    m_pcCurrFrameNumLabel->setText( QString( tr( "%1" ) ).arg( frame_num ) );
+    m_pcCurrFrameNumLabel->setText( QString( tr( "%1" ) ).arg( frame_num + 1 ) );
   }
 }
 Void plaYUVerApp::updateTotalFrameNum( UInt total_frame_num )
@@ -537,14 +545,15 @@ void plaYUVerApp::chageSubWindowSelection()
     m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
     updateCurrFrameNum();
     updateTotalFrameNum();
-    updateProperties();
+    updateStreamProperties();
+    updateFrameProperties();
   }
   else
   {
     m_pcCurrentSubWindow = NULL;
-    m_pcStreamProperties->setData( NULL );
-    m_pcFrameProperties->setData( NULL );
   }
+  updateStreamProperties();
+  updateFrameProperties();
   updateMenus();
   createStatusBar();
 }
@@ -615,31 +624,31 @@ QMdiSubWindow *plaYUVerApp::findSubWindow( const QString &fileName )
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
 
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
-    SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
-    if( mdiChild->currentFile() == canonicalFilePath )
-    return window;
-  }
+  SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
+  if( mdiChild->currentFile() == canonicalFilePath )
+  return window;
+}
   return 0;
 }
 
-void plaYUVerApp::setNavigationTool( )
+void plaYUVerApp::setNavigationTool()
 {
   m_appTool = NavigationTool;
-  setAllSubWindowTool( );
+  setAllSubWindowTool();
 }
 
-void plaYUVerApp::setSelectionTool( )
+void plaYUVerApp::setSelectionTool()
 {
   m_appTool = NormalSelectionTool;
-  setAllSubWindowTool( );
+  setAllSubWindowTool();
 }
 
-void plaYUVerApp::setAllSubWindowTool( )
+void plaYUVerApp::setAllSubWindowTool()
 {
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
-    SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
-    mdiChild->getViewArea()->setTool( m_appTool );
-  }
+  SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
+  mdiChild->getViewArea()->setTool( m_appTool );
+}
 }
 
 void plaYUVerApp::setActiveSubWindow( QWidget *window )
@@ -671,12 +680,13 @@ Void plaYUVerApp::updateMenus()
   actionVideoBackward->setEnabled( hasSubWindow );
   actionVideoForward->setEnabled( hasSubWindow );
   actionVideoLoop->setEnabled( hasSubWindow );
+  actionVideoLock->setEnabled( hasSubWindow );
   m_pcFrameSlider->setEnabled( hasSubWindow );
   if( !hasSubWindow )
   {
     m_pcFrameSlider->setValue( 0 );
-    m_pcCurrFrameNumLabel->setText("-");
-    m_pcTotalFrameNumLabel->setText("-");
+    m_pcCurrFrameNumLabel->setText( "-" );
+    m_pcTotalFrameNumLabel->setText( "-" );
   }
   actionNavigationTool->setEnabled( hasSubWindow );
   actionSelectionTool->setEnabled( hasSubWindow );
@@ -756,7 +766,9 @@ Void plaYUVerApp::createActions()
   connect( m_arrayActions[FORMAT_ACT], SIGNAL( triggered() ), this, SLOT( format() ) );
 
   m_arrayActions[CLOSE_ACT] = new QAction( tr( "Cl&ose" ), this );
-  m_arrayActions[CLOSE_ACT]->setIcon( QIcon( ":/images/close.png" ) );
+  // m_arrayActions[CLOSE_ACT]->setIcon( QIcon( ":/images/close.png" ) );
+  m_arrayActions[CLOSE_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogCloseButton ) );
+
   m_arrayActions[CLOSE_ACT]->setStatusTip( tr( "Close the active window" ) );
   connect( m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), this, SLOT( closeActiveWindow() ) );
 
@@ -847,7 +859,7 @@ Void plaYUVerApp::createActions()
 
   // ------------ Tools ------------
   actionGroupTools = new QActionGroup( this );
-  actionGroupTools->setExclusive(true);
+  actionGroupTools->setExclusive( true );
 
   m_appTool = NavigationTool;
 
@@ -983,13 +995,13 @@ Void plaYUVerApp::createToolBars()
   toolbarVideo->addWidget( m_pcFrameSlider );
   toolbarVideo->addWidget( new QLabel );
   m_pcCurrFrameNumLabel = new QLabel;
-  m_pcCurrFrameNumLabel->setText("-");
+  m_pcCurrFrameNumLabel->setText( "-" );
   toolbarVideo->addWidget( m_pcCurrFrameNumLabel );
   QLabel *forwardslash = new QLabel;
-  forwardslash->setText("/");
+  forwardslash->setText( "/" );
   toolbarVideo->addWidget( forwardslash );
   m_pcTotalFrameNumLabel = new QLabel;
-  m_pcTotalFrameNumLabel->setText("-");
+  m_pcTotalFrameNumLabel->setText( "-" );
   toolbarVideo->addWidget( m_pcTotalFrameNumLabel );
 }
 

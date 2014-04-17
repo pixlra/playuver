@@ -762,11 +762,13 @@ Void plaYUVerApp::createActions()
 
   // ------------ File ------------
   m_arrayActions[OPEN_ACT] = new QAction( QIcon( ":/images/open.png" ), tr( "&Open..." ), this );
+  m_arrayActions[OPEN_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogOpenButton ) );
   m_arrayActions[OPEN_ACT]->setShortcuts( QKeySequence::Open );
   m_arrayActions[OPEN_ACT]->setStatusTip( tr( "Open stream" ) );
   connect( m_arrayActions[OPEN_ACT], SIGNAL( triggered() ), this, SLOT( open() ) );
 
   m_arrayActions[SAVE_ACT] = new QAction( QIcon( ":/images/save.png" ), tr( "&Save..." ), this );
+  m_arrayActions[SAVE_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogSaveButton ) );
   m_arrayActions[SAVE_ACT]->setShortcuts( QKeySequence::SaveAs );
   m_arrayActions[SAVE_ACT]->setStatusTip( tr( "Save current frame" ) );
   connect( m_arrayActions[SAVE_ACT], SIGNAL( triggered() ), this, SLOT( save() ) );

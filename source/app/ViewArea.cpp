@@ -37,7 +37,6 @@
 
 #include "ViewArea.h"
 #include "GridManager.h"
-#include "PlaYUVerFrame.h"
 #include "InputStream.h"
 
 namespace plaYUVer
@@ -67,6 +66,13 @@ ViewArea::ViewArea( QWidget *parent ) :
   m_snapToGrid = false;
   m_blockTrackEnable = false;
   m_pStream = NULL;
+}
+
+void ViewArea::setImage( PlaYUVerFrame* pcFrame )
+{
+  pcFrame->FrametoRGB8();
+  QImage qimg = QImage( pcFrame->getQImageBuffer(), pcFrame->getWidth(), pcFrame->getHeight(), QImage::Format_RGB888 );
+  setImage( QPixmap::fromImage( qimg ) );
 }
 
 void ViewArea::setImage( const QPixmap &pixmap )

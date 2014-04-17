@@ -229,7 +229,18 @@ void plaYUVerApp::selectModule( QAction *curr_action )
     {
       if( pcCurrMod->m_cModuleDef.m_bRequiresNewWindow )
       {
+        SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
+        mdiArea->addSubWindow( interfaceChild );
 
+//        connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
+//            SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
+    //    connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this,
+    //            SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
+        m_pcCurrentSubWindow->setModuleSubWindow( interfaceChild );
+        m_pcCurrentSubWindow->enableModule( pcCurrMod );
+        interfaceChild->show();
+        interfaceChild->zoomToFit();
+        interfaceChild->getViewArea()->setTool( m_appTool );
       }
       else
       {

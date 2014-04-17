@@ -45,8 +45,8 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   m_cViewArea = new ViewArea( m_cScrollArea );
   connect( m_cViewArea, SIGNAL( zoomFactorChanged( double , QPoint) ), this, SLOT( adjustScrollBarByZoom(double, QPoint) ) );
   connect( m_cViewArea, SIGNAL( moveScroll( QPoint ) ), this, SLOT( adjustScrollBarByOffset(QPoint) ) );
-  connect( m_cScrollArea->horizontalScrollBar() , SIGNAL( actionTriggered( int ) ), this, SLOT ( updateLastScrollValue() ) );
-  connect( m_cScrollArea->verticalScrollBar() , SIGNAL( actionTriggered( int ) ), this, SLOT ( updateLastScrollValue() ) );
+  connect( m_cScrollArea->horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
+  connect( m_cScrollArea->verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
 
   // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
@@ -55,6 +55,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   m_pCurrStream = new InputStream;
 
   m_pcCurrentModule = NULL;
+  m_pcModuleSubWindow = NULL;
 
   m_cWindowName = QString( " " );
   m_bIsPlaying = false;
@@ -130,26 +131,33 @@ Void SubWindowHandle::disableModule()
   if( !m_pcCurrentModule )
     return;
 
-  m_pcCurrentModule->m_pcAction->setCheckable(false);
+  m_pcCurrentModule->m_pcAction->setCheckable( false );
   m_pcCurrentModule->destroy();
   m_pcCurrentModule = NULL;
   refreshFrame();
 }
 
+Void SubWindowHandle::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
+{
+  m_pcCurrFrame = pcCurrFrame;
+  m_cViewArea->setImage( m_pcCurrFrame );
+}
+
 Void SubWindowHandle::refreshFrame()
 {
-  PlaYUVerFrame* currFrame;
+  m_pcCurrFrame = m_pCurrStream->getCurrFrame();
   if( m_pcCurrentModule )
   {
-    currFrame = m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() );
+    if( m_pcModuleSubWindow )
+    {
+      m_pcModuleSubWindow->setCurrFrame( m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() ) );
+    }
+    else
+    {
+      m_pcCurrFrame = m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() );
+    }
   }
-  else
-  {
-    currFrame = m_pCurrStream->getCurrFrame();
-  }
-  currFrame->FrametoRGB8();
-  QImage qimg = QImage( currFrame->getQImageBuffer(), currFrame->getWidth(), currFrame->getHeight(), QImage::Format_RGB888 );
-  m_cViewArea->setImage( QPixmap::fromImage( qimg ) );
+  m_cViewArea->setImage( m_pcCurrFrame );
 }
 
 Bool SubWindowHandle::save()
@@ -169,7 +177,8 @@ Bool SubWindowHandle::save()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
   m_pCurrStream->getCurrFrame()->FrametoRGB8();
-  QImage qimg = QImage( m_pCurrStream->getCurrFrame()->getQImageBuffer(), m_pCurrStream->getCurrFrame()->getWidth(), m_pCurrStream->getCurrFrame()->getHeight(), QImage::Format_RGB888 );
+  QImage qimg = QImage( m_pCurrStream->getCurrFrame()->getQImageBuffer(), m_pCurrStream->getCurrFrame()->getWidth(), m_pCurrStream->getCurrFrame()->getHeight(),
+      QImage::Format_RGB888 );
   if( qimg.save( fileName ) )
   {
     QApplication::restoreOverrideCursor();
@@ -279,13 +288,13 @@ Void SubWindowHandle::scaleView( const QSize & size )
 Void SubWindowHandle::scaleViewByRatio( Double ratio )
 {
   Q_ASSERT( m_cViewArea->image() );
-  m_cViewArea->zoomChangeEvent( ratio , QPoint() );
+  m_cViewArea->zoomChangeEvent( ratio, QPoint() );
 }
 
 void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
 {
   QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
-  scrollBar->setValue( int( scrollBar->value() + Offset.x()  ) );
+  scrollBar->setValue( int( scrollBar->value() + Offset.x() ) );
   m_cLastScroll.setX( scrollBar->value() );
   scrollBar = m_cScrollArea->verticalScrollBar();
   scrollBar->setValue( int( scrollBar->value() + Offset.y() ) );
@@ -296,7 +305,7 @@ void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
 
 // This function was developed with help of the schematics presented in
 // http://stackoverflow.com/questions/13155382/jscrollpane-zoom-relative-to-mouse-position
-void SubWindowHandle::adjustScrollBarByZoom( double factor , QPoint center )
+void SubWindowHandle::adjustScrollBarByZoom( double factor, QPoint center )
 {
   QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
   if( center.isNull() )
@@ -307,9 +316,9 @@ void SubWindowHandle::adjustScrollBarByZoom( double factor , QPoint center )
   {
     Int x = center.x() - m_cLastScroll.x();
     Int value = int( factor * m_cLastScroll.x() + ( ( factor - 1 ) * x ) );
-    if ( value > scrollBar->maximum() )
+    if( value > scrollBar->maximum() )
       value = scrollBar->maximum();
-    if ( value < scrollBar->minimum() )
+    if( value < scrollBar->minimum() )
       value = scrollBar->minimum();
     scrollBar->setValue( value );
   }
@@ -323,9 +332,9 @@ void SubWindowHandle::adjustScrollBarByZoom( double factor , QPoint center )
   {
     Int y = center.y() - m_cLastScroll.y();
     Int value = int( factor * m_cLastScroll.y() + ( ( factor - 1 ) * y ) );
-    if ( value > scrollBar->maximum() )
+    if( value > scrollBar->maximum() )
       value = scrollBar->maximum();
-    if ( value < scrollBar->minimum() )
+    if( value < scrollBar->minimum() )
       value = scrollBar->minimum();
     scrollBar->setValue( value );
   }
@@ -333,14 +342,13 @@ void SubWindowHandle::adjustScrollBarByZoom( double factor , QPoint center )
   updateLastScrollValue();
 }
 
-void SubWindowHandle::updateLastScrollValue( )
+void SubWindowHandle::updateLastScrollValue()
 {
   QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
   m_cLastScroll.setX( scrollBar->value() );
   scrollBar = m_cScrollArea->verticalScrollBar();
   m_cLastScroll.setY( scrollBar->value() );
 }
-
 
 QSize SubWindowHandle::sizeHint() const
 {

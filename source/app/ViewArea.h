@@ -33,6 +33,7 @@
 
 #include "TypeDef.h"
 #include "GridManager.h"
+#include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {
@@ -55,6 +56,7 @@ public:
 
   ViewArea( QWidget *parent = 0 );
 
+  void setImage( PlaYUVerFrame* pcFrame );
   void setImage( const QPixmap &pixmap );
   void setMode( ViewMode mode );
   void setMaskColor( const QColor &color = QColor() );

@@ -77,13 +77,11 @@ private:
   enum ColorChannel
   {
     LuminosityChannel = 0,
-    RedChannel = 1,
-    ChromaUhannel = 1,
-    GreenChannel = 2,
-    ChromaVhannel = 2,
-    BlueChannel = 3,
-    AlphaChannel = 5,
+    FirstChannel = 1,
+    SecondChannel = 2,
+    ThirdChannel = 3,
     ColorChannels = 4,
+    AlphaChannel = 5,
   };
 
   enum AllColorsColorType

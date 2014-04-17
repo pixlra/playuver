@@ -35,6 +35,19 @@
 namespace plaYUVer
 {
 
+const QBrush g_eColorPallet[][3] =
+{
+    {
+        Qt::red,  // Channel Red
+        Qt::green,  // Channel Green
+        Qt::blue,  // Channel Blue
+    },
+    {
+        Qt::darkGray,  // Luma
+        Qt::blue,  // Cb
+        Qt::red,  // Cr
+    } };
+
 class HistogramWidgetPrivate
 {
 public:
@@ -134,7 +147,7 @@ void HistogramWidget::setupWidget( int width, int height, HistogramOptions optio
 {
   m_channelType = LumaHistogram;
   m_scaleType = LogScaleHistogram;
-  m_colorType = RedColor;
+  m_colorType = FirstChannelColor;
   m_renderingType = FullImageHistogram;
 
   setOptions( options );
@@ -507,22 +520,22 @@ void HistogramWidget::paintEvent( QPaintEvent * )
 
   switch( m_channelType )
   {
-  case HistogramWidget::RedChannelHistogram:      // Red channel.
-    max = histogram->getMaximum( PlaYUVerFrameStatistics::RedChannel );
+  case HistogramWidget::FirstChannelHistogram:      // Y channel.
+    max = histogram->getMaximum( PlaYUVerFrameStatistics::YChannel );
     break;
-  case HistogramWidget::GreenChannelHistogram:    // Green channel.
-    max = histogram->getMaximum( PlaYUVerFrameStatistics::GreenChannel );
+  case HistogramWidget::SecondChannelHistogram:    // Cb channel.
+    max = histogram->getMaximum( PlaYUVerFrameStatistics::CbChannel );
     break;
-  case HistogramWidget::BlueChannelHistogram:     // Blue channel.
-    max = histogram->getMaximum( PlaYUVerFrameStatistics::BlueChannel );
+  case HistogramWidget::ThirdChannelHistogram:     // Cr channel.
+    max = histogram->getMaximum( PlaYUVerFrameStatistics::CrChannel );
     break;
   case HistogramWidget::AlphaChannelHistogram:    // Alpha channel.
     max = histogram->getMaximum( PlaYUVerFrameStatistics::AlphaChannel );
     break;
 
   case HistogramWidget::ColorChannelsHistogram:   // All color channels.
-    max = qMax( qMax( histogram->getMaximum( PlaYUVerFrameStatistics::RedChannel ), histogram->getMaximum( PlaYUVerFrameStatistics::GreenChannel ) ),
-        histogram->getMaximum( PlaYUVerFrameStatistics::BlueChannel ) );
+    max = qMax( qMax( histogram->getMaximum( PlaYUVerFrameStatistics::YChannel ), histogram->getMaximum( PlaYUVerFrameStatistics::CbChannel ) ),
+        histogram->getMaximum( PlaYUVerFrameStatistics::CrChannel ) );
     break;
   case HistogramWidget::LumaHistogram:            // Luminance.
     max = histogram->getMaximum( PlaYUVerFrameStatistics::LumaChannel );
@@ -546,6 +559,7 @@ void HistogramWidget::paintEvent( QPaintEvent * )
   // so there's no need to write double-buffering code in paintEvent()
   // to avoid flicker.
   QPainter p1( this );
+  Int pallet = 1;
 
   // Drawing selection or all histogram values.
 
@@ -570,22 +584,22 @@ void HistogramWidget::paintEvent( QPaintEvent * )
 
       switch( m_channelType )
       {
-      case HistogramWidget::RedChannelHistogram:    // Red channel.
-        v = histogram->getValue( PlaYUVerFrameStatistics::RedChannel, i++ );
+      case HistogramWidget::FirstChannelHistogram:    // Y channel.
+        v = histogram->getValue( PlaYUVerFrameStatistics::YChannel, i++ );
         break;
-      case HistogramWidget::GreenChannelHistogram:  // Green channel.
-        v = histogram->getValue( PlaYUVerFrameStatistics::GreenChannel, i++ );
+      case HistogramWidget::SecondChannelHistogram:  // Cb channel.
+        v = histogram->getValue( PlaYUVerFrameStatistics::CbChannel, i++ );
         break;
-      case HistogramWidget::BlueChannelHistogram:   // Blue channel.
-        v = histogram->getValue( PlaYUVerFrameStatistics::BlueChannel, i++ );
+      case HistogramWidget::ThirdChannelHistogram:   // Cr channel.
+        v = histogram->getValue( PlaYUVerFrameStatistics::CrChannel, i++ );
         break;
       case HistogramWidget::AlphaChannelHistogram:  // Alpha channel.
         v = histogram->getValue( PlaYUVerFrameStatistics::AlphaChannel, i++ );
         break;
       case HistogramWidget::ColorChannelsHistogram:  // All color.
-        vr = histogram->getValue( PlaYUVerFrameStatistics::RedChannel, i );
-        vg = histogram->getValue( PlaYUVerFrameStatistics::GreenChannel, i );
-        vb = histogram->getValue( PlaYUVerFrameStatistics::BlueChannel, i++ );
+        vr = histogram->getValue( PlaYUVerFrameStatistics::YChannel, i );
+        vg = histogram->getValue( PlaYUVerFrameStatistics::CbChannel, i );
+        vb = histogram->getValue( PlaYUVerFrameStatistics::CrChannel, i++ );
         break;
       case HistogramWidget::LumaHistogram:           // Luminance.
         v = histogram->getValue( PlaYUVerFrameStatistics::LumaChannel, i++ );
@@ -714,11 +728,11 @@ void HistogramWidget::paintEvent( QPaintEvent * )
           // colors channel mode?
           switch( m_colorType )
           {
-          case HistogramWidget::RedColor:
+          case HistogramWidget::FirstChannelColor:
             p1.drawLine( x, wHeight, x, wHeight - yr );
             break;
 
-          case HistogramWidget::GreenColor:
+          case HistogramWidget::SecondChannelColor:
             p1.drawLine( x, wHeight, x, wHeight - yg );
             break;
 
@@ -733,12 +747,12 @@ void HistogramWidget::paintEvent( QPaintEvent * )
           // colors channel mode?
           switch( m_colorType )
           {
-          case HistogramWidget::RedColor:
-            p1.setPen( QPen( Qt::green, 1, Qt::SolidLine ) );
+          case HistogramWidget::FirstChannelColor:
+            p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
             p1.drawLine( x, wHeight, x, wHeight - yg );
-            p1.setPen( QPen( Qt::blue, 1, Qt::SolidLine ) );
+            p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
             p1.drawLine( x, wHeight, x, wHeight - yb );
-            p1.setPen( QPen( Qt::red, 1, Qt::SolidLine ) );
+            p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
             p1.drawLine( x, wHeight, x, wHeight - yr );
 
             p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
@@ -750,12 +764,12 @@ void HistogramWidget::paintEvent( QPaintEvent * )
 
             break;
 
-          case HistogramWidget::GreenColor:
-            p1.setPen( QPen( Qt::blue, 1, Qt::SolidLine ) );
+          case HistogramWidget::SecondChannelColor:
+            p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
             p1.drawLine( x, wHeight, x, wHeight - yb );
-            p1.setPen( QPen( Qt::red, 1, Qt::SolidLine ) );
+            p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
             p1.drawLine( x, wHeight, x, wHeight - yr );
-            p1.setPen( QPen( Qt::green, 1, Qt::SolidLine ) );
+            p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
             p1.drawLine( x, wHeight, x, wHeight - yg );
 
             p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
@@ -768,11 +782,11 @@ void HistogramWidget::paintEvent( QPaintEvent * )
             break;
 
           default:
-            p1.setPen( QPen( Qt::red, 1, Qt::SolidLine ) );
+            p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
             p1.drawLine( x, wHeight, x, wHeight - yr );
-            p1.setPen( QPen( Qt::green, 1, Qt::SolidLine ) );
+            p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
             p1.drawLine( x, wHeight, x, wHeight - yg );
-            p1.setPen( QPen( Qt::blue, 1, Qt::SolidLine ) );
+            p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
             p1.drawLine( x, wHeight, x, wHeight - yb );
 
             p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
@@ -798,12 +812,15 @@ void HistogramWidget::paintEvent( QPaintEvent * )
         // colors channel mode?
         switch( m_colorType )
         {
-        case HistogramWidget::RedColor:
+        case HistogramWidget::FirstChannelColor:
           p1.setPen( QPen( Qt::green, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
           p1.drawLine( x, wHeight, x, wHeight - yg );
           p1.setPen( QPen( Qt::blue, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
           p1.drawLine( x, wHeight, x, wHeight - yb );
           p1.setPen( QPen( Qt::red, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
           p1.drawLine( x, wHeight, x, wHeight - yr );
 
           p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
@@ -815,12 +832,15 @@ void HistogramWidget::paintEvent( QPaintEvent * )
 
           break;
 
-        case HistogramWidget::GreenColor:
+        case HistogramWidget::SecondChannelColor:
           p1.setPen( QPen( Qt::blue, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
           p1.drawLine( x, wHeight, x, wHeight - yb );
           p1.setPen( QPen( Qt::red, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
           p1.drawLine( x, wHeight, x, wHeight - yr );
           p1.setPen( QPen( Qt::green, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
           p1.drawLine( x, wHeight, x, wHeight - yg );
 
           p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
@@ -834,10 +854,13 @@ void HistogramWidget::paintEvent( QPaintEvent * )
 
         default:
           p1.setPen( QPen( Qt::red, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
           p1.drawLine( x, wHeight, x, wHeight - yr );
           p1.setPen( QPen( Qt::green, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
           p1.drawLine( x, wHeight, x, wHeight - yg );
           p1.setPen( QPen( Qt::blue, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
           p1.drawLine( x, wHeight, x, wHeight - yb );
 
           p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
@@ -868,15 +891,15 @@ void HistogramWidget::paintEvent( QPaintEvent * )
   {
     switch( m_channelType )
     {
-    case HistogramWidget::RedChannelHistogram:
+    case HistogramWidget::FirstChannelHistogram:
       guidePos = d->colorGuide.red();
       break;
 
-    case HistogramWidget::GreenChannelHistogram:
+    case HistogramWidget::SecondChannelHistogram:
       guidePos = d->colorGuide.green();
       break;
 
-    case HistogramWidget::BlueChannelHistogram:
+    case HistogramWidget::ThirdChannelHistogram:
       guidePos = d->colorGuide.blue();
       break;
 

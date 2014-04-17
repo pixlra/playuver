@@ -432,9 +432,9 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
         channelCB->clear();
         channelCB->clear();
         channelCB->insertItem( LuminosityChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
-        channelCB->insertItem( RedChannel, QIcon( ":/images/channel-red.png" ), "Red" );
-        channelCB->insertItem( GreenChannel, QIcon( ":/images/channel-green.png" ), "Green" );
-        channelCB->insertItem( BlueChannel, QIcon( ":/images/channel-blue.png" ), "Blue" );
+        channelCB->insertItem( FirstChannel, QIcon( ":/images/channel-red.png" ), "Red" );
+        channelCB->insertItem( SecondChannel, QIcon( ":/images/channel-green.png" ), "Green" );
+        channelCB->insertItem( ThirdChannel, QIcon( ":/images/channel-blue.png" ), "Blue" );
         if( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_ARGB )
         {
           channelCB->insertItem( AlphaChannel, QIcon( ":/images/channel-alpha.png" ), "Alpha" );
@@ -456,9 +456,9 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
       else if( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_YUV )
       {
         channelCB->clear();
-        channelCB->insertItem( LuminosityChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
-        channelCB->insertItem( ChromaUhannel, QIcon( ":/images/channel-red.png" ), "Chroma U" );
-        channelCB->insertItem( ChromaVhannel, QIcon( ":/images/channel-green.png" ), "Chroma V" );
+        channelCB->insertItem( FirstChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
+        channelCB->insertItem( SecondChannel, QIcon( ":/images/channel-red.png" ), "Chroma U" );
+        channelCB->insertItem( ThirdChannel, QIcon( ":/images/channel-green.png" ), "Chroma V" );
         channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "All Channels" );
 
         colorsCB->clear();
@@ -562,16 +562,16 @@ void FramePropertiesSideBar::slotChannelChanged( int channel )
 
   switch( channel )
   {
-  case RedChannel:
-    histogramWidget->m_channelType = HistogramWidget::RedChannelHistogram;
+  case FirstChannel:
+    histogramWidget->m_channelType = HistogramWidget::FirstChannelHistogram;
     colorsCB->setEnabled( false );
     break;
-  case GreenChannel:
-    histogramWidget->m_channelType = HistogramWidget::GreenChannelHistogram;
+  case SecondChannel:
+    histogramWidget->m_channelType = HistogramWidget::SecondChannelHistogram;
     colorsCB->setEnabled( false );
     break;
-  case BlueChannel:
-    histogramWidget->m_channelType = HistogramWidget::BlueChannelHistogram;
+  case ThirdChannel:
+    histogramWidget->m_channelType = HistogramWidget::ThirdChannelHistogram;
     colorsCB->setEnabled( false );
     break;
   case AlphaChannel:
@@ -602,13 +602,13 @@ void FramePropertiesSideBar::slotColorsChanged( int color )
   switch( color )
   {
   case AllColorsGreen:
-    histogramWidget->m_colorType = HistogramWidget::GreenColor;
+    histogramWidget->m_colorType = HistogramWidget::SecondChannelColor;
     break;
   case AllColorsBlue:
-    histogramWidget->m_colorType = HistogramWidget::BlueColor;
+    histogramWidget->m_colorType = HistogramWidget::ThirdChannelColor;
     break;
   default:          // Red.
-    histogramWidget->m_colorType = HistogramWidget::RedColor;
+    histogramWidget->m_colorType = HistogramWidget::FirstChannelColor;
     break;
   }
 

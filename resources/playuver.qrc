@@ -16,6 +16,12 @@
         <file alias="images/histogram-lin.png">icons/histogram-lin.png</file>
         <file alias="images/image-selection.png">icons/image-selection.png</file>
         <file alias="images/image-full.png">icons/image-full.png</file>
+        <file alias="images/channel-alpha.png">icons/channel-alpha-16.png</file>
+        <file alias="images/channel-luma.png">icons/channel-luma-16.png</file>
+        <file alias="images/channel-red.png">icons/channel-red-16.png</file>
+        <file alias="images/channel-green.png">icons/channel-green-16.png</file>
+        <file alias="images/channel-blue.png">icons/channel-blue-16.png</file>
+        <file alias="images/channel-all.png">icons/channel-all-16.png</file>
         
         <file alias="images/copy.png">icons/copy.png</file>
         <file alias="images/paste.png">icons/paste.png</file>

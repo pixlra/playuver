@@ -164,6 +164,7 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent ) :
 {
   // -------------- Variables definition --------------
   m_pcFrame = NULL;
+  m_iLastFrameType = -1;
 
   // Histogram area -----------------------------------------------------
 
@@ -407,16 +408,15 @@ void FramePropertiesSideBar::slotUpdateHistogram()
 
 Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
 {
-  // Clear information.
-  labelMeanValue->clear();
-  labelPixelsValue->clear();
-  labelStdDevValue->clear();
-  labelCountValue->clear();
-  labelMedianValue->clear();
-  labelPercentileValue->clear();
-
   if( !pcFrame )
   {
+    m_iLastFrameType = -1;
+    labelMeanValue->clear();
+    labelPixelsValue->clear();
+    labelStdDevValue->clear();
+    labelCountValue->clear();
+    labelMedianValue->clear();
+    labelPercentileValue->clear();
     // Remove the histogram data from memory
     histogramWidget->reset();
     setEnabled( false );
@@ -425,65 +425,66 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
   else
   {
     Int pel_fmt = pcFrame->getPelFormat();
-    if( ( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_RGB || PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_ARGB ) )
+    if( m_iLastFrameType != pel_fmt )
     {
-      channelCB->clear();
-      channelCB->clear();
-      channelCB->insertItem( LuminosityChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
-      channelCB->insertItem( RedChannel, QIcon( ":/images/channel-red.png" ), "Red" );
-      channelCB->insertItem( GreenChannel, QIcon( ":/images/channel-green.png" ), "Green" );
-      channelCB->insertItem( BlueChannel, QIcon( ":/images/channel-blue.png" ), "Blue" );
-      if( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_ARGB )
+      m_iLastFrameType = pel_fmt;
+      if( ( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_RGB || PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_ARGB ) )
       {
-        channelCB->insertItem( AlphaChannel, QIcon( ":/images/channel-alpha.png" ), "Alpha" );
+        channelCB->clear();
+        channelCB->clear();
+        channelCB->insertItem( LuminosityChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
+        channelCB->insertItem( RedChannel, QIcon( ":/images/channel-red.png" ), "Red" );
+        channelCB->insertItem( GreenChannel, QIcon( ":/images/channel-green.png" ), "Green" );
+        channelCB->insertItem( BlueChannel, QIcon( ":/images/channel-blue.png" ), "Blue" );
+        if( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_ARGB )
+        {
+          channelCB->insertItem( AlphaChannel, QIcon( ":/images/channel-alpha.png" ), "Alpha" );
+        }
+        channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "Colors" );
+
+        colorsCB->clear();
+        colorsCB->addItem( "Red" );
+        colorsCB->addItem( "Green" );
+        colorsCB->addItem( "Blue" );
+        colorsCB->setEnabled( false );
+        colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
+            "<p><b>Red</b>: Draw the Red image channel in the foreground.<p>"
+            "<b>Green</b>: Draw the Green image channel in the foreground.<p>"
+            "<b>Blue</b>: Draw the Blue image channel in the foreground.<p>" ) );
+        colorsCB->show();
+        colorsLabel->show();
       }
-      channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "Colors" );
+      else if( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_YUV )
+      {
+        channelCB->clear();
+        channelCB->insertItem( LuminosityChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
+        channelCB->insertItem( ChromaUhannel, QIcon( ":/images/channel-red.png" ), "Chroma U" );
+        channelCB->insertItem( ChromaVhannel, QIcon( ":/images/channel-green.png" ), "Chroma V" );
+        channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "All Channels" );
 
-      colorsCB->clear();
-      colorsCB->addItem( "Red" );
-      colorsCB->addItem( "Green" );
-      colorsCB->addItem( "Blue" );
-      colorsCB->setEnabled( false );
-      colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
-          "<p><b>Red</b>: Draw the Red image channel in the foreground.<p>"
-          "<b>Green</b>: Draw the Green image channel in the foreground.<p>"
-          "<b>Blue</b>: Draw the Blue image channel in the foreground.<p>" ) );
-      colorsCB->show();
-      colorsLabel->show();
+        colorsCB->clear();
+         colorsCB->addItem( "Luminance" );
+         colorsCB->addItem( "Chroma U" );
+         colorsCB->addItem( "Chroma V" );
+         colorsCB->setEnabled( false );
+         colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
+             "<p><b>Luminance</b>: Draw the Luminance channel in the foreground.<p>"
+             "<b>Chroma U</b>: Draw the Chroma U channel in the foreground.<p>"
+             "<b>Chroma V</b>: Draw the Chroma V channel in the foreground.<p>" ) );
+        colorsCB->show();
+        colorsLabel->show();
+      }
+      else
+      {
+        channelCB->clear();
+        channelCB->addItem( tr( "Luminance" ) );
+        channelCB->setItemIcon( 0, QIcon( ":/images/channel-luma.png" ) );
+        colorsCB->hide();
+        colorsLabel->hide();
+      }
     }
-    else if( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_YUV )
-    {
-      channelCB->clear();
-      channelCB->insertItem( LuminosityChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
-      channelCB->insertItem( ChromaUhannel, QIcon( ":/images/channel-red.png" ), "Chroma U" );
-      channelCB->insertItem( ChromaVhannel, QIcon( ":/images/channel-green.png" ), "Chroma V" );
-      channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "All Channels" );
-
-      colorsCB->clear();
-       colorsCB->addItem( "Luminance" );
-       colorsCB->addItem( "Chroma U" );
-       colorsCB->addItem( "Chroma V" );
-       colorsCB->setEnabled( false );
-       colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
-           "<p><b>Luminance</b>: Draw the Luminance channel in the foreground.<p>"
-           "<b>Chroma U</b>: Draw the Chroma U channel in the foreground.<p>"
-           "<b>Chroma V</b>: Draw the Chroma V channel in the foreground.<p>" ) );
-      colorsCB->show();
-      colorsLabel->show();
-    }
-    else
-    {
-      channelCB->clear();
-      channelCB->addItem( tr( "Luminance" ) );
-      channelCB->setItemIcon( 0, QIcon( ":/images/channel-luma.png" ) );
-      colorsCB->hide();
-      colorsLabel->hide();
-    }
-
     setEnabled( true );
-
     m_pcFrame = pcFrame;
-
     slotUpdateHistogram();
   }
 }

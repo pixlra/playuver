@@ -51,8 +51,10 @@ private:
   ViewArea* m_cViewArea;
 
   PlaYUVerModuleIf* m_pcCurrentModule;
+  SubWindowHandle* m_pcModuleSubWindow;
 
   InputStream* m_pCurrStream;
+  PlaYUVerFrame* m_pcCurrFrame;
 
   QString m_cWindowName;
   QString m_cCurrFileName;
@@ -85,6 +87,7 @@ public:
   QImage* FrameToQImage( PlaYUVerFrame* curr_frame );
 
   Void refreshFrame();
+  Void setCurrFrame( PlaYUVerFrame* pcCurrFrame );
 
   InputStream* getInputStream()
   {
@@ -94,6 +97,10 @@ public:
   ViewArea* getViewArea()
   {
     return m_cViewArea;
+  }
+  Void setModuleSubWindow( SubWindowHandle* pcWindow )
+  {
+    m_pcModuleSubWindow = pcWindow;
   }
 
   /**

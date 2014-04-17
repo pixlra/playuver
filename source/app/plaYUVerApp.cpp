@@ -147,10 +147,10 @@ Void plaYUVerApp::loadFile( QString fileName )
     mdiArea->addSubWindow( interfaceChild );
     statusBar()->showMessage( tr( "File loaded" ), 2000 );
     interfaceChild->show();
-    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
-        SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
+    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
+        SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
 //    connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this,
-//            SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
+//            SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
 
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
@@ -229,7 +229,18 @@ void plaYUVerApp::selectModule( QAction *curr_action )
     {
       if( pcCurrMod->m_cModuleDef.m_bRequiresNewWindow )
       {
+        SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
+        mdiArea->addSubWindow( interfaceChild );
 
+//        connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
+//            SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
+    //    connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this,
+    //            SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
+        m_pcCurrentSubWindow->setModuleSubWindow( interfaceChild );
+        m_pcCurrentSubWindow->enableModule( pcCurrMod );
+        interfaceChild->show();
+        interfaceChild->zoomToFit();
+        interfaceChild->getViewArea()->setTool( m_appTool );
       }
       else
       {
@@ -541,47 +552,43 @@ void plaYUVerApp::about()
 
 void plaYUVerApp::chageSubWindowSelection()
 {
-  if( activeSubWindow() )
+  SubWindowHandle *new_window = activeSubWindow();
+  if( activeSubWindow() != m_pcCurrentSubWindow )
   {
-    if( m_pcCurrentSubWindow )
+    if( activeSubWindow()  )
     {
-      m_pcCurrentSubWindow->disableModule();
+      if( m_pcCurrentSubWindow  )
+      {
+        m_pcCurrentSubWindow->disableModule();
+      }
+      m_pcCurrentSubWindow = new_window;
+      m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
+      m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
+      updateCurrFrameNum();
+      updateTotalFrameNum();
+      updateStreamProperties();
+      updateFrameProperties();
     }
-//    if( m_acPlayingSubWindows.size() < 2 )
-//    {
-//      playingTimer->stop();
-//    }
-    m_pcCurrentSubWindow = activeSubWindow();
-    m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
-    m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
-    updateCurrFrameNum();
-    updateTotalFrameNum();
-    updateStreamProperties();
-    updateFrameProperties();
-  }
-  else
-  {
-    m_pcCurrentSubWindow = NULL;
+    m_pcCurrentSubWindow = new_window;
   }
   updateStreamProperties();
   updateFrameProperties();
   updateMenus();
-  createStatusBar();
 }
 
 // -----------------------  Status bar Functions  -----------------------
 
-void plaYUVerApp::updatePixelValueStatusBar( const QPoint & pos, InputStream* stream )
+void plaYUVerApp::updatePixelValueStatusBar( const QPoint & pos, PlaYUVerFrame* frame )
 {
   Pixel sPixelValue;
   Int iWidth, iHeight;
   Int posX = pos.x(), posY = pos.y();
   QString strPixel;
   QString strStatus = QString( "(%1,%2)   " ).arg( posX ).arg( posY );
-  PlaYUVerFrame *curFrame = stream->getCurrFrame();
+  PlaYUVerFrame *curFrame = frame;
 
-  iWidth = stream->getWidth();
-  iHeight = stream->getHeight();
+  iWidth = frame->getWidth();
+  iHeight = frame->getHeight();
 
   if( ( posX < iWidth ) && ( posX >= 0 ) && ( posY < iHeight ) && ( posY >= 0 ) )
   {

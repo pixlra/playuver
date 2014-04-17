@@ -37,7 +37,6 @@
 
 #include "ViewArea.h"
 #include "GridManager.h"
-#include "PlaYUVerFrame.h"
 #include "InputStream.h"
 
 namespace plaYUVer
@@ -54,6 +53,7 @@ ViewArea::ViewArea( QWidget *parent ) :
 //     setAttribute( Qt::WA_NoBackground );
   setMouseTracking( true );
 
+  m_pcCurrFrame = NULL;
   m_pixmap = QPixmap();
   m_grid = GridManager();
   m_mask = QBitmap();
@@ -67,6 +67,14 @@ ViewArea::ViewArea( QWidget *parent ) :
   m_snapToGrid = false;
   m_blockTrackEnable = false;
   m_pStream = NULL;
+}
+
+void ViewArea::setImage( PlaYUVerFrame* pcFrame )
+{
+  m_pcCurrFrame = pcFrame;
+  m_pcCurrFrame->FrametoRGB8();
+  QImage qimg = QImage( m_pcCurrFrame->getQImageBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), QImage::Format_RGB888 );
+  setImage( QPixmap::fromImage( qimg ) );
 }
 
 void ViewArea::setImage( const QPixmap &pixmap )
@@ -357,7 +365,6 @@ void ViewArea::paintEvent( QPaintEvent *event )
   {
     Int imageWidth = m_pixmap.width();
     Int imageHeight = m_pixmap.height();
-    PlaYUVerFrame *curFrame = getInputStream()->getCurrFrame();
     Pixel sPixelValue;
 
     QFont font("Helvetica");
@@ -372,7 +379,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
       for(Int j=vr.y() ; j<=vr.bottom() ; j++)
       {
         QPoint pixelTopLeft(i,j);
-        sPixelValue = curFrame->getPixelValue( pixelTopLeft, PlaYUVerFrame::COLOR_YUV );
+        sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft, PlaYUVerFrame::COLOR_YUV );
 
         QRect pixelRect(viewToWindow(pixelTopLeft), QSize(m_zoomFactor,m_zoomFactor));
         if( sPixelValue.Luma < 128 )
@@ -605,7 +612,7 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
   QPoint actualPos = windowToView( event->pos() );
   QRect updateRect;
 
-  emit positionChanged( actualPos , getInputStream() );
+  emit positionChanged( actualPos , m_pcCurrFrame );
 
   // If mouse left button pressed
   if( event->buttons() == Qt::LeftButton && m_lastPos != QPoint( -1, -1 ) )

@@ -38,15 +38,15 @@ namespace plaYUVer
 const QBrush g_eColorPallet[][3] =
 {
     {
-        Qt::red,  // Channel Red
-        Qt::green,  // Channel Green
-        Qt::blue,  // Channel Blue
-    },
-    {
         Qt::darkGray,  // Luma
         Qt::blue,  // Cb
         Qt::red,  // Cr
-    } };
+    },
+    {
+        Qt::red,  // Channel Red
+        Qt::green,  // Channel Green
+        Qt::blue,  // Channel Blue
+    },};
 
 class HistogramWidgetPrivate
 {
@@ -559,7 +559,7 @@ void HistogramWidget::paintEvent( QPaintEvent * )
   // so there's no need to write double-buffering code in paintEvent()
   // to avoid flicker.
   QPainter p1( this );
-  Int pallet = 1;
+  Int pallet = d->imageColorSpace;
 
   // Drawing selection or all histogram values.
 

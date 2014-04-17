@@ -49,10 +49,10 @@ public:
   {
     /** Luminance */
     LumaHistogram = 0,
-    /** RGB channels */
-    RedChannelHistogram,
-    GreenChannelHistogram,
-    BlueChannelHistogram,
+    /** Channels */
+    FirstChannelHistogram,
+    SecondChannelHistogram,
+    ThirdChannelHistogram,
     /** Alpha channel */
     AlphaChannelHistogram,
     /** All color channels */
@@ -69,12 +69,10 @@ public:
 
   enum HistogramAllColorMode
   {
-    /** Red color to foreground in All Colors Channel mode */
-    RedColor = 0,
-    /** Green color to foreground in All Colors Channel mode */
-    GreenColor,
-    /** Blue color to foreground in All Colors Channel mode */
-    BlueColor
+    // Select wich component is shown in foreground
+    FirstChannelColor,
+    SecondChannelColor,
+    ThirdChannelColor,
   };
 
   enum HistogramRendering
@@ -187,7 +185,6 @@ private :
 private:
 
   HistogramWidgetPrivate* d;
-
 };
 
 }

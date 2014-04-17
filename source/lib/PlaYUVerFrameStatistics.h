@@ -48,10 +48,10 @@ public:
   enum StatisticsChannel
   {
     LumaChannel = 0,
-    RedChannel,
-    GreenChannel,
-    BlueChannel,
-    AlphaChannel,
+    RedChannel = 1,
+    GreenChannel = 2,
+    BlueChannel = 3,
+    AlphaChannel = 4,
     YChannel = 1,
     CbChannel = 2,
     CrChannel = 3

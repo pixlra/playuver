@@ -544,7 +544,9 @@ void plaYUVerApp::chageSubWindowSelection()
   if( activeSubWindow() )
   {
     if( m_pcCurrentSubWindow )
+    {
       m_pcCurrentSubWindow->disableModule();
+    }
 //    if( m_acPlayingSubWindows.size() < 2 )
 //    {
 //      playingTimer->stop();

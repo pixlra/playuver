@@ -95,6 +95,9 @@ private:
 
   PlaYUVerFrame *m_pcFrame;
   PlaYUVerFrame *m_pcFrameSelection;
+
+  Int m_iLastFrameType;
+
   Bool inLoadingProcess;
 
   QComboBox *channelCB;

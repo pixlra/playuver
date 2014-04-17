@@ -356,7 +356,6 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent ) :
   setLayout( mainLayout );
   setEnabled( false );
 
-
   connect( this, SIGNAL( visibilityChanged(bool) ), this, SLOT( slotUpdateHistogram() ) );
   connect( channelCB, SIGNAL( activated(int) ), this, SLOT( slotChannelChanged(int) ) );
   connect( scaleButtonGroup, SIGNAL( buttonClicked(int) ), this, SLOT( slotScaleChanged(int) ) );
@@ -463,14 +462,14 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
         channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "All Channels" );
 
         colorsCB->clear();
-         colorsCB->addItem( "Luminance" );
-         colorsCB->addItem( "Chroma U" );
-         colorsCB->addItem( "Chroma V" );
-         colorsCB->setEnabled( false );
-         colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
-             "<p><b>Luminance</b>: Draw the Luminance channel in the foreground.<p>"
-             "<b>Chroma U</b>: Draw the Chroma U channel in the foreground.<p>"
-             "<b>Chroma V</b>: Draw the Chroma V channel in the foreground.<p>" ) );
+        colorsCB->addItem( "Luminance" );
+        colorsCB->addItem( "Chroma U" );
+        colorsCB->addItem( "Chroma V" );
+        colorsCB->setEnabled( false );
+        colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
+            "<p><b>Luminance</b>: Draw the Luminance channel in the foreground.<p>"
+            "<b>Chroma U</b>: Draw the Chroma U channel in the foreground.<p>"
+            "<b>Chroma V</b>: Draw the Chroma V channel in the foreground.<p>" ) );
         colorsCB->show();
         colorsLabel->show();
       }

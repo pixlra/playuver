@@ -552,32 +552,28 @@ void plaYUVerApp::about()
 
 void plaYUVerApp::chageSubWindowSelection()
 {
-  if( activeSubWindow() )
+  SubWindowHandle *new_window = activeSubWindow();
+  if( activeSubWindow() != m_pcCurrentSubWindow )
   {
-    if( m_pcCurrentSubWindow )
+    if( activeSubWindow()  )
     {
-      m_pcCurrentSubWindow->disableModule();
+      if( m_pcCurrentSubWindow  )
+      {
+        m_pcCurrentSubWindow->disableModule();
+      }
+      m_pcCurrentSubWindow = new_window;
+      m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
+      m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
+      updateCurrFrameNum();
+      updateTotalFrameNum();
+      updateStreamProperties();
+      updateFrameProperties();
     }
-//    if( m_acPlayingSubWindows.size() < 2 )
-//    {
-//      playingTimer->stop();
-//    }
-    m_pcCurrentSubWindow = activeSubWindow();
-    m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
-    m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
-    updateCurrFrameNum();
-    updateTotalFrameNum();
-    updateStreamProperties();
-    updateFrameProperties();
-  }
-  else
-  {
-    m_pcCurrentSubWindow = NULL;
+    m_pcCurrentSubWindow = new_window;
   }
   updateStreamProperties();
   updateFrameProperties();
   updateMenus();
-  createStatusBar();
 }
 
 // -----------------------  Status bar Functions  -----------------------

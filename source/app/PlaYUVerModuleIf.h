@@ -66,10 +66,11 @@ enum __PlaYUVerModuleRequirements
 
 typedef struct __PlaYUVerModuleDefinition
 {
-  int   m_pchModuleType;
+  int   m_iModuleType;
   const char* m_pchModuleCategory;
   const char* m_pchModuleName;
   const char* m_pchModuleTooltip;
+  bool  m_bRequiresNewWindow;
 }PlaYUVerModuleDefinition;
 
 

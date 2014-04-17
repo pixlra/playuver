@@ -227,7 +227,14 @@ void plaYUVerApp::selectModule( QAction *curr_action )
     PlaYUVerModuleIf* pcCurrMod = m_pcModulesHandle->getSelectedModuleIf();
     if( pcCurrMod )
     {
-      m_pcCurrentSubWindow->enableModule( pcCurrMod );
+      if( pcCurrMod->m_cModuleDef.m_bRequiresNewWindow )
+      {
+
+      }
+      else
+      {
+        m_pcCurrentSubWindow->enableModule( pcCurrMod );
+      }
     }
   }
   return;

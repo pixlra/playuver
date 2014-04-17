@@ -88,7 +88,7 @@ public:
   PlaYUVerFrameStatistics( Pel ***data, UInt width, UInt height, Int bitsPerChannel, Int pixel_format, UInt chroma_size,
       QObject *parent = 0, Options options = CalcLumaWhenRGB );
 
-  PlaYUVerFrameStatistics( const PlaYUVerFrame& playuver_frame, QObject *parent = 0, Options options = CalcLumaWhenRGB );
+  PlaYUVerFrameStatistics( const PlaYUVerFrame *playuver_frame, QObject *parent = 0, Options options = CalcLumaWhenRGB );
 
   ~PlaYUVerFrameStatistics();
 

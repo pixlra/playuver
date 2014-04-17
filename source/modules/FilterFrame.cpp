@@ -35,6 +35,7 @@ PlaYUVerModuleDefinition FilterFrameDef = {
     "Filters",
     "Y_Filter",
     "Filter Y matrix of YUV frame",
+    false,
 };
 
 FilterFrame::FilterFrame()
@@ -45,24 +46,14 @@ FilterFrame::FilterFrame()
 Void FilterFrame::create( PlaYUVerFrame* InputFrame )
 {
   m_pcFilteredFrame = NULL;
-  m_pcFilteredFrame = new PlaYUVerFrame( InputFrame->getWidth(), InputFrame->getHeight(), InputFrame->getPelFormat() );
+  m_pcFilteredFrame = new PlaYUVerFrame( InputFrame->getWidth(), InputFrame->getHeight(), PlaYUVerFrame::GRAY );
 }
 
 PlaYUVerFrame* FilterFrame::process( PlaYUVerFrame* InputFrame )
 {
-  Pel*** pppPelYUV = m_pcFilteredFrame->getPelBufferYUV();
-
-  m_pcFilteredFrame->CopyFrom( InputFrame );
-
-  for( UInt y = 0; y < m_pcFilteredFrame->getHeight() / 2; y++ )
-  {
-    for( UInt x = 0; x < m_pcFilteredFrame->getWidth() / 2; x++ )
-    {
-      pppPelYUV[1][y][x] = 128;
-      pppPelYUV[2][y][x] = 128;
-    }
-  }
-  //m_pcFilteredFrame->YUV420toRGB();
+  Pel*** pppOutputPelYUV = m_pcFilteredFrame->getPelBufferYUV();
+  Pel*** pppInputPelYUV = InputFrame->getPelBufferYUV();
+  memcpy( pppOutputPelYUV[LUMA][0], pppInputPelYUV[LUMA][0], m_pcFilteredFrame->getWidth() * m_pcFilteredFrame->getHeight() * sizeof(Pel) );
   return m_pcFilteredFrame;
 }
 

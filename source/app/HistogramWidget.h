@@ -124,14 +124,14 @@ public  :
       Pel ***selData = 0, UInt selWidth = 0, UInt selHeight = 0);
 
   /** Update full image histogram data from SImage.*/
-  void updateData( const PlaYUVerFrame &playuver_frame, const PlaYUVerFrame &playuver_selection );
+  void updateData( const PlaYUVerFrame *playuver_frame, const PlaYUVerFrame *playuver_selection );
 
   /** Update image selection histogram data methods.*/
   void updateSelectionData( Pel ***selData, uint selWidth, uint selHeight,
       Int bitsPerChannel, Int pixel_format, UInt chroma_size );
 
   /** Update image selection histogram data from SImage.*/
-  void updateSelectionData( const PlaYUVerFrame &imageSelection );
+  void updateSelectionData( const PlaYUVerFrame *imageSelection );
 
   /** @see @p HistogramOption */
   void setOptions( HistogramOptions options = AllOptions );

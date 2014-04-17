@@ -95,11 +95,11 @@ public:
 //                       Constructors and Destructor
 ////////////////////////////////////////////////////////////////////////////////
 
-PlaYUVerFrameStatistics::PlaYUVerFrameStatistics( const PlaYUVerFrame& playuver_frame, QObject *parent, Options options ) :
+PlaYUVerFrameStatistics::PlaYUVerFrameStatistics( const PlaYUVerFrame *playuver_frame, QObject *parent, Options options ) :
         QThread()
 {
-  setup( playuver_frame.getPelBufferYUV(), playuver_frame.getWidth(), playuver_frame.getHeight(), playuver_frame.getBitsChannel(),
-      playuver_frame.getPelFormat(), playuver_frame.getChromaLength(), parent, options );
+  setup( playuver_frame->getPelBufferYUV(), playuver_frame->getWidth(), playuver_frame->getHeight(), playuver_frame->getBitsChannel(),
+      playuver_frame->getPelFormat(), playuver_frame->getChromaLength(), parent, options );
 }
 
 PlaYUVerFrameStatistics::PlaYUVerFrameStatistics( Pel ***data, UInt width, UInt height, Int bitsPerChannel, Int pixel_format, UInt chroma_size, QObject *parent,

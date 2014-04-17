@@ -393,7 +393,7 @@ void FramePropertiesSideBar::slotUpdateHistogram()
     // If a selection area is done in Image Editor and if the current
     // image is the same in Image Viewer, then compute too the histogram
     // for this selection.
-    histogramWidget->updateData( *m_pcFrame, PlaYUVerFrame() );
+    histogramWidget->updateData( m_pcFrame, new PlaYUVerFrame );
     fullImageButton->hide();
     selectionImageButton->hide();
     updateInformations();
@@ -510,7 +510,7 @@ Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
 //                                                  imageSelection.height(),
 //                                                  imageSelection.bitsPerChannel(),
 //                                                  imageSelection.colorSpace() );
-    histogramWidget->updateSelectionData( *m_pcFrameSelection );
+    histogramWidget->updateSelectionData( m_pcFrameSelection );
     fullImageButton->show();
     selectionImageButton->show();
     selectionImageButton->click();

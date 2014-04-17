@@ -122,6 +122,7 @@ public:
 
   Pel*** getPelBufferYUV() const
   {
+    //m_bHasRGBPel = false;
     return m_pppcInputPel;
   }
 

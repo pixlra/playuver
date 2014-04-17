@@ -147,10 +147,10 @@ Void plaYUVerApp::loadFile( QString fileName )
     mdiArea->addSubWindow( interfaceChild );
     statusBar()->showMessage( tr( "File loaded" ), 2000 );
     interfaceChild->show();
-    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
-        SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
+    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
+        SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
 //    connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this,
-//            SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
+//            SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
 
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
@@ -233,9 +233,9 @@ void plaYUVerApp::selectModule( QAction *curr_action )
         mdiArea->addSubWindow( interfaceChild );
 
 //        connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
-//            SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
+//            SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
     //    connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this,
-    //            SLOT( updatePixelValueStatusBar(const QPoint &, InputStream *) ) );
+    //            SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
         m_pcCurrentSubWindow->setModuleSubWindow( interfaceChild );
         m_pcCurrentSubWindow->enableModule( pcCurrMod );
         interfaceChild->show();
@@ -582,17 +582,17 @@ void plaYUVerApp::chageSubWindowSelection()
 
 // -----------------------  Status bar Functions  -----------------------
 
-void plaYUVerApp::updatePixelValueStatusBar( const QPoint & pos, InputStream* stream )
+void plaYUVerApp::updatePixelValueStatusBar( const QPoint & pos, PlaYUVerFrame* frame )
 {
   Pixel sPixelValue;
   Int iWidth, iHeight;
   Int posX = pos.x(), posY = pos.y();
   QString strPixel;
   QString strStatus = QString( "(%1,%2)   " ).arg( posX ).arg( posY );
-  PlaYUVerFrame *curFrame = stream->getCurrFrame();
+  PlaYUVerFrame *curFrame = frame;
 
-  iWidth = stream->getWidth();
-  iHeight = stream->getHeight();
+  iWidth = frame->getWidth();
+  iHeight = frame->getHeight();
 
   if( ( posX < iWidth ) && ( posX >= 0 ) && ( posY < iHeight ) && ( posY >= 0 ) )
   {

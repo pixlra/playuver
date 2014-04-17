@@ -110,7 +110,7 @@ public:
 
 signals:
   void selectionChanged( const QRect &rect );
-  void positionChanged( const QPoint &pos, InputStream *stream );
+  void positionChanged( const QPoint &pos, PlaYUVerFrame *frame );
   void moveScroll( QPoint offset );
   void zoomFactorChanged( double factor , QPoint center);
 
@@ -148,6 +148,7 @@ private:
   QPoint viewToWindow( const QPoint& pt ) const;
   QRect viewToWindow( const QRect& rc ) const;
 
+  PlaYUVerFrame *m_pcCurrFrame;
   QPixmap m_pixmap;
   QBitmap m_mask;
   QRect m_selectedArea;

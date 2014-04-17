@@ -12,6 +12,11 @@
         <file alias="images/zoomtonormal.png">icons/zoomtonormal.png</file>
         <file alias="images/fittowindow.png">icons/fittowindow.png</file>
         
+        <file alias="images/histogram-log.png">icons/histogram-log.png</file>
+        <file alias="images/histogram-lin.png">icons/histogram-lin.png</file>
+        <file alias="images/image-selection.png">icons/image-selection.png</file>
+        <file alias="images/image-full.png">icons/image-full.png</file>
+        
         <file alias="images/copy.png">icons/copy.png</file>
         <file alias="images/paste.png">icons/paste.png</file>
         <file alias="images/saveas.png">icons/saveas.png</file>

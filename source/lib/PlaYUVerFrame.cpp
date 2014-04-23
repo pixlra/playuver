@@ -158,33 +158,12 @@ Void yuvToRgb( T iY, T iU, T iV, T &iR, T &iG, T &iB )
     iB = 255;
 }
 
-static inline Void yuvToRgb( Int iY, Int iU, Int iV, Int &iR, Int &iG, Int &iB )
-{
-  iR = iY + 1402 * iV / 1000;
-  iG = iY - ( 101004 * iU + 209599 * iV ) / 293500;
-  iB = iY + 1772 * iU / 1000;
-
-  if( iR < 0 )
-    iR = 0;
-  if( iG < 0 )
-    iG = 0;
-  if( iB < 0 )
-    iB = 0;
-
-  if( iR > 255 )
-    iR = 255;
-  if( iG > 255 )
-    iG = 255;
-  if( iB > 255 )
-    iB = 255;
-}
-
 template<typename T>
-Void rgbToyuv( T iR, T iG, T iB, T &iY, T &iU, T &iV )
+Void rgbToYuv( T iR, T iG, T iB, T &iY, T &iU, T &iV )
 {
-  iY = ( 299*iR + 587*iG + 114*iB + 500 )/1000;
-  iU = ( 1000*( iB - iY ) + 226816 )/1772;
-  iV = ( 1000*( iR - iY ) + 179456 )/1402;
+  iY = ( 299 * iR + 587 * iG + 114 * iB + 500 ) / 1000;
+  iU = ( 1000 * ( iB - iY ) + 226816 ) / 1772;
+  iV = ( 1000 * ( iR - iY ) + 179456 ) / 1402;
 }
 
 Void PlaYUVerFrame::FrametoRGB8()
@@ -429,6 +408,7 @@ UInt PlaYUVerFrame::getChromaLength() const
 
 Pixel PlaYUVerFrame::ConvertPixel( Pixel sInputPixel, Int eOutputSpace )
 {
+  Int outA, outB, outC;
   Pixel sOutputPixel =
   {
       COLOR_INVALID,
@@ -441,11 +421,17 @@ Pixel PlaYUVerFrame::ConvertPixel( Pixel sInputPixel, Int eOutputSpace )
 
   if( eOutputSpace == COLOR_RGB )
   {
-    yuvToRgb( sInputPixel.Luma, sInputPixel.ChromaU, sInputPixel.ChromaU, sOutputPixel.ColorR, sOutputPixel.ColorG, sOutputPixel.ColorB );
+    yuvToRgb<Int>( sInputPixel.Luma, sInputPixel.ChromaU, sInputPixel.ChromaV, outA, outB, outC );
+    sOutputPixel.ColorR = outA;
+    sOutputPixel.ColorG = outB;
+    sOutputPixel.ColorB = outC;
   }
   if( eOutputSpace == COLOR_YUV )
   {
-    rgbToyuv( sInputPixel.ColorR, sInputPixel.ColorG, sInputPixel.ColorB, sOutputPixel.Luma, sOutputPixel.ChromaU, sOutputPixel.ChromaU );
+    rgbToYuv<Int>( sInputPixel.ColorR, sInputPixel.ColorG, sInputPixel.ColorB, outA, outB, outC );
+    sOutputPixel.Luma = outA;
+    sOutputPixel.ChromaU = outB;
+    sOutputPixel.ChromaV = outC;
   }
   return sOutputPixel;
 }

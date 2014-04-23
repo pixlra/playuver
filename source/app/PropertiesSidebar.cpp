@@ -528,6 +528,9 @@ Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
 
 void FramePropertiesSideBar::slotRefreshOptions( bool /*depth*/)
 {
+  if( !isVisible() )
+    return;
+
   slotChannelChanged( channelCB->currentIndex() );
 
   if( linHistoButton->isChecked() )

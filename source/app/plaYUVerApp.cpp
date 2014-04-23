@@ -49,7 +49,6 @@ plaYUVerApp::plaYUVerApp()
   //mdiArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 
   connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( chageSubWindowSelection() ) );
-  //connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( updateMenus() ) );
 
   mapperWindow = new QSignalMapper( this );
   connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
@@ -221,32 +220,11 @@ void plaYUVerApp::closeAll()
 
 void plaYUVerApp::selectModule( QAction *curr_action )
 {
-  //emit curr_action->triggered();
-  if( m_pcCurrentSubWindow )
+  SubWindowHandle *interfaceChild = m_pcModulesHandle->toggleSelectedModuleIf( m_pcCurrentSubWindow );
+  if( interfaceChild )
   {
-    PlaYUVerModuleIf* pcCurrMod = m_pcModulesHandle->getSelectedModuleIf();
-    if( pcCurrMod )
-    {
-      if( pcCurrMod->m_cModuleDef.m_bRequiresNewWindow )
-      {
-        SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
-        mdiArea->addSubWindow( interfaceChild );
-
-//        connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
-//            SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
-    //    connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this,
-    //            SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
-        m_pcCurrentSubWindow->setModuleSubWindow( interfaceChild );
-        m_pcCurrentSubWindow->enableModule( pcCurrMod );
-        interfaceChild->show();
-        interfaceChild->zoomToFit();
-        interfaceChild->getViewArea()->setTool( m_appTool );
-      }
-      else
-      {
-        m_pcCurrentSubWindow->enableModule( pcCurrMod );
-      }
-    }
+    mdiArea->addSubWindow( interfaceChild );
+    interfaceChild->getViewArea()->setTool( m_appTool );
   }
   return;
 }
@@ -555,12 +533,8 @@ void plaYUVerApp::chageSubWindowSelection()
   SubWindowHandle *new_window = activeSubWindow();
   if( activeSubWindow() != m_pcCurrentSubWindow )
   {
-    if( activeSubWindow()  )
+    if( activeSubWindow() )
     {
-      if( m_pcCurrentSubWindow  )
-      {
-        m_pcCurrentSubWindow->disableModule();
-      }
       m_pcCurrentSubWindow = new_window;
       m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
       m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );

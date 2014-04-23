@@ -131,7 +131,7 @@ Void SubWindowHandle::disableModule()
   if( !m_pcCurrentModule )
     return;
 
-  m_pcCurrentModule->m_pcAction->setCheckable( false );
+  m_pcCurrentModule->m_pcAction->setChecked( false );
   m_pcCurrentModule->destroy();
   m_pcCurrentModule = NULL;
   refreshFrame();

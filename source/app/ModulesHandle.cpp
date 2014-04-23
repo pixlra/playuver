@@ -25,6 +25,9 @@
 #include <cstdio>
 
 #include "ModulesHandle.h"
+#include "SubWindowHandle.h"
+
+// List of modules includes
 #include "FilterFrame.h"
 
 namespace plaYUVer
@@ -32,20 +35,22 @@ namespace plaYUVer
 
 Void ModulesHandle::ModulesList( Bool bCreate )
 {
+
   // Register Modules
   REGISTER_MODULE( FilterFrame );
 
-
 }
-
 
 ModulesHandle::ModulesHandle( QWidget * parent )
 {
-  ModulesList( true );
+  m_pcParent = parent;
+
   // configure class
-  setParent( parent );
+  setParent( m_pcParent );
   m_uiModulesCount = 0;
-  m_uiModuleSelected= -1;
+  m_uiModuleSelected = -1;
+
+  ModulesList( true );
 }
 
 ModulesHandle::~ModulesHandle()
@@ -69,10 +74,49 @@ PlaYUVerModuleIf* ModulesHandle::getSelectedModuleIf()
 
   if( m_uiModuleSelected >= 0 )
     //if( m_arrayModulesActions.at(m_uiModuleSelected)->isChecked() )
-      currModuleIf =  m_pcPlaYUVerModules.at( m_uiModuleSelected );
+    currModuleIf = m_pcPlaYUVerModules.at( m_uiModuleSelected );
 
   m_uiModuleSelected = -1;
   return currModuleIf;
+}
+
+SubWindowHandle* ModulesHandle::toggleSelectedModuleIf( SubWindowHandle* pcSubWindow )
+{
+  SubWindowHandle* interfaceChild = NULL;
+  PlaYUVerModuleIf* currModuleIf = NULL;
+
+  if( m_uiModuleSelected >= 0 )
+    //if( m_arrayModulesActions.at(m_uiModuleSelected)->isChecked() )
+    currModuleIf = m_pcPlaYUVerModules.at( m_uiModuleSelected );
+  m_uiModuleSelected = -1;
+
+  if( currModuleIf->m_pcAction->isChecked() )
+  {
+    if( currModuleIf->m_cModuleDef.m_bRequiresNewWindow )
+    {
+      interfaceChild = new SubWindowHandle( m_pcParent );
+      //mdiArea->addSubWindow( interfaceChild );
+
+      pcSubWindow->setModuleSubWindow( interfaceChild );
+      pcSubWindow->enableModule( currModuleIf );
+
+      interfaceChild->show();
+      interfaceChild->zoomToFit();
+      connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
+          SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
+    }
+    else
+    {
+      pcSubWindow->enableModule( currModuleIf );
+    }
+    currModuleIf->m_pcSubWindow = pcSubWindow;
+  }
+  else
+  {
+    currModuleIf->m_pcSubWindow->disableModule();
+    currModuleIf->m_pcSubWindow = NULL;
+  }
+  return interfaceChild;
 }
 
 QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
@@ -87,8 +131,6 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
   m_pcModulesMenu = MainAppMenuBar->addMenu( "&Modules" );
 
   //m_arrayModulesActions.resize( m_uiModulesCount );
-
-
 
   for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
   {

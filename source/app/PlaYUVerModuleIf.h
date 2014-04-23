@@ -73,6 +73,7 @@ typedef struct __PlaYUVerModuleDefinition
   bool  m_bRequiresNewWindow;
 }PlaYUVerModuleDefinition;
 
+class SubWindowHandle;
 
 class PlaYUVerModuleIf
 {
@@ -86,7 +87,7 @@ public:
   }
 
   QAction* m_pcAction;
-
+  SubWindowHandle* m_pcSubWindow;
   PlaYUVerModuleDefinition m_cModuleDef;
 
   virtual Void create() {};

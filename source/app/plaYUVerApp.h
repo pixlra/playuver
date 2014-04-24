@@ -101,9 +101,9 @@ private Q_SLOTS:
 
   void updatePropertiesSelectedArea( QRect area );
 
-  void setAllSubWindowTool( );
-  void setNavigationTool( );
-  void setSelectionTool( );
+  void setAllSubWindowTool();
+  void setNavigationTool();
+  void setSelectionTool();
 
 private:
   QMdiArea *mdiArea;
@@ -140,9 +140,8 @@ private:
   Bool m_bIsPlaying;
   QVector<SubWindowHandle*> m_acPlayingSubWindows;
   QSlider *m_pcFrameSlider;
-  QLabel  *m_pcCurrFrameNumLabel;
-  QLabel  *m_pcTotalFrameNumLabel;
-
+  QLabel *m_pcCurrFrameNumLabel;
+  QLabel *m_pcTotalFrameNumLabel;
 
   QSignalMapper *mapperZoom;
   QSignalMapper *mapperSeekVideo;
@@ -190,41 +189,30 @@ private:
     CLOSE_ACT,
     CLOSEALL_ACT,
     EXIT_ACT,
+    ZOOM_IN_ACT,
+    ZOOM_OUT_ACT,
+    ZOOM_FIT_ACT,
+    ZOOM_NORMAL_ACT,
+    PLAY_ACT,
+    PAUSE_ACT,
+    STOP_ACT,
+    VIDEO_FORWARD_ACT,
+    VIDEO_BACKWARD_ACT,
+    VIDEO_LOOP_ACT,
+    VIDEO_LOCK_ACT,
+    NAVIGATION_TOOL_ACT,
+    SELECTION_TOOL_ACT,
+    TILE_WINDOWS_ACT,
+    CASCADE_WINDOWS_ACT,
+    PREVIOUS_WINDOWS_ACT,
+    NEXT_WINDOWS_ACT,
+    SEPARATOR_ACT,
+    ABOUT_ACT,
+    ABOUTQT_ACT,
     TOTAL_ACT,
   };
   QVector<QAction*> m_arrayActions;
-  QAction *actionOpen;
-  QAction *actionSave;
-  QAction *actionExit;
-  QAction *actionClose;
-  QAction *actionCloseAll;
-
-  QAction *actionZoomIn;
-  QAction *actionZoomOut;
-  QAction *actionNormalSize;
-  QAction *actionZoomToFit;
-
   QAction *actionPopupMenu;
-
-  QAction *actionTile;
-  QAction *actionCascade;
-  QAction *actionNext;
-  QAction *actionPrevious;
-  QAction *actionSeparator;
-
-  // Video actions.
-  QAction *actionVideoPlay;
-  QAction *actionVideoPause;
-  QAction *actionVideoStop;
-  QAction *actionVideoBackward;
-  QAction *actionVideoForward;
-  QAction *actionVideoLoop;
-  QAction *actionVideoLock;
-  QAction *actionVideoInterlace;
-  QAction *actionVideoCenter;
-
-  QAction *actionAbout;
-  QAction *actionAboutQt;
 
   // Tools Actions;
   QActionGroup *actionGroupTools;

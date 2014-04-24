@@ -305,7 +305,7 @@ void plaYUVerApp::play()
   if( !m_pcCurrentSubWindow->getInputStream() )
     return;
 
-  if( actionVideoLock->isChecked() && m_acPlayingSubWindows.size() )
+  if( m_arrayActions[VIDEO_LOCK_ACT]->isChecked() && m_acPlayingSubWindows.size() )
   {
     Bool bFind = false;
     for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
@@ -404,7 +404,7 @@ void plaYUVerApp::playEvent()
       stop();
       break;
     case -2:
-      if( !actionVideoLoop->isChecked() )
+      if( !m_arrayActions[VIDEO_LOOP_ACT]->isChecked() )
       {
         stop();
         updateCurrFrameNum();
@@ -487,7 +487,7 @@ void plaYUVerApp::seekSliderEvent( int new_frame_num )
 
 void plaYUVerApp::lockButtonEvent()
 {
-  if( !actionVideoLock->isChecked() )
+  if( !m_arrayActions[VIDEO_LOCK_ACT]->isChecked() )
   {
     if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
@@ -521,8 +521,8 @@ void plaYUVerApp::scaleFrame( int ratio )
   {
     activeSubWindow()->scaleViewByRatio( ( Double )( ratio ) / 100.0 );
 
-//    actionZoomIn->setEnabled( activeSubWindow()->getScaleFactor() < 3.0 );
-//    actionZoomOut->setEnabled( activeSubWindow()->getScaleFactor() > 0.333 );
+//    m_arrayActions[ZOOM_IN_ACT]->setEnabled( activeSubWindow()->getScaleFactor() < 3.0 );
+//    m_arrayActions[ZOOM_OUT_ACT]->setEnabled( activeSubWindow()->getScaleFactor() > 0.333 );
   }
 }
 
@@ -530,7 +530,13 @@ void plaYUVerApp::scaleFrame( int ratio )
 
 void plaYUVerApp::about()
 {
-  QMessageBox::about( this, tr( "About plaYUVerApp" ), tr( "The <b>plaYUVerApp</b> is an open-source raw video player " ) );
+  QString about_message;
+  about_message.append("The <b>plaYUVerApp</b> is an open-source raw video player");
+//  about_message.append("\n\r");
+//  about_message.append("João Carreira");
+//  about_message.append("\n\r");
+//  about_message.append("Luís Lucas");
+  QMessageBox::about( this, tr( "About plaYUVerApp" ), about_message );
 }
 
 void plaYUVerApp::chageSubWindowSelection()
@@ -660,22 +666,22 @@ Void plaYUVerApp::updateMenus()
   m_arrayActions[FORMAT_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSE_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSEALL_ACT]->setEnabled( hasSubWindow );
-  actionTile->setEnabled( hasSubWindow );
-  actionCascade->setEnabled( hasSubWindow );
-  actionSeparator->setVisible( hasSubWindow );
+  m_arrayActions[TILE_WINDOWS_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[CASCADE_WINDOWS_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[SEPARATOR_ACT]->setVisible( hasSubWindow );
 
-  actionZoomIn->setEnabled( hasSubWindow );
-  actionZoomOut->setEnabled( hasSubWindow );
-  actionNormalSize->setEnabled( hasSubWindow );
-  actionZoomToFit->setEnabled( hasSubWindow );
+  m_arrayActions[ZOOM_IN_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[ZOOM_OUT_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[ZOOM_NORMAL_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[ZOOM_FIT_ACT]->setEnabled( hasSubWindow );
 
-  actionVideoPlay->setEnabled( hasSubWindow );
-  actionVideoPause->setEnabled( hasSubWindow );
-  actionVideoStop->setEnabled( hasSubWindow );
-  actionVideoBackward->setEnabled( hasSubWindow );
-  actionVideoForward->setEnabled( hasSubWindow );
-  actionVideoLoop->setEnabled( hasSubWindow );
-  actionVideoLock->setEnabled( hasSubWindow );
+  m_arrayActions[PLAY_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[PAUSE_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[STOP_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[VIDEO_BACKWARD_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[VIDEO_FORWARD_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[VIDEO_LOOP_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[VIDEO_LOCK_ACT]->setEnabled( hasSubWindow );
   m_pcFrameSlider->setEnabled( hasSubWindow );
   if( !hasSubWindow )
   {
@@ -683,8 +689,8 @@ Void plaYUVerApp::updateMenus()
     m_pcCurrFrameNumLabel->setText( "-" );
     m_pcTotalFrameNumLabel->setText( "-" );
   }
-  actionNavigationTool->setEnabled( hasSubWindow );
-  actionSelectionTool->setEnabled( hasSubWindow );
+  m_arrayActions[NAVIGATION_TOOL_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[SELECTION_TOOL_ACT]->setEnabled( hasSubWindow );
 
   m_pcModulesHandle->updateMenus( hasSubWindow );
 }
@@ -695,28 +701,28 @@ void plaYUVerApp::updateWindowMenu()
   m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[CLOSE_ACT] );
   m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[CLOSEALL_ACT] );
   m_arrayMenu[WINDOW_MENU]->addSeparator();
-  m_arrayMenu[WINDOW_MENU]->addAction( actionTile );
-  m_arrayMenu[WINDOW_MENU]->addAction( actionCascade );
+  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[TILE_WINDOWS_ACT] );
+  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[CASCADE_WINDOWS_ACT] );
   m_arrayMenu[WINDOW_MENU]->addSeparator();
-  m_arrayMenu[WINDOW_MENU]->addAction( actionNext );
-  m_arrayMenu[WINDOW_MENU]->addAction( actionPrevious );
-  m_arrayMenu[WINDOW_MENU]->addAction( actionSeparator );
+  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[NEXT_WINDOWS_ACT] );
+  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[PREVIOUS_WINDOWS_ACT] );
+  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[SEPARATOR_ACT] );
 
   updateMenus();
 
   QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
-  actionSeparator->setVisible( !windows.isEmpty() );
+  m_arrayActions[SEPARATOR_ACT]->setVisible( !windows.isEmpty() );
   Int number_windows = windows.size();
 
   if( number_windows > 1 )
   {
-    actionNext->setEnabled( true );
-    actionPrevious->setEnabled( true );
+    m_arrayActions[NEXT_WINDOWS_ACT]->setEnabled( true );
+    m_arrayActions[PREVIOUS_WINDOWS_ACT]->setEnabled( true );
   }
   else
   {
-    actionNext->setEnabled( false );
-    actionPrevious->setEnabled( false );
+    m_arrayActions[NEXT_WINDOWS_ACT]->setEnabled( false );
+    m_arrayActions[PREVIOUS_WINDOWS_ACT]->setEnabled( false );
   }
 
   for( Int i = 0; i < number_windows; ++i )
@@ -782,69 +788,66 @@ Void plaYUVerApp::createActions()
   mapperZoom = new QSignalMapper( this );
   connect( mapperZoom, SIGNAL( mapped(int) ), this, SLOT( scaleFrame(int) ) );
 
-  actionZoomIn = new QAction( tr( "Zoom &In (25%)" ), this );
-  actionZoomIn->setIcon( QIcon( ":/images/zoomin.png" ) );
-  actionZoomIn->setShortcut( tr( "Ctrl++" ) );
-  actionZoomIn->setStatusTip( tr( "Scale the image up by 25%" ) );
-  connect( actionZoomIn, SIGNAL( triggered() ), mapperZoom, SLOT( map() ) );
-  mapperZoom->setMapping( actionZoomIn, 125 );
+  m_arrayActions[ZOOM_IN_ACT] = new QAction( tr( "Zoom &In (25%)" ), this );
+  m_arrayActions[ZOOM_IN_ACT]->setIcon( QIcon( ":/images/zoomin.png" ) );
+  m_arrayActions[ZOOM_IN_ACT]->setShortcut( tr( "Ctrl++" ) );
+  m_arrayActions[ZOOM_IN_ACT]->setStatusTip( tr( "Scale the image up by 25%" ) );
+  connect( m_arrayActions[ZOOM_IN_ACT], SIGNAL( triggered() ), mapperZoom, SLOT( map() ) );
+  mapperZoom->setMapping( m_arrayActions[ZOOM_IN_ACT], 125 );
 
-  actionZoomOut = new QAction( tr( "Zoom &Out (25%)" ), this );
-  actionZoomOut->setIcon( QIcon( ":/images/zoomout.png" ) );
-  actionZoomOut->setShortcut( tr( "Ctrl+-" ) );
-  actionZoomOut->setStatusTip( tr( "Scale the image down by 25%" ) );
-  connect( actionZoomOut, SIGNAL( triggered() ), mapperZoom, SLOT( map() ) );
-  mapperZoom->setMapping( actionZoomOut, 80 );
+  m_arrayActions[ZOOM_OUT_ACT] = new QAction( tr( "Zoom &Out (25%)" ), this );
+  m_arrayActions[ZOOM_OUT_ACT]->setIcon( QIcon( ":/images/zoomout.png" ) );
+  m_arrayActions[ZOOM_OUT_ACT]->setShortcut( tr( "Ctrl+-" ) );
+  m_arrayActions[ZOOM_OUT_ACT]->setStatusTip( tr( "Scale the image down by 25%" ) );
+  connect( m_arrayActions[ZOOM_OUT_ACT], SIGNAL( triggered() ), mapperZoom, SLOT( map() ) );
+  mapperZoom->setMapping( m_arrayActions[ZOOM_OUT_ACT], 80 );
 
-  actionNormalSize = new QAction( tr( "&Normal Size" ), this );
-  actionNormalSize->setIcon( QIcon( ":/images/zoomtonormal.png" ) );
-  actionNormalSize->setShortcut( tr( "Ctrl+N" ) );
-  actionNormalSize->setStatusTip( tr( "Show the image at its original size" ) );
-  connect( actionNormalSize, SIGNAL( triggered() ), this, SLOT( normalSize() ) );
+  m_arrayActions[ZOOM_NORMAL_ACT] = new QAction( tr( "&Normal Size" ), this );
+  m_arrayActions[ZOOM_NORMAL_ACT]->setIcon( QIcon( ":/images/zoomtonormal.png" ) );
+  m_arrayActions[ZOOM_NORMAL_ACT]->setShortcut( tr( "Ctrl+N" ) );
+  m_arrayActions[ZOOM_NORMAL_ACT]->setStatusTip( tr( "Show the image at its original size" ) );
+  connect( m_arrayActions[ZOOM_NORMAL_ACT], SIGNAL( triggered() ), this, SLOT( normalSize() ) );
 
-  actionZoomToFit = new QAction( tr( "Zoom to &Fit" ), this );
-  actionZoomToFit->setIcon( QIcon( ":/images/fittowindow.png" ) );
-  actionZoomToFit->setStatusTip( tr( "Zoom in or out to fit on the window." ) );
-  actionZoomToFit->setShortcut( tr( "Ctrl+F" ) );
-  connect( actionZoomToFit, SIGNAL( triggered() ), this, SLOT( zoomToFit() ) );
+  m_arrayActions[ZOOM_FIT_ACT] = new QAction( tr( "Zoom to &Fit" ), this );
+  m_arrayActions[ZOOM_FIT_ACT]->setIcon( QIcon( ":/images/fittowindow.png" ) );
+  m_arrayActions[ZOOM_FIT_ACT]->setStatusTip( tr( "Zoom in or out to fit on the window." ) );
+  m_arrayActions[ZOOM_FIT_ACT]->setShortcut( tr( "Ctrl+F" ) );
+  connect( m_arrayActions[ZOOM_FIT_ACT], SIGNAL( triggered() ), this, SLOT( zoomToFit() ) );
 
   // ------------ Playing ------------
 
-  actionVideoPlay = new QAction( "Play", this );
-  actionVideoPlay->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPlay ) ) );
-  connect( actionVideoPlay, SIGNAL( triggered() ), this, SLOT( play() ) );
+  m_arrayActions[PLAY_ACT] = new QAction( "Play", this );
+  m_arrayActions[PLAY_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPlay ) ) );
+  connect( m_arrayActions[PLAY_ACT], SIGNAL( triggered() ), this, SLOT( play() ) );
 
-  actionVideoPause = new QAction( "Pause", this );
-  actionVideoPause->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPause ) ) );
-  connect( actionVideoPause, SIGNAL( triggered() ), this, SLOT( pause() ) );
+  m_arrayActions[PAUSE_ACT] = new QAction( "Pause", this );
+  m_arrayActions[PAUSE_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPause ) ) );
+  connect( m_arrayActions[PAUSE_ACT], SIGNAL( triggered() ), this, SLOT( pause() ) );
 
-  actionVideoStop = new QAction( "Stop", this );
-  actionVideoStop->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaStop ) ) );
-  connect( actionVideoStop, SIGNAL( triggered() ), this, SLOT( stop() ) );
+  m_arrayActions[STOP_ACT] = new QAction( "Stop", this );
+  m_arrayActions[STOP_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaStop ) ) );
+  connect( m_arrayActions[STOP_ACT], SIGNAL( triggered() ), this, SLOT( stop() ) );
 
   mapperSeekVideo = new QSignalMapper( this );
   connect( mapperSeekVideo, SIGNAL( mapped(int) ), this, SLOT( seekEvent(int) ) );
 
-  actionVideoBackward = new QAction( "VideoBackward", this );
-  actionVideoBackward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
-  connect( actionVideoBackward, SIGNAL( triggered() ), mapperSeekVideo, SLOT( map() ) );
-  mapperSeekVideo->setMapping( actionVideoBackward, 0 );
-  actionVideoForward = new QAction( "VideoForward", this );
-  actionVideoForward->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
-  connect( actionVideoForward, SIGNAL( triggered() ), mapperSeekVideo, SLOT( map() ) );
-  mapperSeekVideo->setMapping( actionVideoForward, 1 );
+  m_arrayActions[VIDEO_BACKWARD_ACT] = new QAction( "VideoBackward", this );
+  m_arrayActions[VIDEO_BACKWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
+  connect( m_arrayActions[VIDEO_BACKWARD_ACT], SIGNAL( triggered() ), mapperSeekVideo, SLOT( map() ) );
+  mapperSeekVideo->setMapping( m_arrayActions[VIDEO_BACKWARD_ACT], 0 );
+  m_arrayActions[VIDEO_FORWARD_ACT] = new QAction( "VideoForward", this );
+  m_arrayActions[VIDEO_FORWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
+  connect( m_arrayActions[VIDEO_FORWARD_ACT], SIGNAL( triggered() ), mapperSeekVideo, SLOT( map() ) );
+  mapperSeekVideo->setMapping( m_arrayActions[VIDEO_FORWARD_ACT], 1 );
 
-  actionVideoLoop = new QAction( "Repeat", this );
-  actionVideoLoop->setCheckable( true );
-  actionVideoLoop->setChecked( false );
+  m_arrayActions[VIDEO_LOOP_ACT] = new QAction( "Repeat", this );
+  m_arrayActions[VIDEO_LOOP_ACT]->setCheckable( true );
+  m_arrayActions[VIDEO_LOOP_ACT]->setChecked( false );
 
-  actionVideoLock = new QAction( "VideoLock", this );
-  actionVideoLock->setCheckable( true );
-  actionVideoLock->setChecked( false );
-  connect( actionVideoLock, SIGNAL( triggered() ), this, SLOT( lockButtonEvent() ) );
-
-  actionVideoInterlace = new QAction( "VideoInterlace", this );
-  actionVideoCenter = new QAction( "VideoCenter", this );
+  m_arrayActions[VIDEO_LOCK_ACT] = new QAction( "VideoLock", this );
+  m_arrayActions[VIDEO_LOCK_ACT]->setCheckable( true );
+  m_arrayActions[VIDEO_LOCK_ACT]->setChecked( false );
+  connect( m_arrayActions[VIDEO_LOCK_ACT], SIGNAL( triggered() ), this, SLOT( lockButtonEvent() ) );
 
   m_pcFrameSlider = new QSlider;
   m_pcFrameSlider->setOrientation( Qt::Horizontal );
@@ -860,51 +863,51 @@ Void plaYUVerApp::createActions()
 
   m_appTool = NavigationTool;
 
-  actionNavigationTool = new QAction( tr( "&Navigation Tool" ), this );
-  actionNavigationTool->setCheckable( true );
-  actionNavigationTool->setChecked( true );
-  actionGroupTools->addAction( actionNavigationTool );
-  connect( actionNavigationTool, SIGNAL( triggered() ), this, SLOT( setNavigationTool() ) );
+  m_arrayActions[NAVIGATION_TOOL_ACT] = new QAction( tr( "&Navigation Tool" ), this );
+  m_arrayActions[NAVIGATION_TOOL_ACT]->setCheckable( true );
+  m_arrayActions[NAVIGATION_TOOL_ACT]->setChecked( true );
+  actionGroupTools->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
+  connect( m_arrayActions[NAVIGATION_TOOL_ACT], SIGNAL( triggered() ), this, SLOT( setNavigationTool() ) );
 
-  actionSelectionTool = new QAction( "&Selection Tool", this );
-  actionSelectionTool->setCheckable( true );
-  actionSelectionTool->setChecked( false );
-  actionGroupTools->addAction( actionSelectionTool );
-  connect( actionSelectionTool, SIGNAL( triggered() ), this, SLOT( setSelectionTool() ) );
+  m_arrayActions[SELECTION_TOOL_ACT] = new QAction( "&Selection Tool", this );
+  m_arrayActions[SELECTION_TOOL_ACT]->setCheckable( true );
+  m_arrayActions[SELECTION_TOOL_ACT]->setChecked( false );
+  actionGroupTools->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
+  connect( m_arrayActions[SELECTION_TOOL_ACT], SIGNAL( triggered() ), this, SLOT( setSelectionTool() ) );
 
   // ------------ Window ------------
 
-  actionTile = new QAction( tr( "&Tile" ), this );
-  actionTile->setStatusTip( tr( "Tile the windows" ) );
-  connect( actionTile, SIGNAL( triggered() ), mdiArea, SLOT( tileSubWindows() ) );
+  m_arrayActions[TILE_WINDOWS_ACT] = new QAction( tr( "&Tile" ), this );
+  m_arrayActions[TILE_WINDOWS_ACT]->setStatusTip( tr( "Tile the windows" ) );
+  connect( m_arrayActions[TILE_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea, SLOT( tileSubWindows() ) );
 
-  actionCascade = new QAction( tr( "&Cascade" ), this );
-  actionCascade->setStatusTip( tr( "Cascade the windows" ) );
-  connect( actionCascade, SIGNAL( triggered() ), mdiArea, SLOT( cascadeSubWindows() ) );
+  m_arrayActions[CASCADE_WINDOWS_ACT] = new QAction( tr( "&Cascade" ), this );
+  m_arrayActions[CASCADE_WINDOWS_ACT]->setStatusTip( tr( "Cascade the windows" ) );
+  connect( m_arrayActions[CASCADE_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea, SLOT( cascadeSubWindows() ) );
 
-  actionNext = new QAction( tr( "Ne&xt" ), this );
-  actionNext->setShortcuts( QKeySequence::NextChild );
-  actionNext->setStatusTip( tr( "Move the focus to the next window" ) );
-  connect( actionNext, SIGNAL( triggered() ), mdiArea, SLOT( activateNextSubWindow() ) );
+  m_arrayActions[NEXT_WINDOWS_ACT] = new QAction( tr( "Ne&xt" ), this );
+  m_arrayActions[NEXT_WINDOWS_ACT]->setShortcuts( QKeySequence::NextChild );
+  m_arrayActions[NEXT_WINDOWS_ACT]->setStatusTip( tr( "Move the focus to the next window" ) );
+  connect( m_arrayActions[NEXT_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea, SLOT( activateNextSubWindow() ) );
 
-  actionPrevious = new QAction( tr( "Pre&vious" ), this );
-  actionPrevious->setShortcuts( QKeySequence::PreviousChild );
-  actionPrevious->setStatusTip( tr( "Move the focus to the previous window" ) );
-  connect( actionPrevious, SIGNAL( triggered() ), mdiArea, SLOT( activatePreviousSubWindow() ) );
+  m_arrayActions[PREVIOUS_WINDOWS_ACT] = new QAction( tr( "Pre&vious" ), this );
+  m_arrayActions[PREVIOUS_WINDOWS_ACT]->setShortcuts( QKeySequence::PreviousChild );
+  m_arrayActions[PREVIOUS_WINDOWS_ACT]->setStatusTip( tr( "Move the focus to the previous window" ) );
+  connect( m_arrayActions[PREVIOUS_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea, SLOT( activatePreviousSubWindow() ) );
 
-  actionSeparator = new QAction( this );
-  actionSeparator->setSeparator( true );
+  m_arrayActions[SEPARATOR_ACT] = new QAction( this );
+  m_arrayActions[SEPARATOR_ACT]->setSeparator( true );
 
   // ------------ About ------------
 
-  actionAbout = new QAction( tr( "&About" ), this );
-  actionAbout->setStatusTip( tr( "Show the application's About box" ) );
-  connect( actionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
+  m_arrayActions[ABOUT_ACT] = new QAction( tr( "&About" ), this );
+  m_arrayActions[ABOUT_ACT]->setStatusTip( tr( "Show the application's About box" ) );
+  connect( m_arrayActions[ABOUT_ACT], SIGNAL( triggered() ), this, SLOT( about() ) );
 
-  actionAboutQt = new QAction( tr( "About &Qt" ), this );
-  actionAboutQt->setIcon( QIcon( ":images/qt.png" ) );
-  actionAboutQt->setStatusTip( tr( "Show the Qt library's About box" ) );
-  connect( actionAboutQt, SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
+  m_arrayActions[ABOUTQT_ACT] = new QAction( tr( "About &Qt" ), this );
+  m_arrayActions[ABOUTQT_ACT]->setIcon( QIcon( ":images/qt.png" ) );
+  m_arrayActions[ABOUTQT_ACT]->setStatusTip( tr( "Show the Qt library's About box" ) );
+  connect( m_arrayActions[ABOUTQT_ACT], SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
 }
 
 Void plaYUVerApp::createMenus()
@@ -920,10 +923,10 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[EXIT_ACT] );
 
   m_arrayMenu[VIEW_MENU] = menuBar()->addMenu( tr( "&View" ) );
-  m_arrayMenu[VIEW_MENU]->addAction( actionZoomIn );
-  m_arrayMenu[VIEW_MENU]->addAction( actionZoomOut );
-  m_arrayMenu[VIEW_MENU]->addAction( actionNormalSize );
-  m_arrayMenu[VIEW_MENU]->addAction( actionZoomToFit );
+  m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_IN_ACT] );
+  m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_OUT_ACT] );
+  m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_NORMAL_ACT] );
+  m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_FIT_ACT] );
 
   m_arrayMenu[VIEW_MENU]->addSeparator();
 
@@ -937,20 +940,20 @@ Void plaYUVerApp::createMenus()
   }
 
   m_arrayMenu[VIDEO_MENU] = menuBar()->addMenu( tr( "Video" ) );
-  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoPlay );
-  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoPause );
-  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoStop );
-  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoBackward );
-  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoForward );
-  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoLoop );
-  m_arrayMenu[VIDEO_MENU]->addAction( actionVideoLock );
+  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[PLAY_ACT] );
+  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[PAUSE_ACT] );
+  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[STOP_ACT] );
+  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
+  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
+  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_LOOP_ACT] );
+  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_LOCK_ACT] );
 
   QMenu* modules_menu = m_pcModulesHandle->createMenus( menuBar() );
   connect( modules_menu, SIGNAL( triggered(QAction *) ), this, SLOT( selectModule(QAction *) ) );
 
   m_arrayMenu[TOOLS_MENU] = menuBar()->addMenu( tr( "Tools" ) );
-  m_arrayMenu[TOOLS_MENU]->addAction( actionNavigationTool );
-  m_arrayMenu[TOOLS_MENU]->addAction( actionSelectionTool );
+  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
+  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
 
   m_arrayMenu[WINDOW_MENU] = menuBar()->addMenu( tr( "&Window" ) );
   updateWindowMenu();
@@ -959,8 +962,8 @@ Void plaYUVerApp::createMenus()
   menuBar()->addSeparator();
 
   m_arrayMenu[ABOUT_MENU] = menuBar()->addMenu( tr( "&Help" ) );
-  m_arrayMenu[ABOUT_MENU]->addAction( actionAbout );
-  m_arrayMenu[ABOUT_MENU]->addAction( actionAboutQt );
+  m_arrayMenu[ABOUT_MENU]->addAction( m_arrayActions[ABOUT_ACT] );
+  m_arrayMenu[ABOUT_MENU]->addAction( m_arrayActions[ABOUTQT_ACT] );
 }
 
 Void plaYUVerApp::createToolBars()
@@ -972,18 +975,18 @@ Void plaYUVerApp::createToolBars()
   toolbarFile->addAction( m_arrayActions[CLOSE_ACT] );
 
   toolbarView = addToolBar( tr( "Zoom" ) );
-  toolbarView->addAction( actionZoomIn );
-  toolbarView->addAction( actionZoomOut );
-  toolbarView->addAction( actionNormalSize );
-  toolbarView->addAction( actionZoomToFit );
+  toolbarView->addAction( m_arrayActions[ZOOM_IN_ACT] );
+  toolbarView->addAction( m_arrayActions[ZOOM_OUT_ACT] );
+  toolbarView->addAction( m_arrayActions[ZOOM_NORMAL_ACT] );
+  toolbarView->addAction( m_arrayActions[ZOOM_FIT_ACT] );
 
   toolbarVideo = addToolBar( tr( "Video" ) );
-  toolbarVideo->addAction( actionVideoPlay );
-  toolbarVideo->addAction( actionVideoPause );
-  toolbarVideo->addAction( actionVideoStop );
-  toolbarVideo->addAction( actionVideoBackward );
+  toolbarVideo->addAction( m_arrayActions[PLAY_ACT] );
+  toolbarVideo->addAction( m_arrayActions[PAUSE_ACT] );
+  toolbarVideo->addAction( m_arrayActions[STOP_ACT] );
+  toolbarVideo->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
   toolbarVideo->addWidget( m_pcFrameSlider );
-  toolbarVideo->addAction( actionVideoForward );
+  toolbarVideo->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
 
   toolbarVideo->addWidget( new QLabel );
   m_pcCurrFrameNumLabel = new QLabel;

@@ -123,7 +123,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   // Pixel format
   QHBoxLayout* pixelFormatLayout = new QHBoxLayout();
   QLabel* pixelFormatLabel = new QLabel();
-  pixelFormatLabel->setText( "Pixel FormatBox" );
+  pixelFormatLabel->setText( "Pixel Format" );
   pixelFormatLabel->setFont( menusFont );
   m_comboBoxPixelFormat = new QComboBox();
   QSizePolicy sizePolicyPixelFormat( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
@@ -134,7 +134,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   m_comboBoxPixelFormat->setAcceptDrops( true );
   m_comboBoxPixelFormat->clear();
   m_comboBoxPixelFormat->insertItems( 0, PlaYUVerFrame::supportedPixelFormatList() );
-  m_comboBoxPixelFormat->setCurrentIndex( 0 );
+  m_comboBoxPixelFormat->setCurrentIndex( 1 );
 
   MainLayout->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum ) );
   pixelFormatLayout->addWidget( pixelFormatLabel );

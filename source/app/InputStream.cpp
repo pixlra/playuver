@@ -399,6 +399,8 @@ cv::Mat InputStream::getFrameCvMat()
 
 Void InputStream::seekInput( UInt64 new_frame_num )
 {
+  if( !m_pFile )
+    return;
   if( new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum )
     return;
 #ifdef USE_FFMPEG

@@ -49,7 +49,6 @@ plaYUVerApp::plaYUVerApp()
   //mdiArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 
   connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( chageSubWindowSelection() ) );
-  //connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( updateMenus() ) );
 
   mapperWindow = new QSignalMapper( this );
   connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
@@ -221,32 +220,13 @@ void plaYUVerApp::closeAll()
 
 void plaYUVerApp::selectModule( QAction *curr_action )
 {
-  //emit curr_action->triggered();
-  if( m_pcCurrentSubWindow )
+  SubWindowHandle *interfaceChild = m_pcModulesHandle->toggleSelectedModuleIf( m_pcCurrentSubWindow );
+  if( interfaceChild )
   {
-    PlaYUVerModuleIf* pcCurrMod = m_pcModulesHandle->getSelectedModuleIf();
-    if( pcCurrMod )
-    {
-      if( pcCurrMod->m_cModuleDef.m_bRequiresNewWindow )
-      {
-        SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
-        mdiArea->addSubWindow( interfaceChild );
-
-//        connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, InputStream *) ), this,
-//            SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
-    //    connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this,
-    //            SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
-        m_pcCurrentSubWindow->setModuleSubWindow( interfaceChild );
-        m_pcCurrentSubWindow->enableModule( pcCurrMod );
-        interfaceChild->show();
-        interfaceChild->zoomToFit();
-        interfaceChild->getViewArea()->setTool( m_appTool );
-      }
-      else
-      {
-        m_pcCurrentSubWindow->enableModule( pcCurrMod );
-      }
-    }
+    mdiArea->addSubWindow( interfaceChild );
+    interfaceChild->show();
+    interfaceChild->zoomToFit();
+    interfaceChild->getViewArea()->setTool( m_appTool );
   }
   return;
 }
@@ -269,7 +249,7 @@ Void plaYUVerApp::updateFrameProperties()
 {
   if( m_pcCurrentSubWindow )
   {
-    m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
+    m_pcFrameProperties->setData( m_pcCurrentSubWindow->getCurrFrame() );
     //m_pcFrameProperties->setSelection( m_pcCurrentSubWindow->getViewArea()->selectedArea() );
   }
   else
@@ -319,47 +299,51 @@ Void plaYUVerApp::setTimerStatus()
 
 void plaYUVerApp::play()
 {
-  if( m_pcCurrentSubWindow )
+  if( !m_pcCurrentSubWindow )
+    return;
+
+  if( !m_pcCurrentSubWindow->getInputStream() )
+    return;
+
+  if( actionVideoLock->isChecked() && m_acPlayingSubWindows.size() )
   {
-    if( actionVideoLock->isChecked() && m_acPlayingSubWindows.size() )
+    Bool bFind = false;
+    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
     {
-      Bool bFind = false;
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      if( m_acPlayingSubWindows.at( i ) == m_pcCurrentSubWindow )
       {
-        if( m_acPlayingSubWindows.at( i ) == m_pcCurrentSubWindow )
-        {
-          bFind = true;
-          break;
-        }
-      }
-      if( !bFind )
-      {
-        m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
-        m_pcCurrentSubWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
-        m_pcCurrentSubWindow->play();
-        m_pcFrameSlider->setMaximum( qMin( m_pcFrameSlider->maximum(), ( Int )m_pcCurrentSubWindow->getInputStream()->getFrameNum() - 1 ) );
+        bFind = true;
+        break;
       }
     }
-    else
+    if( !bFind )
     {
-      playingTimer->stop();
-      m_acPlayingSubWindows.clear();
       m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
+      m_pcCurrentSubWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
       m_pcCurrentSubWindow->play();
-      m_uiAveragePlayInterval = 0;
-      m_bIsPlaying = false;
-    }
-    if( !m_bIsPlaying )
-    {
-      UInt frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
-      UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
-      qDebug( ) << "Desired frame rate: "
-                << QString::number( 1000 / timeInterval )
-                << " fps";
-      playingTimer->start( timeInterval );
-      m_cTimer.start();
+      m_pcFrameSlider->setMaximum( qMin( m_pcFrameSlider->maximum(), ( Int )m_pcCurrentSubWindow->getInputStream()->getFrameNum() - 1 ) );
     }
   }
+  else
+  {
+    playingTimer->stop();
+    m_acPlayingSubWindows.clear();
+    m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
+    m_pcCurrentSubWindow->play();
+    m_uiAveragePlayInterval = 0;
+    m_bIsPlaying = false;
+  }
+  if( !m_bIsPlaying )
+  {
+    UInt frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
+    UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
+    qDebug( ) << "Desired frame rate: "
+              << QString::number( 1000 / timeInterval )
+              << " fps";
+    playingTimer->start( timeInterval );
+    m_cTimer.start();
+  }
+
 }
 
 void plaYUVerApp::pause()
@@ -475,7 +459,6 @@ void plaYUVerApp::seekEvent( int direction )
     else
     {
       m_pcCurrentSubWindow->seekRelativeEvent( direction > 0 ? true : false );
-
     }
     updateFrameProperties();
     updateCurrFrameNum();
@@ -555,15 +538,9 @@ void plaYUVerApp::chageSubWindowSelection()
   SubWindowHandle *new_window = activeSubWindow();
   if( activeSubWindow() != m_pcCurrentSubWindow )
   {
-    if( activeSubWindow()  )
+    if( activeSubWindow() )
     {
-      if( m_pcCurrentSubWindow  )
-      {
-        m_pcCurrentSubWindow->disableModule();
-      }
       m_pcCurrentSubWindow = new_window;
-      m_pcStreamProperties->setData( m_pcCurrentSubWindow->getInputStream() );
-      m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
       updateCurrFrameNum();
       updateTotalFrameNum();
       updateStreamProperties();

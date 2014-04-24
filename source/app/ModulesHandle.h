@@ -42,18 +42,24 @@
 namespace plaYUVer
 {
 
-class ModulesHandle : public QObject
+class SubWindowHandle;
+
+class ModulesHandle: public QObject
 {
- Q_OBJECT
+Q_OBJECT
 public:
   ModulesHandle( QWidget * parent = 0 );
   ~ModulesHandle();
 
   QMenu* createMenus( QMenuBar *MainAppMenuBar );
   Void updateMenus( Bool hasSubWindow );
-  PlaYUVerModuleIf* getSelectedModuleIf();
+  SubWindowHandle* toggleSelectedModuleIf( SubWindowHandle* pcSubWindow );
+  static Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
 
 private:
+  QWidget *m_pcParent;
+
+  Bool m_bShowModulesNewWindow;
   UInt m_uiModulesCount;
   Int m_uiModuleSelected;
   QMenu* m_pcModulesMenu;
@@ -64,6 +70,7 @@ private:
 
   Void appendModule( PlaYUVerModuleIf* );
   Void ModulesList( Bool bCreate );
+
 private Q_SLOTS:
   void selectModule( int index );
 };

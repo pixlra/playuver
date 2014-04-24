@@ -25,6 +25,9 @@
 #include <cstdio>
 
 #include "ModulesHandle.h"
+#include "SubWindowHandle.h"
+
+// List of modules includes
 #include "FilterFrame.h"
 
 namespace plaYUVer
@@ -32,20 +35,22 @@ namespace plaYUVer
 
 Void ModulesHandle::ModulesList( Bool bCreate )
 {
+
   // Register Modules
   REGISTER_MODULE( FilterFrame );
 
-
 }
-
 
 ModulesHandle::ModulesHandle( QWidget * parent )
 {
-  ModulesList( true );
+  m_pcParent = parent;
+
   // configure class
-  setParent( parent );
+  setParent( m_pcParent );
   m_uiModulesCount = 0;
-  m_uiModuleSelected= -1;
+  m_uiModuleSelected = -1;
+  m_bShowModulesNewWindow = false;
+  ModulesList( true );
 }
 
 ModulesHandle::~ModulesHandle()
@@ -63,16 +68,55 @@ void ModulesHandle::selectModule( int index )
   m_uiModuleSelected = index;
 }
 
-PlaYUVerModuleIf* ModulesHandle::getSelectedModuleIf()
+SubWindowHandle* ModulesHandle::toggleSelectedModuleIf( SubWindowHandle* pcSubWindow )
 {
+  SubWindowHandle* interfaceChild = NULL;
   PlaYUVerModuleIf* currModuleIf = NULL;
 
   if( m_uiModuleSelected >= 0 )
-    //if( m_arrayModulesActions.at(m_uiModuleSelected)->isChecked() )
-      currModuleIf =  m_pcPlaYUVerModules.at( m_uiModuleSelected );
-
+    currModuleIf = m_pcPlaYUVerModules.at( m_uiModuleSelected );
   m_uiModuleSelected = -1;
-  return currModuleIf;
+
+  if( currModuleIf->m_pcAction->isChecked() )
+  {
+    currModuleIf->m_pcDisplaySubWindow = NULL;
+    if( currModuleIf->m_cModuleDef.m_bRequiresNewWindow || m_bShowModulesNewWindow )
+    {
+      QString windowName;
+      interfaceChild = new SubWindowHandle( m_pcParent );
+      pcSubWindow->setModuleSubWindow( interfaceChild );
+      pcSubWindow->enableModule( currModuleIf );
+      windowName.append( pcSubWindow->userFriendlyCurrentFile() );
+      windowName.append( " - " );
+      windowName.append( currModuleIf->m_cModuleDef.m_pchModuleName );
+      interfaceChild->setWindowName( windowName );
+      connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
+          SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
+      currModuleIf->m_pcDisplaySubWindow = interfaceChild;
+    }
+    else
+    {
+      pcSubWindow->enableModule( currModuleIf );
+    }
+    currModuleIf->m_pcSubWindow = pcSubWindow;
+  }
+  else
+  {
+    currModuleIf->m_pcSubWindow->disableModule();
+  }
+  return interfaceChild;
+}
+
+Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf )
+{
+  pcCurrModuleIf->m_pcAction->setChecked( false );
+  if( pcCurrModuleIf->m_pcDisplaySubWindow )
+  {
+    pcCurrModuleIf->m_pcDisplaySubWindow->close();
+    pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
+  }
+  pcCurrModuleIf->m_pcSubWindow = NULL;
+  pcCurrModuleIf->destroy();
 }
 
 QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
@@ -87,8 +131,6 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
   m_pcModulesMenu = MainAppMenuBar->addMenu( "&Modules" );
 
   //m_arrayModulesActions.resize( m_uiModulesCount );
-
-
 
   for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
   {

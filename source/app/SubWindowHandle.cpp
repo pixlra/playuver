@@ -52,8 +52,9 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   m_cScrollArea->setWidget( m_cViewArea );
   m_cScrollArea->setWidgetResizable( true );
 
+  m_pCurrStream = NULL;
   m_pCurrStream = new InputStream;
-
+  m_pcCurrFrame = NULL;
   m_pcCurrentModule = NULL;
   m_pcModuleSubWindow = NULL;
 
@@ -64,21 +65,20 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
 
 SubWindowHandle::~SubWindowHandle()
 {
+  disableModule();
   delete m_cViewArea;
   delete m_cScrollArea;
-  delete m_pCurrStream;
-  if( m_pcCurrentModule )
-  {
-    m_pcCurrentModule->m_pcAction->setChecked( false );
-    m_pcCurrentModule->destroy();
-    m_pcCurrentModule = NULL;
-  }
+  if( m_pCurrStream )
+    delete m_pCurrStream;
 }
 
 Bool SubWindowHandle::loadFile( const QString &fileName )
 {
   UInt Width = 0, Height = 0, FrameRate = 30;
   Int InputFormat = -1;
+
+  if( !m_pCurrStream )
+    m_pCurrStream = new InputStream;
 
   m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
 
@@ -102,7 +102,6 @@ Bool SubWindowHandle::loadFile( const QString &fileName )
   QApplication::restoreOverrideCursor();
 
   refreshFrame();
-  //normalSize();
 
   m_cCurrFileName = fileName;
   m_cWindowName = m_pCurrStream->getStreamInformationString();
@@ -116,11 +115,6 @@ Bool SubWindowHandle::loadFile( const QString &fileName )
  */
 Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
 {
-  if( m_pcCurrentModule == select_module )
-  {
-    disableModule();
-    return;
-  }
   m_pcCurrentModule = select_module;
   m_pcCurrentModule->create( m_pCurrStream->getCurrFrame() );
   refreshFrame();
@@ -130,10 +124,9 @@ Void SubWindowHandle::disableModule()
 {
   if( !m_pcCurrentModule )
     return;
-
-  m_pcCurrentModule->m_pcAction->setChecked( false );
-  m_pcCurrentModule->destroy();
+  ModulesHandle::destroyModuleIf( m_pcCurrentModule );
   m_pcCurrentModule = NULL;
+  m_pcModuleSubWindow = NULL;
   refreshFrame();
 }
 
@@ -268,7 +261,11 @@ Void SubWindowHandle::scaleView( Int width, Int height )
 
 Void SubWindowHandle::scaleView( const QSize & size )
 {
-  QSize imgViewSize( m_pCurrStream->getWidth(), m_pCurrStream->getHeight() );
+  QSize imgViewSize;
+  if( m_pcCurrFrame )
+    imgViewSize = QSize( m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight() );
+  else
+    imgViewSize = QSize( m_pCurrStream->getWidth(), m_pCurrStream->getHeight() );
   QSize newSize = imgViewSize;
   newSize.scale( size, Qt::KeepAspectRatio );
 
@@ -361,7 +358,11 @@ QSize SubWindowHandle::sizeHint() const
     maxSize = p->size();
   }
 
-  QSize isize = QSize( m_pCurrStream->getWidth() + 50, m_pCurrStream->getHeight() + 50 );
+  QSize isize;
+  if( m_pcCurrFrame )
+    isize = QSize( m_pcCurrFrame->getWidth() + 50, m_pcCurrFrame->getHeight() + 50 );
+  else
+    isize = QSize( m_pCurrStream->getWidth() + 50, m_pCurrStream->getHeight() + 50 );
 
   // If the SubWindowHandle needs more space that the avaiable, we'll give
   // to the subwindow a reasonable size preserving the image aspect ratio.

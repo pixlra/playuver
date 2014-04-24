@@ -77,6 +77,12 @@ class SubWindowHandle;
 
 class PlaYUVerModuleIf
 {
+  friend class ModulesHandle;
+private:
+  QAction* m_pcAction;
+  SubWindowHandle* m_pcSubWindow;
+  SubWindowHandle* m_pcDisplaySubWindow;
+
 public:
   PlaYUVerModuleIf()
   {
@@ -86,8 +92,6 @@ public:
   {
   }
 
-  QAction* m_pcAction;
-  SubWindowHandle* m_pcSubWindow;
   PlaYUVerModuleDefinition m_cModuleDef;
 
   virtual Void create() {};

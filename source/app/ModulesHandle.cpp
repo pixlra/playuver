@@ -49,7 +49,7 @@ ModulesHandle::ModulesHandle( QWidget * parent )
   setParent( m_pcParent );
   m_uiModulesCount = 0;
   m_uiModuleSelected = -1;
-
+  m_bShowModulesNewWindow = false;
   ModulesList( true );
 }
 
@@ -68,42 +68,31 @@ void ModulesHandle::selectModule( int index )
   m_uiModuleSelected = index;
 }
 
-PlaYUVerModuleIf* ModulesHandle::getSelectedModuleIf()
-{
-  PlaYUVerModuleIf* currModuleIf = NULL;
-
-  if( m_uiModuleSelected >= 0 )
-    //if( m_arrayModulesActions.at(m_uiModuleSelected)->isChecked() )
-    currModuleIf = m_pcPlaYUVerModules.at( m_uiModuleSelected );
-
-  m_uiModuleSelected = -1;
-  return currModuleIf;
-}
-
 SubWindowHandle* ModulesHandle::toggleSelectedModuleIf( SubWindowHandle* pcSubWindow )
 {
   SubWindowHandle* interfaceChild = NULL;
   PlaYUVerModuleIf* currModuleIf = NULL;
 
   if( m_uiModuleSelected >= 0 )
-    //if( m_arrayModulesActions.at(m_uiModuleSelected)->isChecked() )
     currModuleIf = m_pcPlaYUVerModules.at( m_uiModuleSelected );
   m_uiModuleSelected = -1;
 
   if( currModuleIf->m_pcAction->isChecked() )
   {
-    if( currModuleIf->m_cModuleDef.m_bRequiresNewWindow )
+    currModuleIf->m_pcDisplaySubWindow = NULL;
+    if( currModuleIf->m_cModuleDef.m_bRequiresNewWindow || m_bShowModulesNewWindow )
     {
+      QString windowName;
       interfaceChild = new SubWindowHandle( m_pcParent );
-      //mdiArea->addSubWindow( interfaceChild );
-
       pcSubWindow->setModuleSubWindow( interfaceChild );
       pcSubWindow->enableModule( currModuleIf );
-
-      interfaceChild->show();
-      interfaceChild->zoomToFit();
+      windowName.append( pcSubWindow->userFriendlyCurrentFile() );
+      windowName.append( " - " );
+      windowName.append( currModuleIf->m_cModuleDef.m_pchModuleName );
+      interfaceChild->setWindowName( windowName );
       connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
           SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
+      currModuleIf->m_pcDisplaySubWindow = interfaceChild;
     }
     else
     {
@@ -114,9 +103,20 @@ SubWindowHandle* ModulesHandle::toggleSelectedModuleIf( SubWindowHandle* pcSubWi
   else
   {
     currModuleIf->m_pcSubWindow->disableModule();
-    currModuleIf->m_pcSubWindow = NULL;
   }
   return interfaceChild;
+}
+
+Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf )
+{
+  pcCurrModuleIf->m_pcAction->setChecked( false );
+  if( pcCurrModuleIf->m_pcDisplaySubWindow )
+  {
+    pcCurrModuleIf->m_pcDisplaySubWindow->close();
+    pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
+  }
+  pcCurrModuleIf->m_pcSubWindow = NULL;
+  pcCurrModuleIf->destroy();
 }
 
 QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )

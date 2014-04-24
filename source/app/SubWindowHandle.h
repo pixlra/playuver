@@ -36,7 +36,7 @@
 #include "TypeDef.h"
 #include "InputStream.h"
 #include "ViewArea.h"
-#include "PlaYUVerModuleIf.h"
+#include "ModulesHandle.h"
 
 namespace plaYUVer
 {
@@ -94,6 +94,11 @@ public:
     return m_pCurrStream;
   }
 
+  PlaYUVerFrame* getCurrFrame()
+  {
+    return m_pcCurrFrame;
+  }
+
   ViewArea* getViewArea()
   {
     return m_cViewArea;
@@ -145,6 +150,12 @@ public:
   }
 
   QSize sizeHint() const;
+
+  Void setWindowName( QString name )
+  {
+    m_cWindowName = name;
+    setWindowTitle( m_cWindowName );
+  }
 
   QString userFriendlyCurrentFile()
   {

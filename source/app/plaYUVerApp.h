@@ -158,8 +158,8 @@ private:
   {
     FILE_MENU = 0,
     VIEW_MENU,
-    VIDEO_MENU,
     TOOLS_MENU,
+    VIDEO_MENU,
     WINDOW_MENU,
     ABOUT_MENU,
     TOTAL_MENUS,

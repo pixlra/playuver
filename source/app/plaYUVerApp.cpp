@@ -228,6 +228,7 @@ void plaYUVerApp::selectModule( QAction *curr_action )
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
   }
+  updateFrameProperties();
   return;
 }
 
@@ -939,6 +940,10 @@ Void plaYUVerApp::createMenus()
     actionPopupMenu->setText( tr( "&Toolbars/Docks" ) );
   }
 
+  m_arrayMenu[TOOLS_MENU] = menuBar()->addMenu( tr( "Tools" ) );
+  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
+  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
+
   m_arrayMenu[VIDEO_MENU] = menuBar()->addMenu( tr( "Video" ) );
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[PLAY_ACT] );
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[PAUSE_ACT] );
@@ -950,10 +955,6 @@ Void plaYUVerApp::createMenus()
 
   QMenu* modules_menu = m_pcModulesHandle->createMenus( menuBar() );
   connect( modules_menu, SIGNAL( triggered(QAction *) ), this, SLOT( selectModule(QAction *) ) );
-
-  m_arrayMenu[TOOLS_MENU] = menuBar()->addMenu( tr( "Tools" ) );
-  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
-  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
 
   m_arrayMenu[WINDOW_MENU] = menuBar()->addMenu( tr( "&Window" ) );
   updateWindowMenu();

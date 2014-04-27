@@ -99,6 +99,7 @@ private Q_SLOTS:
 
   void updatePixelValueStatusBar( const QPoint & pos, PlaYUVerFrame* frame );
 
+  void updateProperties();
   void updatePropertiesSelectedArea( QRect area );
 
   void setAllSubWindowTool();
@@ -160,6 +161,7 @@ private:
     VIEW_MENU,
     TOOLS_MENU,
     VIDEO_MENU,
+    DOCK_VIEW_MENU,
     WINDOW_MENU,
     ABOUT_MENU,
     TOTAL_MENUS,

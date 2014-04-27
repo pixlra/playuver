@@ -234,7 +234,13 @@ void plaYUVerApp::selectModule( QAction *curr_action )
 
 // -----------------------  Update Properties   --------------------
 
-void plaYUVerApp::updateStreamProperties()
+void plaYUVerApp::updateProperties()
+{
+  updateStreamProperties();
+  updateFrameProperties();
+}
+
+Void plaYUVerApp::updateStreamProperties()
 {
   if( m_pcCurrentSubWindow )
   {
@@ -378,6 +384,7 @@ void plaYUVerApp::stop()
     m_acPlayingSubWindows.clear();
     setTimerStatus();
     updateCurrFrameNum();
+    updateFrameProperties();
     if( m_uiAveragePlayInterval )
       qDebug( ) << "Real display time: "
                 << QString::number( 1000 / m_uiAveragePlayInterval )
@@ -409,6 +416,7 @@ void plaYUVerApp::playEvent()
       {
         stop();
         updateCurrFrameNum();
+        updateFrameProperties();
         return;
       }
       break;
@@ -933,10 +941,10 @@ Void plaYUVerApp::createMenus()
 
   // createPopupMenu() Returns a popup menu containing checkable entries for
   // the toolbars and dock widgets present in the main window.
-  QMenu *viewsSub = createPopupMenu();
-  if( viewsSub )
+  m_arrayMenu[DOCK_VIEW_MENU] = createPopupMenu();
+  if( m_arrayMenu[DOCK_VIEW_MENU] )
   {
-    actionPopupMenu = m_arrayMenu[VIEW_MENU]->addMenu( viewsSub );
+    actionPopupMenu = m_arrayMenu[VIEW_MENU]->addMenu( m_arrayMenu[DOCK_VIEW_MENU] );
     actionPopupMenu->setText( tr( "&Toolbars/Docks" ) );
   }
 
@@ -1011,13 +1019,14 @@ Void plaYUVerApp::createDockWidgets()
   m_arraySideBars[STREAM_SIDEBAR]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   m_arraySideBars[STREAM_SIDEBAR]->setWidget( m_pcStreamProperties );
   addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[STREAM_SIDEBAR] );
+  connect( m_arraySideBars[STREAM_SIDEBAR], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateProperties() ) );
 
   m_pcFrameProperties = new FramePropertiesSideBar( this );
   m_arraySideBars[FRAME_SIDEBAR] = new QDockWidget( tr( "Frame Information" ), this );
   m_arraySideBars[FRAME_SIDEBAR]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   m_arraySideBars[FRAME_SIDEBAR]->setWidget( m_pcFrameProperties );
   addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[FRAME_SIDEBAR] );
-
+  connect( m_arraySideBars[FRAME_SIDEBAR], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateProperties() ) );
 }
 
 Void plaYUVerApp::createStatusBar()

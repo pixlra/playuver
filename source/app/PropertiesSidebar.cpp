@@ -356,7 +356,6 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent ) :
   setLayout( mainLayout );
   setEnabled( false );
 
-  connect( this, SIGNAL( visibilityChanged(bool) ), this, SLOT( slotUpdateHistogram() ) );
   connect( channelCB, SIGNAL( activated(int) ), this, SLOT( slotChannelChanged(int) ) );
   connect( scaleButtonGroup, SIGNAL( buttonClicked(int) ), this, SLOT( slotScaleChanged(int) ) );
   connect( colorsCB, SIGNAL( activated(int) ), this, SLOT( slotColorsChanged(int) ) );

@@ -25,6 +25,7 @@
 #include "plaYUVerApp.h"
 #include "SubWindowHandle.h"
 #include "InputStream.h"
+#include "DialogSubWindowSelector.h"
 
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
@@ -512,6 +513,8 @@ void plaYUVerApp::lockButtonEvent()
 
 void plaYUVerApp::videoSelectionButtonEvent()
 {
+  DialogSubWindowSelector dialogWindowsSelection( this );
+  dialogWindowsSelection.exec();
 
 }
 

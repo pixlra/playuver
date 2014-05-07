@@ -797,14 +797,14 @@ Void plaYUVerApp::createActions()
   mapperZoom = new QSignalMapper( this );
   connect( mapperZoom, SIGNAL( mapped(int) ), this, SLOT( scaleFrame(int) ) );
 
-  m_arrayActions[ZOOM_IN_ACT] = new QAction( tr( "Zoom &In (25%)" ), this );
+  m_arrayActions[ZOOM_IN_ACT] = new QAction( tr( "Zoom &In (+25%)" ), this );
   m_arrayActions[ZOOM_IN_ACT]->setIcon( QIcon( ":/images/zoomin.png" ) );
   m_arrayActions[ZOOM_IN_ACT]->setShortcut( tr( "Ctrl++" ) );
   m_arrayActions[ZOOM_IN_ACT]->setStatusTip( tr( "Scale the image up by 25%" ) );
   connect( m_arrayActions[ZOOM_IN_ACT], SIGNAL( triggered() ), mapperZoom, SLOT( map() ) );
   mapperZoom->setMapping( m_arrayActions[ZOOM_IN_ACT], 125 );
 
-  m_arrayActions[ZOOM_OUT_ACT] = new QAction( tr( "Zoom &Out (25%)" ), this );
+  m_arrayActions[ZOOM_OUT_ACT] = new QAction( tr( "Zoom &Out (-25%)" ), this );
   m_arrayActions[ZOOM_OUT_ACT]->setIcon( QIcon( ":/images/zoomout.png" ) );
   m_arrayActions[ZOOM_OUT_ACT]->setShortcut( tr( "Ctrl+-" ) );
   m_arrayActions[ZOOM_OUT_ACT]->setStatusTip( tr( "Scale the image down by 25%" ) );

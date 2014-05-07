@@ -49,7 +49,6 @@ ModulesHandle::ModulesHandle( QWidget * parent )
   setParent( m_pcParent );
   m_uiModulesCount = 0;
   m_uiModuleSelected = -1;
-  m_bShowModulesNewWindow = false;
   ModulesList( true );
 }
 
@@ -70,6 +69,7 @@ void ModulesHandle::selectModule( int index )
 
 SubWindowHandle* ModulesHandle::toggleSelectedModuleIf( SubWindowHandle* pcSubWindow )
 {
+  Bool bShowModulesNewWindow = m_pcForceNewWindowAction->isChecked();
   SubWindowHandle* interfaceChild = NULL;
   PlaYUVerModuleIf* currModuleIf = NULL;
 
@@ -77,18 +77,22 @@ SubWindowHandle* ModulesHandle::toggleSelectedModuleIf( SubWindowHandle* pcSubWi
     currModuleIf = m_pcPlaYUVerModules.at( m_uiModuleSelected );
   m_uiModuleSelected = -1;
 
+  if( !currModuleIf )
+    return NULL;
+
   if( currModuleIf->m_pcAction->isChecked() )
   {
     currModuleIf->m_pcDisplaySubWindow = NULL;
-    if( currModuleIf->m_cModuleDef.m_bRequiresNewWindow || m_bShowModulesNewWindow )
+    if( currModuleIf->m_cModuleDef.m_bRequiresNewWindow || bShowModulesNewWindow )
     {
       QString windowName;
       interfaceChild = new SubWindowHandle( m_pcParent );
       pcSubWindow->setModuleSubWindow( interfaceChild );
       pcSubWindow->enableModule( currModuleIf );
       windowName.append( pcSubWindow->userFriendlyCurrentFile() );
-      windowName.append( " - " );
+      windowName.append( " [" );
       windowName.append( currModuleIf->m_cModuleDef.m_pchModuleName );
+      windowName.append( "]" );
       interfaceChild->setWindowName( windowName );
       connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
           SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
@@ -154,8 +158,8 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
       }
     }
 
-    currAction = new QAction( tr( currModuleIf->m_cModuleDef.m_pchModuleName ), parent() );
-    currAction->setStatusTip( tr( currModuleIf->m_cModuleDef.m_pchModuleTooltip ) );
+    currAction = new QAction( currModuleIf->m_cModuleDef.m_pchModuleName, parent() );
+    currAction->setStatusTip( currModuleIf->m_cModuleDef.m_pchModuleTooltip );
     currAction->setCheckable( true );
     connect( currAction, SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
     m_pcActionMapper->setMapping( currAction, i );
@@ -168,6 +172,14 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 
     currModuleIf->m_pcAction = currAction;
   }
+
+  m_pcForceNewWindowAction = new QAction( "Use New Window", parent() );
+  m_pcForceNewWindowAction->setStatusTip( "Show module result in a new window. Some modules already force this feature" );
+  m_pcForceNewWindowAction->setCheckable( true );
+
+  m_pcModulesMenu->addSeparator();
+  m_pcModulesMenu->addAction( m_pcForceNewWindowAction );
+
   return m_pcModulesMenu;
 }
 

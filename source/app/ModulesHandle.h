@@ -59,7 +59,6 @@ public:
 private:
   QWidget *m_pcParent;
 
-  Bool m_bShowModulesNewWindow;
   UInt m_uiModulesCount;
   Int m_uiModuleSelected;
   QMenu* m_pcModulesMenu;
@@ -67,6 +66,7 @@ private:
   QList<PlaYUVerModuleIf*> m_pcPlaYUVerModules;
   QSignalMapper* m_pcActionMapper;
   QVector<QAction*> m_arrayModulesActions;
+  QAction *m_pcForceNewWindowAction;
 
   Void appendModule( PlaYUVerModuleIf* );
   Void ModulesList( Bool bCreate );

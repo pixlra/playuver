@@ -510,6 +510,11 @@ void plaYUVerApp::lockButtonEvent()
   }
 }
 
+void plaYUVerApp::videoSelectionButtonEvent()
+{
+
+}
+
 // -----------------------  Zoom Functions  -----------------------
 
 void plaYUVerApp::normalSize()
@@ -540,7 +545,7 @@ void plaYUVerApp::scaleFrame( int ratio )
 void plaYUVerApp::about()
 {
   QString about_message;
-  about_message.append("The <b>plaYUVerApp</b> is an open-source raw video player");
+  about_message.append( "The <b>plaYUVerApp</b> is an open-source raw video player" );
 //  about_message.append("\n\r");
 //  about_message.append("João Carreira");
 //  about_message.append("\n\r");
@@ -840,11 +845,12 @@ Void plaYUVerApp::createActions()
   mapperSeekVideo = new QSignalMapper( this );
   connect( mapperSeekVideo, SIGNAL( mapped(int) ), this, SLOT( seekEvent(int) ) );
 
-  m_arrayActions[VIDEO_BACKWARD_ACT] = new QAction( "VideoBackward", this );
+  m_arrayActions[VIDEO_BACKWARD_ACT] = new QAction( "Video Backward", this );
   m_arrayActions[VIDEO_BACKWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
   connect( m_arrayActions[VIDEO_BACKWARD_ACT], SIGNAL( triggered() ), mapperSeekVideo, SLOT( map() ) );
   mapperSeekVideo->setMapping( m_arrayActions[VIDEO_BACKWARD_ACT], 0 );
-  m_arrayActions[VIDEO_FORWARD_ACT] = new QAction( "VideoForward", this );
+
+  m_arrayActions[VIDEO_FORWARD_ACT] = new QAction( "Video Forward", this );
   m_arrayActions[VIDEO_FORWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
   connect( m_arrayActions[VIDEO_FORWARD_ACT], SIGNAL( triggered() ), mapperSeekVideo, SLOT( map() ) );
   mapperSeekVideo->setMapping( m_arrayActions[VIDEO_FORWARD_ACT], 1 );
@@ -853,10 +859,14 @@ Void plaYUVerApp::createActions()
   m_arrayActions[VIDEO_LOOP_ACT]->setCheckable( true );
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( false );
 
-  m_arrayActions[VIDEO_LOCK_ACT] = new QAction( "VideoLock", this );
+  m_arrayActions[VIDEO_LOCK_ACT] = new QAction( "Video Lock", this );
   m_arrayActions[VIDEO_LOCK_ACT]->setCheckable( true );
   m_arrayActions[VIDEO_LOCK_ACT]->setChecked( false );
   connect( m_arrayActions[VIDEO_LOCK_ACT], SIGNAL( triggered() ), this, SLOT( lockButtonEvent() ) );
+
+  m_arrayActions[VIDEO_LOCK_SELECTION_ACT] = new QAction( "Video Lock Window Selection", this );
+  m_arrayActions[VIDEO_FORWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
+  connect( m_arrayActions[VIDEO_LOCK_SELECTION_ACT], SIGNAL( triggered() ), this, SLOT( videoSelectionButtonEvent() ) );
 
   m_pcFrameSlider = new QSlider;
   m_pcFrameSlider->setOrientation( Qt::Horizontal );
@@ -887,20 +897,24 @@ Void plaYUVerApp::createActions()
   // ------------ Window ------------
 
   m_arrayActions[TILE_WINDOWS_ACT] = new QAction( tr( "&Tile" ), this );
+  m_arrayActions[TILE_WINDOWS_ACT]->setIcon( QIcon( ":images/windowstile.png" ) );
   m_arrayActions[TILE_WINDOWS_ACT]->setStatusTip( tr( "Tile the windows" ) );
   connect( m_arrayActions[TILE_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea, SLOT( tileSubWindows() ) );
 
   m_arrayActions[CASCADE_WINDOWS_ACT] = new QAction( tr( "&Cascade" ), this );
+  m_arrayActions[CASCADE_WINDOWS_ACT]->setIcon( QIcon( ":images/windowscascade.png" ) );
   m_arrayActions[CASCADE_WINDOWS_ACT]->setStatusTip( tr( "Cascade the windows" ) );
   connect( m_arrayActions[CASCADE_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea, SLOT( cascadeSubWindows() ) );
 
   m_arrayActions[NEXT_WINDOWS_ACT] = new QAction( tr( "Ne&xt" ), this );
   m_arrayActions[NEXT_WINDOWS_ACT]->setShortcuts( QKeySequence::NextChild );
+  m_arrayActions[NEXT_WINDOWS_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_ArrowRight ) ) );
   m_arrayActions[NEXT_WINDOWS_ACT]->setStatusTip( tr( "Move the focus to the next window" ) );
   connect( m_arrayActions[NEXT_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea, SLOT( activateNextSubWindow() ) );
 
   m_arrayActions[PREVIOUS_WINDOWS_ACT] = new QAction( tr( "Pre&vious" ), this );
   m_arrayActions[PREVIOUS_WINDOWS_ACT]->setShortcuts( QKeySequence::PreviousChild );
+  m_arrayActions[PREVIOUS_WINDOWS_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_ArrowLeft ) ) );
   m_arrayActions[PREVIOUS_WINDOWS_ACT]->setStatusTip( tr( "Move the focus to the previous window" ) );
   connect( m_arrayActions[PREVIOUS_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea, SLOT( activatePreviousSubWindow() ) );
 
@@ -960,6 +974,7 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_LOOP_ACT] );
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_LOCK_ACT] );
+  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_LOCK_SELECTION_ACT] );
 
   QMenu* modules_menu = m_pcModulesHandle->createMenus( menuBar() );
   connect( modules_menu, SIGNAL( triggered(QAction *) ), this, SLOT( selectModule(QAction *) ) );

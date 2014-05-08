@@ -513,7 +513,7 @@ void plaYUVerApp::lockButtonEvent()
 
 void plaYUVerApp::videoSelectionButtonEvent()
 {
-  DialogSubWindowSelector dialogWindowsSelection( this );
+  DialogSubWindowSelector dialogWindowsSelection( this, mdiArea );
   dialogWindowsSelection.exec();
 
 }

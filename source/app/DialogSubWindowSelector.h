@@ -54,8 +54,17 @@ public:
   DialogSubWindowSelector( QWidget *parent = 0, QMdiArea *mdiArea = 0 );
 
 private:
-  QMdiArea *m_pcMainWindowMdiArea;
+  QMdiArea* m_pcMainWindowMdiArea;
+  QStringList m_pcWindowListNames;
+
+  QComboBox* m_comboBoxWindowList;
+  QPushButton* m_pushButtonAdd;
+  QListWidget* m_listSelectedWindows;
+
+  Void updateSubWindowList();
+
 private Q_SLOTS:
+  void addSubWindow();
 
 };
 

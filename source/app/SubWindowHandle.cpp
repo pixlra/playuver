@@ -53,7 +53,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   m_cScrollArea->setWidgetResizable( true );
 
   m_pCurrStream = NULL;
-  m_pCurrStream = new InputStream;
+  //m_pCurrStream = new InputStream;
   m_pcCurrFrame = NULL;
   m_pcCurrentModule = NULL;
   m_pcModuleSubWindow = NULL;
@@ -78,7 +78,13 @@ Bool SubWindowHandle::loadFile( const QString &fileName )
   Int InputFormat = -1;
 
   if( !m_pCurrStream )
+  {
     m_pCurrStream = new InputStream;
+  }
+//  else
+//  {
+//    m_pCurrStream->close();
+//  }
 
   m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
 
@@ -189,7 +195,7 @@ Void SubWindowHandle::play()
 
 Int SubWindowHandle::playEvent()
 {
-  if( m_bIsPlaying )
+  if( m_pCurrStream && m_bIsPlaying )
   {
     m_pCurrStream->setNextFrame();
     refreshFrame();

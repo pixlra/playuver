@@ -182,7 +182,7 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( UInt& rWidth, UInt& rHeight
   // Set default values
   m_spinBoxWidth->setValue( rWidth );
   m_spinBoxheight->setValue( rHeight );
-  m_comboBoxPixelFormat->setCurrentIndex( rInputFormat );
+  m_comboBoxPixelFormat->setCurrentIndex( rInputFormat >= 0 ? rInputFormat : 0 );
   m_spinBoxFrameRate->setValue( rFrameRate );
   for( Int i = 0; i < standardResolutionSizesList.size(); i++ )
   {

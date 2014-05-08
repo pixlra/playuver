@@ -437,7 +437,7 @@ void plaYUVerApp::playEvent()
 
 Void plaYUVerApp::updateCurrFrameNum()
 {
-  if( m_pcCurrentSubWindow )
+  if( m_pcCurrentSubWindow && m_pcCurrentSubWindow->getInputStream() )
   {
     Int frame_num = m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum();
     m_pcFrameSlider->setValue( frame_num );
@@ -446,7 +446,7 @@ Void plaYUVerApp::updateCurrFrameNum()
 }
 Void plaYUVerApp::updateTotalFrameNum( UInt total_frame_num )
 {
-  if( m_pcCurrentSubWindow && total_frame_num == 0 )
+  if( m_pcCurrentSubWindow && m_pcCurrentSubWindow->getInputStream() && total_frame_num == 0 )
   {
     total_frame_num = m_pcCurrentSubWindow->getInputStream()->getFrameNum();
   }

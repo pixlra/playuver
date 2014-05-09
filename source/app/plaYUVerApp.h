@@ -122,6 +122,7 @@ private:
   Void zoomToFitAll();
 
   //! Playing functions
+  Void startPlay();
   Void setTimerStatus();
   Void updateCurrFrameNum();
   Void updateTotalFrameNum( UInt total_frame_num = 0 );

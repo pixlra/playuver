@@ -52,7 +52,10 @@ Q_OBJECT
 
 public:
   DialogSubWindowSelector( QWidget *parent = 0, QMdiArea *mdiArea = 0 );
-
+  QStringList getSelectedWindows()
+  {
+    return m_pcSelectedWindowListNames;
+  }
 private:
   QMdiArea* m_pcMainWindowMdiArea;
   QStringList m_pcWindowListNames;
@@ -64,6 +67,8 @@ private:
   QListWidget* m_listSelectedWindows;
 
   Void updateSubWindowList();
+
+
 
 private Q_SLOTS:
   void addSubWindow();

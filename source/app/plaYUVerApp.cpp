@@ -314,6 +314,20 @@ Void plaYUVerApp::setTimerStatus()
   }
 }
 
+Void plaYUVerApp::startPlay()
+{
+  if( !m_bIsPlaying )
+  {
+    UInt frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
+    UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
+    qDebug( ) << "Desired frame rate: "
+              << QString::number( 1000 / timeInterval )
+              << " fps";
+    playingTimer->start( timeInterval );
+    m_cTimer.start();
+  }
+}
+
 void plaYUVerApp::play()
 {
   if( !m_pcCurrentSubWindow )
@@ -350,17 +364,7 @@ void plaYUVerApp::play()
     m_uiAveragePlayInterval = 0;
     m_bIsPlaying = false;
   }
-  if( !m_bIsPlaying )
-  {
-    UInt frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
-    UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
-    qDebug( ) << "Desired frame rate: "
-              << QString::number( 1000 / timeInterval )
-              << " fps";
-    playingTimer->start( timeInterval );
-    m_cTimer.start();
-  }
-
+  startPlay();
 }
 
 void plaYUVerApp::pause()
@@ -523,8 +527,28 @@ void plaYUVerApp::lockButtonEvent()
 void plaYUVerApp::videoSelectionButtonEvent()
 {
   DialogSubWindowSelector dialogWindowsSelection( this, mdiArea );
-  dialogWindowsSelection.exec();
-
+  if( dialogWindowsSelection.exec() == QDialog::Accepted )
+  {
+    QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();
+    m_acPlayingSubWindows.clear();
+    SubWindowHandle *subWindow;
+    QString windowName;
+    for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
+    {
+      subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
+      windowName = subWindow->getWindowName();
+      if( selectedWindows.contains( windowName ) )
+      {
+        m_acPlayingSubWindows.append( subWindow );
+        subWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
+        subWindow->play();
+        m_pcFrameSlider->setMaximum( qMin( m_pcFrameSlider->maximum(), ( Int )subWindow->getInputStream()->getFrameNum() - 1 ) );
+      }
+    }
+    m_arrayActions[VIDEO_LOCK_ACT]->setChecked( true );
+    startPlay();
+    return;
+  }
 }
 
 // -----------------------  Zoom Functions  -----------------------

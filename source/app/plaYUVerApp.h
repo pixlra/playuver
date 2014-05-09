@@ -117,6 +117,9 @@ private:
   UInt m_uiAveragePlayInterval;
 
   Void loadFile( QString fileName );
+
+  Void zoomToFitAll();
+
   //! Playing functions
   Void setTimerStatus();
   Void updateCurrFrameNum();

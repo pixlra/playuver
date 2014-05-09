@@ -87,6 +87,15 @@ Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
   {
     loadFile( argv[1] );
   }
+  if( argc >= 2 )
+  {
+    for( Int i = 1; i < argc; i++ )
+    {
+      loadFile( argv[i] );
+    }
+    mdiArea->tileSubWindows();
+    zoomToFitAll();
+  }
 }
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
@@ -524,6 +533,17 @@ void plaYUVerApp::zoomToFit()
     activeSubWindow()->zoomToFit();
 }
 
+Void plaYUVerApp::zoomToFitAll()
+{
+  SubWindowHandle *subWindow;
+  for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
+  {
+    subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
+    subWindow->zoomToFit();
+  }
+}
+
+
 void plaYUVerApp::scaleFrame( int ratio )
 {
   if( activeSubWindow() )
@@ -540,7 +560,7 @@ void plaYUVerApp::scaleFrame( int ratio )
 void plaYUVerApp::about()
 {
   QString about_message;
-  about_message.append("The <b>plaYUVerApp</b> is an open-source raw video player");
+  about_message.append( "The <b>plaYUVerApp</b> is an open-source raw video player" );
 //  about_message.append("\n\r");
 //  about_message.append("João Carreira");
 //  about_message.append("\n\r");

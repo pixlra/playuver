@@ -163,7 +163,8 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
   if( !avStatus )
   {
     m_pFile = NULL;
-    m_pFile = fopen( m_cFilename.toLocal8Bit().data(), "rb" );
+    Char *filename = m_cFilename.toLocal8Bit().data();
+    m_pFile = fopen( filename, "rb" );
     if( m_pFile == NULL )
     {
       close();
@@ -283,6 +284,8 @@ Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, In
         break;
       }
     }
+    if( rWidth >= 0 && rHeight >= 0 && rInputFormat >= 0 )
+      bRet = false;
   }
   return bRet;
 }
@@ -313,10 +316,6 @@ Void InputStream::readNextFrame()
 {
   UInt64 bytes_read = 0;
   //m_cTimer.restart();
-  if( m_iStatus == 0 )
-  {
-    return;
-  }
 
   if( m_iCurrFrameNum + 1 >= ( Int )m_uiTotalFrameNum )
   {

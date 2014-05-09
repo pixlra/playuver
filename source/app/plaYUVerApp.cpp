@@ -539,6 +539,12 @@ void plaYUVerApp::lockButtonEvent()
 void plaYUVerApp::videoSelectionButtonEvent()
 {
   DialogSubWindowSelector dialogWindowsSelection( this, mdiArea );
+  QStringList cWindowListNames;
+  for(Int i=0; i<m_acPlayingSubWindows.size();i++)
+  {
+    cWindowListNames.append( m_acPlayingSubWindows.at(i)->getWindowName() );
+    dialogWindowsSelection.setSubWindowList( cWindowListNames );
+  }
   if( dialogWindowsSelection.exec() == QDialog::Accepted )
   {
     QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();

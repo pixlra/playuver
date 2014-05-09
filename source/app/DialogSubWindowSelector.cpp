@@ -118,6 +118,14 @@ Void DialogSubWindowSelector::updateSubWindowList()
   m_comboBoxWindowList->setCurrentIndex( -1 );
 }
 
+Void DialogSubWindowSelector::setSubWindowList( QStringList cWindowListNames )
+{
+  m_pcSelectedWindowListNames = cWindowListNames;
+  m_listSelectedWindows->clear();
+  m_listSelectedWindows->insertItems( 0, cWindowListNames );
+  updateSubWindowList();
+}
+
 // -----------------------  Slot Functions  -----------------------
 
 void DialogSubWindowSelector::addSubWindow()

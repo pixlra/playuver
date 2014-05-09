@@ -7,6 +7,9 @@
         <file alias="images/exit.png">icons/exit.png</file>
         <file alias="images/configuredialog.png">icons/configuredialog.png</file>
         
+        <file alias="images/windowstile.png">icons/windowstile.png</file>
+        <file alias="images/windowscascade.png">icons/windowscascade.png</file>
+        
         <file alias="images/zoomin.png">icons/zoomin.png</file>
         <file alias="images/zoomout.png">icons/zoomout.png</file>
         <file alias="images/zoomtonormal.png">icons/zoomtonormal.png</file>

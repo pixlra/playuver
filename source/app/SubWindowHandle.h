@@ -156,6 +156,10 @@ public:
     m_cWindowName = name;
     setWindowTitle( m_cWindowName );
   }
+  QString getWindowName()
+  {
+    return m_cWindowName;
+  }
 
   QString userFriendlyCurrentFile()
   {

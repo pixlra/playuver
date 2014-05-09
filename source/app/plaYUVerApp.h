@@ -72,6 +72,7 @@ private Q_SLOTS:
   void seekSliderEvent( int new_frame_num );
   void seekEvent( int direction );
   void lockButtonEvent();
+  void videoSelectionButtonEvent();
 
   void selectModule( QAction * );
 
@@ -122,6 +123,7 @@ private:
 
   //! Playing functions
   UInt getMaxFrameNumber();
+  Void startPlay();
   Void setTimerStatus();
   Void updateCurrFrameNum();
   Void updateTotalFrameNum( UInt total_frame_num = 0 );
@@ -206,6 +208,7 @@ private:
     VIDEO_BACKWARD_ACT,
     VIDEO_LOOP_ACT,
     VIDEO_LOCK_ACT,
+    VIDEO_LOCK_SELECTION_ACT,
     NAVIGATION_TOOL_ACT,
     SELECTION_TOOL_ACT,
     TILE_WINDOWS_ACT,

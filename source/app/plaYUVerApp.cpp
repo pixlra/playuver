@@ -88,6 +88,15 @@ Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
   {
     loadFile( argv[1] );
   }
+  if( argc >= 2 )
+  {
+    for( Int i = 1; i < argc; i++ )
+    {
+      loadFile( argv[i] );
+    }
+    mdiArea->tileSubWindows();
+    zoomToFitAll();
+  }
 }
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
@@ -531,6 +540,17 @@ void plaYUVerApp::zoomToFit()
   if( activeSubWindow() )
     activeSubWindow()->zoomToFit();
 }
+
+Void plaYUVerApp::zoomToFitAll()
+{
+  SubWindowHandle *subWindow;
+  for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
+  {
+    subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
+    subWindow->zoomToFit();
+  }
+}
+
 
 void plaYUVerApp::scaleFrame( int ratio )
 {

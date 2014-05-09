@@ -81,10 +81,6 @@ Bool SubWindowHandle::loadFile( const QString &fileName )
   {
     m_pCurrStream = new InputStream;
   }
-//  else
-//  {
-//    m_pCurrStream->close();
-//  }
 
   m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
 

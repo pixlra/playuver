@@ -53,7 +53,6 @@ class InputStream
 private:
 
   Bool m_bInit;
-  Int m_iStatus;
   Int m_iErrorStatus;
 
 #ifdef USE_FFMPEG

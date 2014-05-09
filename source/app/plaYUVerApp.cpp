@@ -1073,6 +1073,8 @@ Void plaYUVerApp::readSettings()
   move( pos );
   resize( size );
   m_cLastOpenPath = settings.lastOpenPath();
+  m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
+  m_arrayActions[VIDEO_LOCK_ACT]->setChecked( settings.getVideoLock() );
 }
 
 Void plaYUVerApp::writeSettings()
@@ -1081,6 +1083,7 @@ Void plaYUVerApp::writeSettings()
   settings.setMainWindowPos( pos() );
   settings.setMainWindowSize( size() );
   settings.setLastOpenPath( m_cLastOpenPath );
+  settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked(), m_arrayActions[VIDEO_LOCK_ACT]->isChecked() );
 }
 
 }  // NAMESPACE

@@ -38,7 +38,7 @@ QPoint PlaYUVerSettings::mainWindowPos()
   return m_settings.value( "MainWindow/pos", QPoint( 200, 200 ) ).toPoint();
 }
 
-void PlaYUVerSettings::setMainWindowPos( const QPoint & pos )
+Void PlaYUVerSettings::setMainWindowPos( const QPoint & pos )
 {
   m_settings.setValue( "MainWindow/pos", pos );
 }
@@ -48,7 +48,7 @@ QSize PlaYUVerSettings::mainWindowSize()
   return m_settings.value( "MainWindow/size", QSize( 500, 400 ) ).toSize();
 }
 
-void PlaYUVerSettings::setMainWindowSize( const QSize & size )
+Void PlaYUVerSettings::setMainWindowSize( const QSize & size )
 {
   m_settings.setValue( "MainWindow/size", size );
 }
@@ -58,9 +58,25 @@ QString PlaYUVerSettings::lastOpenPath()
   return m_settings.value( "MainWindow/lastOpenPath", QDir::homePath() ).toString();
 }
 
-void PlaYUVerSettings::setLastOpenPath( const QString & path )
+Void PlaYUVerSettings::setLastOpenPath( const QString & path )
 {
   m_settings.setValue( "MainWindow/lastOpenPath", path );
+}
+
+// - - - - - - - - - - - -  PLaying Settings - - - - - - - - - - - - - - - -
+
+Bool PlaYUVerSettings::getRepeat()
+{
+  return m_settings.value( "PLaying/Repeat", false ).toBool();
+}
+Bool PlaYUVerSettings::getVideoLock()
+{
+  return m_settings.value( "PLaying/VideoLock", false ).toBool();
+}
+Void PlaYUVerSettings::setPlayingSettings( Bool repeat, Bool lock )
+{
+  m_settings.setValue( "PLaying/Repeat", repeat );
+  m_settings.setValue( "PLaying/VideoLock", lock );
 }
 
 // - - - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - - - - -

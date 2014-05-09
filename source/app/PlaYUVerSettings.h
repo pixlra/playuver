@@ -28,7 +28,7 @@
 #include "config.h"
 
 #include <QtCore>
-
+#include "TypeDef.h"
 #include "GridManager.h"
 
 namespace plaYUVer
@@ -42,26 +42,30 @@ public:
 
   // - - - - - - - - - - Main Window Settings - - - - - - - - - - - - - 
   QPoint mainWindowPos();
-  void setMainWindowPos( const QPoint &v );
+  Void setMainWindowPos( const QPoint &v );
 
   QSize mainWindowSize();
-  void setMainWindowSize( const QSize &v );
+  Void setMainWindowSize( const QSize &v );
 
   QString lastOpenPath();
-  void setLastOpenPath( const QString &v );
+  Void setLastOpenPath( const QString &v );
+
+  Bool getRepeat();
+  Bool getVideoLock();
+  Void setPlayingSettings( Bool repeat, Bool lock );
 
   // - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - -
   GridManager::Style gridStyle();
-  void setGridStyle( GridManager::Style v );
+  Void setGridStyle( GridManager::Style v );
 
   QColor gridColor();
-  void setGridColor( const QColor &v );
+  Void setGridColor( const QColor &v );
 
-  int gridHSpacing();
-  void setGridHSpacing( int v );
+  Int gridHSpacing();
+  Void setGridHSpacing( int v );
 
-  int gridVSpacing();
-  void setGridVSpacing( int v );
+  Int gridVSpacing();
+  Void setGridVSpacing( int v );
 
 private:
   QSettings m_settings;

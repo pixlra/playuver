@@ -297,6 +297,18 @@ void plaYUVerApp::updatePropertiesSelectedArea( QRect area )
 
 // -----------------------  Playing Functions  --------------------
 
+UInt plaYUVerApp::getMaxFrameNumber()
+{
+  UInt currFrames;
+  UInt maxFrames = INT_MAX;
+  for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+  {
+    currFrames = m_acPlayingSubWindows.at( i  )->getInputStream()->getFrameNum();
+    if( currFrames < maxFrames )
+      maxFrames = currFrames;
+  }
+  return maxFrames;
+}
 Void plaYUVerApp::setTimerStatus()
 {
   Bool status = false;
@@ -352,7 +364,7 @@ void plaYUVerApp::play()
       m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
       m_pcCurrentSubWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
       m_pcCurrentSubWindow->play();
-      m_pcFrameSlider->setMaximum( qMin( m_pcFrameSlider->maximum(), ( Int )m_pcCurrentSubWindow->getInputStream()->getFrameNum() - 1 ) );
+      m_pcFrameSlider->setMaximum( getMaxFrameNumber() - 1 );
     }
   }
   else
@@ -574,7 +586,6 @@ Void plaYUVerApp::zoomToFitAll()
     subWindow->zoomToFit();
   }
 }
-
 
 void plaYUVerApp::scaleFrame( int ratio )
 {
@@ -1104,6 +1115,8 @@ Void plaYUVerApp::readSettings()
   move( pos );
   resize( size );
   m_cLastOpenPath = settings.lastOpenPath();
+  m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
+  m_arrayActions[VIDEO_LOCK_ACT]->setChecked( settings.getVideoLock() );
 }
 
 Void plaYUVerApp::writeSettings()
@@ -1112,6 +1125,7 @@ Void plaYUVerApp::writeSettings()
   settings.setMainWindowPos( pos() );
   settings.setMainWindowSize( size() );
   settings.setLastOpenPath( m_cLastOpenPath );
+  settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked(), m_arrayActions[VIDEO_LOCK_ACT]->isChecked() );
 }
 
 }  // NAMESPACE

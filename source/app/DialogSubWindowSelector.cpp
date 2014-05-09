@@ -45,10 +45,11 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
   menusFont.setBold( true );
   menusFont.setWeight( 75 );
 
-  resize( 392, 100 );
+  QSize windowSize( 350, 80 );
+  resize( windowSize );
   setWindowTitle( "Sub Windows Selection" );
 
-  QVBoxLayout* MainLayout = new QVBoxLayout( this );
+  QHBoxLayout* MainLayout = new QHBoxLayout( this );
 
   // Window list and add button
   m_comboBoxWindowList = new QComboBox();
@@ -61,7 +62,8 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
 
   updateSubWindowList();
 
-  m_pushButtonAdd = new QPushButton("Add", this);
+  m_pushButtonAdd = new QPushButton( "Add", this );
+  m_pushButtonRemove = new QPushButton( "Remove", this );
 
   // Selected Sub Window List
   m_listSelectedWindows = new QListWidget( this );
@@ -69,21 +71,25 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
   // Confirmation buttons
   QDialogButtonBox* dialogButtonOkCancel = new QDialogButtonBox();
   dialogButtonOkCancel->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
+  dialogButtonOkCancel->setOrientation( Qt::Vertical );
   dialogButtonOkCancel->setCenterButtons( false );
 
   // Create Layouts
-  QHBoxLayout* headLayout = new QHBoxLayout();
-  headLayout->addWidget( m_comboBoxWindowList );
-  headLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-  headLayout->addWidget( m_pushButtonAdd );
+  QVBoxLayout* LeftVLayout = new QVBoxLayout();
+  LeftVLayout->addWidget( m_comboBoxWindowList );
+  //LeftVLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  LeftVLayout->addWidget( m_listSelectedWindows );
+
+  QVBoxLayout* RightVLayout = new QVBoxLayout();
+  RightVLayout->addWidget( m_pushButtonAdd );
+  RightVLayout->addWidget( m_pushButtonRemove );
+  RightVLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
+  RightVLayout->addWidget( dialogButtonOkCancel );
 
   // Add components
-  MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-  MainLayout->addLayout( headLayout );
-  MainLayout->addItem( new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
-  MainLayout->addWidget( m_listSelectedWindows );
-  MainLayout->addItem( new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
-  MainLayout->addWidget( dialogButtonOkCancel );
+  //MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Expanding, QSizePolicy::Fixed ) );
+  MainLayout->addLayout( LeftVLayout );
+  MainLayout->addLayout( RightVLayout );
 
   setLayout( MainLayout );
 
@@ -91,29 +97,59 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( m_pushButtonAdd, SIGNAL( clicked() ), this, SLOT( addSubWindow() ) );
+  connect( m_pushButtonRemove, SIGNAL( clicked() ), this, SLOT( removeSubWindow() ) );
   QMetaObject::connectSlotsByName( this );
-
 }
 
 Void DialogSubWindowSelector::updateSubWindowList()
 {
   SubWindowHandle *subWindow;
   QString currSubWindowName;
+  m_pcWindowListNames.clear();
   for( Int i = 0; i < m_pcMainWindowMdiArea->subWindowList().size(); i++ )
   {
     subWindow = qobject_cast<SubWindowHandle *>( m_pcMainWindowMdiArea->subWindowList().at( i ) );
     currSubWindowName = subWindow->getWindowName();
-    //if( m_listSelectedWindows->contai )
-    m_pcWindowListNames.append( currSubWindowName );
+    if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) )
+      m_pcWindowListNames.append( currSubWindowName );
   }
   m_comboBoxWindowList->clear();
   m_comboBoxWindowList->insertItems( 0, m_pcWindowListNames );
   m_comboBoxWindowList->setCurrentIndex( -1 );
 }
 
+// -----------------------  Slot Functions  -----------------------
+
 void DialogSubWindowSelector::addSubWindow()
 {
+  Int iSelectedIdx = m_comboBoxWindowList->currentIndex();
+  if( iSelectedIdx >= 0 )
+  {
+    m_pcSelectedWindowListNames.append( m_pcWindowListNames.at( iSelectedIdx ) );
+    m_listSelectedWindows->clear();
+    m_listSelectedWindows->insertItems( 0, m_pcSelectedWindowListNames );
+    updateSubWindowList();
+  }
+}
 
+void DialogSubWindowSelector::removeSubWindow()
+{
+  QList<QListWidgetItem*> selectedWindows = m_listSelectedWindows->selectedItems();
+  if( selectedWindows.size() )
+  {
+    for( Int i = 0; i < selectedWindows.size(); i++ )
+    {
+      QString currName = selectedWindows.at( i )->text();
+      qDebug( ) << currName;
+      Int indexCurrName = m_pcSelectedWindowListNames.indexOf( currName );
+      qDebug( ) << indexCurrName;
+      m_pcSelectedWindowListNames.removeAt( indexCurrName );
+      m_listSelectedWindows->removeItemWidget( selectedWindows[i] );
+    }
+    m_listSelectedWindows->clear();
+    m_listSelectedWindows->insertItems( 0, m_pcSelectedWindowListNames );
+    updateSubWindowList();
+  }
 }
 
 }  // Namespace SCode

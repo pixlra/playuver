@@ -56,15 +56,18 @@ public:
 private:
   QMdiArea* m_pcMainWindowMdiArea;
   QStringList m_pcWindowListNames;
+  QStringList m_pcSelectedWindowListNames;
 
   QComboBox* m_comboBoxWindowList;
   QPushButton* m_pushButtonAdd;
+  QPushButton* m_pushButtonRemove;
   QListWidget* m_listSelectedWindows;
 
   Void updateSubWindowList();
 
 private Q_SLOTS:
   void addSubWindow();
+  void removeSubWindow();
 
 };
 

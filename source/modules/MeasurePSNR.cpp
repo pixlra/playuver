@@ -18,19 +18,19 @@
  */
 
 /**
- * \file     FilterFrame.cpp
- * \brief    Filter frame module
+ * \file     MeasurePSNR.cpp
+ * \brief    Measure PSNR module
  */
 
 #include <cstdio>
 
-#include "FilterFrame.h"
+#include "MeasurePSNR.h"
 #include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {
 
-PlaYUVerModuleDefinition FilterFrameDef = {
+static PlaYUVerModuleDefinition MeasurePSNRDef = {
     FRAME_LEVEL_MODULE,
     "Filters",
     "Y_Filter",
@@ -38,19 +38,19 @@ PlaYUVerModuleDefinition FilterFrameDef = {
     false,
 };
 
-FilterFrame::FilterFrame()
+MeasurePSNR::MeasurePSNR()
 {
-  m_cModuleDef = FilterFrameDef;
   m_pcFilteredFrame = NULL;
+  m_cModuleDef = MeasurePSNRDef;
 }
 
-Void FilterFrame::create( PlaYUVerFrame* InputFrame )
+Void MeasurePSNR::create( PlaYUVerFrame* InputFrame )
 {
   m_pcFilteredFrame = NULL;
   m_pcFilteredFrame = new PlaYUVerFrame( InputFrame->getWidth(), InputFrame->getHeight(), PlaYUVerFrame::GRAY );
 }
 
-PlaYUVerFrame* FilterFrame::process( PlaYUVerFrame* InputFrame )
+PlaYUVerFrame* MeasurePSNR::process( PlaYUVerFrame* InputFrame )
 {
   Pel*** pppOutputPelYUV = m_pcFilteredFrame->getPelBufferYUV();
   Pel*** pppInputPelYUV = InputFrame->getPelBufferYUV();
@@ -58,7 +58,7 @@ PlaYUVerFrame* FilterFrame::process( PlaYUVerFrame* InputFrame )
   return m_pcFilteredFrame;
 }
 
-Void FilterFrame::destroy()
+Void MeasurePSNR::destroy()
 {
   if( m_pcFilteredFrame )
     delete m_pcFilteredFrame;

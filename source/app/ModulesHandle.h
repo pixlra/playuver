@@ -48,18 +48,19 @@ class ModulesHandle: public QObject
 {
 Q_OBJECT
 public:
-  ModulesHandle( QWidget * parent = 0 );
+  ModulesHandle( QWidget * parent = 0, QMdiArea *mdiArea = 0 );
   ~ModulesHandle();
 
   QMenu* createMenus( QMenuBar *MainAppMenuBar );
   Void updateMenus( Bool hasSubWindow );
-  SubWindowHandle* toggleSelectedModuleIf( SubWindowHandle* pcSubWindow );
+  SubWindowHandle* toggleSelectedModuleIf();
 
 private:
   QWidget *m_pcParent;
-
+  QMdiArea *m_pcMdiArea;
   UInt m_uiModulesCount;
   Int m_uiModuleSelected;
+
   QMenu* m_pcModulesMenu;
   QList<QMenu*> m_pcModulesSubMenuList;
   QList<PlaYUVerModuleIf*> m_pcPlaYUVerModules;
@@ -68,7 +69,7 @@ private:
 
   enum MODULES_ACTION_LIST
   {
-    FORCE_NEW_WINDOW_ACT=0,
+    FORCE_NEW_WINDOW_ACT = 0,
     DISABLE_ALL_ACT,
     MODULES_TOTAL_ACT
   };
@@ -77,7 +78,6 @@ private:
   Void appendModule( PlaYUVerModuleIf* );
   Void ModulesList( Bool bCreate );
   Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
-
 
 private Q_SLOTS:
   void selectModule( int index );

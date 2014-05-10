@@ -41,14 +41,15 @@ Void ModulesHandle::ModulesList( Bool bCreate )
 
 }
 
-ModulesHandle::ModulesHandle( QWidget * parent )
+ModulesHandle::ModulesHandle( QWidget * parent, QMdiArea *mdiArea ) :
+        QObject( parent ),
+        m_pcParent( parent ),
+        m_pcMdiArea( mdiArea ),
+        m_uiModulesCount( 0 ),
+        m_uiModuleSelected( -1 )
 {
-  m_pcParent = parent;
-
   // configure class
   setParent( m_pcParent );
-  m_uiModulesCount = 0;
-  m_uiModuleSelected = -1;
   ModulesList( true );
 }
 
@@ -67,9 +68,10 @@ void ModulesHandle::selectModule( int index )
   m_uiModuleSelected = index;
 }
 
-SubWindowHandle* ModulesHandle::toggleSelectedModuleIf( SubWindowHandle* pcSubWindow )
+SubWindowHandle* ModulesHandle::toggleSelectedModuleIf()
 {
   Bool bShowModulesNewWindow = m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked();
+  SubWindowHandle* pcSubWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->activeSubWindow() );
   SubWindowHandle* interfaceChild = NULL;
   PlaYUVerModuleIf* currModuleIf = NULL;
 

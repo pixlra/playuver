@@ -54,7 +54,7 @@ plaYUVerApp::plaYUVerApp()
   mapperWindow = new QSignalMapper( this );
   connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
 
-  m_pcModulesHandle = new ModulesHandle( this );
+  m_pcModulesHandle = new ModulesHandle( this, mdiArea );
 
   createActions();
   createToolBars();
@@ -230,7 +230,7 @@ void plaYUVerApp::closeAll()
 
 void plaYUVerApp::selectModule( QAction *curr_action )
 {
-  SubWindowHandle *interfaceChild = m_pcModulesHandle->toggleSelectedModuleIf( m_pcCurrentSubWindow );
+  SubWindowHandle *interfaceChild = m_pcModulesHandle->toggleSelectedModuleIf();
   if( interfaceChild )
   {
     mdiArea->addSubWindow( interfaceChild );
@@ -303,7 +303,7 @@ UInt plaYUVerApp::getMaxFrameNumber()
   UInt maxFrames = INT_MAX;
   for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
   {
-    currFrames = m_acPlayingSubWindows.at( i  )->getInputStream()->getFrameNum();
+    currFrames = m_acPlayingSubWindows.at( i )->getInputStream()->getFrameNum();
     if( currFrames < maxFrames )
       maxFrames = currFrames;
   }
@@ -540,9 +540,9 @@ void plaYUVerApp::videoSelectionButtonEvent()
 {
   DialogSubWindowSelector dialogWindowsSelection( this, mdiArea );
   QStringList cWindowListNames;
-  for(Int i=0; i<m_acPlayingSubWindows.size();i++)
+  for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
   {
-    cWindowListNames.append( m_acPlayingSubWindows.at(i)->getWindowName() );
+    cWindowListNames.append( m_acPlayingSubWindows.at( i )->getWindowName() );
     dialogWindowsSelection.setSubWindowList( cWindowListNames );
   }
   if( dialogWindowsSelection.exec() == QDialog::Accepted )

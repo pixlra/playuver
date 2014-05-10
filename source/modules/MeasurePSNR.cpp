@@ -30,13 +30,13 @@
 namespace plaYUVer
 {
 
-static PlaYUVerModuleDefinition MeasurePSNRDef = {
+static PlaYUVerModuleDefinition MeasurePSNRDef =
+{
     FRAME_LEVEL_MODULE,
-    "Filters",
-    "Y_Filter",
-    "Filter Y matrix of YUV frame",
-    false,
-};
+    "Measurements",
+    "PSNR",
+    "MEasure the PSNR between two images",
+    true, };
 
 MeasurePSNR::MeasurePSNR()
 {
@@ -52,9 +52,6 @@ Void MeasurePSNR::create( PlaYUVerFrame* InputFrame )
 
 PlaYUVerFrame* MeasurePSNR::process( PlaYUVerFrame* InputFrame )
 {
-  Pel*** pppOutputPelYUV = m_pcFilteredFrame->getPelBufferYUV();
-  Pel*** pppInputPelYUV = InputFrame->getPelBufferYUV();
-  memcpy( pppOutputPelYUV[LUMA][0], pppInputPelYUV[LUMA][0], m_pcFilteredFrame->getWidth() * m_pcFilteredFrame->getHeight() * sizeof(Pel) );
   return m_pcFilteredFrame;
 }
 

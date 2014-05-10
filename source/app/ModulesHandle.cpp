@@ -29,6 +29,7 @@
 
 // List of modules includes
 #include "FilterFrame.h"
+#include "FrameDifference.h"
 
 namespace plaYUVer
 {
@@ -38,6 +39,7 @@ Void ModulesHandle::ModulesList( Bool bCreate )
 
   // Register Modules
   REGISTER_MODULE( FilterFrame );
+  REGISTER_MODULE( FrameDifference );
 
 }
 

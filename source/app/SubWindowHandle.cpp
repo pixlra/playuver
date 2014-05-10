@@ -146,10 +146,16 @@ Void SubWindowHandle::refreshFrame()
   {
     m_pcCurrFrame = m_pCurrStream->getCurrFrame();
     if( m_pcCurrentModule )
+    {
       if( m_pcModuleSubWindow )
+      {
         m_pcModuleSubWindow->setCurrFrame( m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() ) );
+      }
       else
+      {
         m_pcCurrFrame = m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() );
+      }
+    }
     m_cViewArea->setImage( m_pcCurrFrame );
   }
 }

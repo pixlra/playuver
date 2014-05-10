@@ -78,27 +78,24 @@ class SubWindowHandle;
 class PlaYUVerModuleIf
 {
   friend class ModulesHandle;
+
+public:
+  PlaYUVerModuleDefinition m_cModuleDef;
 private:
   QAction* m_pcAction;
   SubWindowHandle* m_pcSubWindow;
   SubWindowHandle* m_pcDisplaySubWindow;
 
 public:
-  PlaYUVerModuleIf()
-  {
-    m_pcAction = NULL;
-  }
-  virtual ~PlaYUVerModuleIf()
-  {
-  }
-
-  PlaYUVerModuleDefinition m_cModuleDef;
+  PlaYUVerModuleIf() {  }
+  virtual ~PlaYUVerModuleIf() { }
 
   virtual Void create() {};
-  virtual Void process() {};
-
   virtual Void create( PlaYUVerFrame* ) {};
-  virtual PlaYUVerFrame* process( PlaYUVerFrame* ) { return NULL; };
+
+  virtual Void            process() {};
+  virtual PlaYUVerFrame*  process( PlaYUVerFrame* )                   { return NULL; };
+  virtual PlaYUVerFrame*  process( PlaYUVerFrame* , PlaYUVerFrame* )  { return NULL; };
 
   virtual Void destroy() {};
 

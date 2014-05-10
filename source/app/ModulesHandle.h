@@ -54,7 +54,6 @@ public:
   QMenu* createMenus( QMenuBar *MainAppMenuBar );
   Void updateMenus( Bool hasSubWindow );
   SubWindowHandle* toggleSelectedModuleIf( SubWindowHandle* pcSubWindow );
-  Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
 
 private:
   QWidget *m_pcParent;
@@ -66,13 +65,23 @@ private:
   QList<PlaYUVerModuleIf*> m_pcPlaYUVerModules;
   QSignalMapper* m_pcActionMapper;
   QVector<QAction*> m_arrayModulesActions;
-  QAction *m_pcForceNewWindowAction;
+
+  enum MODULES_ACTION_LIST
+  {
+    FORCE_NEW_WINDOW_ACT=0,
+    DISABLE_ALL_ACT,
+    MODULES_TOTAL_ACT
+  };
+  QVector<QAction*> m_arrayActions;
 
   Void appendModule( PlaYUVerModuleIf* );
   Void ModulesList( Bool bCreate );
+  Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
+
 
 private Q_SLOTS:
   void selectModule( int index );
+  void destroyAllModulesIf();
 };
 
 }  // NAMESPACE

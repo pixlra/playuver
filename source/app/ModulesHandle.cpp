@@ -69,7 +69,7 @@ void ModulesHandle::selectModule( int index )
 
 SubWindowHandle* ModulesHandle::toggleSelectedModuleIf( SubWindowHandle* pcSubWindow )
 {
-  Bool bShowModulesNewWindow = m_pcForceNewWindowAction->isChecked();
+  Bool bShowModulesNewWindow = m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked();
   SubWindowHandle* interfaceChild = NULL;
   PlaYUVerModuleIf* currModuleIf = NULL;
 
@@ -128,11 +128,21 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
   pcCurrModuleIf->destroy();
 }
 
+Void ModulesHandle::destroyAllModulesIf()
+{
+  for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
+  {
+    destroyModuleIf( m_pcPlaYUVerModules.at( i ) );
+  }
+}
+
 QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 {
   PlaYUVerModuleIf* currModuleIf;
   QAction* currAction;
   QMenu* currSubMenu;
+
+  m_arrayActions.resize( MODULES_TOTAL_ACT );
 
   m_pcActionMapper = new QSignalMapper( this );
   connect( m_pcActionMapper, SIGNAL( mapped(int) ), this, SLOT( selectModule(int) ) );
@@ -178,12 +188,15 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
     currModuleIf->m_pcAction = currAction;
   }
 
-  m_pcForceNewWindowAction = new QAction( "Use New Window", parent() );
-  m_pcForceNewWindowAction->setStatusTip( "Show module result in a new window. Some modules already force this feature" );
-  m_pcForceNewWindowAction->setCheckable( true );
+  m_arrayActions[DISABLE_ALL_ACT] = new QAction( "Disable All Modules", parent() );
+  connect( m_arrayActions[DISABLE_ALL_ACT], SIGNAL( triggered() ), this, SLOT( destroyAllModulesIf() ) );
+  m_arrayActions[FORCE_NEW_WINDOW_ACT] = new QAction( "Use New Window", parent() );
+  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setStatusTip( "Show module result in a new window. Some modules already force this feature" );
+  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setCheckable( true );
 
   m_pcModulesMenu->addSeparator();
-  m_pcModulesMenu->addAction( m_pcForceNewWindowAction );
+  m_pcModulesMenu->addAction( m_arrayActions[DISABLE_ALL_ACT] );
+  m_pcModulesMenu->addAction( m_arrayActions[FORCE_NEW_WINDOW_ACT] );
 
   return m_pcModulesMenu;
 }

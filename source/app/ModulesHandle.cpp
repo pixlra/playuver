@@ -106,12 +106,12 @@ SubWindowHandle* ModulesHandle::toggleSelectedModuleIf( SubWindowHandle* pcSubWi
   }
   else
   {
-    currModuleIf->m_pcSubWindow->disableModule();
+    destroyModuleIf( currModuleIf );
   }
   return interfaceChild;
 }
 
-Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf )
+Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
 {
   pcCurrModuleIf->m_pcAction->setChecked( false );
   if( pcCurrModuleIf->m_pcDisplaySubWindow )
@@ -119,6 +119,11 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf )
     pcCurrModuleIf->m_pcDisplaySubWindow->close();
     pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
   }
+  else
+  {
+    pcCurrModuleIf->m_pcSubWindow->disableModule();
+  }
+  pcCurrModuleIf->m_pcSubWindow->refreshFrame();
   pcCurrModuleIf->m_pcSubWindow = NULL;
   pcCurrModuleIf->destroy();
 }

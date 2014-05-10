@@ -54,7 +54,7 @@ public:
   QMenu* createMenus( QMenuBar *MainAppMenuBar );
   Void updateMenus( Bool hasSubWindow );
   SubWindowHandle* toggleSelectedModuleIf( SubWindowHandle* pcSubWindow );
-  static Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
+  Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
 
 private:
   QWidget *m_pcParent;

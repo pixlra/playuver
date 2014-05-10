@@ -126,7 +126,6 @@ Void SubWindowHandle::disableModule()
 {
   if( !m_pcCurrentModule )
     return;
-  ModulesHandle::destroyModuleIf( m_pcCurrentModule );
   m_pcCurrentModule = NULL;
   m_pcModuleSubWindow = NULL;
   refreshFrame();

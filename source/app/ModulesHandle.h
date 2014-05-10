@@ -55,6 +55,8 @@ public:
   Void updateMenus( Bool hasSubWindow );
   SubWindowHandle* toggleSelectedModuleIf();
 
+  static Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
+
 private:
   QWidget *m_pcParent;
   QMdiArea *m_pcMdiArea;
@@ -77,7 +79,6 @@ private:
 
   Void appendModule( PlaYUVerModuleIf* );
   Void ModulesList( Bool bCreate );
-  Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
 
 private Q_SLOTS:
   void selectModule( int index );

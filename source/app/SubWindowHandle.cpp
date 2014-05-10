@@ -124,11 +124,14 @@ Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
 
 Void SubWindowHandle::disableModule()
 {
-  if( !m_pcCurrentModule )
-    return;
-  m_pcCurrentModule = NULL;
-  m_pcModuleSubWindow = NULL;
-  refreshFrame();
+  if( m_pcCurrentModule )
+  {
+    PlaYUVerModuleIf* pcCurrentModule = m_pcCurrentModule;
+    m_pcCurrentModule = NULL;
+    m_pcModuleSubWindow = NULL;
+    ModulesHandle::destroyModuleIf( pcCurrentModule );
+    refreshFrame();
+  }
 }
 
 Void SubWindowHandle::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
@@ -139,19 +142,16 @@ Void SubWindowHandle::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 
 Void SubWindowHandle::refreshFrame()
 {
-  m_pcCurrFrame = m_pCurrStream->getCurrFrame();
-  if( m_pcCurrentModule )
+  if( m_pCurrStream )
   {
-    if( m_pcModuleSubWindow )
-    {
-      m_pcModuleSubWindow->setCurrFrame( m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() ) );
-    }
-    else
-    {
-      m_pcCurrFrame = m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() );
-    }
+    m_pcCurrFrame = m_pCurrStream->getCurrFrame();
+    if( m_pcCurrentModule )
+      if( m_pcModuleSubWindow )
+        m_pcModuleSubWindow->setCurrFrame( m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() ) );
+      else
+        m_pcCurrFrame = m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() );
+    m_cViewArea->setImage( m_pcCurrFrame );
   }
-  m_cViewArea->setImage( m_pcCurrFrame );
 }
 
 Bool SubWindowHandle::save()

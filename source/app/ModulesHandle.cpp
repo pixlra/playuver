@@ -99,6 +99,7 @@ SubWindowHandle* ModulesHandle::toggleSelectedModuleIf()
       connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
           SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
       currModuleIf->m_pcDisplaySubWindow = interfaceChild;
+      currModuleIf->m_pcDisplaySubWindow->setModule( currModuleIf );
     }
     else
     {
@@ -117,15 +118,11 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
 {
   pcCurrModuleIf->m_pcAction->setChecked( false );
   if( pcCurrModuleIf->m_pcDisplaySubWindow )
-  {
     pcCurrModuleIf->m_pcDisplaySubWindow->close();
-    pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
-  }
-  else
-  {
+  if( pcCurrModuleIf->m_pcSubWindow )
     pcCurrModuleIf->m_pcSubWindow->disableModule();
-  }
-  pcCurrModuleIf->m_pcSubWindow->refreshFrame();
+
+  pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
   pcCurrModuleIf->m_pcSubWindow = NULL;
   pcCurrModuleIf->destroy();
 }

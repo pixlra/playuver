@@ -73,7 +73,18 @@ INCLUDE( cmake/LibFFmpeg.cmake )
 SET( MODULES_DIR ${SRC_DIR}/modules )
 INCLUDE_DIRECTORIES( ${MODULES_DIR} )
 FILE( GLOB ModuleCMakeFiles cmake/Module*.cmake )
+
+file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h  "// This files defines the macro to \n"
+                                                            "// define a list of modules\n"
+                                                            "#ifndef __MODULESLISTMACRO_H__\n#define __MODULESLISTMACRO_H__\n"
+                                                            "#define REGISTER_ALL_MODULES ") 
+
+file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "// This files add the header files of each module\n"
+                                                              "#ifndef __MODULESLISTHEADER_H__\n#define __MODULESLISTHEADER_H__\n" )
 INCLUDE( ${ModuleCMakeFiles} )
+
+file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h    "\n#endif // __MODULESLISTMACRO_H__\n" )
+file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#endif // __MODULESLISTHEADER_H__\n" )
 
 ######################################################################################
 # Main config.h

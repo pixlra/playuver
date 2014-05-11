@@ -26,22 +26,11 @@
 
 #include "ModulesHandle.h"
 #include "SubWindowHandle.h"
-
-// List of modules includes
-#include "FilterFrame.h"
-#include "FrameDifference.h"
+#include "ModulesListHeader.h"
+#include "ModulesListMacro.h"
 
 namespace plaYUVer
 {
-
-Void ModulesHandle::ModulesList( Bool bCreate )
-{
-
-  // Register Modules
-  REGISTER_MODULE( FilterFrame );
-  REGISTER_MODULE( FrameDifference );
-
-}
 
 ModulesHandle::ModulesHandle( QWidget * parent, QMdiArea *mdiArea ) :
         QObject( parent ),
@@ -52,7 +41,8 @@ ModulesHandle::ModulesHandle( QWidget * parent, QMdiArea *mdiArea ) :
 {
   // configure class
   setParent( m_pcParent );
-  ModulesList( true );
+  // Register Modules
+  REGISTER_ALL_MODULES
 }
 
 ModulesHandle::~ModulesHandle()

@@ -78,7 +78,6 @@ private:
   QVector<QAction*> m_arrayActions;
 
   Void appendModule( PlaYUVerModuleIf* );
-  Void ModulesList( Bool bCreate );
 
 private Q_SLOTS:
   void selectModule( int index );

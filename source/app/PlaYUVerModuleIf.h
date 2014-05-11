@@ -56,11 +56,8 @@ enum __PlaYUVerModuleRequirements
     {                                           \
       if( USE_##X )                             \
       {                                         \
-        if( bCreate )                           \
-        {                                       \
-          X *pMod = new X();                    \
-          appendModule( pMod );                 \
-        }                                       \
+        X *pMod = new X();                      \
+        appendModule( pMod );                   \
       }                                         \
     }
 

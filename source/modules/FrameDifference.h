@@ -49,7 +49,7 @@ public:
   {
   }
   Void create( PlaYUVerFrame* Input );
-  PlaYUVerFrame* process( PlaYUVerFrame* Input1 );
+  PlaYUVerFrame* process( PlaYUVerFrame* Input1, PlaYUVerFrame* Input2=NULL );
   Void destroy();
 
 };

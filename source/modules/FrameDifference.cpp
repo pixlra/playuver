@@ -35,7 +35,7 @@ static PlaYUVerModuleDefinition FrameDifferenceDef =
     FRAME_LEVEL_MODULE,
     "Measurements",
     "FrameDifference",
-    "Measure the difference between two images",
+    "Measure the difference between two images (Y plane)",
     true, };
 
 FrameDifference::FrameDifference()
@@ -46,12 +46,20 @@ FrameDifference::FrameDifference()
 
 Void FrameDifference::create( PlaYUVerFrame* Input )
 {
-  m_pcFrameDifference = NULL;
   m_pcFrameDifference = new PlaYUVerFrame( Input->getWidth(), Input->getHeight(), PlaYUVerFrame::GRAY );
 }
 
-PlaYUVerFrame* FrameDifference::process( PlaYUVerFrame* Input1 )
+PlaYUVerFrame* FrameDifference::process( PlaYUVerFrame* Input1, PlaYUVerFrame* Input2 )
 {
+  Pel* pInput1PelYUV = Input1->getPelBufferYUV()[0][0];
+  Pel* pInput2PelYUV = Input1->getPelBufferYUV()[0][0];
+  Pel* pOutputPelYUV = m_pcFrameDifference->getPelBufferYUV()[0][0];
+
+  for( UInt y = 0; y < m_pcFrameDifference->getHeight(); y++ )
+    for( UInt x = 0; x < m_pcFrameDifference->getWidth(); x++ )
+    {
+      *pOutputPelYUV++ = *pInput1PelYUV++ - *pInput2PelYUV++;
+    }
   return m_pcFrameDifference;
 }
 

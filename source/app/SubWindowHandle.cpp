@@ -117,8 +117,12 @@ Bool SubWindowHandle::loadFile( const QString &fileName )
  */
 Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
 {
+  if( m_pcCurrentModule )
+  {
+    disableModule();
+  }
   m_pcCurrentModule = select_module;
-  m_pcCurrentModule->create( m_pCurrStream->getCurrFrame() );
+  m_pcCurrentModule->create( m_pcCurrFrame );
   refreshFrame();
 }
 
@@ -149,11 +153,11 @@ Void SubWindowHandle::refreshFrame()
     {
       if( m_pcModuleSubWindow )
       {
-        m_pcModuleSubWindow->setCurrFrame( m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() ) );
+        m_pcModuleSubWindow->setCurrFrame( m_pcCurrentModule->process( m_pcCurrFrame ) );
       }
       else
       {
-        m_pcCurrFrame = m_pcCurrentModule->process( m_pCurrStream->getCurrFrame() );
+        m_pcCurrFrame = m_pcCurrentModule->process( m_pcCurrFrame );
       }
     }
     m_cViewArea->setImage( m_pcCurrFrame );

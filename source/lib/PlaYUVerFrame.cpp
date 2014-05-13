@@ -32,6 +32,28 @@ namespace plaYUVer
 
 PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
 {
+  init( width, height, pel_format );
+}
+
+PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other )
+{
+  init( other->getWidth(), other->getHeight(),  other->getPelFormat() );
+  copyFrom(other);
+}
+
+PlaYUVerFrame::~PlaYUVerFrame()
+{
+  if( m_pppcInputPel )
+    freeMem3ImageComponents<Pel>( m_pppcInputPel );
+
+  if( m_pcRGBPelInterlaced )
+    freeMem1D<UChar>( m_pcRGBPelInterlaced );
+
+  closePixfc();
+}
+
+Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format )
+{
   m_pppcInputPel = NULL;
   m_pcRGBPelInterlaced = NULL;
   m_uiWidth = width;
@@ -72,17 +94,6 @@ PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
   }
   getMem1D<Pel>( &m_pcRGBPelInterlaced, m_uiHeight * m_uiWidth * 3 );
   openPixfc();
-}
-
-PlaYUVerFrame::~PlaYUVerFrame()
-{
-  if( m_pppcInputPel )
-    freeMem3ImageComponents<Pel>( m_pppcInputPel );
-
-  if( m_pcRGBPelInterlaced )
-    freeMem1D<UChar>( m_pcRGBPelInterlaced );
-
-  closePixfc();
 }
 
 Void PlaYUVerFrame::openPixfc()
@@ -345,7 +356,7 @@ Void PlaYUVerFrame::FrameFromBuffer( Pel *input_buffer, Int pel_format )
   }
 }
 
-Void PlaYUVerFrame::CopyFrom( PlaYUVerFrame* input_frame )
+Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame )
 {
   if( m_iPixelFormat != input_frame->getPelFormat() )
     return;

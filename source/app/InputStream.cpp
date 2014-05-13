@@ -376,9 +376,9 @@ Void InputStream::setNextFrame()
 PlaYUVerFrame* InputStream::getCurrFrame( PlaYUVerFrame *pyuv_image )
 {
   if( pyuv_image == NULL )
-    pyuv_image = new PlaYUVerFrame( m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), m_pcCurrFrame->getPelFormat() );
-
-  pyuv_image->CopyFrom( m_pcCurrFrame );
+    pyuv_image = new PlaYUVerFrame( m_pcCurrFrame );
+  else
+    pyuv_image->copyFrom( m_pcCurrFrame );
   return pyuv_image;
 }
 

@@ -32,7 +32,14 @@
 namespace plaYUVer
 {
 
-static inline QSize bestSize( QSize currSize );
+static inline QSize bestSize( QSize currSize )
+{
+  QSize bestSize( 180, currSize.height() );
+  if( currSize.width() < bestSize.width() )
+    return bestSize;
+  else
+    return currSize;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //                       StreamPropertiesSideBar
@@ -164,6 +171,7 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent ) :
 {
   // -------------- Variables definition --------------
   m_pcFrame = NULL;
+  m_pcFrameSelection = NULL;
   m_iLastFrameType = -1;
 
   // Histogram area -----------------------------------------------------
@@ -374,34 +382,13 @@ FramePropertiesSideBar::~FramePropertiesSideBar()
   // If there is a currently histogram computation when dialog is closed,
   // stop it before the image data are deleted automatically!
   histogramWidget->stopHistogramComputation();
-
   if( histogramWidget )
     delete histogramWidget;
-
 }
 
 QSize FramePropertiesSideBar::sizeHint() const
 {
   return bestSize( size() );
-}
-
-void FramePropertiesSideBar::slotUpdateHistogram()
-{
-  if( m_pcFrame->isValid() && isVisible() )
-  {
-    // If a selection area is done in Image Editor and if the current
-    // image is the same in Image Viewer, then compute too the histogram
-    // for this selection.
-    histogramWidget->updateData( m_pcFrame, new PlaYUVerFrame );
-    fullImageButton->hide();
-    selectionImageButton->hide();
-    updateInformations();
-  }
-  else
-  {
-    histogramWidget->setLoadingFailed();
-    slotHistogramComputationFailed();
-  }
 }
 
 Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
@@ -483,13 +470,9 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
     }
     setEnabled( true );
     m_pcFrame = pcFrame;
-    slotUpdateHistogram();
+    slotUpdateDataHistogram();
   }
 }
-
-////////////////////////////////////////////////////////////////////////////////
-//                              Set Selection
-////////////////////////////////////////////////////////////////////////////////
 
 Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
 {
@@ -503,12 +486,7 @@ Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
 
     histogramWidget->stopHistogramComputation();
 
-    m_pcFrame->CopyFrom( m_pcFrameSelection );
-//         histogramWidget->updateSelectionData( imageSelection.bits(),
-//                                                  imageSelection.width(),
-//                                                  imageSelection.height(),
-//                                                  imageSelection.bitsPerChannel(),
-//                                                  imageSelection.colorSpace() );
+    m_pcFrameSelection->copyFrom( m_pcFrame );
     histogramWidget->updateSelectionData( m_pcFrameSelection );
     fullImageButton->show();
     selectionImageButton->show();
@@ -521,9 +499,71 @@ Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
     slotRenderingChanged( HistogramWidget::FullImageHistogram );
   }
 }
+
+Void FramePropertiesSideBar::updateStatistiques()
+{
+  QString value;
+
+  int min = minInterv->value();
+  int max = maxInterv->value();
+  int channel = histogramWidget->m_channelType;
+  //int channel = channelCB->currentIndex();
+
+  if( channel == HistogramWidget::ColorChannelsHistogram )
+    channel = colorsCB->currentIndex() + 1;
+
+  PlaYUVerFrameStatistics *histogram;
+
+  if( histogramWidget->m_renderingType == HistogramWidget::FullImageHistogram )
+    histogram = histogramWidget->m_imageHistogram;
+  else
+    histogram = histogramWidget->m_selectionHistogram;
+
+  double mean = histogram->getMean( channel, min, max );
+  labelMeanValue->setText( value.setNum( mean, 'f', 1 ) );
+
+  double pixels = histogram->getPixels();
+  labelPixelsValue->setText( value.setNum( ( float )pixels, 'f', 0 ) );
+
+  double stddev = histogram->getStdDev( channel, min, max );
+  labelStdDevValue->setText( value.setNum( stddev, 'f', 1 ) );
+
+  double counts = histogram->getCount( channel, min, max );
+  labelCountValue->setText( value.setNum( ( float )counts, 'f', 0 ) );
+
+  double median = histogram->getMedian( channel, min, max );
+  labelMedianValue->setText( value.setNum( median, 'f', 1 ) );
+
+  double percentile = ( pixels > 0 ? ( 100.0 * counts / pixels ) : 0.0 );
+  labelPercentileValue->setText( value.setNum( percentile, 'f', 1 ) );
+}
+
+Void FramePropertiesSideBar::stopHistogram()
+{
+  histogramWidget->stopHistogramComputation();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                  SLOTS
 ////////////////////////////////////////////////////////////////////////////////
+
+void FramePropertiesSideBar::slotUpdateDataHistogram()
+{
+  if( m_pcFrame && isVisible() )
+  {
+    // If a selection area is done in Image Editor and if the current
+    // image is the same in Image Viewer, then compute too the histogram
+    // for this selection.
+    histogramWidget->updateData( m_pcFrame, NULL );
+    fullImageButton->hide();
+    selectionImageButton->hide();
+  }
+  else
+  {
+    histogramWidget->setLoadingFailed();
+    slotHistogramComputationFailed();
+  }
+}
 
 void FramePropertiesSideBar::slotRefreshOptions( bool /*depth*/)
 {
@@ -545,7 +585,6 @@ void FramePropertiesSideBar::slotRefreshOptions( bool /*depth*/)
       slotRenderingChanged( HistogramWidget::FullImageHistogram );
     else if( selectionImageButton->isChecked() )
       slotRenderingChanged( HistogramWidget::ImageSelectionHistogram );
-
   }
 }
 
@@ -672,82 +711,6 @@ void FramePropertiesSideBar::slotUpdateIntervRange( int range )
   maxInterv->blockSignals( true );
   maxInterv->setMaximum( range );
   maxInterv->blockSignals( false );
-}
-////////////////////////////////////////////////////////////////////////////////
-//                             Informations
-////////////////////////////////////////////////////////////////////////////////
-
-void FramePropertiesSideBar::updateInformations()
-{
-#if 0
-  QString value;
-  switch( image.colorMode() )
-  {
-    case SImage::BlackWhite:
-    value = tr( "Black and White" );
-    break;
-    case SImage::Gray:
-    value = tr( "Grayscale" );
-    break;
-    default:
-    value = tr( "Color" );
-    break;
-  }
-  colorModeValueLabel->setText( value );
-  value = tr( "%n bit(s)", "", image.depth() );
-  depthValueLabel->setText( value );
-  alphaValueLabel->setText( image.hasAlpha() ? tr( "Yes" ) : tr( "No" ) );
-#endif
-}
-////////////////////////////////////////////////////////////////////////////////
-//                                Statistiques
-////////////////////////////////////////////////////////////////////////////////
-
-void FramePropertiesSideBar::updateStatistiques()
-{
-  QString value;
-
-  int min = minInterv->value();
-  int max = maxInterv->value();
-  int channel = histogramWidget->m_channelType;
-  //int channel = channelCB->currentIndex();
-
-  if( channel == HistogramWidget::ColorChannelsHistogram )
-    channel = colorsCB->currentIndex() + 1;
-
-  PlaYUVerFrameStatistics *histogram;
-
-  if( histogramWidget->m_renderingType == HistogramWidget::FullImageHistogram )
-    histogram = histogramWidget->m_imageHistogram;
-  else
-    histogram = histogramWidget->m_selectionHistogram;
-
-  double mean = histogram->getMean( channel, min, max );
-  labelMeanValue->setText( value.setNum( mean, 'f', 1 ) );
-
-  double pixels = histogram->getPixels();
-  labelPixelsValue->setText( value.setNum( ( float )pixels, 'f', 0 ) );
-
-  double stddev = histogram->getStdDev( channel, min, max );
-  labelStdDevValue->setText( value.setNum( stddev, 'f', 1 ) );
-
-  double counts = histogram->getCount( channel, min, max );
-  labelCountValue->setText( value.setNum( ( float )counts, 'f', 0 ) );
-
-  double median = histogram->getMedian( channel, min, max );
-  labelMedianValue->setText( value.setNum( median, 'f', 1 ) );
-
-  double percentile = ( pixels > 0 ? ( 100.0 * counts / pixels ) : 0.0 );
-  labelPercentileValue->setText( value.setNum( percentile, 'f', 1 ) );
-}
-
-static inline QSize bestSize( QSize currSize )
-{
-  QSize bestSize( 180, currSize.height() );
-  if( currSize.width() < bestSize.width() )
-    return bestSize;
-  else
-    return currSize;
 }
 
 }   // NAMESPACE

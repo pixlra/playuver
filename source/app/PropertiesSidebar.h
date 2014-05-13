@@ -73,6 +73,8 @@ public:
   Void setData( PlaYUVerFrame* m_pcStream );
   Void setSelection( const QRect &selectionArea );
 
+  Void stopHistogram();
+
 private:
   enum ColorChannel
   {
@@ -132,11 +134,10 @@ private:
   HistogramWidget *histogramWidget;
 
 private:
-  void updateInformations();
-  void updateStatistiques();
+  Void updateStatistiques();
 
 private Q_SLOTS:
-  void slotUpdateHistogram();
+  void slotUpdateDataHistogram();
   void slotRefreshOptions( bool sixteenBit );
   void slotHistogramComputationFailed( void );
   void slotChannelChanged( int channel );

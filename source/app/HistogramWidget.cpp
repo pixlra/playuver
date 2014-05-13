@@ -402,7 +402,7 @@ void HistogramWidget::updateData( const PlaYUVerFrame *playuver_frame, const Pla
   // Calc new histogram data
   m_imageHistogram = new PlaYUVerFrameStatistics( playuver_frame, this );
 
-  if( playuver_selection->isValid() )
+  if( playuver_selection )
     m_selectionHistogram = new PlaYUVerFrameStatistics( playuver_selection, this );
   else
     m_selectionHistogram = NULL;

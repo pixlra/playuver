@@ -54,6 +54,7 @@ class PlaYUVerFrame
 {
 public:
   PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );
+  PlaYUVerFrame( PlaYUVerFrame *other );
   ~PlaYUVerFrame();
 
   enum ColorSpace
@@ -115,7 +116,7 @@ public:
 
   Void FrameFromBuffer( Pel *input_buffer, Int pel_format );
 
-  Void CopyFrom( PlaYUVerFrame* );
+  Void copyFrom( PlaYUVerFrame* );
 
   UInt64 getBytesPerFrame();
   UInt getChromaLength() const;
@@ -179,6 +180,7 @@ private:
   Pel*** m_pppcInputPel;
   UChar* m_pcRGBPelInterlaced;
 
+  Void init( UInt width, UInt height, Int pel_format );
   Void openPixfc();
   Void closePixfc();
 #ifdef USE_PIXFC

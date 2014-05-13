@@ -81,8 +81,6 @@ SubWindowHandle* ModulesHandle::toggleSelectedModuleIf()
     {
       QString windowName;
       interfaceChild = new SubWindowHandle( m_pcParent );
-      pcSubWindow->setModuleSubWindow( interfaceChild );
-      pcSubWindow->enableModule( currModuleIf );
       windowName.append( pcSubWindow->userFriendlyCurrentFile() );
       windowName.append( " [" );
       windowName.append( currModuleIf->m_cModuleDef.m_pchModuleName );
@@ -93,12 +91,8 @@ SubWindowHandle* ModulesHandle::toggleSelectedModuleIf()
       currModuleIf->m_pcDisplaySubWindow = interfaceChild;
       currModuleIf->m_pcDisplaySubWindow->setModule( currModuleIf );
     }
-    else
-    {
-      pcSubWindow->enableModule( currModuleIf );
-      currModuleIf->m_pcDisplaySubWindow = pcSubWindow;
-    }
     currModuleIf->m_pcSubWindow = pcSubWindow;
+    pcSubWindow->enableModule( currModuleIf );
   }
   else
   {
@@ -122,7 +116,10 @@ PlaYUVerFrame* ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
   case MODULE_REQUIRES_THREE_FRAMES:
     break;
   }
-  pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( processedFrame );
+  if( pcCurrModuleIf->m_pcDisplaySubWindow )
+    pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( processedFrame );
+  else
+    pcCurrModuleIf->m_pcSubWindow->setCurrFrame( processedFrame );
   return processedFrame;
 }
 

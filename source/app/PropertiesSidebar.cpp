@@ -549,7 +549,7 @@ Void FramePropertiesSideBar::stopHistogram()
 
 void FramePropertiesSideBar::slotUpdateDataHistogram()
 {
-  if( m_pcFrame && isVisible() )
+  if( m_pcFrame->isValid() && isVisible() )
   {
     // If a selection area is done in Image Editor and if the current
     // image is the same in Image Viewer, then compute too the histogram

@@ -239,6 +239,8 @@ void plaYUVerApp::selectModule( QAction *curr_action )
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
   }
+  if( activeSubWindow() )
+    m_pcCurrentSubWindow = activeSubWindow();
   updateFrameProperties();
   return;
 }

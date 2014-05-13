@@ -51,7 +51,6 @@ private:
   ViewArea* m_cViewArea;
 
   PlaYUVerModuleIf* m_pcCurrentModule;
-  SubWindowHandle* m_pcModuleSubWindow;
 
   InputStream* m_pCurrStream;
   PlaYUVerFrame* m_pcCurrFrame;
@@ -102,10 +101,6 @@ public:
   ViewArea* getViewArea()
   {
     return m_cViewArea;
-  }
-  Void setModuleSubWindow( SubWindowHandle* pcWindow )
-  {
-    m_pcModuleSubWindow = pcWindow;
   }
   Void setModule( PlaYUVerModuleIf* pcCurrentModule )
   {

@@ -56,7 +56,6 @@ SubWindowHandle::SubWindowHandle( QWidget * parent ) :
   //m_pCurrStream = new InputStream;
   m_pcCurrFrame = NULL;
   m_pcCurrentModule = NULL;
-  m_pcModuleSubWindow = NULL;
 
   m_cWindowName = QString( " " );
   m_bIsPlaying = false;
@@ -132,7 +131,6 @@ Void SubWindowHandle::disableModule()
   {
     PlaYUVerModuleIf* pcCurrentModule = m_pcCurrentModule;
     m_pcCurrentModule = NULL;
-    m_pcModuleSubWindow = NULL;
     ModulesHandle::destroyModuleIf( pcCurrentModule );
     refreshFrame();
   }
@@ -151,16 +149,12 @@ Void SubWindowHandle::refreshFrame()
     m_pcCurrFrame = m_pCurrStream->getCurrFrame();
     if( m_pcCurrentModule )
     {
-      if( m_pcModuleSubWindow )
-      {
-        m_pcModuleSubWindow->setCurrFrame( m_pcCurrentModule->process( m_pcCurrFrame ) );
-      }
-      else
-      {
-        m_pcCurrFrame = m_pcCurrentModule->process( m_pcCurrFrame );
-      }
+      ModulesHandle::applyModuleIf( m_pcCurrentModule );
     }
-    m_cViewArea->setImage( m_pcCurrFrame );
+    else
+    {
+      m_cViewArea->setImage( m_pcCurrFrame );
+    }
   }
 }
 

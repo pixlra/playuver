@@ -36,7 +36,8 @@ static PlaYUVerModuleDefinition FrameDifferenceDef =
     "Measurements",
     "FrameDifference",
     "Measure the difference between two images (Y plane)",
-    MODULE_REQUIRES_TWOFRAMES | MODULE_REQUIRES_NEW_WINDOW,
+    MODULE_REQUIRES_TWO_FRAMES,
+    MODULE_REQUIRES_NEW_WINDOW,
 };
 
 FrameDifference::FrameDifference()

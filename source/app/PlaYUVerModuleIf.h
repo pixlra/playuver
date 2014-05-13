@@ -47,10 +47,12 @@ enum __PlaYUVerModuleTypes
 
 enum __PlaYUVerModuleRequirements
 {
-  MODULE_REQUIRES_FRAME = 1,
-  MODULE_REQUIRES_TWOFRAMES = 2,
-  MODULE_REQUIRES_NEW_WINDOW = 4,
-  MODULE_REQUIRES_SIDEBAR = 8,
+  MODULE_REQUIRES_ONE_FRAME = 1,
+  MODULE_REQUIRES_TWO_FRAMES = 2,
+  MODULE_REQUIRES_THREE_FRAMES = 3,
+  MODULE_REQUIRES_NOTHING = 0,
+  MODULE_REQUIRES_NEW_WINDOW = 2,
+  MODULE_REQUIRES_SIDEBAR = 4,
   MODULES_REQUIREMENTS_TOTAL,
 };
 
@@ -69,6 +71,7 @@ typedef struct __PlaYUVerModuleDefinition
   const Char* m_pchModuleCategory;
   const Char* m_pchModuleName;
   const Char* m_pchModuleTooltip;
+  UInt m_uiNumberOfFrames;
   UInt m_uiModuleRequirements;
 } PlaYUVerModuleDefinition;
 

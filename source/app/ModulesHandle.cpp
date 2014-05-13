@@ -96,14 +96,34 @@ SubWindowHandle* ModulesHandle::toggleSelectedModuleIf()
     else
     {
       pcSubWindow->enableModule( currModuleIf );
+      currModuleIf->m_pcDisplaySubWindow = pcSubWindow;
     }
     currModuleIf->m_pcSubWindow = pcSubWindow;
   }
   else
   {
+    QCoreApplication::processEvents();
     destroyModuleIf( currModuleIf );
   }
   return interfaceChild;
+}
+
+PlaYUVerFrame* ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
+{
+  PlaYUVerFrame* processedFrame;
+
+  switch( pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames )
+  {
+  case MODULE_REQUIRES_ONE_FRAME:
+    processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow->getCurrFrame() );
+    break;
+  case MODULE_REQUIRES_TWO_FRAMES:
+    break;
+  case MODULE_REQUIRES_THREE_FRAMES:
+    break;
+  }
+  pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( processedFrame );
+  return processedFrame;
 }
 
 Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
@@ -140,7 +160,7 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 
   m_pcModulesMenu = MainAppMenuBar->addMenu( "&Modules" );
 
-  //m_arrayModulesActions.resize( m_uiModulesCount );
+//m_arrayModulesActions.resize( m_uiModulesCount );
 
   for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
   {

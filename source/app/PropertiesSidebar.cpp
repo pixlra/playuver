@@ -554,7 +554,8 @@ void FramePropertiesSideBar::slotUpdateDataHistogram()
     // If a selection area is done in Image Editor and if the current
     // image is the same in Image Viewer, then compute too the histogram
     // for this selection.
-    histogramWidget->updateData( m_pcFrame, NULL );
+    // New frame required to separate from the thread
+    histogramWidget->updateData( new PlaYUVerFrame(m_pcFrame), NULL );
     fullImageButton->hide();
     selectionImageButton->hide();
   }

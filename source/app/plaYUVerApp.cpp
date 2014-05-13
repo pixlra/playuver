@@ -230,6 +230,7 @@ void plaYUVerApp::closeAll()
 
 void plaYUVerApp::selectModule( QAction *curr_action )
 {
+  m_pcFrameProperties->stopHistogram();
   SubWindowHandle *interfaceChild = m_pcModulesHandle->toggleSelectedModuleIf();
   if( interfaceChild )
   {

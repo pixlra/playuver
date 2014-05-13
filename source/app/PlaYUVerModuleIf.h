@@ -49,7 +49,9 @@ enum __PlaYUVerModuleRequirements
 {
   MODULE_REQUIRES_FRAME = 1,
   MODULE_REQUIRES_TWOFRAMES = 2,
-  MODULE_REQUIRES_SIDEBAR = 4,
+  MODULE_REQUIRES_NEW_WINDOW = 4,
+  MODULE_REQUIRES_SIDEBAR = 8,
+  MODULES_REQUIREMENTS_TOTAL,
 };
 
 #define REGISTER_MODULE(X)                      \
@@ -63,39 +65,41 @@ enum __PlaYUVerModuleRequirements
 
 typedef struct __PlaYUVerModuleDefinition
 {
-  int   m_iModuleType;
-  const char* m_pchModuleCategory;
-  const char* m_pchModuleName;
-  const char* m_pchModuleTooltip;
-  bool  m_bRequiresNewWindow;
-}PlaYUVerModuleDefinition;
+  Int m_iModuleType;
+  const Char* m_pchModuleCategory;
+  const Char* m_pchModuleName;
+  const Char* m_pchModuleTooltip;
+  UInt m_uiModuleRequirements;
+} PlaYUVerModuleDefinition;
 
 class SubWindowHandle;
 
 class PlaYUVerModuleIf
 {
   friend class ModulesHandle;
-
-public:
-  PlaYUVerModuleDefinition m_cModuleDef;
 private:
   QAction* m_pcAction;
   SubWindowHandle* m_pcSubWindow;
   SubWindowHandle* m_pcDisplaySubWindow;
-
+  PlaYUVerModuleDefinition m_cModuleDef;
 public:
-  PlaYUVerModuleIf() {  }
+  PlaYUVerModuleIf() :
+          m_pcAction( NULL ),
+          m_pcSubWindow( NULL ),
+          m_pcDisplaySubWindow( NULL )
+  { }
   virtual ~PlaYUVerModuleIf() { }
 
-  virtual Void create() {};
-  virtual Void create( PlaYUVerFrame* ) {};
+  virtual Void create()                 { }
+  virtual Void create( PlaYUVerFrame* ) { }
 
-  virtual Void            process() {};
-  virtual PlaYUVerFrame*  process( PlaYUVerFrame* )                   { return NULL; };
-  virtual PlaYUVerFrame*  process( PlaYUVerFrame* , PlaYUVerFrame* )  { return NULL; };
+  virtual Void              process()                                 {               }
+  virtual PlaYUVerFrame*    process( PlaYUVerFrame* )                 { return NULL;  }
+  virtual PlaYUVerFrame*    process( PlaYUVerFrame*, PlaYUVerFrame* ) { return NULL;  }
 
-  virtual Void destroy() {};
+  virtual Void destroy(){ }
 
+  Void setModuleDefinition( PlaYUVerModuleDefinition def )  { m_cModuleDef = def; }
 };
 
 }  // NAMESPACE

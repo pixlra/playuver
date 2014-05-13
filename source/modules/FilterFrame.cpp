@@ -35,12 +35,12 @@ PlaYUVerModuleDefinition FilterFrameDef = {
     "Filters",
     "Y_Filter",
     "Filter Y matrix of YUV frame",
-    false,
+    MODULE_REQUIRES_FRAME,
 };
 
 FilterFrame::FilterFrame()
 {
-  m_cModuleDef = FilterFrameDef;
+  setModuleDefinition( FilterFrameDef );
   m_pcFilteredFrame = NULL;
 }
 

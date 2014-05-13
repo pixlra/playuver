@@ -77,7 +77,7 @@ SubWindowHandle* ModulesHandle::toggleSelectedModuleIf()
   if( currModuleIf->m_pcAction->isChecked() )
   {
     currModuleIf->m_pcDisplaySubWindow = NULL;
-    if( currModuleIf->m_cModuleDef.m_bRequiresNewWindow || bShowModulesNewWindow )
+    if( ( currModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
       QString windowName;
       interfaceChild = new SubWindowHandle( m_pcParent );

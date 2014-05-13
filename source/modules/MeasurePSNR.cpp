@@ -35,13 +35,14 @@ static PlaYUVerModuleDefinition MeasurePSNRDef =
     FRAME_LEVEL_MODULE,
     "Measurements",
     "PSNR",
-    "MEasure the PSNR between two images",
-    true, };
+    "Measure the PSNR between two images",
+    MODULE_REQUIRES_TWOFRAMES | MODULE_REQUIRES_SIDEBAR,
+};
 
 MeasurePSNR::MeasurePSNR()
 {
   m_pcFilteredFrame = NULL;
-  m_cModuleDef = MeasurePSNRDef;
+  setModuleDefinition( MeasurePSNRDef );
 }
 
 Void MeasurePSNR::create( PlaYUVerFrame* InputFrame )

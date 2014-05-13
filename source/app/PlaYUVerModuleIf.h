@@ -45,6 +45,7 @@ enum __PlaYUVerModuleTypes
   VIDEO_LEVEL_MODULE,
 };
 
+#define MAX_NUMBER_FRAMES 3
 enum __PlaYUVerModuleRequirements
 {
   MODULE_REQUIRES_ONE_FRAME = 1,
@@ -82,15 +83,19 @@ class PlaYUVerModuleIf
   friend class ModulesHandle;
 private:
   QAction* m_pcAction;
-  SubWindowHandle* m_pcSubWindow;
+  SubWindowHandle* m_pcSubWindow[MAX_NUMBER_FRAMES];
   SubWindowHandle* m_pcDisplaySubWindow;
   PlaYUVerModuleDefinition m_cModuleDef;
 public:
   PlaYUVerModuleIf() :
           m_pcAction( NULL ),
-          m_pcSubWindow( NULL ),
           m_pcDisplaySubWindow( NULL )
-  { }
+  {
+    for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
+    {
+      m_pcSubWindow[i] = NULL;
+    }
+  }
   virtual ~PlaYUVerModuleIf() { }
 
   virtual Void create()                 { }

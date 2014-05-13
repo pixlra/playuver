@@ -91,7 +91,7 @@ SubWindowHandle* ModulesHandle::toggleSelectedModuleIf()
       currModuleIf->m_pcDisplaySubWindow = interfaceChild;
       currModuleIf->m_pcDisplaySubWindow->setModule( currModuleIf );
     }
-    currModuleIf->m_pcSubWindow = pcSubWindow;
+    currModuleIf->m_pcSubWindow[0] = pcSubWindow;
     pcSubWindow->enableModule( currModuleIf );
   }
   else
@@ -109,7 +109,7 @@ PlaYUVerFrame* ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
   switch( pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames )
   {
   case MODULE_REQUIRES_ONE_FRAME:
-    processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow->getCurrFrame() );
+    processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
     break;
   case MODULE_REQUIRES_TWO_FRAMES:
     break;
@@ -119,7 +119,7 @@ PlaYUVerFrame* ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
   if( pcCurrModuleIf->m_pcDisplaySubWindow )
     pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( processedFrame );
   else
-    pcCurrModuleIf->m_pcSubWindow->setCurrFrame( processedFrame );
+    pcCurrModuleIf->m_pcSubWindow[0]->setCurrFrame( processedFrame );
   return processedFrame;
 }
 
@@ -128,11 +128,16 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
   pcCurrModuleIf->m_pcAction->setChecked( false );
   if( pcCurrModuleIf->m_pcDisplaySubWindow )
     pcCurrModuleIf->m_pcDisplaySubWindow->close();
-  if( pcCurrModuleIf->m_pcSubWindow )
-    pcCurrModuleIf->m_pcSubWindow->disableModule();
 
+  for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
+  {
+    if( pcCurrModuleIf->m_pcSubWindow[i] )
+    {
+      pcCurrModuleIf->m_pcSubWindow[i]->disableModule();
+      pcCurrModuleIf->m_pcSubWindow[i] = NULL;
+    }
+  }
   pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
-  pcCurrModuleIf->m_pcSubWindow = NULL;
   pcCurrModuleIf->destroy();
 }
 

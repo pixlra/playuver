@@ -79,6 +79,7 @@ private:
   QVector<QAction*> m_arrayActions;
 
   Void appendModule( PlaYUVerModuleIf* );
+  SubWindowHandle* enableModuleIf( PlaYUVerModuleIf *currModuleIf );
 
 private Q_SLOTS:
   void selectModule( int index );

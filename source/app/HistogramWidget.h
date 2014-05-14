@@ -26,8 +26,11 @@
 #ifndef __HISTOGRAMWIDGET_H__
 #define __HISTOGRAMWIDGET_H__
 
+#include "config.h"
+
 #include <QWidget>
 #include <QColor>
+#include "TypeDef.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFrameStatistics.h"
 
@@ -106,84 +109,79 @@ public  :
    * @param height of the widget
    * @param parent the histogram widget parent
    */
-  HistogramWidget( int width, int height, QWidget *parent = 0 );
+  HistogramWidget( Int width, Int height, QWidget *parent = 0 );
 
-  void setupWidget( int width, int height,
+  Void setupWidget( Int width, Int height,
       HistogramOptions options = AllOptions );
 
   ~HistogramWidget();
 
   /** Stop current histogram computations.*/
-  void stopHistogramComputation( void );
+  Void stopHistogramComputation();
 
   /** Update full image histogram data methods.*/
-  void updateData( Pel ***imageData, UInt imageWidth, UInt imageHeight,
+  Void updateData( Pel ***imageData, UInt imageWidth, UInt imageHeight,
       Int bitsPerChannel, Int pixel_format, UInt chroma_size,
       Pel ***selData = 0, UInt selWidth = 0, UInt selHeight = 0);
 
   /** Update full image histogram data from SImage.*/
-  void updateData( const PlaYUVerFrame *playuver_frame, const PlaYUVerFrame *playuver_selection );
+  Void updateData( const PlaYUVerFrame *playuver_frame, const PlaYUVerFrame *playuver_selection );
 
   /** Update image selection histogram data methods.*/
-  void updateSelectionData( Pel ***selData, uint selWidth, uint selHeight,
+  Void updateSelectionData( Pel ***selData, uint selWidth, uint selHeight,
       Int bitsPerChannel, Int pixel_format, UInt chroma_size );
 
   /** Update image selection histogram data from SImage.*/
-  void updateSelectionData( const PlaYUVerFrame *imageSelection );
+  Void updateSelectionData( const PlaYUVerFrame *imageSelection );
 
   /** @see @p HistogramOption */
-  void setOptions( HistogramOptions options = AllOptions );
-  void setDataLoading();
-  void setLoadingFailed();
-  void setHistogramGuideByColor( QColor color );
+  Void setOptions( HistogramOptions options = AllOptions );
+  Void setDataLoading();
+  Void setLoadingSkipped();
+  Void setLoadingFailed();
+  Void setHistogramGuideByColor( QColor color );
 
-  void reset(void);
+  Void reset();
 
 public:
   /** Channel type to draw */
-  int m_channelType;
+  Int m_channelType;
   /** Scale to use for drawing */
-  int m_scaleType;
+  Int m_scaleType;
   /** Color to use for drawing in All Colors Channel mode */
-  int m_colorType;
+  Int m_colorType;
   /** Using full image or image selection for histogram rendering */
-  int m_renderingType;
+  Int m_renderingType;
 
   /** Full image */
   PlaYUVerFrameStatistics *m_imageHistogram;
   /** Histogram area selection */
   PlaYUVerFrameStatistics *m_selectionHistogram;
 
-  signals:
-
+  Q_SIGNALS:
   void signalIntervalChanged( int min, int max );
   void signalMaximumValueChanged( int );
   void signalHistogramComputationDone( bool );
   void signalHistogramComputationFailed( void );
 
-public slots:
-
+public Q_SLOTS:
   void slotMinValueChanged( int min );
   void slotMaxValueChanged( int max );
 
 protected slots:
-
   void slotBlinkTimerDone( void );
 
 protected:
-
-  void paintEvent( QPaintEvent * );
-  void mousePressEvent( QMouseEvent * e );
-  void mouseReleaseEvent( QMouseEvent * e );
-  void mouseMoveEvent( QMouseEvent * e );
-
-private :
-
-  void customEvent( QEvent *event );
-  void notifyValuesChanged();
+  Void paintEvent( QPaintEvent * );
+  Void mousePressEvent( QMouseEvent * e );
+  Void mouseReleaseEvent( QMouseEvent * e );
+  Void mouseMoveEvent( QMouseEvent * e );
 
 private:
+  Void customEvent( QEvent *event );
+  Void notifyValuesChanged();
 
+private:
   HistogramWidgetPrivate* d;
 };
 

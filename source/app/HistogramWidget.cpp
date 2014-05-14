@@ -29,6 +29,7 @@
 #include <QtGui>
 #include <QtDebug>
 #include "HistogramWidget.h"
+#include "TypeDef.h"
 #include "PlaYUVerFrameStatistics.h"
 #include "PlaYUVerFrame.h"
 
@@ -46,7 +47,7 @@ const QBrush g_eColorPallet[][3] =
         Qt::red,  // Channel Red
         Qt::green,  // Channel Green
         Qt::blue,  // Channel Blue
-    },};
+    }, };
 
 class HistogramWidgetPrivate
 {
@@ -58,6 +59,7 @@ public:
     HistogramDataLoading,     // The image is being loaded
     HistogramStarted,         // Histogram values calculation started.
     HistogramCompleted,       // Histogram values calculation completed.
+    HistogramSkipped,         // Skip histogram while playing
     HistogramFailed           // Histogram values calculation failed.
   };
 
@@ -79,11 +81,11 @@ public:
   double xmin;
   double xminOrg;
   double xmax;
-  int range;
-  int clearFlag;          // Clear drawing zone with message.
+  Int range;
+  Int clearFlag;          // Clear drawing zone with message.
 
   // Image informations
-  int imageChannels;
+  Int imageChannels;
   Int imageColorSpace;
   bool sixteenBits;
 
@@ -110,7 +112,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 //Constructor without image data
-HistogramWidget::HistogramWidget( int width, int height, QWidget *parent ) :
+HistogramWidget::HistogramWidget( Int width, Int height, QWidget *parent ) :
         QWidget( parent )
 {
   setAttribute( Qt::WA_DeleteOnClose );
@@ -143,7 +145,7 @@ HistogramWidget::~HistogramWidget()
 //                              Setup Functions 
 ////////////////////////////////////////////////////////////////////////////////
 
-void HistogramWidget::setupWidget( int width, int height, HistogramOptions options )
+Void HistogramWidget::setupWidget( Int width, Int height, HistogramOptions options )
 {
   m_channelType = LumaHistogram;
   m_scaleType = LogScaleHistogram;
@@ -160,7 +162,7 @@ void HistogramWidget::setupWidget( int width, int height, HistogramOptions optio
   connect( d->blinkTimer, SIGNAL( timeout() ), this, SLOT( slotBlinkTimerDone() ) );
 }
 
-void HistogramWidget::setOptions( HistogramOptions options )
+Void HistogramWidget::setOptions( HistogramOptions options )
 {
   d->statisticsVisible = ( bool )( options & ShowStatistics );
   d->selectMode = ( bool )( options & SelectMode );
@@ -168,14 +170,14 @@ void HistogramWidget::setOptions( HistogramOptions options )
   d->lumaChannel = ( bool )( options & ShowLumaChannel );
 }
 
-void HistogramWidget::setHistogramGuideByColor( QColor color )
+Void HistogramWidget::setHistogramGuideByColor( QColor color )
 {
   d->guideVisible = true;
   d->colorGuide = color;
   update();
 }
 
-void HistogramWidget::reset( void )
+Void HistogramWidget::reset()
 {
   d->guideVisible = false;
   d->clearFlag = HistogramWidgetPrivate::HistogramNone;
@@ -197,7 +199,7 @@ void HistogramWidget::reset( void )
 //                          Custom Event Handler  
 ////////////////////////////////////////////////////////////////////////////////
 
-void HistogramWidget::customEvent( QEvent *event )
+Void HistogramWidget::customEvent( QEvent *event )
 {
   if( !event )
   {
@@ -249,7 +251,7 @@ void HistogramWidget::customEvent( QEvent *event )
       unsetCursor();
 
       // Send signals to refresh information if necessary.
-      // The signals may trigger multiple repaints, avoid this,
+      // The signals may trigger multiple repaints, aVoid this,
       // we repaint once afterwards.
       setUpdatesEnabled( false );
 
@@ -287,7 +289,7 @@ void HistogramWidget::customEvent( QEvent *event )
 //                          Data Loading Functions 
 ////////////////////////////////////////////////////////////////////////////////
 
-void HistogramWidget::setDataLoading()
+Void HistogramWidget::setDataLoading()
 {
   if( d->clearFlag != HistogramWidgetPrivate::HistogramDataLoading )
   {
@@ -301,7 +303,16 @@ void HistogramWidget::setDataLoading()
   }
 }
 
-void HistogramWidget::setLoadingFailed()
+Void HistogramWidget::setLoadingSkipped()
+{
+  d->clearFlag = HistogramWidgetPrivate::HistogramSkipped;
+  d->blinkTimer->stop();
+  d->inInitialRepaintWait = false;
+  update();
+  unsetCursor();
+}
+
+Void HistogramWidget::setLoadingFailed()
 {
   d->clearFlag = HistogramWidgetPrivate::HistogramFailed;
   d->blinkTimer->stop();
@@ -312,7 +323,7 @@ void HistogramWidget::setLoadingFailed()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void HistogramWidget::stopHistogramComputation( void )
+Void HistogramWidget::stopHistogramComputation()
 {
   if( m_imageHistogram )
     m_imageHistogram->stopCalcHistogramValues();
@@ -327,7 +338,7 @@ void HistogramWidget::stopHistogramComputation( void )
 //                          Update Data Methods  
 ////////////////////////////////////////////////////////////////////////////////
 
-void HistogramWidget::updateData( Pel ***imageData, UInt imageWidth, UInt imageHeight, Int bitsPerChannel, Int pixel_format, UInt chroma_size, Pel ***selData,
+Void HistogramWidget::updateData( Pel ***imageData, UInt imageWidth, UInt imageHeight, Int bitsPerChannel, Int pixel_format, UInt chroma_size, Pel ***selData,
     UInt selWidth, UInt selHeight )
 {
   Int colorSpace = PlaYUVerFrame::isRGBorYUVorGray( pixel_format );
@@ -375,7 +386,7 @@ void HistogramWidget::updateData( Pel ***imageData, UInt imageWidth, UInt imageH
     m_selectionHistogram = 0L;
 }
 
-void HistogramWidget::updateData( const PlaYUVerFrame *playuver_frame, const PlaYUVerFrame *playuver_selection )
+Void HistogramWidget::updateData( const PlaYUVerFrame *playuver_frame, const PlaYUVerFrame *playuver_selection )
 {
   d->sixteenBits = false;
   //d->imageColorSpace = image.getPelFormat();
@@ -409,7 +420,7 @@ void HistogramWidget::updateData( const PlaYUVerFrame *playuver_frame, const Pla
 
 }
 
-void HistogramWidget::updateSelectionData( Pel ***selData, UInt selWidth, UInt selHeight, Int bitsPerChannel, Int pixel_format, UInt chroma_size )
+Void HistogramWidget::updateSelectionData( Pel ***selData, UInt selWidth, UInt selHeight, Int bitsPerChannel, Int pixel_format, UInt chroma_size )
 {
   // Remove old histogram data from memory.
 
@@ -420,7 +431,7 @@ void HistogramWidget::updateSelectionData( Pel ***selData, UInt selWidth, UInt s
   m_selectionHistogram = new PlaYUVerFrameStatistics( selData, selWidth, selHeight, bitsPerChannel, pixel_format, chroma_size, this );
 }
 
-void HistogramWidget::updateSelectionData( const PlaYUVerFrame *selection )
+Void HistogramWidget::updateSelectionData( const PlaYUVerFrame *selection )
 {
   // Remove old histogram data from memory.
 
@@ -433,7 +444,7 @@ void HistogramWidget::updateSelectionData( const PlaYUVerFrame *selection )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void HistogramWidget::slotBlinkTimerDone( void )
+Void HistogramWidget::slotBlinkTimerDone()
 {
   d->blinkFlag = !d->blinkFlag;
   d->inInitialRepaintWait = false;
@@ -445,7 +456,7 @@ void HistogramWidget::slotBlinkTimerDone( void )
 //                              Paint Event  
 ////////////////////////////////////////////////////////////////////////////////
 
-void HistogramWidget::paintEvent( QPaintEvent * )
+Void HistogramWidget::paintEvent( QPaintEvent * )
 {
   int maxX = size().width() - 1;
   int maxY = size().height() - 1;
@@ -482,6 +493,17 @@ void HistogramWidget::paintEvent( QPaintEvent * )
     else
       p1.drawText( 0, 0, maxX, maxY, Qt::AlignCenter, tr( "Histogram\ncalculation\nin progress..." ) );
 
+    return;
+  }
+  // Histogram computation skipped:
+  // Draw message.
+  else if( d->clearFlag == HistogramWidgetPrivate::HistogramSkipped )
+  {
+    QPainter p1( this );
+    p1.fillRect( 0, 0, maxX, maxY, Qt::white );
+    p1.setPen( Qt::darkGreen );
+    p1.drawText( 0, 0, maxX, maxY, Qt::AlignCenter, tr( "Histogram\ncalculation\nskipped." ) );
+    //bitBlt(this, 0, 0, &pm);
     return;
   }
   // Histogram computation failed:
@@ -557,7 +579,7 @@ void HistogramWidget::paintEvent( QPaintEvent * )
 
   // From Qt 4.0, QWidget automatically double-buffers its painting,
   // so there's no need to write double-buffering code in paintEvent()
-  // to avoid flicker.
+  // to aVoid flicker.
   QPainter p1( this );
   Int pallet = d->imageColorSpace;
 
@@ -991,7 +1013,7 @@ void HistogramWidget::paintEvent( QPaintEvent * )
 //                              Mouse Events  
 ////////////////////////////////////////////////////////////////////////////////
 
-void HistogramWidget::mousePressEvent( QMouseEvent * e )
+Void HistogramWidget::mousePressEvent( QMouseEvent * e )
 {
   if( d->selectMode == true && d->clearFlag == HistogramWidgetPrivate::HistogramCompleted )
   {
@@ -1009,7 +1031,7 @@ void HistogramWidget::mousePressEvent( QMouseEvent * e )
   }
 }
 
-void HistogramWidget::mouseReleaseEvent( QMouseEvent * )
+Void HistogramWidget::mouseReleaseEvent( QMouseEvent * )
 {
   if( d->selectMode == true && d->clearFlag == HistogramWidgetPrivate::HistogramCompleted )
 
@@ -1027,7 +1049,7 @@ void HistogramWidget::mouseReleaseEvent( QMouseEvent * )
   }
 }
 
-void HistogramWidget::mouseMoveEvent( QMouseEvent * e )
+Void HistogramWidget::mouseMoveEvent( QMouseEvent * e )
 {
   if( d->selectMode == true && d->clearFlag == HistogramWidgetPrivate::HistogramCompleted )
   {
@@ -1060,12 +1082,12 @@ void HistogramWidget::mouseMoveEvent( QMouseEvent * e )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void HistogramWidget::notifyValuesChanged()
+Void HistogramWidget::notifyValuesChanged()
 {
   emit signalIntervalChanged( ( int )( d->xmin * d->range ), d->xmax == 0.0 ? d->range : ( int )( d->xmax * d->range ) );
 }
 
-void HistogramWidget::slotMinValueChanged( int min )
+Void HistogramWidget::slotMinValueChanged( int min )
 {
   if( d->selectMode == true && d->clearFlag == HistogramWidgetPrivate::HistogramCompleted )
   {
@@ -1083,7 +1105,7 @@ void HistogramWidget::slotMinValueChanged( int min )
   }
 }
 
-void HistogramWidget::slotMaxValueChanged( int max )
+Void HistogramWidget::slotMaxValueChanged( int max )
 {
   if( d->selectMode == true && d->clearFlag == HistogramWidgetPrivate::HistogramCompleted )
   {

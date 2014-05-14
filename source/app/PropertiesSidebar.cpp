@@ -166,13 +166,14 @@ Void StreamPropertiesSideBar::setData( InputStream* pcStream )
 //                FramePropertiesSideBar
 ////////////////////////////////////////////////////////////////////////////////
 
-FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent ) :
+FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent, Bool *pbIsPlaying ) :
         QWidget( parent )
 {
   // -------------- Variables definition --------------
   m_pcFrame = NULL;
   m_pcFrameSelection = NULL;
   m_iLastFrameType = -1;
+  m_pbIsPlaying = pbIsPlaying;
 
   // Histogram area -----------------------------------------------------
 
@@ -470,7 +471,7 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
     }
     setEnabled( true );
     m_pcFrame = pcFrame;
-    slotUpdateDataHistogram();
+    updateDataHistogram();
   }
 }
 
@@ -500,14 +501,41 @@ Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
   }
 }
 
+Void FramePropertiesSideBar::updateDataHistogram()
+{
+  if( m_pcFrame->isValid() && isVisible() )
+  {
+    if( !(*m_pbIsPlaying) )
+    {
+      // If a selection area is done in Image Editor and if the current
+      // image is the same in Image Viewer, then compute too the histogram
+      // for this selection.
+      // New frame required to separate from the thread
+      histogramWidget->updateData( new PlaYUVerFrame(m_pcFrame), NULL );
+      fullImageButton->hide();
+      selectionImageButton->hide();
+    }
+    else
+    {
+      histogramWidget->setLoadingSkipped();
+    }
+    histogramWidget->update();
+  }
+  else
+  {
+    histogramWidget->setLoadingFailed();
+    slotHistogramComputationFailed();
+  }
+}
+
 Void FramePropertiesSideBar::updateStatistiques()
 {
   QString value;
 
-  int min = minInterv->value();
-  int max = maxInterv->value();
-  int channel = histogramWidget->m_channelType;
-  //int channel = channelCB->currentIndex();
+  Int min = minInterv->value();
+  Int max = maxInterv->value();
+  Int channel = histogramWidget->m_channelType;
+  //Int channel = channelCB->currentIndex();
 
   if( channel == HistogramWidget::ColorChannelsHistogram )
     channel = colorsCB->currentIndex() + 1;
@@ -547,26 +575,7 @@ Void FramePropertiesSideBar::stopHistogram()
 //                                  SLOTS
 ////////////////////////////////////////////////////////////////////////////////
 
-void FramePropertiesSideBar::slotUpdateDataHistogram()
-{
-  if( m_pcFrame->isValid() && isVisible() )
-  {
-    // If a selection area is done in Image Editor and if the current
-    // image is the same in Image Viewer, then compute too the histogram
-    // for this selection.
-    // New frame required to separate from the thread
-    histogramWidget->updateData( new PlaYUVerFrame(m_pcFrame), NULL );
-    fullImageButton->hide();
-    selectionImageButton->hide();
-  }
-  else
-  {
-    histogramWidget->setLoadingFailed();
-    slotHistogramComputationFailed();
-  }
-}
-
-void FramePropertiesSideBar::slotRefreshOptions( bool /*depth*/)
+Void FramePropertiesSideBar::slotRefreshOptions( bool /*depth*/)
 {
   if( !isVisible() )
     return;
@@ -589,13 +598,13 @@ void FramePropertiesSideBar::slotRefreshOptions( bool /*depth*/)
   }
 }
 
-void FramePropertiesSideBar::slotHistogramComputationFailed()
+Void FramePropertiesSideBar::slotHistogramComputationFailed()
 {
   m_pcFrame = NULL;
   m_pcFrameSelection = NULL;
 }
 
-void FramePropertiesSideBar::slotChannelChanged( int channel )
+Void FramePropertiesSideBar::slotChannelChanged( Int channel )
 {
   if( PlaYUVerFrame::isRGBorYUVorGray( m_pcFrame->getPelFormat() ) == PlaYUVerFrame::COLOR_YUV )
     channel += 1;
@@ -633,13 +642,13 @@ void FramePropertiesSideBar::slotChannelChanged( int channel )
   updateStatistiques();
 }
 
-void FramePropertiesSideBar::slotScaleChanged( int scale )
+Void FramePropertiesSideBar::slotScaleChanged( Int scale )
 {
   histogramWidget->m_scaleType = scale;
   histogramWidget->update();
 }
 
-void FramePropertiesSideBar::slotColorsChanged( int color )
+Void FramePropertiesSideBar::slotColorsChanged( Int color )
 {
   switch( color )
   {
@@ -658,14 +667,14 @@ void FramePropertiesSideBar::slotColorsChanged( int color )
   updateStatistiques();
 }
 
-void FramePropertiesSideBar::slotRenderingChanged( int rendering )
+Void FramePropertiesSideBar::slotRenderingChanged( Int rendering )
 {
   histogramWidget->m_renderingType = rendering;
   histogramWidget->update();
   updateStatistiques();
 }
 
-void FramePropertiesSideBar::slotMinValueChanged( int min )
+Void FramePropertiesSideBar::slotMinValueChanged( Int min )
 {
   // Called when user changes values of spin box.
   // Communicate the change to histogram widget.
@@ -679,7 +688,7 @@ void FramePropertiesSideBar::slotMinValueChanged( int min )
   updateStatistiques();
 }
 
-void FramePropertiesSideBar::slotMaxValueChanged( int max )
+Void FramePropertiesSideBar::slotMaxValueChanged( Int max )
 {
   if( max == minInterv->value() - 1 )
     minInterv->setValue( max );
@@ -689,7 +698,7 @@ void FramePropertiesSideBar::slotMaxValueChanged( int max )
   updateStatistiques();
 }
 
-void FramePropertiesSideBar::slotUpdateInterval( int min, int max )
+Void FramePropertiesSideBar::slotUpdateInterval( Int min, Int max )
 {
   // Called when value is set from within histogram widget.
   // Block signals to prevent slotMinValueChanged and
@@ -707,7 +716,7 @@ void FramePropertiesSideBar::slotUpdateInterval( int min, int max )
   updateStatistiques();
 }
 
-void FramePropertiesSideBar::slotUpdateIntervRange( int range )
+Void FramePropertiesSideBar::slotUpdateIntervRange( Int range )
 {
   maxInterv->blockSignals( true );
   maxInterv->setMaximum( range );

@@ -46,6 +46,7 @@ enum __PlaYUVerModuleTypes
 };
 
 #define MAX_NUMBER_FRAMES 3
+
 enum __PlaYUVerModuleRequirements
 {
   MODULE_REQUIRES_ONE_FRAME = 1,
@@ -101,9 +102,10 @@ public:
   virtual Void create()                 { }
   virtual Void create( PlaYUVerFrame* ) { }
 
-  virtual Void              process()                                 {               }
-  virtual PlaYUVerFrame*    process( PlaYUVerFrame* )                 { return NULL;  }
-  virtual PlaYUVerFrame*    process( PlaYUVerFrame*, PlaYUVerFrame* ) { return NULL;  }
+  virtual Void              process()                                                 {               }
+  virtual PlaYUVerFrame*    process( PlaYUVerFrame* )                                 { return NULL;  }
+  virtual PlaYUVerFrame*    process( PlaYUVerFrame*, PlaYUVerFrame* )                 { return NULL;  }
+  virtual PlaYUVerFrame*    process( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* ) { return NULL;  }
 
   virtual Void destroy(){ }
 

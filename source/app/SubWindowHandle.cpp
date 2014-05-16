@@ -121,7 +121,6 @@ Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
     disableModule();
   }
   m_pcCurrentModule = select_module;
-  m_pcCurrentModule->create( m_pcCurrFrame );
   refreshFrame();
 }
 

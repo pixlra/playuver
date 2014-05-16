@@ -51,11 +51,11 @@ public:
   ModulesHandle( QWidget * parent = 0, QMdiArea *mdiArea = 0 );
   ~ModulesHandle();
 
-  QMenu* createMenus( QMenuBar *MainAppMenuBar );
+  QMenu* createMenus( QMenuBar* MainAppMenuBar );
   Void updateMenus( Bool hasSubWindow );
   SubWindowHandle* toggleSelectedModuleIf();
 
-  static PlaYUVerFrame* applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf );
+  static PlaYUVerFrame* applyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
   static Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
 
 private:
@@ -78,8 +78,8 @@ private:
   };
   QVector<QAction*> m_arrayActions;
 
-  Void appendModule( PlaYUVerModuleIf* );
-  SubWindowHandle* enableModuleIf( PlaYUVerModuleIf *currModuleIf );
+  Void appendModule( PlaYUVerModuleIf* pcCurrModuleIf );
+  SubWindowHandle* enableModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
 
 private Q_SLOTS:
   void selectModule( int index );

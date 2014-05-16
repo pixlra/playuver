@@ -25,9 +25,10 @@
 #include <cstdio>
 
 #include "ModulesHandle.h"
-#include "SubWindowHandle.h"
 #include "ModulesListHeader.h"
 #include "ModulesListMacro.h"
+#include "DialogSubWindowSelector.h"
+#include "SubWindowHandle.h"
 
 namespace plaYUVer
 {
@@ -62,74 +63,86 @@ void ModulesHandle::selectModule( int index )
 
 SubWindowHandle* ModulesHandle::toggleSelectedModuleIf()
 {
-  SubWindowHandle* interfaceChild = NULL;
-  PlaYUVerModuleIf* currModuleIf = NULL;
+  PlaYUVerModuleIf* pcCurrModuleIf = NULL;
 
   if( m_uiModuleSelected >= 0 )
-    currModuleIf = m_pcPlaYUVerModules.at( m_uiModuleSelected );
+    pcCurrModuleIf = m_pcPlaYUVerModules.at( m_uiModuleSelected );
   m_uiModuleSelected = -1;
 
-  if( !currModuleIf )
+  if( !pcCurrModuleIf )
     return NULL;
 
-  if( currModuleIf->m_pcAction->isChecked() )
+  if( pcCurrModuleIf->m_pcAction->isChecked() )
   {
-    enableModuleIf( currModuleIf );
+    return enableModuleIf( pcCurrModuleIf );
   }
   else
   {
-    destroyModuleIf( currModuleIf );
+    destroyModuleIf( pcCurrModuleIf );
+    return NULL;
   }
-  return interfaceChild;
+  return NULL;
 }
 
-SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *currModuleIf )
+SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
 {
   Bool bShowModulesNewWindow = m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked();
   SubWindowHandle* pcSubWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->activeSubWindow() );
   SubWindowHandle* interfaceChild = NULL;
 
-  currModuleIf->m_pcDisplaySubWindow = NULL;
-  if( ( currModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
+  pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
+  if( ( pcCurrModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
   {
     QString windowName;
     interfaceChild = new SubWindowHandle( m_pcParent );
     windowName.append( pcSubWindow->userFriendlyCurrentFile() );
     windowName.append( " [" );
-    windowName.append( currModuleIf->m_cModuleDef.m_pchModuleName );
+    windowName.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
     windowName.append( "]" );
     interfaceChild->setWindowName( windowName );
     connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
         SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
-    currModuleIf->m_pcDisplaySubWindow = interfaceChild;
-    currModuleIf->m_pcDisplaySubWindow->setModule( currModuleIf );
+    pcCurrModuleIf->m_pcDisplaySubWindow = interfaceChild;
+    pcCurrModuleIf->m_pcDisplaySubWindow->setModule( pcCurrModuleIf );
   }
-  currModuleIf->m_pcSubWindow[0] = pcSubWindow;
-  pcSubWindow->enableModule( currModuleIf );
-  return interfaceChild;
-}
 
-PlaYUVerFrame* ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
-{
-  PlaYUVerFrame* processedFrame = NULL;
-
-  switch( pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames )
+  UInt numberOfFrames = pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames;
+  UInt windowCount = 0;
+  if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )
   {
-  case MODULE_REQUIRES_ONE_FRAME:
-    processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
-    break;
-  case MODULE_REQUIRES_TWO_FRAMES:
-    processedFrame = NULL;
-    break;
-  case MODULE_REQUIRES_THREE_FRAMES:
-    processedFrame = NULL;
-    break;
+    DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMdiArea );
+    if( dialogWindowsSelection.exec() == QDialog::Accepted )
+    {
+      QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();
+      SubWindowHandle *subWindow;
+      QString windowName;
+      for( Int i = 0; i < m_pcMdiArea->subWindowList().size(); i++ )
+      {
+        subWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->subWindowList().at( i ) );
+        windowName = subWindow->getWindowName();
+        if( selectedWindows.contains( windowName ) )
+        {
+          pcCurrModuleIf->m_pcSubWindow[windowCount++] = subWindow;
+          assert( windowCount <= numberOfFrames );
+        }
+      }
+    }
+    else
+    {
+      pcCurrModuleIf->m_pcAction->setChecked( false );
+      return interfaceChild;
+    }
   }
-  if( pcCurrModuleIf->m_pcDisplaySubWindow )
-    pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( processedFrame );
   else
-    pcCurrModuleIf->m_pcSubWindow[0]->setCurrFrame( processedFrame );
-  return processedFrame;
+  {
+    pcCurrModuleIf->m_pcSubWindow[0] = pcSubWindow;
+  }
+  pcCurrModuleIf->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
+  for( UInt i = 0; i < numberOfFrames; i++ )
+  {
+    pcCurrModuleIf->m_pcSubWindow[i]->enableModule( pcCurrModuleIf );
+  }
+  return interfaceChild;
 }
 
 Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
@@ -158,9 +171,33 @@ Void ModulesHandle::destroyAllModulesIf()
   }
 }
 
+PlaYUVerFrame* ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
+{
+  PlaYUVerFrame* processedFrame = NULL;
+
+  switch( pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames )
+  {
+  case MODULE_REQUIRES_ONE_FRAME:
+    processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
+    break;
+  case MODULE_REQUIRES_TWO_FRAMES:
+    processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame(), pcCurrModuleIf->m_pcSubWindow[1]->getCurrFrame() );
+    break;
+  case MODULE_REQUIRES_THREE_FRAMES:
+    processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame(), pcCurrModuleIf->m_pcSubWindow[1]->getCurrFrame(),
+        pcCurrModuleIf->m_pcSubWindow[2]->getCurrFrame() );
+    break;
+  }
+  if( pcCurrModuleIf->m_pcDisplaySubWindow )
+    pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( processedFrame );
+  else
+    pcCurrModuleIf->m_pcSubWindow[0]->setCurrFrame( processedFrame );
+  return processedFrame;
+}
+
 QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 {
-  PlaYUVerModuleIf* currModuleIf;
+  PlaYUVerModuleIf* pcCurrModuleIf;
   QAction* currAction;
   QMenu* currSubMenu;
 
@@ -175,14 +212,14 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 
   for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
   {
-    currModuleIf = m_pcPlaYUVerModules.at( i );
+    pcCurrModuleIf = m_pcPlaYUVerModules.at( i );
 
     currSubMenu = NULL;
-    if( currModuleIf->m_cModuleDef.m_pchModuleCategory )
+    if( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory )
     {
       for( Int j = 0; j < m_pcModulesSubMenuList.size(); j++ )
       {
-        if( m_pcModulesSubMenuList.at( j )->title() == QString( currModuleIf->m_cModuleDef.m_pchModuleCategory ) )
+        if( m_pcModulesSubMenuList.at( j )->title() == QString( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory ) )
         {
           currSubMenu = m_pcModulesSubMenuList.at( j );
           break;
@@ -190,13 +227,13 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
       }
       if( !currSubMenu )
       {
-        currSubMenu = m_pcModulesMenu->addMenu( currModuleIf->m_cModuleDef.m_pchModuleCategory );
+        currSubMenu = m_pcModulesMenu->addMenu( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory );
         m_pcModulesSubMenuList.append( currSubMenu );
       }
     }
 
-    currAction = new QAction( currModuleIf->m_cModuleDef.m_pchModuleName, parent() );
-    currAction->setStatusTip( currModuleIf->m_cModuleDef.m_pchModuleTooltip );
+    currAction = new QAction( pcCurrModuleIf->m_cModuleDef.m_pchModuleName, parent() );
+    currAction->setStatusTip( pcCurrModuleIf->m_cModuleDef.m_pchModuleTooltip );
     currAction->setCheckable( true );
     connect( currAction, SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
     m_pcActionMapper->setMapping( currAction, i );
@@ -207,7 +244,7 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
     else
       m_pcModulesMenu->addAction( currAction );
 
-    currModuleIf->m_pcAction = currAction;
+    pcCurrModuleIf->m_pcAction = currAction;
   }
 
   m_arrayActions[DISABLE_ALL_ACT] = new QAction( "Disable All Modules", parent() );

@@ -54,7 +54,7 @@ Void FrameDifference::create( PlaYUVerFrame* Input )
 PlaYUVerFrame* FrameDifference::process( PlaYUVerFrame* Input1, PlaYUVerFrame* Input2 )
 {
   Pel* pInput1PelYUV = Input1->getPelBufferYUV()[0][0];
-  Pel* pInput2PelYUV = Input1->getPelBufferYUV()[0][0];
+  Pel* pInput2PelYUV = Input2->getPelBufferYUV()[0][0];
   Pel* pOutputPelYUV = m_pcFrameDifference->getPelBufferYUV()[0][0];
 
   for( UInt y = 0; y < m_pcFrameDifference->getHeight(); y++ )

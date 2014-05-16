@@ -113,7 +113,8 @@ private:
   ModulesHandle *m_pcModulesHandle;
 
   QString m_cLastOpenPath;
-  QTimer *playingTimer;
+  QTimer *m_pcPlayingTimer;
+  Bool m_bIsPlaying;
   QTime m_cTimer;
   UInt m_uiAveragePlayInterval;
 
@@ -144,7 +145,6 @@ private:
   SubWindowHandle *activeSubWindow();
   QMdiSubWindow *findSubWindow( const QString &fileName );
 
-  Bool m_bIsPlaying;
   QVector<SubWindowHandle*> m_acPlayingSubWindows;
   QSlider *m_pcFrameSlider;
   QLabel *m_pcCurrFrameNumLabel;

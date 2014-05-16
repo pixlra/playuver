@@ -70,11 +70,11 @@ plaYUVerApp::plaYUVerApp()
   setUnifiedTitleAndToolBarOnMac( true );
 
   m_bIsPlaying = false;
-  playingTimer = new QTimer;
+  m_pcPlayingTimer = new QTimer;
 #if( QT_VERSION_PLAYUVER == 5 )
-  playingTimer->setTimerType( Qt::CoarseTimer );
+  m_pcPlayingTimer->setTimerType( Qt::CoarseTimer );
 #endif
-  connect( playingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
+  connect( m_pcPlayingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
 
   setAcceptDrops( true );
   mdiArea->setAcceptDrops( true );
@@ -125,7 +125,7 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
 
     if( mayCloseAll )
     {
-      playingTimer->stop();
+      m_pcPlayingTimer->stop();
       closeAll();
       writeSettings();
       event->accept();
@@ -172,7 +172,7 @@ Void plaYUVerApp::loadFile( QString fileName )
 
 // -----------------------  File Functions  -----------------------
 
-void plaYUVerApp::open()
+Void plaYUVerApp::open()
 {
   QString supported = tr( "Supported Files" );
   QString formats = InputStream::supportedReadFormats();
@@ -194,19 +194,19 @@ void plaYUVerApp::open()
   }
 }
 
-void plaYUVerApp::save()
+Void plaYUVerApp::save()
 {
   if( m_pcCurrentSubWindow )
     m_pcCurrentSubWindow->save();
 }
 
-void plaYUVerApp::format()
+Void plaYUVerApp::format()
 {
   if( m_pcCurrentSubWindow )
     m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->currentFile() );
 }
 
-void plaYUVerApp::closeActiveWindow()
+Void plaYUVerApp::closeActiveWindow()
 {
   SubWindowHandle *currSubWindow = activeSubWindow();
   if( currSubWindow )
@@ -221,14 +221,14 @@ void plaYUVerApp::closeActiveWindow()
   mdiArea->closeActiveSubWindow();
 }
 
-void plaYUVerApp::closeAll()
+Void plaYUVerApp::closeAll()
 {
   mdiArea->closeAllSubWindows();
 }
 
 // -----------------------  Modules Selection  --------------------
 
-void plaYUVerApp::selectModule( QAction *curr_action )
+Void plaYUVerApp::selectModule( QAction *curr_action )
 {
   m_pcFrameProperties->stopHistogram();
   SubWindowHandle *interfaceChild = m_pcModulesHandle->toggleSelectedModuleIf();
@@ -247,7 +247,7 @@ void plaYUVerApp::selectModule( QAction *curr_action )
 
 // -----------------------  Update Properties   --------------------
 
-void plaYUVerApp::updateProperties()
+Void plaYUVerApp::updateProperties()
 {
   updateStreamProperties();
   updateFrameProperties();
@@ -278,7 +278,7 @@ Void plaYUVerApp::updateFrameProperties()
   }
 }
 
-void plaYUVerApp::updatePropertiesSelectedArea( QRect area )
+Void plaYUVerApp::updatePropertiesSelectedArea( QRect area )
 {
   if( m_pcCurrentSubWindow )
   {
@@ -322,10 +322,12 @@ Void plaYUVerApp::setTimerStatus()
   if( status )
   {
     m_cTimer.start();
+    m_bIsPlaying = true;
   }
   else
   {
-    playingTimer->stop();
+    m_pcPlayingTimer->stop();
+    m_bIsPlaying = false;
   }
 }
 
@@ -338,12 +340,13 @@ Void plaYUVerApp::startPlay()
     qDebug( ) << "Desired frame rate: "
               << QString::number( 1000 / timeInterval )
               << " fps";
-    playingTimer->start( timeInterval );
+    m_pcPlayingTimer->start( timeInterval );
     m_cTimer.start();
+    m_bIsPlaying = true;
   }
 }
 
-void plaYUVerApp::play()
+Void plaYUVerApp::play()
 {
   if( !m_pcCurrentSubWindow )
     return;
@@ -366,13 +369,13 @@ void plaYUVerApp::play()
     {
       m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
       m_pcCurrentSubWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
-      m_pcCurrentSubWindow->play();
       m_pcFrameSlider->setMaximum( getMaxFrameNumber() - 1 );
     }
+    m_pcCurrentSubWindow->play();
   }
   else
   {
-    playingTimer->stop();
+    m_pcPlayingTimer->stop();
     m_acPlayingSubWindows.clear();
     m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
     m_pcCurrentSubWindow->play();
@@ -382,7 +385,7 @@ void plaYUVerApp::play()
   startPlay();
 }
 
-void plaYUVerApp::pause()
+Void plaYUVerApp::pause()
 {
   if( m_pcCurrentSubWindow )
   {
@@ -400,9 +403,10 @@ void plaYUVerApp::pause()
     updateCurrFrameNum();
   }
   setTimerStatus();
+  updateFrameProperties();
 }
 
-void plaYUVerApp::stop()
+Void plaYUVerApp::stop()
 {
   if( m_acPlayingSubWindows.size() > 0 )
   {
@@ -429,7 +433,7 @@ void plaYUVerApp::stop()
   }
 }
 
-void plaYUVerApp::playEvent()
+Void plaYUVerApp::playEvent()
 {
   UInt time = m_cTimer.elapsed();
   m_cTimer.restart();
@@ -483,7 +487,7 @@ Void plaYUVerApp::updateTotalFrameNum( UInt total_frame_num )
   m_pcTotalFrameNumLabel->setText( QString( tr( "%1" ) ).arg( total_frame_num ) );
 }
 
-void plaYUVerApp::seekEvent( int direction )
+Void plaYUVerApp::seekEvent( int direction )
 {
   if( m_pcCurrentSubWindow )
   {
@@ -503,7 +507,7 @@ void plaYUVerApp::seekEvent( int direction )
   }
 }
 
-void plaYUVerApp::seekSliderEvent( int new_frame_num )
+Void plaYUVerApp::seekSliderEvent( int new_frame_num )
 {
   if( m_pcCurrentSubWindow )
   {
@@ -523,7 +527,7 @@ void plaYUVerApp::seekSliderEvent( int new_frame_num )
   }
 }
 
-void plaYUVerApp::lockButtonEvent()
+Void plaYUVerApp::lockButtonEvent()
 {
   if( !m_arrayActions[VIDEO_LOCK_ACT]->isChecked() )
   {
@@ -539,7 +543,7 @@ void plaYUVerApp::lockButtonEvent()
   }
 }
 
-void plaYUVerApp::videoSelectionButtonEvent()
+Void plaYUVerApp::videoSelectionButtonEvent()
 {
   DialogSubWindowSelector dialogWindowsSelection( this, mdiArea );
   QStringList cWindowListNames;
@@ -574,13 +578,13 @@ void plaYUVerApp::videoSelectionButtonEvent()
 
 // -----------------------  Zoom Functions  -----------------------
 
-void plaYUVerApp::normalSize()
+Void plaYUVerApp::normalSize()
 {
   if( activeSubWindow() )
     activeSubWindow()->normalSize();
 }
 
-void plaYUVerApp::zoomToFit()
+Void plaYUVerApp::zoomToFit()
 {
   if( activeSubWindow() )
     activeSubWindow()->zoomToFit();
@@ -596,7 +600,7 @@ Void plaYUVerApp::zoomToFitAll()
   }
 }
 
-void plaYUVerApp::scaleFrame( int ratio )
+Void plaYUVerApp::scaleFrame( Int ratio )
 {
   if( activeSubWindow() )
   {
@@ -609,7 +613,7 @@ void plaYUVerApp::scaleFrame( int ratio )
 
 // -----------------------  About Functions  -----------------------
 
-void plaYUVerApp::about()
+Void plaYUVerApp::about()
 {
   QString about_message;
   about_message.append( "The <b>plaYUVerApp</b> is an open-source raw video player" );
@@ -620,7 +624,7 @@ void plaYUVerApp::about()
   QMessageBox::about( this, tr( "About plaYUVerApp" ), about_message );
 }
 
-void plaYUVerApp::chageSubWindowSelection()
+Void plaYUVerApp::chageSubWindowSelection()
 {
   SubWindowHandle *new_window = activeSubWindow();
   if( activeSubWindow() != m_pcCurrentSubWindow )
@@ -642,7 +646,7 @@ void plaYUVerApp::chageSubWindowSelection()
 
 // -----------------------  Status bar Functions  -----------------------
 
-void plaYUVerApp::updatePixelValueStatusBar( const QPoint & pos, PlaYUVerFrame* frame )
+Void plaYUVerApp::updatePixelValueStatusBar( const QPoint & pos, PlaYUVerFrame* frame )
 {
   Pixel sPixelValue;
   Int iWidth, iHeight;
@@ -669,7 +673,7 @@ void plaYUVerApp::updatePixelValueStatusBar( const QPoint & pos, PlaYUVerFrame* 
 
 // -----------------------  Drag and drop functions  ----------------------
 
-void plaYUVerApp::dragEnterEvent( QDragEnterEvent *event )
+Void plaYUVerApp::dragEnterEvent( QDragEnterEvent *event )
 {
   //setText(tr("<drop content>"));
   setBackgroundRole( QPalette::Highlight );
@@ -677,7 +681,7 @@ void plaYUVerApp::dragEnterEvent( QDragEnterEvent *event )
   event->acceptProposedAction();
 }
 
-void plaYUVerApp::dropEvent( QDropEvent *event )
+Void plaYUVerApp::dropEvent( QDropEvent *event )
 {
 
   const QMimeData *mimeData = event->mimeData();
@@ -713,19 +717,19 @@ QMdiSubWindow *plaYUVerApp::findSubWindow( const QString &fileName )
   return 0;
 }
 
-void plaYUVerApp::setNavigationTool()
+Void plaYUVerApp::setNavigationTool()
 {
   m_appTool = NavigationTool;
   setAllSubWindowTool();
 }
 
-void plaYUVerApp::setSelectionTool()
+Void plaYUVerApp::setSelectionTool()
 {
   m_appTool = NormalSelectionTool;
   setAllSubWindowTool();
 }
 
-void plaYUVerApp::setAllSubWindowTool()
+Void plaYUVerApp::setAllSubWindowTool()
 {
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
   SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
@@ -733,7 +737,7 @@ void plaYUVerApp::setAllSubWindowTool()
 }
 }
 
-void plaYUVerApp::setActiveSubWindow( QWidget *window )
+Void plaYUVerApp::setActiveSubWindow( QWidget *window )
 {
   if( !window )
     return;
@@ -776,7 +780,7 @@ Void plaYUVerApp::updateMenus()
   m_pcModulesHandle->updateMenus( hasSubWindow );
 }
 
-void plaYUVerApp::updateWindowMenu()
+Void plaYUVerApp::updateWindowMenu()
 {
   m_arrayMenu[WINDOW_MENU]->clear();
   m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[CLOSE_ACT] );
@@ -1103,7 +1107,7 @@ Void plaYUVerApp::createDockWidgets()
   addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[STREAM_SIDEBAR] );
   connect( m_arraySideBars[STREAM_SIDEBAR], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateProperties() ) );
 
-  m_pcFrameProperties = new FramePropertiesSideBar( this );
+  m_pcFrameProperties = new FramePropertiesSideBar( this, &m_bIsPlaying );
   m_arraySideBars[FRAME_SIDEBAR] = new QDockWidget( tr( "Frame Information" ), this );
   m_arraySideBars[FRAME_SIDEBAR]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   m_arraySideBars[FRAME_SIDEBAR]->setWidget( m_pcFrameProperties );

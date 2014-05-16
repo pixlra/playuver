@@ -65,7 +65,7 @@ class FramePropertiesSideBar: public QWidget
 {
 Q_OBJECT
 public:
-  FramePropertiesSideBar( QWidget* parent );
+  FramePropertiesSideBar( QWidget* parent, Bool *pbIsPlaying );
   ~FramePropertiesSideBar();
 
   QSize sizeHint() const;
@@ -95,10 +95,8 @@ private:
 
   PlaYUVerFrame *m_pcFrame;
   PlaYUVerFrame *m_pcFrameSelection;
-
+  Bool* m_pbIsPlaying;
   Int m_iLastFrameType;
-
-  Bool inLoadingProcess;
 
   QComboBox *channelCB;
   QComboBox *colorsCB;
@@ -133,11 +131,10 @@ private:
 
   HistogramWidget *histogramWidget;
 
-private:
   Void updateStatistiques();
+  Void updateDataHistogram();
 
 private Q_SLOTS:
-  void slotUpdateDataHistogram();
   void slotRefreshOptions( bool sixteenBit );
   void slotHistogramComputationFailed( void );
   void slotChannelChanged( int channel );

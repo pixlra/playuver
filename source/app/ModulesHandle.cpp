@@ -104,7 +104,7 @@ SubWindowHandle* ModulesHandle::toggleSelectedModuleIf()
 
 PlaYUVerFrame* ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
 {
-  PlaYUVerFrame* processedFrame;
+  PlaYUVerFrame* processedFrame = NULL;
 
   switch( pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames )
   {
@@ -112,8 +112,10 @@ PlaYUVerFrame* ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
     processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
     break;
   case MODULE_REQUIRES_TWO_FRAMES:
+    processedFrame = NULL;
     break;
   case MODULE_REQUIRES_THREE_FRAMES:
+    processedFrame = NULL;
     break;
   }
   if( pcCurrModuleIf->m_pcDisplaySubWindow )

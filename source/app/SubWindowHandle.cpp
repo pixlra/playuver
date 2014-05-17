@@ -143,14 +143,15 @@ Void SubWindowHandle::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 
 Void SubWindowHandle::refreshFrame()
 {
+  Bool bSetFrame = true;
   if( m_pCurrStream )
   {
     m_pcCurrFrame = m_pCurrStream->getCurrFrame();
     if( m_pcCurrentModule )
     {
-      ModulesHandle::applyModuleIf( m_pcCurrentModule );
+      bSetFrame = ModulesHandle::applyModuleIf( m_pcCurrentModule );
     }
-    else
+    if( bSetFrame )
     {
       m_cViewArea->setImage( m_pcCurrFrame );
     }

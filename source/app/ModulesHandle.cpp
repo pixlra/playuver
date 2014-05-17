@@ -172,10 +172,10 @@ Void ModulesHandle::destroyAllModulesIf()
   }
 }
 
-PlaYUVerFrame* ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
+Bool ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
 {
   PlaYUVerFrame* processedFrame = NULL;
-
+  Bool bRet = false;
   switch( pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames )
   {
   case MODULE_REQUIRES_ONE_FRAME:
@@ -190,10 +190,15 @@ PlaYUVerFrame* ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
     break;
   }
   if( pcCurrModuleIf->m_pcDisplaySubWindow )
+  {
     pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( processedFrame );
+    bRet = true;
+  }
   else
+  {
     pcCurrModuleIf->m_pcSubWindow[0]->setCurrFrame( processedFrame );
-  return processedFrame;
+  }
+  return bRet;
 }
 
 QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )

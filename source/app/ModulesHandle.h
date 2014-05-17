@@ -55,7 +55,7 @@ public:
   Void updateMenus( Bool hasSubWindow );
   SubWindowHandle* toggleSelectedModuleIf();
 
-  static PlaYUVerFrame* applyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
+  static Bool applyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
   static Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
 
 private:

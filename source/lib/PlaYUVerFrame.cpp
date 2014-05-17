@@ -37,8 +37,8 @@ PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
 
 PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other )
 {
-  init( other->getWidth(), other->getHeight(),  other->getPelFormat() );
-  copyFrom(other);
+  init( other->getWidth(), other->getHeight(), other->getPelFormat() );
+  copyFrom( other );
 }
 
 PlaYUVerFrame::~PlaYUVerFrame()
@@ -494,8 +494,81 @@ Pixel PlaYUVerFrame::getPixelValue( const QPoint &pos, Int color_space )
 #ifdef USE_OPENCV
 cv::Mat PlaYUVerFrame::getCvMat()
 {
-  return cv::Mat();
+  Int cvType = CV_8UC3;
+  switch( m_iPixelFormat )
+  {
+  case YUV420p:
+  case YUV444p:
+  case YUV422p:
+  case YUYV422:
+    cvType = CV_8UC3;
+    break;
+  case GRAY:
+    cvType = CV_8UC1;
+    break;
+  case RGB8:
+    cvType = CV_8UC3;
+    break;
+  default:
+    break;
+  }
+  cv::Mat opencvFrame( m_uiHeight, m_uiWidth, cvType );
+  if( m_iPixelFormat != GRAY )
+  {
+    FrametoRGB8();
+    memcpy( opencvFrame.data, m_pcRGBPelInterlaced, getBytesPerFrame() * sizeof(Pel) );
+  }
+  else
+  {
+    memcpy( opencvFrame.data, &( m_pppcInputPel[LUMA][0][0] ), getBytesPerFrame() * sizeof(Pel) );
+  }
+  return opencvFrame;
+}
+
+Void PlaYUVerFrame::copyFrom( cv::Mat* opencvFrame )
+{
+  if( m_iPixelFormat == NO_FMT )
+  {
+    switch( opencvFrame->channels() )
+    {
+    case 1:
+      m_iPixelFormat = GRAY;
+      break;
+    case 3:
+      m_iPixelFormat = RGB8;
+      break;
+    default:
+      return;
+    }
+  }
+
+  if( !isValid() )
+  {
+    init( opencvFrame->cols, opencvFrame->rows, m_iPixelFormat );
+  }
+
+  m_bHasRGBPel = false;
+
+  if( m_iPixelFormat != GRAY )
+  {
+    Pel* pInputPelY = m_pppcInputPel[LUMA][0];
+    Pel* pInputPelU = m_pppcInputPel[CHROMA_U][0];
+    Pel* pInputPelV = m_pppcInputPel[CHROMA_V][0];
+    Pel* pcRGBPelInterlaced = m_pcRGBPelInterlaced;
+    memcpy( pcRGBPelInterlaced, opencvFrame->data, getBytesPerFrame() * sizeof(Pel) );
+    for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )
+    {
+      *pInputPelY++ = *pcRGBPelInterlaced++;
+      *pInputPelU++ = *pcRGBPelInterlaced++;
+      *pInputPelV++ = *pcRGBPelInterlaced++;
+    }
+    m_bHasRGBPel = true;
+  }
+  else
+  {
+    memcpy( m_pppcInputPel[LUMA][0], opencvFrame->data, getBytesPerFrame() * sizeof(Pel) );
+  }
 }
 #endif
 }
-  // NAMESPACE
+// NAMESPACE

@@ -31,6 +31,9 @@
 #include <cstdio>
 #include <cassert>
 #include <QtCore>
+#ifdef USE_OPENCV
+#include <opencv2/opencv.hpp>
+#endif
 #ifdef USE_PIXFC
 #include "pixfc-sse.h"
 #endif
@@ -142,6 +145,7 @@ public:
 
 #ifdef USE_OPENCV
   cv::Mat getCvMat();
+  Void copyFrom( cv::Mat* input_frame );
 #endif
 
   UInt getWidth() const

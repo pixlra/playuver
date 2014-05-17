@@ -110,7 +110,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   UInt windowCount = 0;
   if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )
   {
-    DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMdiArea );
+    DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMdiArea, numberOfFrames );
     if( dialogWindowsSelection.exec() == QDialog::Accepted )
     {
       QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();

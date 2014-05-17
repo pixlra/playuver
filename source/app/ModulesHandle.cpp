@@ -90,22 +90,6 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   SubWindowHandle* pcSubWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->activeSubWindow() );
   SubWindowHandle* interfaceChild = NULL;
 
-  pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
-  if( ( pcCurrModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
-  {
-    QString windowName;
-    interfaceChild = new SubWindowHandle( m_pcParent );
-    windowName.append( pcSubWindow->userFriendlyCurrentFile() );
-    windowName.append( " [" );
-    windowName.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
-    windowName.append( "]" );
-    interfaceChild->setWindowName( windowName );
-    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
-        SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
-    pcCurrModuleIf->m_pcDisplaySubWindow = interfaceChild;
-    pcCurrModuleIf->m_pcDisplaySubWindow->setModule( pcCurrModuleIf );
-  }
-
   UInt numberOfFrames = pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames;
   UInt windowCount = 0;
   if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )
@@ -137,6 +121,23 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   {
     pcCurrModuleIf->m_pcSubWindow[0] = pcSubWindow;
   }
+
+  pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
+  if( ( pcCurrModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
+  {
+    QString windowName;
+    interfaceChild = new SubWindowHandle( m_pcParent );
+    windowName.append( pcSubWindow->userFriendlyCurrentFile() );
+    windowName.append( " [" );
+    windowName.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
+    windowName.append( "]" );
+    interfaceChild->setWindowName( windowName );
+    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
+        SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
+    pcCurrModuleIf->m_pcDisplaySubWindow = interfaceChild;
+    pcCurrModuleIf->m_pcDisplaySubWindow->setModule( pcCurrModuleIf );
+  }
+
   pcCurrModuleIf->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
   for( UInt i = 0; i < numberOfFrames; i++ )
   {

@@ -37,8 +37,8 @@ PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
 
 PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other )
 {
-  init( other->getWidth(), other->getHeight(),  other->getPelFormat() );
-  copyFrom(other);
+  init( other->getWidth(), other->getHeight(), other->getPelFormat() );
+  copyFrom( other );
 }
 
 PlaYUVerFrame::~PlaYUVerFrame()
@@ -494,8 +494,36 @@ Pixel PlaYUVerFrame::getPixelValue( const QPoint &pos, Int color_space )
 #ifdef USE_OPENCV
 cv::Mat PlaYUVerFrame::getCvMat()
 {
-  return cv::Mat();
+  Int cvType = CV_8UC3;
+  switch( m_iPixelFormat )
+  {
+  case YUV420p:
+  case YUV444p:
+  case YUV422p:
+  case YUYV422:
+    cvType = CV_8UC3;
+    break;
+  case GRAY:
+    cvType = CV_8UC1;
+    break;
+  case RGB8:
+    cvType = CV_8UC3;
+    break;
+  default:
+    break;
+  }
+  cv::Mat opencvFrame( m_uiHeight, m_uiWidth, cvType );
+  if( m_iPixelFormat != GRAY )
+  {
+    FrametoRGB8();
+    memcpy( opencvFrame.data, m_pcRGBPelInterlaced, getBytesPerFrame() * sizeof(Pel) );
+  }
+  else
+  {
+    memcpy( opencvFrame.data, &(m_pppcInputPel[LUMA][0][0]), getBytesPerFrame() * sizeof(Pel) );
+  }
+  return opencvFrame;
 }
 #endif
 }
-  // NAMESPACE
+// NAMESPACE

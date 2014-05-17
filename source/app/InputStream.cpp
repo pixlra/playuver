@@ -387,15 +387,6 @@ PlaYUVerFrame* InputStream::getCurrFrame()
   return m_pcCurrFrame;
 }
 
-#ifdef USE_OPENCV
-cv::Mat InputStream::getFrameCvMat()
-{
-  cv::Mat cvMat( m_uiHeight, m_uiWidth, CV_8UC3 );
-
-  return cvMat;
-}
-#endif
-
 Void InputStream::seekInput( UInt64 new_frame_num )
 {
   if( !m_pFile )

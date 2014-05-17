@@ -89,6 +89,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   Bool bShowModulesNewWindow = m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked();
   SubWindowHandle* pcSubWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->activeSubWindow() );
   SubWindowHandle* interfaceChild = NULL;
+  QString windowName;
 
   UInt numberOfFrames = pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames;
   UInt windowCount = 0;
@@ -100,14 +101,17 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
       QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();
       SubWindowHandle *subWindow;
       QString windowName;
-      for( Int i = 0; i < m_pcMdiArea->subWindowList().size(); i++ )
+      for( Int j = 0; j < selectedWindows.size(); j++ )
       {
-        subWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->subWindowList().at( i ) );
-        windowName = subWindow->getWindowName();
-        if( selectedWindows.contains( windowName ) )
+        for( Int i = 0; i < m_pcMdiArea->subWindowList().size(); i++ )
         {
-          pcCurrModuleIf->m_pcSubWindow[windowCount++] = subWindow;
-          assert( windowCount <= numberOfFrames );
+          subWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->subWindowList().at( i ) );
+          windowName = subWindow->getWindowName();
+          if( subWindow->getWindowName() == selectedWindows.at( j ) )
+          {
+            pcCurrModuleIf->m_pcSubWindow[windowCount++] = subWindow;
+            assert( windowCount <= numberOfFrames );
+          }
         }
       }
     }
@@ -116,21 +120,23 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
       pcCurrModuleIf->m_pcAction->setChecked( false );
       return interfaceChild;
     }
+    windowName.append( " [" );
+    windowName.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
+    windowName.append( "]" );
   }
   else
   {
+    windowName.append( pcSubWindow->userFriendlyCurrentFile() );
+    windowName.append( " [" );
+    windowName.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
+    windowName.append( "]" );
     pcCurrModuleIf->m_pcSubWindow[0] = pcSubWindow;
   }
 
   pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
   if( ( pcCurrModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
   {
-    QString windowName;
     interfaceChild = new SubWindowHandle( m_pcParent );
-    windowName.append( pcSubWindow->userFriendlyCurrentFile() );
-    windowName.append( " [" );
-    windowName.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
-    windowName.append( "]" );
     interfaceChild->setWindowName( windowName );
     connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
         SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );

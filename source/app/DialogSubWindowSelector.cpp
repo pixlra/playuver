@@ -30,13 +30,12 @@
 namespace plaYUVer
 {
 
-DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdiArea ) :
-        QDialog( parent )
+DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdiArea, Int numberWindowsSelected ) :
+        QDialog( parent ),
+        m_iNumberOfSelectedWindows( numberWindowsSelected ),
+        m_pcMainWindowMdiArea( mdiArea )
 {
   QFont titleFont, menusFont;
-
-  // Set variables
-  m_pcMainWindowMdiArea = mdiArea;
 
   titleFont.setPointSize( 14 );
   titleFont.setBold( true );
@@ -64,6 +63,7 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
 
   m_pushButtonAdd = new QPushButton( "Add", this );
   m_pushButtonRemove = new QPushButton( "Remove", this );
+  m_pushButtonRemove->setEnabled( false );
 
   // Selected Sub Window List
   m_listSelectedWindows = new QListWidget( this );
@@ -138,6 +138,11 @@ void DialogSubWindowSelector::addSubWindow()
     m_listSelectedWindows->insertItems( 0, m_pcSelectedWindowListNames );
     updateSubWindowList();
   }
+  if( m_pcSelectedWindowListNames.size() >= m_iNumberOfSelectedWindows )
+  {
+    m_pushButtonAdd->setEnabled( false );
+  }
+  m_pushButtonRemove->setEnabled( true );
 }
 
 void DialogSubWindowSelector::removeSubWindow()
@@ -157,6 +162,14 @@ void DialogSubWindowSelector::removeSubWindow()
     m_listSelectedWindows->clear();
     m_listSelectedWindows->insertItems( 0, m_pcSelectedWindowListNames );
     updateSubWindowList();
+  }
+  if( m_pcSelectedWindowListNames.size() < m_iNumberOfSelectedWindows )
+  {
+    m_pushButtonAdd->setEnabled( true );
+  }
+  if( m_pcSelectedWindowListNames.size() == 0 )
+  {
+    m_pushButtonRemove->setEnabled( false );
   }
 }
 

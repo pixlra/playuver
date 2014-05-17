@@ -516,11 +516,11 @@ cv::Mat PlaYUVerFrame::getCvMat()
   if( m_iPixelFormat != GRAY )
   {
     FrametoRGB8();
-    memcpy( opencvFrame.data, m_pcRGBPelInterlaced, getBytesPerFrame() * sizeof(Pel) );
+    memcpy( opencvFrame.data, m_pcRGBPelInterlaced, m_uiWidth * m_uiHeight * 3 * sizeof(Pel) );
   }
   else
   {
-    memcpy( opencvFrame.data, &( m_pppcInputPel[LUMA][0][0] ), getBytesPerFrame() * sizeof(Pel) );
+    memcpy( opencvFrame.data, &( m_pppcInputPel[LUMA][0][0] ), m_uiWidth * m_uiHeight * sizeof(Pel) );
   }
   return opencvFrame;
 }
@@ -555,7 +555,7 @@ Void PlaYUVerFrame::copyFrom( cv::Mat* opencvFrame )
     Pel* pInputPelU = m_pppcInputPel[CHROMA_U][0];
     Pel* pInputPelV = m_pppcInputPel[CHROMA_V][0];
     Pel* pcRGBPelInterlaced = m_pcRGBPelInterlaced;
-    memcpy( pcRGBPelInterlaced, opencvFrame->data, getBytesPerFrame() * sizeof(Pel) );
+    memcpy( pcRGBPelInterlaced, opencvFrame->data, m_uiWidth * m_uiHeight * 3 * sizeof(Pel) );
     for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )
     {
       *pInputPelY++ = *pcRGBPelInterlaced++;
@@ -566,7 +566,7 @@ Void PlaYUVerFrame::copyFrom( cv::Mat* opencvFrame )
   }
   else
   {
-    memcpy( m_pppcInputPel[LUMA][0], opencvFrame->data, getBytesPerFrame() * sizeof(Pel) );
+    memcpy( m_pppcInputPel[LUMA][0], opencvFrame->data, m_uiWidth * m_uiHeight * sizeof(Pel) );
   }
 }
 #endif

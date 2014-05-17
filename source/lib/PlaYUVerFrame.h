@@ -145,6 +145,7 @@ public:
 
 #ifdef USE_OPENCV
   cv::Mat getCvMat();
+  Void copyFrom( cv::Mat* input_frame );
 #endif
 
   UInt getWidth() const

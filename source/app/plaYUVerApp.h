@@ -127,7 +127,7 @@ private:
   Void startPlay();
   Void setTimerStatus();
   Void updateCurrFrameNum();
-  Void updateTotalFrameNum( UInt total_frame_num = 0 );
+  Void updateTotalFrameNum( UInt total_frame_num = 1 );
 
   Void updateMenus();
   Void updateStreamProperties();

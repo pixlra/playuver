@@ -476,10 +476,14 @@ Void plaYUVerApp::updateCurrFrameNum()
     m_pcFrameSlider->setValue( frame_num );
     m_pcCurrFrameNumLabel->setText( QString( tr( "%1" ) ).arg( frame_num + 1 ) );
   }
+  else
+  {
+    m_pcCurrFrameNumLabel->setText( "1" );
+  }
 }
 Void plaYUVerApp::updateTotalFrameNum( UInt total_frame_num )
 {
-  if( m_pcCurrentSubWindow && m_pcCurrentSubWindow->getInputStream() && total_frame_num == 0 )
+  if( m_pcCurrentSubWindow && m_pcCurrentSubWindow->getInputStream() && total_frame_num == 1 )
   {
     total_frame_num = m_pcCurrentSubWindow->getInputStream()->getFrameNum();
   }

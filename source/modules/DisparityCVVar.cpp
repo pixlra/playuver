@@ -46,7 +46,7 @@ DisparityCVVar::DisparityCVVar()
   setModuleDefinition( DisparityCVVarDef );
   m_pcDisparityFrame = NULL;
   m_cStereoVar.levels = 3;                                 // ignored with USE_AUTO_PARAMS
-  m_cStereoVar.pyrScale = 0.5;                                 // ignored with USE_AUTO_PARAMS
+  m_cStereoVar.pyrScale = 0.5;                             // ignored with USE_AUTO_PARAMS
   m_cStereoVar.nIt = 25;
 
   m_cStereoVar.maxDisp = 0;
@@ -54,7 +54,7 @@ DisparityCVVar::DisparityCVVar()
   m_cStereoVar.poly_sigma = 0.0;
   m_cStereoVar.fi = 15.0f;
   m_cStereoVar.lambda = 0.03f;
-  m_cStereoVar.penalization = m_cStereoVar.PENALIZATION_TICHONOV;                                 // ignored with USE_AUTO_PARAMS
+  m_cStereoVar.penalization = m_cStereoVar.PENALIZATION_TICHONOV;            // ignored with USE_AUTO_PARAMS
   m_cStereoVar.cycle = m_cStereoVar.CYCLE_V;                                 // ignored with USE_AUTO_PARAMS
   m_cStereoVar.flags = m_cStereoVar.USE_SMART_ID | m_cStereoVar.USE_AUTO_PARAMS | m_cStereoVar.USE_INITIAL_DISPARITY | m_cStereoVar.USE_MEDIAN_FILTERING;
 }

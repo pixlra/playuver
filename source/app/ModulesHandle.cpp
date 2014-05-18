@@ -106,7 +106,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
           subWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->subWindowList().at( i ) );
           if( subWindow->getWindowName() == selectedWindows.at( j ) )
           {
-            pcCurrModuleIf->m_pcSubWindow[j++] = subWindow;
+            pcCurrModuleIf->m_pcSubWindow[j] = subWindow;
           }
         }
       }
@@ -176,31 +176,38 @@ Void ModulesHandle::destroyAllModulesIf()
   }
 }
 
-Bool ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
+Bool ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Bool isPlaying )
 {
   PlaYUVerFrame* processedFrame = NULL;
   Bool bRet = false;
-  switch( pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames )
+  if( !isPlaying || ( isPlaying && pcCurrModuleIf->m_cModuleDef.m_bApplyWhilePlaying ) )
   {
-  case MODULE_REQUIRES_ONE_FRAME:
-    processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
-    break;
-  case MODULE_REQUIRES_TWO_FRAMES:
-    processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame(), pcCurrModuleIf->m_pcSubWindow[1]->getCurrFrame() );
-    break;
-  case MODULE_REQUIRES_THREE_FRAMES:
-    processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame(), pcCurrModuleIf->m_pcSubWindow[1]->getCurrFrame(),
-        pcCurrModuleIf->m_pcSubWindow[2]->getCurrFrame() );
-    break;
-  }
-  if( pcCurrModuleIf->m_pcDisplaySubWindow )
-  {
-    pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( processedFrame );
-    bRet = true;
+    switch( pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames )
+    {
+    case MODULE_REQUIRES_ONE_FRAME:
+      processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
+      break;
+    case MODULE_REQUIRES_TWO_FRAMES:
+      processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame(), pcCurrModuleIf->m_pcSubWindow[1]->getCurrFrame() );
+      break;
+    case MODULE_REQUIRES_THREE_FRAMES:
+      processedFrame = pcCurrModuleIf->process( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame(), pcCurrModuleIf->m_pcSubWindow[1]->getCurrFrame(),
+          pcCurrModuleIf->m_pcSubWindow[2]->getCurrFrame() );
+      break;
+    }
+    if( pcCurrModuleIf->m_pcDisplaySubWindow )
+    {
+      pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( processedFrame );
+      bRet = true;
+    }
+    else
+    {
+      pcCurrModuleIf->m_pcSubWindow[0]->setCurrFrame( processedFrame );
+    }
   }
   else
   {
-    pcCurrModuleIf->m_pcSubWindow[0]->setCurrFrame( processedFrame );
+    bRet = true;
   }
   return bRet;
 }

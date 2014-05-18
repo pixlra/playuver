@@ -149,7 +149,7 @@ Void SubWindowHandle::refreshFrame()
     m_pcCurrFrame = m_pCurrStream->getCurrFrame();
     if( m_pcCurrentModule )
     {
-      bSetFrame = ModulesHandle::applyModuleIf( m_pcCurrentModule );
+      bSetFrame = ModulesHandle::applyModuleIf( m_pcCurrentModule, m_bIsPlaying );
     }
     if( bSetFrame )
     {
@@ -216,7 +216,7 @@ Int SubWindowHandle::playEvent()
 Void SubWindowHandle::pause()
 {
   m_bIsPlaying = false;
-  return;
+  refreshFrame();
 }
 
 Void SubWindowHandle::seekAbsoluteEvent( UInt new_frame_num )

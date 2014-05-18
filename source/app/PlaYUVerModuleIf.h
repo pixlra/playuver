@@ -48,11 +48,17 @@ enum __PlaYUVerModuleTypes
 #define APPLY_WHILE_PLAYING true
 #define MAX_NUMBER_FRAMES 3
 
-enum __PlaYUVerModuleRequirements
+enum __PlaYUVerModuleNumberOfFrames
 {
+  // Number of frames
   MODULE_REQUIRES_ONE_FRAME = 1,
   MODULE_REQUIRES_TWO_FRAMES = 2,
   MODULE_REQUIRES_THREE_FRAMES = 3,
+};
+
+enum __PlaYUVerModuleRequirements
+{
+  // Requirements
   MODULE_REQUIRES_NOTHING = 0,
   MODULE_REQUIRES_NEW_WINDOW = 2,
   MODULE_REQUIRES_SIDEBAR = 4,

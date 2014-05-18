@@ -31,13 +31,15 @@ namespace plaYUVer
 {
 
 PlaYUVerModuleDefinition FilterFrameDef = {
-    FRAME_LEVEL_MODULE,
-    "Filters",
-    "Y_Filter",
-    "Filter Y matrix of YUV frame",
-    MODULE_REQUIRES_ONE_FRAME,
-    MODULE_REQUIRES_NOTHING,
-    APPLY_WHILE_PLAYING,
+    FRAME_LEVEL_MODULE,             // Apply module to the frames or to the whole sequence.
+                                    // Currently only support for frame
+    "Filters",                      // Category (sub-menu)
+    "Y_Filter",                     // Name
+    "Filter Y matrix of YUV frame", // Description
+    MODULE_REQUIRES_ONE_FRAME,      // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
+    MODULE_REQUIRES_NOTHING,        // Module requirements (check PlaYUVerModulesIf.h).
+                                    // Several requirements should be "or" between each others.
+    APPLY_WHILE_PLAYING,            // Apply module while playing
 };
 
 FilterFrame::FilterFrame()

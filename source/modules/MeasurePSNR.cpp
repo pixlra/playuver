@@ -38,6 +38,7 @@ static PlaYUVerModuleDefinition MeasurePSNRDef =
     "Measure the PSNR between two images",
     MODULE_REQUIRES_TWO_FRAMES,
     MODULE_REQUIRES_NEW_WINDOW,
+    APPLY_WHILE_PLAYING,
 };
 
 MeasurePSNR::MeasurePSNR()

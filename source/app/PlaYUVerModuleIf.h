@@ -45,6 +45,7 @@ enum __PlaYUVerModuleTypes
   VIDEO_LEVEL_MODULE,
 };
 
+#define APPLY_WHILE_PLAYING true
 #define MAX_NUMBER_FRAMES 3
 
 enum __PlaYUVerModuleRequirements
@@ -75,6 +76,7 @@ typedef struct __PlaYUVerModuleDefinition
   const Char* m_pchModuleTooltip;
   UInt m_uiNumberOfFrames;
   UInt m_uiModuleRequirements;
+  Bool m_bApplyWhilePlaying;
 } PlaYUVerModuleDefinition;
 
 class SubWindowHandle;

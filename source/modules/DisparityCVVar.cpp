@@ -37,7 +37,9 @@ static PlaYUVerModuleDefinition DisparityCVVarDef =
     "StereoVar",
     "Measure the disparity between two images using the Stereo Var method (OpenCV)",
     MODULE_REQUIRES_TWO_FRAMES,
-    MODULE_REQUIRES_NEW_WINDOW, };
+    MODULE_REQUIRES_NEW_WINDOW,
+    !APPLY_WHILE_PLAYING,
+};
 
 DisparityCVVar::DisparityCVVar()
 {

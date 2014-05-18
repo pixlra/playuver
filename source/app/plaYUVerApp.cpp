@@ -158,8 +158,7 @@ Void plaYUVerApp::loadFile( QString fileName )
     interfaceChild->show();
     connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
         SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
-    connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this,
-            SLOT( updatePropertiesSelectedArea( QRect ) ) );
+    connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updatePropertiesSelectedArea( QRect ) ) );
 
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
@@ -676,17 +675,13 @@ Void plaYUVerApp::dragEnterEvent( QDragEnterEvent *event )
 {
   //setText(tr("<drop content>"));
   setBackgroundRole( QPalette::Highlight );
-
   event->acceptProposedAction();
 }
 
 Void plaYUVerApp::dropEvent( QDropEvent *event )
 {
-
   const QMimeData *mimeData = event->mimeData();
-
   QList<QUrl> urlList = mimeData->urls();
-
   if( urlList.size() == 1 )
   {
     QString fileName = urlList.at( 0 ).toLocalFile();
@@ -1127,6 +1122,8 @@ Void plaYUVerApp::readSettings()
   move( pos );
   resize( size );
   m_cLastOpenPath = settings.lastOpenPath();
+  m_appTool = ( enum eTool )settings.getSelectedTool();
+  setAllSubWindowTool();
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
   m_arrayActions[VIDEO_LOCK_ACT]->setChecked( settings.getVideoLock() );
 }
@@ -1137,6 +1134,7 @@ Void plaYUVerApp::writeSettings()
   settings.setMainWindowPos( pos() );
   settings.setMainWindowSize( size() );
   settings.setLastOpenPath( m_cLastOpenPath );
+  settings.setSelectedTool( (Int)m_appTool );
   settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked(), m_arrayActions[VIDEO_LOCK_ACT]->isChecked() );
 }
 

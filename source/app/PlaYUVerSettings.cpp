@@ -28,7 +28,7 @@ namespace plaYUVer
 {
 
 PlaYUVerSettings::PlaYUVerSettings() :
-    m_settings( "IT", "YUV Player" )
+        m_settings( "IT", "YUV Player" )
 {
 }
 // - - - - - - - - - - - -  Main Window Settings - - - - - - - - - - - - - - - - 
@@ -61,6 +61,16 @@ QString PlaYUVerSettings::lastOpenPath()
 Void PlaYUVerSettings::setLastOpenPath( const QString & path )
 {
   m_settings.setValue( "MainWindow/lastOpenPath", path );
+}
+
+Int PlaYUVerSettings::getSelectedTool()
+{
+  return m_settings.value( "MainWindow/SelectedTool", NavigationTool ).toInt();
+}
+
+Void PlaYUVerSettings::setSelectedTool( Int tool )
+{
+  m_settings.setValue( "MainWindow/SelectedTool", tool );
 }
 
 // - - - - - - - - - - - -  PLaying Settings - - - - - - - - - - - - - - - -

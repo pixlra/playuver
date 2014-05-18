@@ -50,6 +50,9 @@ public:
   QString lastOpenPath();
   Void setLastOpenPath( const QString &v );
 
+  Int getSelectedTool();
+  Void setSelectedTool( Int);
+
   Bool getRepeat();
   Bool getVideoLock();
   Void setPlayingSettings( Bool repeat, Bool lock );

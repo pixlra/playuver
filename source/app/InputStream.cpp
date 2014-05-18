@@ -284,7 +284,7 @@ Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, In
         break;
       }
     }
-    if( rWidth >= 0 && rHeight >= 0 && rInputFormat >= 0 )
+    if( rWidth > 0 && rHeight > 0 && rInputFormat >= 0 )
       bRet = false;
   }
   return bRet;

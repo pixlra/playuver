@@ -144,7 +144,6 @@ Void SubWindowHandle::swapModuleFrames()
   }
 }
 
-
 Void SubWindowHandle::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
   m_pcCurrFrame = pcCurrFrame;
@@ -166,9 +165,9 @@ Void SubWindowHandle::refreshFrame()
   else
   {
     if( m_pcCurrentModule )
-        {
-          bSetFrame = ModulesHandle::applyModuleIf( m_pcCurrentModule, m_bIsPlaying );
-        }
+    {
+      bSetFrame = ModulesHandle::applyModuleIf( m_pcCurrentModule, m_bIsPlaying );
+    }
   }
   if( bSetFrame )
   {

@@ -18,12 +18,12 @@
  */
 
 /**
- * \file     DisparityCVVar.h
+ * \file     DisparityStereoVar.h
  * \brief    Measure the disparity between two images using the Stereo Var method (OpenCV)
  */
 
-#ifndef __DISPARITYCVVAR_H__
-#define __DISPARITYCVVAR_H__
+#ifndef __DISPARITYSTEREOVAR_H__
+#define __DISPARITYSTEREOVAR_H__
 
 #include "config.h"
 
@@ -39,14 +39,14 @@
 namespace plaYUVer
 {
 
-class DisparityCVVar: public PlaYUVerModuleIf
+class DisparityStereoVar: public PlaYUVerModuleIf
 {
 private:
   PlaYUVerFrame* m_pcDisparityFrame;
   cv::StereoVar m_cStereoVar;
 public:
-  DisparityCVVar();
-  virtual ~DisparityCVVar()
+  DisparityStereoVar();
+  virtual ~DisparityStereoVar()
   {
   }
 
@@ -57,5 +57,5 @@ public:
 
 }  // NAMESPACE
 
-#endif // __DISPARITYCVVAR_H__
+#endif // __DISPARITYSTEREOVAR_H__
 

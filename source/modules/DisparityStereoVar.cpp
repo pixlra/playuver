@@ -18,19 +18,19 @@
  */
 
 /**
- * \file     DisparityCVVar.cpp
+ * \file     DisparityStereoVar.cpp
  * \brief    Measure the disparity between two images using the Stereo Var method (OpenCV)
  */
 
 #include <cstdio>
 
-#include "DisparityCVVar.h"
+#include "DisparityStereoVar.h"
 #include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {
 
-static PlaYUVerModuleDefinition DisparityCVVarDef =
+static PlaYUVerModuleDefinition DisparityStereoVarDef =
 {
     FRAME_LEVEL_MODULE,
     "Disparity",
@@ -41,9 +41,9 @@ static PlaYUVerModuleDefinition DisparityCVVarDef =
     !APPLY_WHILE_PLAYING,
 };
 
-DisparityCVVar::DisparityCVVar()
+DisparityStereoVar::DisparityStereoVar()
 {
-  setModuleDefinition( DisparityCVVarDef );
+  setModuleDefinition( DisparityStereoVarDef );
   m_pcDisparityFrame = NULL;
   m_cStereoVar.levels = 3;                                 // ignored with USE_AUTO_PARAMS
   m_cStereoVar.pyrScale = 0.5;                             // ignored with USE_AUTO_PARAMS
@@ -59,13 +59,13 @@ DisparityCVVar::DisparityCVVar()
   m_cStereoVar.flags = m_cStereoVar.USE_SMART_ID | m_cStereoVar.USE_AUTO_PARAMS | m_cStereoVar.USE_INITIAL_DISPARITY | m_cStereoVar.USE_MEDIAN_FILTERING;
 }
 
-Void DisparityCVVar::create( PlaYUVerFrame* InputFrame )
+Void DisparityStereoVar::create( PlaYUVerFrame* InputFrame )
 {
   m_pcDisparityFrame = new PlaYUVerFrame( InputFrame->getWidth(), InputFrame->getHeight(), PlaYUVerFrame::GRAY );
   m_cStereoVar.minDisp = -( ( ( InputFrame->getWidth() / 8 ) + 15 ) & -16 );
 }
 
-PlaYUVerFrame* DisparityCVVar::process( PlaYUVerFrame* InputLeft, PlaYUVerFrame* InputRight )
+PlaYUVerFrame* DisparityStereoVar::process( PlaYUVerFrame* InputLeft, PlaYUVerFrame* InputRight )
 {
   cv::Mat leftImage = InputLeft->getCvMat();
   cv::Mat rightImage = InputRight->getCvMat();
@@ -78,7 +78,7 @@ PlaYUVerFrame* DisparityCVVar::process( PlaYUVerFrame* InputLeft, PlaYUVerFrame*
   return m_pcDisparityFrame;
 }
 
-Void DisparityCVVar::destroy()
+Void DisparityStereoVar::destroy()
 {
   if( m_pcDisparityFrame )
     delete m_pcDisparityFrame;

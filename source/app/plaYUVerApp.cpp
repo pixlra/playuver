@@ -158,8 +158,8 @@ Void plaYUVerApp::loadFile( QString fileName )
     interfaceChild->show();
     connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
         SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
-//    connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this,
-//            SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
+    connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this,
+            SLOT( updatePropertiesSelectedArea( QRect ) ) );
 
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
@@ -282,12 +282,7 @@ Void plaYUVerApp::updatePropertiesSelectedArea( QRect area )
 {
   if( m_pcCurrentSubWindow )
   {
-    if( area.isNull() )
-    {
-      m_pcFrameProperties->setData( m_pcCurrentSubWindow->getInputStream()->getCurrFrame() );
-      m_pcFrameProperties->setSelection( area );
-    }
-    else
+    if( area.isValid() )
     {
       m_pcFrameProperties->setSelection( area );
     }

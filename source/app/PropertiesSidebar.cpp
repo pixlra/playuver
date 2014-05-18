@@ -171,7 +171,6 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent, Bool *pbIsPlayi
 {
   // -------------- Variables definition --------------
   m_pcFrame = NULL;
-  m_pcFrameSelection = NULL;
   m_iLastFrameType = -1;
   m_pbIsPlaying = pbIsPlaying;
 
@@ -484,11 +483,9 @@ Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
 
   if( selectionArea.isValid() )
   {
-
     histogramWidget->stopHistogramComputation();
-
-    m_pcFrameSelection->copyFrom( m_pcFrame );
-    histogramWidget->updateSelectionData( m_pcFrameSelection );
+    //histogramWidget->updateSelectionData( new PlaYUVerFrame(m_pcFrame selectionArea));
+    histogramWidget->updateSelectionData( new PlaYUVerFrame(m_pcFrame));
     fullImageButton->show();
     selectionImageButton->show();
     selectionImageButton->click();
@@ -547,23 +544,26 @@ Void FramePropertiesSideBar::updateStatistiques()
   else
     histogram = histogramWidget->m_selectionHistogram;
 
-  double mean = histogram->getMean( channel, min, max );
-  labelMeanValue->setText( value.setNum( mean, 'f', 1 ) );
+  if( histogram )
+  {
+    double mean = histogram->getMean( channel, min, max );
+    labelMeanValue->setText( value.setNum( mean, 'f', 1 ) );
 
-  double pixels = histogram->getPixels();
-  labelPixelsValue->setText( value.setNum( ( float )pixels, 'f', 0 ) );
+    double pixels = histogram->getPixels();
+    labelPixelsValue->setText( value.setNum( ( float )pixels, 'f', 0 ) );
 
-  double stddev = histogram->getStdDev( channel, min, max );
-  labelStdDevValue->setText( value.setNum( stddev, 'f', 1 ) );
+    double stddev = histogram->getStdDev( channel, min, max );
+    labelStdDevValue->setText( value.setNum( stddev, 'f', 1 ) );
 
-  double counts = histogram->getCount( channel, min, max );
-  labelCountValue->setText( value.setNum( ( float )counts, 'f', 0 ) );
+    double counts = histogram->getCount( channel, min, max );
+    labelCountValue->setText( value.setNum( ( float )counts, 'f', 0 ) );
 
-  double median = histogram->getMedian( channel, min, max );
-  labelMedianValue->setText( value.setNum( median, 'f', 1 ) );
+    double median = histogram->getMedian( channel, min, max );
+    labelMedianValue->setText( value.setNum( median, 'f', 1 ) );
 
-  double percentile = ( pixels > 0 ? ( 100.0 * counts / pixels ) : 0.0 );
-  labelPercentileValue->setText( value.setNum( percentile, 'f', 1 ) );
+    double percentile = ( pixels > 0 ? ( 100.0 * counts / pixels ) : 0.0 );
+    labelPercentileValue->setText( value.setNum( percentile, 'f', 1 ) );
+  }
 }
 
 Void FramePropertiesSideBar::stopHistogram()
@@ -601,7 +601,6 @@ Void FramePropertiesSideBar::slotRefreshOptions( bool /*depth*/)
 Void FramePropertiesSideBar::slotHistogramComputationFailed()
 {
   m_pcFrame = NULL;
-  m_pcFrameSelection = NULL;
 }
 
 Void FramePropertiesSideBar::slotChannelChanged( Int channel )

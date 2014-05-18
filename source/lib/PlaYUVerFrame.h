@@ -44,20 +44,12 @@ class QImage;
 namespace plaYUVer
 {
 
-static const QString gInputStreamFormatsNames[] =
-{
-    "YUV420p",
-    "YUV444p",
-    "YUV422p",
-    "YUV411p",
-    "YUV410p",
-    "GRAY" };
-
 class PlaYUVerFrame
 {
 public:
   PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );
   PlaYUVerFrame( PlaYUVerFrame *other );
+  PlaYUVerFrame( PlaYUVerFrame *other, QRect area );
   ~PlaYUVerFrame();
 
   enum ColorSpace
@@ -117,11 +109,13 @@ public:
 
   Void FrametoRGB8();
 
-  Void FrameFromBuffer( Pel *input_buffer, Int pel_format );
+  Void FrameFromBuffer( Pel*, Int );
 
   Void copyFrom( PlaYUVerFrame* );
+  Void copyFrom( PlaYUVerFrame*, UInt, UInt);
 
   UInt64 getBytesPerFrame();
+
   UInt getChromaLength() const;
 
   Pel*** getPelBufferYUV() const
@@ -135,17 +129,18 @@ public:
     return m_pppcInputPel;
   }
 
-  static Pixel ConvertPixel( Pixel sInputPixel, Int eOutputSpace );
-  Pixel getPixelValue( const QPoint &pos, Int color );
+  Pixel getPixelValue( const QPoint&, Int );
 
   UChar* getQImageBuffer() const
   {
     return m_pcRGBPelInterlaced;
   }
 
+  static Pixel ConvertPixel( Pixel, Int );
+
 #ifdef USE_OPENCV
   cv::Mat getCvMat();
-  Void copyFrom( cv::Mat* input_frame );
+  Void copyFrom( cv::Mat* );
 #endif
 
   UInt getWidth() const

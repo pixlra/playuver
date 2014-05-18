@@ -94,7 +94,6 @@ private:
   };
 
   PlaYUVerFrame *m_pcFrame;
-  PlaYUVerFrame *m_pcFrameSelection;
   Bool* m_pbIsPlaying;
   Int m_iLastFrameType;
 

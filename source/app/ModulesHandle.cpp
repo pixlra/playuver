@@ -92,7 +92,6 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   QString windowName;
 
   UInt numberOfFrames = pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames;
-  UInt windowCount = 0;
   if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )
   {
     DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMdiArea, numberOfFrames );
@@ -100,17 +99,14 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
     {
       QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();
       SubWindowHandle *subWindow;
-      QString windowName;
       for( Int j = 0; j < selectedWindows.size(); j++ )
       {
         for( Int i = 0; i < m_pcMdiArea->subWindowList().size(); i++ )
         {
           subWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->subWindowList().at( i ) );
-          windowName = subWindow->getWindowName();
           if( subWindow->getWindowName() == selectedWindows.at( j ) )
           {
-            pcCurrModuleIf->m_pcSubWindow[windowCount++] = subWindow;
-            assert( windowCount <= numberOfFrames );
+            pcCurrModuleIf->m_pcSubWindow[j++] = subWindow;
           }
         }
       }
@@ -145,6 +141,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   }
 
   pcCurrModuleIf->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
+
   for( UInt i = 0; i < numberOfFrames; i++ )
   {
     pcCurrModuleIf->m_pcSubWindow[i]->enableModule( pcCurrModuleIf );
@@ -157,6 +154,7 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
   pcCurrModuleIf->m_pcAction->setChecked( false );
   if( pcCurrModuleIf->m_pcDisplaySubWindow )
     pcCurrModuleIf->m_pcDisplaySubWindow->close();
+  pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
 
   for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
   {
@@ -166,7 +164,7 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
       pcCurrModuleIf->m_pcSubWindow[i] = NULL;
     }
   }
-  pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
+
   pcCurrModuleIf->destroy();
 }
 

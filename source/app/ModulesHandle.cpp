@@ -79,12 +79,16 @@ SubWindowHandle* ModulesHandle::processModuleHandlingOpt()
   }
   else
   {
+    SubWindowHandle* pcSubWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->activeSubWindow() );
     switch( m_iOptionSelected )
     {
+    case INVALID_OPT:
+      break;
     case SWAP_FRAMES_OPT:
-      SubWindowHandle* pcSubWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->activeSubWindow() );
       pcSubWindow->swapModuleFrames();
       break;
+    default:
+      Q_ASSERT( 0 );
     }
   }
   m_iOptionSelected = INVALID_OPT;
@@ -123,7 +127,6 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
       pcCurrModuleIf->m_pcAction->setChecked( false );
       return interfaceChild;
     }
-
   }
   else
   {
@@ -139,7 +142,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   {
     interfaceChild = new SubWindowHandle( m_pcParent );
     interfaceChild->setWindowName( windowName );
-    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
+    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), m_pcParent,
         SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
     pcCurrModuleIf->m_pcDisplaySubWindow = interfaceChild;
     pcCurrModuleIf->m_pcDisplaySubWindow->setModule( pcCurrModuleIf );
@@ -296,7 +299,6 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
   m_pcModulesMenu->addAction( m_arrayActions[DISABLE_ALL_ACT] );
   m_pcModulesMenu->addAction( m_arrayActions[FORCE_NEW_WINDOW_ACT] );
   //m_pcModulesMenu->addAction( m_arrayActions[FORCE_PLAYING_REFRESH_ACT] );
-
 
   return m_pcModulesMenu;
 }

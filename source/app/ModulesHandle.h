@@ -53,16 +53,23 @@ public:
 
   QMenu* createMenus( QMenuBar* MainAppMenuBar );
   Void updateMenus( Bool hasSubWindow );
-  SubWindowHandle* toggleSelectedModuleIf();
+  SubWindowHandle* processModuleHandlingOpt();
 
-  static Bool applyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf, Bool isPlaying = false );
   static Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
+  static Bool applyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf, Bool isPlaying = false );
+  static Void swapModulesWindowsIf( PlaYUVerModuleIf *pcCurrModuleIf );
 
 private:
   QWidget *m_pcParent;
   QMdiArea *m_pcMdiArea;
   UInt m_uiModulesCount;
-  Int m_uiModuleSelected;
+  Int m_iOptionSelected;
+
+  enum
+  {
+    INVALID_OPT = -1,
+    SWAP_FRAMES_OPT = -2,
+  };
 
   QMenu* m_pcModulesMenu;
   QList<QMenu*> m_pcModulesSubMenuList;
@@ -73,7 +80,9 @@ private:
   enum MODULES_ACTION_LIST
   {
     FORCE_NEW_WINDOW_ACT = 0,
+    FORCE_PLAYING_REFRESH_ACT,
     DISABLE_ALL_ACT,
+    SWAP_FRAMES_ACT,
     MODULES_TOTAL_ACT
   };
   QVector<QAction*> m_arrayActions;

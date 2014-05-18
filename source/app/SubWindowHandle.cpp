@@ -135,6 +135,16 @@ Void SubWindowHandle::disableModule()
   }
 }
 
+Void SubWindowHandle::swapModuleFrames()
+{
+  if( m_pcCurrentModule )
+  {
+    ModulesHandle::swapModulesWindowsIf( m_pcCurrentModule );
+    refreshFrame();
+  }
+}
+
+
 Void SubWindowHandle::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
   m_pcCurrFrame = pcCurrFrame;
@@ -143,18 +153,26 @@ Void SubWindowHandle::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 
 Void SubWindowHandle::refreshFrame()
 {
-  Bool bSetFrame = true;
+  Bool bSetFrame = false;
   if( m_pCurrStream )
   {
     m_pcCurrFrame = m_pCurrStream->getCurrFrame();
+    bSetFrame = true;
     if( m_pcCurrentModule )
     {
       bSetFrame = ModulesHandle::applyModuleIf( m_pcCurrentModule, m_bIsPlaying );
     }
-    if( bSetFrame )
-    {
-      m_cViewArea->setImage( m_pcCurrFrame );
-    }
+  }
+  else
+  {
+    if( m_pcCurrentModule )
+        {
+          bSetFrame = ModulesHandle::applyModuleIf( m_pcCurrentModule, m_bIsPlaying );
+        }
+  }
+  if( bSetFrame )
+  {
+    m_cViewArea->setImage( m_pcCurrFrame );
   }
 }
 

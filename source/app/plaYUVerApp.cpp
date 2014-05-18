@@ -228,10 +228,10 @@ Void plaYUVerApp::closeAll()
 
 // -----------------------  Modules Selection  --------------------
 
-Void plaYUVerApp::selectModule( QAction *curr_action )
+Void plaYUVerApp::ModuleHandling( QAction *curr_action )
 {
   m_pcFrameProperties->stopHistogram();
-  SubWindowHandle *interfaceChild = m_pcModulesHandle->toggleSelectedModuleIf();
+  SubWindowHandle *interfaceChild = m_pcModulesHandle->processModuleHandlingOpt();
   if( interfaceChild )
   {
     mdiArea->addSubWindow( interfaceChild );
@@ -1052,7 +1052,7 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_LOCK_SELECTION_ACT] );
 
   QMenu* modules_menu = m_pcModulesHandle->createMenus( menuBar() );
-  connect( modules_menu, SIGNAL( triggered(QAction *) ), this, SLOT( selectModule(QAction *) ) );
+  connect( modules_menu, SIGNAL( triggered(QAction *) ), this, SLOT( ModuleHandling(QAction *) ) );
 
   m_arrayMenu[WINDOW_MENU] = menuBar()->addMenu( tr( "&Window" ) );
   updateWindowMenu();

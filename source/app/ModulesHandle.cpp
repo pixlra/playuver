@@ -38,7 +38,7 @@ ModulesHandle::ModulesHandle( QWidget * parent, QMdiArea *mdiArea ) :
         m_pcParent( parent ),
         m_pcMdiArea( mdiArea ),
         m_uiModulesCount( 0 ),
-        m_uiModuleSelected( -1 )
+        m_iOptionSelected( INVALID_OPT )
 {
   // configure class
   setParent( m_pcParent );
@@ -56,31 +56,38 @@ Void ModulesHandle::appendModule( PlaYUVerModuleIf* pIfModule )
   m_uiModulesCount++;
 }
 
-void ModulesHandle::selectModule( int index )
+Void ModulesHandle::selectModule( Int index )
 {
-  m_uiModuleSelected = index;
+  m_iOptionSelected = index;
 }
 
-SubWindowHandle* ModulesHandle::toggleSelectedModuleIf()
+SubWindowHandle* ModulesHandle::processModuleHandlingOpt()
 {
-  PlaYUVerModuleIf* pcCurrModuleIf = NULL;
-
-  if( m_uiModuleSelected >= 0 )
-    pcCurrModuleIf = m_pcPlaYUVerModules.at( m_uiModuleSelected );
-  m_uiModuleSelected = -1;
-
-  if( !pcCurrModuleIf )
-    return NULL;
-
-  if( pcCurrModuleIf->m_pcAction->isChecked() )
+  if( m_iOptionSelected >= 0 )
   {
-    return enableModuleIf( pcCurrModuleIf );
+    PlaYUVerModuleIf* pcCurrModuleIf = m_pcPlaYUVerModules.at( m_iOptionSelected );
+
+    if( pcCurrModuleIf->m_pcAction->isChecked() )
+    {
+      return enableModuleIf( pcCurrModuleIf );
+    }
+    else
+    {
+      destroyModuleIf( pcCurrModuleIf );
+      return NULL;
+    }
   }
   else
   {
-    destroyModuleIf( pcCurrModuleIf );
-    return NULL;
+    switch( m_iOptionSelected )
+    {
+    case SWAP_FRAMES_OPT:
+      SubWindowHandle* pcSubWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->activeSubWindow() );
+      pcSubWindow->swapModuleFrames();
+      break;
+    }
   }
+  m_iOptionSelected = INVALID_OPT;
   return NULL;
 }
 
@@ -116,18 +123,16 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
       pcCurrModuleIf->m_pcAction->setChecked( false );
       return interfaceChild;
     }
-    windowName.append( " [" );
-    windowName.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
-    windowName.append( "]" );
+
   }
   else
   {
     windowName.append( pcSubWindow->userFriendlyCurrentFile() );
-    windowName.append( " [" );
-    windowName.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
-    windowName.append( "]" );
     pcCurrModuleIf->m_pcSubWindow[0] = pcSubWindow;
   }
+  windowName.append( " <" );
+  windowName.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
+  windowName.append( ">" );
 
   pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
   if( ( pcCurrModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
@@ -212,6 +217,16 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Bool isPlay
   return bRet;
 }
 
+Void ModulesHandle::swapModulesWindowsIf( PlaYUVerModuleIf *pcCurrModuleIf )
+{
+  if( pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames == MODULE_REQUIRES_TWO_FRAMES )
+  {
+    SubWindowHandle* auxWindowHandle = pcCurrModuleIf->m_pcSubWindow[0];
+    pcCurrModuleIf->m_pcSubWindow[0] = pcCurrModuleIf->m_pcSubWindow[1];
+    pcCurrModuleIf->m_pcSubWindow[1] = auxWindowHandle;
+  }
+}
+
 QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 {
   PlaYUVerModuleIf* pcCurrModuleIf;
@@ -224,8 +239,6 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
   connect( m_pcActionMapper, SIGNAL( mapped(int) ), this, SLOT( selectModule(int) ) );
 
   m_pcModulesMenu = MainAppMenuBar->addMenu( "&Modules" );
-
-//m_arrayModulesActions.resize( m_uiModulesCount );
 
   for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
   {
@@ -269,10 +282,21 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
   m_arrayActions[FORCE_NEW_WINDOW_ACT] = new QAction( "Use New Window", parent() );
   m_arrayActions[FORCE_NEW_WINDOW_ACT]->setStatusTip( "Show module result in a new window. Some modules already force this feature" );
   m_arrayActions[FORCE_NEW_WINDOW_ACT]->setCheckable( true );
+  m_arrayActions[FORCE_PLAYING_REFRESH_ACT] = new QAction( "Refresh while playing", parent() );
+  m_arrayActions[FORCE_PLAYING_REFRESH_ACT]->setStatusTip( "Force module refreshing while playing" );
+  m_arrayActions[FORCE_PLAYING_REFRESH_ACT]->setCheckable( true );
+
+  m_arrayActions[SWAP_FRAMES_ACT] = new QAction( "Swap frames", parent() );
+  m_arrayActions[SWAP_FRAMES_ACT]->setStatusTip( "Swap Sub Window order" );
+  connect( m_arrayActions[SWAP_FRAMES_ACT], SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
+  m_pcActionMapper->setMapping( m_arrayActions[SWAP_FRAMES_ACT], SWAP_FRAMES_OPT );
 
   m_pcModulesMenu->addSeparator();
+  m_pcModulesMenu->addAction( m_arrayActions[SWAP_FRAMES_ACT] );
   m_pcModulesMenu->addAction( m_arrayActions[DISABLE_ALL_ACT] );
   m_pcModulesMenu->addAction( m_arrayActions[FORCE_NEW_WINDOW_ACT] );
+  //m_pcModulesMenu->addAction( m_arrayActions[FORCE_PLAYING_REFRESH_ACT] );
+
 
   return m_pcModulesMenu;
 }
@@ -285,6 +309,7 @@ Void ModulesHandle::updateMenus( Bool hasSubWindow )
     currModuleAction = m_arrayModulesActions.at( i );
     currModuleAction->setEnabled( hasSubWindow );
   }
+  m_arrayActions[SWAP_FRAMES_ACT]->setEnabled( hasSubWindow );
 }
 
 }  // NAMESPACE

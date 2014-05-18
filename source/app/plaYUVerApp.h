@@ -74,7 +74,7 @@ private Q_SLOTS:
   void lockButtonEvent();
   void videoSelectionButtonEvent();
 
-  void selectModule( QAction * );
+  void ModuleHandling( QAction * );
 
   /**
    * Scale the image by a given factor

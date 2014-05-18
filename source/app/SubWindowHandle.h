@@ -113,7 +113,7 @@ public:
    */
   Void enableModule( PlaYUVerModuleIf* select_module );
   Void disableModule();
-
+  Void swapModuleFrames();
   /**
    * Show the image at its original size
    */

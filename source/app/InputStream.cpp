@@ -215,8 +215,10 @@ Void InputStream::close()
     {
       if( m_ppcFrameBuffer[i] )
         delete m_ppcFrameBuffer[i];
+      m_ppcFrameBuffer[i] = NULL;
     }
     freeMem1D<PlaYUVerFrame*>( m_ppcFrameBuffer );
+    m_ppcFrameBuffer = NULL;
   }
 
   if( m_pInputBuffer )

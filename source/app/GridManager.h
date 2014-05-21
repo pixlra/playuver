@@ -26,6 +26,8 @@
 #ifndef __GRIDMANAGER_H__
 #define __GRIDMANAGER_H__
 
+#include "config.h"
+#include "PlaYUVerDefs.h"
 #include <QRect>
 #include <QColor>
 #include <QPen>

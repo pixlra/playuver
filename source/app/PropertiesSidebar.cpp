@@ -23,10 +23,10 @@
  */
 
 #include "config.h"
+#include "PlaYUVerDefs.h"
 #include <cmath>
 #include <QtGui>
 #include <QtDebug>
-#include "TypeDef.h"
 #include "PropertiesSidebar.h"
 
 namespace plaYUVer

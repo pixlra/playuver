@@ -26,12 +26,12 @@
 #ifndef __VIEWAREA_H__
 #define __VIEWAREA_H__
 
+#include "config.h"
+#include "PlaYUVerDefs.h"
 #include <QWidget>
 #include <QPixmap>
 #include <QBitmap>
 #include <QColor>
-
-#include "TypeDef.h"
 #include "GridManager.h"
 #include "PlaYUVerFrame.h"
 

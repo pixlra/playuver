@@ -26,10 +26,9 @@
 #define __LIBMEMALLOC_H__
 
 #include "config.h"
-
+#include "PlaYUVerDefs.h"
 #include <cstdlib>
 #include <cstring>
-#include "TypeDef.h"
 
 namespace plaYUVer
 {

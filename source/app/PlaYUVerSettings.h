@@ -26,9 +26,8 @@
 #define __PLAYUVERSETTINGS_H__
 
 #include "config.h"
-
+#include "PlaYUVerDefs.h"
 #include <QtCore>
-#include "TypeDef.h"
 #include "GridManager.h"
 
 namespace plaYUVer

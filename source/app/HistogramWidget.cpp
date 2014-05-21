@@ -25,11 +25,13 @@
 
 //TODO:
 //      - Optimizar paintEvent. Parece haver codigo redundante  !! 
+
+#include "config.h"
+#include "PlaYUVerDefs.h"
 #include <cmath>
 #include <QtGui>
 #include <QtDebug>
 #include "HistogramWidget.h"
-#include "TypeDef.h"
 #include "PlaYUVerFrameStatistics.h"
 #include "PlaYUVerFrame.h"
 

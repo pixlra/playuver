@@ -26,13 +26,11 @@
 #define __INPUTSTREAM_H__
 
 #include "config.h"
-
+#include "PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>
-
 #include <QtCore>
 #include <QtGui>
-
 #ifdef USE_OPENCV
 #include <opencv2/opencv.hpp>
 #endif
@@ -40,9 +38,6 @@
 #ifdef USE_FFMPEG
 #include "LibAvContextHandle.h"
 #endif
-
-#include "TypeDef.h"
-
 #include "PlaYUVerFrame.h"
 
 namespace plaYUVer

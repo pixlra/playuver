@@ -26,15 +26,13 @@
 #define __PLAYUVERAPP_H__
 
 #include "config.h"
-
+#include "PlaYUVerDefs.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
 #include <QMainWindow>
-#include "TypeDef.h"
-
 #include "ModulesHandle.h"
 #include "PropertiesSidebar.h"
 

@@ -25,6 +25,8 @@
 #ifndef __PROPERTIESSIDEBAR_H__
 #define __PROPERTIESSIDEBAR_H__
 
+#include "config.h"
+#include "PlaYUVerDefs.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )

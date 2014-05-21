@@ -26,11 +26,9 @@
 #define __PLAYUVERMODULESIF_H__
 
 #include "config.h"
-
+#include "PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>
-
-#include "TypeDef.h"
 #include "PlaYUVerFrame.h"
 
 class QImage;

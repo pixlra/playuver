@@ -44,7 +44,7 @@ extern "C"
 #include <libavformat/avformat.h>
 }
 
-#include "TypeDef.h"
+#include "PlaYUVerDefs.h"
 
 namespace plaYUVer
 {

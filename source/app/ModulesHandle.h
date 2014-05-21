@@ -25,6 +25,7 @@
 #define __MODULESHANDLE_H__
 
 #include "config.h"
+#include "PlaYUVerDefs.h"
 
 #include <iostream>
 #include <cstdio>
@@ -36,7 +37,6 @@
 #include <QtGui>
 #endif
 
-#include "TypeDef.h"
 #include "PlaYUVerModuleIf.h"
 
 namespace plaYUVer

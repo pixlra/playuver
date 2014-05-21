@@ -27,10 +27,9 @@
 #define __HISTOGRAMWIDGET_H__
 
 #include "config.h"
-
+#include "PlaYUVerDefs.h"
 #include <QWidget>
 #include <QColor>
-#include "TypeDef.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFrameStatistics.h"
 

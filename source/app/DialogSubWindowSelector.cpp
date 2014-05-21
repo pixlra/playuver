@@ -24,8 +24,6 @@
 
 #include "DialogSubWindowSelector.h"
 #include "SubWindowHandle.h"
-//#include "PlaYUVerFrame.h"
-//#include "InputStream.h"
 
 namespace plaYUVer
 {

@@ -26,7 +26,7 @@
 #define __PLAYUVERFRAME_H__
 
 #include "config.h"
-
+#include "PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>
 #include <cassert>
@@ -37,7 +37,6 @@
 #ifdef USE_PIXFC
 #include "pixfc-sse.h"
 #endif
-#include "TypeDef.h"
 
 class QImage;
 

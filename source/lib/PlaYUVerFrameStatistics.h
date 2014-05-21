@@ -26,10 +26,8 @@
 #ifndef __PLAYUVERFRAMESTATISTICS_H_
 #define __PLAYUVERFRAMESTATISTICS_H_
 
-#include "config.h"
-
+#include "PlaYUVerDefs.h"
 #include <QThread>
-#include "TypeDef.h"
 #include "PlaYUVerFrame.h"
 
 class QObject;

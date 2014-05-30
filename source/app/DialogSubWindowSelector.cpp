@@ -136,7 +136,7 @@ void DialogSubWindowSelector::addSubWindow()
     m_listSelectedWindows->insertItems( 0, m_pcSelectedWindowListNames );
     updateSubWindowList();
   }
-  if( m_pcSelectedWindowListNames.size() >= m_iNumberOfSelectedWindows )
+  if( m_iNumberOfSelectedWindows >= 0 &&  m_pcSelectedWindowListNames.size() >= m_iNumberOfSelectedWindows )
   {
     m_pushButtonAdd->setEnabled( false );
   }
@@ -161,7 +161,7 @@ void DialogSubWindowSelector::removeSubWindow()
     m_listSelectedWindows->insertItems( 0, m_pcSelectedWindowListNames );
     updateSubWindowList();
   }
-  if( m_pcSelectedWindowListNames.size() < m_iNumberOfSelectedWindows )
+  if( m_iNumberOfSelectedWindows >= 0 &&  m_pcSelectedWindowListNames.size() < m_iNumberOfSelectedWindows )
   {
     m_pushButtonAdd->setEnabled( true );
   }

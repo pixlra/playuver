@@ -569,7 +569,7 @@ Void plaYUVerApp::videoSelectionButtonEvent()
       }
     }
     m_arrayActions[VIDEO_LOCK_ACT]->setChecked( true );
-    startPlay();
+    //startPlay();
     return;
   }
 }

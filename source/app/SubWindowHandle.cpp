@@ -238,14 +238,20 @@ Void SubWindowHandle::pause()
 
 Void SubWindowHandle::seekAbsoluteEvent( UInt new_frame_num )
 {
-  m_pCurrStream->seekInput( new_frame_num );
-  refreshFrame();
+  if( m_pCurrStream )
+  {
+    m_pCurrStream->seekInput( new_frame_num );
+    refreshFrame();
+  }
 }
 
 Void SubWindowHandle::seekRelativeEvent( Bool bIsFoward )
 {
-  m_pCurrStream->seekInput( m_pCurrStream->getCurrFrameNum() + ( bIsFoward ? 1 : -1 ) );
-  refreshFrame();
+  if( m_pCurrStream )
+  {
+    m_pCurrStream->seekInput( m_pCurrStream->getCurrFrameNum() + ( bIsFoward ? 1 : -1 ) );
+    refreshFrame();
+  }
 }
 
 Void SubWindowHandle::stop()

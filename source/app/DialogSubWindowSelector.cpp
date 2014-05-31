@@ -57,7 +57,6 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
   m_comboBoxWindowList->setSizePolicy( sizePolicy );
   m_comboBoxWindowList->setAcceptDrops( true );
 
-  updateSubWindowList();
 
   m_pushButtonAdd = new QPushButton( "Add", this );
   m_pushButtonRemove = new QPushButton( "Remove", this );
@@ -97,6 +96,9 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
   connect( m_pushButtonAdd, SIGNAL( clicked() ), this, SLOT( addSubWindow() ) );
   connect( m_pushButtonRemove, SIGNAL( clicked() ), this, SLOT( removeSubWindow() ) );
   QMetaObject::connectSlotsByName( this );
+
+  updateSubWindowList();
+
 }
 
 Void DialogSubWindowSelector::updateSubWindowList()
@@ -114,6 +116,27 @@ Void DialogSubWindowSelector::updateSubWindowList()
   m_comboBoxWindowList->clear();
   m_comboBoxWindowList->insertItems( 0, m_pcWindowListNames );
   m_comboBoxWindowList->setCurrentIndex( -1 );
+
+  if( m_iNumberOfSelectedWindows >= 0 &&  m_pcSelectedWindowListNames.size() >= m_iNumberOfSelectedWindows )
+  {
+    m_pushButtonAdd->setEnabled( false );
+  }
+  else
+  {
+    m_pushButtonAdd->setEnabled( true );
+  }
+  if( m_iNumberOfSelectedWindows >= 0 &&  m_pcSelectedWindowListNames.size() < m_iNumberOfSelectedWindows )
+  {
+
+  }
+  if( m_pcSelectedWindowListNames.size() > 0 )
+  {
+    m_pushButtonRemove->setEnabled( true );
+  }
+  else
+  {
+    m_pushButtonRemove->setEnabled( false );
+  }
 }
 
 Void DialogSubWindowSelector::setSubWindowList( QStringList cWindowListNames )
@@ -136,11 +159,6 @@ void DialogSubWindowSelector::addSubWindow()
     m_listSelectedWindows->insertItems( 0, m_pcSelectedWindowListNames );
     updateSubWindowList();
   }
-  if( m_iNumberOfSelectedWindows >= 0 &&  m_pcSelectedWindowListNames.size() >= m_iNumberOfSelectedWindows )
-  {
-    m_pushButtonAdd->setEnabled( false );
-  }
-  m_pushButtonRemove->setEnabled( true );
 }
 
 void DialogSubWindowSelector::removeSubWindow()
@@ -161,14 +179,7 @@ void DialogSubWindowSelector::removeSubWindow()
     m_listSelectedWindows->insertItems( 0, m_pcSelectedWindowListNames );
     updateSubWindowList();
   }
-  if( m_iNumberOfSelectedWindows >= 0 &&  m_pcSelectedWindowListNames.size() < m_iNumberOfSelectedWindows )
-  {
-    m_pushButtonAdd->setEnabled( true );
-  }
-  if( m_pcSelectedWindowListNames.size() == 0 )
-  {
-    m_pushButtonRemove->setEnabled( false );
-  }
+
 }
 
 }  // Namespace SCode

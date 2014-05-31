@@ -64,10 +64,10 @@ public:
   Void setGridColor( const QColor &v );
 
   Int gridHSpacing();
-  Void setGridHSpacing( int v );
+  Void setGridHSpacing( Int v );
 
   Int gridVSpacing();
-  Void setGridVSpacing( int v );
+  Void setGridVSpacing( Int v );
 
 private:
   QSettings m_settings;

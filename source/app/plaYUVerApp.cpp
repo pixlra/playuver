@@ -65,7 +65,7 @@ plaYUVerApp::plaYUVerApp()
 
   readSettings();
 
-  setWindowTitle( tr( "plaYUVerApp" ) );
+  setWindowTitle( tr( "plaYUVer" ) );
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
   setUnifiedTitleAndToolBarOnMac( true );
 
@@ -97,6 +97,17 @@ Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
     mdiArea->tileSubWindows();
     zoomToFitAll();
   }
+}
+
+Void plaYUVerApp::about()
+{
+  QString about_message;
+  about_message.append( "The <b>plaYUVer</b> is an open-source raw video player! " );
+  about_message.append("Developed by ");
+  about_message.append("João Carreira ");
+  about_message.append("and ");
+  about_message.append("Luís Lucas");
+  QMessageBox::about( this, "About plaYUVer", about_message );
 }
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
@@ -607,19 +618,6 @@ Void plaYUVerApp::scaleFrame( Int ratio )
 //    m_arrayActions[ZOOM_IN_ACT]->setEnabled( activeSubWindow()->getScaleFactor() < 3.0 );
 //    m_arrayActions[ZOOM_OUT_ACT]->setEnabled( activeSubWindow()->getScaleFactor() > 0.333 );
   }
-}
-
-// -----------------------  About Functions  -----------------------
-
-Void plaYUVerApp::about()
-{
-  QString about_message;
-  about_message.append( "The <b>plaYUVerApp</b> is an open-source raw video player" );
-//  about_message.append("\n\r");
-//  about_message.append("João Carreira");
-//  about_message.append("\n\r");
-//  about_message.append("Luís Lucas");
-  QMessageBox::about( this, tr( "About plaYUVerApp" ), about_message );
 }
 
 Void plaYUVerApp::chageSubWindowSelection()

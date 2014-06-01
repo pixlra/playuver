@@ -72,7 +72,7 @@ SubWindowHandle::~SubWindowHandle()
     delete m_pCurrStream;
 }
 
-Bool SubWindowHandle::loadFile( const QString &fileName )
+Bool SubWindowHandle::loadFile( const QString &rcFilename, Bool bForceDialog )
 {
   UInt Width = 0, Height = 0, FrameRate = 30;
   Int InputFormat = -1;
@@ -84,7 +84,7 @@ Bool SubWindowHandle::loadFile( const QString &fileName )
 
   m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
 
-  if( m_pCurrStream->guessFormat( fileName, Width, Height, InputFormat, FrameRate ) )
+  if( m_pCurrStream->guessFormat( rcFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
   {
     ConfigureFormatDialog formatDialog( this );
     if( formatDialog.runConfigureFormatDialog( Width, Height, InputFormat, FrameRate ) == QDialog::Rejected )
@@ -94,7 +94,7 @@ Bool SubWindowHandle::loadFile( const QString &fileName )
   }
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QApplication::restoreOverrideCursor();
-  if( !m_pCurrStream->open( fileName, Width, Height, InputFormat, FrameRate ) )
+  if( !m_pCurrStream->open( rcFilename, Width, Height, InputFormat, FrameRate ) )
   {
     return false;
   }
@@ -105,7 +105,7 @@ Bool SubWindowHandle::loadFile( const QString &fileName )
 
   refreshFrame();
 
-  m_cCurrFileName = fileName;
+  m_cCurrFileName = rcFilename;
   m_cWindowName = m_pCurrStream->getStreamInformationString();
   setWindowTitle( m_cWindowName );
   return true;

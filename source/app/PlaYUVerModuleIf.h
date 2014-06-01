@@ -84,9 +84,9 @@ class SubWindowHandle;
 
 class PlaYUVerModuleIf
 #ifdef PLAYUVER_THREADED_MODULES
-    : QThread
+    : public QThread
 #else
-    : QObject
+    : public QObject
 #endif
 {
   friend class ModulesHandle;

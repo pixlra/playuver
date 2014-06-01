@@ -213,7 +213,7 @@ Void plaYUVerApp::save()
 Void plaYUVerApp::format()
 {
   if( m_pcCurrentSubWindow )
-    m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->currentFile() );
+    m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->currentFile(), true );
 }
 
 Void plaYUVerApp::closeActiveWindow()
@@ -459,6 +459,7 @@ Void plaYUVerApp::playEvent()
       break;
     case -3:
       m_acPlayingSubWindows.at( i )->close();
+      m_acPlayingSubWindows.remove( i );
       break;
     case -4:
       m_acPlayingSubWindows.remove( i );
@@ -495,7 +496,7 @@ Void plaYUVerApp::updateTotalFrameNum( UInt total_frame_num )
   m_pcTotalFrameNumLabel->setText( QString( tr( "%1" ) ).arg( total_frame_num ) );
 }
 
-Void plaYUVerApp::seekEvent( int direction )
+Void plaYUVerApp::seekEvent( Int direction )
 {
   if( m_pcCurrentSubWindow )
   {
@@ -515,7 +516,7 @@ Void plaYUVerApp::seekEvent( int direction )
   }
 }
 
-Void plaYUVerApp::seekSliderEvent( int new_frame_num )
+Void plaYUVerApp::seekSliderEvent( Int new_frame_num )
 {
   if( m_pcCurrentSubWindow )
   {

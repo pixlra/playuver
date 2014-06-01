@@ -65,7 +65,7 @@ public:
   ~SubWindowHandle();
 
   Bool mayClose();
-  Bool loadFile( const QString &fileName );
+  Bool loadFile( const QString &rcFilename, Bool bForceDialog = false );
   Bool save();
 
   Void play();

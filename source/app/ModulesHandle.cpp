@@ -172,7 +172,6 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
       pcCurrModuleIf->m_pcSubWindow[i] = NULL;
     }
   }
-
   pcCurrModuleIf->destroy();
 }
 

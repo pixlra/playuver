@@ -31,13 +31,12 @@
 #include <cstdio>
 #include "PlaYUVerFrame.h"
 
-class QImage;
 class QAction;
 
 namespace plaYUVer
 {
 
-enum __PlaYUVerModuleTypes
+enum // Module type
 {
   FRAME_LEVEL_MODULE,
   VIDEO_LEVEL_MODULE,
@@ -46,17 +45,15 @@ enum __PlaYUVerModuleTypes
 #define APPLY_WHILE_PLAYING true
 #define MAX_NUMBER_FRAMES 3
 
-enum __PlaYUVerModuleNumberOfFrames
+enum // Number of frames
 {
-  // Number of frames
   MODULE_REQUIRES_ONE_FRAME = 1,
   MODULE_REQUIRES_TWO_FRAMES = 2,
   MODULE_REQUIRES_THREE_FRAMES = 3,
 };
 
-enum __PlaYUVerModuleRequirements
+enum // Requirements
 {
-  // Requirements
   MODULE_REQUIRES_NOTHING = 0,
   MODULE_REQUIRES_NEW_WINDOW = 2,
   MODULE_REQUIRES_SIDEBAR = 4,
@@ -72,7 +69,7 @@ enum __PlaYUVerModuleRequirements
       }                                         \
     }
 
-typedef struct __PlaYUVerModuleDefinition
+typedef struct
 {
   Int m_iModuleType;
   const Char* m_pchModuleCategory;
@@ -86,36 +83,57 @@ typedef struct __PlaYUVerModuleDefinition
 class SubWindowHandle;
 
 class PlaYUVerModuleIf
+#ifdef PLAYUVER_THREADED_MODULES
+    : QThread
+#else
+    : QObject
+#endif
 {
   friend class ModulesHandle;
+
 private:
   QAction* m_pcAction;
   SubWindowHandle* m_pcSubWindow[MAX_NUMBER_FRAMES];
   SubWindowHandle* m_pcDisplaySubWindow;
   PlaYUVerModuleDefinition m_cModuleDef;
+
+  Void postProgress( Bool success, PlaYUVerFrame* pcProcessedFrame );
 public:
-  PlaYUVerModuleIf() :
-          m_pcAction( NULL ),
-          m_pcDisplaySubWindow( NULL )
+  class EventData: public QEvent
   {
-    for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
+  public:
+    EventData() :
+            QEvent( QEvent::User )
     {
-      m_pcSubWindow[i] = NULL;
+      m_bSuccess = false;
+      m_pcProcessedFrame = NULL;
+      m_pcModule = NULL;
     }
-  }
-  virtual ~PlaYUVerModuleIf() { }
+    Bool m_bSuccess;
+    PlaYUVerFrame* m_pcProcessedFrame;
+    PlaYUVerModuleIf* m_pcModule;
+  };
 
-  virtual Void create()                 { }
-  virtual Void create( PlaYUVerFrame* ) { }
+  PlaYUVerModuleIf();
+  virtual ~PlaYUVerModuleIf() {}
 
-  virtual Void              process()                                                 {               }
-  virtual PlaYUVerFrame*    process( PlaYUVerFrame* )                                 { return NULL;  }
-  virtual PlaYUVerFrame*    process( PlaYUVerFrame*, PlaYUVerFrame* )                 { return NULL;  }
-  virtual PlaYUVerFrame*    process( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* ) { return NULL;  }
 
-  virtual Void destroy(){ }
+  virtual Void create() {}
+  virtual Void create( PlaYUVerFrame* ) {}
 
-  Void setModuleDefinition( PlaYUVerModuleDefinition def )  { m_cModuleDef = def; }
+  virtual Void            process() {}
+  virtual PlaYUVerFrame*  process( PlaYUVerFrame* ) { return NULL; }
+  virtual PlaYUVerFrame*  process( PlaYUVerFrame*, PlaYUVerFrame* ) { return NULL; }
+  virtual PlaYUVerFrame*  process( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* ) { return NULL; }
+
+  virtual Void destroy() { }
+
+  //PlaYUVerFrame* getProcessedFrame() { return m_pcProcessedFrame; }
+
+  Void setModuleDefinition( PlaYUVerModuleDefinition def ) { m_cModuleDef = def; }
+
+protected:
+    virtual void run();
 };
 
 }  // NAMESPACE

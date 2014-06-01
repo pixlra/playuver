@@ -45,11 +45,12 @@ SET( CMAKE_CXX_FLAGS "" )
 ######################################################################################
 # Variables
 ######################################################################################
-ADD_OPTION(USE_WERROR        "Warnings as errors"       OFF )
-ADD_OPTION(USE_QT4           "Build with QT4"           OFF )
-ADD_OPTION(USE_OPENCV        "Add OpenCV support"       OFF )
-ADD_OPTION(USE_PIXFC         "Add PIXFC support"        OFF )
-ADD_OPTION(USE_FFMPEG        "Add FFMPEG support"       OFF )
+ADD_OPTION(PLAYUVER_WERROR              "Warnings as errors"       OFF )
+ADD_OPTION(PLAYUVER_THREADED_MODULES    "Warnings as errors"       ON  )
+ADD_OPTION(USE_QT4                      "Build with QT4"           OFF )
+ADD_OPTION(USE_OPENCV                   "Add OpenCV support"       OFF )
+ADD_OPTION(USE_PIXFC                    "Add PIXFC support"        OFF )
+ADD_OPTION(USE_FFMPEG                   "Add FFMPEG support"       OFF )
 
 ######################################################################################
 # Dependencies
@@ -103,7 +104,7 @@ SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" )
 SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g" )
 SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3" )
 
-IF( USE_WERROR )
+IF( PLAYUVER_WERROR )
   SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
 ENDIF()
 

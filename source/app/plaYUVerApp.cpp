@@ -245,8 +245,7 @@ Void plaYUVerApp::ModuleHandling( QAction *curr_action )
   if( interfaceChild )
   {
     mdiArea->addSubWindow( interfaceChild );
-    interfaceChild->show();
-    interfaceChild->zoomToFit();
+
     interfaceChild->getViewArea()->setTool( m_appTool );
   }
   if( activeSubWindow() )

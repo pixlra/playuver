@@ -58,6 +58,7 @@ public:
   static Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
   static Bool applyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf, Bool isPlaying = false );
   static Void swapModulesWindowsIf( PlaYUVerModuleIf *pcCurrModuleIf );
+  static Bool showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame );
 
 private:
   QWidget *m_pcParent;
@@ -89,6 +90,7 @@ private:
 
   Void appendModule( PlaYUVerModuleIf* pcCurrModuleIf );
   SubWindowHandle* enableModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
+  Void customEvent( QEvent *event );
 
 private Q_SLOTS:
   void selectModule( int index );

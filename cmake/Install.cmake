@@ -75,16 +75,5 @@ IF( USE_FFMPEG )
   LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS ",")
   LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libavformat53 (>= 6:0.8.10~), libcodec53 (>= 6:0.8.3-1~), libavutil51 (>= 6:0.8.3-1~)")
 ENDIF()
-<<<<<<< HEAD
-IF( USE_OPENCV )
-  SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}")
-ENDIF()
 
-SET(CPACK_PACKAGE_DESCRIPTION "plaYUVer is an open-source QT based raw video player")
-SET(CPACK_PACKAGE_CONTACT "Joao Carreira (jfmcarreira@gmail.com), Luis Lucas (luisfrlucas@gmail.com)")
-# set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/Debian/postinst")
-=======
-
-
->>>>>>> master
 INCLUDE(CPack)

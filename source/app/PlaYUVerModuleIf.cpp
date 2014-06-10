@@ -40,7 +40,7 @@ PlaYUVerModuleIf::PlaYUVerModuleIf() :
 
 void PlaYUVerModuleIf::run()
 {
-  PlaYUVerFrame* pcProcessedFrame;
+  PlaYUVerFrame* pcProcessedFrame = NULL;
   switch( m_cModuleDef.m_uiNumberOfFrames )
   {
   case MODULE_REQUIRES_ONE_FRAME:

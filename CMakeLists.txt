@@ -9,8 +9,8 @@ cmake_minimum_required( VERSION 2.8.9 )
 ######################################################################################
 SET( PROJECT_NAME playuver )
 SET( PLAYUVER_VERSION_MAJOR "0" )
-SET( PLAYUVER_VERSION_MINOR "1" )
-SET( PLAYUVER_VERSION_PATH  "0" )
+SET( PLAYUVER_VERSION_MINOR "0" )
+SET( PLAYUVER_VERSION_PATH  "9999" )
 PROJECT( ${PROJECT_NAME} )
 
 INCLUDE( cmake/CMakeMacros.cmake )

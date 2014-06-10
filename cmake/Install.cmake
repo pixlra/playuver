@@ -50,18 +50,32 @@ ENDIF()
 # Create deb package
 ######################################################################################
 SET(CPACK_GENERATOR "DEB")
+
 SET(CPACK_PACKAGE_NAME "plaYUVer")
+SET(CPACK_PACKAGE_CONTACT "Joao Carreira (jfmcarreira@gmail.com), Luis Lucas (luisfrlucas@gmail.com)")
+
 SET(CPACK_PACKAGE_VERSION_MAJOR ${PLAYUVER_VERSION_MAJOR})
 SET(CPACK_PACKAGE_VERSION_MINOR ${PLAYUVER_VERSION_MINOR})
 SET(CPACK_PACKAGE_VERSION_PATCH ${PLAYUVER_VERSION_PATH})
+
+SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+
+SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION "plaYUVer is an open-source QT based raw video player")
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Joao Carreira (jfmcarreira@gmail.com), Luis Lucas (luisfrlucas@gmail.com)")
+
+
+SET(CPACK_DEBIAN_PACKAGE_DEPENDS "")
 IF( USE_QT4 )
-  SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS},libqtcore4,libqtgui4 ")
+  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libqtcore4 (>= 4:4.8.5~), libqtgui4 (>= 4:4.8.5~)" )
 ELSE()
-  SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS},libqt5core5a,libqt5gui5,libqt5widgets5 ")
+  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libqt5core5a, libqt5gui5, libqt5widgets5")
 ENDIF()
+
 IF( USE_FFMPEG )
-  SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS},libavformat53,libcodec53,libavutil51")
+  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS ",")
+  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libavformat53 (>= 6:0.8.10~), libcodec53 (>= 6:0.8.3-1~), libavutil51 (>= 6:0.8.3-1~)")
 ENDIF()
+<<<<<<< HEAD
 IF( USE_OPENCV )
   SET(CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}")
 ENDIF()
@@ -69,4 +83,8 @@ ENDIF()
 SET(CPACK_PACKAGE_DESCRIPTION "plaYUVer is an open-source QT based raw video player")
 SET(CPACK_PACKAGE_CONTACT "Joao Carreira (jfmcarreira@gmail.com), Luis Lucas (luisfrlucas@gmail.com)")
 # set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/Debian/postinst")
+=======
+
+
+>>>>>>> master
 INCLUDE(CPack)

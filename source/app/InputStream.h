@@ -48,6 +48,7 @@ class InputStream
 private:
 
   Bool m_bInit;
+  Bool m_bLoadAll;
   Int m_iErrorStatus;
 
 #ifdef USE_FFMPEG
@@ -108,6 +109,8 @@ public:
 
   Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
   Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
+
+  Void loadAll();
 
   Void readNextFrame();
 

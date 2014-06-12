@@ -164,8 +164,8 @@ Void plaYUVerApp::loadFile( QString fileName )
   SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
   if( interfaceChild->loadFile( fileName ) )
   {
+    statusBar()->showMessage( tr( "Loading file..." ) );
     mdiArea->addSubWindow( interfaceChild );
-    statusBar()->showMessage( tr( "File loaded" ), 2000 );
     interfaceChild->show();
     connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
         SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
@@ -173,6 +173,7 @@ Void plaYUVerApp::loadFile( QString fileName )
 
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
+    statusBar()->showMessage( tr( "File loaded" ), 2000 );
   }
   else
   {
@@ -215,6 +216,17 @@ Void plaYUVerApp::format()
   if( m_pcCurrentSubWindow )
     m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->currentFile(), true );
 }
+
+Void plaYUVerApp::loadAll()
+{
+  if( m_pcCurrentSubWindow )
+  {
+    statusBar()->showMessage( tr( "Loading file into memory ..." ) );
+    m_pcCurrentSubWindow->getInputStream()->loadAll();
+    statusBar()->showMessage( tr( "File loaded" ), 2000 );
+  }
+}
+
 
 Void plaYUVerApp::closeActiveWindow()
 {
@@ -840,6 +852,11 @@ Void plaYUVerApp::createActions()
   m_arrayActions[SAVE_ACT]->setStatusTip( tr( "Save current frame" ) );
   connect( m_arrayActions[SAVE_ACT], SIGNAL( triggered() ), this, SLOT( save() ) );
 
+  m_arrayActions[LOAD_ALL_ACT] = new QAction( tr( "&Load All" ), this );
+  //m_arrayActions[LOAD_ALL_ACT]->setIcon( QIcon( ":/images/configuredialog.png" ) );
+  m_arrayActions[LOAD_ALL_ACT]->setStatusTip( tr( "Load sequence into memory (caution)" ) );
+  connect( m_arrayActions[LOAD_ALL_ACT], SIGNAL( triggered() ), this, SLOT( loadAll() ) );
+
   m_arrayActions[FORMAT_ACT] = new QAction( tr( "&Format" ), this );
   m_arrayActions[FORMAT_ACT]->setIcon( QIcon( ":/images/configuredialog.png" ) );
   m_arrayActions[FORMAT_ACT]->setStatusTip( tr( "Open format dialog" ) );
@@ -1003,7 +1020,9 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[FILE_MENU] = menuBar()->addMenu( tr( "&File" ) );
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[OPEN_ACT] );
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[SAVE_ACT] );
+  m_arrayMenu[FILE_MENU]->addSeparator();
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[FORMAT_ACT] );
+  m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[LOAD_ALL_ACT] );
   m_arrayMenu[FILE_MENU]->addSeparator();
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[CLOSE_ACT] );
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[EXIT_ACT] );

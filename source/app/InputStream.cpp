@@ -252,7 +252,7 @@ Void InputStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UIn
 Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
 {
   Bool bRet = false;
-  QString fileExtension = QFileInfo( filename ).completeSuffix();
+  QString fileExtension = QFileInfo( filename ).suffix();
   if( !fileExtension.compare( "yuv" ) )
   {
     bRet = true;

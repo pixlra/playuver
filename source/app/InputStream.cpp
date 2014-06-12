@@ -131,7 +131,7 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
   m_iPixelFormat = input_format;
 
 #ifdef USE_FFMPEG
-  if( QFileInfo( filename ).completeSuffix().compare( QString( "yuv" ) ) )
+  if( QFileInfo( filename ).suffix().compare( QString( "yuv" ) ) )
   {
     avStatus = m_cLibAvContext.initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum );
     m_cFormatName = QFileInfo( filename ).completeSuffix().toUpper();

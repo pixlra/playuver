@@ -51,7 +51,9 @@ ENDIF()
 ######################################################################################
 SET(CPACK_GENERATOR "DEB")
 
-SET(CPACK_PACKAGE_NAME "plaYUVer")
+SET(CPACK_PACKAGE_NAME "playuver")
+SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION "plaYUVer is an open-source QT based raw video player")
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Joao Carreira (jfmcarreira@gmail.com), Luis Lucas (luisfrlucas@gmail.com)")
 SET(CPACK_PACKAGE_CONTACT "Joao Carreira (jfmcarreira@gmail.com), Luis Lucas (luisfrlucas@gmail.com)")
 
 SET(CPACK_PACKAGE_VERSION_MAJOR ${PLAYUVER_VERSION_MAJOR})
@@ -59,10 +61,6 @@ SET(CPACK_PACKAGE_VERSION_MINOR ${PLAYUVER_VERSION_MINOR})
 SET(CPACK_PACKAGE_VERSION_PATCH ${PLAYUVER_VERSION_PATH})
 
 SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
-
-SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION "plaYUVer is an open-source QT based raw video player")
-SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Joao Carreira (jfmcarreira@gmail.com), Luis Lucas (luisfrlucas@gmail.com)")
-
 
 SET(CPACK_DEBIAN_PACKAGE_DEPENDS "")
 IF( USE_QT4 )

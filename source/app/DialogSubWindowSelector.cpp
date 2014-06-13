@@ -57,8 +57,8 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
   m_comboBoxWindowList->setSizePolicy( sizePolicy );
   m_comboBoxWindowList->setAcceptDrops( true );
 
-
   m_pushButtonAdd = new QPushButton( "Add", this );
+  m_pushButtonAddAll = new QPushButton( "Add all", this );
   m_pushButtonRemove = new QPushButton( "Remove", this );
   m_pushButtonRemove->setEnabled( false );
 
@@ -79,6 +79,7 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
 
   QVBoxLayout* RightVLayout = new QVBoxLayout();
   RightVLayout->addWidget( m_pushButtonAdd );
+  RightVLayout->addWidget( m_pushButtonAddAll );
   RightVLayout->addWidget( m_pushButtonRemove );
   RightVLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
   RightVLayout->addWidget( dialogButtonOkCancel );
@@ -94,6 +95,7 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( m_pushButtonAdd, SIGNAL( clicked() ), this, SLOT( addSubWindow() ) );
+  connect( m_pushButtonAddAll, SIGNAL( clicked() ), this, SLOT( addAllSubWindow() ) );
   connect( m_pushButtonRemove, SIGNAL( clicked() ), this, SLOT( removeSubWindow() ) );
   QMetaObject::connectSlotsByName( this );
 
@@ -110,14 +112,14 @@ Void DialogSubWindowSelector::updateSubWindowList()
   {
     subWindow = qobject_cast<SubWindowHandle *>( m_pcMainWindowMdiArea->subWindowList().at( i ) );
     currSubWindowName = subWindow->getWindowName();
-    if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) )
+    if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) && !subWindow->getIsModule() )
       m_pcWindowListNames.append( currSubWindowName );
   }
   m_comboBoxWindowList->clear();
   m_comboBoxWindowList->insertItems( 0, m_pcWindowListNames );
   m_comboBoxWindowList->setCurrentIndex( -1 );
 
-  if( m_iNumberOfSelectedWindows >= 0 &&  m_pcSelectedWindowListNames.size() >= m_iNumberOfSelectedWindows )
+  if( m_iNumberOfSelectedWindows >= 0 && m_pcSelectedWindowListNames.size() >= m_iNumberOfSelectedWindows )
   {
     m_pushButtonAdd->setEnabled( false );
   }
@@ -125,7 +127,7 @@ Void DialogSubWindowSelector::updateSubWindowList()
   {
     m_pushButtonAdd->setEnabled( true );
   }
-  if( m_iNumberOfSelectedWindows >= 0 &&  m_pcSelectedWindowListNames.size() < m_iNumberOfSelectedWindows )
+  if( m_iNumberOfSelectedWindows >= 0 && m_pcSelectedWindowListNames.size() < m_iNumberOfSelectedWindows )
   {
 
   }
@@ -136,6 +138,10 @@ Void DialogSubWindowSelector::updateSubWindowList()
   else
   {
     m_pushButtonRemove->setEnabled( false );
+  }
+  if( m_iNumberOfSelectedWindows >= 0 && m_pcWindowListNames.size() <= m_iNumberOfSelectedWindows )
+  {
+    m_pushButtonAddAll->setEnabled( true );
   }
 }
 
@@ -149,7 +155,7 @@ Void DialogSubWindowSelector::setSubWindowList( QStringList cWindowListNames )
 
 // -----------------------  Slot Functions  -----------------------
 
-void DialogSubWindowSelector::addSubWindow()
+Void DialogSubWindowSelector::addSubWindow()
 {
   Int iSelectedIdx = m_comboBoxWindowList->currentIndex();
   if( iSelectedIdx >= 0 )
@@ -161,7 +167,21 @@ void DialogSubWindowSelector::addSubWindow()
   }
 }
 
-void DialogSubWindowSelector::removeSubWindow()
+Void DialogSubWindowSelector::addAllSubWindow()
+{
+  if( m_iNumberOfSelectedWindows <= 0 || m_pcWindowListNames.size() <= m_iNumberOfSelectedWindows )
+  {
+    for( Int i = 0; i < m_pcWindowListNames.size(); i++ )
+    {
+      m_pcSelectedWindowListNames.append( m_pcWindowListNames.at( i ) );
+    }
+    m_listSelectedWindows->clear();
+    m_listSelectedWindows->insertItems( 0, m_pcSelectedWindowListNames );
+    updateSubWindowList();
+  }
+}
+
+Void DialogSubWindowSelector::removeSubWindow()
 {
   QList<QListWidgetItem*> selectedWindows = m_listSelectedWindows->selectedItems();
   if( selectedWindows.size() )

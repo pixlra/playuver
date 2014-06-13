@@ -57,11 +57,12 @@ private:
   QString m_cCurrFileName;
 
   Bool m_bIsPlaying;
+  Bool m_bIsModule;
 
   QPoint m_cLastScroll;
 
 public:
-  SubWindowHandle( QWidget * parent = 0 );
+  SubWindowHandle( QWidget * parent = 0, Bool isModule = false );
   ~SubWindowHandle();
 
   Bool mayClose();
@@ -166,6 +167,11 @@ public:
   QString currentFile()
   {
     return m_cCurrFileName;
+  }
+
+  Bool getIsModule()
+  {
+    return m_bIsModule;
   }
 
 protected:

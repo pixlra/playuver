@@ -64,6 +64,7 @@ private:
 
   QComboBox* m_comboBoxWindowList;
   QPushButton* m_pushButtonAdd;
+  QPushButton* m_pushButtonAddAll;
   QPushButton* m_pushButtonRemove;
   QListWidget* m_listSelectedWindows;
 
@@ -71,6 +72,7 @@ private:
 
 private Q_SLOTS:
   void addSubWindow();
+  void addAllSubWindow();
   void removeSubWindow();
 
 };

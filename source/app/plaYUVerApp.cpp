@@ -671,7 +671,7 @@ Void plaYUVerApp::updatePixelValueStatusBar( const QPoint & pos, PlaYUVerFrame* 
     sPixelValue = curFrame->getPixelValue( pos, PlaYUVerFrame::COLOR_YUV );
     strPixel = QString( "Y: %1   U: %2   V: %3" ).arg( sPixelValue.Luma ).arg( sPixelValue.ChromaU ).arg( sPixelValue.ChromaV );
     strStatus.append( strPixel );
-    statusBar()->showMessage( strStatus, 0 );
+    statusBar()->showMessage( strStatus, 3000 );
   }
   else
   {

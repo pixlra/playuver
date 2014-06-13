@@ -101,12 +101,12 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   resolutionLabel->setText( "Resolution chosen" );
   QLabel* widthLabel = new QLabel( "Width" );
   m_spinBoxWidth = new QSpinBox();
-  m_spinBoxWidth->setRange( 0, 7240 );
+  m_spinBoxWidth->setRange( 0, 8192 );
   m_spinBoxWidth->setValue( 0 );
 
   QLabel* heightLabel = new QLabel( "Height" );
   m_spinBoxheight = new QSpinBox();
-  m_spinBoxheight->setRange( 0, 5432 );
+  m_spinBoxheight->setRange( 0, 4608 );
   m_spinBoxheight->setValue( 0 );
 
   QLabel* pixelsLabel = new QLabel();

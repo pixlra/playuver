@@ -29,8 +29,9 @@
 namespace plaYUVer
 {
 
-SubWindowHandle::SubWindowHandle( QWidget * parent ) :
-        QMdiSubWindow( parent )
+SubWindowHandle::SubWindowHandle( QWidget * parent, Bool isModule ) :
+        QMdiSubWindow( parent ),
+        m_bIsModule( isModule )
 {
   setParent( parent );
 

@@ -139,7 +139,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
   if( ( pcCurrModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
   {
-    interfaceChild = new SubWindowHandle( m_pcParent );
+    interfaceChild = new SubWindowHandle( m_pcParent, true );
     interfaceChild->setWindowName( windowName );
     connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), m_pcParent,
         SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );

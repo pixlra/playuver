@@ -194,6 +194,7 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
   m_cStreamInformationString.append( "] " );
   m_cStreamInformationString.append( QFileInfo( m_cFilename ).fileName() );
 
+  m_iCurrFrameNum = -1;
   seekInput( 0 );
   //loadAll();
 
@@ -359,7 +360,7 @@ Void InputStream::readNextFrame()
   UInt64 bytes_read = 0;
   //m_cTimer.restart();
 
-  if( m_iCurrFrameNum + 1 >= ( Int )m_uiTotalFrameNum )
+  if( m_iCurrFrameNum + 1 >= (Int64)m_uiTotalFrameNum )
   {
     m_iErrorStatus = LAST_FRAME;
     m_pcNextFrame = NULL;
@@ -419,8 +420,7 @@ Void InputStream::setNextFrame()
   else
   {
     m_iErrorStatus = END_OF_SEQ;
-    m_iCurrFrameNum = 0;
-    seekInput( m_iCurrFrameNum );
+    seekInput( 0 );
   }
 }
 
@@ -440,7 +440,7 @@ PlaYUVerFrame* InputStream::getCurrFrame()
 
 Void InputStream::seekInput( UInt64 new_frame_num )
 {
-  if( !m_pFile || new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum)
+  if( !m_pFile || new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum || (Int64)new_frame_num == m_iCurrFrameNum )
     return;
 
   m_iCurrFrameNum = new_frame_num - 1;

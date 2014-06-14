@@ -78,7 +78,7 @@ private:
   UInt m_uiHeight;
   UInt m_uiFrameRate;
   UInt64 m_uiTotalFrameNum;
-  Int m_iCurrFrameNum;
+  Int64 m_iCurrFrameNum;
 
 public:
   InputStream();

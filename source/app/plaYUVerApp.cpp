@@ -103,10 +103,10 @@ Void plaYUVerApp::about()
 {
   QString about_message;
   about_message.append( "The <b>plaYUVer</b> is an open-source raw video player! " );
-  about_message.append("Developed by ");
-  about_message.append("João Carreira ");
-  about_message.append("and ");
-  about_message.append("Luís Lucas");
+  about_message.append( "Developed by " );
+  about_message.append( "João Carreira " );
+  about_message.append( "and " );
+  about_message.append( "Luís Lucas" );
   QMessageBox::about( this, "About plaYUVer", about_message );
 }
 
@@ -305,15 +305,25 @@ Void plaYUVerApp::updatePropertiesSelectedArea( QRect area )
 
 // -----------------------  Playing Functions  --------------------
 
-UInt plaYUVerApp::getMaxFrameNumber()
+UInt64 plaYUVerApp::getMaxFrameNumber()
 {
   UInt currFrames;
-  UInt maxFrames = INT_MAX;
-  for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+  UInt64 maxFrames = INT_MAX;
+  if( m_pcCurrentSubWindow )
   {
-    currFrames = m_acPlayingSubWindows.at( i )->getInputStream()->getFrameNum();
-    if( currFrames < maxFrames )
-      maxFrames = currFrames;
+    if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
+    {
+      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      {
+        currFrames = m_acPlayingSubWindows.at( i )->getInputStream()->getFrameNum();
+        if( currFrames < maxFrames )
+          maxFrames = currFrames;
+      }
+    }
+    else
+    {
+      maxFrames = m_pcCurrentSubWindow->getInputStream()->getFrameNum();
+    }
   }
   return maxFrames;
 }
@@ -374,7 +384,7 @@ Void plaYUVerApp::play()
     {
       m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
       m_pcCurrentSubWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
-      m_pcFrameSlider->setMaximum( getMaxFrameNumber() - 1 );
+      updateTotalFrameNum();
     }
     m_pcCurrentSubWindow->play();
   }
@@ -436,6 +446,7 @@ Void plaYUVerApp::stop()
       seekSliderEvent( 0 );
     }
   }
+  updateTotalFrameNum();
 }
 
 Void plaYUVerApp::playEvent()
@@ -456,6 +467,13 @@ Void plaYUVerApp::playEvent()
         updateCurrFrameNum();
         updateFrameProperties();
         return;
+      }
+      else
+      {
+        for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+        {
+          m_acPlayingSubWindows.at( i )->seekAbsoluteEvent( 0 );
+        }
       }
       break;
     case -3:
@@ -487,11 +505,12 @@ Void plaYUVerApp::updateCurrFrameNum()
     m_pcCurrFrameNumLabel->setText( "1" );
   }
 }
-Void plaYUVerApp::updateTotalFrameNum( UInt total_frame_num )
+Void plaYUVerApp::updateTotalFrameNum()
 {
-  if( m_pcCurrentSubWindow && m_pcCurrentSubWindow->getInputStream() && total_frame_num == 1 )
+  UInt64 total_frame_num = 1;
+  if( m_pcCurrentSubWindow && m_pcCurrentSubWindow->getInputStream() )
   {
-    total_frame_num = m_pcCurrentSubWindow->getInputStream()->getFrameNum();
+    total_frame_num = getMaxFrameNumber();
   }
   m_pcFrameSlider->setMaximum( total_frame_num - 1 );
   m_pcTotalFrameNumLabel->setText( QString( tr( "%1" ) ).arg( total_frame_num ) );
@@ -1133,7 +1152,7 @@ Void plaYUVerApp::writeSettings()
   settings.setMainWindowPos( pos() );
   settings.setMainWindowSize( size() );
   settings.setLastOpenPath( m_cLastOpenPath );
-  settings.setSelectedTool( (Int)m_appTool );
+  settings.setSelectedTool( ( Int )m_appTool );
   settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked(), m_arrayActions[VIDEO_LOCK_ACT]->isChecked() );
 }
 

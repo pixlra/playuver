@@ -26,6 +26,9 @@
 #include "SubWindowHandle.h"
 #include "InputStream.h"
 #include "DialogSubWindowSelector.h"
+#ifdef USE_FERVOR
+#include "fvupdater.h"
+#endif
 
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
@@ -969,7 +972,7 @@ Void plaYUVerApp::createActions()
   m_pcFrameSlider = new QSlider;
   m_pcFrameSlider->setOrientation( Qt::Horizontal );
   m_pcFrameSlider->setMaximumWidth( 100 );
-  m_pcFrameSlider->setMaximumWidth( /* 300 */ 2000 );
+  m_pcFrameSlider->setMaximumWidth( /* 300 */2000 );
   m_pcFrameSlider->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
   m_pcFrameSlider->setEnabled( false );
   connect( m_pcFrameSlider, SIGNAL( sliderMoved(int) ), this, SLOT( seekSliderEvent(int) ) );
@@ -1020,6 +1023,13 @@ Void plaYUVerApp::createActions()
   m_arrayActions[SEPARATOR_ACT]->setSeparator( true );
 
   // ------------ About ------------
+
+#ifdef USE_FERVOR
+  m_arrayActions[UPDATE_ACT] = new QAction( tr( "&Update" ), this );
+  m_arrayActions[UPDATE_ACT]->setStatusTip( tr( "Check for updates" ) );
+  connect(m_arrayActions[UPDATE_ACT], SIGNAL(clicked()),
+      FvUpdater::sharedUpdater(), SLOT(CheckForUpdatesNotSilent()));
+#endif
 
   m_arrayActions[ABOUT_ACT] = new QAction( tr( "&About" ), this );
   m_arrayActions[ABOUT_ACT]->setStatusTip( tr( "Show the application's About box" ) );
@@ -1086,8 +1096,13 @@ Void plaYUVerApp::createMenus()
   menuBar()->addSeparator();
 
   m_arrayMenu[ABOUT_MENU] = menuBar()->addMenu( tr( "&Help" ) );
+#ifdef USE_FERVOR
+  m_arrayMenu[ABOUT_MENU]->addAction( m_arrayActions[UPDATE_ACT] );
+#endif
+  m_arrayMenu[ABOUT_MENU]->addSeparator();
   m_arrayMenu[ABOUT_MENU]->addAction( m_arrayActions[ABOUT_ACT] );
   m_arrayMenu[ABOUT_MENU]->addAction( m_arrayActions[ABOUTQT_ACT] );
+
 }
 
 Void plaYUVerApp::createToolBars()

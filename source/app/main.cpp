@@ -24,14 +24,23 @@
 
 #include <QApplication>
 #include "plaYUVerApp.h"
-
+#ifdef USE_FERVOR
+#include "fvupdater.h"
+#endif
 using namespace plaYUVer;
 
 int main( int argc, char *argv[] )
 {
   QApplication a( argc, argv );
+  QApplication::setApplicationName("playuver");
+  QApplication::setApplicationVersion("0.1");
+  QApplication::setOrganizationName("playuver");
+  QApplication::setOrganizationDomain("playuver.pixlra");
   plaYUVerApp w;
   w.show();
   w.parseArgs( argc, argv );
+#ifdef USE_FERVOR
+  FvUpdater::sharedUpdater()->SetFeedURL("/home/joaoc/Programming/PlaYUVerDev/playuver/app-update.xml");
+#endif
   return a.exec();
 }

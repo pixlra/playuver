@@ -49,8 +49,9 @@ ADD_OPTION(PLAYUVER_WERROR              "Warnings as errors"       OFF )
 ADD_OPTION(PLAYUVER_THREADED_MODULES    "Warnings as errors"       ON  )
 ADD_OPTION(USE_QT4                      "Build with QT4"           OFF )
 ADD_OPTION(USE_OPENCV                   "Add OpenCV support"       OFF )
-ADD_OPTION(USE_PIXFC                    "Add PIXFC support"        OFF )
 ADD_OPTION(USE_FFMPEG                   "Add FFMPEG support"       OFF )
+ADD_OPTION(USE_FERVOR                   "Add Fervor support"       OFF )
+ADD_OPTION(USE_PIXFC                    "Add PIXFC support"        OFF )
 
 ######################################################################################
 # Dependencies
@@ -67,6 +68,11 @@ IF( USE_OPENCV )
 ENDIF()
 INCLUDE( cmake/LibPixfc.cmake )
 INCLUDE( cmake/LibFFmpeg.cmake )
+IF( USE_FERVOR )
+  ADD_SUBDIRECTORY( fervor )
+  INCLUDE_DIRECTORIES( fervor )
+  LIST(APPEND LINKER_LIBS "Fervor" )
+ENDIF()
 
 ######################################################################################
 # PlaYUVer modules build
@@ -131,6 +137,7 @@ status("Dependencies:")
 status("    QT:"              USE_QT4             THEN "QT4" ELSE "QT5" )
 status("    OpenCV:"          USE_OPENCV          THEN YES ELSE NO)
 status("    FFMPEG:"          USE_FFMPEG          THEN YES ELSE NO)
+status("    Fervor:"          USE_FERVOR           THEN YES ELSE NO)
 status("    Pixfc-sse:"       USE_PIXFC           THEN YES ELSE NO)
 status("Features:")
 status("    Modules List:"          "${MODULES_LIST}" )

@@ -1128,7 +1128,7 @@ Void plaYUVerApp::createToolBars()
   addToolBar( Qt::TopToolBarArea, m_arrayToolBars[VIEW_TOOLBAR] );
 
   m_arrayToolBars[VIDEO_TOOLBAR] = new QToolBar( tr( "Video" ) );
-  m_arrayToolBars[VIDEO_TOOLBAR]->setAllowedAreas( Qt::BottomToolBarArea );
+  m_arrayToolBars[VIDEO_TOOLBAR]->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[PLAY_ACT] );
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[PAUSE_ACT] );
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[STOP_ACT] );

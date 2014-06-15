@@ -7,10 +7,19 @@ cmake_minimum_required( VERSION 2.8.9 )
 ######################################################################################
 # Project Definition
 ######################################################################################
+
+IF(UNIX)
+  EXECUTE_PROCESS(COMMAND "date" "+%Y%m%d" OUTPUT_VARIABLE DAY)
+  string(STRIP ${DAY} DAY)
+ENDIF(UNIX)
+
 SET( PROJECT_NAME playuver )
 SET( PLAYUVER_VERSION_MAJOR "0" )
 SET( PLAYUVER_VERSION_MINOR "0" )
-SET( PLAYUVER_VERSION_PATH  "9999" )
+SET( PLAYUVER_VERSION_PATCH  "9999" )
+#SET( PLAYUVER_VERSION_PATCH  ${DAY} )
+SET( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLAYUVER_VERSION_PATCH}")
+
 PROJECT( ${PROJECT_NAME} )
 
 INCLUDE( cmake/CMakeMacros.cmake )
@@ -69,6 +78,8 @@ ENDIF()
 INCLUDE( cmake/LibPixfc.cmake )
 INCLUDE( cmake/LibFFmpeg.cmake )
 IF( USE_FERVOR )
+  SET( FERVOR_APP_NAME ${PROJECT_NAME} ) 
+  SET( FERVOR_APP_VERSION ${PLAYUVER_VERSION} )
   ADD_SUBDIRECTORY( fervor )
   INCLUDE_DIRECTORIES( fervor )
   LIST(APPEND LINKER_LIBS "Fervor" )

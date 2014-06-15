@@ -28,7 +28,7 @@ namespace plaYUVer
 {
 
 PlaYUVerSettings::PlaYUVerSettings() :
-        m_settings( "IT", "YUV Player" )
+        m_settings( "pixLRA", "plaYUVer" )
 {
 }
 // - - - - - - - - - - - -  Main Window Settings - - - - - - - - - - - - - - - - 

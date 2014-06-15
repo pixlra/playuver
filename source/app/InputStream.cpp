@@ -300,6 +300,9 @@ Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, In
 
 Void InputStream::loadAll()
 {
+  if( m_bLoadAll )
+    return;
+
   if( m_ppcFrameBuffer )
   {
     for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
@@ -323,8 +326,9 @@ Void InputStream::loadAll()
   }
   m_uiFrameBufferIndex = 0;
   m_pcCurrFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
+  m_iCurrFrameNum = -1;
   seekInput( 0 );
-  for( UInt i = m_uiFrameBufferIndex+1; i < m_uiFrameBufferSize; i++ )
+  for( UInt i = 0; i < m_uiFrameBufferSize-1; i++ )
   {
     readNextFrame();
     setNextFrame();

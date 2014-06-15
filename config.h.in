@@ -44,6 +44,8 @@
 /* FFMPEG */
 #cmakedefine USE_FFMPEG
 
+/* Fervor update lib */
+#cmakedefine USE_FERVOR
 
 /* PIXFC-SSE lib */
 #cmakedefine USE_PIXFC

@@ -164,8 +164,8 @@ Void plaYUVerApp::loadFile( QString fileName )
   SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
   if( interfaceChild->loadFile( fileName ) )
   {
+    statusBar()->showMessage( tr( "Loading file..." ) );
     mdiArea->addSubWindow( interfaceChild );
-    statusBar()->showMessage( tr( "File loaded" ), 2000 );
     interfaceChild->show();
     connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
         SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
@@ -173,6 +173,7 @@ Void plaYUVerApp::loadFile( QString fileName )
 
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
+    statusBar()->showMessage( tr( "File loaded" ), 2000 );
   }
   else
   {
@@ -216,6 +217,16 @@ Void plaYUVerApp::format()
     m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->currentFile(), true );
 }
 
+Void plaYUVerApp::loadAll()
+{
+  if( m_pcCurrentSubWindow )
+  {
+    statusBar()->showMessage( tr( "Loading file into memory ..." ) );
+    m_pcCurrentSubWindow->getInputStream()->loadAll();
+    statusBar()->showMessage( tr( "File loaded" ), 2000 );
+  }
+}
+
 Void plaYUVerApp::closeActiveWindow()
 {
   SubWindowHandle *currSubWindow = activeSubWindow();
@@ -245,8 +256,7 @@ Void plaYUVerApp::ModuleHandling( QAction *curr_action )
   if( interfaceChild )
   {
     mdiArea->addSubWindow( interfaceChild );
-    interfaceChild->show();
-    interfaceChild->zoomToFit();
+
     interfaceChild->getViewArea()->setTool( m_appTool );
   }
   if( activeSubWindow() )
@@ -679,7 +689,7 @@ Void plaYUVerApp::updatePixelValueStatusBar( const QPoint & pos, PlaYUVerFrame* 
     sPixelValue = curFrame->getPixelValue( pos, PlaYUVerFrame::COLOR_YUV );
     strPixel = QString( "Y: %1   U: %2   V: %3" ).arg( sPixelValue.Luma ).arg( sPixelValue.ChromaU ).arg( sPixelValue.ChromaV );
     strStatus.append( strPixel );
-    statusBar()->showMessage( strStatus, 0 );
+    statusBar()->showMessage( strStatus, 3000 );
   }
   else
   {
@@ -860,6 +870,11 @@ Void plaYUVerApp::createActions()
   m_arrayActions[SAVE_ACT]->setStatusTip( tr( "Save current frame" ) );
   connect( m_arrayActions[SAVE_ACT], SIGNAL( triggered() ), this, SLOT( save() ) );
 
+  m_arrayActions[LOAD_ALL_ACT] = new QAction( tr( "&Load All" ), this );
+  //m_arrayActions[LOAD_ALL_ACT]->setIcon( QIcon( ":/images/configuredialog.png" ) );
+  m_arrayActions[LOAD_ALL_ACT]->setStatusTip( tr( "Load sequence into memory (caution)" ) );
+  connect( m_arrayActions[LOAD_ALL_ACT], SIGNAL( triggered() ), this, SLOT( loadAll() ) );
+
   m_arrayActions[FORMAT_ACT] = new QAction( tr( "&Format" ), this );
   m_arrayActions[FORMAT_ACT]->setIcon( QIcon( ":/images/configuredialog.png" ) );
   m_arrayActions[FORMAT_ACT]->setStatusTip( tr( "Open format dialog" ) );
@@ -954,7 +969,7 @@ Void plaYUVerApp::createActions()
   m_pcFrameSlider = new QSlider;
   m_pcFrameSlider->setOrientation( Qt::Horizontal );
   m_pcFrameSlider->setMaximumWidth( 100 );
-  m_pcFrameSlider->setMaximumWidth( 300 );
+  m_pcFrameSlider->setMaximumWidth( /* 300 */ 2000 );
   m_pcFrameSlider->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
   m_pcFrameSlider->setEnabled( false );
   connect( m_pcFrameSlider, SIGNAL( sliderMoved(int) ), this, SLOT( seekSliderEvent(int) ) );
@@ -1023,7 +1038,9 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[FILE_MENU] = menuBar()->addMenu( tr( "&File" ) );
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[OPEN_ACT] );
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[SAVE_ACT] );
+  m_arrayMenu[FILE_MENU]->addSeparator();
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[FORMAT_ACT] );
+  m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[LOAD_ALL_ACT] );
   m_arrayMenu[FILE_MENU]->addSeparator();
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[CLOSE_ACT] );
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[EXIT_ACT] );
@@ -1075,36 +1092,46 @@ Void plaYUVerApp::createMenus()
 
 Void plaYUVerApp::createToolBars()
 {
-  toolbarFile = addToolBar( tr( "File" ) );
-  toolbarFile->addAction( m_arrayActions[OPEN_ACT] );
-  toolbarFile->addAction( m_arrayActions[SAVE_ACT] );
-  toolbarFile->addAction( m_arrayActions[FORMAT_ACT] );
-  toolbarFile->addAction( m_arrayActions[CLOSE_ACT] );
+  m_arrayToolBars.resize( TOTAL_TOOLBAR );
 
-  toolbarView = addToolBar( tr( "Zoom" ) );
-  toolbarView->addAction( m_arrayActions[ZOOM_IN_ACT] );
-  toolbarView->addAction( m_arrayActions[ZOOM_OUT_ACT] );
-  toolbarView->addAction( m_arrayActions[ZOOM_NORMAL_ACT] );
-  toolbarView->addAction( m_arrayActions[ZOOM_FIT_ACT] );
+  m_arrayToolBars[FILE_TOOLBAR] = new QToolBar( tr( "File" ) );
+  m_arrayToolBars[FILE_TOOLBAR]->addAction( m_arrayActions[OPEN_ACT] );
+  m_arrayToolBars[FILE_TOOLBAR]->addAction( m_arrayActions[SAVE_ACT] );
+  m_arrayToolBars[FILE_TOOLBAR]->addAction( m_arrayActions[FORMAT_ACT] );
+  m_arrayToolBars[FILE_TOOLBAR]->addAction( m_arrayActions[CLOSE_ACT] );
 
-  toolbarVideo = addToolBar( tr( "Video" ) );
-  toolbarVideo->addAction( m_arrayActions[PLAY_ACT] );
-  toolbarVideo->addAction( m_arrayActions[PAUSE_ACT] );
-  toolbarVideo->addAction( m_arrayActions[STOP_ACT] );
-  toolbarVideo->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
-  toolbarVideo->addWidget( m_pcFrameSlider );
-  toolbarVideo->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
+  m_arrayToolBars[FILE_TOOLBAR]->setMovable( false );
+  addToolBar( Qt::TopToolBarArea, m_arrayToolBars[FILE_TOOLBAR] );
 
-  toolbarVideo->addWidget( new QLabel );
+  m_arrayToolBars[VIEW_TOOLBAR] = new QToolBar( tr( "View" ) );
+  m_arrayToolBars[VIEW_TOOLBAR]->addAction( m_arrayActions[ZOOM_IN_ACT] );
+  m_arrayToolBars[VIEW_TOOLBAR]->addAction( m_arrayActions[ZOOM_OUT_ACT] );
+  m_arrayToolBars[VIEW_TOOLBAR]->addAction( m_arrayActions[ZOOM_NORMAL_ACT] );
+  m_arrayToolBars[VIEW_TOOLBAR]->addAction( m_arrayActions[ZOOM_FIT_ACT] );
+
+  m_arrayToolBars[FILE_TOOLBAR]->setMovable( false );
+  addToolBar( Qt::TopToolBarArea, m_arrayToolBars[VIEW_TOOLBAR] );
+
+  m_arrayToolBars[VIDEO_TOOLBAR] = new QToolBar( tr( "Video" ) );
+  m_arrayToolBars[VIDEO_TOOLBAR]->setAllowedAreas( Qt::BottomToolBarArea );
+  m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[PLAY_ACT] );
+  m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[PAUSE_ACT] );
+  m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[STOP_ACT] );
+  m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
+  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcFrameSlider );
+  m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
+  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( new QLabel );
   m_pcCurrFrameNumLabel = new QLabel;
   m_pcCurrFrameNumLabel->setText( "-" );
-  toolbarVideo->addWidget( m_pcCurrFrameNumLabel );
+  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcCurrFrameNumLabel );
   QLabel *forwardslash = new QLabel;
   forwardslash->setText( "/" );
-  toolbarVideo->addWidget( forwardslash );
+  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( forwardslash );
   m_pcTotalFrameNumLabel = new QLabel;
   m_pcTotalFrameNumLabel->setText( "-" );
-  toolbarVideo->addWidget( m_pcTotalFrameNumLabel );
+  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcTotalFrameNumLabel );
+
+  addToolBar( Qt::BottomToolBarArea, m_arrayToolBars[VIDEO_TOOLBAR] );
 }
 
 Void plaYUVerApp::createDockWidgets()

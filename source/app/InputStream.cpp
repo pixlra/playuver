@@ -41,6 +41,7 @@ namespace plaYUVer
 InputStream::InputStream()
 {
   m_bInit = false;
+  m_bLoadAll = false;
   m_iErrorStatus = 0;
 
   m_pFile = NULL;
@@ -58,6 +59,7 @@ InputStream::InputStream()
   m_pcNextFrame = NULL;
   m_ppcFrameBuffer = NULL;
   m_uiFrameBufferSize = 2;
+  m_uiFrameBufferIndex = 0;
   m_uiAveragePlayInterval = 0;
 }
 
@@ -145,6 +147,7 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
     return m_bInit;
   }
 
+  m_uiFrameBufferSize = 2;
   getMem1D<PlaYUVerFrame*>( &m_ppcFrameBuffer, m_uiFrameBufferSize );
   for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
   {
@@ -193,6 +196,7 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
 
   m_iCurrFrameNum = -1;
   seekInput( 0 );
+  //loadAll();
 
   m_cTimer.start();
   m_uiAveragePlayInterval = 0;
@@ -229,6 +233,7 @@ Void InputStream::close()
             << QString::number( 1000 / ( m_uiAveragePlayInterval + 1 ) )
             << " fps";
 
+  m_bLoadAll = false;
   m_bInit = false;
 }
 
@@ -293,6 +298,45 @@ Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, In
   return bRet;
 }
 
+Void InputStream::loadAll()
+{
+  if( m_bLoadAll )
+    return;
+
+  if( m_ppcFrameBuffer )
+  {
+    for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
+    {
+      if( m_ppcFrameBuffer[i] )
+        delete m_ppcFrameBuffer[i];
+      m_ppcFrameBuffer[i] = NULL;
+    }
+    freeMem1D<PlaYUVerFrame*>( m_ppcFrameBuffer );
+    m_ppcFrameBuffer = NULL;
+  }
+  m_uiFrameBufferSize = m_uiTotalFrameNum;
+  getMem1D<PlaYUVerFrame*>( &m_ppcFrameBuffer, m_uiFrameBufferSize );
+  for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
+  {
+    m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
+    if( !m_ppcFrameBuffer[i] )
+    {
+      close();
+    }
+  }
+  m_uiFrameBufferIndex = 0;
+  m_pcCurrFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
+  m_iCurrFrameNum = -1;
+  seekInput( 0 );
+  for( UInt i = 0; i < m_uiFrameBufferSize-1; i++ )
+  {
+    readNextFrame();
+    setNextFrame();
+  }
+  m_bLoadAll = true;
+  seekInput( 0 );
+}
+
 Void InputStream::getDuration( Int* duration_array )
 {
   Int hours, mins, secs;
@@ -324,6 +368,11 @@ Void InputStream::readNextFrame()
   {
     m_iErrorStatus = LAST_FRAME;
     m_pcNextFrame = NULL;
+    return;
+  }
+
+  if( m_bLoadAll )
+  {
     return;
   }
 
@@ -365,8 +414,12 @@ Void InputStream::setNextFrame()
   {
     m_pcCurrFrame = m_pcNextFrame;
     m_iCurrFrameNum++;
-    m_pcNextFrame = m_ppcFrameBuffer[!m_uiFrameBufferIndex];
-    m_uiFrameBufferIndex = !m_uiFrameBufferIndex;
+    m_uiFrameBufferIndex++;
+    if( m_uiFrameBufferIndex == m_uiFrameBufferSize )
+    {
+      m_uiFrameBufferIndex = 0;
+    }
+    m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
   }
   else
   {
@@ -391,10 +444,18 @@ PlaYUVerFrame* InputStream::getCurrFrame()
 
 Void InputStream::seekInput( UInt64 new_frame_num )
 {
-  if( !m_pFile )
+  if( !m_pFile || new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum || (Int64)new_frame_num == m_iCurrFrameNum )
     return;
-  if( new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum || (Int64)new_frame_num == m_iCurrFrameNum )
+
+  m_iCurrFrameNum = new_frame_num - 1;
+
+  if( m_bLoadAll )
+  {
+    m_uiFrameBufferIndex = new_frame_num;
+    m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
+    setNextFrame();
     return;
+  }
 #ifdef USE_FFMPEG
   if( m_cLibAvContext.getStatus() )
   {
@@ -409,7 +470,7 @@ Void InputStream::seekInput( UInt64 new_frame_num )
   }
   m_uiFrameBufferIndex = 0;
   m_pcCurrFrame = m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
-  m_iCurrFrameNum = new_frame_num - 1;
+
   readNextFrame();
   setNextFrame();
   if( m_uiTotalFrameNum > 1 )

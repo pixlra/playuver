@@ -37,6 +37,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, Bool isModule ) :
 
   setAttribute( Qt::WA_DeleteOnClose );
   setBackgroundRole( QPalette::Light );
+  setVisible( false );
 
   // Create a new scroll area inside the sub-window
   m_cScrollArea = new QScrollArea( this );
@@ -122,7 +123,7 @@ Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
     disableModule();
   }
   m_pcCurrentModule = select_module;
-  refreshFrame();
+ // refreshFrame();
 }
 
 Void SubWindowHandle::disableModule()
@@ -149,6 +150,13 @@ Void SubWindowHandle::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
   m_pcCurrFrame = pcCurrFrame;
   m_cViewArea->setImage( m_pcCurrFrame );
+  if( !isVisible() )
+  {
+    show();
+    resize( sizeHint() );
+    zoomToFit();
+
+  }
 }
 
 Void SubWindowHandle::refreshFrame()
@@ -391,7 +399,8 @@ QSize SubWindowHandle::sizeHint() const
   if( m_pcCurrFrame )
     isize = QSize( m_pcCurrFrame->getWidth() + 50, m_pcCurrFrame->getHeight() + 50 );
   else
-    isize = QSize( m_pCurrStream->getWidth() + 50, m_pCurrStream->getHeight() + 50 );
+    if( m_pCurrStream )
+      isize = QSize( m_pCurrStream->getWidth() + 50, m_pCurrStream->getHeight() + 50 );
 
   // If the SubWindowHandle needs more space that the avaiable, we'll give
   // to the subwindow a reasonable size preserving the image aspect ratio.

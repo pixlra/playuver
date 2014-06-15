@@ -36,6 +36,8 @@
   #define QT_VERSION_PLAYUVER 4
 #endif
 
+#cmakedefine PLAYUVER_THREADED_MODULES
+
 /* OpenCV */
 #cmakedefine USE_OPENCV
 

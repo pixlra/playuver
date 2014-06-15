@@ -59,6 +59,7 @@ private Q_SLOTS:
   void open();
   void save();
   void format();
+  void loadAll();
   void closeActiveWindow();
   void closeAll();
 
@@ -183,15 +184,21 @@ private:
   StreamPropertiesSideBar* m_pcStreamProperties;
   FramePropertiesSideBar* m_pcFrameProperties;
 
-  QToolBar *toolbarFile;
-  QToolBar *toolbarView;
-  QToolBar *toolbarVideo;
+  enum TOOLBAR_LIST
+  {
+    FILE_TOOLBAR = 0,
+    VIEW_TOOLBAR,
+    VIDEO_TOOLBAR,
+    TOTAL_TOOLBAR,
+  };
+  QVector<QToolBar*> m_arrayToolBars;
 
   enum APP_ACTION_LIST
   {
     OPEN_ACT = 0,
     SAVE_ACT,
     FORMAT_ACT,
+    LOAD_ALL_ACT,
     CLOSE_ACT,
     CLOSEALL_ACT,
     EXIT_ACT,

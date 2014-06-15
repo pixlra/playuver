@@ -1171,6 +1171,13 @@ Void plaYUVerApp::readSettings()
   setAllSubWindowTool();
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
   m_arrayActions[VIDEO_LOCK_ACT]->setChecked( settings.getVideoLock() );
+  Bool visibleStreamProp, visibleFrameProp;
+  settings.getDockVisibility( visibleStreamProp, visibleFrameProp );
+  if( !visibleStreamProp )
+    m_arraySideBars[STREAM_SIDEBAR]->close();
+  if( !visibleFrameProp )
+    m_arraySideBars[FRAME_SIDEBAR]->close();
+
 }
 
 Void plaYUVerApp::writeSettings()
@@ -1180,6 +1187,7 @@ Void plaYUVerApp::writeSettings()
   settings.setMainWindowSize( size() );
   settings.setLastOpenPath( m_cLastOpenPath );
   settings.setSelectedTool( ( Int )m_appTool );
+  settings.setDockVisibility( m_pcStreamProperties->isVisible(), m_pcFrameProperties->isVisible() );
   settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked(), m_arrayActions[VIDEO_LOCK_ACT]->isChecked() );
 }
 

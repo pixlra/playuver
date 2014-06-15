@@ -73,6 +73,18 @@ Void PlaYUVerSettings::setSelectedTool( Int tool )
   m_settings.setValue( "MainWindow/SelectedTool", tool );
 }
 
+Void PlaYUVerSettings::setDockVisibility( Bool statusStreamProperties, Bool statusFrameProperties )
+{
+  m_settings.setValue( "Dock/StreamProperties", statusStreamProperties );
+  m_settings.setValue( "Dock/FrameProperties", statusFrameProperties );
+}
+
+Void PlaYUVerSettings::getDockVisibility( Bool& statusStreamProperties, Bool& statusFrameProperties )
+{
+  statusStreamProperties = m_settings.value( "Dock/StreamProperties", true ).toBool();
+  statusFrameProperties = m_settings.value( "Dock/FrameProperties", true ).toBool();
+}
+
 // - - - - - - - - - - - -  PLaying Settings - - - - - - - - - - - - - - - -
 
 Bool PlaYUVerSettings::getRepeat()

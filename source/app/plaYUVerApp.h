@@ -59,6 +59,8 @@ private Q_SLOTS:
   void open();
   void save();
   void format();
+  void reload();
+  void reloadAll();
   void loadAll();
   void closeActiveWindow();
   void closeAll();
@@ -198,6 +200,8 @@ private:
     OPEN_ACT = 0,
     SAVE_ACT,
     FORMAT_ACT,
+    RELOAD_ACT,
+    RELOAD_ALL_ACT,
     LOAD_ALL_ACT,
     CLOSE_ACT,
     CLOSEALL_ACT,

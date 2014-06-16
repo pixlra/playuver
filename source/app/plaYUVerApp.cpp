@@ -1027,8 +1027,7 @@ Void plaYUVerApp::createActions()
 #ifdef USE_FERVOR
   m_arrayActions[UPDATE_ACT] = new QAction( tr( "&Update" ), this );
   m_arrayActions[UPDATE_ACT]->setStatusTip( tr( "Check for updates" ) );
-  connect(m_arrayActions[UPDATE_ACT], SIGNAL(clicked()),
-      FvUpdater::sharedUpdater(), SLOT(CheckForUpdatesNotSilent()));
+  connect( m_arrayActions[UPDATE_ACT], SIGNAL( triggered() ), FvUpdater::sharedUpdater(), SLOT( CheckForUpdatesNotSilent() ) );
 #endif
 
   m_arrayActions[ABOUT_ACT] = new QAction( tr( "&About" ), this );

@@ -8,7 +8,7 @@ IF( WIN32 )
 ENDIF()
 
 IF( USE_QT4 )
-    FIND_PACKAGE( Qt4 REQUIRED QtCore QtGui QtNetwork )
+    FIND_PACKAGE( Qt4 REQUIRED QtCore QtGui QtNetwork QtWebKit )
     IF( NOT QT4_FOUND)
         SET(USE_QT4 FALSE)
     ENDIF()

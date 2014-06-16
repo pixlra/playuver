@@ -65,10 +65,10 @@ ADD_OPTION(USE_PIXFC                    "Add PIXFC support"        OFF )
 ######################################################################################
 # Dependencies
 ######################################################################################
+INCLUDE( cmake/LibFervor.cmake )
 INCLUDE( cmake/LibQT.cmake )
 INCLUDE( cmake/LibOpenCV.cmake )
 INCLUDE( cmake/LibFFmpeg.cmake )
-INCLUDE( cmake/LibFervor.cmake )
 INCLUDE( cmake/LibPixfc.cmake )
 
 ######################################################################################

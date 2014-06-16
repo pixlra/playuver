@@ -223,7 +223,7 @@ Void plaYUVerApp::format()
 Void plaYUVerApp::reload()
 {
   if( m_pcCurrentSubWindow )
-    m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->currentFile(), false );
+    m_pcCurrentSubWindow->reloadFile();
 }
 
 Void plaYUVerApp::reloadAll()
@@ -232,7 +232,7 @@ Void plaYUVerApp::reloadAll()
   for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
   {
     subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
-    subWindow->loadFile( m_pcCurrentSubWindow->currentFile(), false );
+    subWindow->reloadFile();
   }
 }
 

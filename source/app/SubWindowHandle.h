@@ -67,6 +67,7 @@ public:
 
   Bool mayClose();
   Bool loadFile( const QString &rcFilename, Bool bForceDialog = false );
+  Void reloadFile();
   Bool save();
 
   Void play();

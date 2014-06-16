@@ -224,7 +224,6 @@ Void plaYUVerApp::reload()
 {
   if( m_pcCurrentSubWindow )
     m_pcCurrentSubWindow->reloadFile();
-
 }
 
 Void plaYUVerApp::reloadAll()

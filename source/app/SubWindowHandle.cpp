@@ -73,6 +73,13 @@ SubWindowHandle::~SubWindowHandle()
     delete m_pCurrStream;
 }
 
+Void SubWindowHandle::reloadFile()
+{
+  Int currFrameNum = m_pCurrStream->getCurrFrameNum();
+  loadFile( m_cCurrFileName, false );
+  seekAbsoluteEvent( currFrameNum );
+}
+
 Bool SubWindowHandle::loadFile( const QString &rcFilename, Bool bForceDialog )
 {
   UInt Width = 0, Height = 0, FrameRate = 30;

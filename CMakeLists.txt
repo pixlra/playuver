@@ -66,24 +66,10 @@ ADD_OPTION(USE_PIXFC                    "Add PIXFC support"        OFF )
 # Dependencies
 ######################################################################################
 INCLUDE( cmake/LibQT.cmake )
-
-IF( USE_OPENCV )
-    FIND_PACKAGE( OpenCV )
-    IF( NOT OpenCV_FOUND)
-        SET(USE_OPENCV FALSE)
-    ELSE()
-        LIST(APPEND LINKER_LIBS ${OpenCV_LIBRARIES} )
-    ENDIF()
-ENDIF()
-INCLUDE( cmake/LibPixfc.cmake )
+INCLUDE( cmake/LibOpenCV.cmake )
 INCLUDE( cmake/LibFFmpeg.cmake )
-IF( USE_FERVOR )
-  SET( FERVOR_APP_NAME ${PROJECT_NAME} ) 
-  SET( FERVOR_APP_VERSION ${PLAYUVER_VERSION} )
-  ADD_SUBDIRECTORY( source/lib/fervor-lib )
-  INCLUDE_DIRECTORIES( source/lib/fervor-lib )
-  LIST(APPEND LINKER_LIBS "Fervor" )
-ENDIF()
+INCLUDE( cmake/LibFervor.cmake )
+INCLUDE( cmake/LibPixfc.cmake )
 
 ######################################################################################
 # PlaYUVer modules build

@@ -605,9 +605,12 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
 {
   event->accept();
 
+#ifndef _MSC_VER
   // Add this code line to avoid slow navigation with some specific mouses
+  // This seems to always appear on windows
   if(qApp->hasPendingEvents())
     return;
+#endif
 
   QPoint actualPos = windowToView( event->pos() );
   QRect updateRect;

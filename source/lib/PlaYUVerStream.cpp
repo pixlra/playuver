@@ -160,13 +160,15 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   if( !avStatus )
   {
     m_pFile = NULL;
-    Char *filename = m_cFilename.toLocal8Bit().data();
+    Char *filename = new char[m_cFilename.length() + 1];
+    memcpy(filename, m_cFilename.toUtf8().constData(), m_cFilename.length() + 1 * sizeof(char));
     m_pFile = fopen( filename, "rb" );
     if( m_pFile == NULL )
     {
       close();
       return m_bInit;
     }
+    delete[] filename;
     fseek( m_pFile, 0, SEEK_END );
     m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
     fseek( m_pFile, 0, SEEK_SET );

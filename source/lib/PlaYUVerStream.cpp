@@ -28,8 +28,8 @@
 #include "PlaYUVerStream.h"
 #ifdef USE_FFMPEG
 #include "LibAvContextHandle.h"
-#include "LibMemory.h"
 #endif
+#include "LibMemory.h"
 
 namespace plaYUVer
 {

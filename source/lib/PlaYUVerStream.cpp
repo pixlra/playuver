@@ -32,7 +32,7 @@
 namespace plaYUVer
 {
 
-InputStream::InputStream()
+PlaYUVerStream::PlaYUVerStream()
 {
   m_bInit = false;
   m_bLoadAll = false;
@@ -57,12 +57,12 @@ InputStream::InputStream()
   m_uiAveragePlayInterval = 0;
 }
 
-InputStream::~InputStream()
+PlaYUVerStream::~PlaYUVerStream()
 {
   close();
 }
 
-QString InputStream::supportedReadFormats()
+QString PlaYUVerStream::supportedReadFormats()
 {
   QString formats;
   formats = "*.yuv "  // Raw video
@@ -75,7 +75,7 @@ QString InputStream::supportedReadFormats()
   return formats;
 }
 
-QString InputStream::supportedWriteFormats()
+QString PlaYUVerStream::supportedWriteFormats()
 {
   QString formats;
   formats = "*.bmp "   // Windows Bitmap
@@ -86,7 +86,7 @@ QString InputStream::supportedWriteFormats()
   return formats;
 }
 
-QStringList InputStream::supportedReadFormatsList()
+QStringList PlaYUVerStream::supportedReadFormatsList()
 {
   QStringList formats;
   formats << "Raw video (*.yuv)"
@@ -99,7 +99,7 @@ QStringList InputStream::supportedReadFormatsList()
   return formats;
 }
 
-QStringList InputStream::supportedWriteFormatsList()
+QStringList PlaYUVerStream::supportedWriteFormatsList()
 {
   QStringList formats;
   formats << "Windows Bitmap (*.bmp)"
@@ -108,7 +108,7 @@ QStringList InputStream::supportedWriteFormatsList()
   return formats;
 }
 
-Bool InputStream::open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate )
+Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate )
 {
   Bool avStatus = false;
 
@@ -199,7 +199,7 @@ Bool InputStream::open( QString filename, UInt width, UInt height, Int input_for
   return m_bInit;
 }
 
-Void InputStream::close()
+Void PlaYUVerStream::close()
 {
   if( m_pFile )
     fclose( m_pFile );
@@ -231,7 +231,7 @@ Void InputStream::close()
   m_bInit = false;
 }
 
-Void InputStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
+Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
 {
   if( m_bInit )
   {
@@ -249,7 +249,7 @@ Void InputStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UIn
   }
 }
 
-Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
+Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
 {
   Bool bRet = false;
   QString fileExtension = QFileInfo( filename ).suffix();
@@ -292,7 +292,7 @@ Bool InputStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, In
   return bRet;
 }
 
-Void InputStream::loadAll()
+Void PlaYUVerStream::loadAll()
 {
   if( m_bLoadAll )
     return;
@@ -331,7 +331,7 @@ Void InputStream::loadAll()
   seekInput( 0 );
 }
 
-Void InputStream::getDuration( Int* duration_array )
+Void PlaYUVerStream::getDuration( Int* duration_array )
 {
   Int hours, mins, secs;
 #ifdef USE_FFMPEG
@@ -353,7 +353,7 @@ Void InputStream::getDuration( Int* duration_array )
   *duration_array++ = secs;
 }
 
-Void InputStream::readNextFrame()
+Void PlaYUVerStream::readNextFrame()
 {
   UInt64 bytes_read = 0;
   //m_cTimer.restart();
@@ -396,13 +396,13 @@ Void InputStream::readNextFrame()
   return;
 }
 
-Bool InputStream::writeFrame( const QString& filename )
+Bool PlaYUVerStream::writeFrame( const QString& filename )
 {
   //m_pcCurrFrame->getQimage().save( filename );
   return true;
 }
 
-Void InputStream::setNextFrame()
+Void PlaYUVerStream::setNextFrame()
 {
   if( m_pcNextFrame )
   {
@@ -422,7 +422,7 @@ Void InputStream::setNextFrame()
   }
 }
 
-PlaYUVerFrame* InputStream::getCurrFrame( PlaYUVerFrame *pyuv_image )
+PlaYUVerFrame* PlaYUVerStream::getCurrFrame( PlaYUVerFrame *pyuv_image )
 {
   if( pyuv_image == NULL )
     pyuv_image = new PlaYUVerFrame( m_pcCurrFrame );
@@ -431,12 +431,12 @@ PlaYUVerFrame* InputStream::getCurrFrame( PlaYUVerFrame *pyuv_image )
   return pyuv_image;
 }
 
-PlaYUVerFrame* InputStream::getCurrFrame()
+PlaYUVerFrame* PlaYUVerStream::getCurrFrame()
 {
   return m_pcCurrFrame;
 }
 
-Void InputStream::seekInput( UInt64 new_frame_num )
+Void PlaYUVerStream::seekInput( UInt64 new_frame_num )
 {
   if( !m_pFile || new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum || (Int64)new_frame_num == m_iCurrFrameNum )
     return;
@@ -471,7 +471,7 @@ Void InputStream::seekInput( UInt64 new_frame_num )
     readNextFrame();
 }
 
-Bool InputStream::checkErrors( Int error_type )
+Bool PlaYUVerStream::checkErrors( Int error_type )
 {
   if( m_iErrorStatus == error_type )
   {

@@ -123,7 +123,7 @@ QSize StreamPropertiesSideBar::sizeHint() const
   return bestSize( size() );
 }
 
-Void StreamPropertiesSideBar::setData( InputStream* pcStream )
+Void StreamPropertiesSideBar::setData( PlaYUVerStream* pcStream )
 {
   // Clear information.
   labelFormatValue->clear();

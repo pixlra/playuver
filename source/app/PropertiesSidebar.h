@@ -49,10 +49,10 @@ public:
 
   QSize sizeHint() const;
 
-  Void setData( InputStream* m_pcStream );
+  Void setData( PlaYUVerStream* m_pcStream );
 
 private:
-  InputStream* m_pcStream;
+  PlaYUVerStream* m_pcStream;
 
   Bool m_bIsVisible;
   QLabel* labelFormatValue;

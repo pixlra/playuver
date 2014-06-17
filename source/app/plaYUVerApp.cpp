@@ -189,14 +189,14 @@ Void plaYUVerApp::loadFile( QString fileName )
 Void plaYUVerApp::open()
 {
   QString supported = tr( "Supported Files" );
-  QString formats = InputStream::supportedReadFormats();
+  QString formats = PlaYUVerStream::supportedReadFormats();
   formats.prepend( " (" );
   formats.append( ")" );
   supported.append( formats );  // supported=="Supported Files (*.pbm *.jpg...)"
 
   QStringList filter;
   filter << supported
-         << InputStream::supportedReadFormatsList()
+         << PlaYUVerStream::supportedReadFormatsList()
          << tr( "All Files (*)" );
 
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );

@@ -55,7 +55,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, Bool isModule ) :
   m_cScrollArea->setWidgetResizable( true );
 
   m_pCurrStream = NULL;
-  //m_pCurrStream = new InputStream;
+  //m_pCurrStream = new PlaYUVerStream;
   m_pcCurrFrame = NULL;
   m_pcCurrentModule = NULL;
 
@@ -80,19 +80,19 @@ Void SubWindowHandle::reloadFile()
   seekAbsoluteEvent( currFrameNum );
 }
 
-Bool SubWindowHandle::loadFile( const QString &rcFilename, Bool bForceDialog )
+Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
 {
   UInt Width = 0, Height = 0, FrameRate = 30;
   Int InputFormat = -1;
 
   if( !m_pCurrStream )
   {
-    m_pCurrStream = new InputStream;
+    m_pCurrStream = new PlaYUVerStream;
   }
 
   m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
 
-  if( m_pCurrStream->guessFormat( rcFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
+  if( m_pCurrStream->guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
   {
     ConfigureFormatDialog formatDialog( this );
     if( formatDialog.runConfigureFormatDialog( Width, Height, InputFormat, FrameRate ) == QDialog::Rejected )
@@ -102,7 +102,7 @@ Bool SubWindowHandle::loadFile( const QString &rcFilename, Bool bForceDialog )
   }
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QApplication::restoreOverrideCursor();
-  if( !m_pCurrStream->open( rcFilename, Width, Height, InputFormat, FrameRate ) )
+  if( !m_pCurrStream->open( cFilename, Width, Height, InputFormat, FrameRate ) )
   {
     return false;
   }
@@ -113,7 +113,7 @@ Bool SubWindowHandle::loadFile( const QString &rcFilename, Bool bForceDialog )
 
   refreshFrame();
 
-  m_cCurrFileName = rcFilename;
+  m_cCurrFileName = cFilename;
   m_cWindowName = m_pCurrStream->getStreamInformationString();
   setWindowTitle( m_cWindowName );
   return true;
@@ -194,13 +194,13 @@ Void SubWindowHandle::refreshFrame()
 Bool SubWindowHandle::save()
 {
   QString supported = tr( "Supported Files" );
-  QString formats = InputStream::supportedWriteFormats();
+  QString formats = PlaYUVerStream::supportedWriteFormats();
   formats.prepend( " (" );
   formats.append( ")" );
   supported.append( formats );  // supported=="Supported Files (*.pbm *.jpg...)"
   QStringList filter;
   filter << supported
-         << InputStream::supportedWriteFormatsList()
+         << PlaYUVerStream::supportedWriteFormatsList()
          << tr( "All Files (*)" );
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save As" ), m_cCurrFileName, filter.join( ";;" ) );
   if( fileName.isEmpty() )
@@ -231,12 +231,12 @@ Int SubWindowHandle::playEvent()
   {
     m_pCurrStream->setNextFrame();
     refreshFrame();
-    if( m_pCurrStream->checkErrors( InputStream::END_OF_SEQ ) )
+    if( m_pCurrStream->checkErrors( PlaYUVerStream::END_OF_SEQ ) )
     {
       return -2;
     }
     m_pCurrStream->readNextFrame();
-    if( m_pCurrStream->checkErrors( InputStream::READING ) )
+    if( m_pCurrStream->checkErrors( PlaYUVerStream::READING ) )
     {
       QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( m_cCurrFileName ) );
       return -3;

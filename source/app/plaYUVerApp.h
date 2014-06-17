@@ -40,7 +40,7 @@ namespace plaYUVer
 {
 
 class SubWindowHandle;
-class InputStream;
+class PlaYUVerStream;
 
 class plaYUVerApp: public QMainWindow
 {

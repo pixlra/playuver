@@ -22,8 +22,8 @@
  * \brief    Input stream handling
  */
 
-#ifndef __INPUTSTREAM_H__
-#define __INPUTSTREAM_H__
+#ifndef __PLAYUVERSTREAM_H__
+#define __PLAYUVERSTREAM_H__
 
 #ifdef PLAYUVER
 #include "config.h"
@@ -44,7 +44,7 @@
 namespace plaYUVer
 {
 
-class InputStream
+class PlaYUVerStream
 {
 private:
 
@@ -83,21 +83,21 @@ private:
   Int64 m_iCurrFrameNum;
 
 public:
-  InputStream();
-  ~InputStream();
+  PlaYUVerStream();
+  ~PlaYUVerStream();
 
   static QString supportedReadFormats();
   static QString supportedWriteFormats();
   static QStringList supportedReadFormatsList();
   static QStringList supportedWriteFormatsList();
 
-  enum InputStreamFormats
+  enum PlaYUVerStreamFormats
   {
     INVALID = -1,
     YUVFormat = 0,  // Use color space.
   };
 
-  enum InputStreamErrors
+  enum PlaYUVerStreamErrors
   {
     NO_STREAM_ERROR = 0,
     READING,
@@ -185,4 +185,4 @@ public:
 
 }  // NAMESPACE
 
-#endif // __INPUTSTREAM_H__
+#endif // __PLAYUVERSTREAM_H__

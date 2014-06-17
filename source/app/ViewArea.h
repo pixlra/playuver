@@ -38,7 +38,7 @@
 namespace plaYUVer
 {
 
-class InputStream;
+class PlaYUVerStream;
 
 /**
  *
@@ -99,8 +99,8 @@ public:
     return m_maskColor;
   }
 
-  void setInputStream( InputStream *stream );
-  InputStream* getInputStream();
+  void setInputStream( PlaYUVerStream *stream );
+  PlaYUVerStream* getInputStream();
 
   Void zoomChangeEvent(Double factor, QPoint center);
   Double getZoomFactor();
@@ -167,7 +167,7 @@ private:
   bool m_snapToGrid;
   bool m_cursorInGrid;
 
-  InputStream *m_pStream;
+  PlaYUVerStream *m_pStream;
 
 };
 

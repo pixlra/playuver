@@ -875,12 +875,12 @@ void ViewArea::updateMask( const QRect &rect )
 }
 
 
-void ViewArea::setInputStream( InputStream *stream )
+void ViewArea::setInputStream( PlaYUVerStream *stream )
 {
   m_pStream = stream;
 }
 
-InputStream* ViewArea::getInputStream()
+PlaYUVerStream* ViewArea::getInputStream()
 {
   return m_pStream;
 }

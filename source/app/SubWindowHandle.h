@@ -50,7 +50,7 @@ private:
 
   PlaYUVerModuleIf* m_pcCurrentModule;
 
-  InputStream* m_pCurrStream;
+  PlaYUVerStream* m_pCurrStream;
   PlaYUVerFrame* m_pcCurrFrame;
 
   QString m_cWindowName;
@@ -66,7 +66,7 @@ public:
   ~SubWindowHandle();
 
   Bool mayClose();
-  Bool loadFile( const QString &rcFilename, Bool bForceDialog = false );
+  Bool loadFile( QString cFilename, Bool bForceDialog = false );
   Void reloadFile();
   Bool save();
 
@@ -88,7 +88,7 @@ public:
   Void refreshFrame();
   Void setCurrFrame( PlaYUVerFrame* pcCurrFrame );
 
-  InputStream* getInputStream()
+  PlaYUVerStream* getInputStream()
   {
     return m_pCurrStream;
   }

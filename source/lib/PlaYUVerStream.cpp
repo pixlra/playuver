@@ -22,8 +22,6 @@
  * \brief    Input stream handling
  */
 
-#include "config.h"
-
 #include <cstdio>
 #include "PlaYUVerStream.h"
 #ifdef USE_FFMPEG

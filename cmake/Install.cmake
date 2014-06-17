@@ -49,7 +49,7 @@ ENDIF()
 ######################################################################################
 # Create deb package
 ######################################################################################
-SET(CPACK_GENERATOR "DEB")
+SET(CPACK_GENERATOR "DEB;ZIP")
 
 SET(CPACK_PACKAGE_NAME ${PROJECT_NAME})
 SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION "plaYUVer is an open-source QT based raw video player")

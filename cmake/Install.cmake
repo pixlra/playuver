@@ -76,8 +76,8 @@ IF( UNIX )
     LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libavformat53 (>= 6:0.8.10~), libcodec53 (>= 6:0.8.3-1~), libavutil51 (>= 6:0.8.3-1~)")
   ENDIF()
   
-  EXECUTE_PROCESS(COMMAND "date" "+%Y%m%d" OUTPUT_VARIABLE DAY)
-  string(STRIP ${DAY} DAY)
+  #EXECUTE_PROCESS(COMMAND "date" "+%Y%m%d" OUTPUT_VARIABLE DAY)
+  #string(STRIP ${DAY} DAY)
 
 ENDIF()
 
@@ -85,8 +85,8 @@ IF( WIN32 )
 
   SET(CPACK_GENERATOR "ZIP")
   
-  EXECUTE_PROCESS(COMMAND "cmd" " /C date /T" OUTPUT_VARIABLE ${DAY})
-  string(REGEX REPLACE "(..)/(..)/..(..).*" "\\1/\\2/\\3" ${DAY} ${${DAY}})
+  #EXECUTE_PROCESS(COMMAND "cmd" " /C date /T" OUTPUT_VARIABLE ${DAY})
+  #string(REGEX REPLACE "(..)/(..)/..(..).*" "\\1/\\2/\\3" ${DAY} ${${DAY}})
  
 ENDIF()
 

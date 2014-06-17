@@ -24,7 +24,7 @@
 
 #include "plaYUVerApp.h"
 #include "SubWindowHandle.h"
-#include "InputStream.h"
+#include "PlaYUVerStream.h"
 #include "DialogSubWindowSelector.h"
 #ifdef USE_FERVOR
 #include "fvupdater.h"

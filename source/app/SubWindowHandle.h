@@ -32,7 +32,7 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
-#include "InputStream.h"
+#include "PlaYUVerStream.h"
 #include "ViewArea.h"
 #include "ModulesHandle.h"
 

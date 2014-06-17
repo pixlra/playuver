@@ -24,7 +24,7 @@
 
 #include "ConfigureFormatDialog.h"
 #include "PlaYUVerFrame.h"
-#include "InputStream.h"
+#include "PlaYUVerStream.h"
 
 namespace plaYUVer
 {

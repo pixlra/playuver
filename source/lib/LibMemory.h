@@ -49,6 +49,27 @@ typedef long long Int64;
 typedef unsigned long long UInt64;
 #endif
 
+static inline void* mem_malloc( size_t nitems )
+{
+  void *d;
+  if( ( d = malloc( nitems ) ) == NULL )
+  {
+    return NULL;
+  }
+  return d;
+}
+
+
+static inline void mem_free( void *ptr )
+{
+  if( ptr != NULL )
+  {
+    free( ptr );
+    ptr = NULL;
+  }
+}
+
+
 static inline Void* xMallocMem( SizeT nitems )
 {
   Void *d;

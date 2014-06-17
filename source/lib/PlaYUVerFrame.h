@@ -25,7 +25,9 @@
 #ifndef __PLAYUVERFRAME_H__
 #define __PLAYUVERFRAME_H__
 
+#ifdef PLAYUVER
 #include "config.h"
+#endif
 #include "PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>

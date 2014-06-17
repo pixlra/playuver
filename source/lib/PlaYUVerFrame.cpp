@@ -24,7 +24,6 @@
 #include <cstdio>
 
 #include "PlaYUVerFrame.h"
-#include "LibMemAlloc.h"
 #include "LibMemory.h"
 
 namespace plaYUVer

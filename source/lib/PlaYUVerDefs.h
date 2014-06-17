@@ -25,7 +25,7 @@
 #ifndef __TYPEDEF_H__
 #define __TYPEDEF_H__
 
-#ifndef __MAKE_LIB__
+#ifdef PLAYUVER
 #include "config.h"
 #endif
 #include <string>

@@ -33,7 +33,7 @@
 #include <QtGui>
 #include <QWidget>
 #endif
-#include "InputStream.h"
+#include "PlaYUVerStream.h"
 #include "PlaYUVerFrame.h"
 #include "HistogramWidget.h"
 

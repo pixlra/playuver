@@ -37,7 +37,7 @@
 
 #include "ViewArea.h"
 #include "GridManager.h"
-#include "InputStream.h"
+#include "PlaYUVerStream.h"
 
 namespace plaYUVer
 {

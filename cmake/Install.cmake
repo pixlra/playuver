@@ -3,9 +3,9 @@
 ######################################################################################
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION bin )
-INSTALL(FILES resources/playuver.desktop DESTINATION share/applications )
-INSTALL(FILES resources/playuver.png DESTINATION share/icons )
-INSTALL(FILES resources/x-raw.xml DESTINATION share/mime/video )
+INSTALL(FILES ${RSC_DIR}/playuver.desktop DESTINATION share/applications )
+INSTALL(FILES ${RSC_DIR}/playuver.png DESTINATION share/icons )
+INSTALL(FILES ${RSC_DIR}/x-raw.xml DESTINATION share/mime/video )
 
 IF( WIN32 )
   IF( NOT USE_QT4 )
@@ -43,6 +43,12 @@ IF( WIN32 )
     INSTALL(FILES ${OpenCV_DLL_DIR}/opencv_legacy${OpenCV_VERSION_MAJOR}${OpenCV_VERSION_MINOR}${OpenCV_VERSION_PATCH}.dll DESTINATION bin )
     INSTALL(FILES ${OpenCV_DLL_DIR}/opencv_gpu${OpenCV_VERSION_MAJOR}${OpenCV_VERSION_MINOR}${OpenCV_VERSION_PATCH}.dll DESTINATION bin )
   ENDIF()
+ENDIF()
+
+IF( PLAYUVER_INSTALL_LIBS )
+  FILE( GLOB PLAYUVER_LIB_INCLUDE_FILES   ${SRC_DIR}/lib/*.h ) 
+  INSTALL(FILES ${PLAYUVER_LIB_INCLUDE_FILES} DESTINATION include )
+  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libPlaYUVerLib.a DESTINATION lib )
 ENDIF()
 
 

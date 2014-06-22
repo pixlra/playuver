@@ -30,6 +30,7 @@
 /* QT definition */
 #cmakedefine USE_QT4
 
+#undef QT_VERSION_PLAYUVER
 #ifndef USE_QT4
   #define QT_VERSION_PLAYUVER 5
 #else

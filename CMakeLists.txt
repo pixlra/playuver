@@ -39,7 +39,7 @@ SET( CMAKE_AUTOMOC ON )
 
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${SRC_DIR}/app ${SRC_DIR}/lib ) 
 
-FILE( GLOB SOURCES_FILES   ${SRC_DIR}/app/*.cpp ${SRC_DIR}/lib/*.cpp )
+FILE( GLOB SOURCES_FILES   ${SRC_DIR}/app/*.cpp )
 FILE( GLOB FORMS_FILES     ${UI_DIR}/*.ui   )
 FILE( GLOB RESOURCES_FILES ${RSC_DIR}/*.qrc ${RSC_DIR}/*.rc )
 
@@ -58,12 +58,20 @@ ADD_DEFINITIONS( "-DPLAYUVER" )
 ######################################################################################
 ADD_OPTION(PLAYUVER_WERROR              "Warnings as errors"       OFF )
 ADD_OPTION(PLAYUVER_THREADED_MODULES    "Warnings as errors"       ON  )
+ADD_OPTION(PLAYUVER_INSTALL_LIBS        "Install PlaYUVer Lib"     ON  )
 ADD_OPTION(USE_QT4                      "Build with QT4"           OFF )
 ADD_OPTION(USE_OPENCV                   "Add OpenCV support"       OFF )
 ADD_OPTION(USE_FFMPEG                   "Add FFMPEG support"       OFF )
 ADD_OPTION(USE_FERVOR                   "Add Fervor support"       OFF )
 ADD_OPTION(USE_PIXFC                    "Add PIXFC support"        OFF )
 
+######################################################################################
+# PlaYUVer lib
+######################################################################################
+FILE( GLOB PLAYUVER_LIB_SOURCES_FILES ${SRC_DIR}/lib/*.cpp )
+INCLUDE_DIRECTORIES( ${SRC_DIR}/lib )
+ADD_LIBRARY( PlaYUVerLib ${PLAYUVER_LIB_SOURCES_FILES} )
+  
 ######################################################################################
 # Dependencies
 ######################################################################################
@@ -117,7 +125,7 @@ SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" )
 
 ADD_EXECUTABLE( ${PROJECT_NAME} ${SOURCES_FILES} ${HEADERS_MOC_FILES} ${FORMS_HEADERS_FILES} ${RESOURCES_RCC_FILES} )
 
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${PLAYUVER_LIBS}  ${MODULES_LIBS}  ${LINKER_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib ${MODULES_LIBS}  ${LINKER_LIBS} )
 
 IF( NOT USE_QT4)
     QT5_USE_MODULES( ${PROJECT_NAME} ${CURR_QT_MODULES} )

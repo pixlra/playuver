@@ -616,6 +616,7 @@ Void plaYUVerApp::videoSelectionButtonEvent()
     m_acPlayingSubWindows.clear();
     SubWindowHandle *subWindow;
     QString windowName;
+    Double scaleFactor = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( 0 ) )->getZoomFactor();
     for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
     {
       subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
@@ -624,6 +625,7 @@ Void plaYUVerApp::videoSelectionButtonEvent()
       {
         m_acPlayingSubWindows.append( subWindow );
         subWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
+        subWindow->scaleView( scaleFactor );
         subWindow->play();
         m_pcFrameSlider->setMaximum( qMin( m_pcFrameSlider->maximum(), ( Int )subWindow->getInputStream()->getFrameNum() - 1 ) );
       }
@@ -638,14 +640,38 @@ Void plaYUVerApp::videoSelectionButtonEvent()
 
 Void plaYUVerApp::normalSize()
 {
-  if( activeSubWindow() )
-    activeSubWindow()->normalSize();
+  if( m_pcCurrentSubWindow )
+  {
+    if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
+    {
+      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      {
+        m_acPlayingSubWindows.at( i )->normalSize();
+      }
+    }
+    else
+    {
+      m_pcCurrentSubWindow->normalSize();
+    }
+  }
 }
 
 Void plaYUVerApp::zoomToFit()
 {
-  if( activeSubWindow() )
-    activeSubWindow()->zoomToFit();
+  if( m_pcCurrentSubWindow )
+  {
+    if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
+    {
+      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      {
+        m_acPlayingSubWindows.at( i )->zoomToFit();
+      }
+    }
+    else
+    {
+      m_pcCurrentSubWindow->zoomToFit();
+    }
+  }
 }
 
 Void plaYUVerApp::zoomToFitAll()
@@ -660,12 +686,19 @@ Void plaYUVerApp::zoomToFitAll()
 
 Void plaYUVerApp::scaleFrame( Int ratio )
 {
-  if( activeSubWindow() )
+  if( m_pcCurrentSubWindow )
   {
-    activeSubWindow()->scaleViewByRatio( ( Double )( ratio ) / 100.0 );
-
-//    m_arrayActions[ZOOM_IN_ACT]->setEnabled( activeSubWindow()->getScaleFactor() < 3.0 );
-//    m_arrayActions[ZOOM_OUT_ACT]->setEnabled( activeSubWindow()->getScaleFactor() > 0.333 );
+    if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
+    {
+      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      {
+        m_acPlayingSubWindows.at( i )->scaleViewByRatio( ( Double )( ratio ) / 100.0 );
+      }
+    }
+    else
+    {
+      m_pcCurrentSubWindow->scaleViewByRatio( ( Double )( ratio ) / 100.0 );
+    }
   }
 }
 

@@ -102,6 +102,12 @@ public:
   {
     return m_cViewArea;
   }
+
+  Double getZoomFactor()
+  {
+    return m_cViewArea->getZoomFactor();
+  }
+
   Void setModule( PlaYUVerModuleIf* pcCurrentModule )
   {
     m_pcCurrentModule = pcCurrentModule;

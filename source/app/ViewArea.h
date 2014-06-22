@@ -99,11 +99,15 @@ public:
     return m_maskColor;
   }
 
+  Double getZoomFactor()
+  {
+    return m_zoomFactor;
+  }
+
   void setInputStream( PlaYUVerStream *stream );
   PlaYUVerStream* getInputStream();
 
   Void zoomChangeEvent(Double factor, QPoint center);
-  Double getZoomFactor();
   void setTool( enum eTool tool );
 
 //     QSize sizeHint() const;

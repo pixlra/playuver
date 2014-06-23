@@ -1,0 +1,75 @@
+# ===================================================================================================================
+#  The PlaYUVer Libs CMake configuration file
+#
+#             ** File generated automatically, do not modify **
+#
+#  Usage from an external project:
+#    In your CMakeLists.txt, add these lines:
+#
+#    find_package(PlaYUVer REQUIRED)
+#    include_directories(${PLAYUVER_INCLUDE_DIRS})
+#    target_link_libraries(MY_TARGET_NAME ${PLAYUVER_LINKER_LIBS})
+#
+#    Or you can search for specific PlaYUVer modules:
+#
+#    find_package(PlaYUVer REQUIRED Frame Stream)
+#
+#    If the module is found then PLAYUVER_<MODULE>_FOUND is set to TRUE.
+#
+#    This file will define the following variables:
+#      - PLAYUVER_LINKER_LIBS              : The list of all imported targets for OpenCV modules.
+#      - PLAYUVER_CXX_FLAGS
+#      - PLAYUVER_INCLUDE_DIRS             : The PlaYUVer include directories.
+#      - PLAYUVER_COMPUTE_CAPABILITIES     : The version of compute capability
+#      - PLAYUVER_ANDROID_NATIVE_API_LEVEL : Minimum required level of Android API
+#      - PLAYUVER_VERSION                  : The version of this PlaYUVer build: "@PLAYUVER_VERSION@"
+#      - PLAYUVER_VERSION_MAJOR            : Major version part of PLAYUVER_VERSION: "@PLAYUVER_VERSION_MAJOR@"
+#      - PLAYUVER_VERSION_MINOR            : Minor version part of PLAYUVER_VERSION: "@PLAYUVER_VERSION_MINOR@"
+#      - PLAYUVER_VERSION_PATCH            : Patch version part of PLAYUVER_VERSION: "@PLAYUVER_VERSION_PATCH@"
+#
+# ===================================================================================================================
+
+
+# ======================================================
+#  Variables:
+# ======================================================
+SET(PLAYUVER_VERSION @PLAYUVER_VERSION@)
+SET(PLAYUVER_VERSION_MAJOR  @PLAYUVER_VERSION_MAJOR@)
+SET(PLAYUVER_VERSION_MINOR  @PLAYUVER_VERSION_MINOR@)
+SET(PLAYUVER_VERSION_PATCH  @PLAYUVER_VERSION_PATCH@)
+
+SET( PLAYUVER_LINKER_LIBS "" )
+SET( PLAYUVER_CXX_FLAGS "" )
+SET( PLAYUVER_INCLUDE_DIRS "" )
+
+LIST(APPEND PLAYUVER_LINKER_LIBS "PlaYUVerFrame" )
+LIST(APPEND PLAYUVER_LINKER_LIBS "PlaYUVerStream" )
+LIST(APPEND PLAYUVER_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include )
+
+# ======================================================
+#  PlaYUVer dependencies:
+# ======================================================
+
+SET( PLAYUVER_HAS_OPENCV @USE_OPENCV@ )
+SET( PLAYUVER_HAS_QT4 @USE_QT4@ )
+
+IF( PLAYUVER_HAS_QT4 )
+
+  FIND_PACKAGE( Qt4 REQUIRED QtCore )
+  IF( NOT QT4_FOUND)
+    SET(USE_QT4 FALSE)
+  ENDIF()
+  INCLUDE( ${QT_USE_FILE} )
+  ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+  LIST(APPEND PLAYUVER_LIBS ${QT_LIBRARIES} )
+  
+ELSE()
+
+  FIND_PACKAGE( Qt5Core REQUIRED )
+  LIST(APPEND PLAYUVER_INCLUDE_DIRS ${Qt5Core_INCLUDE_DIRS} )
+  LIST(APPEND PLAYUVER_CXX_FLAGS ${Qt5Core_EXECUTABLE_COMPILE_FLAGS} )
+  LIST(APPEND PLAYUVER_LINKER_LIBS ${Qt5Core_LIBRARIES} )
+ 
+ENDIF()
+  
+

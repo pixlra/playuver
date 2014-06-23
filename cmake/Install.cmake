@@ -6,6 +6,7 @@ INSTALL(TARGETS ${PROJECT_NAME} DESTINATION bin )
 INSTALL(FILES ${RSC_DIR}/playuver.desktop DESTINATION share/applications )
 INSTALL(FILES ${RSC_DIR}/playuver.png DESTINATION share/icons )
 INSTALL(FILES ${RSC_DIR}/x-raw.xml DESTINATION share/mime/video )
+INSTALL(FILES ${CMAKE_BINARY_DIR}/PlaYUVerConfig.cmake DESTINATION share/playuver )
 
 IF( WIN32 )
   IF( NOT USE_QT4 )

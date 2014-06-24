@@ -217,13 +217,21 @@ Void plaYUVerApp::save()
 Void plaYUVerApp::format()
 {
   if( m_pcCurrentSubWindow )
+  {
     m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->currentFile(), true );
+    m_pcCurrentSubWindow = NULL;
+    chageSubWindowSelection();
+  }
 }
 
 Void plaYUVerApp::reload()
 {
   if( m_pcCurrentSubWindow )
+  {
     m_pcCurrentSubWindow->reloadFile();
+    m_pcCurrentSubWindow = NULL;
+    chageSubWindowSelection();
+  }
 }
 
 Void plaYUVerApp::reloadAll()

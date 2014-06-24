@@ -224,7 +224,9 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
       currFrames = pcCurrModuleIf->m_pcSubWindow[i]->getInputStream()->getFrameNum();
       if( currFrames < numberOfFrames )
         numberOfFrames = currFrames;
+      pcCurrModuleIf->m_pcSubWindow[i]->stop();
     }
+    QApplication::setOverrideCursor( Qt::WaitCursor );
     for( UInt f = 0; f < numberOfFrames; f++ )
     {
       for( UInt i = 0; i < numberOfWindows; i++ )
@@ -233,8 +235,10 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
         pcCurrModuleIf->m_pcSubWindow[i]->playEvent();
       }
       applyModuleIf( pcCurrModuleIf, false, false );
+      QCoreApplication::processEvents();
       pcCurrModuleIf->m_pcModuleStream->writeFrame( pcCurrModuleIf->m_pcProcessedFrame );
     }
+    QApplication::restoreOverrideCursor();
   }
 }
 
@@ -260,7 +264,10 @@ Void ModulesHandle::openModuleIfStream( PlaYUVerModuleIf *pcCurrModuleIf )
 
       QString fileName = QFileDialog::getSaveFileName( m_pcParent, tr( "Open File" ), QString(), filter.join( ";;" ) );
 
-      pcCurrModuleIf->m_pcSubWindow[0]->getInputStream()->getFormat( Width, Height, InputFormat, FrameRate );
+      Width = pcCurrModuleIf->m_pcProcessedFrame->getWidth();
+      Height = pcCurrModuleIf->m_pcProcessedFrame->getHeight();
+      InputFormat = pcCurrModuleIf->m_pcProcessedFrame->getPelFormat();
+      FrameRate = pcCurrModuleIf->m_pcSubWindow[0]->getInputStream()->getFrameRate();
 
       pcCurrModuleIf->m_pcModuleStream = new PlaYUVerStream;
       if( !pcCurrModuleIf->m_pcModuleStream->open( fileName, Width, Height, InputFormat, FrameRate, false ) )
@@ -387,7 +394,6 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
   m_pcModulesMenu->addAction( m_arrayActions[SWAP_FRAMES_ACT] );
   m_pcModulesMenu->addAction( m_arrayActions[DISABLE_ALL_ACT] );
   m_pcModulesMenu->addAction( m_arrayActions[FORCE_NEW_WINDOW_ACT] );
-  //m_pcModulesMenu->addAction( m_arrayActions[FORCE_PLAYING_REFRESH_ACT] );
 
   return m_pcModulesMenu;
 }

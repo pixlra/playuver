@@ -35,6 +35,7 @@ namespace plaYUVer
 PlaYUVerStream::PlaYUVerStream()
 {
   m_bInit = false;
+  m_bIsInput = true;
   m_bLoadAll = false;
   m_iErrorStatus = 0;
 
@@ -46,7 +47,7 @@ PlaYUVerStream::PlaYUVerStream()
   m_iPixelFormat = -1;
   m_uiFrameRate = 30;
   m_iFileFormat = INVALID;
-  m_pInputBuffer = NULL;
+  m_pStreamBuffer = NULL;
   m_cFilename = QString( "" );
   m_cStreamInformationString = QString( "" );
   m_pcCurrFrame = NULL;
@@ -67,12 +68,11 @@ QString PlaYUVerStream::supportedReadFormats()
   QString formats;
   formats = "*.yuv "  // Raw video
 #ifdef USE_FFMPEG
-          "*.avi "   // Audio video interleaved
-          "*.mp4 "
-          "*.wmv "// Windows media video
+      "*.avi "   // Audio video interleaved
+      "*.mp4 "
+      "*.wmv "// Windows media video
 #endif
-      ;
-  return formats;
+;  return formats;
 }
 
 QString PlaYUVerStream::supportedWriteFormats()
@@ -108,7 +108,7 @@ QStringList PlaYUVerStream::supportedWriteFormatsList()
   return formats;
 }
 
-Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate )
+Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate, Bool bInput )
 {
   Bool avStatus = false;
 
@@ -118,6 +118,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   }
 
   m_bInit = false;
+  m_bIsInput = bInput;
   m_cFilename = filename;
   m_uiWidth = width;
   m_uiHeight = height;
@@ -127,7 +128,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   m_iPixelFormat = input_format;
 
 #ifdef USE_FFMPEG
-  if( QFileInfo( filename ).suffix().compare( QString( "yuv" ) ) )
+  if( m_bIsInput && QFileInfo( filename ).suffix().compare( QString( "yuv" ) ) )
   {
     avStatus = m_cLibAvContext.initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum );
     m_cFormatName = QFileInfo( filename ).completeSuffix().toUpper();
@@ -141,7 +142,14 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     return m_bInit;
   }
 
-  m_uiFrameBufferSize = 2;
+  if( m_bIsInput )
+  {
+    m_uiFrameBufferSize = 2;
+  }
+  else
+  {
+    m_uiFrameBufferSize = 1;
+  }
   getMem1D<PlaYUVerFrame*>( &m_ppcFrameBuffer, m_uiFrameBufferSize );
   for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
   {
@@ -161,21 +169,25 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   {
     m_pFile = NULL;
     Char *filename = new char[m_cFilename.length() + 1];
-    memcpy(filename, m_cFilename.toUtf8().constData(), m_cFilename.length() + 1 * sizeof(char));
-    m_pFile = fopen( filename, "rb" );
+    memcpy( filename, m_cFilename.toUtf8().constData(), m_cFilename.length() + 1 * sizeof(char) );
+    m_pFile = fopen( filename, m_bIsInput ? "rb" : "wb" );
+    delete[] filename;
     if( m_pFile == NULL )
     {
       close();
       return m_bInit;
     }
-    delete[] filename;
-    fseek( m_pFile, 0, SEEK_END );
-    m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
-    fseek( m_pFile, 0, SEEK_SET );
+    if( m_bIsInput )
+    {
+      fseek( m_pFile, 0, SEEK_END );
+      m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
+      fseek( m_pFile, 0, SEEK_SET );
+    }
     m_cFormatName = QString::fromUtf8( "YUV" );
     m_cCodedName = QString::fromUtf8( "Raw Video" );
   }
-  if( !getMem1D<Pel>( &m_pInputBuffer, m_pcCurrFrame->getBytesPerFrame() ) )
+
+  if( !getMem1D<Pel>( &m_pStreamBuffer, m_pcCurrFrame->getBytesPerFrame() ) )
   {
     close();
     return m_bInit;
@@ -222,8 +234,8 @@ Void PlaYUVerStream::close()
     m_ppcFrameBuffer = NULL;
   }
 
-  if( m_pInputBuffer )
-    freeMem1D<Pel>( m_pInputBuffer );
+  if( m_pStreamBuffer )
+    freeMem1D<Pel>( m_pStreamBuffer );
 
   qDebug( ) << "Frame read time: "
             << QString::number( 1000 / ( m_uiAveragePlayInterval + 1 ) )
@@ -269,7 +281,7 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
         resolutionString.remove( "_" );
         QStringList resolutionArgs = resolutionString.split( "x" );
         qDebug( ) << "Found resolution = "
-                  << resolutionArgs;
+        << resolutionArgs;
         if( resolutionArgs.size() == 2 )
         {
           rWidth = resolutionArgs.at( 0 ).toUInt();
@@ -324,9 +336,9 @@ Void PlaYUVerStream::loadAll()
   m_pcCurrFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
   m_iCurrFrameNum = -1;
   seekInput( 0 );
-  for( UInt i = 0; i < m_uiFrameBufferSize-1; i++ )
+  for( UInt i = 0; i < m_uiFrameBufferSize - 1; i++ )
   {
-    readNextFrame();
+    readFrame();
     setNextFrame();
   }
   m_bLoadAll = true;
@@ -355,12 +367,12 @@ Void PlaYUVerStream::getDuration( Int* duration_array )
   *duration_array++ = secs;
 }
 
-Void PlaYUVerStream::readNextFrame()
+Void PlaYUVerStream::readFrame()
 {
-  UInt64 bytes_read = 0;
-  //m_cTimer.restart();
+  if( !m_bInit || !m_bIsInput )
+    return;
 
-  if( m_iCurrFrameNum + 1 >= (Int64)m_uiTotalFrameNum )
+  if( m_iCurrFrameNum + 1 >= ( Int64 )m_uiTotalFrameNum )
   {
     m_iErrorStatus = LAST_FRAME;
     m_pcNextFrame = NULL;
@@ -382,7 +394,7 @@ Void PlaYUVerStream::readNextFrame()
 #endif
   {
     UInt64 frame_bytes_input = m_pcNextFrame->getBytesPerFrame();
-    bytes_read = fread( m_pInputBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
+    UInt64 bytes_read = fread( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
     if( bytes_read != frame_bytes_input )
     {
       m_iErrorStatus = READING;
@@ -390,7 +402,7 @@ Void PlaYUVerStream::readNextFrame()
                 << endl;
       return;
     }
-    m_pcNextFrame->FrameFromBuffer( m_pInputBuffer, m_iPixelFormat );
+    m_pcNextFrame->FrameFromBuffer( m_pStreamBuffer, m_iPixelFormat );
   }
   //Int time = m_cTimer.elapsed();
   //m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time) / 2;
@@ -398,10 +410,16 @@ Void PlaYUVerStream::readNextFrame()
   return;
 }
 
-Bool PlaYUVerStream::writeFrame( const QString& filename )
+Void PlaYUVerStream::writeFrame( const QString& filename )
 {
-  //m_pcCurrFrame->getQimage().save( filename );
-  return true;
+  UInt64 frame_bytes_input = m_pcNextFrame->getBytesPerFrame();
+  m_pcNextFrame->FrameToBuffer( m_pStreamBuffer );
+  UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
+  if( bytes_read != frame_bytes_input )
+  {
+    m_iErrorStatus = WRITING;
+  }
+  return;
 }
 
 Void PlaYUVerStream::setNextFrame()
@@ -440,7 +458,7 @@ PlaYUVerFrame* PlaYUVerStream::getCurrFrame()
 
 Void PlaYUVerStream::seekInput( UInt64 new_frame_num )
 {
-  if( !m_pFile || new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum || (Int64)new_frame_num == m_iCurrFrameNum )
+  if( !m_pFile || new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum || ( Int64 )new_frame_num == m_iCurrFrameNum )
     return;
 
   m_iCurrFrameNum = new_frame_num - 1;
@@ -467,10 +485,10 @@ Void PlaYUVerStream::seekInput( UInt64 new_frame_num )
   m_uiFrameBufferIndex = 0;
   m_pcCurrFrame = m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
 
-  readNextFrame();
+  readFrame();
   setNextFrame();
   if( m_uiTotalFrameNum > 1 )
-    readNextFrame();
+    readFrame();
 }
 
 Bool PlaYUVerStream::checkErrors( Int error_type )

@@ -49,6 +49,7 @@ class PlaYUVerStream
 private:
 
   Bool m_bInit;
+  Bool m_bIsInput;
   Bool m_bLoadAll;
   Int m_iErrorStatus;
 
@@ -68,7 +69,7 @@ private:
   Int m_iFileFormat;
   Int m_iPixelFormat;
 
-  Pel* m_pInputBuffer;
+  Pel* m_pStreamBuffer;
 
   UInt m_uiFrameBufferSize;
   PlaYUVerFrame **m_ppcFrameBuffer;
@@ -101,11 +102,12 @@ public:
   {
     NO_STREAM_ERROR = 0,
     READING,
+    WRITING,
     LAST_FRAME,
     END_OF_SEQ,
   };
 
-  Bool open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate );
+  Bool open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate, Bool bInput = true );
   Void close();
 
   Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
@@ -113,9 +115,9 @@ public:
 
   Void loadAll();
 
-  Void readNextFrame();
+  Void readFrame();
 
-  Bool writeFrame( const QString& filename );
+  Void writeFrame( const QString& filename );
 
   Void setNextFrame();
   PlaYUVerFrame* getCurrFrame();

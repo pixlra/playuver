@@ -235,7 +235,7 @@ Int SubWindowHandle::playEvent()
     {
       return -2;
     }
-    m_pCurrStream->readNextFrame();
+    m_pCurrStream->readFrame();
     if( m_pCurrStream->checkErrors( PlaYUVerStream::READING ) )
     {
       QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( m_cCurrFileName ) );

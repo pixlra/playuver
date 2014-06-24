@@ -111,6 +111,7 @@ public:
   Void FrametoRGB8();
 
   Void FrameFromBuffer( Pel*, Int );
+  Void FrameToBuffer( Pel* );
 
   Void copyFrom( PlaYUVerFrame* );
   Void copyFrom( PlaYUVerFrame*, UInt, UInt);

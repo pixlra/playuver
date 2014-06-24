@@ -88,9 +88,11 @@ public:
   ~PlaYUVerStream();
 
   static QString supportedReadFormats();
-  static QString supportedWriteFormats();
   static QStringList supportedReadFormatsList();
+  static QString supportedWriteFormats();
   static QStringList supportedWriteFormatsList();
+  static QString supportedSaveFormats();
+  static QStringList supportedSaveFormatsList();
 
   enum PlaYUVerStreamFormats
   {
@@ -116,8 +118,10 @@ public:
   Void loadAll();
 
   Void readFrame();
+  Void writeFrame();
+  Void writeFrame( PlaYUVerFrame *pcFrame );
 
-  Void writeFrame( const QString& filename );
+  Void saveFrame( const QString& filename );
 
   Void setNextFrame();
   PlaYUVerFrame* getCurrFrame();

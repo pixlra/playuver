@@ -153,6 +153,15 @@ Void SubWindowHandle::swapModuleFrames()
   }
 }
 
+Void SubWindowHandle::applyModuleAllFrames()
+{
+  if( m_pcCurrentModule )
+  {
+    ModulesHandle::applyAllModuleIf( m_pcCurrentModule );
+    stop();
+  }
+}
+
 Void SubWindowHandle::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
   m_pcCurrFrame = pcCurrFrame;

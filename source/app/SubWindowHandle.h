@@ -112,6 +112,10 @@ public:
   {
     m_pcCurrentModule = pcCurrentModule;
   }
+  PlaYUVerModuleIf* getModule()
+  {
+    return m_pcCurrentModule;
+  }
 
   /**
    * Functions to enable a module in the
@@ -120,6 +124,8 @@ public:
   Void enableModule( PlaYUVerModuleIf* select_module );
   Void disableModule();
   Void swapModuleFrames();
+  Void applyModuleAllFrames();
+
   /**
    * Show the image at its original size
    */

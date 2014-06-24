@@ -69,21 +69,10 @@ QString PlaYUVerStream::supportedReadFormats()
   formats = "*.yuv "  // Raw video
 #ifdef USE_FFMPEG
       "*.avi "   // Audio video interleaved
-      "*.mp4 "
+      "*.mp4 "// MP4
       "*.wmv "// Windows media video
 #endif
 ;  return formats;
-}
-
-QString PlaYUVerStream::supportedWriteFormats()
-{
-  QString formats;
-  formats = "*.bmp "   // Windows Bitmap
-          "*.jpg "// Joint Photographic Experts Group
-          "*.jpeg "// Joint Photographic Experts Group
-          "*.png "// Portable Network Graphics
-  ;
-  return formats;
 }
 
 QStringList PlaYUVerStream::supportedReadFormatsList()
@@ -99,7 +88,32 @@ QStringList PlaYUVerStream::supportedReadFormatsList()
   return formats;
 }
 
+QString PlaYUVerStream::supportedWriteFormats()
+{
+  QString formats;
+  formats = "*.yuv "   // raw video
+      ;
+  return formats;
+}
+
 QStringList PlaYUVerStream::supportedWriteFormatsList()
+{
+  QStringList formats;
+  formats << "Raw video (*.yuv)";
+  return formats;
+}
+
+QString PlaYUVerStream::supportedSaveFormats()
+{
+  QString formats;
+  formats = "*.jpg "   // Joint Photographic Experts Group
+          "*.jpeg "// Joint Photographic Experts Group
+          "*.png "// Portable Network Graphics
+  ;
+  return formats;
+}
+
+QStringList PlaYUVerStream::supportedSaveFormatsList()
 {
   QStringList formats;
   formats << "Windows Bitmap (*.bmp)"
@@ -203,6 +217,9 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   m_cStreamInformationString.append( QFileInfo( m_cFilename ).fileName() );
 
   m_iCurrFrameNum = -1;
+
+  m_bInit = true;
+
   seekInput( 0 );
   //loadAll();
 
@@ -308,7 +325,7 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
 
 Void PlaYUVerStream::loadAll()
 {
-  if( m_bLoadAll )
+  if( m_bLoadAll || !m_bIsInput )
     return;
 
   if( m_ppcFrameBuffer )
@@ -410,15 +427,32 @@ Void PlaYUVerStream::readFrame()
   return;
 }
 
-Void PlaYUVerStream::writeFrame( const QString& filename )
+Void PlaYUVerStream::writeFrame()
 {
-  UInt64 frame_bytes_input = m_pcNextFrame->getBytesPerFrame();
-  m_pcNextFrame->FrameToBuffer( m_pStreamBuffer );
+  UInt64 frame_bytes_input = m_pcCurrFrame->getBytesPerFrame();
+  m_pcCurrFrame->FrameToBuffer( m_pStreamBuffer );
   UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
   if( bytes_read != frame_bytes_input )
   {
     m_iErrorStatus = WRITING;
   }
+  return;
+}
+
+Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
+{
+  UInt64 frame_bytes_input = pcFrame->getBytesPerFrame();
+  pcFrame->FrameToBuffer( m_pStreamBuffer );
+  UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
+  if( bytes_read != frame_bytes_input )
+  {
+    m_iErrorStatus = WRITING;
+  }
+  return;
+}
+
+Void PlaYUVerStream::saveFrame( const QString& filename )
+{
   return;
 }
 

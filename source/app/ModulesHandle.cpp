@@ -86,6 +86,10 @@ SubWindowHandle* ModulesHandle::processModuleHandlingOpt()
     case SWAP_FRAMES_OPT:
       pcSubWindow->swapModuleFrames();
       break;
+    case APPLY_ALL_OPT:
+      openModuleIfStream( pcSubWindow->getModule() );
+      pcSubWindow->applyModuleAllFrames();
+      break;
     default:
       Q_ASSERT( 0 );
     }
@@ -184,16 +188,18 @@ Void ModulesHandle::destroyAllModulesIf()
   }
 }
 
-Bool ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Bool isPlaying )
+Bool ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Bool isPlaying, Bool disableThreads )
 {
   Bool bRet = false;
   if( !isPlaying || ( isPlaying && pcCurrModuleIf->m_cModuleDef.m_bApplyWhilePlaying ) )
   {
 #ifdef PLAYUVER_THREADED_MODULES
-    pcCurrModuleIf->start();
-#else
-    pcCurrModuleIf->run();
+    if( !disableThreads )
+      pcCurrModuleIf->start();
+    else
 #endif
+      pcCurrModuleIf->run();
+
     if( pcCurrModuleIf->m_pcDisplaySubWindow )
     {
       bRet = true;
@@ -208,7 +214,63 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Bool isPlay
 
 Void ModulesHandle::applyAllModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
 {
+  if( pcCurrModuleIf->m_pcModuleStream )
+  {
+    UInt numberOfWindows = pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames;
+    UInt currFrames;
+    UInt64 numberOfFrames = INT_MAX;
+    for( UInt i = 0; i < numberOfWindows; i++ )
+    {
+      currFrames = pcCurrModuleIf->m_pcSubWindow[i]->getInputStream()->getFrameNum();
+      if( currFrames < numberOfFrames )
+        numberOfFrames = currFrames;
+    }
+    for( UInt f = 0; f < numberOfFrames; f++ )
+    {
+      for( UInt i = 0; i < numberOfWindows; i++ )
+      {
+        pcCurrModuleIf->m_pcSubWindow[i]->play();
+        pcCurrModuleIf->m_pcSubWindow[i]->playEvent();
+      }
+      applyModuleIf( pcCurrModuleIf, false, false );
+      pcCurrModuleIf->m_pcModuleStream->writeFrame( pcCurrModuleIf->m_pcProcessedFrame );
+    }
+  }
+}
 
+Void ModulesHandle::openModuleIfStream( PlaYUVerModuleIf *pcCurrModuleIf )
+{
+  if( pcCurrModuleIf )
+  {
+    if( !pcCurrModuleIf->m_pcModuleStream )
+    {
+      UInt Width = 0, Height = 0, FrameRate = 30;
+      Int InputFormat = -1;
+
+      QString supported = tr( "Supported Files" );
+      QString formats = PlaYUVerStream::supportedWriteFormats();
+      formats.prepend( " (" );
+      formats.append( ")" );
+      supported.append( formats );  // supported=="Supported Files (*.pbm *.jpg...)"
+
+      QStringList filter;
+      filter << supported
+             << PlaYUVerStream::supportedWriteFormatsList()
+             << tr( "All Files (*)" );
+
+      QString fileName = QFileDialog::getSaveFileName( m_pcParent, tr( "Open File" ), QString(), filter.join( ";;" ) );
+
+      pcCurrModuleIf->m_pcSubWindow[0]->getInputStream()->getFormat( Width, Height, InputFormat, FrameRate );
+
+      pcCurrModuleIf->m_pcModuleStream = new PlaYUVerStream;
+      if( !pcCurrModuleIf->m_pcModuleStream->open( fileName, Width, Height, InputFormat, FrameRate, false ) )
+      {
+        delete pcCurrModuleIf->m_pcModuleStream;
+        pcCurrModuleIf->m_pcModuleStream = NULL;
+        return;
+      }
+    }
+  }
 }
 
 Bool ModulesHandle::showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame )
@@ -300,8 +362,6 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
     pcCurrModuleIf->m_pcAction = currAction;
   }
 
-  m_arrayActions[DISABLE_ALL_ACT] = new QAction( "Disable All Modules", parent() );
-  connect( m_arrayActions[DISABLE_ALL_ACT], SIGNAL( triggered() ), this, SLOT( destroyAllModulesIf() ) );
   m_arrayActions[FORCE_NEW_WINDOW_ACT] = new QAction( "Use New Window", parent() );
   m_arrayActions[FORCE_NEW_WINDOW_ACT]->setStatusTip( "Show module result in a new window. Some modules already force this feature" );
   m_arrayActions[FORCE_NEW_WINDOW_ACT]->setCheckable( true );
@@ -309,12 +369,21 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
   m_arrayActions[FORCE_PLAYING_REFRESH_ACT]->setStatusTip( "Force module refreshing while playing" );
   m_arrayActions[FORCE_PLAYING_REFRESH_ACT]->setCheckable( true );
 
+  m_arrayActions[APPLY_ALL_ACT] = new QAction( "Apply to All", parent() );
+  m_arrayActions[APPLY_ALL_ACT]->setStatusTip( "Apply module to all frames and save the result" );
+  connect( m_arrayActions[APPLY_ALL_ACT], SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
+  m_pcActionMapper->setMapping( m_arrayActions[APPLY_ALL_ACT], APPLY_ALL_OPT );
+
   m_arrayActions[SWAP_FRAMES_ACT] = new QAction( "Swap frames", parent() );
   m_arrayActions[SWAP_FRAMES_ACT]->setStatusTip( "Swap Sub Window order" );
   connect( m_arrayActions[SWAP_FRAMES_ACT], SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
   m_pcActionMapper->setMapping( m_arrayActions[SWAP_FRAMES_ACT], SWAP_FRAMES_OPT );
 
+  m_arrayActions[DISABLE_ALL_ACT] = new QAction( "Disable All Modules", parent() );
+  connect( m_arrayActions[DISABLE_ALL_ACT], SIGNAL( triggered() ), this, SLOT( destroyAllModulesIf() ) );
+
   m_pcModulesMenu->addSeparator();
+  m_pcModulesMenu->addAction( m_arrayActions[APPLY_ALL_ACT] );
   m_pcModulesMenu->addAction( m_arrayActions[SWAP_FRAMES_ACT] );
   m_pcModulesMenu->addAction( m_arrayActions[DISABLE_ALL_ACT] );
   m_pcModulesMenu->addAction( m_arrayActions[FORCE_NEW_WINDOW_ACT] );

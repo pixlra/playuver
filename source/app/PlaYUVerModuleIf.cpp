@@ -30,7 +30,9 @@ namespace plaYUVer
 
 PlaYUVerModuleIf::PlaYUVerModuleIf() :
         m_pcAction( NULL ),
-        m_pcDisplaySubWindow( NULL )
+        m_pcDisplaySubWindow( NULL ),
+        m_pcProcessedFrame( NULL ),
+        m_pcModuleStream( NULL )
 {
   for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
   {
@@ -40,20 +42,19 @@ PlaYUVerModuleIf::PlaYUVerModuleIf() :
 
 void PlaYUVerModuleIf::run()
 {
-  PlaYUVerFrame* pcProcessedFrame = NULL;
   switch( m_cModuleDef.m_uiNumberOfFrames )
   {
   case MODULE_REQUIRES_ONE_FRAME:
-    pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame() );
+    m_pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame() );
     break;
   case MODULE_REQUIRES_TWO_FRAMES:
-    pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
+    m_pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
     break;
   case MODULE_REQUIRES_THREE_FRAMES:
-    pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame(), m_pcSubWindow[2]->getCurrFrame() );
+    m_pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame(), m_pcSubWindow[2]->getCurrFrame() );
     break;
   }
-  postProgress( true, pcProcessedFrame );
+  postProgress( true, m_pcProcessedFrame );
 }
 
 Void PlaYUVerModuleIf::postProgress( Bool success, PlaYUVerFrame* pcProcessedFrame )
@@ -62,8 +63,8 @@ Void PlaYUVerModuleIf::postProgress( Bool success, PlaYUVerFrame* pcProcessedFra
   eventData->m_bSuccess = success;
   eventData->m_pcProcessedFrame = pcProcessedFrame;
   eventData->m_pcModule = this;
-  if( parent() )
-  QCoreApplication::postEvent( parent(), eventData );
+  if( parent() && pcProcessedFrame )
+    QCoreApplication::postEvent( parent(), eventData );
 }
 
 }  // NAMESPACE

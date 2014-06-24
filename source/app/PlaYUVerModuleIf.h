@@ -97,7 +97,9 @@ private:
   SubWindowHandle* m_pcSubWindow[MAX_NUMBER_FRAMES];
   SubWindowHandle* m_pcDisplaySubWindow;
   PlaYUVerModuleDefinition m_cModuleDef;
+
   PlaYUVerStream* m_pcModuleStream;
+  PlaYUVerFrame* m_pcProcessedFrame;
 
   Void postProgress( Bool success, PlaYUVerFrame* pcProcessedFrame );
 public:

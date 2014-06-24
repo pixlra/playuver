@@ -56,7 +56,7 @@ public:
   SubWindowHandle* processModuleHandlingOpt();
 
   static Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
-  static Bool applyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf, Bool isPlaying = false );
+  static Bool applyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf, Bool isPlaying, Bool disableThreads = false );
   static Void swapModulesWindowsIf( PlaYUVerModuleIf *pcCurrModuleIf );
   static Bool showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame );
 
@@ -72,6 +72,7 @@ private:
   {
     INVALID_OPT = -1,
     SWAP_FRAMES_OPT = -2,
+    APPLY_ALL_OPT = -3,
   };
 
   QMenu* m_pcModulesMenu;
@@ -84,14 +85,17 @@ private:
   {
     FORCE_NEW_WINDOW_ACT = 0,
     FORCE_PLAYING_REFRESH_ACT,
-    DISABLE_ALL_ACT,
+    APPLY_ALL_ACT,
     SWAP_FRAMES_ACT,
+    DISABLE_ALL_ACT,
     MODULES_TOTAL_ACT
   };
   QVector<QAction*> m_arrayActions;
 
   Void appendModule( PlaYUVerModuleIf* pcCurrModuleIf );
   SubWindowHandle* enableModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
+  Void openModuleIfStream( PlaYUVerModuleIf *pcCurrModuleIf );
+
   Void customEvent( QEvent *event );
 
 private Q_SLOTS:

@@ -60,6 +60,8 @@ public:
   static Void swapModulesWindowsIf( PlaYUVerModuleIf *pcCurrModuleIf );
   static Bool showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame );
 
+  static Void applyAllModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
+
 private:
   QWidget *m_pcParent;
   QMdiArea *m_pcMdiArea;

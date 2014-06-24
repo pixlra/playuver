@@ -206,6 +206,11 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Bool isPlay
   return bRet;
 }
 
+Void ModulesHandle::applyAllModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
+{
+
+}
+
 Bool ModulesHandle::showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame )
 {
   Bool bRet = false;

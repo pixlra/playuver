@@ -30,6 +30,7 @@
 #include <iostream>
 #include <cstdio>
 #include "PlaYUVerFrame.h"
+#include "PlaYUVerStream.h"
 
 class QAction;
 
@@ -96,6 +97,7 @@ private:
   SubWindowHandle* m_pcSubWindow[MAX_NUMBER_FRAMES];
   SubWindowHandle* m_pcDisplaySubWindow;
   PlaYUVerModuleDefinition m_cModuleDef;
+  PlaYUVerStream* m_pcModuleStream;
 
   Void postProgress( Bool success, PlaYUVerFrame* pcProcessedFrame );
 public:

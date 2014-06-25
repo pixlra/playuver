@@ -32,8 +32,8 @@ namespace plaYUVer
 
 static PlaYUVerModuleDefinition MeasurePSNRDef =
 {
-    FRAME_LEVEL_MODULE,
-    "Measurements",
+    FRAME_MEASUREMENT_MODULE,
+    "Quality",
     "PSNR",
     "Measure the PSNR between two images",
     MODULE_REQUIRES_TWO_FRAMES,

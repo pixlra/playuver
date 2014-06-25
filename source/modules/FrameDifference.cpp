@@ -32,7 +32,7 @@ namespace plaYUVer
 
 static PlaYUVerModuleDefinition FrameDifferenceDef =
 {
-    FRAME_LEVEL_MODULE,
+    FRAME_PROCESSING_MODULE,
     "Measurements",
     "AbsoluteFrameDifference",
     "Measure the difference between two images (Y plane), e. g., abs( Y1 - Y2 )",

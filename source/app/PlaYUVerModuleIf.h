@@ -39,8 +39,9 @@ namespace plaYUVer
 
 enum // Module type
 {
-  FRAME_LEVEL_MODULE,
-  VIDEO_LEVEL_MODULE,
+  FRAME_PROCESSING_MODULE,
+  VIDEO_PROCESSING_MODULE,
+  FRAME_MEASUREMENT_MODULE,
 };
 
 #define APPLY_WHILE_PLAYING true
@@ -131,8 +132,6 @@ public:
   virtual PlaYUVerFrame*  process( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* ) { return NULL; }
 
   virtual Void destroy() { }
-
-  //PlaYUVerFrame* getProcessedFrame() { return m_pcProcessedFrame; }
 
   Void setModuleDefinition( PlaYUVerModuleDefinition def ) { m_cModuleDef = def; }
 

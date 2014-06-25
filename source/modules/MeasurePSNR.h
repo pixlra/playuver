@@ -41,7 +41,6 @@ namespace plaYUVer
 class MeasurePSNR: public PlaYUVerModuleIf
 {
 private:
-  PlaYUVerFrame* m_pcFilteredFrame;
 
 public:
   MeasurePSNR();
@@ -54,10 +53,6 @@ public:
   PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
   Void destroy();
 
-  PlaYUVerFrame* getModImage()
-  {
-    return m_pcFilteredFrame;
-  }
 };
 
 }  // NAMESPACE

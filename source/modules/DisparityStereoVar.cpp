@@ -32,7 +32,7 @@ namespace plaYUVer
 
 static PlaYUVerModuleDefinition DisparityStereoVarDef =
 {
-    FRAME_LEVEL_MODULE,
+    FRAME_PROCESSING_MODULE,
     "Disparity",
     "StereoVar",
     "Measure the disparity between two images using the Stereo Var method (OpenCV)",

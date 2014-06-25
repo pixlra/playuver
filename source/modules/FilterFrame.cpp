@@ -31,7 +31,7 @@ namespace plaYUVer
 {
 
 PlaYUVerModuleDefinition FilterFrameDef = {
-    FRAME_LEVEL_MODULE,             // Apply module to the frames or to the whole sequence.
+    FRAME_PROCESSING_MODULE,        // Apply module to the frames or to the whole sequence.
                                     // Currently only support for frame
     "Filters",                      // Category (sub-menu)
     "Y_Filter",                     // Name

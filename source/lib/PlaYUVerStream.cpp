@@ -57,6 +57,8 @@ PlaYUVerStream::PlaYUVerStream()
   m_uiFrameBufferSize = 2;
   m_uiFrameBufferIndex = 0;
   m_uiAveragePlayInterval = 0;
+
+  m_cLibAvContext = NULL;
 }
 
 PlaYUVerStream::~PlaYUVerStream()
@@ -145,9 +147,9 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
 #ifdef USE_FFMPEG
   if( m_bIsInput && QFileInfo( filename ).suffix().compare( QString( "yuv" ) ) )
   {
-    avStatus = m_cLibAvContext.initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum );
+    avStatus = m_cLibAvContext->initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum );
     m_cFormatName = QFileInfo( filename ).completeSuffix().toUpper();
-    m_cCodedName = QString::fromUtf8( m_cLibAvContext.getCodecName() ).toUpper();
+    m_cCodedName = QString::fromUtf8( m_cLibAvContext->getCodecName() ).toUpper();
   }
 #endif
 
@@ -237,7 +239,7 @@ Void PlaYUVerStream::close()
     fclose( m_pFile );
 
 #ifdef USE_FFMPEG
-  m_cLibAvContext.closeAvFormat();
+  m_cLibAvContext->closeAvFormat();
 #endif
 
   if( m_ppcFrameBuffer )
@@ -367,9 +369,9 @@ Void PlaYUVerStream::getDuration( Int* duration_array )
 {
   Int hours, mins, secs;
 #ifdef USE_FFMPEG
-  if( m_cLibAvContext.getStatus() )
+  if( m_cLibAvContext->getStatus() )
   {
-    secs = m_cLibAvContext.getStreamDuration();
+    secs = m_cLibAvContext->getStreamDuration();
   }
   else
 #endif
@@ -403,10 +405,10 @@ Void PlaYUVerStream::readFrame()
   }
 
 #ifdef USE_FFMPEG
-  if( m_cLibAvContext.getStatus() )
+  if( m_cLibAvContext->getStatus() )
   {
-    m_cLibAvContext.decodeAvFormat();
-    m_pcNextFrame->FrameFromBuffer( m_cLibAvContext.video_dst_data[0], m_iPixelFormat );
+    m_cLibAvContext->decodeAvFormat();
+    m_pcNextFrame->FrameFromBuffer( m_cLibAvContext->video_dst_data[0], m_iPixelFormat );
   }
   else
 #endif
@@ -506,9 +508,9 @@ Void PlaYUVerStream::seekInput( UInt64 new_frame_num )
     return;
   }
 #ifdef USE_FFMPEG
-  if( m_cLibAvContext.getStatus() )
+  if( m_cLibAvContext->getStatus() )
   {
-    m_cLibAvContext.seekAvFormat( new_frame_num );
+    m_cLibAvContext->seekAvFormat( new_frame_num );
   }
   else
 #endif

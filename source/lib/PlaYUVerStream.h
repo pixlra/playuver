@@ -31,10 +31,10 @@
 #include <QtCore>
 #include "PlaYUVerFrame.h"
 
-class LibAvContextHandle;
-
 namespace plaYUVer
 {
+
+class LibAvContextHandle;
 
 class PlaYUVerStream
 {
@@ -45,9 +45,7 @@ private:
   Bool m_bLoadAll;
   Int m_iErrorStatus;
 
-#ifdef USE_FFMPEG
-  LibAvContextHandle m_cLibAvContext;
-#endif
+  LibAvContextHandle* m_cLibAvContext;
 
   QString m_cFilename;
   QString m_cFormatName;

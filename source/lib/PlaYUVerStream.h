@@ -25,21 +25,13 @@
 #ifndef __PLAYUVERSTREAM_H__
 #define __PLAYUVERSTREAM_H__
 
-#ifdef PLAYUVER
-#include "config.h"
-#endif
 #include "PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>
 #include <QtCore>
-#ifdef USE_OPENCV
-#include <opencv2/opencv.hpp>
-#endif
-
-#ifdef USE_FFMPEG
-#include "LibAvContextHandle.h"
-#endif
 #include "PlaYUVerFrame.h"
+
+class LibAvContextHandle;
 
 namespace plaYUVer
 {

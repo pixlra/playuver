@@ -22,12 +22,13 @@
  * \brief    Input stream handling
  */
 
+#include "config.h"
 #include <cstdio>
+#include "LibMemory.h"
 #include "PlaYUVerStream.h"
 #ifdef USE_FFMPEG
 #include "LibAvContextHandle.h"
 #endif
-#include "LibMemory.h"
 
 namespace plaYUVer
 {

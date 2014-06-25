@@ -33,14 +33,12 @@
 #include <cstdio>
 #include <cassert>
 #include <QtCore>
+
 #ifdef USE_OPENCV
 #include <opencv2/opencv.hpp>
 #endif
-#ifdef USE_PIXFC
-#include "pixfc-sse.h"
-#endif
 
-class QImage;
+class PixFcSSE;
 
 namespace plaYUVer
 {
@@ -140,10 +138,9 @@ public:
 
   static Pixel ConvertPixel( Pixel, Int );
 
-#ifdef USE_OPENCV
   cv::Mat getCvMat();
   Void copyFrom( cv::Mat* );
-#endif
+
 
   UInt getWidth() const
   {
@@ -184,10 +181,8 @@ private:
   Void init( UInt width, UInt height, Int pel_format );
   Void openPixfc();
   Void closePixfc();
-#ifdef USE_PIXFC
   PixFcSSE* m_pcPixfc;
-  inline Void FrametoRGB8Pixfc();
-#endif
+  Void FrametoRGB8Pixfc();
 }
 ;
 

@@ -21,10 +21,17 @@
  * \file     PlaYUVerFrame.cpp
  * \brief    Video Frame handling
  */
-#include <cstdio>
 
-#include "PlaYUVerFrame.h"
+#include "config.h"
+#include <cstdio>
 #include "LibMemory.h"
+#include "PlaYUVerFrame.h"
+#ifdef USE_OPENCV
+#include <opencv2/opencv.hpp>
+#endif
+#ifdef USE_PIXFC
+#include "pixfc-sse.h"
+#endif
 
 namespace plaYUVer
 {
@@ -125,9 +132,9 @@ Void PlaYUVerFrame::closePixfc()
 #endif
 }
 
-#ifdef USE_PIXFC
-inline Void PlaYUVerFrame::FrametoRGB8Pixfc()
+Void PlaYUVerFrame::FrametoRGB8Pixfc()
 {
+#ifdef USE_PIXFC
   switch( m_iPixelFormat )
   {
     case YUV420p:
@@ -148,9 +155,8 @@ inline Void PlaYUVerFrame::FrametoRGB8Pixfc()
     break;
   }
   m_bHasRGBPel = true;
-}
-
 #endif
+}
 
 template<typename T>
 Void yuvToRgb( T iY, T iU, T iV, T &iR, T &iG, T &iB )
@@ -599,8 +605,6 @@ Pixel PlaYUVerFrame::ConvertPixel( Pixel sInputPixel, Int eOutputSpace )
   return sOutputPixel;
 }
 
-// Format conversion
-
 #ifdef USE_OPENCV
 cv::Mat PlaYUVerFrame::getCvMat()
 {
@@ -634,7 +638,10 @@ cv::Mat PlaYUVerFrame::getCvMat()
   }
   return opencvFrame;
 }
+#endif
 
+
+#ifdef USE_OPENCV
 Void PlaYUVerFrame::copyFrom( cv::Mat* opencvFrame )
 {
   if( m_iPixelFormat == NO_FMT )

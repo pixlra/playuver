@@ -31,8 +31,8 @@ namespace plaYUVer
 PlaYUVerModuleIf::PlaYUVerModuleIf() :
         m_pcAction( NULL ),
         m_pcDisplaySubWindow( NULL ),
-        m_pcProcessedFrame( NULL ),
-        m_pcModuleStream( NULL )
+        m_pcModuleStream( NULL ),
+        m_pcProcessedFrame( NULL )
 {
   for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
   {

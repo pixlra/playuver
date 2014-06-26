@@ -194,6 +194,7 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
     m_uiSecs = duration / AV_TIME_BASE;
     num_frames = m_uiSecs * frame_rate;
     m_uiMicroSec = duration % AV_TIME_BASE;
+    num_frames = num_frames == 0 ? 1 : num_frames;
   }
   else
   {

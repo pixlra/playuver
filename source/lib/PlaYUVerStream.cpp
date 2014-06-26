@@ -84,7 +84,6 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   m_uiHeight = height;
   m_uiFrameRate = frame_rate;
 
-
   if( m_bIsInput )
   {
     m_iFileFormat = YUVINPUT;
@@ -98,15 +97,23 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
 
     m_iPixelFormat = input_format;
 
-  #ifdef USE_FFMPEG
-    if( m_bIsInput /*&& m_iFileFormat != YUVINPUT */)
+#ifdef USE_FFMPEG
+    if( m_iFileFormat != YUVINPUT )
     {
       avStatus = m_cLibAvContext->initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum );
       m_cFormatName = QFileInfo( filename ).completeSuffix().toUpper();
       m_cCodedName = QString::fromUtf8( m_cLibAvContext->getCodecName() ).toUpper();
     }
-  #endif
+#endif
+    if( !avStatus )
+    {
+      switch( m_iFileFormat )
+      {
+      case PGMINPUT:
 
+        break;
+      }
+    }
     m_uiFrameBufferSize = 2;
   }
   else
@@ -114,8 +121,6 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     m_iFileFormat = YUVOUTPUT;
     m_uiFrameBufferSize = 1;
   }
-
-
 
   if( m_uiWidth <= 0 || m_uiHeight <= 0 || m_iPixelFormat < 0 )
   {
@@ -138,7 +143,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
 
   UInt64 frame_bytes_input = m_pcCurrFrame->getBytesPerFrame();
 
-  if( !avStatus )
+  if( !avStatus && m_iFileFormat == YUVINPUT )
   {
     m_pFile = NULL;
     Char *filename = new char[m_cFilename.length() + 1];
@@ -158,6 +163,12 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     }
     m_cFormatName = QString::fromUtf8( "YUV" );
     m_cCodedName = QString::fromUtf8( "Raw Video" );
+  }
+
+  if( m_uiTotalFrameNum <= 0 )
+  {
+    close();
+    return m_bInit;
   }
 
   if( !getMem1D<Pel>( &m_pStreamBuffer, m_pcCurrFrame->getBytesPerFrame() ) )
@@ -180,7 +191,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   m_bInit = true;
 
   seekInput( 0 );
-  //loadAll();
+//loadAll();
 
   m_cTimer.start();
   m_uiAveragePlayInterval = 0;
@@ -246,7 +257,7 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
   if( !fileExtension.compare( "yuv" ) )
   {
     bRet = true;
-    // Guess resolution - match %dx%d
+// Guess resolution - match %dx%d
 #if( QT_VERSION_PLAYUVER == 5 )
     QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*_" ).match( filename );
     if( resolutionMatch.hasMatch() )
@@ -266,7 +277,7 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
       }
     }
 #endif
-    // Guess pixel format
+// Guess pixel format
     QStringList formats_list = PlaYUVerFrame::supportedPixelFormatList();
     for( Int i = 0; i < formats_list.size(); i++ )
     {
@@ -363,7 +374,10 @@ Void PlaYUVerStream::readFrame()
 #ifdef USE_FFMPEG
   if( m_cLibAvContext->getStatus() )
   {
-    m_cLibAvContext->decodeAvFormat();
+    if( !m_cLibAvContext->decodeAvFormat() )
+    {
+      m_iErrorStatus = READING;
+    }
     m_pcNextFrame->FrameFromBuffer( m_cLibAvContext->video_dst_data[0], m_iPixelFormat );
   }
   else
@@ -380,8 +394,8 @@ Void PlaYUVerStream::readFrame()
     }
     m_pcNextFrame->FrameFromBuffer( m_pStreamBuffer, m_iPixelFormat );
   }
-  //Int time = m_cTimer.elapsed();
-  //m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time) / 2;
+//Int time = m_cTimer.elapsed();
+//m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time) / 2;
   m_pcNextFrame->FrametoRGB8();
   return;
 }

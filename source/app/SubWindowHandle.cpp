@@ -130,7 +130,7 @@ Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
     disableModule();
   }
   m_pcCurrentModule = select_module;
- // refreshFrame();
+  // refreshFrame();
 }
 
 Void SubWindowHandle::disableModule()
@@ -200,33 +200,12 @@ Void SubWindowHandle::refreshFrame()
   }
 }
 
-Bool SubWindowHandle::save()
+Bool SubWindowHandle::save( QString filename )
 {
-  QString supported = tr( "Supported Files" );
-  QString formats = PlaYUVerStream::supportedWriteFormats();
-  formats.prepend( " (" );
-  formats.append( ")" );
-  supported.append( formats );  // supported=="Supported Files (*.pbm *.jpg...)"
-  QStringList filter;
-  filter << supported
-         << PlaYUVerStream::supportedWriteFormatsList()
-         << tr( "All Files (*)" );
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save As" ), m_cCurrFileName, filter.join( ";;" ) );
-  if( fileName.isEmpty() )
-    return false;
-
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  m_pCurrStream->getCurrFrame()->FrametoRGB8();
-  QImage qimg = QImage( m_pCurrStream->getCurrFrame()->getQImageBuffer(), m_pCurrStream->getCurrFrame()->getWidth(), m_pCurrStream->getCurrFrame()->getHeight(),
-      QImage::Format_RGB888 );
-  if( qimg.save( fileName ) )
-  {
-    QApplication::restoreOverrideCursor();
-    QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot save file %1" ).arg( fileName ) );
-    return false;
-  }
+  Bool iRet = m_pCurrStream->saveFrame( filename );
   QApplication::restoreOverrideCursor();
-  return true;
+  return iRet;
 }
 
 Void SubWindowHandle::play()
@@ -414,9 +393,8 @@ QSize SubWindowHandle::sizeHint() const
   QSize isize;
   if( m_pcCurrFrame )
     isize = QSize( m_pcCurrFrame->getWidth() + 50, m_pcCurrFrame->getHeight() + 50 );
-  else
-    if( m_pCurrStream )
-      isize = QSize( m_pCurrStream->getWidth() + 50, m_pCurrStream->getHeight() + 50 );
+  else if( m_pCurrStream )
+    isize = QSize( m_pCurrStream->getWidth() + 50, m_pCurrStream->getHeight() + 50 );
 
   // If the SubWindowHandle needs more space that the avaiable, we'll give
   // to the subwindow a reasonable size preserving the image aspect ratio.

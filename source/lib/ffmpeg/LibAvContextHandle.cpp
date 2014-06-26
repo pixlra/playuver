@@ -108,15 +108,34 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
     sprintf( aux_string, "%dx%d", width, height );
     av_dict_set( &format_opts, "video_size", aux_string, 0 );
   }
+//  YUV420p = 0,
+//     YUV444p,
+//     YUV422p,
+//     YUYV422,
+//     GRAY,
+//     RGB8,
   switch( pixel_format )
   {
   case PlaYUVerFrame::NO_FMT:
     break;
+
   case PlaYUVerFrame::YUV420p:
     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_YUV420P ), 0 );
     break;
+  case PlaYUVerFrame::YUV444p:
+    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_YUV444P ), 0 );
+    break;
+  case PlaYUVerFrame::YUV422p:
+    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_YUV422P ), 0 );
+    break;
+  case PlaYUVerFrame::YUYV422:
+    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_YUYV422 ), 0 );
+    break;
   case PlaYUVerFrame::GRAY:
     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_GRAY8 ), 0 );
+    break;
+  case PlaYUVerFrame::RGB8:
+    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_RGB24 ), 0 );
     break;
   default:
     break;
@@ -152,8 +171,8 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
     video_dst_bufsize = ret;
   }
 
-  const char *codec_name = avcodec_get_name(video_dec_ctx->codec_id);
-  sprintf(m_acCodecName, "%s", codec_name);
+  const char *codec_name = avcodec_get_name( video_dec_ctx->codec_id );
+  sprintf( m_acCodecName, "%s", codec_name );
 
   Double fr = 30;
   if( video_stream->avg_frame_rate.den && video_stream->avg_frame_rate.num )
@@ -188,6 +207,9 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
   case AV_PIX_FMT_YUV420P:
     pixel_format = PlaYUVerFrame::YUV420p;
     break;
+  case AV_PIX_FMT_YUV444P:
+    pixel_format = PlaYUVerFrame::YUV444p;
+    break;
   case AV_PIX_FMT_YUV422P:
     pixel_format = PlaYUVerFrame::YUV422p;
     break;
@@ -213,7 +235,7 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
     closeAvFormat();
     return false;
   }
-  
+
 #if( LIBAVFORMAT_VERSION_MAJOR >= 55 )
   frame = av_frame_alloc();
 #else

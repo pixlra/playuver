@@ -77,18 +77,100 @@ public:
   PlaYUVerStream();
   ~PlaYUVerStream();
 
-  static QString supportedReadFormats();
-  static QStringList supportedReadFormatsList();
-  static QString supportedWriteFormats();
-  static QStringList supportedWriteFormatsList();
-  static QString supportedSaveFormats();
-  static QStringList supportedSaveFormatsList();
-
-  enum PlaYUVerStreamFormats
+  enum PlaYUVerStreamInputFormats
   {
-    INVALID = -1,
-    YUVFormat = 0,  // Use color space.
+    INVALID_INPUT = -1,
+    YUVINPUT = 0,
+#ifdef USE_FFMPEG
+    AVIINPUT,
+    MP4INPUT,
+    WMVINPUT,
+    PGMINPUT,
+    PNGINPUT,
+    BMPINPUT,
+    JPEGINPUT,
+#endif
+    TOTAL_INPUT_FORMATS
   };
+
+  static QStringList supportedReadFormatsExt()
+  {
+    QStringList formatsExt;
+    formatsExt << "yuv"  // Raw video
+#ifdef USE_FFMPEG
+               << "avi"   // Audio video interleaved
+               << "mp4"// MP4
+               << "wmv"// Windows media video
+               << "pgm"
+               << "png"
+               << "bmp"
+               << "jpg"
+#endif
+               ;
+    assert( formatsExt.size() == TOTAL_INPUT_FORMATS );
+    return formatsExt;
+  }
+
+  static QStringList supportedReadFormatsName()
+  {
+    QStringList formatsName;
+    formatsName << "Raw video"
+#ifdef USE_FFMPEG
+                << "Audio video interleaved"
+                << "MPEG4"
+                << "Windows media video"
+                << "Portable Grayscale Map"
+                << "Portable Network Graphics"
+                << "Windows Bitmap"
+                << "Joint Photographic Experts Group"
+#endif
+                ;
+    assert( formatsName.size() == TOTAL_INPUT_FORMATS );
+    return formatsName;
+  }
+
+  enum PlaYUVerStreamOutputFormats
+  {
+    INVALID_OUTPUT = -1,
+    YUVOUTPUT = 0,
+    TOTAL_OUTPUT_FORMATS
+  };
+
+  static QStringList supportedWriteFormatsExt()
+  {
+    QStringList formatsExt;
+    formatsExt << "yuv"   // raw video
+    ;
+    assert( formatsExt.size() == TOTAL_OUTPUT_FORMATS );
+    return formatsExt;
+  }
+
+  static QStringList supportedWriteFormatsName()
+  {
+    QStringList formatsName;
+    formatsName << "Raw video";
+    assert( formatsName.size() == TOTAL_OUTPUT_FORMATS );
+    return formatsName;
+  }
+
+  static QStringList supportedSaveFormatsExt()
+  {
+    QStringList formatsExt;
+    formatsExt << "bmp"
+               << "jpeg"
+               << "png"  // portable network graphics
+               ;
+    return formatsExt;
+  }
+
+  static QStringList supportedSaveFormatsName()
+  {
+    QStringList formatsName;
+    formatsName << "Windows Bitmap"
+                << "Joint Photographic Experts Group"
+                << "Portable Network Graphics";
+    return formatsName;
+  }
 
   enum PlaYUVerStreamErrors
   {
@@ -111,7 +193,7 @@ public:
   Void writeFrame();
   Void writeFrame( PlaYUVerFrame *pcFrame );
 
-  Void saveFrame( const QString& filename );
+  Bool saveFrame( const QString& filename );
 
   Void setNextFrame();
   PlaYUVerFrame* getCurrFrame();

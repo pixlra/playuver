@@ -188,15 +188,27 @@ Void plaYUVerApp::loadFile( QString fileName )
 
 Void plaYUVerApp::open()
 {
-  QString supported = tr( "Supported Files" );
-  QString formats = PlaYUVerStream::supportedReadFormats();
-  formats.prepend( " (" );
-  formats.append( ")" );
-  supported.append( formats );  // supported=="Supported Files (*.pbm *.jpg...)"
+  QString supported = tr( "Supported Files (" );
+  QStringList formatsList;
+  QStringList formatsExt = PlaYUVerStream::supportedReadFormatsExt();
+  QStringList formatsName = PlaYUVerStream::supportedReadFormatsName();
+
+  for( Int i = 0; i < formatsName.size(); i++ )
+  {
+    QString currFmt;
+    supported.append( " *." );
+    supported.append( formatsExt[i] );
+    currFmt.append( formatsName[i] );
+    currFmt.append( " (*." );
+    currFmt.append( formatsExt[i] );
+    currFmt.append( ")" );
+    formatsList << currFmt;
+  }
+  supported.append( " )" );
 
   QStringList filter;
   filter << supported
-         << PlaYUVerStream::supportedReadFormatsList()
+         << formatsList
          << tr( "All Files (*)" );
 
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );
@@ -211,7 +223,43 @@ Void plaYUVerApp::open()
 Void plaYUVerApp::save()
 {
   if( m_pcCurrentSubWindow )
-    m_pcCurrentSubWindow->save();
+  {
+    QString supported = tr( "Supported Files (" );
+    QStringList formatsList;
+    QStringList formatsExt = PlaYUVerStream::supportedSaveFormatsExt();
+    QStringList formatsName = PlaYUVerStream::supportedSaveFormatsName();
+
+    for( Int i = 0; i < formatsName.size(); i++ )
+    {
+      QString currFmt;
+      supported.append( " *." );
+      supported.append( formatsExt[i] );
+      currFmt.append( formatsName[i] );
+      currFmt.append( " (*." );
+      currFmt.append( formatsExt[i] );
+      currFmt.append( ")" );
+      formatsList << currFmt;
+    }
+    supported.append( " )" );
+
+    QStringList filter;
+    filter << supported
+           << formatsList
+           << tr( "All Files (*)" );
+
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Open File" ), QString(), filter.join( ";;" ) );
+
+    if( !fileName.isEmpty() )
+    {
+      m_cLastOpenPath = QFileInfo( fileName ).path();
+      if( !m_pcCurrentSubWindow->save( fileName ) )
+      {
+        QApplication::restoreOverrideCursor();
+        QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot save file %1" ).arg( fileName ) );
+        return;
+      }
+    }
+  }
 }
 
 Void plaYUVerApp::format()

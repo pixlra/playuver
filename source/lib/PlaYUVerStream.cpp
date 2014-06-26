@@ -26,6 +26,7 @@
 #include <cstdio>
 #include "LibMemory.h"
 #include "PlaYUVerStream.h"
+#include <QImage>
 #ifdef USE_FFMPEG
 #include "LibAvContextHandle.h"
 #endif
@@ -47,7 +48,7 @@ PlaYUVerStream::PlaYUVerStream()
   m_iCurrFrameNum = -1;
   m_iPixelFormat = -1;
   m_uiFrameRate = 30;
-  m_iFileFormat = INVALID;
+  m_iFileFormat = INVALID_INPUT;
   m_pStreamBuffer = NULL;
   m_cFilename = QString( "" );
   m_cStreamInformationString = QString( "" );
@@ -57,72 +58,14 @@ PlaYUVerStream::PlaYUVerStream()
   m_uiFrameBufferSize = 2;
   m_uiFrameBufferIndex = 0;
   m_uiAveragePlayInterval = 0;
-
-  m_cLibAvContext = NULL;
+#ifdef USE_FFMPEG
+  m_cLibAvContext = new LibAvContextHandle;
+#endif
 }
 
 PlaYUVerStream::~PlaYUVerStream()
 {
   close();
-}
-
-QString PlaYUVerStream::supportedReadFormats()
-{
-  QString formats;
-  formats = "*.yuv "  // Raw video
-#ifdef USE_FFMPEG
-      "*.avi "   // Audio video interleaved
-      "*.mp4 "// MP4
-      "*.wmv "// Windows media video
-#endif
-;  return formats;
-}
-
-QStringList PlaYUVerStream::supportedReadFormatsList()
-{
-  QStringList formats;
-  formats << "Raw video (*.yuv)"
-#ifdef USE_FFMPEG
-          << "Audio video interleaved (*.avi)"
-          << "MPEG4 (*.mp4)"
-          << "Windows media video (*.wmv)"
-#endif
-          ;
-  return formats;
-}
-
-QString PlaYUVerStream::supportedWriteFormats()
-{
-  QString formats;
-  formats = "*.yuv "   // raw video
-      ;
-  return formats;
-}
-
-QStringList PlaYUVerStream::supportedWriteFormatsList()
-{
-  QStringList formats;
-  formats << "Raw video (*.yuv)";
-  return formats;
-}
-
-QString PlaYUVerStream::supportedSaveFormats()
-{
-  QString formats;
-  formats = "*.jpg "   // Joint Photographic Experts Group
-          "*.jpeg "// Joint Photographic Experts Group
-          "*.png "// Portable Network Graphics
-  ;
-  return formats;
-}
-
-QStringList PlaYUVerStream::supportedSaveFormatsList()
-{
-  QStringList formats;
-  formats << "Windows Bitmap (*.bmp)"
-          << "Joint Photographic Experts Group (*.jpg *.jpeg)"
-          << "Portable Network Graphics (*.png)";
-  return formats;
 }
 
 Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate, Bool bInput )
@@ -141,17 +84,38 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   m_uiHeight = height;
   m_uiFrameRate = frame_rate;
 
-  m_iFileFormat = YUVFormat;
-  m_iPixelFormat = input_format;
 
-#ifdef USE_FFMPEG
-  if( m_bIsInput && QFileInfo( filename ).suffix().compare( QString( "yuv" ) ) )
+  if( m_bIsInput )
   {
-    avStatus = m_cLibAvContext->initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum );
-    m_cFormatName = QFileInfo( filename ).completeSuffix().toUpper();
-    m_cCodedName = QString::fromUtf8( m_cLibAvContext->getCodecName() ).toUpper();
+    m_iFileFormat = YUVINPUT;
+
+    QStringList formatsExt = PlaYUVerStream::supportedReadFormatsExt();
+    QString currExt = QFileInfo( filename ).suffix();
+    if( formatsExt.contains( currExt ) )
+    {
+      m_iFileFormat = formatsExt.indexOf( currExt );
+    }
+
+    m_iPixelFormat = input_format;
+
+  #ifdef USE_FFMPEG
+    if( m_bIsInput /*&& m_iFileFormat != YUVINPUT */)
+    {
+      avStatus = m_cLibAvContext->initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum );
+      m_cFormatName = QFileInfo( filename ).completeSuffix().toUpper();
+      m_cCodedName = QString::fromUtf8( m_cLibAvContext->getCodecName() ).toUpper();
+    }
+  #endif
+
+    m_uiFrameBufferSize = 2;
   }
-#endif
+  else
+  {
+    m_iFileFormat = YUVOUTPUT;
+    m_uiFrameBufferSize = 1;
+  }
+
+
 
   if( m_uiWidth <= 0 || m_uiHeight <= 0 || m_iPixelFormat < 0 )
   {
@@ -159,14 +123,6 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     return m_bInit;
   }
 
-  if( m_bIsInput )
-  {
-    m_uiFrameBufferSize = 2;
-  }
-  else
-  {
-    m_uiFrameBufferSize = 1;
-  }
   getMem1D<PlaYUVerFrame*>( &m_ppcFrameBuffer, m_uiFrameBufferSize );
   for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
   {
@@ -301,7 +257,7 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
         resolutionString.remove( "_" );
         QStringList resolutionArgs = resolutionString.split( "x" );
         qDebug( ) << "Found resolution = "
-        << resolutionArgs;
+                  << resolutionArgs;
         if( resolutionArgs.size() == 2 )
         {
           rWidth = resolutionArgs.at( 0 ).toUInt();
@@ -454,9 +410,10 @@ Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
   return;
 }
 
-Void PlaYUVerStream::saveFrame( const QString& filename )
+Bool PlaYUVerStream::saveFrame( const QString& filename )
 {
-  return;
+  QImage qimg = QImage( m_pcCurrFrame->getQImageBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), QImage::Format_RGB888 );
+  return qimg.save( filename );
 }
 
 Void PlaYUVerStream::setNextFrame()
@@ -495,7 +452,7 @@ PlaYUVerFrame* PlaYUVerStream::getCurrFrame()
 
 Void PlaYUVerStream::seekInput( UInt64 new_frame_num )
 {
-  if( !m_pFile || new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum || ( Int64 )new_frame_num == m_iCurrFrameNum )
+  if( !m_bInit || new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum || ( Int64 )new_frame_num == m_iCurrFrameNum )
     return;
 
   m_iCurrFrameNum = new_frame_num - 1;

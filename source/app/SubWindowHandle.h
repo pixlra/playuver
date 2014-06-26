@@ -68,7 +68,7 @@ public:
   Bool mayClose();
   Bool loadFile( QString cFilename, Bool bForceDialog = false );
   Void reloadFile();
-  Bool save();
+  Bool save( QString filename  );
 
   Void play();
   Void pause();

@@ -70,7 +70,7 @@ public:
   Void reloadFile();
   Bool save( QString filename  );
 
-  Void play();
+  Bool play();
   Void pause();
   Int playEvent();
   Void stop();

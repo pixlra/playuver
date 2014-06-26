@@ -456,29 +456,26 @@ Void plaYUVerApp::play()
 
   if( m_arrayActions[VIDEO_LOCK_ACT]->isChecked() && m_acPlayingSubWindows.size() )
   {
-    Bool bFind = false;
-    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+    if( !m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
-      if( m_acPlayingSubWindows.at( i ) == m_pcCurrentSubWindow )
+      if( !m_pcCurrentSubWindow->play() )
       {
-        bFind = true;
-        break;
+        return;
       }
-    }
-    if( !bFind )
-    {
       m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
       m_pcCurrentSubWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
       updateTotalFrameNum();
     }
-    m_pcCurrentSubWindow->play();
   }
   else
   {
     m_pcPlayingTimer->stop();
     m_acPlayingSubWindows.clear();
+    if( !m_pcCurrentSubWindow->play() )
+    {
+      return;
+    }
     m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
-    m_pcCurrentSubWindow->play();
     m_uiAveragePlayInterval = 0;
     m_bIsPlaying = false;
   }

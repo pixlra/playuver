@@ -208,9 +208,17 @@ Bool SubWindowHandle::save( QString filename )
   return iRet;
 }
 
-Void SubWindowHandle::play()
+Bool SubWindowHandle::play()
 {
-  m_bIsPlaying = true;
+  if( m_pCurrStream && m_pCurrStream->getFrameNum() > 1 )
+  {
+    m_bIsPlaying = true;
+  }
+  else
+  {
+    m_bIsPlaying = false;
+  }
+  return m_bIsPlaying;
 }
 
 Int SubWindowHandle::playEvent()

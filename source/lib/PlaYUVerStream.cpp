@@ -264,11 +264,11 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
     bRet = true;
 // Guess resolution - match %dx%d
 #if( QT_VERSION_PLAYUVER == 5 )
-    QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*_" ).match( filename );
+    QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*" ).match( filename );
     if( resolutionMatch.hasMatch() )
     {
       QString resolutionString = resolutionMatch.captured( 0 );
-      if( resolutionString.startsWith( "_" ) && resolutionString.endsWith( "_" ) )
+      if( resolutionString.startsWith( "_" ) || resolutionString.endsWith( "_" ) )
       {
         resolutionString.remove( "_" );
         QStringList resolutionArgs = resolutionString.split( "x" );

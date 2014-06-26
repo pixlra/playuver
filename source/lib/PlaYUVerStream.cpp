@@ -86,7 +86,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
 
   if( m_bIsInput )
   {
-    m_iFileFormat = YUVINPUT;
+    m_iFileFormat = INVALID_INPUT;
 
     QStringList formatsExt = PlaYUVerStream::supportedReadFormatsExt();
     QString currExt = QFileInfo( filename ).suffix();
@@ -94,6 +94,12 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     {
       m_iFileFormat = formatsExt.indexOf( currExt );
     }
+    if( m_iFileFormat == INVALID_INPUT )
+    {
+      close();
+      return m_bInit;
+    }
+    m_cFormatName = PlaYUVerStream::supportedReadFormatsExt().at( m_iFileFormat ).toUpper();
 
     m_iPixelFormat = input_format;
 
@@ -101,7 +107,6 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     if( m_iFileFormat != YUVINPUT )
     {
       avStatus = m_cLibAvContext->initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum );
-      m_cFormatName = QFileInfo( filename ).completeSuffix().toUpper();
       m_cCodedName = QString::fromUtf8( m_cLibAvContext->getCodecName() ).toUpper();
     }
 #endif

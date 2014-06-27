@@ -138,9 +138,10 @@ public:
 
   static Pixel ConvertPixel( Pixel, Int );
 
+#ifdef USE_OPENCV
   cv::Mat getCvMat();
   Void copyFrom( cv::Mat* );
-
+#endif
 
   UInt getWidth() const
   {

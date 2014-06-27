@@ -113,7 +113,7 @@ Void ViewArea::zoomChangeEvent(Double factor, QPoint center )
 {
   Double zoomFactor;
   Double maxZoom = 100.0;
-  Double minZoom = ( 32.0 / m_pixmap.width() );
+  Double minZoom = 0.01;//( 1.0 / m_pixmap.width() );
 
   if( ( m_zoomFactor == minZoom ) && (factor < 1 ) )
     return;

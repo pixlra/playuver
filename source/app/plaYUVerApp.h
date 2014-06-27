@@ -82,7 +82,8 @@ private Q_SLOTS:
    * @param factor factor of scale. Ex: 120 scale the image up by 20% and
    *        80 scale the image down by 25%
    */
-  void scaleFrame( int ratio = 100 );
+  void scaleFrame( int ratio = 100.0 );
+  void setZoomFromSBox( double ratio );
 
   void normalSize();
   void zoomToFit();
@@ -103,6 +104,8 @@ private Q_SLOTS:
 
   void updateProperties();
   void updatePropertiesSelectedArea( QRect area );
+
+  void updateZoomFactorSBox();
 
   void setAllSubWindowTool();
   void setNavigationTool();
@@ -150,6 +153,7 @@ private:
   QSlider *m_pcFrameSlider;
   QLabel *m_pcCurrFrameNumLabel;
   QLabel *m_pcTotalFrameNumLabel;
+  QDoubleSpinBox *m_pcZoomFactorSBox;
 
   QSignalMapper *mapperZoom;
   QSignalMapper *mapperSeekVideo;

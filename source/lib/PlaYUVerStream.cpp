@@ -110,6 +110,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
       m_cCodedName = QString::fromUtf8( m_cLibAvContext->getCodecName() ).toUpper();
     }
 #endif
+#if 0
     if( !avStatus )
     {
       switch( m_iFileFormat )
@@ -119,6 +120,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
         break;
       }
     }
+#endif
     m_uiFrameBufferSize = 2;
   }
   else

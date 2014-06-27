@@ -106,7 +106,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   QString windowName;
 
   UInt numberOfFrames = pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames;
-  if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )
+  if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )  // Show dialog to select sub windows
   {
     DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMdiArea, numberOfFrames );
     if( dialogWindowsSelection.exec() == QDialog::Accepted )
@@ -141,18 +141,30 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   windowName.append( ">" );
 
   pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
-  if( ( pcCurrModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
+  if( pcCurrModuleIf->m_cModuleDef.m_iModuleType == FRAME_PROCESSING_MODULE )
   {
-    interfaceChild = new SubWindowHandle( m_pcParent, true );
-    interfaceChild->setWindowName( windowName );
-    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), m_pcParent,
-        SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
-    pcCurrModuleIf->m_pcDisplaySubWindow = interfaceChild;
-    pcCurrModuleIf->m_pcDisplaySubWindow->setModule( pcCurrModuleIf );
+    if( ( pcCurrModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
+    {
+      interfaceChild = new SubWindowHandle( m_pcParent, true );
+      interfaceChild->setWindowName( windowName );
+      connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), m_pcParent,
+          SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
+      pcCurrModuleIf->m_pcDisplaySubWindow = interfaceChild;
+      pcCurrModuleIf->m_pcDisplaySubWindow->setModule( pcCurrModuleIf );
+    }
+  }
+  if( pcCurrModuleIf->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
+  {
+    if( pcCurrModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_SIDEBAR )
+    {
+      pcCurrModuleIf->m_pcModuleDock = new ModuleHandleDock( m_pcParent );
+    }
   }
 
+  // Create Module
   pcCurrModuleIf->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
 
+  // Associate module with subwindows
   for( UInt i = 0; i < numberOfFrames; i++ )
   {
     pcCurrModuleIf->m_pcSubWindow[i]->enableModule( pcCurrModuleIf );
@@ -250,7 +262,6 @@ Void ModulesHandle::openModuleIfStream( PlaYUVerModuleIf *pcCurrModuleIf )
     {
       UInt Width = 0, Height = 0, FrameRate = 30;
       Int InputFormat = -1;
-
 
       QString supported = tr( "Supported Files (" );
       QStringList formatsList;

@@ -22,8 +22,8 @@
  * \brief    Frame Difference module
  */
 
-#ifndef __MEASUREPSNR_H__
-#define __MEASUREPSNR_H__
+#ifndef __FRAMEDIFFERENCE_H__
+#define __FRAMEDIFFERENCE_H__
 
 #include "config.h"
 #include "PlaYUVerDefs.h"
@@ -55,5 +55,5 @@ public:
 
 }  // NAMESPACE
 
-#endif // __MEASUREPSNR_H__
+#endif // __FRAMEDIFFERENCE_H__
 

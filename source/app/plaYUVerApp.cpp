@@ -39,6 +39,8 @@
 
 #include "PlaYUVerSettings.h"
 
+#define SYNCHRONISED_ZOON 1
+
 namespace plaYUVer
 {
 
@@ -711,6 +713,7 @@ Void plaYUVerApp::normalSize()
 {
   if( m_pcCurrentSubWindow )
   {
+#if SYNCHRONISED_ZOON
     if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
       for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
@@ -719,6 +722,7 @@ Void plaYUVerApp::normalSize()
       }
     }
     else
+#endif
     {
       m_pcCurrentSubWindow->normalSize();
     }
@@ -730,6 +734,7 @@ Void plaYUVerApp::zoomToFit()
 {
   if( m_pcCurrentSubWindow )
   {
+#if SYNCHRONISED_ZOON
     if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
       for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
@@ -738,6 +743,7 @@ Void plaYUVerApp::zoomToFit()
       }
     }
     else
+#endif
     {
       m_pcCurrentSubWindow->zoomToFit();
     }
@@ -759,6 +765,7 @@ Void plaYUVerApp::scaleFrame( int ratio )
 {
   if( m_pcCurrentSubWindow )
   {
+#if SYNCHRONISED_ZOON
     if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
       for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
@@ -767,6 +774,7 @@ Void plaYUVerApp::scaleFrame( int ratio )
       }
     }
     else
+#endif
     {
       m_pcCurrentSubWindow->scaleViewByRatio( ( Double )( ratio ) / 100.0 );
     }

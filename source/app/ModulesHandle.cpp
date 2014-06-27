@@ -33,7 +33,7 @@
 namespace plaYUVer
 {
 
-ModulesHandle::ModulesHandle( QWidget * parent, QMdiArea *mdiArea ) :
+ModulesHandle::ModulesHandle( QMainWindow * parent, QMdiArea *mdiArea ) :
         QObject( parent ),
         m_pcParent( parent ),
         m_pcMdiArea( mdiArea ),
@@ -157,7 +157,18 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   {
     if( pcCurrModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_SIDEBAR )
     {
-      pcCurrModuleIf->m_pcModuleDock = new ModuleHandleDock( m_pcParent );
+      pcCurrModuleIf->m_pcModuleDock = new ModuleHandleDock( m_pcParent, pcCurrModuleIf );
+      QString titleDockWidget;
+      titleDockWidget.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
+      titleDockWidget.append( " Information" );
+      pcCurrModuleIf->m_pcDockWidget = new QDockWidget( titleDockWidget, m_pcParent );
+      pcCurrModuleIf->m_pcDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+      pcCurrModuleIf->m_pcDockWidget->setWidget( pcCurrModuleIf->m_pcModuleDock );
+      pcCurrModuleIf->m_pcDockWidget->setAttribute( Qt::WA_DeleteOnClose );
+      pcCurrModuleIf->m_pcDockWidget->setTitleBarWidget( 0 );
+      m_pcParent->addDockWidget( Qt::RightDockWidgetArea, pcCurrModuleIf->m_pcDockWidget );
+
+      connect( pcCurrModuleIf->m_pcDockWidget, SIGNAL( visibilityChanged(bool) ), pcCurrModuleIf->m_pcModuleDock, SLOT( visibilityChangedSlot(bool) ) );
     }
   }
 
@@ -176,7 +187,16 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
 
 Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
 {
-  pcCurrModuleIf->m_pcAction->setChecked( false );
+  if( pcCurrModuleIf->m_pcModuleDock )
+  {
+    pcCurrModuleIf->m_pcModuleDock->close();
+    pcCurrModuleIf->m_pcModuleDock = NULL;
+  }
+  if( pcCurrModuleIf->m_pcDockWidget )
+  {
+    pcCurrModuleIf->m_pcDockWidget->close();
+    pcCurrModuleIf->m_pcDockWidget = NULL;
+  }
   if( pcCurrModuleIf->m_pcDisplaySubWindow )
     pcCurrModuleIf->m_pcDisplaySubWindow->close();
   pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
@@ -189,6 +209,7 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
       pcCurrModuleIf->m_pcSubWindow[i] = NULL;
     }
   }
+  pcCurrModuleIf->m_pcAction->setChecked( false );
   pcCurrModuleIf->destroy();
 }
 
@@ -212,10 +233,11 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Bool isPlay
 #endif
       pcCurrModuleIf->run();
 
-    if( pcCurrModuleIf->m_pcDisplaySubWindow )
+    if( pcCurrModuleIf->m_pcDisplaySubWindow || pcCurrModuleIf->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
     {
       bRet = true;
     }
+
   }
   else
   {
@@ -319,6 +341,13 @@ Bool ModulesHandle::showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, PlaYUVerFram
   return bRet;
 }
 
+Bool ModulesHandle::showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Double moduleResult )
+{
+  Bool bRet = false;
+  pcCurrModuleIf->m_pcModuleDock->setModulueReturnValue(moduleResult);
+  return bRet;
+}
+
 Void ModulesHandle::swapModulesWindowsIf( PlaYUVerModuleIf *pcCurrModuleIf )
 {
   if( pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames == MODULE_REQUIRES_TWO_FRAMES )
@@ -338,7 +367,15 @@ Void ModulesHandle::customEvent( QEvent *event )
   PlaYUVerModuleIf::EventData *eventData = ( PlaYUVerModuleIf::EventData* )event;
   if( eventData->m_bSuccess )
   {
-    showModuleIf( eventData->m_pcModule, eventData->m_pcProcessedFrame );
+    switch( eventData->m_pcModule->m_cModuleDef.m_iModuleType )
+    {
+    case FRAME_PROCESSING_MODULE:
+      showModuleIf( eventData->m_pcModule, eventData->m_pcProcessedFrame );
+      break;
+    case FRAME_MEASUREMENT_MODULE:
+      showModuleIf( eventData->m_pcModule, eventData->m_dMeasurementResult );
+      break;
+    }
   }
 }
 

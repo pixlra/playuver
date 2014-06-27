@@ -18,42 +18,52 @@
  */
 
 /**
- * \file     MeasurePSNR.h
- * \brief    Frame Difference module
+ * \file     ModuleHandleDock.h
+ * \brief    Module handle dock
  */
 
-#ifndef __MEASUREPSNR_H__
-#define __MEASUREPSNR_H__
+#ifndef __MODULEHANDLEDOCK_H__
+#define __MODULEHANDLEDOCK_H__
 
 #include "config.h"
 #include "PlaYUVerDefs.h"
-#include <iostream>
-#include <cstdio>
-#include "PlaYUVerFrame.h"
-#include "PlaYUVerModuleIf.h"
+#if( QT_VERSION_PLAYUVER == 5 )
+#include <QtWidgets>
+#elif( QT_VERSION_PLAYUVER == 4 )
+#include <QtGui>
+#include <QWidget>
+#endif
 
-#include <cassert>
 
 namespace plaYUVer
 {
 
-class MeasurePSNR: public PlaYUVerModuleIf
-{
-private:
-public:
-  MeasurePSNR();
-  virtual ~MeasurePSNR()
-  {
-  }
-  Void create( PlaYUVerFrame* );
-  Double measure( PlaYUVerFrame*, PlaYUVerFrame* );
-  Void destroy();
+class PlaYUVerModuleIf;
 
-  static Double getMSE( PlaYUVerFrame* Org, PlaYUVerFrame* Rec, Int component );
+class ModuleHandleDock: public QWidget
+{
+Q_OBJECT
+public:
+  ModuleHandleDock( QWidget* parent, PlaYUVerModuleIf* moduleIf );
+  ~ModuleHandleDock();
+
+  Void setModulueReturnValue( Double value );
+
+  QSize sizeHint() const;
+
+private:
+
+  PlaYUVerModuleIf* m_pcCurrModuleIf;
+
+  Bool m_bIsVisible;
+  QLabel* labelModulueValueLabel;
+  QLabel* labelModulueReturnValue;
+
+public Q_SLOTS:
+  void visibilityChangedSlot( bool );
 
 };
 
-}  // NAMESPACE
+}   // NAMESPACE
 
-#endif // __MEASUREPSNR_H__
-
+#endif // __MODULEHANDLEDOCK_H__

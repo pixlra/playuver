@@ -98,14 +98,17 @@ private:
   SubWindowHandle* m_pcSubWindow[MAX_NUMBER_FRAMES];
 
   SubWindowHandle* m_pcDisplaySubWindow;
+
+  QDockWidget* m_pcDockWidget;
   ModuleHandleDock* m_pcModuleDock;
 
   PlaYUVerModuleDefinition m_cModuleDef;
 
   PlaYUVerStream* m_pcModuleStream;
   PlaYUVerFrame* m_pcProcessedFrame;
+  Double m_dMeasurementResult;
 
-  Void postProgress( Bool success, PlaYUVerFrame* pcProcessedFrame );
+  Void postProgress( Bool success, PlaYUVerFrame* pcProcessedFrame, Double moduleResult  );
 public:
   class EventData: public QEvent
   {
@@ -115,10 +118,12 @@ public:
     {
       m_bSuccess = false;
       m_pcProcessedFrame = NULL;
+      m_dMeasurementResult = 0;
       m_pcModule = NULL;
     }
     Bool m_bSuccess;
     PlaYUVerFrame* m_pcProcessedFrame;
+    Double m_dMeasurementResult;
     PlaYUVerModuleIf* m_pcModule;
   };
 
@@ -139,8 +144,8 @@ public:
 
   virtual Void destroy() { }
 
-  Void setModuleDefinition( PlaYUVerModuleDefinition def ) { m_cModuleDef = def; }
-
+  Void setModuleDefinition( PlaYUVerModuleDefinition def )  { m_cModuleDef = def;   }
+  PlaYUVerModuleDefinition getModuleDefinition()            { return m_cModuleDef;  }
 protected:
     virtual void run();
 };

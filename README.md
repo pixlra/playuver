@@ -2,20 +2,24 @@ plaYUVer
 ========
 
 plaYUVer is an open-source video player with the following features:
-- support for libavformat and libavcodec;
-- support for wide range of raw video formats;
-- support for OpenCV imag/video processing library
-- advanced frame zoom with easy to use pan function
-- usefull information in status bar, *e.g.*, pixel information
-- usefull sidebars with stream and frame information, *e.g.*, frame histogram
+- Support for libavformat and libavcodec;
+- Support for wide range of raw video formats;
+- Support for OpenCV imag/video processing library
+- Advanced frame zoom with easy to use pan function
+- Usefull information in status bar, *e.g.*, pixel information
+- Usefull sidebars with stream and frame information, *e.g.*, frame histogram
 - Advanced API for frame/video processing algorithms
+
+Builds
+----------------------------------------------------------------
+Download update build for windows and linux from our <a href="https://sourceforge.net/projects/playuver/">SourceForge project page</a> 
 
 
 Developers
 ----------------------------------------------------------------
 
-- João Carreira     (jfmcarreira@gmail.com)
-- Luís Lucas        (luisfrlucas@gmail.com) 
+- Joao Carreira     (jfmcarreira@gmail.com)
+- Lui�s Lucas        (luisfrlucas@gmail.com) 
 
 
 Install using cmake

@@ -173,9 +173,11 @@ Void plaYUVerApp::loadFile( QString fileName )
     connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
         SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
     connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updatePropertiesSelectedArea( QRect ) ) );
+    connect( interfaceChild->getViewArea(), SIGNAL( zoomFactorChanged( double , QPoint ) ), this, SLOT( updateZoomFactorSBox() ) );
 
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
+    updateZoomFactorSBox( );
     statusBar()->showMessage( tr( "File loaded" ), 2000 );
   }
   else
@@ -385,6 +387,20 @@ Void plaYUVerApp::updatePropertiesSelectedArea( QRect area )
   else
   {
     m_pcFrameProperties->setData( NULL );
+  }
+}
+
+
+Void plaYUVerApp::updateZoomFactorSBox( )
+{
+  if( m_pcCurrentSubWindow && m_pcCurrentSubWindow->getViewArea() )
+  {
+    Double factor = m_pcCurrentSubWindow->getViewArea()->getZoomFactor();
+    m_pcZoomFactorSBox->setValue(factor*100);
+  }
+  else
+  {
+    m_pcZoomFactorSBox->setValue(0.0);
   }
 }
 
@@ -706,6 +722,7 @@ Void plaYUVerApp::normalSize()
     {
       m_pcCurrentSubWindow->normalSize();
     }
+    updateZoomFactorSBox();
   }
 }
 
@@ -724,6 +741,7 @@ Void plaYUVerApp::zoomToFit()
     {
       m_pcCurrentSubWindow->zoomToFit();
     }
+    updateZoomFactorSBox();
   }
 }
 
@@ -737,7 +755,7 @@ Void plaYUVerApp::zoomToFitAll()
   }
 }
 
-Void plaYUVerApp::scaleFrame( Int ratio )
+Void plaYUVerApp::scaleFrame( int ratio )
 {
   if( m_pcCurrentSubWindow )
   {
@@ -752,6 +770,20 @@ Void plaYUVerApp::scaleFrame( Int ratio )
     {
       m_pcCurrentSubWindow->scaleViewByRatio( ( Double )( ratio ) / 100.0 );
     }
+    updateZoomFactorSBox();
+//    m_arrayActions[ZOOM_IN_ACT]->setEnabled( activeSubWindow()->getScaleFactor() < 3.0 );
+//    m_arrayActions[ZOOM_OUT_ACT]->setEnabled( activeSubWindow()->getScaleFactor() > 0.333 );
+  }
+}
+
+Void plaYUVerApp::setZoomFromSBox( double zoom )
+{
+  Double lastZoom;
+  if( activeSubWindow() )
+  {
+    lastZoom = activeSubWindow()->getViewArea()->getZoomFactor() * 100;
+    if( zoom / lastZoom != 1.0 )
+      activeSubWindow()->scaleViewByRatio( zoom / lastZoom );
   }
 }
 
@@ -767,6 +799,7 @@ Void plaYUVerApp::chageSubWindowSelection()
       updateTotalFrameNum();
       updateStreamProperties();
       updateFrameProperties();
+      updateZoomFactorSBox();
     }
     m_pcCurrentSubWindow = new_window;
   }
@@ -886,6 +919,7 @@ Void plaYUVerApp::updateMenus()
   m_arrayActions[ZOOM_OUT_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[ZOOM_NORMAL_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[ZOOM_FIT_ACT]->setEnabled( hasSubWindow );
+  m_pcZoomFactorSBox->setEnabled( hasSubWindow );
 
   m_arrayActions[PLAY_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[PAUSE_ACT]->setEnabled( hasSubWindow );
@@ -1233,6 +1267,13 @@ Void plaYUVerApp::createToolBars()
   addToolBar( Qt::TopToolBarArea, m_arrayToolBars[FILE_TOOLBAR] );
 
   m_arrayToolBars[VIEW_TOOLBAR] = new QToolBar( tr( "View" ) );
+  m_pcZoomFactorSBox = new QDoubleSpinBox;
+  m_pcZoomFactorSBox->setRange(1.0, 10000.0);
+  m_pcZoomFactorSBox->setSingleStep(10.0);
+  m_pcZoomFactorSBox->setValue(100.0);
+  m_pcZoomFactorSBox->setSuffix("%");
+  connect(m_pcZoomFactorSBox, SIGNAL( valueChanged(double) ), this, SLOT( setZoomFromSBox(double) ) );
+  m_arrayToolBars[VIEW_TOOLBAR]->addWidget( m_pcZoomFactorSBox );
   m_arrayToolBars[VIEW_TOOLBAR]->addAction( m_arrayActions[ZOOM_IN_ACT] );
   m_arrayToolBars[VIEW_TOOLBAR]->addAction( m_arrayActions[ZOOM_OUT_ACT] );
   m_arrayToolBars[VIEW_TOOLBAR]->addAction( m_arrayActions[ZOOM_NORMAL_ACT] );

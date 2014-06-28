@@ -269,7 +269,7 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent, Bool *pbIsPlayi
 
   // -------------------------------------------------------------
 
-  histogramWidget = new HistogramWidget( 256, 140 );
+  histogramWidget = new HistogramWidget( 256, 100 );
   histogramWidget->setOptions( HistogramWidget::BlinkComputation | HistogramWidget::SelectMode | HistogramWidget::ShowLumaChannel );
   histogramWidget->setWhatsThis( tr( "<p>This is the histogram drawing of "
       "the selected image channel" ) );
@@ -484,11 +484,11 @@ Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
   if( selectionArea.isValid() )
   {
     histogramWidget->stopHistogramComputation();
-    //histogramWidget->updateSelectionData( new PlaYUVerFrame(m_pcFrame selectionArea));
-    histogramWidget->updateSelectionData( new PlaYUVerFrame(m_pcFrame));
+    histogramWidget->updateSelectionData( new PlaYUVerFrame(m_pcFrame,  selectionArea));
     fullImageButton->show();
     selectionImageButton->show();
     selectionImageButton->click();
+    slotRenderingChanged( HistogramWidget::ImageSelectionHistogram );
   }
   else
   {

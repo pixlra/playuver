@@ -35,6 +35,7 @@
 #include <QMainWindow>
 #include "ModulesHandle.h"
 #include "PropertiesSidebar.h"
+#include "QualityMeasurementSidebar.h"
 
 namespace plaYUVer
 {
@@ -181,14 +182,16 @@ private:
 
   enum SIDEBAR_LIST
   {
-    STREAM_SIDEBAR = 0,
-    FRAME_SIDEBAR,
-    TOTAL_SIDEBAR,
+    STREAM_DOCK = 0,
+    FRAME_DOCK,
+    QUALITY_DOCK,
+    TOTAL_DOCK,
   };
   QVector<QDockWidget*> m_arraySideBars;
 
   StreamPropertiesSideBar* m_pcStreamProperties;
   FramePropertiesSideBar* m_pcFrameProperties;
+  QualityMeasurementSidebar* m_pcQualityMeasurement;
 
   enum TOOLBAR_LIST
   {

@@ -31,6 +31,11 @@ namespace plaYUVer
 
 SubWindowHandle::SubWindowHandle( QWidget * parent, Bool isModule ) :
         QMdiSubWindow( parent ),
+        m_pCurrStream( NULL ),
+        m_pcCurrFrame( NULL ),
+        m_pcCurrentModule( NULL ),
+        m_pcReferenceSubWindow( NULL ),
+        m_bIsPlaying( false ),
         m_bIsModule( isModule )
 {
   setParent( parent );
@@ -50,17 +55,11 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, Bool isModule ) :
   connect( m_cScrollArea->horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
   connect( m_cScrollArea->verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
 
-  // Define the cViewArea as the widget inside the scroll area
+// Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
   m_cScrollArea->setWidgetResizable( true );
 
-  m_pCurrStream = NULL;
-  //m_pCurrStream = new PlaYUVerStream;
-  m_pcCurrFrame = NULL;
-  m_pcCurrentModule = NULL;
-
   m_cWindowName = QString( " " );
-  m_bIsPlaying = false;
   m_cLastScroll = QPoint();
 }
 
@@ -130,7 +129,7 @@ Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
     disableModule();
   }
   m_pcCurrentModule = select_module;
-  // refreshFrame();
+// refreshFrame();
 }
 
 Void SubWindowHandle::disableModule()
@@ -282,7 +281,7 @@ Void SubWindowHandle::normalSize()
 
 Void SubWindowHandle::zoomToFit()
 {
-  // Scale to a smaller size that the real to a nicer look
+// Scale to a smaller size that the real to a nicer look
   QSize niceFit( m_cScrollArea->viewport()->size().width() - 5, m_cScrollArea->viewport()->size().height() - 5 );
   scaleView( niceFit );
 }
@@ -309,7 +308,7 @@ Void SubWindowHandle::scaleView( const QSize & size )
   QSize newSize = imgViewSize;
   newSize.scale( size, Qt::KeepAspectRatio );
 
-  // Calc the zoom factor
+// Calc the zoom factor
   Double wfactor = 1;
   Double hfactor = 1;
 
@@ -390,7 +389,7 @@ void SubWindowHandle::updateLastScrollValue()
 QSize SubWindowHandle::sizeHint() const
 {
   QSize maxSize;  // The size of the parent (viewport widget
-                  // of the QMdiArea).
+// of the QMdiArea).
 
   QWidget *p = parentWidget();
   if( p )
@@ -404,8 +403,8 @@ QSize SubWindowHandle::sizeHint() const
   else if( m_pCurrStream )
     isize = QSize( m_pCurrStream->getWidth() + 50, m_pCurrStream->getHeight() + 50 );
 
-  // If the SubWindowHandle needs more space that the avaiable, we'll give
-  // to the subwindow a reasonable size preserving the image aspect ratio.
+// If the SubWindowHandle needs more space that the avaiable, we'll give
+// to the subwindow a reasonable size preserving the image aspect ratio.
   if( isize.width() < maxSize.width() && isize.height() < maxSize.height() )
   {
     return isize;

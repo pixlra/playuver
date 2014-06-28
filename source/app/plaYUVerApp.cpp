@@ -809,6 +809,8 @@ Void plaYUVerApp::chageSubWindowSelection()
   }
   updateStreamProperties();
   updateFrameProperties();
+  m_pcQualityMeasurement->updateCurrentWindow( m_pcCurrentSubWindow );
+  m_pcQualityMeasurement->updateSubWindowList();
   updateMenus();
 }
 
@@ -1311,21 +1313,31 @@ Void plaYUVerApp::createToolBars()
 Void plaYUVerApp::createDockWidgets()
 {
   // Properties Dock Window
-  m_arraySideBars.resize( TOTAL_SIDEBAR );
+  m_arraySideBars.resize( TOTAL_DOCK );
 
   m_pcStreamProperties = new StreamPropertiesSideBar( this );
-  m_arraySideBars[STREAM_SIDEBAR] = new QDockWidget( tr( "Stream Information" ), this );
-  m_arraySideBars[STREAM_SIDEBAR]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  m_arraySideBars[STREAM_SIDEBAR]->setWidget( m_pcStreamProperties );
-  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[STREAM_SIDEBAR] );
-  connect( m_arraySideBars[STREAM_SIDEBAR], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateProperties() ) );
+  m_arraySideBars[STREAM_DOCK] = new QDockWidget( tr( "Stream Information" ), this );
+  m_arraySideBars[STREAM_DOCK]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  m_arraySideBars[STREAM_DOCK]->setWidget( m_pcStreamProperties );
+  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[STREAM_DOCK] );
+  connect( m_arraySideBars[STREAM_DOCK], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateProperties() ) );
 
   m_pcFrameProperties = new FramePropertiesSideBar( this, &m_bIsPlaying );
-  m_arraySideBars[FRAME_SIDEBAR] = new QDockWidget( tr( "Frame Information" ), this );
-  m_arraySideBars[FRAME_SIDEBAR]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  m_arraySideBars[FRAME_SIDEBAR]->setWidget( m_pcFrameProperties );
-  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[FRAME_SIDEBAR] );
-  connect( m_arraySideBars[FRAME_SIDEBAR], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateProperties() ) );
+  m_arraySideBars[FRAME_DOCK] = new QDockWidget( tr( "Frame Information" ), this );
+  m_arraySideBars[FRAME_DOCK]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  m_arraySideBars[FRAME_DOCK]->setWidget( m_pcFrameProperties );
+  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[FRAME_DOCK] );
+  connect( m_arraySideBars[FRAME_DOCK], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateProperties() ) );
+
+  QMainWindow::tabifyDockWidget( m_arraySideBars[FRAME_DOCK], m_arraySideBars[STREAM_DOCK] );
+  //QMainWindow::setTabPosition(Qt::RightDockWidgetArea, QTabWidget::North);
+
+  m_pcQualityMeasurement = new QualityMeasurementSidebar( this, mdiArea );
+  m_arraySideBars[QUALITY_DOCK] = new QDockWidget( tr( "Quality Measurement" ), this );
+  m_arraySideBars[QUALITY_DOCK]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  m_arraySideBars[QUALITY_DOCK]->setWidget( m_pcQualityMeasurement );
+  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[QUALITY_DOCK] );
+
 }
 
 Void plaYUVerApp::createStatusBar()
@@ -1348,9 +1360,9 @@ Void plaYUVerApp::readSettings()
   Bool visibleStreamProp, visibleFrameProp;
   settings.getDockVisibility( visibleStreamProp, visibleFrameProp );
   if( !visibleStreamProp )
-    m_arraySideBars[STREAM_SIDEBAR]->close();
+    m_arraySideBars[STREAM_DOCK]->close();
   if( !visibleFrameProp )
-    m_arraySideBars[FRAME_SIDEBAR]->close();
+    m_arraySideBars[FRAME_DOCK]->close();
 
 }
 

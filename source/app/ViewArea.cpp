@@ -109,7 +109,6 @@ void ViewArea::clearMask()
 //     return QSize( w, h );
 // }
 
-<<<<<<< HEAD
 Void ViewArea::setZoomFactor( Double f )
 {
   m_zoomFactor = f;
@@ -118,10 +117,7 @@ Void ViewArea::setZoomFactor( Double f )
   update();
 }
 
-Void ViewArea::zoomChangeEvent(Double factor, QPoint center )
-=======
 Void ViewArea::zoomChangeEvent( Double factor, QPoint center )
->>>>>>> features_quality_side_bar
 {
   Double zoomFactor;
   Double maxZoom = 100.0;

@@ -478,7 +478,38 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
   default:
     Q_ASSERT( 0 );
   }
+}
 
+Double PlaYUVerFrame::getMSE( PlaYUVerFrame* Org, Int component )
+{
+  Pel* pPelYUV = getPelBufferYUV()[component][0];
+  Pel* pOrgPelYUV = Org->getPelBufferYUV()[component][0];
+
+  Int aux_pel_1, aux_pel_2;
+  Int diff = 0;
+  Double ssd = 0;
+
+  for( UInt i = 0; i < Org->getHeight() * Org->getWidth(); i++ )
+  {
+    aux_pel_1 = *pPelYUV++;
+    aux_pel_2 = *pOrgPelYUV++;
+    diff = aux_pel_1 - aux_pel_2;
+    ssd += ( Double )( diff * diff );
+  }
+  if( ssd == 0.0 )
+  {
+    return 0.0;
+  }
+  return ssd / ( Org->getWidth() * Org->getHeight() );
+}
+
+Double PlaYUVerFrame::getPSNR( PlaYUVerFrame* Org, Int component )
+{
+  Double dPSNR = 100;
+  Double dMSE = getMSE( Org, component );
+  if( dMSE != 0 )
+    dPSNR = 10 * log10( 65025 / dMSE );
+  return dPSNR;
 }
 
 UInt64 PlaYUVerFrame::getBytesPerFrame()

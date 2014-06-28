@@ -114,6 +114,9 @@ public:
   Void copyFrom( PlaYUVerFrame* );
   Void copyFrom( PlaYUVerFrame*, UInt, UInt);
 
+  Double getMSE( PlaYUVerFrame* Org, Int component );
+  Double getPSNR( PlaYUVerFrame* Org, Int component );
+
   UInt64 getBytesPerFrame();
 
   UInt getChromaLength() const;

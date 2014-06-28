@@ -77,17 +77,18 @@ void PlaYUVerModuleIf::run()
       break;
     }
   }
-  postProgress( true, m_pcProcessedFrame, m_dMeasurementResult );
+  else
+  {
+    return;
+  }
+  postProgress( true );
+  return;
 }
 
-Void PlaYUVerModuleIf::postProgress( Bool success, PlaYUVerFrame* pcProcessedFrame, Double moduleResult )
+Void PlaYUVerModuleIf::postProgress( Bool success )
 {
-  EventData *eventData = new EventData();
-  eventData->m_bSuccess = success;
-  eventData->m_pcProcessedFrame = pcProcessedFrame;
-  eventData->m_dMeasurementResult = moduleResult;
-  eventData->m_pcModule = this;
-  if( parent() && ( pcProcessedFrame  || moduleResult ) )
+  EventData *eventData = new EventData( success, this );
+  if( parent() )
     QCoreApplication::postEvent( parent(), eventData );
 }
 

@@ -153,7 +153,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
       pcCurrModuleIf->m_pcDisplaySubWindow->setModule( pcCurrModuleIf );
     }
   }
-  if( pcCurrModuleIf->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
+  else if( pcCurrModuleIf->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
   {
     if( pcCurrModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_SIDEBAR )
     {
@@ -370,10 +370,10 @@ Void ModulesHandle::customEvent( QEvent *event )
     switch( eventData->m_pcModule->m_cModuleDef.m_iModuleType )
     {
     case FRAME_PROCESSING_MODULE:
-      showModuleIf( eventData->m_pcModule, eventData->m_pcProcessedFrame );
+      showModuleIf( eventData->m_pcModule, eventData->m_pcModule->m_pcProcessedFrame );
       break;
     case FRAME_MEASUREMENT_MODULE:
-      showModuleIf( eventData->m_pcModule, eventData->m_dMeasurementResult );
+      showModuleIf( eventData->m_pcModule, eventData->m_pcModule->m_dMeasurementResult );
       break;
     }
   }

@@ -108,22 +108,18 @@ private:
   PlaYUVerFrame* m_pcProcessedFrame;
   Double m_dMeasurementResult;
 
-  Void postProgress( Bool success, PlaYUVerFrame* pcProcessedFrame, Double moduleResult  );
+  Void postProgress( Bool success );
 public:
   class EventData: public QEvent
   {
   public:
-    EventData() :
+    EventData( bool success = false, PlaYUVerModuleIf* module = NULL ) :
             QEvent( QEvent::User )
     {
-      m_bSuccess = false;
-      m_pcProcessedFrame = NULL;
-      m_dMeasurementResult = 0;
-      m_pcModule = NULL;
+      m_bSuccess = success;
+      m_pcModule = module;
     }
     Bool m_bSuccess;
-    PlaYUVerFrame* m_pcProcessedFrame;
-    Double m_dMeasurementResult;
     PlaYUVerModuleIf* m_pcModule;
   };
 
@@ -146,6 +142,7 @@ public:
 
   Void setModuleDefinition( PlaYUVerModuleDefinition def )  { m_cModuleDef = def;   }
   PlaYUVerModuleDefinition getModuleDefinition()            { return m_cModuleDef;  }
+
 protected:
     virtual void run();
 };

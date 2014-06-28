@@ -754,6 +754,7 @@ Void plaYUVerApp::zoomToFitAll()
     subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
     subWindow->zoomToFit();
   }
+  updateZoomFactorSBox();
 }
 
 Void plaYUVerApp::scaleFrame( int ratio )

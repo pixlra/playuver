@@ -89,10 +89,6 @@ plaYUVerApp::plaYUVerApp()
 
 Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
 {
-  if( argc == 2 )
-  {
-    loadFile( argv[1] );
-  }
   if( argc >= 2 )
   {
     for( Int i = 1; i < argc; i++ )
@@ -179,7 +175,7 @@ Void plaYUVerApp::loadFile( QString fileName )
 
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
-    updateZoomFactorSBox( );
+    updateZoomFactorSBox();
     statusBar()->showMessage( tr( "File loaded" ), 2000 );
   }
   else
@@ -392,17 +388,16 @@ Void plaYUVerApp::updatePropertiesSelectedArea( QRect area )
   }
 }
 
-
-Void plaYUVerApp::updateZoomFactorSBox( )
+Void plaYUVerApp::updateZoomFactorSBox()
 {
   if( m_pcCurrentSubWindow && m_pcCurrentSubWindow->getViewArea() )
   {
     Double factor = m_pcCurrentSubWindow->getViewArea()->getZoomFactor();
-    m_pcZoomFactorSBox->setValue(factor*100);
+    m_pcZoomFactorSBox->setValue( factor * 100 );
   }
   else
   {
-    m_pcZoomFactorSBox->setValue(0.0);
+    m_pcZoomFactorSBox->setValue( 0.0 );
   }
 }
 
@@ -1276,11 +1271,11 @@ Void plaYUVerApp::createToolBars()
 
   m_arrayToolBars[VIEW_TOOLBAR] = new QToolBar( tr( "View" ) );
   m_pcZoomFactorSBox = new QDoubleSpinBox;
-  m_pcZoomFactorSBox->setRange(1.0, 10000.0);
-  m_pcZoomFactorSBox->setSingleStep(10.0);
-  m_pcZoomFactorSBox->setValue(100.0);
-  m_pcZoomFactorSBox->setSuffix("%");
-  connect(m_pcZoomFactorSBox, SIGNAL( valueChanged(double) ), this, SLOT( setZoomFromSBox(double) ) );
+  m_pcZoomFactorSBox->setRange( 1.0, 10000.0 );
+  m_pcZoomFactorSBox->setSingleStep( 10.0 );
+  m_pcZoomFactorSBox->setValue( 100.0 );
+  m_pcZoomFactorSBox->setSuffix( "%" );
+  connect( m_pcZoomFactorSBox, SIGNAL( valueChanged(double) ), this, SLOT( setZoomFromSBox(double) ) );
   m_arrayToolBars[VIEW_TOOLBAR]->addWidget( m_pcZoomFactorSBox );
   m_arrayToolBars[VIEW_TOOLBAR]->addAction( m_arrayActions[ZOOM_IN_ACT] );
   m_arrayToolBars[VIEW_TOOLBAR]->addAction( m_arrayActions[ZOOM_OUT_ACT] );

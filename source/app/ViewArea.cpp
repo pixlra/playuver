@@ -47,7 +47,7 @@ static const QColor imageMaskColor = Qt::green;
 static const QColor eraserColor = Qt::red;
 
 ViewArea::ViewArea( QWidget *parent ) :
-    QWidget( parent )
+        QWidget( parent )
 {
   setAttribute( Qt::WA_StaticContents );
 //     setAttribute( Qt::WA_NoBackground );
@@ -109,16 +109,16 @@ void ViewArea::clearMask()
 //     return QSize( w, h );
 // }
 
-Void ViewArea::zoomChangeEvent(Double factor, QPoint center )
+Void ViewArea::zoomChangeEvent( Double factor, QPoint center )
 {
   Double zoomFactor;
   Double maxZoom = 100.0;
-  Double minZoom = 0.01;//( 1.0 / m_pixmap.width() );
+  Double minZoom = 0.01;  //( 1.0 / m_pixmap.width() );
 
-  if( ( m_zoomFactor == minZoom ) && (factor < 1 ) )
+  if( ( m_zoomFactor == minZoom ) && ( factor < 1 ) )
     return;
 
-  if( ( m_zoomFactor == maxZoom ) && (factor > 1 ) )
+  if( ( m_zoomFactor == maxZoom ) && ( factor > 1 ) )
     return;
 
   zoomFactor = m_zoomFactor * factor;
@@ -130,7 +130,7 @@ Void ViewArea::zoomChangeEvent(Double factor, QPoint center )
     zoomFactor = maxZoom;
 
   setZoomFactor( zoomFactor );
-  emit zoomFactorChanged(factor, center);
+  emit zoomFactorChanged( factor, center );
 
 }
 
@@ -313,9 +313,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
   // to draw the whole pixmap if your widget is only partially exposed), and reverse map it with the painter matrix.
   // That gives us the part of the pixmap that has actually been exposed.
   // See: http://blog.qt.digia.com/blog/2006/05/13/fast-transformed-pixmapimage-drawing/
-  QRect exposedRect = painter.worldTransform().inverted()
-                       .mapRect(event->rect())
-                       .adjusted(-1, -1, 1, 1);
+  QRect exposedRect = painter.worldTransform().inverted().mapRect( event->rect() ).adjusted( -1, -1, 1, 1 );
   // Draw the pixmap.
   painter.drawPixmap( exposedRect, m_pixmap, exposedRect );
 
@@ -346,7 +344,6 @@ void ViewArea::paintEvent( QPaintEvent *event )
 
   painter.restore();
 
-
   // Draw a border around the image.
   if( m_xOffset || m_yOffset )
   {
@@ -355,54 +352,53 @@ void ViewArea::paintEvent( QPaintEvent *event )
   }
 
   // Draw pixel values in grid
-  if(m_zoomFactor>=25.0)
+  if( m_zoomFactor >= 25.0 )
   {
     Int imageWidth = m_pixmap.width();
     Int imageHeight = m_pixmap.height();
     Pixel sPixelValue;
 
-    QFont font("Helvetica");
-    font.setPixelSize(m_zoomFactor/4);
-    painter.setFont(font);
+    QFont font( "Helvetica" );
+    font.setPixelSize( m_zoomFactor / 4 );
+    painter.setFont( font );
 
     QRect vr = windowToView( winRect );
     vr &= QRect( 0, 0, imageWidth, imageHeight );
 
-    for(Int i=vr.x() ; i<=vr.right() ; i++)
+    for( Int i = vr.x(); i <= vr.right(); i++ )
     {
-      for(Int j=vr.y() ; j<=vr.bottom() ; j++)
+      for( Int j = vr.y(); j <= vr.bottom(); j++ )
       {
-        QPoint pixelTopLeft(i,j);
+        QPoint pixelTopLeft( i, j );
         sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft, PlaYUVerFrame::COLOR_YUV );
 
-        QRect pixelRect(viewToWindow(pixelTopLeft), QSize(m_zoomFactor,m_zoomFactor));
+        QRect pixelRect( viewToWindow( pixelTopLeft ), QSize( m_zoomFactor, m_zoomFactor ) );
         if( sPixelValue.Luma < 128 )
-          painter.setPen(QColor(Qt::white));
+          painter.setPen( QColor( Qt::white ) );
         else
-          painter.setPen(QColor(Qt::black));
-        painter.drawText(pixelRect, Qt::AlignCenter, QString::number(sPixelValue.Luma));
+          painter.setPen( QColor( Qt::black ) );
+        painter.drawText( pixelRect, Qt::AlignCenter, QString::number( sPixelValue.Luma ) );
       }
     }
 
     QColor color( Qt::white );
     QPen mainPen = QPen( color, 1, Qt::SolidLine );
-    painter.setPen(mainPen);
+    painter.setPen( mainPen );
 
     // Draw vertical line
-    for( Int x = vr.x(); x <= (vr.right()+1); x ++ )
+    for( Int x = vr.x(); x <= ( vr.right() + 1 ); x++ )
     {
       // Always draw the full line otherwise the line stippling
       // varies with the location of view area and we get glitchy
       // patterns.
-      painter.drawLine( viewToWindow(QPoint(x,0)), viewToWindow(QPoint(x,imageHeight)) );
+      painter.drawLine( viewToWindow( QPoint( x, 0 ) ), viewToWindow( QPoint( x, imageHeight ) ) );
     }
     // Draw horizontal line
-    for( Int y = vr.y(); y <= (vr.bottom()+1); y ++ )
+    for( Int y = vr.y(); y <= ( vr.bottom() + 1 ); y++ )
     {
-      painter.drawLine( viewToWindow(QPoint(0,y)), viewToWindow(QPoint(imageWidth,y)) );
+      painter.drawLine( viewToWindow( QPoint( 0, y ) ), viewToWindow( QPoint( imageWidth, y ) ) );
     }
   }
-
 
   QRect sr = viewToWindow( m_selectedArea );
   QRect ir = sr & winRect;
@@ -498,7 +494,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
         break;
       }
       default:
-        color = selectionColor; // ?Problems!
+        color = selectionColor;  // ?Problems!
       }
 
       color.setAlpha( 120 );
@@ -524,12 +520,12 @@ void ViewArea::wheelEvent( QWheelEvent *event )
   Double factor;
 
   factor = 0.001 * event->delta();
-  if(factor>0)
-    factor=1.25;
+  if( factor > 0 )
+    factor = 1.25;
   else
-    factor=0.8;
+    factor = 0.8;
 
-  zoomChangeEvent( factor , event->pos() );
+  zoomChangeEvent( factor, event->pos() );
 }
 
 void ViewArea::mousePressEvent( QMouseEvent *event )
@@ -542,7 +538,7 @@ void ViewArea::mousePressEvent( QMouseEvent *event )
   {
     if( tool() == NavigationTool )
     {
-      if( !(m_xOffset && m_yOffset) )
+      if( !( m_xOffset && m_yOffset ) )
         setCursor( Qt::ClosedHandCursor );
 
       m_lastWindowPos = event->pos();
@@ -602,14 +598,14 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
 #ifndef _MSC_VER
   // Add this code line to avoid slow navigation with some specific mouses
   // This seems to always appear on windows
-  if(qApp->hasPendingEvents())
-    return;
+  if( qApp->hasPendingEvents())
+  return;
 #endif
 
   QPoint actualPos = windowToView( event->pos() );
   QRect updateRect;
 
-  emit positionChanged( actualPos , m_pcCurrFrame );
+  emit positionChanged( actualPos, m_pcCurrFrame );
 
   // If mouse left button pressed
   if( event->buttons() == Qt::LeftButton && m_lastPos != QPoint( -1, -1 ) )
@@ -629,7 +625,7 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
 
     if( tool() == NavigationTool )
     {
-      QPoint offset = m_lastWindowPos - event->pos() ;
+      QPoint offset = m_lastWindowPos - event->pos();
       emit moveScroll( offset );
     }
 
@@ -679,19 +675,19 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
         }
       }
     }
-/*    else // if tool() == BlockSelectionTool || MaskTool || EraserTool
-    {
-      m_blockTrackEnable = false;
-      // If cursor is inside the selected area, we most redraw 
-      // the selection rect because it may be smaller.
-      if( m_selectedArea.contains( actualPos ) )
-      {
-        m_selectedArea = m_grid.rectContains( m_lastPos );
-      }
+    /*    else // if tool() == BlockSelectionTool || MaskTool || EraserTool
+     {
+     m_blockTrackEnable = false;
+     // If cursor is inside the selected area, we most redraw
+     // the selection rect because it may be smaller.
+     if( m_selectedArea.contains( actualPos ) )
+     {
+     m_selectedArea = m_grid.rectContains( m_lastPos );
+     }
 
-      m_selectedArea = m_selectedArea.united( m_grid.rectContains( actualPos ) );
-    }
-*/
+     m_selectedArea = m_selectedArea.united( m_grid.rectContains( actualPos ) );
+     }
+     */
     if( tool() == NormalSelectionTool )
     {
       // Intercept the selected area with the image area to limit the
@@ -744,89 +740,92 @@ void ViewArea::mouseReleaseEvent( QMouseEvent *event )
   {
     if( tool() == NavigationTool )
     {
-        unsetCursor();
+      unsetCursor();
     }
-
-    // Normal Mode ------------------------------------------------------
-    if( mode() == NormalMode )
+    else if( tool() == NormalSelectionTool )
     {
-      if( vpos == m_lastPos )
+      // Normal Mode ------------------------------------------------------
+      if( mode() == NormalMode )
       {
+        if( vpos == m_lastPos )
+        {
+          m_selectedArea = QRect();
+
+          if( tool() == BlockSelectionTool )
+            m_blockTrackEnable = true;
+        }
+        emit selectionChanged( m_selectedArea );
+
+      }
+
+      // Mask Mode -----------------------------------------------------------
+      else if( mode() == MaskMode )
+      {
+        if( !m_selectedArea.isNull() )
+        {
+          updateMask( m_selectedArea );
+        }
+
         m_selectedArea = QRect();
-
-        if( tool() == BlockSelectionTool )
-          m_blockTrackEnable = true;
+        m_blockTrackEnable = true;
       }
-      emit selectionChanged( m_selectedArea );
-
+      m_newShape = false;
+      update();
+      m_lastPos = QPoint( -1, -1 );
     }
-
-    // Mask Mode -----------------------------------------------------------
-    else if( mode() == MaskMode )
-    {
-      if( !m_selectedArea.isNull() )
-      {
-        updateMask( m_selectedArea );
-      }
-
-      m_selectedArea = QRect();
-      m_blockTrackEnable = true;
-    }
-    m_newShape = false;
-    update();
-    m_lastPos = QPoint( -1, -1 );
   }
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 
 bool ViewArea::isPosValid( const QPoint &pos ) const
 {
 
-  if( pos.x() < 0 || pos.y() < 0 || pos.x() >= m_pixmap.width() || pos.y() >= m_pixmap.height() )
-    return false;
-  else
-    return true;
+if( pos.x() < 0 || pos.y() < 0 || pos.x() >= m_pixmap.width() || pos.y() >= m_pixmap.height() )
+  return false;
+else
+  return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 QPoint ViewArea::windowToView( const QPoint& pt ) const
 {
-  QPoint p;
-  p.setX( static_cast<int>( ( pt.x() - m_xOffset ) / m_zoomFactor ) );
-  p.setY( static_cast<int>( ( pt.y() - m_yOffset ) / m_zoomFactor ) );
+QPoint p;
+p.setX( static_cast<int>( ( pt.x() - m_xOffset ) / m_zoomFactor ) );
+p.setY( static_cast<int>( ( pt.y() - m_yOffset ) / m_zoomFactor ) );
 
-  return p;
+return p;
 }
 
 QRect ViewArea::windowToView( const QRect& rc ) const
 {
-  QRect r;
+QRect r;
 
-  r.setTopLeft( windowToView( rc.topLeft() ) );
+r.setTopLeft( windowToView( rc.topLeft() ) );
 //     r.setRight ( (int)( ceil(( rc.right()  - m_xOffset)/m_zoomFactor  )));
 //     r.setBottom( (int)( ceil(( rc.bottom()- m_yOffset)/m_zoomFactor  )));
 //     r.setRight ( static_cast<int>(( rc.right() - m_xOffset ) / m_zoomFactor +1));
 //     r.setBottom( static_cast<int>(( rc.bottom() - m_xOffset ) / m_zoomFactor+1));
-  r.setBottomRight( windowToView( rc.bottomRight() ) );
-  return r;
+r.setBottomRight( windowToView( rc.bottomRight() ) );
+return r;
 }
 
 QPoint ViewArea::viewToWindow( const QPoint& pt ) const
 {
-  QPoint p;
+QPoint p;
 
-  p.setX( static_cast<int>( pt.x() * m_zoomFactor + m_xOffset ) );
-  p.setY( static_cast<int>( pt.y() * m_zoomFactor + m_yOffset ) );
+p.setX( static_cast<int>( pt.x() * m_zoomFactor + m_xOffset ) );
+p.setY( static_cast<int>( pt.y() * m_zoomFactor + m_yOffset ) );
 
-  return p;
+return p;
 }
 
 QRect ViewArea::viewToWindow( const QRect& rc ) const
 {
-  QRect r;
+QRect r;
 
-  r.setTopLeft( viewToWindow( rc.topLeft() ) );
+r.setTopLeft( viewToWindow( rc.topLeft() ) );
 //     r.setRight ( (int)( ceil(( rc.right() +1+m_xOffset )*m_zoomFactor ) - 1 ));
 //     r.setBottom( (int)( ceil(( rc.bottom()+1+m_yOffset )*m_zoomFactor ) - 1 ));
 //     r.setRight ( (int)( ceil(( rc.right()+0.5)*m_zoomFactor  )+ m_xOffset )-1);
@@ -834,9 +833,9 @@ QRect ViewArea::viewToWindow( const QRect& rc ) const
 // qDebug()<<"Right = "<< r.right();
 //     r.setRight ( static_cast<int>(( rc.right()+1) * m_zoomFactor + m_xOffset -1) );
 //     r.setBottom( static_cast<int>(( rc.bottom()+1) * m_zoomFactor + m_yOffset -1));
-  r.setBottomRight( viewToWindow( rc.bottomRight() ) );
+r.setBottomRight( viewToWindow( rc.bottomRight() ) );
 
-  return r;
+return r;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -844,42 +843,41 @@ QRect ViewArea::viewToWindow( const QRect& rc ) const
 ////////////////////////////////////////////////////////////////////////////////
 void ViewArea::updateMask( const QRect &rect )
 {
-  switch( tool() )
-  {
-  case MaskTool:
-  {
-    // Add rect to the mask
-    QPainter painter( &m_mask );
-    painter.setBrush( Qt::color1 );
-    painter.setPen( Qt::NoPen );
-    painter.drawRect( rect );
-    painter.end();
-    break;
-  }
-  case EraserTool:
-  {
-    // Clears rect area in the mask
-    QPainter painter( &m_mask );
-    painter.setBrush( Qt::color0 );
-    painter.setPen( Qt::NoPen );
-    painter.drawRect( rect );
-    painter.end();
-    break;
-  }
-  default: /* Do Nothing */
-    ;
-  }
+switch( tool() )
+{
+case MaskTool:
+{
+  // Add rect to the mask
+  QPainter painter( &m_mask );
+  painter.setBrush( Qt::color1 );
+  painter.setPen( Qt::NoPen );
+  painter.drawRect( rect );
+  painter.end();
+  break;
 }
-
+case EraserTool:
+{
+  // Clears rect area in the mask
+  QPainter painter( &m_mask );
+  painter.setBrush( Qt::color0 );
+  painter.setPen( Qt::NoPen );
+  painter.drawRect( rect );
+  painter.end();
+  break;
+}
+default: /* Do Nothing */
+  ;
+}
+}
 
 void ViewArea::setInputStream( PlaYUVerStream *stream )
 {
-  m_pStream = stream;
+m_pStream = stream;
 }
 
 PlaYUVerStream* ViewArea::getInputStream()
 {
-  return m_pStream;
+return m_pStream;
 }
 
-} // NameSpace plaYUVer
+}  // NameSpace plaYUVer

@@ -484,11 +484,11 @@ Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
   if( selectionArea.isValid() )
   {
     histogramWidget->stopHistogramComputation();
-    //histogramWidget->updateSelectionData( new PlaYUVerFrame(m_pcFrame selectionArea));
-    histogramWidget->updateSelectionData( new PlaYUVerFrame(m_pcFrame));
+    histogramWidget->updateSelectionData( new PlaYUVerFrame(m_pcFrame,  selectionArea));
     fullImageButton->show();
     selectionImageButton->show();
     selectionImageButton->click();
+    slotRenderingChanged( HistogramWidget::ImageSelectionHistogram );
   }
   else
   {

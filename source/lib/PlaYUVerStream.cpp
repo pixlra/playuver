@@ -330,7 +330,8 @@ Void PlaYUVerStream::loadAll()
   m_pcCurrFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
   m_iCurrFrameNum = -1;
   seekInput( 0 );
-  for( UInt i = 0; i < m_uiFrameBufferSize - 1; i++ )
+  setNextFrame();
+  for( UInt i = m_uiFrameBufferIndex; i < m_uiFrameBufferSize ; i++ )
   {
     readFrame();
     setNextFrame();

@@ -162,13 +162,13 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
       titleDockWidget.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
       titleDockWidget.append( " Information" );
       pcCurrModuleIf->m_pcDockWidget = new QDockWidget( titleDockWidget, m_pcParent );
+      pcCurrModuleIf->m_pcDockWidget->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
       pcCurrModuleIf->m_pcDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
       pcCurrModuleIf->m_pcDockWidget->setWidget( pcCurrModuleIf->m_pcModuleDock );
-      pcCurrModuleIf->m_pcDockWidget->setAttribute( Qt::WA_DeleteOnClose );
-      pcCurrModuleIf->m_pcDockWidget->setTitleBarWidget( 0 );
+      //pcCurrModuleIf->m_pcDockWidget->setAttribute( Qt::WA_DeleteOnClose );
       m_pcParent->addDockWidget( Qt::RightDockWidgetArea, pcCurrModuleIf->m_pcDockWidget );
 
-      connect( pcCurrModuleIf->m_pcDockWidget, SIGNAL( visibilityChanged(bool) ), pcCurrModuleIf->m_pcModuleDock, SLOT( visibilityChangedSlot(bool) ) );
+      //connect( pcCurrModuleIf->m_pcDockWidget, SIGNAL( visibilityChanged(bool) ), pcCurrModuleIf->m_pcModuleDock, SLOT( visibilityChangedSlot(bool) ) );
     }
   }
 
@@ -237,7 +237,6 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Bool isPlay
     {
       bRet = true;
     }
-
   }
   else
   {

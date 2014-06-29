@@ -489,7 +489,17 @@ Double PlaYUVerFrame::getMSE( PlaYUVerFrame* Org, Int component )
   Int diff = 0;
   Double ssd = 0;
 
-  for( UInt i = 0; i < Org->getHeight() * Org->getWidth(); i++ )
+  Int numberOfPixels = 0;
+  if( component == LUMA )
+  {
+    numberOfPixels = Org->getHeight() * Org->getWidth();
+  }
+  else
+  {
+    numberOfPixels = getChromaLength();
+  }
+
+  for( UInt i = 0; i < numberOfPixels; i++ )
   {
     aux_pel_1 = *pPelYUV++;
     aux_pel_2 = *pOrgPelYUV++;

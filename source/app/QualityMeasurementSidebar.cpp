@@ -46,27 +46,23 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, QMdiArea 
 
   m_comboBoxRef = new QComboBox;
 
-  m_comboBoxRec = new QComboBox;
-
   updateSubWindowList();
 
   QGridLayout *mainLayout = new QGridLayout;
   mainLayout->addWidget( RefLabel, 0, 0, Qt::AlignLeft );
   mainLayout->addWidget( m_comboBoxRef, 0, 1, Qt::AlignLeft );
-  //mainLayout->addWidget( RecLabel, 1, 0, Qt::AlignLeft );
-  //mainLayout->addWidget( m_comboBoxRec, 1, 1, Qt::AlignLeft );
 
-  m_ppcLabelQualityLabel[LUMA] = new QLabel( tr( "PSNR Y:" ) );
+  m_ppcLabelQualityLabel[LUMA] = new QLabel( "PSNR Y:" );
   m_ppcLabelQualityLabel[LUMA]->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
   m_ppcLabelQualityValue[LUMA] = new QLabel;
   m_ppcLabelQualityValue[LUMA]->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
-  m_ppcLabelQualityLabel[CHROMA_U] = new QLabel( tr( "PSNR U:" ) );
+  m_ppcLabelQualityLabel[CHROMA_U] = new QLabel( "PSNR U:" );
   m_ppcLabelQualityLabel[CHROMA_U]->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
   m_ppcLabelQualityValue[CHROMA_U] = new QLabel;
   m_ppcLabelQualityValue[CHROMA_U]->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
-  m_ppcLabelQualityLabel[CHROMA_V] = new QLabel( tr( "PSNR V:" ) );
+  m_ppcLabelQualityLabel[CHROMA_V] = new QLabel( "PSNR V:" );
   m_ppcLabelQualityLabel[CHROMA_V]->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
   m_ppcLabelQualityValue[CHROMA_V] = new QLabel;
   m_ppcLabelQualityValue[CHROMA_V]->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
@@ -86,7 +82,7 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, QMdiArea 
 
   mainLayout->addWidget( statisticsGroup, 4, 0, 3, 3 );
 
-  mainLayout->setRowStretch( 8, 10 );
+  //mainLayout->setRowStretch( 8, 10 );
   setLayout( mainLayout );
 
   connect( m_comboBoxRef, SIGNAL( activated(int) ), this, SLOT( slotReferenceChanged(int) ) );
@@ -134,27 +130,27 @@ Void QualityMeasurementSidebar::updateCurrentWindow( SubWindowHandle *subWindow 
 Void QualityMeasurementSidebar::updateSidebarData()
 {
   QString value( "0.00" );
-  SubWindowHandle* refSubWindow = m_pcCurrentSubWindow->getRefSubWindow();
-
-  if( refSubWindow )
+  if( m_pcCurrentSubWindow )
   {
-    PlaYUVerFrame* currFrame = m_pcCurrentSubWindow->getCurrFrame();
-    PlaYUVerFrame* refFrame = refSubWindow->getCurrFrame();
-    Double quality;
-
-    for( Int component = 0; component < 3; component++ )
+    if( SubWindowHandle* refSubWindow = m_pcCurrentSubWindow->getRefSubWindow() )
     {
-      quality = currFrame->getPSNR( refFrame, component );
-      m_ppcLabelQualityLabel[component]->setText( value.setNum( quality, 'f', 2 ) );
+      PlaYUVerFrame* currFrame = m_pcCurrentSubWindow->getCurrFrame();
+      PlaYUVerFrame* refFrame = refSubWindow->getCurrFrame();
+      Double quality;
+
+      for( Int component = 0; component < 3; component++ )
+      {
+        quality = currFrame->getPSNR( refFrame, component );
+        m_ppcLabelQualityValue[component]->setText( value.setNum( quality, 'f', 2 ) );
+      }
+      return;
     }
   }
-  else
+  for( Int component = 0; component < 3; component++ )
   {
-    for( Int component = 0; component < 3; component++ )
-    {
-      m_ppcLabelQualityLabel[component]->setText( value );
-    }
+    m_ppcLabelQualityValue[component]->setText( value );
   }
+
 }
 
 Void QualityMeasurementSidebar::slotReferenceChanged( Int index )
@@ -164,9 +160,16 @@ Void QualityMeasurementSidebar::slotReferenceChanged( Int index )
   {
     subWindow = qobject_cast<SubWindowHandle *>( m_pcMainWindowMdiArea->subWindowList().at( index ) );
     if( subWindow )
-      m_pcCurrentSubWindow->setRefSubWindow( subWindow );
+    {
+      if( m_pcCurrentSubWindow->getCurrFrame()->haveSameFmt( subWindow->getCurrFrame() ) )
+      {
+        m_pcCurrentSubWindow->setRefSubWindow( subWindow );
+        updateSidebarData();
+        return;
+      }
+    }
   }
-  // updateSidebarData();
+  m_comboBoxRef->setCurrentIndex( -1 );
 }
 
 }   // NAMESPACE

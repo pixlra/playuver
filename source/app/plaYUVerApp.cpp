@@ -155,14 +155,14 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
 
 Void plaYUVerApp::loadFile( QString fileName )
 {
-  QMdiSubWindow *existing = findSubWindow( fileName );
-  if( existing )
+  SubWindowHandle *interfaceChild = plaYUVerApp::findSubWindow( mdiArea, fileName );
+  if( interfaceChild )
   {
-    mdiArea->setActiveSubWindow( existing );
+    mdiArea->setActiveSubWindow( interfaceChild );
     return;
   }
 
-  SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
+  interfaceChild = new SubWindowHandle( this );  //createSubWindow();
   if( interfaceChild->loadFile( fileName ) )
   {
     statusBar()->showMessage( tr( "Loading file..." ) );
@@ -559,9 +559,6 @@ Void plaYUVerApp::playEvent()
       if( !m_arrayActions[VIDEO_LOOP_ACT]->isChecked() )
       {
         stop();
-        updateCurrFrameNum();
-        updateFrameProperties();
-        return;
       }
       else
       {
@@ -584,6 +581,7 @@ Void plaYUVerApp::playEvent()
   }
   updateCurrFrameNum();
   updateFrameProperties();
+  m_pcQualityMeasurement->updateSidebarData();
   m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time ) / 2;
 }
 
@@ -799,6 +797,10 @@ Void plaYUVerApp::chageSubWindowSelection()
     if( activeSubWindow() )
     {
       m_pcCurrentSubWindow = new_window;
+      if( !plaYUVerApp::findSubWindow( mdiArea, m_pcCurrentSubWindow->getRefSubWindow() ) )
+      {
+        m_pcCurrentSubWindow->setRefSubWindow( NULL );
+      }
       updateCurrFrameNum();
       updateTotalFrameNum();
       updateStreamProperties();
@@ -871,16 +873,26 @@ SubWindowHandle *plaYUVerApp::activeSubWindow()
   return 0;
 }
 
-QMdiSubWindow *plaYUVerApp::findSubWindow( const QString &fileName )
+SubWindowHandle* plaYUVerApp::findSubWindow( const QMdiArea* mdiArea, const QString& fileName )
 {
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
 
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
   SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
   if( mdiChild->currentFile() == canonicalFilePath )
-  return window;
+  return mdiChild;
 }
   return 0;
+}
+
+SubWindowHandle* plaYUVerApp::findSubWindow( const QMdiArea* mdiArea, const SubWindowHandle* subWindow )
+{
+  foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
+  SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
+  if( mdiChild == subWindow )
+  return mdiChild;
+}
+return 0;
 }
 
 Void plaYUVerApp::setNavigationTool()

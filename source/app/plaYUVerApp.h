@@ -148,7 +148,10 @@ private:
   Void writeSettings();
 
   SubWindowHandle *activeSubWindow();
-  QMdiSubWindow *findSubWindow( const QString &fileName );
+
+  static SubWindowHandle* findSubWindow( const QMdiArea* mdiArea, const QString& fileName );
+  static SubWindowHandle* findSubWindow( const QMdiArea* mdiArea, const SubWindowHandle* subWindow );
+
 
   QVector<SubWindowHandle*> m_acPlayingSubWindows;
   QSlider *m_pcFrameSlider;

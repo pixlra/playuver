@@ -82,7 +82,7 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, QMdiArea 
 
   mainLayout->addWidget( statisticsGroup, 4, 0, 3, 3 );
 
-  //mainLayout->setRowStretch( 8, 10 );
+  mainLayout->setRowStretch( 8, 10 );
   setLayout( mainLayout );
 
   connect( m_comboBoxRef, SIGNAL( activated(int) ), this, SLOT( slotReferenceChanged(int) ) );

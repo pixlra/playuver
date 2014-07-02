@@ -124,7 +124,7 @@ Void QualityMeasurementSidebar::updateSubWindowList()
   {
     if( SubWindowHandle* refSubWindow = m_pcCurrentSubWindow->getRefSubWindow() )
     {
-      Int index = m_pcWindowListNames.contains( refSubWindow->getWindowName() );
+      Int index = m_pcWindowListNames.indexOf( refSubWindow->getWindowName() );
       m_comboBoxRef->setCurrentIndex( index );
     }
   }
@@ -143,7 +143,7 @@ Void QualityMeasurementSidebar::updateSidebarData()
   {
     if( SubWindowHandle* refSubWindow = m_pcCurrentSubWindow->getRefSubWindow() )
     {
-      Int index = m_pcWindowListNames.contains( refSubWindow->getWindowName() );
+      Int index = m_pcWindowListNames.indexOf( refSubWindow->getWindowName() );
       m_comboBoxRef->setCurrentIndex( index );
 
       PlaYUVerFrame* currFrame = m_pcCurrentSubWindow->getCurrFrame();

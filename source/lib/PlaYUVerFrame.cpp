@@ -489,7 +489,7 @@ Double PlaYUVerFrame::getMSE( PlaYUVerFrame* Org, Int component )
   Int diff = 0;
   Double ssd = 0;
 
-  Int numberOfPixels = 0;
+  UInt numberOfPixels = 0;
   if( component == LUMA )
   {
     numberOfPixels = Org->getHeight() * Org->getWidth();

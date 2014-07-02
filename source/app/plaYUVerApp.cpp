@@ -624,6 +624,7 @@ Void plaYUVerApp::seekEvent( Int direction )
     {
       m_pcCurrentSubWindow->seekRelativeEvent( direction > 0 ? true : false );
     }
+    m_pcQualityMeasurement->updateSidebarData();
     updateFrameProperties();
     updateCurrFrameNum();
   }
@@ -644,6 +645,7 @@ Void plaYUVerApp::seekSliderEvent( Int new_frame_num )
     {
       m_pcCurrentSubWindow->seekAbsoluteEvent( ( UInt )new_frame_num );
     }
+    m_pcQualityMeasurement->updateSidebarData();
     updateFrameProperties();
     updateCurrFrameNum();
   }

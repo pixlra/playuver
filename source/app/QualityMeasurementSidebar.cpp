@@ -118,7 +118,16 @@ Void QualityMeasurementSidebar::updateSubWindowList()
   }
   m_comboBoxRef->clear();
   m_comboBoxRef->insertItems( 0, m_pcWindowListNames );
+
   m_comboBoxRef->setCurrentIndex( -1 );
+  if( m_pcCurrentSubWindow )
+  {
+    if( SubWindowHandle* refSubWindow = m_pcCurrentSubWindow->getRefSubWindow() )
+    {
+      Int index = m_pcWindowListNames.contains( refSubWindow->getWindowName() );
+      m_comboBoxRef->setCurrentIndex( index );
+    }
+  }
 }
 
 Void QualityMeasurementSidebar::updateCurrentWindow( SubWindowHandle *subWindow )
@@ -134,6 +143,9 @@ Void QualityMeasurementSidebar::updateSidebarData()
   {
     if( SubWindowHandle* refSubWindow = m_pcCurrentSubWindow->getRefSubWindow() )
     {
+      Int index = m_pcWindowListNames.contains( refSubWindow->getWindowName() );
+      m_comboBoxRef->setCurrentIndex( index );
+
       PlaYUVerFrame* currFrame = m_pcCurrentSubWindow->getCurrFrame();
       PlaYUVerFrame* refFrame = refSubWindow->getCurrFrame();
       Double quality;
@@ -155,10 +167,9 @@ Void QualityMeasurementSidebar::updateSidebarData()
 
 Void QualityMeasurementSidebar::slotReferenceChanged( Int index )
 {
-  SubWindowHandle *subWindow;
   if( index > -1 && m_pcCurrentSubWindow )
   {
-    subWindow = qobject_cast<SubWindowHandle *>( m_pcMainWindowMdiArea->subWindowList().at( index ) );
+    SubWindowHandle *subWindow = qobject_cast<SubWindowHandle *>( m_pcMainWindowMdiArea->subWindowList().at( index ) );
     if( subWindow )
     {
       if( m_pcCurrentSubWindow->getCurrFrame()->haveSameFmt( subWindow->getCurrFrame() ) )

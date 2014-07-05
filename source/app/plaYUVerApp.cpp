@@ -657,12 +657,13 @@ Void plaYUVerApp::lockButtonEvent()
   {
     if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
-      stop();
-      play();
+      m_acPlayingSubWindows.clear();
+      m_acPlayingSubWindows.append(m_pcCurrentSubWindow);
     }
     else
     {
-      stop();
+      if( m_acPlayingSubWindows.size() > 1 )
+        m_acPlayingSubWindows.clear();
     }
   }
 }

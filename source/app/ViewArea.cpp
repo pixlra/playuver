@@ -139,6 +139,7 @@ Void ViewArea::zoomChangeEvent( Double factor, QPoint center )
 
   setZoomFactor( zoomFactor );
   emit zoomFactorChanged( factor, center );
+
 }
 
 void ViewArea::setMode( ViewMode mode )

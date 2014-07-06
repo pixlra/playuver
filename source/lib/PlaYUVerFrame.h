@@ -118,6 +118,7 @@ public:
   Double getPSNR( PlaYUVerFrame* Org, Int component );
 
   UInt64 getBytesPerFrame();
+  static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat );
 
   UInt getChromaLength() const;
 

@@ -524,23 +524,28 @@ Double PlaYUVerFrame::getPSNR( PlaYUVerFrame* Org, Int component )
 
 UInt64 PlaYUVerFrame::getBytesPerFrame()
 {
-  switch( m_iPixelFormat )
+  return getBytesPerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
+}
+
+UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat )
+{
+  switch( iPixelFormat )
   {
   case YUV420p:
-    return m_uiWidth * m_uiHeight * 1.5;
+    return uiWidth * uiHeight * 1.5;
     break;
   case YUV444p:
-    return m_uiWidth * m_uiHeight * 3;
+    return uiWidth * uiHeight * 3;
     break;
   case YUV422p:
   case YUYV422:
-    return m_uiWidth * m_uiHeight * 2;
+    return uiWidth * uiHeight * 2;
     break;
   case GRAY:
-    return m_uiWidth * m_uiHeight;
+    return uiWidth * uiHeight;
     break;
   case RGB8:
-    return m_uiWidth * m_uiHeight * 3;
+    return uiWidth * uiHeight * 3;
     break;
   default:
     return 0;

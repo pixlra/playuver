@@ -38,7 +38,20 @@
 
 namespace plaYUVer
 {
+
 class SubWindowHandle;
+
+struct structPlaYUVERStreamInfo
+{
+  QString m_cFilename;
+  QSize m_cResolution;
+  Int m_iPelFormat;
+  UInt m_uiFrameRate;
+};
+
+//typedef QVector<PlaYUVERStreamInfo> PlaYUVerRecentFileListInfo;
+typedef struct structPlaYUVERStreamInfo PlaYUVerRecentFileListInfo;
+typedef struct structPlaYUVERStreamInfo PlaYUVerStreamInfo;
 
 class SubWindowHandle: public QMdiSubWindow
 {
@@ -49,6 +62,8 @@ private:
   QScrollArea* m_cScrollArea;
   ViewArea* m_cViewArea;
 
+  PlaYUVerStreamInfo m_sStreamInfo;
+
   PlaYUVerStream* m_pCurrStream;
   PlaYUVerFrame* m_pcCurrFrame;
 
@@ -57,7 +72,6 @@ private:
   SubWindowHandle* m_pcReferenceSubWindow;
 
   QString m_cWindowName;
-  QString m_cCurrFileName;
 
   Bool m_bIsPlaying;
   Bool m_bIsModule;
@@ -90,6 +104,11 @@ public:
 
   Void refreshFrame();
   Void setCurrFrame( PlaYUVerFrame* pcCurrFrame );
+
+  PlaYUVerStreamInfo getStreamInfo()
+  {
+    return m_sStreamInfo;
+  }
 
   PlaYUVerStream* getInputStream()
   {
@@ -191,7 +210,7 @@ public:
 
   QString currentFile()
   {
-    return m_cCurrFileName;
+    return m_sStreamInfo.m_cFilename;
   }
 
   Bool getIsModule()
@@ -209,5 +228,7 @@ public Q_SLOTS:
 };
 
 }  // NAMESPACE
+
+Q_DECLARE_METATYPE(plaYUVer::PlaYUVerRecentFileListInfo);
 
 #endif // __SUBWINDOWHANDLE_H__

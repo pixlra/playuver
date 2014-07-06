@@ -24,6 +24,7 @@
 
 #include <QApplication>
 #include "plaYUVerApp.h"
+#include "SubWindowHandle.h"
 #ifdef USE_FERVOR
 #include "fvupdater.h"
 #endif
@@ -36,6 +37,9 @@ int main( int argc, char *argv[] )
   QApplication::setApplicationVersion("PLAYUVER_VERSION");
   QApplication::setOrganizationName("pixlra");
   QApplication::setOrganizationDomain("playuver.pixlra");
+
+  qRegisterMetaType<PlaYUVerRecentFileListInfo>("PlaYUVerRecentFileListInfo");
+
   plaYUVerApp w;
   w.show();
   w.parseArgs( argc, argv );

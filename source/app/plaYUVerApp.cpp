@@ -23,7 +23,6 @@
  */
 
 #include "plaYUVerApp.h"
-#include "SubWindowHandle.h"
 #include "PlaYUVerStream.h"
 #include "DialogSubWindowSelector.h"
 #ifdef USE_FERVOR
@@ -176,6 +175,8 @@ Void plaYUVerApp::loadFile( QString fileName )
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
     updateZoomFactorSBox();
+    //m_aRecentFileStreamInfo.append( interfaceChild->getStreamInfo() );
+    m_aRecentFileStreamInfo = interfaceChild->getStreamInfo();
     statusBar()->showMessage( tr( "File loaded" ), 2000 );
   }
   else
@@ -658,7 +659,7 @@ Void plaYUVerApp::lockButtonEvent()
     if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
       m_acPlayingSubWindows.clear();
-      m_acPlayingSubWindows.append(m_pcCurrentSubWindow);
+      m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
     }
     else
     {
@@ -1372,6 +1373,9 @@ Void plaYUVerApp::readSettings()
   setAllSubWindowTool();
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
   m_arrayActions[VIDEO_LOCK_ACT]->setChecked( settings.getVideoLock() );
+
+  m_aRecentFileStreamInfo = settings.getRecentFileList();
+
   Bool visibleStreamProp, visibleFrameProp, visibleQualityMeasure;
   settings.getDockVisibility( visibleStreamProp, visibleFrameProp, visibleQualityMeasure );
   if( !visibleStreamProp )
@@ -1390,6 +1394,7 @@ Void plaYUVerApp::writeSettings()
   settings.setMainWindowSize( size() );
   settings.setLastOpenPath( m_cLastOpenPath );
   settings.setSelectedTool( ( Int )m_appTool );
+  settings.setRecentFileList( m_aRecentFileStreamInfo );
   settings.setDockVisibility( m_pcStreamProperties->isVisible(), m_pcFrameProperties->isVisible(), m_pcQualityMeasurement->isVisible() );
   settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked(), m_arrayActions[VIDEO_LOCK_ACT]->isChecked() );
 }

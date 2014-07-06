@@ -29,6 +29,7 @@
 #include "PlaYUVerDefs.h"
 #include <QtCore>
 #include "GridManager.h"
+#include "SubWindowHandle.h"
 
 namespace plaYUVer
 {
@@ -58,6 +59,10 @@ public:
 
   Void setDockVisibility( Bool statusStreamProperties, Bool statusFrameProperties, Bool statusQualityMeasurement );
   Void getDockVisibility( Bool& statusStreamProperties, Bool& statusFrameProperties, Bool& statusQualityMeasurement );
+
+  // - - - - - - - - - - Recent Files Settings - - - - - - - - - - - - -
+  Void setRecentFileList( PlaYUVerRecentFileListInfo );
+  PlaYUVerRecentFileListInfo getRecentFileList();
 
   // - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - -
   GridManager::Style gridStyle();

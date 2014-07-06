@@ -33,6 +33,7 @@
 #include <QtGui>
 #endif
 #include <QMainWindow>
+#include "SubWindowHandle.h"
 #include "ModulesHandle.h"
 #include "PropertiesSidebar.h"
 #include "QualityMeasurementSidebar.h"
@@ -40,7 +41,6 @@
 namespace plaYUVer
 {
 
-class SubWindowHandle;
 class PlaYUVerStream;
 
 class plaYUVerApp: public QMainWindow
@@ -50,6 +50,11 @@ Q_OBJECT
 public:
   plaYUVerApp();
   Void parseArgs( Int argc, Char *argv[] );
+
+  enum RecentFileList
+  {
+    MAXRECENTFILES,
+  };
 
 protected:
   Void closeEvent( QCloseEvent *event );
@@ -124,6 +129,9 @@ private:
   UInt m_uiAveragePlayInterval;
 
   Void loadFile( QString fileName );
+
+  Void readRecentFileList();
+  Void writeRecentFileList();
 
   Void zoomToFitAll();
 
@@ -248,6 +256,8 @@ private:
   QAction *actionNavigationTool;
   QAction *actionSelectionTool;
   enum eTool m_appTool;
+
+  PlaYUVerRecentFileListInfo m_aRecentFileStreamInfo;
 
 };
 

@@ -75,7 +75,7 @@ SubWindowHandle::~SubWindowHandle()
 Void SubWindowHandle::reloadFile()
 {
   Int currFrameNum = m_pCurrStream->getCurrFrameNum();
-  loadFile( m_cCurrFileName, false );
+  loadFile( m_sStreamInfo.m_cFilename, false );
   seekAbsoluteEvent( currFrameNum );
 }
 
@@ -112,7 +112,11 @@ Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
 
   refreshFrame();
 
-  m_cCurrFileName = cFilename;
+  m_sStreamInfo.m_cFilename = cFilename;
+  m_sStreamInfo.m_cResolution = QSize( Width, Height);
+  m_sStreamInfo.m_iPelFormat = InputFormat;
+  m_sStreamInfo.m_uiFrameRate = FrameRate;
+
   m_cWindowName = m_pCurrStream->getStreamInformationString();
   setWindowTitle( m_cWindowName );
   return true;
@@ -233,7 +237,7 @@ Int SubWindowHandle::playEvent()
     m_pCurrStream->readFrame();
     if( m_pCurrStream->checkErrors( PlaYUVerStream::READING ) )
     {
-      QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( m_cCurrFileName ) );
+      QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( m_sStreamInfo.m_cFilename ) );
       return -3;
     }
     return 0;

@@ -115,7 +115,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     {
       switch( m_iFileFormat )
       {
-      case PGMINPUT:
+        case PGMINPUT:
 
         break;
       }
@@ -252,7 +252,7 @@ Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, 
   {
     rWidth = 0;
     rHeight = 0;
-    rInputFormat = -1;
+    rInputFormat = PlaYUVerFrame::YUV420p;
     rFrameRate = 30;
   }
 }
@@ -264,27 +264,7 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
   if( !fileExtension.compare( "yuv" ) )
   {
     bRet = true;
-// Guess resolution - match %dx%d
-#if( QT_VERSION_PLAYUVER == 5 )
-    QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*" ).match( filename );
-    if( resolutionMatch.hasMatch() )
-    {
-      QString resolutionString = resolutionMatch.captured( 0 );
-      if( resolutionString.startsWith( "_" ) || resolutionString.endsWith( "_" ) )
-      {
-        resolutionString.remove( "_" );
-        QStringList resolutionArgs = resolutionString.split( "x" );
-        qDebug( ) << "Found resolution = "
-                  << resolutionArgs;
-        if( resolutionArgs.size() == 2 )
-        {
-          rWidth = resolutionArgs.at( 0 ).toUInt();
-          rHeight = resolutionArgs.at( 1 ).toUInt();
-        }
-      }
-    }
-#endif
-// Guess pixel format
+    // Guess pixel format
     QStringList formats_list = PlaYUVerFrame::supportedPixelFormatList();
     for( Int i = 0; i < formats_list.size(); i++ )
     {
@@ -294,6 +274,77 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
         break;
       }
     }
+
+    if( rWidth == 0 || rHeight == 0 )
+    {
+      // Guess resolution - match  resolution name
+      QStringList stdResName = standardResolutionSizes().stringListName;
+      for( Int i = 0; i < stdResName.size(); i++ )
+      {
+        if( filename.contains( stdResName.at( i ) ) )
+        {
+          rWidth = standardResolutionSizes().sizeResolution.at( i ).width();
+          rHeight = standardResolutionSizes().sizeResolution.at( i ).height();
+          break;
+        }
+      }
+      // Guess resolution - match %dx%d
+#if( QT_VERSION_PLAYUVER == 5 )
+      QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*" ).match( filename );
+      if( resolutionMatch.hasMatch() )
+      {
+        QString resolutionString = resolutionMatch.captured( 0 );
+        if( resolutionString.startsWith( "_" ) || resolutionString.endsWith( "_" ) )
+        {
+          resolutionString.remove( "_" );
+          QStringList resolutionArgs = resolutionString.split( "x" );
+          qDebug( ) << "Found resolution = "
+                    << resolutionArgs;
+          if( resolutionArgs.size() == 2 )
+          {
+            rWidth = resolutionArgs.at( 0 ).toUInt();
+            rHeight = resolutionArgs.at( 1 ).toUInt();
+          }
+        }
+      }
+#endif
+    }
+
+    // Guess resolution by file size
+    if( rWidth == 0 && rHeight == 0 )
+    {
+
+      Char *filename_char = new char[filename.length() + 1];
+      memcpy( filename_char, filename.toUtf8().constData(), filename.length() + 1 * sizeof(char) );
+      FILE* pF = fopen( filename_char, "rb" );
+      fseek( pF, 0, SEEK_END );
+      UInt64 uiFileSize = ftell( pF );
+      fclose( pF );
+      delete[] filename_char;
+
+      if( pF != NULL )
+      {
+        Int count = 0, module, frame_bytes, match;
+        QVector<QSize> sizeResolution = standardResolutionSizes().sizeResolution;
+        for( Int i = 0; i < sizeResolution.size(); i++ )
+        {
+          frame_bytes = PlaYUVerFrame::getBytesPerFrame( sizeResolution.at( i ).width(), sizeResolution.at( i ).height(), rInputFormat );
+          module = uiFileSize % frame_bytes;
+          if( module == 0 )
+          {
+            match = i;
+            count++;
+          }
+        }
+        if( count == 1 )
+        {
+          rWidth = sizeResolution.at( match ).width();
+          rHeight = sizeResolution.at( match ).height();
+        }
+      }
+
+    }
+
     if( rWidth > 0 && rHeight > 0 && rInputFormat >= 0 )
       bRet = false;
   }
@@ -331,7 +382,7 @@ Void PlaYUVerStream::loadAll()
   m_iCurrFrameNum = -1;
   seekInput( 0 );
   setNextFrame();
-  for( UInt i = m_uiFrameBufferIndex; i < m_uiFrameBufferSize ; i++ )
+  for( UInt i = m_uiFrameBufferIndex; i < m_uiFrameBufferSize; i++ )
   {
     readFrame();
     setNextFrame();

@@ -43,7 +43,9 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   // Config dialog
 
-  setStandardResolutionSizes();
+  struct PlaYUVerStream::StandardResolution stdRes = PlaYUVerStream::standardResolutionSizes();
+  standardResolutionNames = stdRes.stringListFullName;
+  standardResolutionSizes = stdRes.sizeResolution;
 
   setObjectName( QStringLiteral( "ConfigureFormat" ) );
   resize( 392, 350 );
@@ -184,9 +186,9 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( UInt& rWidth, UInt& rHeight
   m_spinBoxheight->setValue( rHeight );
   m_comboBoxPixelFormat->setCurrentIndex( rInputFormat >= 0 ? rInputFormat : 0 );
   m_spinBoxFrameRate->setValue( rFrameRate );
-  for( Int i = 0; i < standardResolutionSizesList.size(); i++ )
+  for( Int i = 0; i < standardResolutionSizes.size(); i++ )
   {
-    if( standardResolutionSizesList.at( i ) == QSize( rWidth, rHeight ) )
+    if( standardResolutionSizes.at( i ) == QSize( rWidth, rHeight ) )
     {
       m_comboBoxStandardResolution->setCurrentIndex( i );
     }
@@ -208,7 +210,7 @@ void ConfigureFormatDialog::StandardResolutionSelection()
   if( currIdx == -1 )
     return;
 
-  QSize currSize = standardResolutionSizesList.at( currIdx );
+  QSize currSize = standardResolutionSizes.at( currIdx );
   m_spinBoxWidth->setValue( currSize.width() );
   m_spinBoxheight->setValue( currSize.height() );
 }

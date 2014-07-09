@@ -27,7 +27,18 @@ IF( USE_FERVOR )
       INSTALL(FILES ${QT_DIR}/bin/Qt5Network${QT_DLL_POSTFIX}.dll DESTINATION bin )
       INSTALL(FILES ${QT_DIR}/bin/Qt5WebKit${QT_DLL_POSTFIX}.dll DESTINATION bin )
       INSTALL(FILES ${QT_DIR}/bin/Qt5WebKitWidgets${QT_DLL_POSTFIX}.dll DESTINATION bin )
+      INSTALL(FILES ${QT_DIR}/bin/Qt5Quick${QT_DLL_POSTFIX}.dll DESTINATION bin )
+      INSTALL(FILES ${QT_DIR}/bin/Qt5Qml${QT_DLL_POSTFIX}.dll DESTINATION bin )
+      INSTALL(FILES ${QT_DIR}/bin/Qt5Multimedia${QT_DLL_POSTFIX}.dll DESTINATION bin )
+      INSTALL(FILES ${QT_DIR}/bin/Qt5Sql${QT_DLL_POSTFIX}.dll DESTINATION bin )
+      INSTALL(FILES ${QT_DIR}/bin/Qt5Positioning${QT_DLL_POSTFIX}.dll DESTINATION bin )
+      INSTALL(FILES ${QT_DIR}/bin/Qt5Sensors${QT_DLL_POSTFIX}.dll DESTINATION bin )
+      INSTALL(FILES ${QT_DIR}/bin/Qt5MultimediaWidgets${QT_DLL_POSTFIX}.dll DESTINATION bin )
+      INSTALL(FILES ${QT_DIR}/bin/Qt5OpenGL${QT_DLL_POSTFIX}.dll DESTINATION bin )    
+      
     ENDIF() 
+    
+    LIST(APPEND QT_MODULES Network WebKit WebKitWidgets )
     
   ELSE()
     MESSAGE( "Fervor lib source code is not find in ${FERVOR_DIR}... Disabling it!" )

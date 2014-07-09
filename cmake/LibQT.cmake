@@ -54,4 +54,6 @@ IF( NOT USE_QT4 )
     INSTALL(FILES ${QT_DIR}/plugins/platforms/qwindows.dll DESTINATION bin/platforms )
   ENDIF() 
   
+  LIST(APPEND QT_MODULES Core Gui Widgets )
+  
 ENDIF()

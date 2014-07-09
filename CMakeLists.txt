@@ -124,6 +124,10 @@ ADD_EXECUTABLE( ${PROJECT_NAME} ${SOURCES_FILES} ${HEADERS_MOC_FILES} ${FORMS_HE
 
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib ${MODULES_LIBS}  ${LINKER_LIBS} )
 
+IF( NOT USE_QT4 )
+  QT5_USE_MODULES( ${PROJECT_NAME} ${QT_MODULES} )
+ENDIF()
+
 INCLUDE(cmake/Install.cmake)
 
 ######################################################################################

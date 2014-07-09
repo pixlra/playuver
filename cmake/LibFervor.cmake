@@ -24,6 +24,7 @@ IF( USE_FERVOR )
     SET(QT_USE_QTWEBKIT true)
     
     IF( WIN32 ) 
+      INSTALL(FILES ${QT_DIR}/bin/Qt5Network${QT_DLL_POSTFIX}.dll DESTINATION bin )
       INSTALL(FILES ${QT_DIR}/bin/Qt5WebKit${QT_DLL_POSTFIX}.dll DESTINATION bin )
       INSTALL(FILES ${QT_DIR}/bin/Qt5WebKitWidgets${QT_DLL_POSTFIX}.dll DESTINATION bin )
     ENDIF() 

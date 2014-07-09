@@ -22,6 +22,12 @@ IF( USE_FERVOR )
     
     SET(QT_USE_QTNETWORK true)
     SET(QT_USE_QTWEBKIT true)
+    
+    IF( WIN32 ) 
+      INSTALL(FILES ${QT_DIR}/bin/Qt5WebKit${QT_DLL_POSTFIX}.dll DESTINATION bin )
+      INSTALL(FILES ${QT_DIR}/bin/Qt5WebKitWidgets${QT_DLL_POSTFIX}.dll DESTINATION bin )
+    ENDIF() 
+    
   ELSE()
     MESSAGE( "Fervor lib source code is not find in ${FERVOR_DIR}... Disabling it!" )
     SET( USE_FERVOR False )

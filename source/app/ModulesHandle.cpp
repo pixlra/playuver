@@ -419,6 +419,7 @@ Void ModulesHandle::updateMenus( Bool hasSubWindow )
     currModuleAction = m_arrayModulesActions.at( i );
     currModuleAction->setEnabled( hasSubWindow );
   }
+  m_arrayActions[APPLY_ALL_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[SWAP_FRAMES_ACT]->setEnabled( hasSubWindow );
 }
 

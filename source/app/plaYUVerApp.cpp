@@ -949,6 +949,7 @@ Void plaYUVerApp::updateMenus()
   m_arrayActions[VIDEO_FORWARD_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_LOOP_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_LOCK_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[VIDEO_LOCK_SELECTION_ACT]->setEnabled( hasSubWindow );
   m_pcFrameSlider->setEnabled( hasSubWindow );
   if( !hasSubWindow )
   {

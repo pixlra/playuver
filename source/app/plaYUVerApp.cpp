@@ -211,12 +211,15 @@ Void plaYUVerApp::open()
          << formatsList
          << tr( "All Files (*)" );
 
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );
+  QStringList fileNameList = QFileDialog::getOpenFileNames( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );
 
-  if( !fileName.isEmpty() )
+  for( Int i = 0; i < fileNameList.size(); i++ )
   {
-    m_cLastOpenPath = QFileInfo( fileName ).path();
-    loadFile( fileName );
+    if( !fileNameList.at( i ).isEmpty() )
+    {
+      m_cLastOpenPath = QFileInfo( fileNameList.at( i ) ).path();
+      loadFile( fileNameList.at( i ) );
+    }
   }
 }
 
@@ -658,7 +661,7 @@ Void plaYUVerApp::lockButtonEvent()
     if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
       m_acPlayingSubWindows.clear();
-      m_acPlayingSubWindows.append(m_pcCurrentSubWindow);
+      m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
     }
     else
     {

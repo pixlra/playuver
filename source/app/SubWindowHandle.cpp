@@ -94,7 +94,7 @@ Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
   if( m_pCurrStream->guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
   {
     ConfigureFormatDialog formatDialog( this );
-    if( formatDialog.runConfigureFormatDialog( Width, Height, InputFormat, FrameRate ) == QDialog::Rejected )
+    if( formatDialog.runConfigureFormatDialog( cFilename, Width, Height, InputFormat, FrameRate ) == QDialog::Rejected )
     {
       return false;
     }

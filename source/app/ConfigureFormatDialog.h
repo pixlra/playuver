@@ -56,7 +56,7 @@ Q_OBJECT
 public:
 
   ConfigureFormatDialog( QWidget *parent = 0 );
-  Int runConfigureFormatDialog ( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
+  Int runConfigureFormatDialog ( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
 
 private Q_SLOTS:
   void StandardResolutionSelection();
@@ -65,6 +65,7 @@ private:
   QStringList standardResolutionNames;
   QVector<QSize> standardResolutionSizes;
 
+  QLabel* m_labelFilename;
   QComboBox *m_comboBoxStandardResolution;
   QSpinBox *m_spinBoxWidth;
   QSpinBox *m_spinBoxheight;

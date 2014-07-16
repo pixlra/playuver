@@ -48,7 +48,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   standardResolutionSizes = stdRes.sizeResolution;
 
   setObjectName( QStringLiteral( "ConfigureFormat" ) );
-  resize( 392, 350 );
+  resize( 392, 370 );
 
   setWindowTitle( "Configure Resolution" );
   setWindowIcon( QIcon( ":/images/configureformat.png" ) );

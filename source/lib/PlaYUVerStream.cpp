@@ -260,6 +260,7 @@ Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, 
 Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
 {
   Bool bRet = false;
+  QString FilenameShort = QFileInfo( filename ).fileName();
   QString fileExtension = QFileInfo( filename ).suffix();
   if( !fileExtension.compare( "yuv" ) )
   {
@@ -268,7 +269,7 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
     QStringList formats_list = PlaYUVerFrame::supportedPixelFormatList();
     for( Int i = 0; i < formats_list.size(); i++ )
     {
-      if( filename.contains( formats_list.at( i ), Qt::CaseInsensitive ) )
+      if( FilenameShort.contains( formats_list.at( i ), Qt::CaseInsensitive ) )
       {
         rInputFormat = i;
         break;
@@ -278,19 +279,33 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
     if( rWidth == 0 || rHeight == 0 )
     {
       // Guess resolution - match  resolution name
+      Int iMatch = -1;
       QStringList stdResName = standardResolutionSizes().stringListName;
       for( Int i = 0; i < stdResName.size(); i++ )
       {
-        if( filename.contains( stdResName.at( i ) ) )
+        if( FilenameShort.contains( stdResName.at( i ) ) )
         {
-          rWidth = standardResolutionSizes().sizeResolution.at( i ).width();
-          rHeight = standardResolutionSizes().sizeResolution.at( i ).height();
-          break;
+          if( iMatch >= 0 )
+          {
+            if( stdResName.at( i ).size() > stdResName.at( iMatch ).size() )
+            {
+              iMatch = i;
+            }
+          }
+          else
+          {
+            iMatch = i;
+          }
         }
+      }
+      if( iMatch >= 0 )
+      {
+        rWidth = standardResolutionSizes().sizeResolution.at( iMatch ).width();
+        rHeight = standardResolutionSizes().sizeResolution.at( iMatch ).height();
       }
       // Guess resolution - match %dx%d
 #if( QT_VERSION_PLAYUVER == 5 )
-      QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*" ).match( filename );
+      QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*" ).match( FilenameShort );
       if( resolutionMatch.hasMatch() )
       {
         QString resolutionString = resolutionMatch.captured( 0 );

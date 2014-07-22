@@ -130,6 +130,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
 
   if( m_uiWidth <= 0 || m_uiHeight <= 0 || m_iPixelFormat < 0 )
   {
+    qDebug( ) << "Incorrect configuration";
     close();
     return m_bInit;
   }
@@ -140,6 +141,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
     if( !m_ppcFrameBuffer[i] )
     {
+      qDebug( ) << "Cannot allocated frame buffer";
       close();
       return m_bInit;
     }
@@ -164,7 +166,17 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     if( m_bIsInput )
     {
       fseek( m_pFile, 0, SEEK_END );
-      m_uiTotalFrameNum = ftell( m_pFile ) / ( frame_bytes_input );
+      UInt64 fileSize = ftell( m_pFile );
+#if 0
+      if( fileSize % frame_bytes_input )
+      {
+        Int remaining = fileSize % frame_bytes_input;
+        qDebug( ) << "Incorrect configuration: failed ( fileSize % frame_bytes_input = " << remaining << " )" ;
+        close();
+        return m_bInit;
+      }
+#endif
+      m_uiTotalFrameNum = fileSize / frame_bytes_input;
       fseek( m_pFile, 0, SEEK_SET );
     }
     m_cFormatName = QString::fromUtf8( "YUV" );
@@ -173,6 +185,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
 
   if( m_bIsInput && m_uiTotalFrameNum <= 0 )
   {
+    qDebug( ) << "Incorrect configuration: less than one frame";
     close();
     return m_bInit;
   }

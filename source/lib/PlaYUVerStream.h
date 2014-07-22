@@ -156,7 +156,8 @@ public:
   static QStringList supportedSaveFormatsExt()
   {
     QStringList formatsExt;
-    formatsExt << "bmp"
+    formatsExt << "yuv"
+               << "bmp"
                << "jpeg"
                << "png"  // portable network graphics
                ;
@@ -166,7 +167,8 @@ public:
   static QStringList supportedSaveFormatsName()
   {
     QStringList formatsName;
-    formatsName << "Windows Bitmap"
+    formatsName << "Raw Video"
+                << "Windows Bitmap"
                 << "Joint Photographic Experts Group"
                 << "Portable Network Graphics";
     return formatsName;

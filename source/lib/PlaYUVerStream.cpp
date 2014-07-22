@@ -82,6 +82,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   m_cFilename = filename;
   m_uiWidth = width;
   m_uiHeight = height;
+  m_iPixelFormat = input_format;
   m_uiFrameRate = frame_rate;
 
   if( m_bIsInput )
@@ -100,8 +101,6 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
       return m_bInit;
     }
     m_cFormatName = PlaYUVerStream::supportedReadFormatsExt().at( m_iFileFormat ).toUpper();
-
-    m_iPixelFormat = input_format;
 
 #ifdef USE_FFMPEG
     if( m_iFileFormat != YUVINPUT )
@@ -172,7 +171,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     m_cCodedName = QString::fromUtf8( "Raw Video" );
   }
 
-  if( m_uiTotalFrameNum <= 0 )
+  if( m_bIsInput && m_uiTotalFrameNum <= 0 )
   {
     close();
     return m_bInit;
@@ -198,7 +197,6 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   m_bInit = true;
 
   seekInput( 0 );
-//loadAll();
 
   m_cTimer.start();
   m_uiAveragePlayInterval = 0;
@@ -209,6 +207,9 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
 
 Void PlaYUVerStream::close()
 {
+  if( !m_bInit )
+    return;
+
   if( m_pFile )
     fclose( m_pFile );
 
@@ -500,8 +501,32 @@ Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
 
 Bool PlaYUVerStream::saveFrame( const QString& filename )
 {
-  QImage qimg = QImage( m_pcCurrFrame->getQImageBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), QImage::Format_RGB888 );
-  return qimg.save( filename );
+  Int iFileFormat = INVALID_INPUT;
+
+  QStringList formatsExt = PlaYUVerStream::supportedReadFormatsExt();
+  QString currExt = QFileInfo( filename ).suffix();
+  if( formatsExt.contains( currExt ) )
+  {
+    iFileFormat = formatsExt.indexOf( currExt );
+  }
+
+  if( iFileFormat == YUVINPUT )
+  {
+    PlaYUVerStream auxFrameStream;
+    if( !auxFrameStream.open( filename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, false ) )
+    {
+      return false;
+    }
+    auxFrameStream.writeFrame( m_pcCurrFrame );
+    auxFrameStream.close();
+    return true;
+  }
+  else
+  {
+    QImage qimg = QImage( m_pcCurrFrame->getQImageBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), QImage::Format_RGB888 );
+    return qimg.save( filename );
+  }
+  return false;
 }
 
 Void PlaYUVerStream::setNextFrame()

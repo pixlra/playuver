@@ -477,6 +477,7 @@ Void plaYUVerApp::play()
       if( !m_pcCurrentSubWindow->play() )
       {
         return;
+        startPlay();
       }
       m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
       m_pcCurrentSubWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );

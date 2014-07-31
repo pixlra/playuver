@@ -434,8 +434,11 @@ Void plaYUVerApp::setTimerStatus()
   }
   if( status )
   {
-    m_cTimer.start();
-    m_bIsPlaying = true;
+    if( !m_bIsPlaying )
+    {
+      m_cTimer.start();
+      m_bIsPlaying = true;
+    }
   }
   else
   {
@@ -469,13 +472,12 @@ Void plaYUVerApp::play()
 
   if( m_arrayActions[VIDEO_LOCK_ACT]->isChecked() && m_acPlayingSubWindows.size() )
   {
+    if( !m_pcCurrentSubWindow->play() )
+    {
+      return;
+    }
     if( !m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
-      if( !m_pcCurrentSubWindow->play() )
-      {
-        return;
-        startPlay();
-      }
       m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
       m_pcCurrentSubWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
       updateTotalFrameNum();

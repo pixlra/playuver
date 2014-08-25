@@ -49,7 +49,7 @@ plaYUVerApp::plaYUVerApp()
 
   setWindowModality( Qt::ApplicationModal );
 
-  mdiArea = new QMdiArea;
+  mdiArea = new PlaYUVerMdiArea;
   setCentralWidget( mdiArea );
   //mdiArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
   //mdiArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );

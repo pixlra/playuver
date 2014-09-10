@@ -119,24 +119,26 @@ private:
   public:
     PlaYUVerMdiArea( QWidget *parent = 0 ) :
             QMdiArea( parent ),
-            m_pixmap( ":/images/playuver-backgroud-logo.png" )
+            m_pixmapLogo( ":/images/playuver-backgroud-logo.png" )
     {
     }
   protected:
     void paintEvent( QPaintEvent *event )
     {
       QMdiArea::paintEvent( event );
-
       QPainter painter( viewport() );
+      QSize logoSize = 2 * size() / 3;
+
+      QPixmap pixFinalLogo = m_pixmapLogo.scaled(logoSize,Qt::KeepAspectRatio);
 
       // Calculate the logo position - the bottom right corner of the mdi area.
-      int x = width() / 2 - m_pixmap.width() / 2;
-      int y = height() / 2 - m_pixmap.height() / 2;
-      painter.drawPixmap( x, y, m_pixmap );
+      int x = width() / 2 - pixFinalLogo.width() / 2;
+      int y = height() / 2 - pixFinalLogo.height() / 2;
+      painter.drawPixmap( x, y, pixFinalLogo );
     }
   private:
     // Store the logo image.
-    QPixmap m_pixmap;
+    QPixmap m_pixmapLogo;
   };
 
   //QMdiArea *mdiArea;

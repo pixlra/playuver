@@ -112,9 +112,12 @@ Void QualityMeasurementSidebar::updateSubWindowList()
   for( Int i = 0; i < m_pcMainWindowMdiArea->subWindowList().size(); i++ )
   {
     subWindow = qobject_cast<SubWindowHandle *>( m_pcMainWindowMdiArea->subWindowList().at( i ) );
-    currSubWindowName = subWindow->getWindowName();
-    if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) && !subWindow->getIsModule() )
-      m_pcWindowListNames.append( currSubWindowName );
+    if( subWindow )
+    {
+      currSubWindowName = subWindow->getWindowName();
+      if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) && !subWindow->getIsModule() )
+        m_pcWindowListNames.append( currSubWindowName );
+    }
   }
   m_comboBoxRef->clear();
   m_comboBoxRef->insertItems( 0, m_pcWindowListNames );

@@ -536,6 +536,7 @@ Bool PlaYUVerStream::saveFrame( const QString& filename )
   }
   else
   {
+    m_pcCurrFrame->FrametoRGB8();
     QImage qimg = QImage( m_pcCurrFrame->getQImageBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), QImage::Format_RGB888 );
     return qimg.save( filename );
   }

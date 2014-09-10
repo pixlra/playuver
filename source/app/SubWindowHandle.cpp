@@ -201,8 +201,33 @@ Void SubWindowHandle::refreshFrame()
 
 Bool SubWindowHandle::save( QString filename )
 {
+  Bool iRet = false;
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  Bool iRet = m_pCurrStream->saveFrame( filename );
+  if( !m_pCurrStream )
+  {
+    if( !m_pcCurrFrame )
+    {
+      return false;
+    }
+    Int iFileFormat = PlaYUVerStream::INVALID_INPUT;
+    QStringList formatsExt = PlaYUVerStream::supportedReadFormatsExt();
+    QString currExt = QFileInfo( filename ).suffix();
+    if( formatsExt.contains( currExt ) )
+    {
+      iFileFormat = formatsExt.indexOf( currExt );
+    }
+    if( iFileFormat == PlaYUVerStream::YUVINPUT )
+    {
+      return false;
+    }
+    m_pcCurrFrame->FrametoRGB8();
+    QImage qimg = QImage( m_pcCurrFrame->getQImageBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), QImage::Format_RGB888 );
+    iRet = qimg.save( filename );
+  }
+  else
+  {
+    iRet = m_pCurrStream->saveFrame( filename );
+  }
   QApplication::restoreOverrideCursor();
   return iRet;
 }

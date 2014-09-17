@@ -1050,7 +1050,7 @@ Void plaYUVerApp::createActions()
   m_arrayActions[RELOAD_ALL_ACT] = new QAction( tr( "Reload All" ), this );
   //m_arrayActions[RELOAD_ACT]->setIcon( QIcon( ":/images/configuredialog.png" ) );
   m_arrayActions[RELOAD_ALL_ACT]->setStatusTip( tr( "Reload all sequences" ) );
-  connect( m_arrayActions[RELOAD_ALL_ACT], SIGNAL( triggered() ), this, SLOT( reload() ) );
+  connect( m_arrayActions[RELOAD_ALL_ACT], SIGNAL( triggered() ), this, SLOT( reloadAll() ) );
 
   m_arrayActions[LOAD_ALL_ACT] = new QAction( tr( "Preload" ), this );
   //m_arrayActions[LOAD_ALL_ACT]->setIcon( QIcon( ":/images/configuredialog.png" ) );

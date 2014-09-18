@@ -114,6 +114,7 @@ Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
 
   m_cCurrFileName = cFilename;
   m_cWindowName = m_pCurrStream->getStreamInformationString();
+  m_cWindowShortName = QFileInfo( cFilename ).fileName();
   setWindowTitle( m_cWindowName );
   return true;
 }

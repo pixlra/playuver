@@ -269,7 +269,7 @@ Void plaYUVerApp::format()
 {
   if( m_pcCurrentSubWindow )
   {
-    m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->currentFile(), true );
+    m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->getCurrentFileName(), true );
     m_pcCurrentSubWindow = NULL;
     chageSubWindowSelection();
   }
@@ -888,7 +888,7 @@ SubWindowHandle* plaYUVerApp::findSubWindow( const QMdiArea* mdiArea, const QStr
 
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
   SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
-  if( mdiChild->currentFile() == canonicalFilePath )
+  if( mdiChild->getCurrentFileName() == canonicalFilePath )
   return mdiChild;
 }
   return 0;
@@ -1006,11 +1006,11 @@ Void plaYUVerApp::updateWindowMenu()
     QString text;
     if( i < 9 )
     {
-      text = tr( "&%1 %2" ).arg( i + 1 ).arg( child->userFriendlyCurrentFile() );
+      text = tr( "&%1 %2" ).arg( i + 1 ).arg( child->getWindowName() );
     }
     else
     {
-      text = tr( "%1 %2" ).arg( i + 1 ).arg( child->userFriendlyCurrentFile() );
+      text = tr( "%1 %2" ).arg( i + 1 ).arg( child->getWindowName() );
     }
     QAction *action = m_arrayMenu[WINDOW_MENU]->addAction( text );
     action->setCheckable( true );

@@ -45,7 +45,8 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, QMdiArea 
   RecLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
 
   m_comboBoxRef = new QComboBox;
-
+  m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLength );
+  m_comboBoxRef->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed);
   updateSubWindowList();
 
   QGridLayout *mainLayout = new QGridLayout;
@@ -114,7 +115,7 @@ Void QualityMeasurementSidebar::updateSubWindowList()
     subWindow = qobject_cast<SubWindowHandle *>( m_pcMainWindowMdiArea->subWindowList().at( i ) );
     if( subWindow )
     {
-      currSubWindowName = subWindow->getWindowName();
+      currSubWindowName = subWindow->getWindowShortName();
       if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) && !subWindow->getIsModule() )
         m_pcWindowListNames.append( currSubWindowName );
     }
@@ -127,10 +128,11 @@ Void QualityMeasurementSidebar::updateSubWindowList()
   {
     if( SubWindowHandle* refSubWindow = m_pcCurrentSubWindow->getRefSubWindow() )
     {
-      Int index = m_pcWindowListNames.indexOf( refSubWindow->getWindowName() );
+      Int index = m_pcWindowListNames.indexOf( refSubWindow->getWindowShortName() );
       m_comboBoxRef->setCurrentIndex( index );
     }
   }
+  m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToContents );
 }
 
 Void QualityMeasurementSidebar::updateCurrentWindow( SubWindowHandle *subWindow )

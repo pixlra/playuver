@@ -133,7 +133,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   }
   else
   {
-    windowName.append( pcSubWindow->userFriendlyCurrentFile() );
+    windowName.append( pcSubWindow->getWindowName() );
     pcCurrModuleIf->m_pcSubWindow[0] = pcSubWindow;
   }
   windowName.append( " <" );

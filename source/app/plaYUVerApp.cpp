@@ -70,7 +70,7 @@ plaYUVerApp::plaYUVerApp()
 
   readSettings();
 
-  setWindowTitle( tr( "plaYUVer" ) );
+  setWindowTitle( QApplication::applicationName() );
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
   setUnifiedTitleAndToolBarOnMac( true );
 
@@ -84,6 +84,7 @@ plaYUVerApp::plaYUVerApp()
   setAcceptDrops( true );
   mdiArea->setAcceptDrops( true );
 
+  m_pcAboutDialog = NULL;
   m_pcCurrentSubWindow = NULL;
 }
 
@@ -102,13 +103,16 @@ Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
 
 Void plaYUVerApp::about()
 {
-  QString about_message;
-  about_message.append( "The <b>plaYUVer</b> is an open-source raw video player! " );
-  about_message.append( "Developed by " );
-  about_message.append( "João Carreira " );
-  about_message.append( "and " );
-  about_message.append( "Luís Lucas" );
-  QMessageBox::about( this, "About plaYUVer", about_message );
+  if (!m_pcAboutDialog)
+    m_pcAboutDialog = new AboutDialog(this);
+  m_pcAboutDialog->exec();
+//  QString about_message;
+//  about_message.append( "The <b>plaYUVer</b> is an open-source raw video player! " );
+//  about_message.append( "Developed by " );
+//  about_message.append( "João Carreira " );
+//  about_message.append( "and " );
+//  about_message.append( "Luís Lucas" );
+//  QMessageBox::about( this, "About plaYUVer", about_message );
 }
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )

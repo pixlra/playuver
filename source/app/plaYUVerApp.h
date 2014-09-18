@@ -36,6 +36,7 @@
 #include "ModulesHandle.h"
 #include "PropertiesSidebar.h"
 #include "QualityMeasurementSidebar.h"
+#include "AboutDialog.h"
 
 namespace plaYUVer
 {
@@ -276,6 +277,8 @@ private:
   QAction *actionNavigationTool;
   QAction *actionSelectionTool;
   enum eTool m_appTool;
+
+  AboutDialog* m_pcAboutDialog;
 
 };
 

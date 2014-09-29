@@ -38,6 +38,7 @@ PlaYUVerStream::PlaYUVerStream()
 {
   m_bInit = false;
   m_bIsInput = true;
+  m_bIsOpened = false;
   m_bLoadAll = false;
   m_iErrorStatus = 0;
 
@@ -151,14 +152,20 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
 
   UInt64 frame_bytes_input = m_pcCurrFrame->getBytesPerFrame();
 
+  if( !avStatus )
+  {
+    if( !openFile() )
+    {
+      close();
+      return m_bInit;
+    }
+    m_cFormatName = QString::fromUtf8( "YUV" );
+    m_cCodedName = QString::fromUtf8( "Raw Video" );
+  }
+
   if( !avStatus && m_iFileFormat == YUVINPUT )
   {
-    m_pFile = NULL;
-    Char *filename = new char[m_cFilename.length() + 1];
-    memcpy( filename, m_cFilename.toUtf8().constData(), m_cFilename.length() + 1 * sizeof(char) );
-    m_pFile = fopen( filename, m_bIsInput ? "rb" : "wb" );
-    delete[] filename;
-    if( m_pFile == NULL )
+    if( !openFile() )
     {
       close();
       return m_bInit;
@@ -218,13 +225,34 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   return m_bInit;
 }
 
+Bool PlaYUVerStream::openFile()
+{
+  m_pFile = NULL;
+  Char *filename = new char[m_cFilename.length() + 1];
+  memcpy( filename, m_cFilename.toUtf8().constData(), m_cFilename.length() + 1 * sizeof(char) );
+  m_pFile = fopen( filename, m_bIsInput ? "rb" : "wb" );
+  delete[] filename;
+  if( m_pFile == NULL )
+  {
+    return false;
+  }
+  fseek( m_pFile, m_iCurrFrameNum >= 0 ? m_iCurrFrameNum : 0, SEEK_SET );
+  return true;
+}
+
+Void PlaYUVerStream::closeFile()
+{
+  if( !m_bInit && m_pFile )
+    return;
+  fclose( m_pFile );
+}
+
 Void PlaYUVerStream::close()
 {
   if( !m_bInit )
     return;
 
-  if( m_pFile )
-    fclose( m_pFile );
+  closeFile();
 
 #ifdef USE_FFMPEG
   m_cLibAvContext->closeAvFormat();

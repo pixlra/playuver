@@ -42,6 +42,8 @@ private:
 
   Bool m_bInit;
   Bool m_bIsInput;
+  Bool m_bIsOpened;
+
   Bool m_bLoadAll;
   Int m_iErrorStatus;
 
@@ -215,6 +217,9 @@ public:
 
   Bool open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate, Bool bInput = true );
   Void close();
+
+  Bool openFile();
+  Void closeFile();
 
   static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
 

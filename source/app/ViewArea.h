@@ -108,7 +108,6 @@ public:
   PlaYUVerStream* getInputStream();
 
   Void zoomChangeEvent(Double factor, QPoint center);
-
   void setTool( enum eTool tool );
 
 //     QSize sizeHint() const;
@@ -129,7 +128,7 @@ public Q_SLOTS:
   void setGridVisible( bool enable );
   void setSnapToGrid( bool enable );
   void setSelectedArea( QRect &rect );
-  void setZoomFactor( double );
+  void setZoomFactor( double f );
 
 protected:
   void paintEvent( QPaintEvent *event );

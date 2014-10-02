@@ -56,21 +56,36 @@ Q_OBJECT
 public:
 
   ConfigureFormatDialog( QWidget *parent = 0 );
-  Int runConfigureFormatDialog ( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
+  Int runConfigureFormatDialog ( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
 
 private Q_SLOTS:
   void StandardResolutionSelection();
 
 private:
   QStringList standardResolutionNames;
-  QVector<QSize> standardResolutionSizes;
+  QList<QSize> standardResolutionSizesList;
 
-  QLabel* m_labelFilename;
   QComboBox *m_comboBoxStandardResolution;
   QSpinBox *m_spinBoxWidth;
   QSpinBox *m_spinBoxheight;
   QComboBox *m_comboBoxPixelFormat;
   QSpinBox *m_spinBoxFrameRate;
+
+  Void setStandardResolutionSizes()
+  {
+    ADD_STANDARD_RESOLUTION( "CIF (352x288)", 352, 288 );
+    ADD_STANDARD_RESOLUTION( "VGA (640x480)", 640, 480 );
+    ADD_STANDARD_RESOLUTION( "WVGA (832x480)", 832, 480 );
+    ADD_STANDARD_RESOLUTION( "XVGA (1024x768)", 1024, 768 );
+    ADD_STANDARD_RESOLUTION( "HD (1280x720)", 1280, 720 );
+    ADD_STANDARD_RESOLUTION( "SXGA- (1280x900)", 1280, 900 );
+    ADD_STANDARD_RESOLUTION( "SXGA (1280x1024)", 1280, 1024 );
+    ADD_STANDARD_RESOLUTION( "WSXGA (1440x900)", 1440, 900 );
+    ADD_STANDARD_RESOLUTION( "Full HD (1920x1080)", 1920, 1080 );
+    ADD_STANDARD_RESOLUTION( "WQXGA (2560x1600)", 2560, 1600 );
+    ADD_STANDARD_RESOLUTION( "Ultra HD (3840x2160)", 3840, 2160 );
+    ADD_STANDARD_RESOLUTION( "8K", 8192, 4608 );
+  }
 
 };
 

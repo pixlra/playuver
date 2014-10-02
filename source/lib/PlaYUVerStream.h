@@ -42,8 +42,6 @@ private:
 
   Bool m_bInit;
   Bool m_bIsInput;
-  Bool m_bIsOpened;
-
   Bool m_bLoadAll;
   Int m_iErrorStatus;
 
@@ -158,8 +156,7 @@ public:
   static QStringList supportedSaveFormatsExt()
   {
     QStringList formatsExt;
-    formatsExt << "yuv"
-               << "bmp"
+    formatsExt << "bmp"
                << "jpeg"
                << "png"  // portable network graphics
                ;
@@ -169,41 +166,10 @@ public:
   static QStringList supportedSaveFormatsName()
   {
     QStringList formatsName;
-    formatsName << "Raw Video"
-                << "Windows Bitmap"
+    formatsName << "Windows Bitmap"
                 << "Joint Photographic Experts Group"
                 << "Portable Network Graphics";
     return formatsName;
-  }
-
-#define REGIST_STANDARD_RESOLUTION( name, width, height) \
-    stdRes.stringListName.append( QString( name ) ); \
-    stdRes.stringListFullName.append( QString( "%1 (%2x%3)" ).arg( name ).arg( width ).arg( height ) ); \
-    stdRes.sizeResolution.append( QSize( width, height ) )
-
-  struct StandardResolution
-  {
-    QStringList stringListName;
-    QStringList stringListFullName;
-    QVector<QSize> sizeResolution;
-  };
-
-  static struct StandardResolution standardResolutionSizes()
-  {
-    struct StandardResolution stdRes;
-    REGIST_STANDARD_RESOLUTION( "CIF", 352, 288 );
-    REGIST_STANDARD_RESOLUTION( "VGA", 640, 480 );
-    REGIST_STANDARD_RESOLUTION( "WVGA", 832, 480 );
-    REGIST_STANDARD_RESOLUTION( "XVGA", 1024, 768 );
-    REGIST_STANDARD_RESOLUTION( "HD", 1280, 720 );
-    REGIST_STANDARD_RESOLUTION( "SXGA-", 1280, 900 );
-    REGIST_STANDARD_RESOLUTION( "SXGA", 1280, 1024 );
-    REGIST_STANDARD_RESOLUTION( "WSXGA", 1440, 900 );
-    REGIST_STANDARD_RESOLUTION( "FullHD", 1920, 1080 );
-    REGIST_STANDARD_RESOLUTION( "WQXGA", 2560, 1600 );
-    REGIST_STANDARD_RESOLUTION( "UltraHD", 3840, 2160 );
-    REGIST_STANDARD_RESOLUTION( "8K", 8192, 4608 );
-    return stdRes;
   }
 
   enum PlaYUVerStreamErrors
@@ -218,11 +184,7 @@ public:
   Bool open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate, Bool bInput = true );
   Void close();
 
-  Bool openFile();
-  Void closeFile();
-
-  static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
-
+  Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
   Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
 
   Void loadAll();

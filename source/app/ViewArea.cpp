@@ -109,14 +109,6 @@ void ViewArea::clearMask()
 //     return QSize( w, h );
 // }
 
-Void ViewArea::setZoomFactor( Double f )
-{
-  m_zoomFactor = f;
-
-  updateSize();
-  update();
-}
-
 Void ViewArea::zoomChangeEvent( Double factor, QPoint center )
 {
   Double zoomFactor;
@@ -140,6 +132,14 @@ Void ViewArea::zoomChangeEvent( Double factor, QPoint center )
   setZoomFactor( zoomFactor );
   emit zoomFactorChanged( factor, center );
 
+}
+
+void ViewArea::setZoomFactor( double f )
+{
+  m_zoomFactor = f;
+
+  updateSize();
+  update();
 }
 
 void ViewArea::setMode( ViewMode mode )
@@ -519,15 +519,13 @@ void ViewArea::wheelEvent( QWheelEvent *event )
 {
   Double factor;
 
-  if( event->modifiers() & Qt::ControlModifier )
-  {
-    factor = 0.001 * event->delta();
-    if(factor>0)
-      factor=1.25;
-    else
-      factor=0.8;
-    zoomChangeEvent( factor , event->pos() );
-  }
+  factor = 0.001 * event->delta();
+  if( factor > 0 )
+    factor = 1.25;
+  else
+    factor = 0.8;
+
+  zoomChangeEvent( factor, event->pos() );
 }
 
 void ViewArea::mousePressEvent( QMouseEvent *event )
@@ -536,10 +534,6 @@ void ViewArea::mousePressEvent( QMouseEvent *event )
 
   QPoint vpos = windowToView( event->pos() );
 
-  if( event->button() == Qt::MidButton )
-  {
-
-  }
   if( event->button() == Qt::LeftButton )
   {
     if( tool() == NavigationTool )

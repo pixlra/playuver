@@ -269,7 +269,7 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent, Bool *pbIsPlayi
 
   // -------------------------------------------------------------
 
-  histogramWidget = new HistogramWidget( 256, 100 );
+  histogramWidget = new HistogramWidget( 256, 140 );
   histogramWidget->setOptions( HistogramWidget::BlinkComputation | HistogramWidget::SelectMode | HistogramWidget::ShowLumaChannel );
   histogramWidget->setWhatsThis( tr( "<p>This is the histogram drawing of "
       "the selected image channel" ) );

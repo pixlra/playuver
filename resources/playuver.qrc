@@ -1,8 +1,6 @@
 <RCC>
     <qresource>
         <file alias="images/playuver.png">icons/playuver.png</file>
-        <file alias="images/playuver-backgroud-logo.png">playuver-background-logo.png</file>
-
         <file alias="images/open.png">icons/open.png</file>
         <file alias="images/save.png">icons/save.png</file>
         <file alias="images/close.png">icons/close.png</file>

@@ -56,8 +56,8 @@ public:
   Bool getVideoLock();
   Void setPlayingSettings( Bool repeat, Bool lock );
 
-  Void setDockVisibility( Bool statusStreamProperties, Bool statusFrameProperties, Bool statusQualityMeasurement );
-  Void getDockVisibility( Bool& statusStreamProperties, Bool& statusFrameProperties, Bool& statusQualityMeasurement );
+  Void setDockVisibility( Bool statusStreamProperties, Bool statusFrameProperties );
+  Void getDockVisibility( Bool& statusStreamProperties, Bool& statusFrameProperties );
 
   // - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - -
   GridManager::Style gridStyle();

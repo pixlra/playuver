@@ -23,18 +23,23 @@
  */
 
 #include <QApplication>
+#include "config.h"
 #include "plaYUVerApp.h"
 #ifdef USE_FERVOR
 #include "fvupdater.h"
 #endif
 using namespace plaYUVer;
 
+#if _WIN32
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
+
 int main( int argc, char *argv[] )
 {
   QApplication a( argc, argv );
-  QApplication::setApplicationName("playuver");
-  QApplication::setApplicationVersion("0.1");
-  QApplication::setOrganizationName("playuver");
+  QApplication::setApplicationName("PlaYUVer");
+  QApplication::setApplicationVersion(PLAYUVER_VERSION_STRING);
+  QApplication::setOrganizationName("pixlra");
   QApplication::setOrganizationDomain("playuver.pixlra");
   plaYUVerApp w;
   w.show();

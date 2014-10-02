@@ -118,6 +118,7 @@ public:
   Double getPSNR( PlaYUVerFrame* Org, Int component );
 
   UInt64 getBytesPerFrame();
+  static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat );
 
   UInt getChromaLength() const;
 
@@ -170,6 +171,10 @@ public:
   {
     return ( m_uiWidth > 0 ) && ( m_uiHeight > 0 ) && ( m_iPixelFormat >= 0 );
   }
+  Bool haveSameFmt( PlaYUVerFrame* other ) const
+    {
+      return ( m_uiWidth == other->getWidth() ) && ( m_uiHeight == other->getHeight() ) && ( m_iPixelFormat == other->getPelFormat() );
+    }
 
 private:
   UInt m_uiWidth;

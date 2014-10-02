@@ -36,19 +36,20 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
-
 #include "PlaYUVerModuleIf.h"
+#include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {
 
+class PlaYUVerModuleIf;
 class SubWindowHandle;
 
 class ModulesHandle: public QObject
 {
 Q_OBJECT
 public:
-  ModulesHandle( QWidget * parent = 0, QMdiArea *mdiArea = 0 );
+  ModulesHandle( QMainWindow* parent = 0, QMdiArea *mdiArea = 0 );
   ~ModulesHandle();
 
   QMenu* createMenus( QMenuBar* MainAppMenuBar );
@@ -59,11 +60,11 @@ public:
   static Bool applyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf, Bool isPlaying, Bool disableThreads = false );
   static Void swapModulesWindowsIf( PlaYUVerModuleIf *pcCurrModuleIf );
   static Bool showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame );
-
+  static Bool showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Double moduleResult );
   static Void applyAllModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
 
 private:
-  QWidget *m_pcParent;
+  QMainWindow *m_pcParent;
   QMdiArea *m_pcMdiArea;
   UInt m_uiModulesCount;
   Int m_iOptionSelected;
@@ -101,6 +102,7 @@ private:
 private Q_SLOTS:
   void selectModule( int index );
   void destroyAllModulesIf();
+
 };
 
 }  // NAMESPACE

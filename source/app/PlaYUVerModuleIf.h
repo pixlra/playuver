@@ -31,6 +31,7 @@
 #include <cstdio>
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerStream.h"
+#include "ModuleHandleDock.h"
 
 class QAction;
 
@@ -40,7 +41,6 @@ namespace plaYUVer
 enum // Module type
 {
   FRAME_PROCESSING_MODULE,
-  VIDEO_PROCESSING_MODULE,
   FRAME_MEASUREMENT_MODULE,
 };
 
@@ -96,26 +96,30 @@ class PlaYUVerModuleIf
 private:
   QAction* m_pcAction;
   SubWindowHandle* m_pcSubWindow[MAX_NUMBER_FRAMES];
+
   SubWindowHandle* m_pcDisplaySubWindow;
+
+  QDockWidget* m_pcDockWidget;
+  ModuleHandleDock* m_pcModuleDock;
+
   PlaYUVerModuleDefinition m_cModuleDef;
 
   PlaYUVerStream* m_pcModuleStream;
   PlaYUVerFrame* m_pcProcessedFrame;
+  Double m_dMeasurementResult;
 
-  Void postProgress( Bool success, PlaYUVerFrame* pcProcessedFrame );
+  Void postProgress( Bool success );
 public:
   class EventData: public QEvent
   {
   public:
-    EventData() :
+    EventData( bool success = false, PlaYUVerModuleIf* module = NULL ) :
             QEvent( QEvent::User )
     {
-      m_bSuccess = false;
-      m_pcProcessedFrame = NULL;
-      m_pcModule = NULL;
+      m_bSuccess = success;
+      m_pcModule = module;
     }
     Bool m_bSuccess;
-    PlaYUVerFrame* m_pcProcessedFrame;
     PlaYUVerModuleIf* m_pcModule;
   };
 
@@ -126,14 +130,18 @@ public:
   virtual Void create() {}
   virtual Void create( PlaYUVerFrame* ) {}
 
-  virtual Void            process() {}
   virtual PlaYUVerFrame*  process( PlaYUVerFrame* ) { return NULL; }
   virtual PlaYUVerFrame*  process( PlaYUVerFrame*, PlaYUVerFrame* ) { return NULL; }
   virtual PlaYUVerFrame*  process( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* ) { return NULL; }
 
+  virtual Double          measure( PlaYUVerFrame* ) { return 0; }
+  virtual Double          measure( PlaYUVerFrame*, PlaYUVerFrame* ) { return 0; }
+  virtual Double          measure( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* ) { return 0; }
+
   virtual Void destroy() { }
 
-  Void setModuleDefinition( PlaYUVerModuleDefinition def ) { m_cModuleDef = def; }
+  Void setModuleDefinition( PlaYUVerModuleDefinition def )  { m_cModuleDef = def;   }
+  PlaYUVerModuleDefinition getModuleDefinition()            { return m_cModuleDef;  }
 
 protected:
     virtual void run();

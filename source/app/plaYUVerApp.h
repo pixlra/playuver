@@ -35,6 +35,8 @@
 #include <QMainWindow>
 #include "ModulesHandle.h"
 #include "PropertiesSidebar.h"
+#include "QualityMeasurementSidebar.h"
+#include "AboutDialog.h"
 
 namespace plaYUVer
 {
@@ -112,7 +114,36 @@ private Q_SLOTS:
   void setSelectionTool();
 
 private:
-  QMdiArea *mdiArea;
+
+  class PlaYUVerMdiArea: public QMdiArea
+  {
+  public:
+    PlaYUVerMdiArea( QWidget *parent = 0 ) :
+            QMdiArea( parent ),
+            m_pixmapLogo( ":/images/playuver-backgroud-logo.png" )
+    {
+    }
+  protected:
+    void paintEvent( QPaintEvent *event )
+    {
+      QMdiArea::paintEvent( event );
+      QPainter painter( viewport() );
+      QSize logoSize = 2 * size() / 3;
+
+      QPixmap pixFinalLogo = m_pixmapLogo.scaled(logoSize,Qt::KeepAspectRatio);
+
+      // Calculate the logo position - the bottom right corner of the mdi area.
+      int x = width() / 2 - pixFinalLogo.width() / 2;
+      int y = height() / 2 - pixFinalLogo.height() / 2;
+      painter.drawPixmap( x, y, pixFinalLogo );
+    }
+  private:
+    // Store the logo image.
+    QPixmap m_pixmapLogo;
+  };
+
+  //QMdiArea *mdiArea;
+  PlaYUVerMdiArea *mdiArea;
   SubWindowHandle *m_pcCurrentSubWindow;
   ModulesHandle *m_pcModulesHandle;
 
@@ -147,7 +178,9 @@ private:
   Void writeSettings();
 
   SubWindowHandle *activeSubWindow();
-  QMdiSubWindow *findSubWindow( const QString &fileName );
+
+  static SubWindowHandle* findSubWindow( const QMdiArea* mdiArea, const QString& fileName );
+  static SubWindowHandle* findSubWindow( const QMdiArea* mdiArea, const SubWindowHandle* subWindow );
 
   QVector<SubWindowHandle*> m_acPlayingSubWindows;
   QSlider *m_pcFrameSlider;
@@ -181,14 +214,16 @@ private:
 
   enum SIDEBAR_LIST
   {
-    STREAM_SIDEBAR = 0,
-    FRAME_SIDEBAR,
-    TOTAL_SIDEBAR,
+    STREAM_DOCK = 0,
+    FRAME_DOCK,
+    QUALITY_DOCK,
+    TOTAL_DOCK,
   };
   QVector<QDockWidget*> m_arraySideBars;
 
   StreamPropertiesSideBar* m_pcStreamProperties;
   FramePropertiesSideBar* m_pcFrameProperties;
+  QualityMeasurementSidebar* m_pcQualityMeasurement;
 
   enum TOOLBAR_LIST
   {
@@ -242,6 +277,8 @@ private:
   QAction *actionNavigationTool;
   QAction *actionSelectionTool;
   enum eTool m_appTool;
+
+  AboutDialog* m_pcAboutDialog;
 
 };
 

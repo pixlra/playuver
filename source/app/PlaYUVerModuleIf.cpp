@@ -31,6 +31,8 @@ namespace plaYUVer
 PlaYUVerModuleIf::PlaYUVerModuleIf() :
         m_pcAction( NULL ),
         m_pcDisplaySubWindow( NULL ),
+        m_pcDockWidget( NULL ),
+        m_pcModuleDock( NULL ),
         m_pcModuleStream( NULL ),
         m_pcProcessedFrame( NULL )
 {
@@ -42,28 +44,51 @@ PlaYUVerModuleIf::PlaYUVerModuleIf() :
 
 void PlaYUVerModuleIf::run()
 {
-  switch( m_cModuleDef.m_uiNumberOfFrames )
+  m_pcProcessedFrame = NULL;
+  m_dMeasurementResult = 0;
+
+  if( m_cModuleDef.m_iModuleType == FRAME_PROCESSING_MODULE )
   {
-  case MODULE_REQUIRES_ONE_FRAME:
-    m_pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame() );
-    break;
-  case MODULE_REQUIRES_TWO_FRAMES:
-    m_pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
-    break;
-  case MODULE_REQUIRES_THREE_FRAMES:
-    m_pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame(), m_pcSubWindow[2]->getCurrFrame() );
-    break;
+    switch( m_cModuleDef.m_uiNumberOfFrames )
+    {
+    case MODULE_REQUIRES_ONE_FRAME:
+      m_pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame() );
+      break;
+    case MODULE_REQUIRES_TWO_FRAMES:
+      m_pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
+      break;
+    case MODULE_REQUIRES_THREE_FRAMES:
+      m_pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame(), m_pcSubWindow[2]->getCurrFrame() );
+      break;
+    }
   }
-  postProgress( true, m_pcProcessedFrame );
+  else if( m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
+  {
+    switch( m_cModuleDef.m_uiNumberOfFrames )
+    {
+    case MODULE_REQUIRES_ONE_FRAME:
+      m_dMeasurementResult = measure( m_pcSubWindow[0]->getCurrFrame() );
+      break;
+    case MODULE_REQUIRES_TWO_FRAMES:
+      m_dMeasurementResult = measure( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
+      break;
+    case MODULE_REQUIRES_THREE_FRAMES:
+      m_dMeasurementResult = measure( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame(), m_pcSubWindow[2]->getCurrFrame() );
+      break;
+    }
+  }
+  else
+  {
+    return;
+  }
+  postProgress( true );
+  return;
 }
 
-Void PlaYUVerModuleIf::postProgress( Bool success, PlaYUVerFrame* pcProcessedFrame )
+Void PlaYUVerModuleIf::postProgress( Bool success )
 {
-  EventData *eventData = new EventData();
-  eventData->m_bSuccess = success;
-  eventData->m_pcProcessedFrame = pcProcessedFrame;
-  eventData->m_pcModule = this;
-  if( parent() && pcProcessedFrame )
+  EventData *eventData = new EventData( success, this );
+  if( parent() )
     QCoreApplication::postEvent( parent(), eventData );
 }
 

@@ -43,10 +43,12 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   // Config dialog
 
-  setStandardResolutionSizes();
+  struct PlaYUVerStream::StandardResolution stdRes = PlaYUVerStream::standardResolutionSizes();
+  standardResolutionNames = stdRes.stringListFullName;
+  standardResolutionSizes = stdRes.sizeResolution;
 
   setObjectName( QStringLiteral( "ConfigureFormat" ) );
-  resize( 392, 350 );
+  resize( 392, 370 );
 
   setWindowTitle( "Configure Resolution" );
   setWindowIcon( QIcon( ":/images/configureformat.png" ) );
@@ -67,6 +69,20 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   headLayout->addWidget( dialogIconLabel );
 
   MainLayout->addLayout( headLayout );
+
+  MainLayout->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum ) );
+
+  // Filename layout
+  QHBoxLayout* filenameLayout = new QHBoxLayout();
+  QLabel* filenameLabel = new QLabel();
+  filenameLabel->setText( "Name" );
+  filenameLabel->setFont( menusFont );
+  m_labelFilename = new QLabel();
+  m_labelFilename->setText( "Test" );
+  filenameLayout->addWidget( filenameLabel );
+  filenameLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  filenameLayout->addWidget( m_labelFilename );
+  MainLayout->addLayout( filenameLayout );
 
   // standardResolutionLayout
   MainLayout->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum ) );
@@ -177,16 +193,18 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
 }
 
-Int ConfigureFormatDialog::runConfigureFormatDialog( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
+Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
 {
   // Set default values
+  m_labelFilename->setText( Filename );
+  //m_labelFilename->setText( QFileInfo( Filename ).fileName() );
   m_spinBoxWidth->setValue( rWidth );
   m_spinBoxheight->setValue( rHeight );
   m_comboBoxPixelFormat->setCurrentIndex( rInputFormat >= 0 ? rInputFormat : 0 );
   m_spinBoxFrameRate->setValue( rFrameRate );
-  for( Int i = 0; i < standardResolutionSizesList.size(); i++ )
+  for( Int i = 0; i < standardResolutionSizes.size(); i++ )
   {
-    if( standardResolutionSizesList.at( i ) == QSize( rWidth, rHeight ) )
+    if( standardResolutionSizes.at( i ) == QSize( rWidth, rHeight ) )
     {
       m_comboBoxStandardResolution->setCurrentIndex( i );
     }
@@ -208,7 +226,7 @@ void ConfigureFormatDialog::StandardResolutionSelection()
   if( currIdx == -1 )
     return;
 
-  QSize currSize = standardResolutionSizesList.at( currIdx );
+  QSize currSize = standardResolutionSizes.at( currIdx );
   m_spinBoxWidth->setValue( currSize.width() );
   m_spinBoxheight->setValue( currSize.height() );
 }

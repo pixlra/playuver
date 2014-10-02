@@ -117,12 +117,14 @@ Void QualityMeasurementSidebar::updateSubWindowList()
     {
       currSubWindowName = subWindow->getWindowShortName();
       if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) && !subWindow->getIsModule() )
+      {
         m_pcWindowListNames.append( currSubWindowName );
+        //m_comboBoxRef->setItemText( currIdx++, currSubWindowName );
+      }
     }
   }
   m_comboBoxRef->clear();
-  m_comboBoxRef->insertItems( 0, m_pcWindowListNames );
-
+  m_comboBoxRef->insertItems( -1, m_pcWindowListNames );
   m_comboBoxRef->setCurrentIndex( -1 );
   if( m_pcCurrentSubWindow )
   {
@@ -162,6 +164,10 @@ Void QualityMeasurementSidebar::updateSidebarData()
       }
       return;
     }
+    else
+    {
+      m_comboBoxRef->setCurrentIndex( -1 );
+    }
   }
   for( Int component = 0; component < 3; component++ )
   {
@@ -181,11 +187,15 @@ Void QualityMeasurementSidebar::slotReferenceChanged( Int index )
       {
         m_pcCurrentSubWindow->setRefSubWindow( subWindow );
         updateSidebarData();
+        m_comboBoxRef->setCurrentIndex( index );
         return;
       }
     }
   }
-  m_comboBoxRef->setCurrentIndex( -1 );
+  else
+  {
+    m_comboBoxRef->setCurrentIndex( -1 );
+  }
 }
 
 }   // NAMESPACE

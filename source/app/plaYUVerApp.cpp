@@ -231,6 +231,7 @@ Void plaYUVerApp::save()
 {
   if( m_pcCurrentSubWindow )
   {
+	SubWindowHandle *saveWindow = m_pcCurrentSubWindow;
     QString supported = tr( "Supported Files (" );
     QStringList formatsList;
     QStringList formatsExt = PlaYUVerStream::supportedSaveFormatsExt();
@@ -259,7 +260,7 @@ Void plaYUVerApp::save()
     if( !fileName.isEmpty() )
     {
       m_cLastOpenPath = QFileInfo( fileName ).path();
-      if( !m_pcCurrentSubWindow->save( fileName ) )
+      if( !saveWindow->save( fileName ) )
       {
         QApplication::restoreOverrideCursor();
         QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot save file %1" ).arg( fileName ) );

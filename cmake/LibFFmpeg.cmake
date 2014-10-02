@@ -10,7 +10,8 @@
 
 IF( USE_FFMPEG )
 
-  SET( FFMPEG_HEADERS avformat.h avcodec.h avutil.h avdevice.h )
+#   SET( FFMPEG_HEADERS avformat.h avcodec.h avutil.h avdevice.h )
+  SET( FFMPEG_HEADERS avformat.h avcodec.h avutil.h )
   SET( FFMPEG_PATH_SUFFIXES libavformat libavcodec libavutil libavdevice libffmpeg )
   SET( FFMPEG_SWS_HEADERS swscale.h )
   SET( FFMPEG_SWS_PATH_SUFFIXES libswscale )

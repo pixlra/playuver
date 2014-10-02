@@ -19,17 +19,16 @@
 
 /**
  * \file     MeasurePSNR.h
- * \brief    Measure PSNR module
+ * \brief    Frame Difference module
  */
 
 #ifndef __MEASUREPSNR_H__
 #define __MEASUREPSNR_H__
 
 #include "config.h"
-
+#include "PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>
-#include "TypeDef.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerModuleIf.h"
 
@@ -41,17 +40,16 @@ namespace plaYUVer
 class MeasurePSNR: public PlaYUVerModuleIf
 {
 private:
-
 public:
   MeasurePSNR();
   virtual ~MeasurePSNR()
   {
   }
-
-  Void create( PlaYUVerFrame* InputFrame );
-
-  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
+  Void create( PlaYUVerFrame* );
+  Double measure( PlaYUVerFrame*, PlaYUVerFrame* );
   Void destroy();
+
+  static Double getMSE( PlaYUVerFrame* Org, PlaYUVerFrame* Rec, Int component );
 
 };
 

@@ -18,34 +18,22 @@
  */
 
 /**
- * \file     main.cpp
- * \brief    main file
+ * \file     AboutDialog.h
+ * \brief    About Dialog
+ *           Based on the work of Glad Deschrijver <glad.deschrijver@gmail.com> in KTikZ project
  */
 
-#include <QApplication>
-#include "config.h"
-#include "plaYUVerApp.h"
-#ifdef USE_FERVOR
-#include "fvupdater.h"
-#endif
-using namespace plaYUVer;
+#ifndef __ABOUTDIALOG_H__
+#define __ABOUTDIALOG_H__
 
-#if _WIN32
-#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
-#endif
+#include <QDialog>
 
-int main( int argc, char *argv[] )
+class AboutDialog : public QDialog
 {
-  QApplication a( argc, argv );
-  QApplication::setApplicationName("PlaYUVer");
-  QApplication::setApplicationVersion(PLAYUVER_VERSION_STRING);
-  QApplication::setOrganizationName("pixlra");
-  QApplication::setOrganizationDomain("playuver.pixlra");
-  plaYUVerApp w;
-  w.show();
-  w.parseArgs( argc, argv );
-#ifdef USE_FERVOR
-  FvUpdater::sharedUpdater()->SetFeedURL("http://192.168.96.201/share/jcarreira.it.pub/plaYUVer/playuver-update.xml");
-#endif
-  return a.exec();
-}
+	Q_OBJECT
+
+public:
+	AboutDialog(QWidget *parent = 0);
+};
+
+#endif // __ABOUTDIALOG_H__

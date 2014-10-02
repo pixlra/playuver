@@ -38,6 +38,7 @@
 
 namespace plaYUVer
 {
+class SubWindowHandle;
 
 class SubWindowHandle: public QMdiSubWindow
 {
@@ -48,12 +49,15 @@ private:
   QScrollArea* m_cScrollArea;
   ViewArea* m_cViewArea;
 
-  PlaYUVerModuleIf* m_pcCurrentModule;
-
   PlaYUVerStream* m_pCurrStream;
   PlaYUVerFrame* m_pcCurrFrame;
 
+  PlaYUVerModuleIf* m_pcCurrentModule;
+
+  SubWindowHandle* m_pcReferenceSubWindow;
+
   QString m_cWindowName;
+  QString m_cWindowShortName;
   QString m_cCurrFileName;
 
   Bool m_bIsPlaying;
@@ -68,7 +72,7 @@ public:
   Bool mayClose();
   Bool loadFile( QString cFilename, Bool bForceDialog = false );
   Void reloadFile();
-  Bool save( QString filename  );
+  Bool save( QString filename );
 
   Bool play();
   Void pause();
@@ -115,6 +119,15 @@ public:
   PlaYUVerModuleIf* getModule()
   {
     return m_pcCurrentModule;
+  }
+
+  Void setRefSubWindow( SubWindowHandle* subWindow )
+  {
+    m_pcReferenceSubWindow = subWindow;
+  }
+  SubWindowHandle* getRefSubWindow()
+  {
+    return m_pcReferenceSubWindow;
   }
 
   /**
@@ -171,13 +184,11 @@ public:
   {
     return m_cWindowName;
   }
-
-  QString userFriendlyCurrentFile()
+  QString getWindowShortName()
   {
-    return m_cWindowName;
+    return m_cWindowShortName;
   }
-
-  QString currentFile()
+  QString getCurrentFileName()
   {
     return m_cCurrFileName;
   }

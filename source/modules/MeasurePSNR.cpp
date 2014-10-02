@@ -19,7 +19,7 @@
 
 /**
  * \file     MeasurePSNR.cpp
- * \brief    Measure PSNR module
+ * \brief    Frame Difference module
  */
 
 #include <cstdio>
@@ -34,35 +34,59 @@ static PlaYUVerModuleDefinition MeasurePSNRDef =
 {
     FRAME_MEASUREMENT_MODULE,
     "Quality",
-    "PSNR",
+    "PSNR Y",
     "Measure the PSNR between two images",
     MODULE_REQUIRES_TWO_FRAMES,
-    MODULE_REQUIRES_NEW_WINDOW,
-    APPLY_WHILE_PLAYING,
-};
+    MODULE_REQUIRES_SIDEBAR,
+    APPLY_WHILE_PLAYING, };
 
 MeasurePSNR::MeasurePSNR()
 {
-  m_pcFilteredFrame = NULL;
   setModuleDefinition( MeasurePSNRDef );
 }
 
-Void MeasurePSNR::create( PlaYUVerFrame* InputFrame )
+Void MeasurePSNR::create( PlaYUVerFrame* Org )
 {
-  m_pcFilteredFrame = NULL;
-  m_pcFilteredFrame = new PlaYUVerFrame( InputFrame->getWidth(), InputFrame->getHeight(), PlaYUVerFrame::GRAY );
 }
 
-PlaYUVerFrame* MeasurePSNR::process( PlaYUVerFrame* InputFrame )
+Double MeasurePSNR::getMSE( PlaYUVerFrame* Org, PlaYUVerFrame* Rec, Int component )
 {
-  return m_pcFilteredFrame;
+  Pel* pInput1PelYUV = Org->getPelBufferYUV()[component][0];
+  Pel* pInput2PelYUV = Rec->getPelBufferYUV()[component][0];
+
+  Int aux_pel_1, aux_pel_2;
+  Int diff = 0;
+  Double ssd = 0;
+
+  for( UInt y = 0; y < Org->getHeight(); y++ )
+    for( UInt x = 0; x < Org->getWidth(); x++ )
+    {
+      aux_pel_1 = *pInput1PelYUV++;
+      aux_pel_2 = *pInput2PelYUV++;
+      diff = aux_pel_1 - aux_pel_2;
+      ssd += ( Double )( diff * diff );
+    }
+  if( ssd == 0.0 )
+  {
+    return 0.0;
+  }
+  return ssd / ( Org->getWidth() * Org->getHeight() );
+}
+
+Double MeasurePSNR::measure( PlaYUVerFrame* Org, PlaYUVerFrame* Rec )
+{
+  Double psnrY = 100;
+  Double mseY = MeasurePSNR::getMSE( Org, Rec, LUMA );
+
+  if( mseY != 0 )
+    psnrY = 10 * log10( 65025 / mseY );
+
+  return psnrY;
 }
 
 Void MeasurePSNR::destroy()
 {
-  if( m_pcFilteredFrame )
-    delete m_pcFilteredFrame;
-  m_pcFilteredFrame = NULL;
+
 }
 
 }  // NAMESPACE

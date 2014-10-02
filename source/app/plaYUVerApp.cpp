@@ -49,7 +49,7 @@ plaYUVerApp::plaYUVerApp()
 
   setWindowModality( Qt::ApplicationModal );
 
-  mdiArea = new QMdiArea;
+  mdiArea = new PlaYUVerMdiArea;
   setCentralWidget( mdiArea );
   //mdiArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
   //mdiArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
@@ -70,7 +70,7 @@ plaYUVerApp::plaYUVerApp()
 
   readSettings();
 
-  setWindowTitle( tr( "plaYUVer" ) );
+  setWindowTitle( QApplication::applicationName() );
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
   setUnifiedTitleAndToolBarOnMac( true );
 
@@ -84,6 +84,7 @@ plaYUVerApp::plaYUVerApp()
   setAcceptDrops( true );
   mdiArea->setAcceptDrops( true );
 
+  m_pcAboutDialog = NULL;
   m_pcCurrentSubWindow = NULL;
 }
 
@@ -102,13 +103,16 @@ Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
 
 Void plaYUVerApp::about()
 {
-  QString about_message;
-  about_message.append( "The <b>plaYUVer</b> is an open-source raw video player! " );
-  about_message.append( "Developed by " );
-  about_message.append( "João Carreira " );
-  about_message.append( "and " );
-  about_message.append( "Luís Lucas" );
-  QMessageBox::about( this, "About plaYUVer", about_message );
+  if (!m_pcAboutDialog)
+    m_pcAboutDialog = new AboutDialog(this);
+  m_pcAboutDialog->exec();
+//  QString about_message;
+//  about_message.append( "The <b>plaYUVer</b> is an open-source raw video player! " );
+//  about_message.append( "Developed by " );
+//  about_message.append( "João Carreira " );
+//  about_message.append( "and " );
+//  about_message.append( "Luís Lucas" );
+//  QMessageBox::about( this, "About plaYUVer", about_message );
 }
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
@@ -155,14 +159,14 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
 
 Void plaYUVerApp::loadFile( QString fileName )
 {
-  QMdiSubWindow *existing = findSubWindow( fileName );
-  if( existing )
+  SubWindowHandle *interfaceChild = plaYUVerApp::findSubWindow( mdiArea, fileName );
+  if( interfaceChild )
   {
-    mdiArea->setActiveSubWindow( existing );
+    mdiArea->setActiveSubWindow( interfaceChild );
     return;
   }
 
-  SubWindowHandle *interfaceChild = new SubWindowHandle( this );  //createSubWindow();
+  interfaceChild = new SubWindowHandle( this );  //createSubWindow();
   if( interfaceChild->loadFile( fileName ) )
   {
     statusBar()->showMessage( tr( "Loading file..." ) );
@@ -211,12 +215,15 @@ Void plaYUVerApp::open()
          << formatsList
          << tr( "All Files (*)" );
 
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );
+  QStringList fileNameList = QFileDialog::getOpenFileNames( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );
 
-  if( !fileName.isEmpty() )
+  for( Int i = 0; i < fileNameList.size(); i++ )
   {
-    m_cLastOpenPath = QFileInfo( fileName ).path();
-    loadFile( fileName );
+    if( !fileNameList.at( i ).isEmpty() )
+    {
+      m_cLastOpenPath = QFileInfo( fileNameList.at( i ) ).path();
+      loadFile( fileNameList.at( i ) );
+    }
   }
 }
 
@@ -266,7 +273,7 @@ Void plaYUVerApp::format()
 {
   if( m_pcCurrentSubWindow )
   {
-    m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->currentFile(), true );
+    m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->getCurrentFileName(), true );
     m_pcCurrentSubWindow = NULL;
     chageSubWindowSelection();
   }
@@ -562,9 +569,6 @@ Void plaYUVerApp::playEvent()
       if( !m_arrayActions[VIDEO_LOOP_ACT]->isChecked() )
       {
         stop();
-        updateCurrFrameNum();
-        updateFrameProperties();
-        return;
       }
       else
       {
@@ -587,6 +591,7 @@ Void plaYUVerApp::playEvent()
   }
   updateCurrFrameNum();
   updateFrameProperties();
+  m_pcQualityMeasurement->updateSidebarData();
   m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time ) / 2;
 }
 
@@ -629,6 +634,7 @@ Void plaYUVerApp::seekEvent( Int direction )
     {
       m_pcCurrentSubWindow->seekRelativeEvent( direction > 0 ? true : false );
     }
+    m_pcQualityMeasurement->updateSidebarData();
     updateFrameProperties();
     updateCurrFrameNum();
   }
@@ -649,6 +655,7 @@ Void plaYUVerApp::seekSliderEvent( Int new_frame_num )
     {
       m_pcCurrentSubWindow->seekAbsoluteEvent( ( UInt )new_frame_num );
     }
+    m_pcQualityMeasurement->updateSidebarData();
     updateFrameProperties();
     updateCurrFrameNum();
   }
@@ -661,7 +668,7 @@ Void plaYUVerApp::lockButtonEvent()
     if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
       m_acPlayingSubWindows.clear();
-      m_acPlayingSubWindows.append(m_pcCurrentSubWindow);
+      m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
     }
     else
     {
@@ -758,6 +765,7 @@ Void plaYUVerApp::zoomToFitAll()
     subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
     subWindow->zoomToFit();
   }
+  updateZoomFactorSBox();
 }
 
 Void plaYUVerApp::scaleFrame( int ratio )
@@ -802,6 +810,10 @@ Void plaYUVerApp::chageSubWindowSelection()
     if( activeSubWindow() )
     {
       m_pcCurrentSubWindow = new_window;
+      if( !plaYUVerApp::findSubWindow( mdiArea, m_pcCurrentSubWindow->getRefSubWindow() ) )
+      {
+        m_pcCurrentSubWindow->setRefSubWindow( NULL );
+      }
       updateCurrFrameNum();
       updateTotalFrameNum();
       updateStreamProperties();
@@ -812,6 +824,8 @@ Void plaYUVerApp::chageSubWindowSelection()
   }
   updateStreamProperties();
   updateFrameProperties();
+  m_pcQualityMeasurement->updateCurrentWindow( m_pcCurrentSubWindow );
+  m_pcQualityMeasurement->updateSubWindowList();
   updateMenus();
 }
 
@@ -872,16 +886,26 @@ SubWindowHandle *plaYUVerApp::activeSubWindow()
   return 0;
 }
 
-QMdiSubWindow *plaYUVerApp::findSubWindow( const QString &fileName )
+SubWindowHandle* plaYUVerApp::findSubWindow( const QMdiArea* mdiArea, const QString& fileName )
 {
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
 
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
   SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
-  if( mdiChild->currentFile() == canonicalFilePath )
-  return window;
+  if( mdiChild->getCurrentFileName() == canonicalFilePath )
+  return mdiChild;
 }
   return 0;
+}
+
+SubWindowHandle* plaYUVerApp::findSubWindow( const QMdiArea* mdiArea, const SubWindowHandle* subWindow )
+{
+  foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
+  SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
+  if( mdiChild == subWindow )
+  return mdiChild;
+}
+return 0;
 }
 
 Void plaYUVerApp::setNavigationTool()
@@ -986,11 +1010,11 @@ Void plaYUVerApp::updateWindowMenu()
     QString text;
     if( i < 9 )
     {
-      text = tr( "&%1 %2" ).arg( i + 1 ).arg( child->userFriendlyCurrentFile() );
+      text = tr( "&%1 %2" ).arg( i + 1 ).arg( child->getWindowName() );
     }
     else
     {
-      text = tr( "%1 %2" ).arg( i + 1 ).arg( child->userFriendlyCurrentFile() );
+      text = tr( "%1 %2" ).arg( i + 1 ).arg( child->getWindowName() );
     }
     QAction *action = m_arrayMenu[WINDOW_MENU]->addAction( text );
     action->setCheckable( true );
@@ -1030,7 +1054,7 @@ Void plaYUVerApp::createActions()
   m_arrayActions[RELOAD_ALL_ACT] = new QAction( tr( "Reload All" ), this );
   //m_arrayActions[RELOAD_ACT]->setIcon( QIcon( ":/images/configuredialog.png" ) );
   m_arrayActions[RELOAD_ALL_ACT]->setStatusTip( tr( "Reload all sequences" ) );
-  connect( m_arrayActions[RELOAD_ALL_ACT], SIGNAL( triggered() ), this, SLOT( reload() ) );
+  connect( m_arrayActions[RELOAD_ALL_ACT], SIGNAL( triggered() ), this, SLOT( reloadAll() ) );
 
   m_arrayActions[LOAD_ALL_ACT] = new QAction( tr( "Preload" ), this );
   //m_arrayActions[LOAD_ALL_ACT]->setIcon( QIcon( ":/images/configuredialog.png" ) );
@@ -1315,21 +1339,31 @@ Void plaYUVerApp::createToolBars()
 Void plaYUVerApp::createDockWidgets()
 {
   // Properties Dock Window
-  m_arraySideBars.resize( TOTAL_SIDEBAR );
+  m_arraySideBars.resize( TOTAL_DOCK );
 
   m_pcStreamProperties = new StreamPropertiesSideBar( this );
-  m_arraySideBars[STREAM_SIDEBAR] = new QDockWidget( tr( "Stream Information" ), this );
-  m_arraySideBars[STREAM_SIDEBAR]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  m_arraySideBars[STREAM_SIDEBAR]->setWidget( m_pcStreamProperties );
-  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[STREAM_SIDEBAR] );
-  connect( m_arraySideBars[STREAM_SIDEBAR], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateProperties() ) );
+  m_arraySideBars[STREAM_DOCK] = new QDockWidget( tr( "Stream Information" ), this );
+  m_arraySideBars[STREAM_DOCK]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  m_arraySideBars[STREAM_DOCK]->setWidget( m_pcStreamProperties );
+  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[STREAM_DOCK] );
+  connect( m_arraySideBars[STREAM_DOCK], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateProperties() ) );
 
   m_pcFrameProperties = new FramePropertiesSideBar( this, &m_bIsPlaying );
-  m_arraySideBars[FRAME_SIDEBAR] = new QDockWidget( tr( "Frame Information" ), this );
-  m_arraySideBars[FRAME_SIDEBAR]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  m_arraySideBars[FRAME_SIDEBAR]->setWidget( m_pcFrameProperties );
-  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[FRAME_SIDEBAR] );
-  connect( m_arraySideBars[FRAME_SIDEBAR], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateProperties() ) );
+  m_arraySideBars[FRAME_DOCK] = new QDockWidget( tr( "Frame Information" ), this );
+  m_arraySideBars[FRAME_DOCK]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  m_arraySideBars[FRAME_DOCK]->setWidget( m_pcFrameProperties );
+  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[FRAME_DOCK] );
+  connect( m_arraySideBars[FRAME_DOCK], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateProperties() ) );
+
+  QMainWindow::tabifyDockWidget( m_arraySideBars[FRAME_DOCK], m_arraySideBars[STREAM_DOCK] );
+  //QMainWindow::setTabPosition(Qt::RightDockWidgetArea, QTabWidget::North);
+
+  m_pcQualityMeasurement = new QualityMeasurementSidebar( this, mdiArea );
+  m_arraySideBars[QUALITY_DOCK] = new QDockWidget( tr( "Quality Measurement" ), this );
+  m_arraySideBars[QUALITY_DOCK]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  m_arraySideBars[QUALITY_DOCK]->setWidget( m_pcQualityMeasurement );
+  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[QUALITY_DOCK] );
+
 }
 
 Void plaYUVerApp::createStatusBar()
@@ -1349,12 +1383,14 @@ Void plaYUVerApp::readSettings()
   setAllSubWindowTool();
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
   m_arrayActions[VIDEO_LOCK_ACT]->setChecked( settings.getVideoLock() );
-  Bool visibleStreamProp, visibleFrameProp;
-  settings.getDockVisibility( visibleStreamProp, visibleFrameProp );
+  Bool visibleStreamProp, visibleFrameProp, visibleQualityMeasure;
+  settings.getDockVisibility( visibleStreamProp, visibleFrameProp, visibleQualityMeasure );
   if( !visibleStreamProp )
-    m_arraySideBars[STREAM_SIDEBAR]->close();
+    m_arraySideBars[STREAM_DOCK]->close();
   if( !visibleFrameProp )
-    m_arraySideBars[FRAME_SIDEBAR]->close();
+    m_arraySideBars[FRAME_DOCK]->close();
+  if( !visibleQualityMeasure )
+    m_arraySideBars[QUALITY_DOCK]->close();
 
 }
 
@@ -1365,7 +1401,7 @@ Void plaYUVerApp::writeSettings()
   settings.setMainWindowSize( size() );
   settings.setLastOpenPath( m_cLastOpenPath );
   settings.setSelectedTool( ( Int )m_appTool );
-  settings.setDockVisibility( m_pcStreamProperties->isVisible(), m_pcFrameProperties->isVisible() );
+  settings.setDockVisibility( m_pcStreamProperties->isVisible(), m_pcFrameProperties->isVisible(), m_pcQualityMeasurement->isVisible() );
   settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked(), m_arrayActions[VIDEO_LOCK_ACT]->isChecked() );
 }
 

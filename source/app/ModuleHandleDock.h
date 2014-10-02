@@ -18,34 +18,52 @@
  */
 
 /**
- * \file     main.cpp
- * \brief    main file
+ * \file     ModuleHandleDock.h
+ * \brief    Module handle dock
  */
 
-#include <QApplication>
+#ifndef __MODULEHANDLEDOCK_H__
+#define __MODULEHANDLEDOCK_H__
+
 #include "config.h"
-#include "plaYUVerApp.h"
-#ifdef USE_FERVOR
-#include "fvupdater.h"
-#endif
-using namespace plaYUVer;
-
-#if _WIN32
-#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#include "PlaYUVerDefs.h"
+#if( QT_VERSION_PLAYUVER == 5 )
+#include <QtWidgets>
+#elif( QT_VERSION_PLAYUVER == 4 )
+#include <QtGui>
+#include <QWidget>
 #endif
 
-int main( int argc, char *argv[] )
+
+namespace plaYUVer
 {
-  QApplication a( argc, argv );
-  QApplication::setApplicationName("PlaYUVer");
-  QApplication::setApplicationVersion(PLAYUVER_VERSION_STRING);
-  QApplication::setOrganizationName("pixlra");
-  QApplication::setOrganizationDomain("playuver.pixlra");
-  plaYUVerApp w;
-  w.show();
-  w.parseArgs( argc, argv );
-#ifdef USE_FERVOR
-  FvUpdater::sharedUpdater()->SetFeedURL("http://192.168.96.201/share/jcarreira.it.pub/plaYUVer/playuver-update.xml");
-#endif
-  return a.exec();
-}
+
+class PlaYUVerModuleIf;
+
+class ModuleHandleDock: public QWidget
+{
+Q_OBJECT
+public:
+  ModuleHandleDock( QWidget* parent, PlaYUVerModuleIf* moduleIf );
+  ~ModuleHandleDock();
+
+  Void setModulueReturnValue( Double value );
+
+  QSize sizeHint() const;
+
+private:
+
+  PlaYUVerModuleIf* m_pcCurrModuleIf;
+
+  Bool m_bIsVisible;
+  QLabel* labelModulueValueLabel;
+  QLabel* labelModulueReturnValue;
+
+public Q_SLOTS:
+  void visibilityChangedSlot( bool );
+
+};
+
+}   // NAMESPACE
+
+#endif // __MODULEHANDLEDOCK_H__

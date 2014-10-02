@@ -489,7 +489,17 @@ Double PlaYUVerFrame::getMSE( PlaYUVerFrame* Org, Int component )
   Int diff = 0;
   Double ssd = 0;
 
-  for( UInt i = 0; i < Org->getHeight() * Org->getWidth(); i++ )
+  UInt numberOfPixels = 0;
+  if( component == LUMA )
+  {
+    numberOfPixels = Org->getHeight() * Org->getWidth();
+  }
+  else
+  {
+    numberOfPixels = getChromaLength();
+  }
+
+  for( UInt i = 0; i < numberOfPixels; i++ )
   {
     aux_pel_1 = *pPelYUV++;
     aux_pel_2 = *pOrgPelYUV++;
@@ -514,23 +524,28 @@ Double PlaYUVerFrame::getPSNR( PlaYUVerFrame* Org, Int component )
 
 UInt64 PlaYUVerFrame::getBytesPerFrame()
 {
-  switch( m_iPixelFormat )
+  return getBytesPerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
+}
+
+UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat )
+{
+  switch( iPixelFormat )
   {
   case YUV420p:
-    return m_uiWidth * m_uiHeight * 1.5;
+    return uiWidth * uiHeight * 1.5;
     break;
   case YUV444p:
-    return m_uiWidth * m_uiHeight * 3;
+    return uiWidth * uiHeight * 3;
     break;
   case YUV422p:
   case YUYV422:
-    return m_uiWidth * m_uiHeight * 2;
+    return uiWidth * uiHeight * 2;
     break;
   case GRAY:
-    return m_uiWidth * m_uiHeight;
+    return uiWidth * uiHeight;
     break;
   case RGB8:
-    return m_uiWidth * m_uiHeight * 3;
+    return uiWidth * uiHeight * 3;
     break;
   default:
     return 0;

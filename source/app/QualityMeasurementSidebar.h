@@ -18,12 +18,12 @@
  */
 
 /**
- * \file     ConfigureFormatDialog.h
- * \brief    Dialog box to set the sequence resolution
+ * \file     QualityMeasurementSidebar.h
+ * \brief    Definition of the quality measurement sidebar
  */
 
-#ifndef __CONFIGUREFORMATDIALOG_H__
-#define __CONFIGUREFORMATDIALOG_H__
+#ifndef __QUALITYMEASUREMENTSIDEBAR_H__
+#define __QUALITYMEASUREMENTSIDEBAR_H__
 
 #include "config.h"
 #include "PlaYUVerDefs.h"
@@ -31,49 +31,51 @@
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
+#include <QWidget>
 #endif
-#include <QtCore>
-
-
-
-class QPixmap;
-class QColor;
+#include "PlaYUVerStream.h"
+#include "PlaYUVerFrame.h"
+#include "HistogramWidget.h"
 
 namespace plaYUVer
 {
 
-#define ADD_STANDARD_RESOLUTION( name, width, height) \
-    standardResolutionNames.push_back( QString( name ) ); \
-    standardResolutionSizesList.push_back( QSize( width, height ) )
+class SubWindowHandle;
 
-/**
- *
- */
-class ConfigureFormatDialog: public QDialog
+class QualityMeasurementSidebar: public QWidget
 {
 Q_OBJECT
-
 public:
+  QualityMeasurementSidebar( QWidget*, QMdiArea * );
+  ~QualityMeasurementSidebar();
 
-  ConfigureFormatDialog( QWidget *parent = 0 );
-  Int runConfigureFormatDialog ( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
+  QSize sizeHint() const;
 
-private Q_SLOTS:
-  void StandardResolutionSelection();
+  Void updateSubWindowList();
+  Void updateCurrentWindow( SubWindowHandle * );
+  Void updateSidebarData();
 
 private:
-  QStringList standardResolutionNames;
-  QVector<QSize> standardResolutionSizes;
+  QMdiArea* m_pcMainWindowMdiArea;
 
-  QLabel* m_labelFilename;
-  QComboBox *m_comboBoxStandardResolution;
-  QSpinBox *m_spinBoxWidth;
-  QSpinBox *m_spinBoxheight;
-  QComboBox *m_comboBoxPixelFormat;
-  QSpinBox *m_spinBoxFrameRate;
+  QStringList m_pcWindowListNames;
+  QStringList m_pcSelectedWindowListNames;
+
+  SubWindowHandle *m_pcCurrentSubWindow;
+
+  QComboBox *m_comboBoxRef;
+  QComboBox *m_comboBoxRec;
+
+  QLabel* m_ppcLabelQualityLabel[3];
+  QLabel* m_ppcLabelQualityValue[3];
+
+  HistogramWidget *histogramWidget;
+
+private Q_SLOTS:
+  void slotReferenceChanged( int );
 
 };
 
-}  // NAMESPACE
+}   // NAMESPACE
 
-#endif // __CONFIGUREFORMATDIALOG_H__
+#endif // __QUALITYMEASUREMENTSIDEBAR_H__

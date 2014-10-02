@@ -16,7 +16,7 @@ ENDIF(UNIX)
 SET( PROJECT_NAME "playuver" )
 
 PROJECT( ${PROJECT_NAME} )
-INCLUDE( PlaYUVerVersion.cmake )
+INCLUDE( cmake/PlaYUVerVersion.cmake )
 
 INCLUDE( cmake/CMakeMacros.cmake )
 
@@ -83,7 +83,7 @@ INCLUDE( cmake/LibPixfc.cmake )
 ######################################################################################
 SET( MODULES_DIR ${SRC_DIR}/modules )
 INCLUDE_DIRECTORIES( ${MODULES_DIR} )
-FILE( GLOB ModuleCMakeFiles cmake/Module*.cmake )
+FILE( GLOB ModuleCMakeFiles ModuleDefinition.cmake )
 
 file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h  "// This files defines the macro to \n"
                                                             "// define a list of modules\n"

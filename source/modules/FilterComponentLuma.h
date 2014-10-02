@@ -18,12 +18,12 @@
  */
 
 /**
- * \file     FilterFrame.h
+ * \file     FilterComponentLuma.h
  * \brief    Filter frame module
  */
 
-#ifndef __FILTERFRAME_H__
-#define __FILTERFRAME_H__
+#ifndef __FILTERCOMPONENT_H__
+#define __FILTERCOMPONENT_H__
 
 #include "config.h"
 #include "PlaYUVerDefs.h"
@@ -37,22 +37,40 @@
 namespace plaYUVer
 {
 
-class FilterFrame: public PlaYUVerModuleIf
+class FilterComponent
 {
 private:
   PlaYUVerFrame* m_pcFilteredFrame;
-
 public:
-  FilterFrame();
-  virtual ~FilterFrame()
+  FilterComponent();
+  virtual ~FilterComponent()
   {
   }
-
-  Void create( PlaYUVerFrame* InputFrame );
-
-  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
+  Void createFilter( UInt uiWidth, UInt uiHeight );
+  PlaYUVerFrame* filterComponent( PlaYUVerFrame* InputFrame,  Int Component );
   Void destroy();
+};
 
+class FilterComponentLuma: public FilterComponent, public PlaYUVerModuleIf
+{
+public:
+  FilterComponentLuma();
+  virtual ~FilterComponentLuma()
+  {
+  }
+  Void create( PlaYUVerFrame* InputFrame );
+  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
+};
+
+class FilterComponentChromaU: public FilterComponent, public PlaYUVerModuleIf
+{
+public:
+  FilterComponentChromaU();
+  virtual ~FilterComponentChromaU()
+  {
+  }
+  Void create( PlaYUVerFrame* InputFrame );
+  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
 };
 
 }  // NAMESPACE

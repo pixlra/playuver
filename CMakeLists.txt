@@ -83,7 +83,6 @@ INCLUDE( cmake/LibPixfc.cmake )
 ######################################################################################
 SET( MODULES_DIR ${SRC_DIR}/modules )
 INCLUDE_DIRECTORIES( ${MODULES_DIR} )
-FILE( GLOB ModuleCMakeFiles ModuleDefinition.cmake )
 
 file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h  "// This files defines the macro to \n"
                                                             "// define a list of modules\n"
@@ -91,8 +90,12 @@ file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h  "// This files defin
                                                             "#define REGISTER_ALL_MODULES ") 
 
 file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "// This files add the header files of each module\n"
-                                                              "#ifndef __MODULESLISTHEADER_H__\n#define __MODULESLISTHEADER_H__\n" )
-INCLUDE( ${ModuleCMakeFiles} )
+  
+                                                            "#ifndef __MODULESLISTHEADER_H__\n#define __MODULESLISTHEADER_H__\n" )
+
+# FILE( GLOB ModuleCMakeFiles ModuleDefinition.cmake )
+# INCLUDE( ${ModuleCMakeFiles} )
+INCLUDE( ModuleDefinition.cmake )
 
 file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h    "\n#endif // __MODULESLISTMACRO_H__\n" )
 file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#endif // __MODULESLISTHEADER_H__\n" )

@@ -18,8 +18,8 @@
  */
 
 /**
- * \file     FilterComponentLuma.h
- * \brief    Filter frame module
+ * \file     FilterComponent.h
+ * \brief    Filter component frame module
  */
 
 #ifndef __FILTERCOMPONENT_H__
@@ -67,6 +67,17 @@ class FilterComponentChromaU: public FilterComponent, public PlaYUVerModuleIf
 public:
   FilterComponentChromaU();
   virtual ~FilterComponentChromaU()
+  {
+  }
+  Void create( PlaYUVerFrame* InputFrame );
+  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
+};
+
+class FilterComponentChromaV: public FilterComponent, public PlaYUVerModuleIf
+{
+public:
+  FilterComponentChromaV();
+  virtual ~FilterComponentChromaV()
   {
   }
   Void create( PlaYUVerFrame* InputFrame );

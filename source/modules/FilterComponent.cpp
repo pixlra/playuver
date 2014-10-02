@@ -18,14 +18,13 @@
  */
 
 /**
- * \file     FilterComponentLuma.cpp
- * \brief    Filter frame module
+ * \file     FilterComponent.cpp
+ * \brief    Filter component frame module
  */
 
 #include <cstdio>
 
-#include "FilterComponentLuma.h"
-#include "PlaYUVerFrame.h"
+#include "FilterComponent.h"
 
 namespace plaYUVer
 {
@@ -45,7 +44,7 @@ PlaYUVerFrame* FilterComponent::filterComponent( PlaYUVerFrame* InputFrame, Int 
 {
   Pel*** pppOutputPelYUV = m_pcFilteredFrame->getPelBufferYUV();
   Pel*** pppInputPelYUV = InputFrame->getPelBufferYUV();
-  memcpy( pppOutputPelYUV[Component][0], pppInputPelYUV[Component][0], m_pcFilteredFrame->getWidth() * m_pcFilteredFrame->getHeight() * sizeof(Pel) );
+  memcpy( pppOutputPelYUV[LUMA][0], pppInputPelYUV[Component][0], m_pcFilteredFrame->getWidth() * m_pcFilteredFrame->getHeight() * sizeof(Pel) );
   return m_pcFilteredFrame;
 }
 
@@ -60,7 +59,7 @@ Void FilterComponent::destroy()
 PlaYUVerModuleDefinition FilterComponentLumaDef = {
     FRAME_PROCESSING_MODULE,        // Apply module to the frames or to the whole sequence.
                                     // Currently only support for frame
-    "Filter Component",                      // Category (sub-menu)
+    "Filter Component",             // Category (sub-menu)
     "Luma",                         // Name
     "Filter Y matrix of YUV frame", // Description
     MODULE_REQUIRES_ONE_FRAME,      // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
@@ -84,7 +83,7 @@ PlaYUVerFrame* FilterComponentLuma::process( PlaYUVerFrame* InputFrame )
   return filterComponent( InputFrame, LUMA );
 }
 
-PlaYUVerModuleDefinition FilterComponentCrDef = {
+PlaYUVerModuleDefinition FilterComponentCbDef = {
     FRAME_PROCESSING_MODULE,        // Apply module to the frames or to the whole sequence.
                                     // Currently only support for frame
     "Filter Component",                      // Category (sub-menu)
@@ -98,17 +97,44 @@ PlaYUVerModuleDefinition FilterComponentCrDef = {
 
 FilterComponentChromaU::FilterComponentChromaU()
 {
-  setModuleDefinition( FilterComponentCrDef );
+  setModuleDefinition( FilterComponentCbDef );
 }
 
 Void FilterComponentChromaU::create( PlaYUVerFrame* InputFrame )
 {
-  createFilter( InputFrame->getWidth(), InputFrame->getHeight() );
+  createFilter( InputFrame->getChromaWidth(), InputFrame->getChromaHeight() );
 }
 
 PlaYUVerFrame* FilterComponentChromaU::process( PlaYUVerFrame* InputFrame )
 {
   return filterComponent( InputFrame, CHROMA_U );
+}
+
+PlaYUVerModuleDefinition FilterComponentCrDef = {
+    FRAME_PROCESSING_MODULE,        // Apply module to the frames or to the whole sequence.
+                                    // Currently only support for frame
+    "Filter Component",                      // Category (sub-menu)
+    "Chroma R",                     // Name
+    "Filter Y matrix of YUV frame", // Description
+    MODULE_REQUIRES_ONE_FRAME,      // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
+    MODULE_REQUIRES_NOTHING,        // Module requirements (check PlaYUVerModulesIf.h).
+                                    // Several requirements should be "or" between each others.
+    APPLY_WHILE_PLAYING,            // Apply module while playing
+};
+
+FilterComponentChromaV::FilterComponentChromaV()
+{
+  setModuleDefinition( FilterComponentCrDef );
+}
+
+Void FilterComponentChromaV::create( PlaYUVerFrame* InputFrame )
+{
+  createFilter( InputFrame->getChromaWidth(), InputFrame->getChromaHeight() );
+}
+
+PlaYUVerFrame* FilterComponentChromaV::process( PlaYUVerFrame* InputFrame )
+{
+  return filterComponent( InputFrame, CHROMA_V );
 }
 
 }  // NAMESPACE

@@ -2,8 +2,9 @@
 # Default Modules
 ######################################################################################
 
-ADD_MODULE( FilterComponentLuma "FilterComponentLuma" )
-ADD_MODULE( FilterComponentChromaU "FilterComponentLuma" )
+ADD_MODULE( FilterComponentLuma "FilterComponent" )
+ADD_MODULE( FilterComponentChromaU "FilterComponent" )
+ADD_MODULE( FilterComponentChromaV "FilterComponent" )
 ADD_MODULE( FrameDifference "FrameDifference" )
 ADD_MODULE( MeasurePSNR "MeasurePSNR" )
 

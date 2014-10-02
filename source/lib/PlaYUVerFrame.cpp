@@ -553,6 +553,49 @@ UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelF
   return 0;
 }
 
+UInt PlaYUVerFrame::getChromaWidth() const
+{
+  switch( m_iPixelFormat )
+  {
+  case YUV420p:
+    return m_uiWidth / 2;
+    break;
+  case YUV444p:
+  case YUV422p:
+  case YUYV422:
+  case RGB8:
+    return m_uiWidth;
+    break;
+  case GRAY:
+    return 0;
+    break;
+  default:
+    return 0;
+  }
+  return 0;
+}
+
+UInt PlaYUVerFrame::getChromaHeight() const
+{
+  switch( m_iPixelFormat )
+  {
+  case YUV420p:
+  case YUV422p:
+  case YUYV422:
+    return m_uiHeight / 2;
+    break;
+  case YUV444p:
+  case RGB8:
+    return m_uiHeight;
+  case GRAY:
+    return 0;
+    break;
+  default:
+    return 0;
+  }
+  return 0;
+}
+
 UInt PlaYUVerFrame::getChromaLength() const
 {
   switch( m_iPixelFormat )

@@ -120,6 +120,8 @@ public:
   UInt64 getBytesPerFrame();
   static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat );
 
+  UInt getChromaWidth() const;
+  UInt getChromaHeight() const;
   UInt getChromaLength() const;
 
   Pel*** getPelBufferYUV() const

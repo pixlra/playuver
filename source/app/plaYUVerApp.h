@@ -250,7 +250,7 @@ private:
     ZOOM_FIT_ACT,
     ZOOM_NORMAL_ACT,
     PLAY_ACT,
-    PAUSE_ACT,
+    /*PAUSE_ACT,*/
     STOP_ACT,
     VIDEO_FORWARD_ACT,
     VIDEO_BACKWARD_ACT,

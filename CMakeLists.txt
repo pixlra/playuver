@@ -52,6 +52,7 @@ ADD_DEFINITIONS( "-DPLAYUVER" )
 ######################################################################################
 # Variables
 ######################################################################################
+ADD_OPTION(PLAYUVER_LONGVERSIONNAME     "Use long version name in deb" OFF )
 ADD_OPTION(PLAYUVER_WERROR              "Warnings as errors"       OFF )
 ADD_OPTION(PLAYUVER_THREADED_MODULES    "Warnings as errors"       ON  )
 ADD_OPTION(PLAYUVER_INSTALL_LIBS        "Install PlaYUVer Lib"     ON  )
@@ -138,6 +139,7 @@ status("Configuration:")
 status("    Build type:"          "${CMAKE_BUILD_TYPE}")
 status("    Build flags:"         "${CMAKE_CXX_FLAGS}")
 status("    Warnings as errors:"  USE_WERROR          THEN YES ELSE NO)
+status("    Package Name:"        "${PACKAGE_FILE_NAME}" )
 status("Dependencies:")
 status("    QT:"                  USE_QT4             THEN "QT4" ELSE "QT5")
 status("    OpenCV:"              USE_OPENCV          THEN YES ELSE NO)

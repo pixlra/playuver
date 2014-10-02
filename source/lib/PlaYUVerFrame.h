@@ -112,10 +112,7 @@ public:
   Void FrameToBuffer( Pel* );
 
   Void copyFrom( PlaYUVerFrame* );
-  Void copyFrom( PlaYUVerFrame*, UInt, UInt);
-
-  Double getMSE( PlaYUVerFrame* Org, Int component );
-  Double getPSNR( PlaYUVerFrame* Org, Int component );
+  Void copyFrom( PlaYUVerFrame*, UInt, UInt );
 
   UInt64 getBytesPerFrame();
   static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat );
@@ -149,6 +146,29 @@ public:
   Void copyFrom( cv::Mat* );
 #endif
 
+  enum QualityMetrics
+  {
+    NO_METRIC = -1,
+    PSNR_METRIC = 0,
+    SSIM_METRIC,
+    NUMBER_METRICS,
+  };
+
+  static QStringList supportedQualityMetricsList()
+  {
+    QStringList metrics;
+    metrics << "PSNR"
+            << "SSIM"  // SSIM
+            ;
+    assert( metrics.size() == NUMBER_METRICS );
+    return metrics;
+  }
+
+  Double getQuality( Int Metric, PlaYUVerFrame* Org, Int component );
+  Double getMSE( PlaYUVerFrame* Org, Int component );
+  Double getPSNR( PlaYUVerFrame* Org, Int component );
+  Double getSSIM( PlaYUVerFrame* Org, Int component );
+
   UInt getWidth() const
   {
     return m_uiWidth;
@@ -174,9 +194,9 @@ public:
     return ( m_uiWidth > 0 ) && ( m_uiHeight > 0 ) && ( m_iPixelFormat >= 0 );
   }
   Bool haveSameFmt( PlaYUVerFrame* other ) const
-    {
-      return ( m_uiWidth == other->getWidth() ) && ( m_uiHeight == other->getHeight() ) && ( m_iPixelFormat == other->getPelFormat() );
-    }
+  {
+    return ( m_uiWidth == other->getWidth() ) && ( m_uiHeight == other->getHeight() ) && ( m_iPixelFormat == other->getPelFormat() );
+  }
 
 private:
   UInt m_uiWidth;

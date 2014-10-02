@@ -480,48 +480,6 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
   }
 }
 
-Double PlaYUVerFrame::getMSE( PlaYUVerFrame* Org, Int component )
-{
-  Pel* pPelYUV = getPelBufferYUV()[component][0];
-  Pel* pOrgPelYUV = Org->getPelBufferYUV()[component][0];
-
-  Int aux_pel_1, aux_pel_2;
-  Int diff = 0;
-  Double ssd = 0;
-
-  UInt numberOfPixels = 0;
-  if( component == LUMA )
-  {
-    numberOfPixels = Org->getHeight() * Org->getWidth();
-  }
-  else
-  {
-    numberOfPixels = getChromaLength();
-  }
-
-  for( UInt i = 0; i < numberOfPixels; i++ )
-  {
-    aux_pel_1 = *pPelYUV++;
-    aux_pel_2 = *pOrgPelYUV++;
-    diff = aux_pel_1 - aux_pel_2;
-    ssd += ( Double )( diff * diff );
-  }
-  if( ssd == 0.0 )
-  {
-    return 0.0;
-  }
-  return ssd / ( Org->getWidth() * Org->getHeight() );
-}
-
-Double PlaYUVerFrame::getPSNR( PlaYUVerFrame* Org, Int component )
-{
-  Double dPSNR = 100;
-  Double dMSE = getMSE( Org, component );
-  if( dMSE != 0 )
-    dPSNR = 10 * log10( 65025 / dMSE );
-  return dPSNR;
-}
-
 UInt64 PlaYUVerFrame::getBytesPerFrame()
 {
   return getBytesPerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
@@ -776,5 +734,73 @@ Void PlaYUVerFrame::copyFrom( cv::Mat* opencvFrame )
   }
 }
 #endif
+
+/**
+ * Quality Related Function API
+ */
+
+Double PlaYUVerFrame::getQuality( Int Metric, PlaYUVerFrame* Org, Int component )
+{
+  switch( Metric )
+  {
+  case PSNR_METRIC:
+    return getPSNR( Org, component );
+    break;
+  case SSIM_METRIC:
+    return getSSIM( Org, component );
+    break;
+  default:
+    assert( 0 );
+  };
+  return 0;
 }
-// NAMESPACE
+
+Double PlaYUVerFrame::getMSE( PlaYUVerFrame* Org, Int component )
+{
+  Pel* pPelYUV = getPelBufferYUV()[component][0];
+  Pel* pOrgPelYUV = Org->getPelBufferYUV()[component][0];
+
+  Int aux_pel_1, aux_pel_2;
+  Int diff = 0;
+  Double ssd = 0;
+
+  UInt numberOfPixels = 0;
+  if( component == LUMA )
+  {
+    numberOfPixels = Org->getHeight() * Org->getWidth();
+  }
+  else
+  {
+    numberOfPixels = getChromaLength();
+  }
+
+  for( UInt i = 0; i < numberOfPixels; i++ )
+  {
+    aux_pel_1 = *pPelYUV++;
+    aux_pel_2 = *pOrgPelYUV++;
+    diff = aux_pel_1 - aux_pel_2;
+    ssd += ( Double )( diff * diff );
+  }
+  if( ssd == 0.0 )
+  {
+    return 0.0;
+  }
+  return ssd / ( Org->getWidth() * Org->getHeight() );
+}
+
+Double PlaYUVerFrame::getPSNR( PlaYUVerFrame* Org, Int component )
+{
+  Double dPSNR = 100;
+  Double dMSE = getMSE( Org, component );
+  if( dMSE != 0 )
+    dPSNR = 10 * log10( 65025 / dMSE );
+  return dPSNR;
+}
+
+Double PlaYUVerFrame::getSSIM( PlaYUVerFrame* Org, Int component )
+{
+  Double dSSIM = 1;
+  return dSSIM;
+}
+
+} // NAMESPACE

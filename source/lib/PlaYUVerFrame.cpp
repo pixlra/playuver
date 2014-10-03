@@ -746,6 +746,9 @@ Double PlaYUVerFrame::getQuality( Int Metric, PlaYUVerFrame* Org, Int component 
   case PSNR_METRIC:
     return getPSNR( Org, component );
     break;
+  case MSE_METRIC:
+    return getMSE( Org, component );
+    break;
   case SSIM_METRIC:
     return getSSIM( Org, component );
     break;

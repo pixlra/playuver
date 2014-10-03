@@ -150,6 +150,7 @@ public:
   {
     NO_METRIC = -1,
     PSNR_METRIC = 0,
+    MSE_METRIC,
     SSIM_METRIC,
     NUMBER_METRICS,
   };
@@ -158,6 +159,7 @@ public:
   {
     QStringList metrics;
     metrics << "PSNR"
+            << "MSE"
             << "SSIM"  // SSIM
             ;
     assert( metrics.size() == NUMBER_METRICS );

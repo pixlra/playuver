@@ -63,6 +63,8 @@ private:
 
   SubWindowHandle *m_pcCurrentSubWindow;
 
+  QComboBox *m_comboBoxMetric;
+
   QComboBox *m_comboBoxRef;
   QComboBox *m_comboBoxRec;
 
@@ -73,6 +75,7 @@ private:
 
 private Q_SLOTS:
   void slotReferenceChanged( int );
+  void slotQualityMetricChanged();
 
 };
 

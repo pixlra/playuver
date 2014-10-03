@@ -16,7 +16,7 @@ ENDIF(UNIX)
 SET( PROJECT_NAME "playuver" )
 
 PROJECT( ${PROJECT_NAME} )
-INCLUDE( PlaYUVerVersion.cmake )
+INCLUDE( cmake/PlaYUVerVersion.cmake )
 
 INCLUDE( cmake/CMakeMacros.cmake )
 
@@ -52,6 +52,7 @@ ADD_DEFINITIONS( "-DPLAYUVER" )
 ######################################################################################
 # Variables
 ######################################################################################
+ADD_OPTION(PLAYUVER_LONGVERSIONNAME     "Use long version name in deb" OFF )
 ADD_OPTION(PLAYUVER_WERROR              "Warnings as errors"       OFF )
 ADD_OPTION(PLAYUVER_THREADED_MODULES    "Warnings as errors"       ON  )
 ADD_OPTION(PLAYUVER_INSTALL_LIBS        "Install PlaYUVer Lib"     ON  )
@@ -82,7 +83,6 @@ INCLUDE( cmake/LibPixfc.cmake )
 ######################################################################################
 SET( MODULES_DIR ${SRC_DIR}/modules )
 INCLUDE_DIRECTORIES( ${MODULES_DIR} )
-FILE( GLOB ModuleCMakeFiles cmake/Module*.cmake )
 
 file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h  "// This files defines the macro to \n"
                                                             "// define a list of modules\n"
@@ -90,8 +90,12 @@ file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h  "// This files defin
                                                             "#define REGISTER_ALL_MODULES ") 
 
 file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "// This files add the header files of each module\n"
-                                                              "#ifndef __MODULESLISTHEADER_H__\n#define __MODULESLISTHEADER_H__\n" )
-INCLUDE( ${ModuleCMakeFiles} )
+  
+                                                            "#ifndef __MODULESLISTHEADER_H__\n#define __MODULESLISTHEADER_H__\n" )
+
+# FILE( GLOB ModuleCMakeFiles ModuleDefinition.cmake )
+# INCLUDE( ${ModuleCMakeFiles} )
+INCLUDE( ModuleDefinition.cmake )
 
 file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h    "\n#endif // __MODULESLISTMACRO_H__\n" )
 file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#endif // __MODULESLISTHEADER_H__\n" )
@@ -124,8 +128,8 @@ ADD_EXECUTABLE( ${PROJECT_NAME} ${SOURCES_FILES} ${HEADERS_MOC_FILES} ${FORMS_HE
 
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib ${MODULES_LIBS}  ${LINKER_LIBS} )
 
-IF( NOT USE_QT4)
-    QT5_USE_MODULES( ${PROJECT_NAME} ${CURR_QT_MODULES} )
+IF( NOT USE_QT4 )
+  QT5_USE_MODULES( ${PROJECT_NAME} ${QT_MODULES} )
 ENDIF()
 
 INCLUDE(cmake/Install.cmake)
@@ -133,15 +137,17 @@ INCLUDE(cmake/Install.cmake)
 ######################################################################################
 # Final information dump
 ######################################################################################
+status("Version:"                 "${PLAYUVER_VERSION}")
 status("Configuration:")
-status("    Build type:"           ${CMAKE_BUILD_TYPE} )
-status("    Build flags:"          "${CMAKE_CXX_FLAGS}" )
-status("    Warnings as errors:" USE_WERROR       THEN YES ELSE NO)
+status("    Build type:"          "${CMAKE_BUILD_TYPE}")
+status("    Build flags:"         "${CMAKE_CXX_FLAGS}")
+status("    Warnings as errors:"  USE_WERROR          THEN YES ELSE NO)
+status("    Package Name:"        "${PACKAGE_FILE_NAME}" )
 status("Dependencies:")
-status("    QT:"              USE_QT4             THEN "QT4" ELSE "QT5" )
-status("    OpenCV:"          USE_OPENCV          THEN YES ELSE NO)
-status("    FFMPEG:"          USE_FFMPEG          THEN YES ELSE NO)
-status("    Fervor:"          USE_FERVOR           THEN YES ELSE NO)
-status("    Pixfc-sse:"       USE_PIXFC           THEN YES ELSE NO)
+status("    QT:"                  USE_QT4             THEN "QT4" ELSE "QT5")
+status("    OpenCV:"              USE_OPENCV          THEN YES ELSE NO)
+status("    FFMPEG:"              USE_FFMPEG          THEN YES ELSE NO)
+status("    Fervor:"              USE_FERVOR          THEN YES ELSE NO)
+status("    Pixfc-sse:"           USE_PIXFC           THEN YES ELSE NO)
 status("Features:")
-status("    Modules List:"          "${MODULES_LIST}" )
+status("    Modules List:"        "${MODULES_LIST}" )

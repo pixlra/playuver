@@ -102,8 +102,6 @@ private:
   QDockWidget* m_pcDockWidget;
   ModuleHandleDock* m_pcModuleDock;
 
-  PlaYUVerModuleDefinition m_cModuleDef;
-
   PlaYUVerStream* m_pcModuleStream;
   PlaYUVerFrame* m_pcProcessedFrame;
   Double m_dMeasurementResult;
@@ -144,7 +142,8 @@ public:
   PlaYUVerModuleDefinition getModuleDefinition()            { return m_cModuleDef;  }
 
 protected:
-    virtual void run();
+  PlaYUVerModuleDefinition m_cModuleDef;
+  virtual void run();
 };
 
 }  // NAMESPACE

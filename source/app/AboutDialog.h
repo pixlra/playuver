@@ -18,44 +18,22 @@
  */
 
 /**
- * \file     FilterFrame.h
- * \brief    Filter frame module
+ * \file     AboutDialog.h
+ * \brief    About Dialog
+ *           Based on the work of Glad Deschrijver <glad.deschrijver@gmail.com> in KTikZ project
  */
 
-#ifndef __FILTERFRAME_H__
-#define __FILTERFRAME_H__
+#ifndef __ABOUTDIALOG_H__
+#define __ABOUTDIALOG_H__
 
-#include "config.h"
-#include "PlaYUVerDefs.h"
-#include <iostream>
-#include <cstdio>
-#include "PlaYUVerFrame.h"
-#include "PlaYUVerModuleIf.h"
+#include <QDialog>
 
-#include <cassert>
-
-namespace plaYUVer
+class AboutDialog : public QDialog
 {
-
-class FilterFrame: public PlaYUVerModuleIf
-{
-private:
-  PlaYUVerFrame* m_pcFilteredFrame;
+	Q_OBJECT
 
 public:
-  FilterFrame();
-  virtual ~FilterFrame()
-  {
-  }
-
-  Void create( PlaYUVerFrame* InputFrame );
-
-  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
-  Void destroy();
-
+	AboutDialog(QWidget *parent = 0);
 };
 
-}  // NAMESPACE
-
-#endif // __FILTERFRAME_H__
-
+#endif // __ABOUTDIALOG_H__

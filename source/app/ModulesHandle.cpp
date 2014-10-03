@@ -133,7 +133,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   }
   else
   {
-    windowName.append( pcSubWindow->userFriendlyCurrentFile() );
+    windowName.append( pcSubWindow->getWindowName() );
     pcCurrModuleIf->m_pcSubWindow[0] = pcSubWindow;
   }
   windowName.append( " <" );
@@ -209,6 +209,12 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
       pcCurrModuleIf->m_pcSubWindow[i] = NULL;
     }
   }
+  if( pcCurrModuleIf->m_pcModuleStream )
+  {
+    pcCurrModuleIf->m_pcModuleStream->close();
+    delete pcCurrModuleIf->m_pcModuleStream;
+    pcCurrModuleIf->m_pcModuleStream = NULL;
+  }
   pcCurrModuleIf->m_pcAction->setChecked( false );
   pcCurrModuleIf->destroy();
 }
@@ -262,14 +268,14 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
     QApplication::setOverrideCursor( Qt::WaitCursor );
     for( UInt f = 0; f < numberOfFrames; f++ )
     {
+      applyModuleIf( pcCurrModuleIf, false, true );
+      //QCoreApplication::processEvents();
+      pcCurrModuleIf->m_pcModuleStream->writeFrame( pcCurrModuleIf->m_pcProcessedFrame );
       for( UInt i = 0; i < numberOfWindows; i++ )
       {
         pcCurrModuleIf->m_pcSubWindow[i]->play();
         pcCurrModuleIf->m_pcSubWindow[i]->playEvent();
       }
-      applyModuleIf( pcCurrModuleIf, false, false );
-      QCoreApplication::processEvents();
-      pcCurrModuleIf->m_pcModuleStream->writeFrame( pcCurrModuleIf->m_pcProcessedFrame );
     }
     QApplication::restoreOverrideCursor();
   }
@@ -466,6 +472,7 @@ Void ModulesHandle::updateMenus( Bool hasSubWindow )
     currModuleAction = m_arrayModulesActions.at( i );
     currModuleAction->setEnabled( hasSubWindow );
   }
+  m_arrayActions[APPLY_ALL_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[SWAP_FRAMES_ACT]->setEnabled( hasSubWindow );
 }
 

@@ -349,8 +349,8 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent, Bool *pbIsPlayi
   statisticsLayout->addWidget( labelStdDevValue, 3, 1 );
   statisticsLayout->addWidget( medianLabel, 4, 0 );
   statisticsLayout->addWidget( labelMedianValue, 4, 1 );
-  statisticsLayout->addWidget( percentileLabel, 5, 0 );
-  statisticsLayout->addWidget( labelPercentileValue, 5, 1 );
+//  statisticsLayout->addWidget( percentileLabel, 5, 0 );
+//  statisticsLayout->addWidget( labelPercentileValue, 5, 1 );
 
   QGroupBox *statisticsGroup = new QGroupBox( tr( "Statistics" ) );
   statisticsGroup->setLayout( statisticsLayout );

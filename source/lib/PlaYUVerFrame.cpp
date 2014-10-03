@@ -390,30 +390,30 @@ Void PlaYUVerFrame::FrameToBuffer( Pel *output_buffer )
     memcpy( output_buffer + frame_bytes_input * 5 / 4, &m_pppcInputPel[CHROMA_V][0][0], frame_bytes_input / 4 * sizeof(Pel) );
     break;
   case YUV444p:
-    memcpy(  output_buffer + frame_bytes_input * 0, &m_pppcInputPel[LUMA][0][0], frame_bytes_input * sizeof(Pel) );
-    memcpy(  output_buffer + frame_bytes_input * 1, &m_pppcInputPel[CHROMA_U][0][0], frame_bytes_input * sizeof(Pel) );
-    memcpy(  output_buffer + frame_bytes_input * 2, &m_pppcInputPel[CHROMA_V][0][0],frame_bytes_input * sizeof(Pel) );
+    memcpy( output_buffer + frame_bytes_input * 0, &m_pppcInputPel[LUMA][0][0], frame_bytes_input * sizeof(Pel) );
+    memcpy( output_buffer + frame_bytes_input * 1, &m_pppcInputPel[CHROMA_U][0][0], frame_bytes_input * sizeof(Pel) );
+    memcpy( output_buffer + frame_bytes_input * 2, &m_pppcInputPel[CHROMA_V][0][0], frame_bytes_input * sizeof(Pel) );
     break;
   case YUV422p:
-    memcpy(  output_buffer + frame_bytes_input * 0,&m_pppcInputPel[LUMA][0][0], frame_bytes_input * sizeof(Pel) );
-    memcpy(  output_buffer + frame_bytes_input * 1,&m_pppcInputPel[CHROMA_U][0][0],  frame_bytes_input / 2 * sizeof(Pel) );
-    memcpy(  output_buffer + frame_bytes_input * 3 / 2,&m_pppcInputPel[CHROMA_V][0][0], frame_bytes_input / 2 * sizeof(Pel) );
+    memcpy( output_buffer + frame_bytes_input * 0, &m_pppcInputPel[LUMA][0][0], frame_bytes_input * sizeof(Pel) );
+    memcpy( output_buffer + frame_bytes_input * 1, &m_pppcInputPel[CHROMA_U][0][0], frame_bytes_input / 2 * sizeof(Pel) );
+    memcpy( output_buffer + frame_bytes_input * 3 / 2, &m_pppcInputPel[CHROMA_V][0][0], frame_bytes_input / 2 * sizeof(Pel) );
     break;
   case YUYV422:
     for( UInt i = 0; i < m_uiHeight * m_uiWidth / 2; i++ )
     {
-      *output_buffer++ = *pInputPelY++ ;
-      *output_buffer++ = *pInputPelU++ ;
-      *output_buffer++ = *pInputPelY++ ;
-      *output_buffer++ = *pInputPelV++ ;
+      *output_buffer++ = *pInputPelY++;
+      *output_buffer++ = *pInputPelU++;
+      *output_buffer++ = *pInputPelY++;
+      *output_buffer++ = *pInputPelV++;
     }
     break;
   case GRAY:
-    memcpy(  output_buffer + frame_bytes_input * 0, &m_pppcInputPel[LUMA][0][0], frame_bytes_input * sizeof(Pel) );
+    memcpy( output_buffer + frame_bytes_input * 0, &m_pppcInputPel[LUMA][0][0], frame_bytes_input * sizeof(Pel) );
     break;
   case RGB8:
     FrametoRGB8();
-    memcpy(  output_buffer, pcRGBPelInterlaced, frame_bytes_input * sizeof(Pel) * 3 );
+    memcpy( output_buffer, pcRGBPelInterlaced, frame_bytes_input * sizeof(Pel) * 3 );
     break;
   }
 }
@@ -480,67 +480,73 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
   }
 }
 
-Double PlaYUVerFrame::getMSE( PlaYUVerFrame* Org, Int component )
-{
-  Pel* pPelYUV = getPelBufferYUV()[component][0];
-  Pel* pOrgPelYUV = Org->getPelBufferYUV()[component][0];
-
-  Int aux_pel_1, aux_pel_2;
-  Int diff = 0;
-  Double ssd = 0;
-
-  UInt numberOfPixels = 0;
-  if( component == LUMA )
-  {
-    numberOfPixels = Org->getHeight() * Org->getWidth();
-  }
-  else
-  {
-    numberOfPixels = getChromaLength();
-  }
-
-  for( UInt i = 0; i < numberOfPixels; i++ )
-  {
-    aux_pel_1 = *pPelYUV++;
-    aux_pel_2 = *pOrgPelYUV++;
-    diff = aux_pel_1 - aux_pel_2;
-    ssd += ( Double )( diff * diff );
-  }
-  if( ssd == 0.0 )
-  {
-    return 0.0;
-  }
-  return ssd / ( Org->getWidth() * Org->getHeight() );
-}
-
-Double PlaYUVerFrame::getPSNR( PlaYUVerFrame* Org, Int component )
-{
-  Double dPSNR = 100;
-  Double dMSE = getMSE( Org, component );
-  if( dMSE != 0 )
-    dPSNR = 10 * log10( 65025 / dMSE );
-  return dPSNR;
-}
-
 UInt64 PlaYUVerFrame::getBytesPerFrame()
+{
+  return getBytesPerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
+}
+
+UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat )
+{
+  switch( iPixelFormat )
+  {
+  case YUV420p:
+    return uiWidth * uiHeight * 1.5;
+    break;
+  case YUV444p:
+    return uiWidth * uiHeight * 3;
+    break;
+  case YUV422p:
+  case YUYV422:
+    return uiWidth * uiHeight * 2;
+    break;
+  case GRAY:
+    return uiWidth * uiHeight;
+    break;
+  case RGB8:
+    return uiWidth * uiHeight * 3;
+    break;
+  default:
+    return 0;
+  }
+  return 0;
+}
+
+UInt PlaYUVerFrame::getChromaWidth() const
 {
   switch( m_iPixelFormat )
   {
   case YUV420p:
-    return m_uiWidth * m_uiHeight * 1.5;
+    return m_uiWidth / 2;
     break;
   case YUV444p:
-    return m_uiWidth * m_uiHeight * 3;
-    break;
   case YUV422p:
   case YUYV422:
-    return m_uiWidth * m_uiHeight * 2;
+  case RGB8:
+    return m_uiWidth;
     break;
   case GRAY:
-    return m_uiWidth * m_uiHeight;
+    return 0;
     break;
+  default:
+    return 0;
+  }
+  return 0;
+}
+
+UInt PlaYUVerFrame::getChromaHeight() const
+{
+  switch( m_iPixelFormat )
+  {
+  case YUV420p:
+  case YUV422p:
+  case YUYV422:
+    return m_uiHeight / 2;
+    break;
+  case YUV444p:
   case RGB8:
-    return m_uiWidth * m_uiHeight * 3;
+    return m_uiHeight;
+  case GRAY:
+    return 0;
     break;
   default:
     return 0;
@@ -652,19 +658,19 @@ cv::Mat PlaYUVerFrame::getCvMat()
   Int cvType = CV_8UC3;
   switch( m_iPixelFormat )
   {
-    case YUV420p:
-    case YUV444p:
-    case YUV422p:
-    case YUYV422:
+  case YUV420p:
+  case YUV444p:
+  case YUV422p:
+  case YUYV422:
     cvType = CV_8UC3;
     break;
-    case GRAY:
+  case GRAY:
     cvType = CV_8UC1;
     break;
-    case RGB8:
+  case RGB8:
     cvType = CV_8UC3;
     break;
-    default:
+  default:
     break;
   }
   cv::Mat opencvFrame( m_uiHeight, m_uiWidth, cvType );
@@ -681,7 +687,6 @@ cv::Mat PlaYUVerFrame::getCvMat()
 }
 #endif
 
-
 #ifdef USE_OPENCV
 Void PlaYUVerFrame::copyFrom( cv::Mat* opencvFrame )
 {
@@ -689,13 +694,13 @@ Void PlaYUVerFrame::copyFrom( cv::Mat* opencvFrame )
   {
     switch( opencvFrame->channels() )
     {
-      case 1:
+    case 1:
       m_iPixelFormat = GRAY;
       break;
-      case 3:
+    case 3:
       m_iPixelFormat = RGB8;
       break;
-      default:
+    default:
       return;
     }
   }
@@ -728,5 +733,150 @@ Void PlaYUVerFrame::copyFrom( cv::Mat* opencvFrame )
   }
 }
 #endif
+
+/**
+ * Quality Related Function API
+ */
+
+Double PlaYUVerFrame::getQuality( Int Metric, PlaYUVerFrame* Org, Int component )
+{
+  switch( Metric )
+  {
+  case PSNR_METRIC:
+    return getPSNR( Org, component );
+    break;
+  case MSE_METRIC:
+    return getMSE( Org, component );
+    break;
+  case SSIM_METRIC:
+    return getSSIM( Org, component );
+    break;
+  default:
+    assert( 0 );
+  };
+  return 0;
 }
-// NAMESPACE
+
+Double PlaYUVerFrame::getMSE( PlaYUVerFrame* Org, Int component )
+{
+  Pel* pPelYUV = getPelBufferYUV()[component][0];
+  Pel* pOrgPelYUV = Org->getPelBufferYUV()[component][0];
+
+  Int aux_pel_1, aux_pel_2;
+  Int diff = 0;
+  Double ssd = 0;
+
+  UInt numberOfPixels = 0;
+  if( component == LUMA )
+  {
+    numberOfPixels = Org->getHeight() * Org->getWidth();
+  }
+  else
+  {
+    numberOfPixels = getChromaLength();
+  }
+
+  for( UInt i = 0; i < numberOfPixels; i++ )
+  {
+    aux_pel_1 = *pPelYUV++;
+    aux_pel_2 = *pOrgPelYUV++;
+    diff = aux_pel_1 - aux_pel_2;
+    ssd += ( Double )( diff * diff );
+  }
+  if( ssd == 0.0 )
+  {
+    return 0.0;
+  }
+  return ssd / ( Org->getWidth() * Org->getHeight() );
+}
+
+Double PlaYUVerFrame::getPSNR( PlaYUVerFrame* Org, Int component )
+{
+  Double dPSNR = 100;
+  Double dMSE = getMSE( Org, component );
+  if( dMSE != 0 )
+    dPSNR = 10 * log10( 65025 / dMSE );
+  return dPSNR;
+}
+
+float compute_ssim( Pel **refImg, Pel **encImg, Int width, Int height, Int win_width, Int win_height, Int max_pel_value_comp, Int overlapSize )
+{
+  static const float K1 = 0.01f, K2 = 0.03f;
+  float max_pix_value_sqd;
+  float C1, C2;
+  float win_pixels = ( float )( win_width * win_height );
+#ifdef UNBIASED_VARIANCE
+  float win_pixels_bias = win_pixels - 1;
+#else
+  float win_pixels_bias = win_pixels;
+#endif
+  float mb_ssim, meanOrg, meanEnc;
+  float varOrg, varEnc, covOrgEnc;
+  int imeanOrg, imeanEnc, ivarOrg, ivarEnc, icovOrgEnc;
+  float cur_distortion = 0.0;
+  int i, j, n, m, win_cnt = 0;
+
+  max_pix_value_sqd = ( float )( max_pel_value_comp * max_pel_value_comp );
+  C1 = K1 * K1 * max_pix_value_sqd;
+  C2 = K2 * K2 * max_pix_value_sqd;
+
+  for( j = 0; j <= height - win_height; j += overlapSize )
+  {
+    for( i = 0; i <= width - win_width; i += overlapSize )
+    {
+      imeanOrg = 0;
+      imeanEnc = 0;
+      ivarOrg = 0;
+      ivarEnc = 0;
+      icovOrgEnc = 0;
+
+      for( n = j; n < j + win_height; n++ )
+      {
+        for( m = i; m < i + win_width; m++ )
+        {
+          imeanOrg += refImg[n][m];
+          imeanEnc += encImg[n][m];
+          ivarOrg += refImg[n][m] * refImg[n][m];
+          ivarEnc += encImg[n][m] * encImg[n][m];
+          icovOrgEnc += refImg[n][m] * encImg[n][m];
+        }
+      }
+
+      meanOrg = ( float )imeanOrg / win_pixels;
+      meanEnc = ( float )imeanEnc / win_pixels;
+
+      varOrg = ( ( float )ivarOrg - ( ( float )imeanOrg ) * meanOrg ) / win_pixels_bias;
+      varEnc = ( ( float )ivarEnc - ( ( float )imeanEnc ) * meanEnc ) / win_pixels_bias;
+      covOrgEnc = ( ( float )icovOrgEnc - ( ( float )imeanOrg ) * meanEnc ) / win_pixels_bias;
+
+      mb_ssim = ( float )( ( 2.0 * meanOrg * meanEnc + C1 ) * ( 2.0 * covOrgEnc + C2 ) );
+      mb_ssim /= ( float )( meanOrg * meanOrg + meanEnc * meanEnc + C1 ) * ( varOrg + varEnc + C2 );
+
+      cur_distortion += mb_ssim;
+      win_cnt++;
+    }
+  }
+
+  cur_distortion /= ( float )win_cnt;
+
+  if( cur_distortion >= 1.0 && cur_distortion < 1.01 )  // avoid float accuracy problem at very low QP(e.g.2)
+    cur_distortion = 1.0;
+
+  return cur_distortion;
+}
+
+Double PlaYUVerFrame::getSSIM( PlaYUVerFrame* Org, Int component )
+{
+  Double dSSIM = 1;
+  if( component == LUMA )
+  {
+    dSSIM = compute_ssim( m_pppcInputPel[component], Org->getPelBufferYUV()[component], m_uiWidth, m_uiHeight, 8, 8, 255, 8 );
+  }
+  else
+  {
+    dSSIM = compute_ssim( m_pppcInputPel[component], Org->getPelBufferYUV()[component], getChromaWidth(), getChromaHeight(), 4, 4, 255, 8 );
+  }
+  return dSSIM;
+}
+
+}  // NAMESPACE

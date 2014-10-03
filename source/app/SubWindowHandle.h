@@ -73,6 +73,9 @@ private:
 
   QString m_cWindowName;
 
+  QString m_cWindowShortName;
+  QString m_cCurrFileName;
+
   Bool m_bIsPlaying;
   Bool m_bIsModule;
 
@@ -202,13 +205,11 @@ public:
   {
     return m_cWindowName;
   }
-
-  QString userFriendlyCurrentFile()
+  QString getWindowShortName()
   {
-    return m_cWindowName;
+    return m_cWindowShortName;
   }
-
-  QString currentFile()
+  QString getCurrentFileName()
   {
     return m_sStreamInfo.m_cFilename;
   }

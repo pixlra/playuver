@@ -70,7 +70,7 @@ IF( WIN32 )
 
   SET(CPACK_GENERATOR "ZIP")
   SET(OS "Windows")
-  
+  SET(GITBRANCH "devel") # temp work around
   #EXECUTE_PROCESS(COMMAND "cmd" " /C date /T" OUTPUT_VARIABLE ${DAY})
   #string(REGEX REPLACE "(..)/(..)/..(..).*" "\\1/\\2/\\3" ${DAY} ${${DAY}})
  

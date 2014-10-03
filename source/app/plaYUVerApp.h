@@ -54,7 +54,7 @@ public:
 
   enum RecentFileList
   {
-    MAXRECENTFILES,
+    MAXRECENTFILES = 2,
   };
 
 protected:

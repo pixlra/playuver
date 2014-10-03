@@ -179,8 +179,6 @@ Void plaYUVerApp::loadFile( QString fileName )
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
     updateZoomFactorSBox();
-    //m_aRecentFileStreamInfo.append( interfaceChild->getStreamInfo() );
-    m_aRecentFileStreamInfo = interfaceChild->getStreamInfo();
     statusBar()->showMessage( tr( "File loaded" ), 2000 );
   }
   else

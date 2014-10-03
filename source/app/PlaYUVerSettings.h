@@ -61,7 +61,7 @@ public:
   Void getDockVisibility( Bool& statusStreamProperties, Bool& statusFrameProperties, Bool& statusQualityMeasurement );
 
   // - - - - - - - - - - Recent Files Settings - - - - - - - - - - - - -
-  Void setRecentFileList( PlaYUVerRecentFileListInfo );
+  Void setRecentFileList( PlaYUVerRecentFileListInfo recentFileList );
   PlaYUVerRecentFileListInfo getRecentFileList();
 
   // - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - -

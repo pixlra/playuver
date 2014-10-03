@@ -44,6 +44,7 @@ int main( int argc, char *argv[] )
   QApplication::setOrganizationDomain("playuver.pixlra");
 
   qRegisterMetaType<PlaYUVerRecentFileListInfo>("PlaYUVerRecentFileListInfo");
+  qRegisterMetaTypeStreamOperators<PlaYUVerRecentFileListInfo>("PlaYUVerRecentFileListInfo");
 
   plaYUVerApp w;
   w.show();

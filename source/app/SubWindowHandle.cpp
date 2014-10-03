@@ -29,6 +29,41 @@
 namespace plaYUVer
 {
 
+QDataStream& operator<<( QDataStream& out, const plaYUVer::PlaYUVerRecentFileListInfo& array )
+{
+  PlaYUVerStreamInfo d;
+  out << array.size();
+  for( Int i = 0; i < array.size(); i++ )
+  {
+    d = array.at( i );
+    out << d.m_cFilename << d.m_cResolution.width()
+                         << d.m_cResolution.height()
+                         << d.m_iPelFormat
+                         << d.m_uiFrameRate;
+
+  }
+  return out;
+}
+
+QDataStream& operator>>( QDataStream& in, plaYUVer::PlaYUVerRecentFileListInfo& array )
+{
+  PlaYUVerStreamInfo d;
+  Int array_size;
+  in >> array_size;
+  for( Int i = 0; i < array_size; i++ )
+  {
+    in >> d.m_cFilename;
+    Int x, y;
+    in >> x;
+    in >> y;
+    in >> d.m_iPelFormat;
+    in >> d.m_uiFrameRate;
+    d.m_cResolution = QSize( x, y );
+    array.append( d );
+  }
+  return in;
+}
+
 SubWindowHandle::SubWindowHandle( QWidget * parent, Bool isModule ) :
         QMdiSubWindow( parent ),
         m_pCurrStream( NULL ),
@@ -113,7 +148,7 @@ Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
   refreshFrame();
 
   m_sStreamInfo.m_cFilename = cFilename;
-  m_sStreamInfo.m_cResolution = QSize( Width, Height);
+  m_sStreamInfo.m_cResolution = QSize( Width, Height );
   m_sStreamInfo.m_iPelFormat = InputFormat;
   m_sStreamInfo.m_uiFrameRate = FrameRate;
 

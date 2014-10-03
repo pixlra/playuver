@@ -1,5 +1,6 @@
-plaYUVer
+PlaYUVer - Enhanced raw video player
 ========
+
 
 plaYUVer is an open-source video player with the following features:
 - Support for libavformat and libavcodec;
@@ -17,7 +18,7 @@ Developers
 ----------------------------------------------------------------
 
 - Joao Carreira     (jfmcarreira@gmail.com)
-- Lui­s Lucas        (luisfrlucas@gmail.com) 
+- LuiÂ­s Lucas        (luisfrlucas@gmail.com) 
 
 
 Builds

@@ -41,20 +41,17 @@ namespace plaYUVer
 
 class SubWindowHandle;
 
-struct structPlaYUVERStreamInfo
+typedef struct
 {
   QString m_cFilename;
   QSize m_cResolution;
   Int m_iPelFormat;
   UInt m_uiFrameRate;
-};
+}PlaYUVerStreamInfo;
+typedef QVector<PlaYUVerStreamInfo> PlaYUVerStreamInfoVector;
 
-typedef QVector<structPlaYUVERStreamInfo> PlaYUVerRecentFileListInfo;
-//typedef structPlaYUVERStreamInfo PlaYUVerRecentFileListInfo;
-typedef struct structPlaYUVERStreamInfo PlaYUVerStreamInfo;
-
-QDataStream& operator<<(QDataStream& out, const plaYUVer::PlaYUVerRecentFileListInfo& d);
-QDataStream& operator>>(QDataStream& in, plaYUVer::PlaYUVerRecentFileListInfo& d);
+QDataStream& operator<<(QDataStream& out, const PlaYUVerStreamInfoVector& d);
+QDataStream& operator>>(QDataStream& in, PlaYUVerStreamInfoVector& d);
 
 
 class SubWindowHandle: public QMdiSubWindow
@@ -234,9 +231,8 @@ public Q_SLOTS:
 
 }  // NAMESPACE
 
-
-
-Q_DECLARE_METATYPE(plaYUVer::PlaYUVerRecentFileListInfo);
-//Q_DECLARE_METATYPE(plaYUVer::structPlaYUVERStreamInfo)
+Q_DECLARE_METATYPE(plaYUVer::PlaYUVerStreamInfo);
+Q_DECLARE_METATYPE(plaYUVer::PlaYUVerStreamInfoVector);
 
 #endif // __SUBWINDOWHANDLE_H__
+

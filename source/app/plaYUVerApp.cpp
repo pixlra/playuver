@@ -102,8 +102,8 @@ Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
 
 Void plaYUVerApp::about()
 {
-  if (!m_pcAboutDialog)
-    m_pcAboutDialog = new AboutDialog(this);
+  if( !m_pcAboutDialog )
+    m_pcAboutDialog = new AboutDialog( this );
   m_pcAboutDialog->exec();
 //  QString about_message;
 //  about_message.append( "The <b>plaYUVer</b> is an open-source raw video player! " );
@@ -179,6 +179,12 @@ Void plaYUVerApp::loadFile( QString fileName )
     interfaceChild->zoomToFit();
     interfaceChild->getViewArea()->setTool( m_appTool );
     updateZoomFactorSBox();
+
+    m_aRecentFileStreamInfo.prepend( interfaceChild->getStreamInfo() );
+    while ( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
+      m_aRecentFileStreamInfo.removeLast();
+    updateRecentFileActions();
+
     statusBar()->showMessage( tr( "File loaded" ), 2000 );
   }
   else
@@ -226,11 +232,19 @@ Void plaYUVerApp::open()
   }
 }
 
+Void plaYUVerApp::openRecent()
+{
+  QAction *action = qobject_cast<QAction *>( sender() );
+  PlaYUVerStreamInfo recentFile = action->data().value<PlaYUVerStreamInfo>();
+  if( action )
+    loadFile( recentFile.m_cFilename );
+}
+
 Void plaYUVerApp::save()
 {
   if( m_pcCurrentSubWindow )
   {
-	SubWindowHandle *saveWindow = m_pcCurrentSubWindow;
+    SubWindowHandle *saveWindow = m_pcCurrentSubWindow;
     QString supported = tr( "Supported Files (" );
     QStringList formatsList;
     QStringList formatsExt = PlaYUVerStream::supportedSaveFormatsExt();
@@ -1049,6 +1063,28 @@ Void plaYUVerApp::updateWindowMenu()
   }
 }
 
+Void plaYUVerApp::updateRecentFileActions()
+{
+  Int numRecentFiles = m_aRecentFileStreamInfo.size();
+  numRecentFiles = qMin( numRecentFiles, MAX_RECENT_FILES );
+  Int actionIdx = 0;
+  while( actionIdx < numRecentFiles )
+  {
+    QString text = m_aRecentFileStreamInfo.at( actionIdx ).m_cFilename;
+    m_arrayRecentFilesActions.at( actionIdx )->setText( QFileInfo( text ).fileName() );
+    m_arrayRecentFilesActions.at( actionIdx )->setToolTip( "Open File " + text );
+    m_arrayRecentFilesActions.at( actionIdx )->setStatusTip( "Open File " + text );
+    m_arrayRecentFilesActions.at( actionIdx )->setData( QVariant::fromValue( m_aRecentFileStreamInfo.at( actionIdx ) ) );
+    m_arrayRecentFilesActions.at( actionIdx )->setVisible( true );
+    actionIdx++;
+  }
+  while( actionIdx < MAX_RECENT_FILES )
+  {
+    m_arrayRecentFilesActions.at( actionIdx )->setVisible( false );
+    actionIdx++;
+  }
+}
+
 Void plaYUVerApp::createActions()
 {
   m_arrayActions.resize( TOTAL_ACT );
@@ -1059,6 +1095,14 @@ Void plaYUVerApp::createActions()
   m_arrayActions[OPEN_ACT]->setShortcuts( QKeySequence::Open );
   m_arrayActions[OPEN_ACT]->setStatusTip( tr( "Open stream" ) );
   connect( m_arrayActions[OPEN_ACT], SIGNAL( triggered() ), this, SLOT( open() ) );
+
+  m_arrayRecentFilesActions.resize( MAX_RECENT_FILES );
+  for( Int i = 0; i < MAX_RECENT_FILES; i++ )
+  {
+    m_arrayRecentFilesActions[i] = new QAction( this );
+    m_arrayRecentFilesActions[i]->setVisible( false );
+    connect( m_arrayRecentFilesActions[i], SIGNAL( triggered() ), this, SLOT( openRecent() ) );
+  }
 
   m_arrayActions[SAVE_ACT] = new QAction( QIcon( ":/images/save.png" ), tr( "&Save Frame" ), this );
   m_arrayActions[SAVE_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogSaveButton ) );
@@ -1254,6 +1298,12 @@ Void plaYUVerApp::createMenus()
 
   m_arrayMenu[FILE_MENU] = menuBar()->addMenu( tr( "&File" ) );
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[OPEN_ACT] );
+  m_arrayMenu[RECENT_MENU] = m_arrayMenu[FILE_MENU]->addMenu( tr( "Open Recent" ) );
+  for( Int i = 0; i < MAX_RECENT_FILES; ++i )
+  {
+    m_arrayMenu[RECENT_MENU]->addAction( m_arrayRecentFilesActions[i] );
+  }
+
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[SAVE_ACT] );
   m_arrayMenu[FILE_MENU]->addSeparator();
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[FORMAT_ACT] );
@@ -1415,6 +1465,7 @@ Void plaYUVerApp::readSettings()
   m_arrayActions[VIDEO_LOCK_ACT]->setChecked( settings.getVideoLock() );
 
   m_aRecentFileStreamInfo = settings.getRecentFileList();
+  updateRecentFileActions();
 
   Bool visibleStreamProp, visibleFrameProp, visibleQualityMeasure;
   settings.getDockVisibility( visibleStreamProp, visibleFrameProp, visibleQualityMeasure );

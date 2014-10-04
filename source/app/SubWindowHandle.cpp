@@ -29,7 +29,7 @@
 namespace plaYUVer
 {
 
-QDataStream& operator<<( QDataStream& out, const plaYUVer::PlaYUVerRecentFileListInfo& array )
+QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array )
 {
   PlaYUVerStreamInfo d;
   out << array.size();
@@ -45,7 +45,7 @@ QDataStream& operator<<( QDataStream& out, const plaYUVer::PlaYUVerRecentFileLis
   return out;
 }
 
-QDataStream& operator>>( QDataStream& in, plaYUVer::PlaYUVerRecentFileListInfo& array )
+QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& array )
 {
   PlaYUVerStreamInfo d;
   Int array_size;

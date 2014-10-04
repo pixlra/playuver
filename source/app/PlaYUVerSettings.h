@@ -61,8 +61,8 @@ public:
   Void getDockVisibility( Bool& statusStreamProperties, Bool& statusFrameProperties, Bool& statusQualityMeasurement );
 
   // - - - - - - - - - - Recent Files Settings - - - - - - - - - - - - -
-  Void setRecentFileList( PlaYUVerRecentFileListInfo recentFileList );
-  PlaYUVerRecentFileListInfo getRecentFileList();
+  Void setRecentFileList( PlaYUVerStreamInfoVector recentFileList );
+  PlaYUVerStreamInfoVector getRecentFileList();
 
   // - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - -
   GridManager::Style gridStyle();

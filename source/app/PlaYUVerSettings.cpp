@@ -103,17 +103,17 @@ Void PlaYUVerSettings::setPlayingSettings( Bool repeat, Bool lock )
   m_settings.setValue( "Playing/VideoLock", lock );
 }
 
-Void PlaYUVerSettings::setRecentFileList( PlaYUVerRecentFileListInfo recentFileList )
+Void PlaYUVerSettings::setRecentFileList( PlaYUVerStreamInfoVector recentFileList )
 {
   QVariant var;
-  var.setValue<PlaYUVerRecentFileListInfo>( recentFileList );
+  var.setValue<PlaYUVerStreamInfoVector>( recentFileList );
   m_settings.setValue("MainWindow/RecentFileList", var );
 }
 
-PlaYUVerRecentFileListInfo PlaYUVerSettings::getRecentFileList()
+QVector<PlaYUVerStreamInfo> PlaYUVerSettings::getRecentFileList()
 {
   QVariant value = m_settings.value("MainWindow/RecentFileList");
-  return value.value<PlaYUVerRecentFileListInfo>();
+  return value.value<PlaYUVerStreamInfoVector>();
 }
 
 // - - - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - - - - -

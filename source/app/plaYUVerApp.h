@@ -52,11 +52,6 @@ public:
   plaYUVerApp();
   Void parseArgs( Int argc, Char *argv[] );
 
-  enum RecentFileList
-  {
-    MAXRECENTFILES = 2,
-  };
-
 protected:
   Void closeEvent( QCloseEvent *event );
 
@@ -66,6 +61,7 @@ private Q_SLOTS:
    *  File functions slots
    */
   void open();
+  void openRecent();
   void save();
   void format();
   void reload();
@@ -102,7 +98,7 @@ private Q_SLOTS:
   void about();
 
   void chageSubWindowSelection();
-  void updateWindowMenu();s
+  void updateWindowMenu();
   void dragEnterEvent( QDragEnterEvent *event );
   void dropEvent( QDropEvent *event );
 
@@ -177,6 +173,8 @@ private:
   Void updateStreamProperties();
   Void updateFrameProperties();
 
+  Void updateRecentFileActions();
+
   Void createActions();
   Void createMenus();
   Void createToolBars();
@@ -213,6 +211,7 @@ private:
   enum MAIN_APP_MENU_LIST
   {
     FILE_MENU = 0,
+    RECENT_MENU,
     VIEW_MENU,
     TOOLS_MENU,
     VIDEO_MENU,
@@ -257,6 +256,7 @@ private:
   enum APP_ACTION_LIST
   {
     OPEN_ACT = 0,
+    OPEN_RECENT_ACT,
     SAVE_ACT,
     FORMAT_ACT,
     RELOAD_ACT,
@@ -290,6 +290,9 @@ private:
     TOTAL_ACT,
   };
   QVector<QAction*> m_arrayActions;
+
+#define MAX_RECENT_FILES 5
+  QVector<QAction*> m_arrayRecentFilesActions;
   //QAction *actionPopupMenu;
 
   // Tools Actions;
@@ -298,7 +301,7 @@ private:
   QAction *actionSelectionTool;
   enum eTool m_appTool;
 
-  PlaYUVerRecentFileListInfo m_aRecentFileStreamInfo;
+  PlaYUVerStreamInfoVector m_aRecentFileStreamInfo;
 
   AboutDialog* m_pcAboutDialog;
 

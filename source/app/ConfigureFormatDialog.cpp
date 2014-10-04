@@ -48,7 +48,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   standardResolutionSizes = stdRes.sizeResolution;
 
   setObjectName( QStringLiteral( "ConfigureFormat" ) );
-  resize( 392, 370 );
+  resize( 400, 370 );
 
   setWindowTitle( "Configure Resolution" );
   setWindowIcon( QIcon( ":/images/configureformat.png" ) );
@@ -73,16 +73,16 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   MainLayout->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum ) );
 
   // Filename layout
-  QHBoxLayout* filenameLayout = new QHBoxLayout();
-  QLabel* filenameLabel = new QLabel();
-  filenameLabel->setText( "Name" );
-  filenameLabel->setFont( menusFont );
-  m_labelFilename = new QLabel();
-  m_labelFilename->setText( "Test" );
-  filenameLayout->addWidget( filenameLabel );
-  filenameLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-  filenameLayout->addWidget( m_labelFilename );
-  MainLayout->addLayout( filenameLayout );
+//  QHBoxLayout* filenameLayout = new QHBoxLayout();
+//  QLabel* filenameLabel = new QLabel();
+//  filenameLabel->setText( "Name" );
+//  filenameLabel->setFont( menusFont );
+//  m_labelFilename = new QLabel();
+//  m_labelFilename->setText( "Test" );
+//  filenameLayout->addWidget( filenameLabel );
+//  filenameLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+//  filenameLayout->addWidget( m_labelFilename );
+  //MainLayout->addLayout( filenameLayout );
 
   // standardResolutionLayout
   MainLayout->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum ) );
@@ -115,6 +115,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   QLabel* resolutionLabel = new QLabel();
   resolutionLabel->setFont( menusFont );
   resolutionLabel->setText( "Resolution chosen" );
+  resolutionLabel->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
   QLabel* widthLabel = new QLabel( "Width" );
   m_spinBoxWidth = new QSpinBox();
   m_spinBoxWidth->setRange( 0, 8192 );
@@ -128,12 +129,12 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   QLabel* pixelsLabel = new QLabel();
   pixelsLabel->setText( "Pixels" );
 
-  resolutionGrid->addWidget( resolutionLabel, 0, 0, 1, 1 );
-  resolutionGrid->addWidget( widthLabel, 1, 1, 1, 1 );
-  resolutionGrid->addWidget( m_spinBoxWidth, 2, 1, 1, 1 );
-  resolutionGrid->addWidget( heightLabel, 1, 2, 1, 1 );
-  resolutionGrid->addWidget( m_spinBoxheight, 2, 2, 1, 1 );
-  resolutionGrid->addWidget( pixelsLabel, 2, 3, 1, 1 );
+  resolutionGrid->addWidget( resolutionLabel, 1, 0, 1, 1 );
+  resolutionGrid->addWidget( widthLabel, 0, 1, 1, 1 );
+  resolutionGrid->addWidget( m_spinBoxWidth, 1, 1, 1, 1 );
+  resolutionGrid->addWidget( heightLabel, 0, 2, 1, 1 );
+  resolutionGrid->addWidget( m_spinBoxheight, 1, 2, 1, 1 );
+  resolutionGrid->addWidget( pixelsLabel, 1, 3, 1, 1 );
   MainLayout->addLayout( resolutionGrid );
 
   // Pixel format
@@ -196,7 +197,8 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
 {
   // Set default values
-  m_labelFilename->setText( Filename );
+  //m_labelFilename->setText( Filename );
+  setWindowTitle( "Configure resolution for " + Filename );
   //m_labelFilename->setText( QFileInfo( Filename ).fileName() );
   m_spinBoxWidth->setValue( rWidth );
   m_spinBoxheight->setValue( rHeight );

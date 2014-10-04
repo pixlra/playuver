@@ -291,7 +291,7 @@ private:
   };
   QVector<QAction*> m_arrayActions;
 
-#define MAX_RECENT_FILES 5
+#define MAX_RECENT_FILES 10
   QVector<QAction*> m_arrayRecentFilesActions;
   //QAction *actionPopupMenu;
 

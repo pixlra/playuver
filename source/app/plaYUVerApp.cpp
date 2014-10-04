@@ -184,6 +184,9 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo )
     interfaceChild->getViewArea()->setTool( m_appTool );
     updateZoomFactorSBox();
 
+    Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
+    if( idx >= 0 )
+      m_aRecentFileStreamInfo.remove( idx );
     m_aRecentFileStreamInfo.prepend( interfaceChild->getStreamInfo() );
     while ( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
       m_aRecentFileStreamInfo.removeLast();
@@ -231,7 +234,11 @@ Void plaYUVerApp::open()
     if( !fileNameList.at( i ).isEmpty() )
     {
       m_cLastOpenPath = QFileInfo( fileNameList.at( i ) ).path();
-      loadFile( fileNameList.at( i ) );
+      Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileNameList.at( i ) );
+      if( idx >= 0 )
+        loadFile( fileNameList.at( i ), (PlaYUVerStreamInfo*) &m_aRecentFileStreamInfo.at( idx ) );
+      else
+        loadFile( fileNameList.at( i ) );
     }
   }
 }
@@ -985,6 +992,9 @@ Void plaYUVerApp::setActiveSubWindow( QWidget *window )
 Void plaYUVerApp::updateMenus()
 {
   Bool hasSubWindow = ( activeSubWindow() != 0 );
+
+  m_arrayMenu[RECENT_MENU]->setEnabled( m_aRecentFileStreamInfo.size() > 0 ? true : false );
+
   m_arrayActions[SAVE_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[FORMAT_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSE_ACT]->setEnabled( hasSubWindow );
@@ -1091,6 +1101,7 @@ Void plaYUVerApp::updateRecentFileActions()
     m_arrayRecentFilesActions.at( actionIdx )->setVisible( false );
     actionIdx++;
   }
+  m_arrayMenu[RECENT_MENU]->setEnabled( m_aRecentFileStreamInfo.size() > 0 ? true : false );
 }
 
 Void plaYUVerApp::createActions()

@@ -48,7 +48,7 @@ typedef QVector<PlaYUVerStreamInfo> PlaYUVerStreamInfoVector;
 
 QDataStream& operator<<(QDataStream& out, const PlaYUVerStreamInfoVector& d);
 QDataStream& operator>>(QDataStream& in, PlaYUVerStreamInfoVector& d);
-
+Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename );
 
 class PlaYUVerStream
 {

@@ -67,6 +67,16 @@ QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& array )
   return in;
 }
 
+Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename )
+{
+  for( Int i = 0; i < array.size(); i++ )
+    if( array.at( i ).m_cFilename == filename)
+      return i;
+  return -1;
+}
+
+
+
 
 PlaYUVerStream::PlaYUVerStream()
 {
@@ -245,6 +255,12 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   m_cStreamInformationString.append( PlaYUVerFrame::supportedPixelFormatList().at( m_iPixelFormat ) );
   m_cStreamInformationString.append( "] " );
   m_cStreamInformationString.append( QFileInfo( m_cFilename ).fileName() );
+
+  m_sStreamInfo.m_cFilename = m_cFilename;
+  m_sStreamInfo.m_uiWidth = m_uiWidth;
+  m_sStreamInfo.m_uiHeight = m_uiHeight;
+  m_sStreamInfo.m_iPelFormat = m_iPixelFormat;
+  m_sStreamInfo.m_uiFrameRate = m_uiFrameRate;
 
   m_iCurrFrameNum = -1;
 

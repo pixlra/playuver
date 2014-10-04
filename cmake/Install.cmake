@@ -70,7 +70,7 @@ IF( WIN32 )
 
   SET(CPACK_GENERATOR "ZIP")
   SET(OS "Windows")
-  
+  SET(GIT_BRANCH "devel") # temp work around
   #EXECUTE_PROCESS(COMMAND "cmd" " /C date /T" OUTPUT_VARIABLE ${DAY})
   #string(REGEX REPLACE "(..)/(..)/..(..).*" "\\1/\\2/\\3" ${DAY} ${${DAY}})
  
@@ -93,8 +93,9 @@ IF( PLAYUVER_LONGVERSIONNAME )
   SET( PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME} )
 ELSE()
 #  message(STATUS ${GIT_BRANCH} )
-  STRING(REPLACE "master" "stable" __version_name_deb ${GIT_BRANCH}  )
-  STRING(REPLACE "devel" "latest" __version_name_deb ${GIT_BRANCH} )
+  SET( __version_name_deb ${GIT_BRANCH} )
+  STRING(REPLACE "master" "stable" __version_name_deb ${__version_name_deb}  )
+  STRING(REPLACE "devel" "latest" __version_name_deb ${__version_name_deb} )
   message(STATUS ${GIT_BRANCH} )
   SET( CPACK_PACKAGE_FILE_NAME  "${CPACK_PACKAGE_NAME}-${__version_name_deb}${APPEND_VERSION}-${OS}-${CPACK_PACKAGE_ARCHITECTURE}" )  
   SET( PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME} )

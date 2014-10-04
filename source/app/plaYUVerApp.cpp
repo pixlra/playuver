@@ -862,6 +862,10 @@ Void plaYUVerApp::chageSubWindowSelection()
       updateStreamProperties();
       updateFrameProperties();
       updateZoomFactorSBox();
+      if( m_pcCurrentSubWindow->isPlaying() )
+        m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPause ) );
+      else
+        m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPlay ) );
     }
     m_pcCurrentSubWindow = new_window;
   }

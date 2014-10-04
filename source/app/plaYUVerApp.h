@@ -57,7 +57,9 @@ protected:
 
 private Q_SLOTS:
 
-  //! File functions
+  /**
+   *  File functions slots
+   */
   void open();
   void save();
   void format();
@@ -67,7 +69,9 @@ private Q_SLOTS:
   void closeActiveWindow();
   void closeAll();
 
-  //! Playing functions
+  /**
+   *  Playing functions slots
+   */
   void play();
   void pause();
   void stop();
@@ -90,13 +94,10 @@ private Q_SLOTS:
   void normalSize();
   void zoomToFit();
 
-  //!  Show a message box with some information about the plaYUVerApp App
   void about();
 
   void chageSubWindowSelection();
-  void updateWindowMenu();
-
-  //! Drag and drop functions
+  void updateWindowMenu();s
   void dragEnterEvent( QDragEnterEvent *event );
   void dropEvent( QDropEvent *event );
 
@@ -130,7 +131,7 @@ private:
       QPainter painter( viewport() );
       QSize logoSize = 2 * size() / 3;
 
-      QPixmap pixFinalLogo = m_pixmapLogo.scaled(logoSize,Qt::KeepAspectRatio);
+      QPixmap pixFinalLogo = m_pixmapLogo.scaled( logoSize, Qt::KeepAspectRatio );
 
       // Calculate the logo position - the bottom right corner of the mdi area.
       int x = width() / 2 - pixFinalLogo.width() / 2;
@@ -138,11 +139,9 @@ private:
       painter.drawPixmap( x, y, pixFinalLogo );
     }
   private:
-    // Store the logo image.
     QPixmap m_pixmapLogo;
   };
 
-  //QMdiArea *mdiArea;
   PlaYUVerMdiArea *mdiArea;
   SubWindowHandle *m_pcCurrentSubWindow;
   ModulesHandle *m_pcModulesHandle;
@@ -157,7 +156,9 @@ private:
 
   Void zoomToFitAll();
 
-  //! Playing functions
+  /**
+   *  Playing functions
+   */
   UInt64 getMaxFrameNumber();
   Void startPlay();
   Void setTimerStatus();
@@ -188,6 +189,8 @@ private:
   QLabel *m_pcTotalFrameNumLabel;
   QDoubleSpinBox *m_pcZoomFactorSBox;
 
+
+
   QSignalMapper *mapperZoom;
   QSignalMapper *mapperSeekVideo;
   QSignalMapper *mapperWindow;
@@ -212,6 +215,9 @@ private:
   };
   QVector<QMenu*> m_arrayMenu;
 
+  /**
+   * Array of side bars for the main app
+   */
   enum SIDEBAR_LIST
   {
     STREAM_DOCK = 0,
@@ -225,6 +231,9 @@ private:
   FramePropertiesSideBar* m_pcFrameProperties;
   QualityMeasurementSidebar* m_pcQualityMeasurement;
 
+  /**
+   * Array of tool bars for the main app
+   */
   enum TOOLBAR_LIST
   {
     FILE_TOOLBAR = 0,
@@ -234,6 +243,9 @@ private:
   };
   QVector<QToolBar*> m_arrayToolBars;
 
+  /**
+     * Array of actions for the main app
+     */
   enum APP_ACTION_LIST
   {
     OPEN_ACT = 0,
@@ -270,7 +282,7 @@ private:
     TOTAL_ACT,
   };
   QVector<QAction*> m_arrayActions;
-  QAction *actionPopupMenu;
+  //QAction *actionPopupMenu;
 
   // Tools Actions;
   QActionGroup *actionGroupTools;

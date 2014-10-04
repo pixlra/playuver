@@ -1278,7 +1278,7 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[DOCK_VIEW_MENU] = createPopupMenu();
   if( m_arrayMenu[DOCK_VIEW_MENU] )
   {
-    actionPopupMenu = m_arrayMenu[VIEW_MENU]->addMenu( m_arrayMenu[DOCK_VIEW_MENU] );
+    QAction *actionPopupMenu = m_arrayMenu[VIEW_MENU]->addMenu( m_arrayMenu[DOCK_VIEW_MENU] );
     actionPopupMenu->setText( tr( "&Toolbars/Docks" ) );
   }
 

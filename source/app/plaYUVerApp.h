@@ -256,7 +256,6 @@ private:
   enum APP_ACTION_LIST
   {
     OPEN_ACT = 0,
-    OPEN_RECENT_ACT,
     SAVE_ACT,
     FORMAT_ACT,
     RELOAD_ACT,

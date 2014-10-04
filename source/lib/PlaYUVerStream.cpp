@@ -34,6 +34,40 @@
 namespace plaYUVer
 {
 
+QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array )
+{
+  PlaYUVerStreamInfo d;
+  out << array.size();
+  for( Int i = 0; i < array.size(); i++ )
+  {
+    d = array.at( i );
+    out << d.m_cFilename << d.m_uiWidth
+                         << d.m_uiHeight
+                         << d.m_iPelFormat
+                         << d.m_uiFrameRate;
+
+  }
+  return out;
+}
+
+QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& array )
+{
+  PlaYUVerStreamInfo d;
+  Int array_size;
+  in >> array_size;
+  for( Int i = 0; i < array_size; i++ )
+  {
+    in >> d.m_cFilename;
+    in >> d.m_uiWidth;
+    in >> d.m_uiHeight;
+    in >> d.m_iPelFormat;
+    in >> d.m_uiFrameRate;
+    array.append( d );
+  }
+  return in;
+}
+
+
 PlaYUVerStream::PlaYUVerStream()
 {
   m_bInit = false;

@@ -156,7 +156,7 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
   }
 }
 
-Void plaYUVerApp::loadFile( QString fileName )
+Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo )
 {
   SubWindowHandle *interfaceChild = plaYUVerApp::findSubWindow( mdiArea, fileName );
   if( interfaceChild )
@@ -164,9 +164,13 @@ Void plaYUVerApp::loadFile( QString fileName )
     mdiArea->setActiveSubWindow( interfaceChild );
     return;
   }
-
   interfaceChild = new SubWindowHandle( this );  //createSubWindow();
-  if( interfaceChild->loadFile( fileName ) )
+  Bool retChild = false;
+  if( !streamInfo )
+    retChild =  interfaceChild->loadFile( fileName );
+  else
+    retChild =  interfaceChild->loadFile( streamInfo );
+  if(retChild )
   {
     statusBar()->showMessage( tr( "Loading file..." ) );
     mdiArea->addSubWindow( interfaceChild );
@@ -237,7 +241,7 @@ Void plaYUVerApp::openRecent()
   QAction *action = qobject_cast<QAction *>( sender() );
   PlaYUVerStreamInfo recentFile = action->data().value<PlaYUVerStreamInfo>();
   if( action )
-    loadFile( recentFile.m_cFilename );
+    loadFile( recentFile.m_cFilename, &recentFile );
 }
 
 Void plaYUVerApp::save()

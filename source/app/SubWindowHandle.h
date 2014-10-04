@@ -44,7 +44,8 @@ class SubWindowHandle;
 typedef struct
 {
   QString m_cFilename;
-  QSize m_cResolution;
+  UInt m_uiWidth;
+  UInt m_uiHeight;
   Int m_iPelFormat;
   UInt m_uiFrameRate;
 }PlaYUVerStreamInfo;
@@ -88,6 +89,7 @@ public:
 
   Bool mayClose();
   Bool loadFile( QString cFilename, Bool bForceDialog = false );
+  Bool loadFile( PlaYUVerStreamInfo* streamInfo );
   Void reloadFile();
   Bool save( QString filename );
 

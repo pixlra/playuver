@@ -36,8 +36,8 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array
   for( Int i = 0; i < array.size(); i++ )
   {
     d = array.at( i );
-    out << d.m_cFilename << d.m_cResolution.width()
-                         << d.m_cResolution.height()
+    out << d.m_cFilename << d.m_uiWidth
+                         << d.m_uiHeight
                          << d.m_iPelFormat
                          << d.m_uiFrameRate;
 
@@ -53,12 +53,10 @@ QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& array )
   for( Int i = 0; i < array_size; i++ )
   {
     in >> d.m_cFilename;
-    Int x, y;
-    in >> x;
-    in >> y;
+    in >> d.m_uiWidth;
+    in >> d.m_uiHeight;
     in >> d.m_iPelFormat;
     in >> d.m_uiFrameRate;
-    d.m_cResolution = QSize( x, y );
     array.append( d );
   }
   return in;
@@ -148,12 +146,39 @@ Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
   refreshFrame();
 
   m_sStreamInfo.m_cFilename = cFilename;
-  m_sStreamInfo.m_cResolution = QSize( Width, Height );
+  m_sStreamInfo.m_uiWidth = Width;
+  m_sStreamInfo.m_uiHeight = Height;
   m_sStreamInfo.m_iPelFormat = InputFormat;
   m_sStreamInfo.m_uiFrameRate = FrameRate;
 
   m_cWindowName = m_pCurrStream->getStreamInformationString();
   m_cWindowShortName = QFileInfo( cFilename ).fileName();
+  setWindowTitle( m_cWindowName );
+  return true;
+}
+
+Bool SubWindowHandle::loadFile( PlaYUVerStreamInfo* streamInfo )
+{
+  if( !m_pCurrStream )
+  {
+    m_pCurrStream = new PlaYUVerStream;
+  }
+  m_sStreamInfo = *streamInfo;
+
+  if( !m_pCurrStream->open( m_sStreamInfo.m_cFilename, m_sStreamInfo.m_uiWidth, m_sStreamInfo.m_uiHeight, m_sStreamInfo.m_iPelFormat,
+      m_sStreamInfo.m_uiFrameRate ) )
+  {
+    return false;
+  }
+
+  m_cViewArea->setInputStream( m_pCurrStream );
+
+  QApplication::restoreOverrideCursor();
+
+  refreshFrame();
+
+  m_cWindowName = m_pCurrStream->getStreamInformationString();
+  m_cWindowShortName = QFileInfo( m_sStreamInfo.m_cFilename ).fileName();
   setWindowTitle( m_cWindowName );
   return true;
 }

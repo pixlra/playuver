@@ -601,6 +601,7 @@ Void plaYUVerApp::stop()
       seekSliderEvent( 0 );
     }
   }
+  m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPlay ) );
   updateTotalFrameNum();
 }
 
@@ -869,7 +870,8 @@ Void plaYUVerApp::chageSubWindowSelection()
       updateStreamProperties();
       updateFrameProperties();
       updateZoomFactorSBox();
-      if( m_pcCurrentSubWindow->isPlaying() )
+
+      if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
         m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPause ) );
       else
         m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPlay ) );
@@ -1334,6 +1336,9 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[EXIT_ACT] );
 
   m_arrayMenu[VIEW_MENU] = menuBar()->addMenu( tr( "&View" ) );
+  m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
+  m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
+  m_arrayMenu[VIEW_MENU]->addSeparator();
   m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_IN_ACT] );
   m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_OUT_ACT] );
   m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_NORMAL_ACT] );
@@ -1350,9 +1355,9 @@ Void plaYUVerApp::createMenus()
     actionPopupMenu->setText( tr( "&Toolbars/Docks" ) );
   }
 
-  m_arrayMenu[TOOLS_MENU] = menuBar()->addMenu( tr( "Tools" ) );
-  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
-  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
+//  m_arrayMenu[TOOLS_MENU] = menuBar()->addMenu( tr( "Tools" ) );
+//  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
+//  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
 
   m_arrayMenu[VIDEO_MENU] = menuBar()->addMenu( tr( "Video" ) );
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[PLAY_ACT] );

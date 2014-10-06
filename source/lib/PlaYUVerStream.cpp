@@ -70,13 +70,10 @@ QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& array )
 Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename )
 {
   for( Int i = 0; i < array.size(); i++ )
-    if( array.at( i ).m_cFilename == filename)
+    if( array.at( i ).m_cFilename == filename )
       return i;
   return -1;
 }
-
-
-
 
 PlaYUVerStream::PlaYUVerStream()
 {
@@ -209,11 +206,6 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
 
   if( !avStatus && m_iFileFormat == YUVINPUT )
   {
-    if( !openFile() )
-    {
-      close();
-      return m_bInit;
-    }
     if( m_bIsInput )
     {
       fseek( m_pFile, 0, SEEK_END );
@@ -222,7 +214,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
       if( fileSize % frame_bytes_input )
       {
         Int remaining = fileSize % frame_bytes_input;
-        qDebug( ) << "Incorrect configuration: failed ( fileSize % frame_bytes_input = " << remaining << " )" ;
+        qDebug( ) << "Incorrect configuration: failed ( fileSize % frame_bytes_input = " << remaining << " )";
         close();
         return m_bInit;
       }
@@ -230,8 +222,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
       m_uiTotalFrameNum = fileSize / frame_bytes_input;
       fseek( m_pFile, 0, SEEK_SET );
     }
-    m_cFormatName = QString::fromUtf8( "YUV" );
-    m_cCodedName = QString::fromUtf8( "Raw Video" );
+
   }
 
   if( m_bIsInput && m_uiTotalFrameNum <= 0 )
@@ -292,9 +283,8 @@ Bool PlaYUVerStream::openFile()
 
 Void PlaYUVerStream::closeFile()
 {
-  if( !m_bInit && m_pFile )
-    return;
-  fclose( m_pFile );
+  if( m_pFile )
+    fclose( m_pFile );
 }
 
 Void PlaYUVerStream::close()
@@ -405,8 +395,7 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
         {
           resolutionString.remove( "_" );
           QStringList resolutionArgs = resolutionString.split( "x" );
-          qDebug( ) << "Found resolution = "
-                    << resolutionArgs;
+          qDebug( ) << "Found resolution = " << resolutionArgs;
           if( resolutionArgs.size() == 2 )
           {
             rWidth = resolutionArgs.at( 0 ).toUInt();

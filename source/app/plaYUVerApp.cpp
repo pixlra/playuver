@@ -189,7 +189,11 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo )
       m_aRecentFileStreamInfo.remove( idx );
     m_aRecentFileStreamInfo.prepend( interfaceChild->getStreamInfo() );
     while ( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
-      m_aRecentFileStreamInfo.removeLast();
+//#if( QT_VERSION_PLAYUVER == 5)
+//      m_aRecentFileStreamInfo.removeLast();
+//#else
+    m_aRecentFileStreamInfo.removeAt( m_aRecentFileStreamInfo.size() - 1);
+//#endif
     updateRecentFileActions();
 
     statusBar()->showMessage( tr( "File loaded" ), 2000 );

@@ -18,27 +18,38 @@
  */
 
 /**
- * \file     AboutDialog.h
- * \brief    About Dialog
- *           Based on the work of Glad Deschrijver <glad.deschrijver@gmail.com> in KTikZ project
+ * \file     WidgetFrameNumber.h
+ * \brief    Frame number widget
  */
 
-#ifndef __ABOUTDIALOG_H__
-#define __ABOUTDIALOG_H__
+#ifndef __WIDGETFRAMENUMBER_H__
+#define __WIDGETFRAMENUMBER_H__
 
-#include <QDialog>
+#include "config.h"
+#include "PlaYUVerDefs.h"
+#include <QtCore>
+#if( QT_VERSION_PLAYUVER == 5 )
+#include <QtWidgets>
+#elif( QT_VERSION_PLAYUVER == 4 )
+#include <QtGui>
+#endif
 
 namespace plaYUVer
 {
 
-class AboutDialog : public QDialog
+class WidgetFrameNumber: public QWidget
 {
-	Q_OBJECT
-
 public:
-	AboutDialog(QWidget *parent = 0);
+  WidgetFrameNumber( QWidget *parent = 0 );
+  Void setCurrFrameNum( Int number );
+  Void setTotalFrameNum( Int number );
+  Void clear();
+private:
+  QLabel *m_pcCurrFrameNumLabel;
+  QLabel *m_pcTotalFrameNumLabel;
+
 };
 
 }  // NAMESPACE
 
-#endif // __ABOUTDIALOG_H__
+#endif // __WIDGETFRAMENUMBER_H__

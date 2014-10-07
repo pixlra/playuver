@@ -35,6 +35,7 @@
 #include <QtGui>
 #endif
 #include <QtDebug>
+#include "WidgetFrameNumber.h"
 
 #include "PlaYUVerSettings.h"
 
@@ -656,11 +657,11 @@ Void plaYUVerApp::updateCurrFrameNum()
   {
     Int frame_num = m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum();
     m_pcFrameSlider->setValue( frame_num );
-    m_pcCurrFrameNumLabel->setText( QString( tr( "%1" ) ).arg( frame_num + 1 ) );
+    m_pcFrameNumInfo->setCurrFrameNum( frame_num );
   }
   else
   {
-    m_pcCurrFrameNumLabel->setText( "1" );
+    m_pcFrameNumInfo->setCurrFrameNum( 0 );
   }
 }
 Void plaYUVerApp::updateTotalFrameNum()
@@ -671,7 +672,7 @@ Void plaYUVerApp::updateTotalFrameNum()
     total_frame_num = getMaxFrameNumber();
   }
   m_pcFrameSlider->setMaximum( total_frame_num - 1 );
-  m_pcTotalFrameNumLabel->setText( QString( tr( "%1" ) ).arg( total_frame_num ) );
+  m_pcFrameNumInfo->setTotalFrameNum( total_frame_num );
 }
 
 Void plaYUVerApp::seekEvent( Int direction )
@@ -1027,8 +1028,7 @@ Void plaYUVerApp::updateMenus()
   if( !hasSubWindow )
   {
     m_pcFrameSlider->setValue( 0 );
-    m_pcCurrFrameNumLabel->setText( "-" );
-    m_pcTotalFrameNumLabel->setText( "-" );
+    m_pcFrameNumInfo->clear();
   }
   m_arrayActions[NAVIGATION_TOOL_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[SELECTION_TOOL_ACT]->setEnabled( hasSubWindow );
@@ -1431,15 +1431,8 @@ Void plaYUVerApp::createToolBars()
   m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcFrameSlider );
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
   m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( new QLabel );
-  m_pcCurrFrameNumLabel = new QLabel;
-  m_pcCurrFrameNumLabel->setText( "-" );
-  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcCurrFrameNumLabel );
-  QLabel *forwardslash = new QLabel;
-  forwardslash->setText( "/" );
-  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( forwardslash );
-  m_pcTotalFrameNumLabel = new QLabel;
-  m_pcTotalFrameNumLabel->setText( "-" );
-  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcTotalFrameNumLabel );
+  m_pcFrameNumInfo = new WidgetFrameNumber;
+  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcFrameNumInfo );
 
   addToolBar( Qt::TopToolBarArea, m_arrayToolBars[VIDEO_TOOLBAR] );
 }

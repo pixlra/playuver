@@ -38,6 +38,7 @@
 #include "PropertiesSidebar.h"
 #include "QualityMeasurementSidebar.h"
 #include "AboutDialog.h"
+#include "WidgetFrameNumber.h"
 
 namespace plaYUVer
 {
@@ -191,11 +192,9 @@ private:
 
   QVector<SubWindowHandle*> m_acPlayingSubWindows;
   QSlider *m_pcFrameSlider;
-  QLabel *m_pcCurrFrameNumLabel;
-  QLabel *m_pcTotalFrameNumLabel;
+
+  WidgetFrameNumber* m_pcFrameNumInfo;
   QDoubleSpinBox *m_pcZoomFactorSBox;
-
-
 
   QSignalMapper *mapperZoom;
   QSignalMapper *mapperSeekVideo;
@@ -251,8 +250,8 @@ private:
   QVector<QToolBar*> m_arrayToolBars;
 
   /**
-     * Array of actions for the main app
-     */
+   * Array of actions for the main app
+   */
   enum APP_ACTION_LIST
   {
     OPEN_ACT = 0,

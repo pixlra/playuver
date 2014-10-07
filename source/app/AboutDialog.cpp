@@ -32,6 +32,9 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 
+namespace plaYUVer
+{
+
 AboutDialog::AboutDialog(QWidget *parent)
     : QDialog(parent)
 {
@@ -75,3 +78,5 @@ AboutDialog::AboutDialog(QWidget *parent)
 
 	setWindowTitle(tr("About %1").arg(QApplication::applicationName()));
 }
+
+}  // NAMESPACE

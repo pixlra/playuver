@@ -25,6 +25,7 @@
 #ifndef __WIDGETFRAMENUMBER_H__
 #define __WIDGETFRAMENUMBER_H__
 
+
 #include "config.h"
 #include "PlaYUVerDefs.h"
 #include <QtCore>

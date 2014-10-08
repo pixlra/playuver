@@ -50,7 +50,8 @@ int main( int argc, char *argv[] )
   w.show();
   w.parseArgs( argc, argv );
 #ifdef USE_FERVOR
-  FvUpdater::sharedUpdater()->SetFeedURL("http://192.168.96.201/share/jcarreira.it.pub/plaYUVer/playuver-update.xml");
+  FvUpdater::sharedUpdater()->SetFeedURL("http://192.168.96.201/share/jcarreira.it.pub/plaYUVer/PlaYUVerUpdate.xml");
+  FvUpdater::sharedUpdater()->SetDependencies(DEPENDENCIES_STRING);
 #endif
   return a.exec();
 }

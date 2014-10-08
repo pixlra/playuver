@@ -2,13 +2,13 @@
 <html>
 
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="plaYUVer : plaYUVer is an open-source raw video player" />
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Playuver : plaYUVer is an open-source raw video player">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>plaYUVer</title>
+    <title>Playuver</title>
   </head>
 
   <body>
@@ -32,17 +32,17 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h1>
-<a name="playuver" class="anchor" href="#playuver"><span class="octicon octicon-link"></span></a>plaYUVer</h1>
+<a name="playuver---enhanced-raw-video-player" class="anchor" href="#playuver---enhanced-raw-video-player"><span class="octicon octicon-link"></span></a>PlaYUVer - Enhanced raw video player</h1>
 
 <p>plaYUVer is an open-source video player with the following features:</p>
 
 <ul>
-<li>Support for libavformat and libavcodec</li>
-<li>Support for wide range of raw video formats</li>
+<li>Support for libavformat and libavcodec;</li>
+<li>Support for wide range of raw video formats;</li>
 <li>Support for OpenCV imag/video processing library</li>
 <li>Advanced frame zoom with easy to use pan function</li>
-<li>Usefull information in status bar, e.g., pixel information</li>
-<li>Usefull sidebars with stream and frame information, e.g., frame histogram</li>
+<li>Usefull information in status bar, <em>e.g.</em>, pixel information</li>
+<li>Usefull sidebars with stream and frame information, <em>e.g.</em>, frame histogram</li>
 <li>Constant growing libs for stream and frame processing (PlaYUVerStream PlaYUVerFrame)</li>
 <li>Advanced API for frame/video processing algorithms</li>
 <li>Frame level quality measurement API based on the PlaYUVerFrame class</li>
@@ -50,19 +50,24 @@
 <a name="developers" class="anchor" href="#developers"><span class="octicon octicon-link"></span></a>Developers</h2>
 
 <ul>
-<li>João Carreira     (<a href="mailto:jfmcarreira@gmail.com">jfmcarreira@gmail.com</a>)</li>
-<li>Luís Lucas        (<a href="mailto:luisfrlucas@gmail.com">luisfrlucas@gmail.com</a>) </li>
+<li>Joao Carreira     (<a href="mailto:jfmcarreira@gmail.com">jfmcarreira@gmail.com</a>)</li>
+<li>Lui­s Lucas        (<a href="mailto:luisfrlucas@gmail.com">luisfrlucas@gmail.com</a>) </li>
 </ul><h2>
-<a name="install-using-cmake" class="anchor" href="#install-using-cmake"><span class="octicon octicon-link"></span></a>Install using cmake</h2>
+<a name="builds" class="anchor" href="#builds"><span class="octicon octicon-link"></span></a>Builds</h2>
+
+<p>Download update build for windows and linux from our <a href="https://sourceforge.net/projects/playuver/">SourceForge project page</a> </p>
+
+<h2>
+<a name="buildinstall-using-cmake" class="anchor" href="#buildinstall-using-cmake"><span class="octicon octicon-link"></span></a>Build/Install using cmake</h2>
 
 <ol>
 <li>
 <p>The following are required for compilation:</p>
 
 <ul>
-<li>an ordinary C++ development environment</li>
+<li>an ordinary C++ development environment (g++, make, C++ libraries and headers, ...)</li>
 <li>cmake</li>
-<li>a Qt development environment: only QtCore, QtGui and QtWidgets are required, at least in version 4</li>
+<li>a Qt development environment (libraries, headers, qmake, ...): only QtCore, QtGui and QtWidgets are required, at least in version 4</li>
 </ul>
 </li>
 <li>
@@ -71,13 +76,15 @@
 <ul>
 <li>QT</li>
 <li>OpenCv (optional)</li>
+<li>FFmpeg (optional)</li>
 </ul>
 </li>
 <li><p>Run the following commands: (this will create an executable named playuver) </p></li>
 </ol><pre><code>mkdir build
 cd build
-cmake ../
+cmake -DUSE_FFMPEG=ON -DUSE_OPENCV=ON ..  (for FFmpeg and OpenCV support)
 make
+make install 
 </code></pre>
       </section>
     </div>
@@ -85,7 +92,8 @@ make
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">PlaYUVer maintained by <a href="https://github.com/pixlra">pixlra</a> developers</p>
+        <p class="copyright">Playuver maintained by <a href="https://github.com/pixlra">pixlra</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
 

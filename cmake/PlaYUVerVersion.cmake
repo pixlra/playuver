@@ -22,7 +22,13 @@ execute_process(
   OUTPUT_VARIABLE GIT_BRANCH
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+SET( __version_name_deb ${GIT_BRANCH} )
+STRING(REPLACE "master" "stable" __version_name_deb ${__version_name_deb}  )
+STRING(REPLACE "devel" "latest" __version_name_deb ${__version_name_deb} )
+  
+SET( PACK_NAME ${__version_name_deb} )
 
+unset(__version_name_deb) 
 unset(__version_list) 
 unset(__version)
 unset(__patch)

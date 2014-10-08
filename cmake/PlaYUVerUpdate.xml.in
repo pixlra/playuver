@@ -28,28 +28,32 @@
 
 			<!-- Windows version. -->
 			<enclosure
-				url="http://you.com/app/Your%20Great%20App%202.0%20Windows.zip"
+				url="http://sourceforge.net/projects/playuver/files/playuver-@PACK_NAME@_wQT5_wOpenCV-Windows-amd64.zip/download  "
 				fervor:version="2"
 				fervor:platform="Q_OS_WIN32"
         fervor:dependencies="QT5OPENCV"
-				length="1656492"
 				type="application/octet-stream" />
 
 			<!-- Linux version. -->
-			<enclosure
-				url="http://you.com/app/Your%20Great%20App%202.0%20Linux.zip"
-				fervor:version="2"
+      <enclosure
+				url="http://sourceforge.net/projects/playuver/files/playuver-@PACK_NAME@_wQT4_wFFmpeg_wOpenCV-Linux-amd64.zip/download"
+				fervor:version="2.0"
 				fervor:platform="Q_OS_LINUX"
         fervor:dependencies="QT5OPENCVFFMPEG"
-				length="1618935"
+				type="application/octet-stream" />
+      
+			<enclosure
+				url="http://sourceforge.net/projects/playuver/files/playuver-@PACK_NAME@_wQT4_wFFmpeg_wOpenCV-Linux-amd64.zip/download"
+				fervor:version="2.0"
+				fervor:platform="Q_OS_LINUX"
+        fervor:dependencies="QT4OPENCVFFMPEG"
 				type="application/octet-stream" />
       
       <enclosure
-				url="http://you.com/app/Your%20Great%20App%202.0%20Linux.zip"
-				fervor:version="2"
+				url="http://sourceforge.net/projects/playuver/files/playuver-@PACK_NAME@_wQT4_wOpenCV-Linux-amd64.zip/download"
+				fervor:version="2.0"
 				fervor:platform="Q_OS_LINUX"
         fervor:dependencies="QT4OPENCV"
-				length="1618935"
 				type="application/octet-stream" />
 
 		</item>

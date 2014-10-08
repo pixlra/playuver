@@ -23,7 +23,6 @@ execute_process(
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-
 unset(__version_list) 
 unset(__version)
 unset(__patch)

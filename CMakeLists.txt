@@ -105,6 +105,7 @@ file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#endif // __MODU
 ######################################################################################
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlaYUVerConfig.cmake.in ${CMAKE_BINARY_DIR}/PlaYUVerConfig.cmake @ONLY)
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlaYUVerUpdate.xml.in ${CMAKE_BINARY_DIR}/PlaYUVerUpdate.xml @ONLY)
 
 ######################################################################################
 # Target App

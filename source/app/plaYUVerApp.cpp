@@ -170,7 +170,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo )
   if( !streamInfo )
   {
     Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
-    streamInfo = idx >= 0 ? &m_aRecentFileStreamInfo.at( idx ) : NULL;
+    streamInfo = (PlaYUVerStreamInfo*)(idx >= 0 ? &m_aRecentFileStreamInfo.at( idx ) : NULL);
   }
 
   if( !streamInfo )

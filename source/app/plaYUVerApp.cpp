@@ -168,6 +168,12 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo )
   interfaceChild = new SubWindowHandle( this );  //createSubWindow();
   Bool retChild = false;
   if( !streamInfo )
+  {
+    Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
+    streamInfo = idx >= 0 ? &m_aRecentFileStreamInfo.at( idx ) : NULL;
+  }
+
+  if( !streamInfo )
     retChild =  interfaceChild->loadFile( fileName );
   else
     retChild =  interfaceChild->loadFile( streamInfo );
@@ -239,11 +245,7 @@ Void plaYUVerApp::open()
     if( !fileNameList.at( i ).isEmpty() )
     {
       m_cLastOpenPath = QFileInfo( fileNameList.at( i ) ).path();
-      Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileNameList.at( i ) );
-      if( idx >= 0 )
-        loadFile( fileNameList.at( i ), (PlaYUVerStreamInfo*) &m_aRecentFileStreamInfo.at( idx ) );
-      else
-        loadFile( fileNameList.at( i ) );
+      loadFile( fileNameList.at( i ) );
     }
   }
 }

@@ -58,7 +58,7 @@ WidgetFrameNumber::WidgetFrameNumber( QWidget *parent ) :
 }
 Void WidgetFrameNumber::setCurrFrameNum( Int number )
 {
-  m_pcCurrFrameNumLabel->setText( QString( tr( "%1" ) ).arg( number + 1 ) );
+  m_pcCurrFrameNumLabel->setText( QString( tr( "%1" ) ).arg( number ) );
 }
 Void WidgetFrameNumber::setTotalFrameNum( Int number )
 {

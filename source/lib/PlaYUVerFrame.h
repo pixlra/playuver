@@ -47,10 +47,18 @@ typedef struct
 {
   const Char* name;
   Int colorSpace;
+  UInt numberChannels;
   Int ratioChromaWidth;
   Int ratioChromaHeight;
-  Void (*init)( UInt Width, UInt Height );
+  Pixel (*getPixelValue) ( Pel ***Img, Int xPos, Int yPos );
+  Void (*frameFromBuffer)( Pel *in, Pel*** out );
+  Void (*bufferFromFrame)( Pel ***in, Pel* out );
+  Void (*fillRGBbuffer)( Pel*** in, UChar* out );
 } PlaYUVerFramePelFormat;
+
+#define PLAYUVER_NUMBER_FORMATS 6
+
+extern PlaYUVerFramePelFormat g_PlaYUVerFramePelFormatsList[PLAYUVER_NUMBER_FORMATS];
 
 class PlaYUVerFrame
 {
@@ -129,7 +137,7 @@ public:
     return m_pppcInputPel;
   }
 
-  Pixel getPixelValue( const QPoint&, Int );
+  Pixel getPixelValue( Int xPos, Int yPos, Int eColorSpace );
 
   UChar* getQImageBuffer() const
   {

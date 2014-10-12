@@ -36,6 +36,93 @@
 namespace plaYUVer
 {
 
+
+
+
+Void yuv420_init( UInt Width, UInt Height )
+{
+
+}
+
+PlaYUVerFramePelFormat yuv420p =
+{
+  "YUV420p",
+  PlaYUVerFrame::COLOR_YUV,
+  2,
+  2,
+  yuv420_init,
+};
+
+PlaYUVerFramePelFormat yuv444p =
+{
+  "YUV444p",
+  PlaYUVerFrame::COLOR_YUV,
+  1,
+  1,
+  yuv420_init,
+};
+
+PlaYUVerFramePelFormat yuv422p =
+{
+  "YUV422p",
+  PlaYUVerFrame::COLOR_YUV,
+  2,
+  1,
+  yuv420_init,
+};
+
+PlaYUVerFramePelFormat yuv422 =
+{
+  "YUV422",
+  PlaYUVerFrame::COLOR_YUV,
+  2,
+  1,
+  yuv420_init,
+};
+
+
+PlaYUVerFramePelFormat gray =
+{
+  "GRAY",
+  PlaYUVerFrame::COLOR_YUV,
+  4,
+  4,
+  yuv420_init,
+};
+
+PlaYUVerFramePelFormat rgb8 =
+{
+  "RGB8",
+  PlaYUVerFrame::COLOR_RGB,
+  1,
+  1,
+  yuv420_init,
+};
+
+PlaYUVerFramePelFormat PlaYUVerFramePelFormatsList[] =
+{
+    yuv420p, yuv444p, yuv422p, yuv422, gray, rgb8,
+};
+
+QStringList PlaYUVerFrame::supportedPixelFormatList()
+{
+  QStringList formats;
+  Int numberFormats = sizeof(PlaYUVerFramePelFormatsList)/sizeof(PlaYUVerFramePelFormat);
+  for(Int i=0; i<numberFormats;i++)
+  {
+    formats << PlaYUVerFramePelFormatsList[i].name;
+  }
+//  formats << "YUV420p"
+//          << "YUV444p"
+//          << "YUV422p"
+//          << "YUYV422"
+//          << "GRAY"
+//          << "RGB8"  // RGB 3*8 bits per pixel
+//          ;
+  assert( formats.size() == NUMBER_FORMATS );
+  return formats;
+}
+
 PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
 {
   init( width, height, pel_format );
@@ -80,30 +167,34 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format )
     return;
   }
 
+  m_pcPelFormat = &(PlaYUVerFramePelFormatsList[pel_format]);
+
   m_bHasRGBPel = false;
 
-  switch( m_iPixelFormat )
-  {
-  case YUV420p:
-    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 2, 2 );
-    break;
-  case YUV444p:
-    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 1 );
-    break;
-  case YUV422p:
-  case YUYV422:
-    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 2 );
-    break;
-  case GRAY:
-    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 4, 4 );
-    break;
-  case RGB8:
-    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 1 );
-    break;
-  default:
-    m_pppcInputPel = NULL;
-    break;
-  }
+  getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, m_pcPelFormat->ratioChromaHeight, m_pcPelFormat->ratioChromaWidth );
+
+//  switch( m_iPixelFormat )
+//  {
+//  case YUV420p:
+//    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 2, 2 );
+//    break;
+//  case YUV444p:
+//    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 1 );
+//    break;
+//  case YUV422p:
+//  case YUYV422:
+//    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 2 );
+//    break;
+//  case GRAY:
+//    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 4, 4 );
+//    break;
+//  case RGB8:
+//    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 1 );
+//    break;
+//  default:
+//    m_pppcInputPel = NULL;
+//    break;
+//  }
   getMem1D<Pel>( &m_pcRGBPelInterlaced, m_uiHeight * m_uiWidth * 3 );
   openPixfc();
 }

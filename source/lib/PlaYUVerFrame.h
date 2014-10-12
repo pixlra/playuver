@@ -43,14 +43,18 @@ class PixFcSSE;
 namespace plaYUVer
 {
 
+typedef struct
+{
+  const Char* name;
+  Int colorSpace;
+  Int ratioChromaWidth;
+  Int ratioChromaHeight;
+  Void (*init)( UInt Width, UInt Height );
+} PlaYUVerFramePelFormat;
+
 class PlaYUVerFrame
 {
 public:
-  PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );
-  PlaYUVerFrame( PlaYUVerFrame *other );
-  PlaYUVerFrame( PlaYUVerFrame *other, QRect area );
-  ~PlaYUVerFrame();
-
   enum ColorSpace
   {
     COLOR_INVALID = -1,
@@ -92,19 +96,12 @@ public:
     return COLOR_INVALID;
   }
 
-  static QStringList supportedPixelFormatList()
-  {
-    QStringList formats;
-    formats << "YUV420p"
-            << "YUV444p"
-            << "YUV422p"
-            << "YUYV422"
-            << "GRAY"
-            << "RGB8"  // RGB 3*8 bits per pixel
-            ;
-    assert( formats.size() == NUMBER_FORMATS );
-    return formats;
-  }
+  static QStringList supportedPixelFormatList();
+
+  PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );
+  PlaYUVerFrame( PlaYUVerFrame *other );
+  PlaYUVerFrame( PlaYUVerFrame *other, QRect area );
+  ~PlaYUVerFrame();
 
   Void FrametoRGB8();
 
@@ -201,6 +198,9 @@ public:
   }
 
 private:
+
+  PlaYUVerFramePelFormat* m_pcPelFormat;
+
   UInt m_uiWidth;
   UInt m_uiHeight;
   Int m_iPixelFormat;

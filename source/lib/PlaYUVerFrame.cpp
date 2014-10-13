@@ -36,11 +36,30 @@
 namespace plaYUVer
 {
 
+Int PlaYUVerFrame::isRGBorYUVorGray( Int pixel_format )
+{
+  switch( pixel_format )
+  {
+  case GRAY:
+    return COLOR_GRAY;
+    break;
+  case YUV420p:
+  case YUV444p:
+  case YUV422p:
+  case YUYV422:
+    return COLOR_YUV;
+    break;
+  case RGB8:
+    return COLOR_RGB;
+    break;
+  }
+  return COLOR_INVALID;
+}
+
 QStringList PlaYUVerFrame::supportedPixelFormatList()
 {
   QStringList formats;
-  Int numberFormats = sizeof( g_PlaYUVerFramePelFormatsList ) / sizeof(PlaYUVerFramePelFormat);
-  numberFormats = 6;
+  Int numberFormats = PLAYUVER_NUMBER_FORMATS;
   for( Int i = 0; i < numberFormats; i++ )
   {
     formats << g_PlaYUVerFramePelFormatsList[i].name;

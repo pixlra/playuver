@@ -108,37 +108,12 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
     sprintf( aux_string, "%dx%d", width, height );
     av_dict_set( &format_opts, "video_size", aux_string, 0 );
   }
-//  YUV420p = 0,
-//     YUV444p,
-//     YUV422p,
-//     YUYV422,
-//     GRAY,
-//     RGB8,
-  switch( pixel_format )
-  {
-  case PlaYUVerFrame::NO_FMT:
-    break;
 
-  case PlaYUVerFrame::YUV420p:
-    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_YUV420P ), 0 );
-    break;
-  case PlaYUVerFrame::YUV444p:
-    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_YUV444P ), 0 );
-    break;
-  case PlaYUVerFrame::YUV422p:
-    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_YUV422P ), 0 );
-    break;
-  case PlaYUVerFrame::YUYV422:
-    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_YUYV422 ), 0 );
-    break;
-  case PlaYUVerFrame::GRAY:
-    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_GRAY8 ), 0 );
-    break;
-  case PlaYUVerFrame::RGB8:
-    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AV_PIX_FMT_RGB24 ), 0 );
-    break;
-  default:
-    break;
+
+  Int ffmpeg_pel_format = g_PlaYUVerFramePelFormatsList[pixel_format].ffmpegPelFormat;
+  if( ffmpeg_pel_format >= 0 )
+  {
+    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AVPixelFormat( ffmpeg_pel_format ) ), 0 );
   }
 
   /* open input file, and allocate format context */
@@ -203,29 +178,15 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
 
   width = video_dec_ctx->width;
   height = video_dec_ctx->height;
-  switch( video_dec_ctx->pix_fmt )
+
+  pixel_format = PlaYUVerFrame::NO_FMT;
+  for( Int i = 0; i < PLAYUVER_NUMBER_FORMATS; i++ )
   {
-  case AV_PIX_FMT_YUV420P:
-    pixel_format = PlaYUVerFrame::YUV420p;
-    break;
-  case AV_PIX_FMT_YUV444P:
-    pixel_format = PlaYUVerFrame::YUV444p;
-    break;
-  case AV_PIX_FMT_YUV422P:
-    pixel_format = PlaYUVerFrame::YUV422p;
-    break;
-  case AV_PIX_FMT_YUYV422:
-    pixel_format = PlaYUVerFrame::YUYV422;
-    break;
-  case AV_PIX_FMT_GRAY8:
-    pixel_format = PlaYUVerFrame::GRAY;
-    break;
-  case AV_PIX_FMT_RGB24:
-    pixel_format = PlaYUVerFrame::RGB8;
-    break;
-  default:
-    pixel_format = PlaYUVerFrame::NO_FMT;
-    break;
+    if( g_PlaYUVerFramePelFormatsList[i].ffmpegPelFormat == video_dec_ctx->pix_fmt )
+    {
+      pixel_format = i;
+      break;
+    }
   }
 
   /* dump input information to stderr */

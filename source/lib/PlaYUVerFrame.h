@@ -50,10 +50,11 @@ typedef struct
   UInt numberChannels;
   Int ratioChromaWidth;
   Int ratioChromaHeight;
-  Pixel (*getPixelValue) ( Pel ***Img, Int xPos, Int yPos );
+  Pixel (*getPixelValue)( Pel ***Img, Int xPos, Int yPos );
   Void (*frameFromBuffer)( Pel *in, Pel*** out );
   Void (*bufferFromFrame)( Pel ***in, Pel* out );
   Void (*fillRGBbuffer)( Pel*** in, UChar* out );
+  Int ffmpegPelFormat;
 } PlaYUVerFramePelFormat;
 
 #define PLAYUVER_NUMBER_FORMATS 6
@@ -84,26 +85,7 @@ public:
     NUMBER_FORMATS
   };
 
-  static Int isRGBorYUVorGray( Int pixel_format )
-  {
-    switch( pixel_format )
-    {
-    case GRAY:
-      return COLOR_GRAY;
-      break;
-    case YUV420p:
-    case YUV444p:
-    case YUV422p:
-    case YUYV422:
-      return COLOR_YUV;
-      break;
-    case RGB8:
-      return COLOR_RGB;
-      break;
-    }
-    return COLOR_INVALID;
-  }
-
+  static Int isRGBorYUVorGray( Int pixel_format );
   static QStringList supportedPixelFormatList();
 
   PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );
@@ -224,8 +206,7 @@ private:
   Void closePixfc();
   PixFcSSE* m_pcPixfc;
   Void FrametoRGB8Pixfc();
-}
-;
+};
 
 }  // NAMESPACE
 

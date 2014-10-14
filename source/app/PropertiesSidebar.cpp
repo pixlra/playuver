@@ -56,6 +56,7 @@ StreamPropertiesSideBar::StreamPropertiesSideBar( QWidget* parent ) :
   QLabel *streamNameLabel = new QLabel( tr( "Name:" ) );
   streamNameLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
   labelNameValue = new QLabel;
+  labelNameValue->setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) );
   labelNameValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
   QLabel *formatLabel = new QLabel( tr( "File Format:" ) );
@@ -88,6 +89,9 @@ StreamPropertiesSideBar::StreamPropertiesSideBar( QWidget* parent ) :
 
   QGridLayout *propertiesLayout = new QGridLayout;
   Int layout_line = 0;
+//  propertiesLayout->addWidget( streamNameLabel, layout_line, 0 );
+//  propertiesLayout->addWidget( labelNameValue, layout_line, 1 );
+//  layout_line++;
   propertiesLayout->addWidget( formatLabel, layout_line, 0 );
   propertiesLayout->addWidget( labelFormatValue, layout_line, 1 );
   layout_line++;
@@ -150,7 +154,7 @@ Void StreamPropertiesSideBar::setData( PlaYUVerStream* pcStream )
     setEnabled( true );
 
 
-    labelNameValue->setText( m_pcStream->getFileName() );
+    labelNameValue->setText( QFileInfo( m_pcStream->getFileName() ).fileName() );
     labelFormatValue->setText( m_pcStream->getFormatName() );
     labelCodecValue->setText( m_pcStream->getCodecName() );
     Int duration[3];

@@ -53,6 +53,7 @@ plaYUVerApp::plaYUVerApp()
   setCentralWidget( mdiArea );
   //mdiArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
   //mdiArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+  mdiArea->setActivationOrder( QMdiArea::ActivationHistoryOrder );
 
   connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( chageSubWindowSelection() ) );
 
@@ -878,6 +879,7 @@ Void plaYUVerApp::chageSubWindowSelection()
     if( activeSubWindow() )
     {
       m_pcCurrentSubWindow = new_window;
+      setWindowTitle( QApplication::applicationName() + " - " + m_pcCurrentSubWindow->getWindowName() );
       if( !plaYUVerApp::findSubWindow( mdiArea, m_pcCurrentSubWindow->getRefSubWindow() ) )
       {
         m_pcCurrentSubWindow->setRefSubWindow( NULL );

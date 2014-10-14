@@ -55,6 +55,7 @@ private:
   PlaYUVerStream* m_pcStream;
 
   Bool m_bIsVisible;
+  QLabel* labelNameValue;
   QLabel* labelFormatValue;
   QLabel* labelCodecValue;
   QLabel* labelDurationValueTime;

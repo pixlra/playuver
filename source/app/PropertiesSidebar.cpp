@@ -53,6 +53,11 @@ StreamPropertiesSideBar::StreamPropertiesSideBar( QWidget* parent ) :
 
   // ----------------- GUI definition -----------------
 
+  QLabel *streamNameLabel = new QLabel( tr( "Name:" ) );
+  streamNameLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+  labelNameValue = new QLabel;
+  labelNameValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+
   QLabel *formatLabel = new QLabel( tr( "File Format:" ) );
   formatLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
   labelFormatValue = new QLabel;
@@ -126,6 +131,7 @@ QSize StreamPropertiesSideBar::sizeHint() const
 Void StreamPropertiesSideBar::setData( PlaYUVerStream* pcStream )
 {
   // Clear information.
+  labelNameValue->clear();
   labelFormatValue->clear();
   labelCodecValue->clear();
   labelDurationValueTime->clear();
@@ -143,11 +149,13 @@ Void StreamPropertiesSideBar::setData( PlaYUVerStream* pcStream )
     m_pcStream = pcStream;
     setEnabled( true );
 
-    QString value;
+
+    labelNameValue->setText( m_pcStream->getFileName() );
     labelFormatValue->setText( m_pcStream->getFormatName() );
     labelCodecValue->setText( m_pcStream->getCodecName() );
     Int duration[3];
     m_pcStream->getDuration( duration );
+    QString value;
     value = QString( tr( "%1h:%2m:%3s" ) ).arg( duration[0] ).arg( duration[1] ).arg( duration[2] );
     labelDurationValueTime->setText( value );
     value = QString( tr( "%1 frms" ) ).arg( m_pcStream->getFrameNum() );

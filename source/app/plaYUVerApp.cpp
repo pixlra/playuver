@@ -761,7 +761,7 @@ Void plaYUVerApp::videoSelectionButtonEvent()
         m_acPlayingSubWindows.append( subWindow );
         subWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
         subWindow->scaleView( scaleFactor );
-        subWindow->play();
+        //subWindow->play();
         m_pcFrameSlider->setMaximum( qMin( m_pcFrameSlider->maximum(), ( Int )subWindow->getInputStream()->getFrameNum() - 1 ) );
       }
     }

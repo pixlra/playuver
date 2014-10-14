@@ -170,14 +170,14 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo )
   if( !streamInfo )
   {
     Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
-    streamInfo = (PlaYUVerStreamInfo*)(idx >= 0 ? &m_aRecentFileStreamInfo.at( idx ) : NULL);
+    streamInfo = ( PlaYUVerStreamInfo* )( idx >= 0 ? &m_aRecentFileStreamInfo.at( idx ) : NULL );
   }
 
   if( !streamInfo )
-    retChild =  interfaceChild->loadFile( fileName );
+    retChild = interfaceChild->loadFile( fileName );
   else
-    retChild =  interfaceChild->loadFile( streamInfo );
-  if(retChild )
+    retChild = interfaceChild->loadFile( streamInfo );
+  if( retChild )
   {
     statusBar()->showMessage( tr( "Loading file..." ) );
     mdiArea->addSubWindow( interfaceChild );
@@ -195,11 +195,11 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo )
     if( idx >= 0 )
       m_aRecentFileStreamInfo.remove( idx );
     m_aRecentFileStreamInfo.prepend( interfaceChild->getStreamInfo() );
-    while ( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
+    while( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
 //#if( QT_VERSION_PLAYUVER == 5)
 //      m_aRecentFileStreamInfo.removeLast();
 //#else
-    m_aRecentFileStreamInfo.remove( m_aRecentFileStreamInfo.size() - 1);
+      m_aRecentFileStreamInfo.remove( m_aRecentFileStreamInfo.size() - 1 );
 //#endif
     updateRecentFileActions();
 
@@ -499,15 +499,15 @@ Void plaYUVerApp::startPlay()
     }
     if( m_acPlayingSubWindows.size() > 0 )
     {
-    UInt frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
-    UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
-    qDebug( ) << "Desired frame rate: "
-              << QString::number( 1000 / timeInterval )
-              << " fps";
-    m_pcPlayingTimer->start( timeInterval );
-    m_cTimer.start();
-    m_bIsPlaying = true;
-    m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPause ) );
+      UInt frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
+      UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
+      qDebug( ) << "Desired frame rate: "
+                << QString::number( 1000 / timeInterval )
+                << " fps";
+      m_pcPlayingTimer->start( timeInterval );
+      m_cTimer.start();
+      m_bIsPlaying = true;
+      m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPause ) );
     }
   }
 }

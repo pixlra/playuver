@@ -490,6 +490,15 @@ Void plaYUVerApp::startPlay()
 {
   if( !m_bIsPlaying )
   {
+    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+    {
+      if( !m_acPlayingSubWindows.at( i )->play() )
+      {
+        m_acPlayingSubWindows.remove( i );
+      }
+    }
+    if( m_acPlayingSubWindows.size() > 0 )
+    {
     UInt frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
     UInt timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
     qDebug( ) << "Desired frame rate: "
@@ -498,6 +507,8 @@ Void plaYUVerApp::startPlay()
     m_pcPlayingTimer->start( timeInterval );
     m_cTimer.start();
     m_bIsPlaying = true;
+    m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPause ) );
+    }
   }
 }
 
@@ -537,7 +548,6 @@ Void plaYUVerApp::play()
       m_bIsPlaying = false;
     }
     startPlay();
-    m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPause ) );
   }
   else
   {

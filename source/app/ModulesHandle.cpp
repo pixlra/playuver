@@ -256,7 +256,7 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
   if( pcCurrModuleIf->m_pcModuleStream )
   {
     UInt numberOfWindows = pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames;
-    UInt currFrames;
+    UInt64 currFrames = 0;
     UInt64 numberOfFrames = INT_MAX;
     for( UInt i = 0; i < numberOfWindows; i++ )
     {
@@ -269,7 +269,7 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
     for( UInt f = 0; f < numberOfFrames; f++ )
     {
       applyModuleIf( pcCurrModuleIf, false, true );
-      //QCoreApplication::processEvents();
+      QCoreApplication::processEvents();
       pcCurrModuleIf->m_pcModuleStream->writeFrame( pcCurrModuleIf->m_pcProcessedFrame );
       for( UInt i = 0; i < numberOfWindows; i++ )
       {
@@ -334,14 +334,17 @@ Void ModulesHandle::openModuleIfStream( PlaYUVerModuleIf *pcCurrModuleIf )
 Bool ModulesHandle::showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame )
 {
   Bool bRet = false;
-  if( pcCurrModuleIf->m_pcDisplaySubWindow )
+  if( processedFrame  )
   {
-    pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( processedFrame );
-    bRet = true;
-  }
-  else
-  {
-    pcCurrModuleIf->m_pcSubWindow[0]->setCurrFrame( processedFrame );
+    if( pcCurrModuleIf->m_pcDisplaySubWindow )
+    {
+      pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( processedFrame );
+      bRet = true;
+    }
+    else
+    {
+      pcCurrModuleIf->m_pcSubWindow[0]->setCurrFrame( processedFrame );
+    }
   }
   return bRet;
 }

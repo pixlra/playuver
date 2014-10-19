@@ -53,6 +53,14 @@ public:
   {
     NormalMode, MaskMode,
   };
+  typedef enum
+  {
+    NavigationTool,
+    NormalSelectionTool,
+    BlockSelectionTool,
+    MaskTool,
+    EraserTool
+  }eTool;
 
   ViewArea( QWidget *parent = 0 );
 
@@ -90,7 +98,7 @@ public:
   {
     return m_mode;
   }
-  enum eTool tool() const
+  eTool tool() const
   {
     return m_tool;
   }
@@ -109,7 +117,7 @@ public:
 
   Void zoomChangeEvent(Double factor, QPoint center);
 
-  void setTool( enum eTool tool );
+  void setTool( eTool tool );
 
 //     QSize sizeHint() const;
 
@@ -161,7 +169,7 @@ private:
   QPoint m_lastWindowPos;
   GridManager m_grid;
   ViewMode m_mode;
-  enum eTool m_tool;
+  eTool m_tool;
   QColor m_maskColor;
   double m_zoomFactor;
   int m_xOffset;

@@ -983,15 +983,9 @@ SubWindowHandle* plaYUVerApp::findSubWindow( const QMdiArea* mdiArea, const SubW
 return 0;
 }
 
-Void plaYUVerApp::setNavigationTool()
+Void plaYUVerApp::setTool( Int idxTool )
 {
-  m_appTool = NavigationTool;
-  setAllSubWindowTool();
-}
-
-Void plaYUVerApp::setSelectionTool()
-{
-  m_appTool = NormalSelectionTool;
+  m_appTool = (ViewArea::eTool ) idxTool;
   setAllSubWindowTool();
 }
 
@@ -1273,19 +1267,25 @@ Void plaYUVerApp::createActions()
   actionGroupTools = new QActionGroup( this );
   actionGroupTools->setExclusive( true );
 
-  m_appTool = NavigationTool;
+  m_mapperTools = new QSignalMapper( this );
+  connect( m_mapperTools, SIGNAL( mapped(int) ), this, SLOT( setTool(int) ) );
+
+  m_appTool = ViewArea::NavigationTool;
 
   m_arrayActions[NAVIGATION_TOOL_ACT] = new QAction( tr( "&Navigation Tool" ), this );
   m_arrayActions[NAVIGATION_TOOL_ACT]->setCheckable( true );
   m_arrayActions[NAVIGATION_TOOL_ACT]->setChecked( true );
   actionGroupTools->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
-  connect( m_arrayActions[NAVIGATION_TOOL_ACT], SIGNAL( triggered() ), this, SLOT( setNavigationTool() ) );
+  connect( m_arrayActions[NAVIGATION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
+  m_mapperTools->setMapping( m_arrayActions[NAVIGATION_TOOL_ACT], ViewArea::NavigationTool );
 
   m_arrayActions[SELECTION_TOOL_ACT] = new QAction( "&Selection Tool", this );
   m_arrayActions[SELECTION_TOOL_ACT]->setCheckable( true );
   m_arrayActions[SELECTION_TOOL_ACT]->setChecked( false );
   actionGroupTools->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
-  connect( m_arrayActions[SELECTION_TOOL_ACT], SIGNAL( triggered() ), this, SLOT( setSelectionTool() ) );
+  connect( m_arrayActions[SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
+  m_mapperTools->setMapping( m_arrayActions[SELECTION_TOOL_ACT], ViewArea::NormalSelectionTool );
+
 
   // ------------ Window ------------
 
@@ -1495,8 +1495,8 @@ Void plaYUVerApp::readSettings()
   move( pos );
   resize( size );
   m_cLastOpenPath = settings.lastOpenPath();
-  m_appTool = ( enum eTool )settings.getSelectedTool();
-  setAllSubWindowTool();
+  //m_appTool = ( ViewArea::eTool )settings.getSelectedTool();
+  //setAllSubWindowTool();
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
   m_arrayActions[VIDEO_LOCK_ACT]->setChecked( settings.getVideoLock() );
 

@@ -272,7 +272,7 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
       pcCurrModuleIf->m_pcSubWindow[i]->stop();
     }
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    for( UInt f = 0; f < numberOfFrames; f++ )
+    for( UInt f = 1; f < numberOfFrames; f++ )
     {
       applyModuleIf( pcCurrModuleIf, false, true );
       QCoreApplication::processEvents();
@@ -282,6 +282,10 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
         pcCurrModuleIf->m_pcSubWindow[i]->play();
         pcCurrModuleIf->m_pcSubWindow[i]->playEvent();
       }
+    }
+    for( UInt i = 0; i < numberOfWindows; i++ )
+    {
+      pcCurrModuleIf->m_pcSubWindow[i]->stop();
     }
     QApplication::restoreOverrideCursor();
   }

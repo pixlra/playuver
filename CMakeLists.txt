@@ -54,7 +54,7 @@ ADD_DEFINITIONS( "-DPLAYUVER" )
 ######################################################################################
 ADD_OPTION(PLAYUVER_LONGVERSIONNAME     "Use long version name in deb" OFF )
 ADD_OPTION(PLAYUVER_WERROR              "Warnings as errors"       OFF )
-ADD_OPTION(PLAYUVER_THREADED_MODULES    "Warnings as errors"       ON  )
+ADD_OPTION(PLAYUVER_THREADED_MODULES    "Use threads for modules"  OFF )
 ADD_OPTION(PLAYUVER_INSTALL_LIBS        "Install PlaYUVer Lib"     ON  )
 ADD_OPTION(USE_QT4                      "Build with QT4"           OFF )
 ADD_OPTION(USE_OPENCV                   "Add OpenCV support"       OFF )

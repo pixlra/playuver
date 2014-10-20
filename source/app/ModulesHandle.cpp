@@ -172,6 +172,12 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
     }
   }
 
+  // Disable existing Module
+  for( UInt i = 0; i < numberOfFrames; i++ )
+  {
+    pcCurrModuleIf->m_pcSubWindow[i]->disableModule();
+  }
+
   // Create Module
   pcCurrModuleIf->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
 
@@ -334,7 +340,7 @@ Void ModulesHandle::openModuleIfStream( PlaYUVerModuleIf *pcCurrModuleIf )
 Bool ModulesHandle::showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame )
 {
   Bool bRet = false;
-  if( processedFrame  )
+  //if( processedFrame  )
   {
     if( pcCurrModuleIf->m_pcDisplaySubWindow )
     {
@@ -352,7 +358,7 @@ Bool ModulesHandle::showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, PlaYUVerFram
 Bool ModulesHandle::showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Double moduleResult )
 {
   Bool bRet = false;
-  pcCurrModuleIf->m_pcModuleDock->setModulueReturnValue(moduleResult);
+  pcCurrModuleIf->m_pcModuleDock->setModulueReturnValue( moduleResult );
   return bRet;
 }
 

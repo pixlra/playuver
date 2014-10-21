@@ -37,7 +37,7 @@ INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${SRC_DIR}/
 
 FILE( GLOB SOURCES_FILES   ${SRC_DIR}/app/*.cpp )
 FILE( GLOB FORMS_FILES     ${UI_DIR}/*.ui   )
-FILE( GLOB RESOURCES_FILES ${RSC_DIR}/*.qrc ${RSC_DIR}/*.rc )
+FILE( GLOB RESOURCES_FILES ${RSC_DIR}/*rc  )
 
 # must go before the project command
 SET(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
@@ -77,6 +77,24 @@ INCLUDE( cmake/LibQT.cmake )
 INCLUDE( cmake/LibOpenCV.cmake )
 INCLUDE( cmake/LibFFmpeg.cmake )
 INCLUDE( cmake/LibPixfc.cmake )
+
+
+# Windows application icon
+if (WIN32)
+set(WINDOWS_RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/resources.obj)
+if (MSVC)
+add_custom_command(OUTPUT ${WINDOWS_RES_FILE}
+COMMAND rc.exe /fo ${WINDOWS_RES_FILE} playuver.rc
+WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/resources
+)
+else()
+add_custom_command(OUTPUT ${WINDOWS_RES_FILE}
+COMMAND windres.exe playuver.rc ${WINDOWS_RES_FILE}
+WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/resources
+)
+endif()
+endif()
+
 
 ######################################################################################
 # PlaYUVer modules build
@@ -125,7 +143,7 @@ ENDIF()
 
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" )
 
-ADD_EXECUTABLE( ${PROJECT_NAME} ${SOURCES_FILES} ${HEADERS_MOC_FILES} ${FORMS_HEADERS_FILES} ${RESOURCES_RCC_FILES} )
+ADD_EXECUTABLE( ${PROJECT_NAME} ${SOURCES_FILES} ${HEADERS_MOC_FILES} ${FORMS_HEADERS_FILES} ${RESOURCES_RCC_FILES} ${WINDOWS_RES_FILE} )
 
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib ${MODULES_LIBS}  ${LINKER_LIBS} )
 

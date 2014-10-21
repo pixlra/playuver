@@ -253,7 +253,7 @@ public:
   PlaYUVerFrame* getCurrFrame();
   PlaYUVerFrame* getCurrFrame( PlaYUVerFrame * );
 
-  Void seekInput( UInt64 new_frame_num );
+  Bool seekInput( UInt64 new_frame_num );
 
   Bool checkErrors( Int error_type );
 

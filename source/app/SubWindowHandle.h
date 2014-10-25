@@ -52,6 +52,7 @@ private:
 
   PlaYUVerStream* m_pCurrStream;
   PlaYUVerFrame* m_pcCurrFrame;
+  QRect m_cSelectedArea;
 
   QString m_cFilename;
   PlaYUVerModuleIf* m_pcCurrentModule;
@@ -214,6 +215,7 @@ protected:
   void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:
+  void updateSelectedArea( QRect area );
   void adjustScrollBarByZoom( double factor, QPoint center );
   void adjustScrollBarByOffset( QPoint Offset );
   void updateLastScrollValue();

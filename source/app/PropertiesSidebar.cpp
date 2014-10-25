@@ -491,22 +491,25 @@ Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
   // This is necessary to stop computation because image.bits() is
   // currently used by threaded histogram algorithm.
 
-  m_cSelectionArea = selectionArea;
+  if( m_pcFrame )
+  {
+    m_cSelectionArea = selectionArea;
 
-  if( selectionArea.isValid() )
-  {
-    histogramWidget->stopHistogramComputation();
-    histogramWidget->updateSelectionData( new PlaYUVerFrame(m_pcFrame,  selectionArea));
-    fullImageButton->show();
-    selectionImageButton->show();
-    selectionImageButton->click();
-    slotRenderingChanged( HistogramWidget::ImageSelectionHistogram );
-  }
-  else
-  {
-    fullImageButton->hide();
-    selectionImageButton->hide();
-    slotRenderingChanged( HistogramWidget::FullImageHistogram );
+    if( selectionArea.isValid() )
+    {
+      histogramWidget->stopHistogramComputation();
+      histogramWidget->updateSelectionData( new PlaYUVerFrame(m_pcFrame,  selectionArea));
+      fullImageButton->show();
+      selectionImageButton->show();
+      selectionImageButton->click();
+      slotRenderingChanged( HistogramWidget::ImageSelectionHistogram );
+    }
+    else
+    {
+      fullImageButton->hide();
+      selectionImageButton->hide();
+      slotRenderingChanged( HistogramWidget::FullImageHistogram );
+    }
   }
 }
 

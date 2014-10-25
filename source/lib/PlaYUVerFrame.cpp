@@ -437,42 +437,42 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
   case YUV420p:
     for( UInt i = 0; i < m_uiHeight / 2; i++ )
     {
-      memcpy( m_pppcInputPel[LUMA][0], &( input_frame->getPelBufferYUV()[LUMA][yPos + ( i << 1 )][xPos] ), m_uiWidth * sizeof(Pel) );
-      memcpy( m_pppcInputPel[LUMA][0], &( input_frame->getPelBufferYUV()[LUMA][yPos + ( i << 1 ) + 1][xPos] ), m_uiWidth * sizeof(Pel) );
-      memcpy( m_pppcInputPel[CHROMA_U][0], &( input_frame->getPelBufferYUV()[CHROMA_U][yPos / 2 + i][xPos / 2] ), m_uiWidth / 2 * sizeof(Pel) );
-      memcpy( m_pppcInputPel[CHROMA_V][0], &( input_frame->getPelBufferYUV()[CHROMA_V][yPos / 2 + i][xPos / 2] ), m_uiWidth / 2 * sizeof(Pel) );
+      memcpy( m_pppcInputPel[LUMA][(i<<1)], &( input_frame->getPelBufferYUV()[LUMA][yPos + ( i << 1 )][xPos] ), m_uiWidth * sizeof(Pel) );
+      memcpy( m_pppcInputPel[LUMA][(i<<1) + 1], &( input_frame->getPelBufferYUV()[LUMA][yPos + ( i << 1 ) + 1][xPos] ), m_uiWidth * sizeof(Pel) );
+      memcpy( m_pppcInputPel[CHROMA_U][i], &( input_frame->getPelBufferYUV()[CHROMA_U][yPos / 2 + i][xPos / 2] ), m_uiWidth / 2 * sizeof(Pel) );
+      memcpy( m_pppcInputPel[CHROMA_V][i], &( input_frame->getPelBufferYUV()[CHROMA_V][yPos / 2 + i][xPos / 2] ), m_uiWidth / 2 * sizeof(Pel) );
     }
     break;
   case YUV444p:
     for( UInt i = 0; i < m_uiHeight; i++ )
     {
-      memcpy( m_pppcInputPel[LUMA][0], &( input_frame->getPelBufferYUV()[LUMA][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
-      memcpy( m_pppcInputPel[CHROMA_U][0], &( input_frame->getPelBufferYUV()[CHROMA_U][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
-      memcpy( m_pppcInputPel[CHROMA_V][0], &( input_frame->getPelBufferYUV()[CHROMA_V][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
+      memcpy( m_pppcInputPel[LUMA][i], &( input_frame->getPelBufferYUV()[LUMA][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
+      memcpy( m_pppcInputPel[CHROMA_U][i], &( input_frame->getPelBufferYUV()[CHROMA_U][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
+      memcpy( m_pppcInputPel[CHROMA_V][i], &( input_frame->getPelBufferYUV()[CHROMA_V][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
     }
     break;
   case YUV422p:
   case YUYV422:
     for( UInt i = 0; i < m_uiHeight / 2; i++ )
     {
-      memcpy( m_pppcInputPel[LUMA][0], &( input_frame->getPelBufferYUV()[LUMA][yPos + ( i << 1 )][xPos] ), m_uiWidth * sizeof(Pel) );
-      memcpy( m_pppcInputPel[LUMA][0], &( input_frame->getPelBufferYUV()[LUMA][yPos + ( i << 1 ) + 1][xPos] ), m_uiWidth * sizeof(Pel) );
-      memcpy( m_pppcInputPel[CHROMA_U][0], &( input_frame->getPelBufferYUV()[CHROMA_U][yPos + i][xPos / 2] ), m_uiWidth / 2 * sizeof(Pel) );
-      memcpy( m_pppcInputPel[CHROMA_V][0], &( input_frame->getPelBufferYUV()[CHROMA_V][yPos + i][xPos / 2] ), m_uiWidth / 2 * sizeof(Pel) );
+      memcpy( m_pppcInputPel[LUMA][i<<1], &( input_frame->getPelBufferYUV()[LUMA][yPos + ( i << 1 )][xPos] ), m_uiWidth * sizeof(Pel) );
+      memcpy( m_pppcInputPel[LUMA][i<<1 + 1], &( input_frame->getPelBufferYUV()[LUMA][yPos + ( i << 1 ) + 1][xPos] ), m_uiWidth * sizeof(Pel) );
+      memcpy( m_pppcInputPel[CHROMA_U][i], &( input_frame->getPelBufferYUV()[CHROMA_U][yPos + i][xPos / 2] ), m_uiWidth / 2 * sizeof(Pel) );
+      memcpy( m_pppcInputPel[CHROMA_V][i], &( input_frame->getPelBufferYUV()[CHROMA_V][yPos + i][xPos / 2] ), m_uiWidth / 2 * sizeof(Pel) );
     }
     break;
   case GRAY:
     for( UInt i = 0; i < m_uiHeight; i++ )
     {
-      memcpy( m_pppcInputPel[LUMA][0], &( input_frame->getPelBufferYUV()[LUMA][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
+      memcpy( m_pppcInputPel[LUMA][i], &( input_frame->getPelBufferYUV()[LUMA][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
     }
     break;
   case RGB8:
     for( UInt i = 0; i < m_uiHeight; i++ )
     {
-      memcpy( m_pppcInputPel[COLOR_R][0], &( input_frame->getPelBufferYUV()[LUMA][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
-      memcpy( m_pppcInputPel[COLOR_G][0], &( input_frame->getPelBufferYUV()[CHROMA_U][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
-      memcpy( m_pppcInputPel[COLOR_B][0], &( input_frame->getPelBufferYUV()[CHROMA_V][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
+      memcpy( m_pppcInputPel[COLOR_R][i], &( input_frame->getPelBufferYUV()[LUMA][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
+      memcpy( m_pppcInputPel[COLOR_G][i], &( input_frame->getPelBufferYUV()[CHROMA_U][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
+      memcpy( m_pppcInputPel[COLOR_B][i], &( input_frame->getPelBufferYUV()[CHROMA_V][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
     }
     break;
   default:
@@ -627,10 +627,10 @@ Pixel PlaYUVerFrame::ConvertPixel( Pixel sInputPixel, Int eOutputSpace )
   Int outA, outB, outC;
   Pixel sOutputPixel =
   {
-      COLOR_INVALID,
-      0,
-      0,
-      0 };
+    COLOR_INVALID,
+    0,
+    0,
+    0 };
 
   if( sInputPixel.color_space == eOutputSpace )
     return sInputPixel;

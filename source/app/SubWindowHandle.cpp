@@ -236,36 +236,17 @@ Bool SubWindowHandle::save( QString filename )
 {
   Bool iRet = false;
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  if( !m_pCurrStream || m_cSelectedArea.isValid() )
+
+  PlaYUVerFrame* saveFrame = m_pcCurrFrame;
+  if( m_cSelectedArea.isValid() )
   {
-    PlaYUVerFrame* savedFrame = m_pcCurrFrame;
-    if( m_cSelectedArea.isValid() )
-    {
-      savedFrame = new PlaYUVerFrame( m_pcCurrFrame, m_cSelectedArea );
-    }
-    if( !savedFrame )
-    {
-      return false;
-    }
-    Int iFileFormat = PlaYUVerStream::INVALID_INPUT;
-    QStringList formatsExt = PlaYUVerStream::supportedReadFormatsExt();
-    QString currExt = QFileInfo( filename ).suffix();
-    if( formatsExt.contains( currExt ) )
-    {
-      iFileFormat = formatsExt.indexOf( currExt );
-    }
-    if( iFileFormat == PlaYUVerStream::YUVINPUT )
-    {
-      return false;
-    }
-    savedFrame->FrametoRGB8();
-    QImage qimg = QImage( savedFrame->getQImageBuffer(), savedFrame->getWidth(), savedFrame->getHeight(), QImage::Format_RGB888 );
-    iRet = qimg.save( filename );
+    saveFrame = new PlaYUVerFrame( m_pcCurrFrame, m_cSelectedArea );
   }
-  else
+  if( !saveFrame )
   {
-    iRet = m_pCurrStream->saveFrame( filename );
+    return false;
   }
+  iRet = PlaYUVerStream::saveFrame( filename, saveFrame );
   QApplication::restoreOverrideCursor();
   return iRet;
 }

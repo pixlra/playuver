@@ -174,21 +174,23 @@ public:
   static QStringList supportedSaveFormatsExt()
   {
     QStringList formatsExt;
-    formatsExt << "yuv"
+    formatsExt << supportedWriteFormatsExt()
                << "bmp"
                << "jpeg"
                << "png"  // portable network graphics
                ;
+    formatsExt.removeDuplicates();
     return formatsExt;
   }
 
   static QStringList supportedSaveFormatsName()
   {
     QStringList formatsName;
-    formatsName << "Raw Video"
+    formatsName << supportedWriteFormatsName()
                 << "Windows Bitmap"
                 << "Joint Photographic Experts Group"
                 << "Portable Network Graphics";
+    formatsName.removeDuplicates();
     return formatsName;
   }
 
@@ -248,6 +250,7 @@ public:
   Void writeFrame( PlaYUVerFrame *pcFrame );
 
   Bool saveFrame( const QString& filename );
+  static Bool saveFrame( const QString& filename, PlaYUVerFrame *saveFrame );
 
   Void setNextFrame();
   PlaYUVerFrame* getCurrFrame();

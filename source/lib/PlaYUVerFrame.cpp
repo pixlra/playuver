@@ -502,10 +502,9 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
     break;
   case YUV422p:
   case YUYV422:
-    for( UInt i = 0; i < m_uiHeight / 2; i++ )
+    for( UInt i = 0; i < m_uiHeight; i++ )
     {
-      memcpy( m_pppcInputPel[LUMA][i<<1], &( input_frame->getPelBufferYUV()[LUMA][yPos + ( i << 1 )][xPos] ), m_uiWidth * sizeof(Pel) );
-      memcpy( m_pppcInputPel[LUMA][i<<1 + 1], &( input_frame->getPelBufferYUV()[LUMA][yPos + ( i << 1 ) + 1][xPos] ), m_uiWidth * sizeof(Pel) );
+      memcpy( m_pppcInputPel[LUMA][i], &( input_frame->getPelBufferYUV()[LUMA][yPos + i][xPos] ), m_uiWidth * sizeof(Pel) );
       memcpy( m_pppcInputPel[CHROMA_U][i], &( input_frame->getPelBufferYUV()[CHROMA_U][yPos + i][xPos / 2] ), m_uiWidth / 2 * sizeof(Pel) );
       memcpy( m_pppcInputPel[CHROMA_V][i], &( input_frame->getPelBufferYUV()[CHROMA_V][yPos + i][xPos / 2] ), m_uiWidth / 2 * sizeof(Pel) );
     }

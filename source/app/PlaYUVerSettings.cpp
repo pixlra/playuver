@@ -65,7 +65,7 @@ Void PlaYUVerSettings::setLastOpenPath( const QString & path )
 
 Int PlaYUVerSettings::getSelectedTool()
 {
-  return m_settings.value( "MainWindow/SelectedTool", NavigationTool ).toInt();
+  return m_settings.value( "MainWindow/SelectedTool", ViewArea::NavigationTool ).toInt();
 }
 
 Void PlaYUVerSettings::setSelectedTool( Int tool )

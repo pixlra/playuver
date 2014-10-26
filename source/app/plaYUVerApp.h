@@ -113,8 +113,7 @@ private Q_SLOTS:
   void updateZoomFactorSBox();
 
   void setAllSubWindowTool();
-  void setNavigationTool();
-  void setSelectionTool();
+  void setTool( int idxTool );
 
 private:
 
@@ -295,9 +294,15 @@ private:
 
   // Tools Actions;
   QActionGroup *actionGroupTools;
-  QAction *actionNavigationTool;
-  QAction *actionSelectionTool;
-  enum eTool m_appTool;
+  enum APP_TOOLS_ACTION_LIST
+ {
+  NAVIGATION_TOOL,
+  SELECTION_TOOL,
+  TOTAL_TOOLS,
+ };
+ QVector<QAction*> m_arrayTools;
+ QSignalMapper *m_mapperTools;
+ ViewArea::eTool m_appTool;
 
   PlaYUVerStreamInfoVector m_aRecentFileStreamInfo;
 

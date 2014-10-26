@@ -644,10 +644,10 @@ PlaYUVerFrame* PlaYUVerStream::getCurrFrame()
   return m_pcCurrFrame;
 }
 
-Void PlaYUVerStream::seekInput( UInt64 new_frame_num )
+Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 {
   if( !m_bInit || new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum || ( Int64 )new_frame_num == m_iCurrFrameNum )
-    return;
+    return false;
 
   m_iCurrFrameNum = new_frame_num - 1;
 
@@ -656,7 +656,7 @@ Void PlaYUVerStream::seekInput( UInt64 new_frame_num )
     m_uiFrameBufferIndex = new_frame_num;
     m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
     setNextFrame();
-    return;
+    return true;
   }
 #ifdef USE_FFMPEG
   if( m_cLibAvContext->getStatus() )
@@ -677,6 +677,7 @@ Void PlaYUVerStream::seekInput( UInt64 new_frame_num )
   setNextFrame();
   if( m_uiTotalFrameNum > 1 )
     readFrame();
+  return true;
 }
 
 Bool PlaYUVerStream::checkErrors( Int error_type )

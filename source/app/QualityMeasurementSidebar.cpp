@@ -48,13 +48,13 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, QMdiArea 
   RecLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
 
   m_comboBoxMetric = new QComboBox;
-  m_comboBoxMetric->insertItems( 0, PlaYUVerFrame::supportedQualityMetricsList());
+  m_comboBoxMetric->insertItems( 0, PlaYUVerFrame::supportedQualityMetricsList() );
   m_comboBoxMetric->setSizeAdjustPolicy( QComboBox::AdjustToContents );
-  m_comboBoxMetric->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed);
+  m_comboBoxMetric->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 
   m_comboBoxRef = new QComboBox;
   m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLength );
-  m_comboBoxRef->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed);
+  m_comboBoxRef->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
   updateSubWindowList();
 
   QGridLayout *mainLayout = new QGridLayout;
@@ -152,7 +152,16 @@ Void QualityMeasurementSidebar::updateSubWindowList()
 Void QualityMeasurementSidebar::updateCurrentWindow( SubWindowHandle *subWindow )
 {
   m_pcCurrentSubWindow = subWindow;
-  updateSidebarData();
+  if( m_pcCurrentSubWindow )
+  {
+    Int index = -1;
+    if( SubWindowHandle* refSubWindow = m_pcCurrentSubWindow->getRefSubWindow() )
+    {
+      index = m_pcWindowListNames.indexOf( refSubWindow->getWindowName() );
+    }
+    m_comboBoxRef->setCurrentIndex( index );
+    updateSidebarData();
+  }
 }
 
 Void QualityMeasurementSidebar::updateSidebarData()
@@ -160,11 +169,9 @@ Void QualityMeasurementSidebar::updateSidebarData()
   QString value( "0.00" );
   if( m_pcCurrentSubWindow )
   {
-    if( SubWindowHandle* refSubWindow = m_pcCurrentSubWindow->getRefSubWindow() )
+    SubWindowHandle* refSubWindow = m_pcCurrentSubWindow->getRefSubWindow();
+    if( refSubWindow )
     {
-      Int index = m_pcWindowListNames.indexOf( refSubWindow->getWindowName() );
-      m_comboBoxRef->setCurrentIndex( index );
-
       PlaYUVerFrame* currFrame = m_pcCurrentSubWindow->getCurrFrame();
       PlaYUVerFrame* refFrame = refSubWindow->getCurrFrame();
       Double quality;
@@ -213,9 +220,9 @@ Void QualityMeasurementSidebar::slotReferenceChanged( Int index )
 Void QualityMeasurementSidebar::slotQualityMetricChanged()
 {
   QString labelQuality = PlaYUVerFrame::supportedQualityMetricsList().at( m_comboBoxMetric->currentIndex() );
-  m_ppcLabelQualityLabel[LUMA]->setText( labelQuality + " Y");
-  m_ppcLabelQualityLabel[CHROMA_U]->setText( labelQuality + " U");
-  m_ppcLabelQualityLabel[CHROMA_V]->setText( labelQuality + " V");
+  m_ppcLabelQualityLabel[LUMA]->setText( labelQuality + " Y" );
+  m_ppcLabelQualityLabel[CHROMA_U]->setText( labelQuality + " U" );
+  m_ppcLabelQualityLabel[CHROMA_V]->setText( labelQuality + " V" );
   updateSidebarData();
 }
 }   // NAMESPACE

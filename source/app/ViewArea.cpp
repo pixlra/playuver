@@ -436,7 +436,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
       QRect imgr = viewToWindow( QRect( 0, 0, m_pixmap.width(), m_pixmap.height() ) );
 
       myPath.addRect( imgr );
-      myPath.addRect( sr/*m_selectedArea*/);
+      myPath.addRect( sr); //m_selectedArea
       painter.drawPath( myPath );
 
       // 2) Draw the selection rectangle   
@@ -641,7 +641,7 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
     {
       // If the selection is only vertical or horizontal then we have one
       // of the dimentions null.
-      if( actualPos.x() == m_lastPos.x() || actualPos.y() == m_lastPos.y() )
+      if( actualPos.x() == m_lastPos.x() && actualPos.y() == m_lastPos.y() )
       {
         m_selectedArea = QRect();
       }
@@ -651,14 +651,14 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
         // From left to right
         if( m_lastPos.x() < actualPos.x() )
         {
-          QPoint bottomR = actualPos - QPoint( 1, 1 );
+          QPoint bottomR = actualPos;// - QPoint( 1, 1 );
           m_selectedArea = QRect( m_lastPos, bottomR );
         }
         // From right to left
         else
         {
           QPoint topL( actualPos.x(), m_lastPos.y() );
-          QPoint bottomR( m_lastPos.x() - 1, actualPos.y() - 1 );
+          QPoint bottomR( m_lastPos.x(), actualPos.y() );
 
           m_selectedArea = QRect( topL, bottomR );
         }
@@ -670,13 +670,13 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
         if( m_lastPos.x() < actualPos.x() )
         {
           QPoint topL( m_lastPos.x(), actualPos.y() );
-          QPoint bottomR( actualPos.x() - 1, m_lastPos.y() - 1 );
+          QPoint bottomR( actualPos.x(), m_lastPos.y() );
           m_selectedArea = QRect( topL, bottomR );
         }
         // From right to left
         else
         {
-          QPoint bottomR = m_lastPos - QPoint( 1, 1 );
+          QPoint bottomR = m_lastPos;// - QPoint( 1, 1 );
           m_selectedArea = QRect( actualPos, bottomR );
         }
       }
@@ -702,15 +702,16 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
       m_selectedArea &= QRect( 0, 0, m_pixmap.width(), m_pixmap.height() );
 
       // Update only the united area
-      updateRect = updateRect.united( viewToWindow( m_selectedArea ) );
+//      updateRect = updateRect.united( viewToWindow( m_selectedArea ) );
 
       // "When rendering with a one pixel wide pen the QRect's
       // boundary line will be rendered to the right and below the
       // mathematical rectangle's boundary line.", in QT4 doc.
       // Our selection pen width is 1, let's adjust the rendering area.
-      updateRect.adjust( 0, 0, 1, 1 );
+//      updateRect.adjust( 0, 0, 1, 1 );
 
-      update( updateRect.normalized() );
+//      update( updateRect.normalized() );
+      update();
     }
     return;
   }

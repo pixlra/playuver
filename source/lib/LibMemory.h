@@ -194,7 +194,7 @@ Int getMem3ImageComponents( T**** array3D, Int dim1, Int dim2, Int ratioDim1Chro
   // Chroma
   ( *array3D )[1][0] = ( *array3D )[0][0] + dim2 * dim1;
   for( i = 1; i < dim1 / ratioDim1Chroma; i++ )
-    ( *array3D )[1][i] = ( *array3D )[1][i - 1] + dim2;
+    ( *array3D )[1][i] = ( *array3D )[1][i - 1] + dim2 / ratioDim2Chroma;
 
   ( *array3D )[2][0] = ( *array3D )[1][0] + dim2 / ratioDim2Chroma * dim1 / ratioDim1Chroma;
   for( i = 1; i < dim1 / ratioDim1Chroma; i++ )

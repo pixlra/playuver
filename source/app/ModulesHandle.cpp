@@ -66,7 +66,7 @@ SubWindowHandle* ModulesHandle::processModuleHandlingOpt()
   if( m_iOptionSelected >= 0 )
   {
     PlaYUVerModuleIf* pcCurrModuleIf = m_pcPlaYUVerModules.at( m_iOptionSelected );
-
+    m_iOptionSelected = INVALID_OPT;
     if( pcCurrModuleIf->m_pcAction->isChecked() )
     {
       return enableModuleIf( pcCurrModuleIf );

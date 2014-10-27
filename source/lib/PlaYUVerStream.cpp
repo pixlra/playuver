@@ -581,30 +581,35 @@ Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
 
 Bool PlaYUVerStream::saveFrame( const QString& filename )
 {
-  Int iFileFormat = INVALID_INPUT;
+  return saveFrame( filename, m_pcCurrFrame );
+}
 
-  QStringList formatsExt = PlaYUVerStream::supportedReadFormatsExt();
+Bool PlaYUVerStream::saveFrame( const QString& filename, PlaYUVerFrame *saveFrame )
+{
+  Int iFileFormat = INVALID_OUTPUT;
+
+  QStringList formatsExt = PlaYUVerStream::supportedSaveFormatsExt();
   QString currExt = QFileInfo( filename ).suffix();
   if( formatsExt.contains( currExt ) )
   {
     iFileFormat = formatsExt.indexOf( currExt );
   }
 
-  if( iFileFormat == YUVINPUT )
+  if( iFileFormat < TOTAL_OUTPUT_FORMATS )
   {
     PlaYUVerStream auxFrameStream;
-    if( !auxFrameStream.open( filename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, false ) )
+    if( !auxFrameStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(), saveFrame->getPelFormat(), 1, false ) )
     {
       return false;
     }
-    auxFrameStream.writeFrame( m_pcCurrFrame );
+    auxFrameStream.writeFrame( saveFrame );
     auxFrameStream.close();
     return true;
   }
   else
   {
-    m_pcCurrFrame->FrametoRGB8();
-    QImage qimg = QImage( m_pcCurrFrame->getQImageBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), QImage::Format_RGB888 );
+    saveFrame->FrametoRGB8();
+    QImage qimg = QImage( saveFrame->getQImageBuffer(), saveFrame->getWidth(), saveFrame->getHeight(), QImage::Format_RGB888 );
     return qimg.save( filename );
   }
   return false;

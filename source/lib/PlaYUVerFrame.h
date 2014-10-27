@@ -201,6 +201,7 @@ private:
   Pel*** m_pppcInputPel;
   UChar* m_pcRGBPelInterlaced;
 
+  Void adjustSelectedAreaDims( QRect &area, Int pel_format );
   Void init( UInt width, UInt height, Int pel_format );
   Void openPixfc();
   Void closePixfc();

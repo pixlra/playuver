@@ -52,6 +52,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, Bool isModule ) :
   m_cViewArea = new ViewArea( m_cScrollArea );
   connect( m_cViewArea, SIGNAL( zoomFactorChanged( double , QPoint) ), this, SLOT( adjustScrollBarByZoom(double, QPoint) ) );
   connect( m_cViewArea, SIGNAL( moveScroll( QPoint ) ), this, SLOT( adjustScrollBarByOffset(QPoint) ) );
+  connect( m_cViewArea, SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectedArea( QRect ) ) );
   connect( m_cScrollArea->horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
   connect( m_cScrollArea->verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
 
@@ -145,6 +146,11 @@ Bool SubWindowHandle::loadFile( PlaYUVerStreamInfo* streamInfo )
   return true;
 }
 
+Void SubWindowHandle::updateSelectedArea( QRect area )
+{
+  m_cSelectedArea = area;
+}
+
 /**
  * Functions to enable a module in the
  * current SubWindow
@@ -230,31 +236,17 @@ Bool SubWindowHandle::save( QString filename )
 {
   Bool iRet = false;
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  if( !m_pCurrStream )
+
+  PlaYUVerFrame* saveFrame = m_pcCurrFrame;
+  if( m_cSelectedArea.isValid() )
   {
-    if( !m_pcCurrFrame )
-    {
-      return false;
-    }
-    Int iFileFormat = PlaYUVerStream::INVALID_INPUT;
-    QStringList formatsExt = PlaYUVerStream::supportedReadFormatsExt();
-    QString currExt = QFileInfo( filename ).suffix();
-    if( formatsExt.contains( currExt ) )
-    {
-      iFileFormat = formatsExt.indexOf( currExt );
-    }
-    if( iFileFormat == PlaYUVerStream::YUVINPUT )
-    {
-      return false;
-    }
-    m_pcCurrFrame->FrametoRGB8();
-    QImage qimg = QImage( m_pcCurrFrame->getQImageBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), QImage::Format_RGB888 );
-    iRet = qimg.save( filename );
+    saveFrame = new PlaYUVerFrame( m_pcCurrFrame, m_cSelectedArea );
   }
-  else
+  if( !saveFrame )
   {
-    iRet = m_pCurrStream->saveFrame( filename );
+    return false;
   }
+  iRet = PlaYUVerStream::saveFrame( filename, saveFrame );
   QApplication::restoreOverrideCursor();
   return iRet;
 }

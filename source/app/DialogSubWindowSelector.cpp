@@ -28,9 +28,10 @@
 namespace plaYUVer
 {
 
-DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdiArea, Int numberWindowsSelected ) :
+DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdiArea, Int minWindowsSelected, Int maxWindowsSelected ) :
         QDialog( parent ),
-        m_iNumberOfSelectedWindows( numberWindowsSelected ),
+        m_iMinSelectedWindows( minWindowsSelected ),
+        m_iMaxSlectedWindows( maxWindowsSelected ),
         m_pcMainWindowMdiArea( mdiArea )
 {
   QFont titleFont, menusFont;
@@ -66,10 +67,11 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
   m_listSelectedWindows = new QListWidget( this );
 
   // Confirmation buttons
-  QDialogButtonBox* dialogButtonOkCancel = new QDialogButtonBox();
-  dialogButtonOkCancel->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
-  dialogButtonOkCancel->setOrientation( Qt::Vertical );
-  dialogButtonOkCancel->setCenterButtons( false );
+  m_pushButtonOkCancel = new QDialogButtonBox();
+  m_pushButtonOkCancel->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
+  m_pushButtonOkCancel->setOrientation( Qt::Vertical );
+  m_pushButtonOkCancel->setCenterButtons( false );
+  m_pushButtonOkCancel->buttons().at( 0 )->setEnabled( false );
 
   // Create Layouts
   QVBoxLayout* LeftVLayout = new QVBoxLayout();
@@ -82,7 +84,7 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
   RightVLayout->addWidget( m_pushButtonAddAll );
   RightVLayout->addWidget( m_pushButtonRemove );
   RightVLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
-  RightVLayout->addWidget( dialogButtonOkCancel );
+  RightVLayout->addWidget( m_pushButtonOkCancel );
 
   // Add components
   //MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Expanding, QSizePolicy::Fixed ) );
@@ -92,8 +94,8 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
   setLayout( MainLayout );
 
   // Create actions
-  connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( m_pushButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( m_pushButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( m_pushButtonAdd, SIGNAL( clicked() ), this, SLOT( addSubWindow() ) );
   connect( m_pushButtonAddAll, SIGNAL( clicked() ), this, SLOT( addAllSubWindow() ) );
   connect( m_pushButtonRemove, SIGNAL( clicked() ), this, SLOT( removeSubWindow() ) );
@@ -119,18 +121,25 @@ Void DialogSubWindowSelector::updateSubWindowList()
   m_comboBoxWindowList->insertItems( 0, m_pcWindowListNames );
   m_comboBoxWindowList->setCurrentIndex( -1 );
 
-  if( m_iNumberOfSelectedWindows >= 0 && m_pcSelectedWindowListNames.size() >= m_iNumberOfSelectedWindows )
-  {
-    m_pushButtonAdd->setEnabled( false );
-  }
-  else
-  {
-    m_pushButtonAdd->setEnabled( true );
-  }
-  if( m_iNumberOfSelectedWindows >= 0 && m_pcSelectedWindowListNames.size() < m_iNumberOfSelectedWindows )
-  {
+  Bool enableAddAll = true;
 
+  if( m_iMaxSlectedWindows >= 0 )
+  {
+    if( m_pcSelectedWindowListNames.size() >= m_iMaxSlectedWindows )
+    {
+      m_pushButtonAdd->setEnabled( false );
+    }
+    else
+    {
+      m_pushButtonAdd->setEnabled( true );
+    }
+    if(  m_pcWindowListNames.size() > m_iMaxSlectedWindows )
+    {
+      enableAddAll = false;
+    }
   }
+  m_pushButtonAddAll->setEnabled( enableAddAll );
+
   if( m_pcSelectedWindowListNames.size() > 0 )
   {
     m_pushButtonRemove->setEnabled( true );
@@ -139,10 +148,16 @@ Void DialogSubWindowSelector::updateSubWindowList()
   {
     m_pushButtonRemove->setEnabled( false );
   }
-  if( m_iNumberOfSelectedWindows >= 0 && m_pcWindowListNames.size() <= m_iNumberOfSelectedWindows )
+
+  if( m_pcSelectedWindowListNames.size() >= m_iMinSelectedWindows )
   {
-    m_pushButtonAddAll->setEnabled( true );
+    m_pushButtonOkCancel->buttons().at( 0 )->setEnabled( true );
   }
+  else
+  {
+    m_pushButtonOkCancel->buttons().at( 0 )->setEnabled( false );
+  }
+
 }
 
 Void DialogSubWindowSelector::setSubWindowList( QStringList cWindowListNames )
@@ -169,7 +184,7 @@ Void DialogSubWindowSelector::addSubWindow()
 
 Void DialogSubWindowSelector::addAllSubWindow()
 {
-  if( m_iNumberOfSelectedWindows <= 0 || m_pcWindowListNames.size() <= m_iNumberOfSelectedWindows )
+  if( m_iMaxSlectedWindows <= 0 || m_pcWindowListNames.size() <= m_iMaxSlectedWindows )
   {
     for( Int i = 0; i < m_pcWindowListNames.size(); i++ )
     {

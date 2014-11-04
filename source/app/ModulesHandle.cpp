@@ -105,14 +105,16 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   SubWindowHandle* interfaceChild = NULL;
   QString windowName;
 
+  QVector<SubWindowHandle*> subWindowList;
   UInt numberOfFrames = pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames;
   if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )  // Show dialog to select sub windows
   {
-    DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMdiArea, numberOfFrames );
+    DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMdiArea, numberOfFrames, numberOfFrames );
     if( dialogWindowsSelection.exec() == QDialog::Accepted )
     {
       QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();
       SubWindowHandle *subWindow;
+
       for( Int j = 0; j < selectedWindows.size(); j++ )
       {
         for( Int i = 0; i < m_pcMdiArea->subWindowList().size(); i++ )
@@ -120,25 +122,44 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
           subWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->subWindowList().at( i ) );
           if( subWindow->getWindowName() == selectedWindows.at( j ) )
           {
+            subWindowList.append( subWindow );
             pcCurrModuleIf->m_pcSubWindow[j] = subWindow;
           }
         }
       }
     }
-    else
+    // Check for same fmt in more than one frame modules
+    for( Int i = 1; i < subWindowList.size(); i++ )
     {
-      pcCurrModuleIf->m_pcAction->setChecked( false );
-      return interfaceChild;
+      if( !subWindowList.at( i )->getCurrFrame()->haveSameFmt( subWindowList.at( 0 )->getCurrFrame()) )
+      {
+        subWindowList.clear();
+        break;
+      }
     }
   }
   else
   {
     windowName.append( pcSubWindow->getWindowName() );
-    pcCurrModuleIf->m_pcSubWindow[0] = pcSubWindow;
+    subWindowList.append( pcSubWindow );
   }
+
+  if( subWindowList.size() == 0 )
+  {
+    pcCurrModuleIf->m_pcAction->setChecked( false );
+    m_pcParent->statusBar()->showMessage( "Error! Module cannot be applied", 2000 );
+    return interfaceChild;
+  }
+
   windowName.append( " <" );
   windowName.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
   windowName.append( ">" );
+
+  for( Int i = 0; i < subWindowList.size(); i++ )
+  {
+    pcCurrModuleIf->m_pcSubWindow[i] = subWindowList.at( i );
+    pcCurrModuleIf->m_pcSubWindow[i]->disableModule();
+  }
 
   pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
   if( pcCurrModuleIf->m_cModuleDef.m_iModuleType == FRAME_PROCESSING_MODULE )
@@ -165,17 +186,8 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
       pcCurrModuleIf->m_pcDockWidget->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
       pcCurrModuleIf->m_pcDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
       pcCurrModuleIf->m_pcDockWidget->setWidget( pcCurrModuleIf->m_pcModuleDock );
-      //pcCurrModuleIf->m_pcDockWidget->setAttribute( Qt::WA_DeleteOnClose );
       m_pcParent->addDockWidget( Qt::RightDockWidgetArea, pcCurrModuleIf->m_pcDockWidget );
-
-      //connect( pcCurrModuleIf->m_pcDockWidget, SIGNAL( visibilityChanged(bool) ), pcCurrModuleIf->m_pcModuleDock, SLOT( visibilityChangedSlot(bool) ) );
     }
-  }
-
-  // Disable existing Module
-  for( UInt i = 0; i < numberOfFrames; i++ )
-  {
-    pcCurrModuleIf->m_pcSubWindow[i]->disableModule();
   }
 
   // Create Module

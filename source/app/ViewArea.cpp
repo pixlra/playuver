@@ -371,11 +371,13 @@ void ViewArea::paintEvent( QPaintEvent *event )
       {
         QPoint pixelTopLeft( i, j );
 
+        QRect pixelRect( viewToWindow( pixelTopLeft ), QSize( m_zoomFactor, m_zoomFactor ) );
+
         Int frFormat = m_pcCurrFrame->getPelFormat();
 
         if( (frFormat==PlaYUVerFrame::COLOR_YUV) || (frFormat==PlaYUVerFrame::COLOR_GRAY) )
         {
-          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft, PlaYUVerFrame::COLOR_YUV );
+          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_YUV );
 
           if( sPixelValue.Luma < 128 )
             painter.setPen( QColor( Qt::white ) );
@@ -390,7 +392,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
         {
           if( (frFormat==PlaYUVerFrame::COLOR_RGB) )
           {
-            sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft, PlaYUVerFrame::COLOR_RGB );
+            sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_RGB );
 
             if( ( sPixelValue.ColorR + sPixelValue.ColorG + sPixelValue.ColorB ) < 128*3 )
               painter.setPen( QColor( Qt::white ) );

@@ -170,6 +170,7 @@ public:
   {
     return m_iPixelFormat;
   }
+  Int getColorSpace() const;
   Int getNumberChannels() const
   {
     return m_iNumberChannels;

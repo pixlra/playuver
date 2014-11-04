@@ -177,6 +177,12 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format )
   openPixfc();
 }
 
+Int PlaYUVerFrame::getColorSpace() const
+{
+  return m_pcPelFormat->colorSpace;
+}
+
+
 UInt64 PlaYUVerFrame::getBytesPerFrame()
 {
   return getBytesPerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );

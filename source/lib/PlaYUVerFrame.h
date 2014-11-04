@@ -133,6 +133,7 @@ public:
   }
 
   Pixel getPixelValue( const QPoint&, Int );
+  Int getColorSpace() const;
 
   UChar* getQImageBuffer() const
   {

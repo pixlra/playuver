@@ -670,6 +670,32 @@ Pixel PlaYUVerFrame::getPixelValue( const QPoint &pos, Int color_space )
   return pixel_value;
 }
 
+Int PlaYUVerFrame::getColorSpace() const
+{
+  Int iColorSpace;
+
+  switch (m_iPixelFormat) {
+    case YUV420p:
+    case YUV422p:
+    case YUV444p:
+    case YUYV422:
+      iColorSpace = COLOR_YUV ;
+      break;
+    case RGB8:
+      iColorSpace = COLOR_RGB ;
+      break;
+    case GRAY:
+      iColorSpace = COLOR_GRAY ;
+      break;
+    default:
+      iColorSpace = COLOR_INVALID ;
+      break;
+  }
+
+  return iColorSpace;
+}
+
+
 Pixel PlaYUVerFrame::ConvertPixel( Pixel sInputPixel, Int eOutputSpace )
 {
   Int outA, outB, outC;

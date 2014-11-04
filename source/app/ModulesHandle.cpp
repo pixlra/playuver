@@ -147,6 +147,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   if( subWindowList.size() == 0 )
   {
     pcCurrModuleIf->m_pcAction->setChecked( false );
+    m_pcParent->statusBar()->showMessage( "Error! Module cannot be applied", 2000 );
     return interfaceChild;
   }
 

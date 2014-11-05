@@ -268,7 +268,6 @@ void ViewArea::updateOffset()
   {
     m_xOffset = 0;
   }
-
   if( height() > m_pixmap.height() * m_zoomFactor )
   {
     m_yOffset = ( height() - m_pixmap.height() * m_zoomFactor ) / 2;

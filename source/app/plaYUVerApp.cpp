@@ -694,9 +694,13 @@ Void plaYUVerApp::seekEvent( Int direction )
   {
     if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      Int frame_num = m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum();
+      if( !( (frame_num + 1) >= getMaxFrameNumber()  && direction > 0 ) )
       {
-        m_acPlayingSubWindows.at( i )->seekRelativeEvent( direction > 0 ? true : false );
+        for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+        {
+          m_acPlayingSubWindows.at( i )->seekRelativeEvent( direction > 0 ? true : false );
+        }
       }
     }
     else
@@ -745,6 +749,8 @@ Void plaYUVerApp::lockButtonEvent()
         m_acPlayingSubWindows.clear();
     }
   }
+  updateCurrFrameNum();
+  updateTotalFrameNum();
 }
 
 Void plaYUVerApp::videoSelectionButtonEvent()

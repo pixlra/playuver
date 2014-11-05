@@ -144,7 +144,7 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format )
     getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 2 );
     break;
   case GRAY:
-    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 4, 4 );
+    getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 99, 99 );
     break;
   case RGB8:
     getMem3ImageComponents<Pel>( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 1 );
@@ -338,12 +338,12 @@ Void PlaYUVerFrame::FrametoRGB8()
       for( UInt y = 0; y < m_uiHeight; y++ )
         for( UInt x = 0; x < m_uiWidth; x++ )
         {
-          iY = *pInputPelY++;
-          //yuvToRgb( iY, iY, iY, iR, iG, iB );
+          iY = *pInputPelY;
           iR = iG = iB = iY;
           *pcRGBPelInterlaced++ = iR;
           *pcRGBPelInterlaced++ = iG;
           *pcRGBPelInterlaced++ = iB;
+          pInputPelY++;
         }
       break;
     case RGB8:
@@ -401,7 +401,7 @@ Void PlaYUVerFrame::FrameFromBuffer( Pel *input_buffer, Int pel_format )
     }
     break;
   case GRAY:
-    memcpy( &m_pppcInputPel[LUMA][0][0], input_buffer + frame_bytes_input * 0, frame_bytes_input * sizeof(Pel) );
+    memcpy( &m_pppcInputPel[LUMA][0][0], input_buffer, frame_bytes_input * sizeof(Pel) );
     break;
   case RGB8:
     memcpy( pcRGBPelInterlaced, input_buffer, frame_bytes_input * sizeof(Pel) * 3 );

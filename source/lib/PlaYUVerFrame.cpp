@@ -390,12 +390,12 @@ Void PlaYUVerFrame::FrametoRGB8()
       for( UInt y = 0; y < m_uiHeight; y++ )
         for( UInt x = 0; x < m_uiWidth; x++ )
         {
-          iY = *pInputPelY++;
-          //yuvToRgb( iY, iY, iY, iR, iG, iB );
+          iY = *pInputPelY;
           iR = iG = iB = iY;
           *pcRGBPelInterlaced++ = iR;
           *pcRGBPelInterlaced++ = iG;
           *pcRGBPelInterlaced++ = iB;
+          pInputPelY++;
         }
       break;
     case RGB8:

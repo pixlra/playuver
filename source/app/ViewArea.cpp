@@ -268,7 +268,6 @@ void ViewArea::updateOffset()
   {
     m_xOffset = 0;
   }
-
   if( height() > m_pixmap.height() * m_zoomFactor )
   {
     m_yOffset = ( height() - m_pixmap.height() * m_zoomFactor ) / 2;
@@ -373,9 +372,9 @@ void ViewArea::paintEvent( QPaintEvent *event )
 
         QRect pixelRect( viewToWindow( pixelTopLeft ), QSize( m_zoomFactor, m_zoomFactor ) );
 
-        Int frFormat = m_pcCurrFrame->getPelFormat();
+        Int frFormat = m_pcCurrFrame->getColorSpace();
 
-        if( (frFormat==PlaYUVerFrame::COLOR_YUV) || (frFormat==PlaYUVerFrame::COLOR_GRAY) )
+        if( frFormat == PlaYUVerFrame::COLOR_YUV )
         {
           sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_YUV );
 
@@ -384,31 +383,38 @@ void ViewArea::paintEvent( QPaintEvent *event )
           else
             painter.setPen( QColor( Qt::black ) );
 
-          painter.drawText( pixelRect, Qt::AlignCenter, "Y: " + QString::number( sPixelValue.Luma ) + "\n" +
-              "U: " + QString::number( sPixelValue.ChromaU ) + "\n" +
-              "V: " + QString::number( sPixelValue.ChromaV ));
+          painter.drawText( pixelRect, Qt::AlignCenter,
+              "Y: " + QString::number( sPixelValue.Luma ) + "\n" + "U: " + QString::number( sPixelValue.ChromaU ) + "\n" + "V: "
+                  + QString::number( sPixelValue.ChromaV ) );
         }
-        else
+        if( frFormat == PlaYUVerFrame::COLOR_GRAY )
         {
-          if( (frFormat==PlaYUVerFrame::COLOR_RGB) )
-          {
-            sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_RGB );
+          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_YUV );
 
-            if( ( sPixelValue.ColorR + sPixelValue.ColorG + sPixelValue.ColorB ) < 128*3 )
-              painter.setPen( QColor( Qt::white ) );
-            else
-              painter.setPen( QColor( Qt::black ) );
-
-            painter.drawText( pixelRect, Qt::AlignCenter, "R: " + QString::number( sPixelValue.ColorR ) + "\n" +
-                "G: " + QString::number( sPixelValue.ColorG ) + "\n" +
-                "B: " + QString::number( sPixelValue.ColorB ));
-          }
+          if( sPixelValue.Luma < 128 )
+            painter.setPen( QColor( Qt::white ) );
           else
-            assert(0);
+            painter.setPen( QColor( Qt::black ) );
+
+          painter.drawText( pixelRect, Qt::AlignCenter, "Y: " + QString::number( sPixelValue.Luma ) );
         }
 
+        if( ( frFormat == PlaYUVerFrame::COLOR_RGB ) )
+        {
+          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_RGB );
+
+          if( ( sPixelValue.ColorR + sPixelValue.ColorG + sPixelValue.ColorB ) < 128 * 3 )
+            painter.setPen( QColor( Qt::white ) );
+          else
+            painter.setPen( QColor( Qt::black ) );
+
+          painter.drawText( pixelRect, Qt::AlignCenter,
+              "R: " + QString::number( sPixelValue.ColorR ) + "\n" + "G: " + QString::number( sPixelValue.ColorG ) + "\n" + "B: "
+                  + QString::number( sPixelValue.ColorB ) );
+        }
       }
     }
+
 
     QColor color( Qt::white );
     QPen mainPen = QPen( color, 1, Qt::SolidLine );

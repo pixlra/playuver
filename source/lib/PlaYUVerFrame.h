@@ -52,7 +52,7 @@ typedef struct
   Int ratioChromaHeight;
   Pixel (*getPixelValue)( Pel ***Img, Int xPos, Int yPos );
   Void (*frameFromBuffer)( Pel *in, Pel*** out, UInt width, UInt height );
-  Void (*bufferFromFrame)( Pel ***in, Pel* out, UInt width, UInt height );
+  Void (*bufferFromFrame)( Pel* out, Pel ***in, UInt width, UInt height );
   Void (*fillRGBbuffer)( Pel*** in, UChar* out, UInt width, UInt height );
   Int ffmpegPelFormat;
 } PlaYUVerFramePelFormat;

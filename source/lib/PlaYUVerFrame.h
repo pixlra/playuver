@@ -91,7 +91,6 @@ Void rgbToYuv( T iR, T iG, T iB, T &iY, T &iU, T &iV )
   iV = ( 1000 * ( iR - iY ) + 179456 ) / 1402;
 }
 
-
 class PlaYUVerFrame
 {
 public:
@@ -124,45 +123,64 @@ public:
   PlaYUVerFrame( PlaYUVerFrame *other, QRect area );
   ~PlaYUVerFrame();
 
-  Void FrametoRGB8();
-
-  Void FrameFromBuffer( Pel*, Int );
-  Void FrameToBuffer( Pel* );
-
-  Void copyFrom( PlaYUVerFrame* );
-  Void copyFrom( PlaYUVerFrame*, UInt, UInt );
-
   UInt64 getBytesPerFrame();
   static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat );
 
+  Int getColorSpace() const;
+  Int getNumberChannels() const;
   UInt getChromaWidth() const;
   UInt getChromaHeight() const;
   UInt getChromaLength() const;
 
+  Void FrameFromBuffer( Pel*, Int );
+  Void FrameToBuffer( Pel* );
+
+  Void fillRGBBuffer();
+
+  Void copyFrom( PlaYUVerFrame* );
+  Void copyFrom( PlaYUVerFrame*, UInt, UInt );
+
+  Pixel getPixelValue( Int xPos, Int yPos, Int eColorSpace );
+  static Pixel ConvertPixel( Pixel, Int );
+
+  UInt getWidth() const
+  {
+    return m_uiWidth;
+  }
+  UInt getHeight() const
+  {
+    return m_uiHeight;
+  }
+  Int getPelFormat() const
+  {
+    return m_iPixelFormat;
+  }
+
+  Int getBitsChannel() const
+  {
+    return m_iBitsChannels;
+  }
+  Bool isValid() const
+  {
+    return ( m_uiWidth > 0 ) && ( m_uiHeight > 0 ) && ( m_iPixelFormat >= 0 );
+  }
+  Bool haveSameFmt( PlaYUVerFrame* other ) const
+  {
+    return ( m_uiWidth == other->getWidth() ) && ( m_uiHeight == other->getHeight() ) && ( m_iPixelFormat == other->getPelFormat() );
+  }
   Pel*** getPelBufferYUV() const
   {
     return m_pppcInputPel;
   }
-
   Pel*** getPelBufferYUV()
   {
     m_bHasRGBPel = false;
     return m_pppcInputPel;
   }
-
-  Pixel getPixelValue( Int xPos, Int yPos, Int eColorSpace );
-
-  UChar* getQImageBuffer() const
+  UChar* getRGBBuffer() const
   {
     return m_pcRGB32;
   }
-
-  static Pixel ConvertPixel( Pixel, Int );
-
-  template<typename T>
-  static Void YUV2RGB( T iY, T iU, T iV, T &iR, T &iG, T &iB );
-  template<typename T>
-  static Void RGB2YUV( T iR, T iG, T iB, T &iY, T &iU, T &iV );
 
 #ifdef USE_OPENCV
   cv::Mat getCvMat();
@@ -193,36 +211,6 @@ public:
   Double getMSE( PlaYUVerFrame* Org, Int component );
   Double getPSNR( PlaYUVerFrame* Org, Int component );
   Double getSSIM( PlaYUVerFrame* Org, Int component );
-
-  UInt getWidth() const
-  {
-    return m_uiWidth;
-  }
-  UInt getHeight() const
-  {
-    return m_uiHeight;
-  }
-  Int getPelFormat() const
-  {
-    return m_iPixelFormat;
-  }
-  Int getColorSpace() const;
-  Int getNumberChannels() const
-  {
-    return m_iNumberChannels;
-  }
-  Int getBitsChannel() const
-  {
-    return m_iBitsChannels;
-  }
-  Bool isValid() const
-  {
-    return ( m_uiWidth > 0 ) && ( m_uiHeight > 0 ) && ( m_iPixelFormat >= 0 );
-  }
-  Bool haveSameFmt( PlaYUVerFrame* other ) const
-  {
-    return ( m_uiWidth == other->getWidth() ) && ( m_uiHeight == other->getHeight() ) && ( m_iPixelFormat == other->getPelFormat() );
-  }
 
 private:
 

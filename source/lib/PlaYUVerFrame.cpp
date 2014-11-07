@@ -182,6 +182,11 @@ Int PlaYUVerFrame::getColorSpace() const
   return m_pcPelFormat->colorSpace;
 }
 
+Int PlaYUVerFrame::getNumberChannels() const
+  {
+    return m_pcPelFormat->numberChannels;
+  }
+
 UInt64 PlaYUVerFrame::getBytesPerFrame()
 {
   return getBytesPerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
@@ -225,44 +230,7 @@ Void PlaYUVerFrame::FrameToBuffer( Pel *output_buffer )
   m_pcPelFormat->bufferFromFrame( m_pppcInputPel, output_buffer, m_uiWidth, m_uiHeight );
 }
 
-Pixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos, Int eColorSpace )
-{
-  Pixel PelValue = m_pcPelFormat->getPixelValue( m_pppcInputPel, xPos, yPos );
-  ConvertPixel( PelValue, eColorSpace );
-  return PelValue;
-}
-
-Pixel PlaYUVerFrame::ConvertPixel( Pixel sInputPixel, Int eOutputSpace )
-{
-  Int outA, outB, outC;
-  Pixel sOutputPixel =
-  {
-    COLOR_INVALID,
-    0,
-    0,
-    0 };
-
-  if( sInputPixel.color_space == eOutputSpace )
-    return sInputPixel;
-
-  if( eOutputSpace == COLOR_RGB )
-  {
-    yuvToRgb<Int>( sInputPixel.Luma, sInputPixel.ChromaU, sInputPixel.ChromaV, outA, outB, outC );
-    sOutputPixel.ColorR = outA;
-    sOutputPixel.ColorG = outB;
-    sOutputPixel.ColorB = outC;
-  }
-  if( eOutputSpace == COLOR_YUV )
-  {
-    rgbToYuv<Int>( sInputPixel.ColorR, sInputPixel.ColorG, sInputPixel.ColorB, outA, outB, outC );
-    sOutputPixel.Luma = outA;
-    sOutputPixel.ChromaU = outB;
-    sOutputPixel.ChromaV = outC;
-  }
-  return sOutputPixel;
-}
-
-Void PlaYUVerFrame::FrametoRGB8()
+Void PlaYUVerFrame::fillRGBBuffer()
 {
   if( m_bHasRGBPel )
     return;
@@ -329,6 +297,43 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
   default:
     Q_ASSERT( 0 );
   }
+}
+
+Pixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos, Int eColorSpace )
+{
+  Pixel PelValue = m_pcPelFormat->getPixelValue( m_pppcInputPel, xPos, yPos );
+  ConvertPixel( PelValue, eColorSpace );
+  return PelValue;
+}
+
+Pixel PlaYUVerFrame::ConvertPixel( Pixel sInputPixel, Int eOutputSpace )
+{
+  Int outA, outB, outC;
+  Pixel sOutputPixel =
+  {
+    COLOR_INVALID,
+    0,
+    0,
+    0 };
+
+  if( sInputPixel.color_space == eOutputSpace )
+    return sInputPixel;
+
+  if( eOutputSpace == COLOR_RGB )
+  {
+    yuvToRgb<Int>( sInputPixel.Luma, sInputPixel.ChromaU, sInputPixel.ChromaV, outA, outB, outC );
+    sOutputPixel.ColorR = outA;
+    sOutputPixel.ColorG = outB;
+    sOutputPixel.ColorB = outC;
+  }
+  if( eOutputSpace == COLOR_YUV )
+  {
+    rgbToYuv<Int>( sInputPixel.ColorR, sInputPixel.ColorG, sInputPixel.ColorB, outA, outB, outC );
+    sOutputPixel.Luma = outA;
+    sOutputPixel.ChromaU = outB;
+    sOutputPixel.ChromaV = outC;
+  }
+  return sOutputPixel;
 }
 
 Void PlaYUVerFrame::openPixfc()
@@ -405,7 +410,7 @@ cv::Mat PlaYUVerFrame::getCvMat()
   cv::Mat opencvFrame( m_uiHeight, m_uiWidth, cvType );
   if( m_iPixelFormat != GRAY )
   {
-    FrametoRGB8();
+    fillRGBBuffer();
     memcpy( opencvFrame.data, m_pcRGB32, m_uiWidth * m_uiHeight * 3 * sizeof(Pel) );
   }
   else

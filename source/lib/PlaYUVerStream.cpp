@@ -551,7 +551,7 @@ Void PlaYUVerStream::readFrame()
   }
 //Int time = m_cTimer.elapsed();
 //m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time) / 2;
-  m_pcNextFrame->FrametoRGB8();
+  m_pcNextFrame->fillRGBBuffer();
   return;
 }
 
@@ -608,8 +608,8 @@ Bool PlaYUVerStream::saveFrame( const QString& filename, PlaYUVerFrame *saveFram
   }
   else
   {
-    saveFrame->FrametoRGB8();
-    QImage qimg = QImage( saveFrame->getQImageBuffer(), saveFrame->getWidth(), saveFrame->getHeight(), QImage::Format_RGB888 );
+    saveFrame->fillRGBBuffer();
+    QImage qimg = QImage( saveFrame->getRGBBuffer(), saveFrame->getWidth(), saveFrame->getHeight(), QImage::Format_RGB888 );
     return qimg.save( filename );
   }
   return false;

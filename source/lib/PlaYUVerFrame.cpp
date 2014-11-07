@@ -223,6 +223,8 @@ Void PlaYUVerFrame::FrameFromBuffer( Pel *input_buffer, Int pel_format )
   if( m_iPixelFormat != pel_format )
     return;
   m_pcPelFormat->frameFromBuffer( input_buffer, m_pppcInputPel, m_uiWidth, m_uiHeight );
+  m_bHasRGBPel = false;
+  fillRGBBuffer();
 }
 
 Void PlaYUVerFrame::FrameToBuffer( Pel *output_buffer )

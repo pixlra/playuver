@@ -398,7 +398,7 @@ cv::Mat PlaYUVerFrame::getCvMat()
   case YUV444p:
   case YUV422p:
   case YUYV422:
-    cvType = CV_8UC3;
+    cvType = CV_8UC4;
     break;
   case GRAY:
     cvType = CV_8UC1;
@@ -413,7 +413,7 @@ cv::Mat PlaYUVerFrame::getCvMat()
   if( m_iPixelFormat != GRAY )
   {
     fillRGBBuffer();
-    memcpy( opencvFrame.data, m_pcRGB32, m_uiWidth * m_uiHeight * 3 * sizeof(Pel) );
+    memcpy( opencvFrame.data, m_pcRGB32, m_uiWidth * m_uiHeight * 4 * sizeof(UChar) );
   }
   else
   {
@@ -431,7 +431,7 @@ Void PlaYUVerFrame::copyFrom( cv::Mat* opencvFrame )
     case 1:
       m_iPixelFormat = GRAY;
       break;
-    case 3:
+    case 4:
       m_iPixelFormat = RGB8;
       break;
     default:
@@ -452,12 +452,13 @@ Void PlaYUVerFrame::copyFrom( cv::Mat* opencvFrame )
     Pel* pInputPelU = m_pppcInputPel[CHROMA_U][0];
     Pel* pInputPelV = m_pppcInputPel[CHROMA_V][0];
     Pel* pcRGBPelInterlaced = m_pcRGB32;
-    memcpy( pcRGBPelInterlaced, opencvFrame->data, m_uiWidth * m_uiHeight * 3 * sizeof(Pel) );
+    memcpy( pcRGBPelInterlaced, opencvFrame->data, m_uiWidth * m_uiHeight * 4 * sizeof(Pel) );
+    UInt* buff = (UInt*)pcRGBPelInterlaced;
     for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )
     {
-      *pInputPelY++ = *pcRGBPelInterlaced++;
-      *pInputPelU++ = *pcRGBPelInterlaced++;
-      *pInputPelV++ = *pcRGBPelInterlaced++;
+      *pInputPelY++ = qRed( *buff );
+      *pInputPelU++ = qGreen( *buff );
+      *pInputPelV++ = qBlue( *buff++ );
     }
     m_bHasRGBPel = true;
   }

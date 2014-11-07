@@ -39,12 +39,6 @@ namespace plaYUVer
 #define ADD_FFMPEG_PEL_FMT( fmt ) 0
 #endif
 
-static inline UInt qRgb( Int r, Int g, Int b )  // set RGB value
-{
-  return ( 0xffu << 24 ) | ( ( r & 0xff ) << 16 ) | ( ( g & 0xff ) << 8 ) | ( b & 0xff );
-}
-
-
 /**
  * YUV Formats
  * Progressive and interlaces

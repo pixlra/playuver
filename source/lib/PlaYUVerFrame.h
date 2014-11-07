@@ -91,6 +91,22 @@ Void rgbToYuv( T iR, T iG, T iB, T &iY, T &iU, T &iV )
   iV = ( 1000 * ( iR - iY ) + 179456 ) / 1402;
 }
 
+inline Q_DECL_CONSTEXPR Int qRed(UInt rgb)             // get red part of RGB
+{ return ((rgb >> 16) & 0xff); }
+
+inline Q_DECL_CONSTEXPR Int qGreen(UInt rgb)           // get green part of RGB
+{ return ((rgb >> 8) & 0xff); }
+
+inline Q_DECL_CONSTEXPR Int qBlue(UInt rgb)            // get blue part of RGB
+{ return (rgb & 0xff); }
+
+inline Q_DECL_CONSTEXPR Int qAlpha(UInt rgb)           // get alpha part of RGBA
+{ return rgb >> 24; }
+
+inline Q_DECL_CONSTEXPR UInt qRgb(Int r, Int g, Int b) // set RGB value
+{ return (0xffu << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff); }
+
+
 class PlaYUVerFrame
 {
 public:

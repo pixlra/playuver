@@ -73,7 +73,7 @@ void ViewArea::setImage( PlaYUVerFrame* pcFrame )
 {
   m_pcCurrFrame = pcFrame;
   m_pcCurrFrame->FrametoRGB8();
-  QImage qimg = QImage( m_pcCurrFrame->getQImageBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), QImage::Format_RGB888 );
+  QImage qimg = QImage( m_pcCurrFrame->getQImageBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), QImage::Format_RGB32 );
   setImage( QPixmap::fromImage( qimg ) );
 }
 

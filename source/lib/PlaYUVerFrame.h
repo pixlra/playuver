@@ -52,7 +52,7 @@ typedef struct
   Int ratioChromaHeight;
   Pixel (*getPixelValue)( Pel ***Img, Int xPos, Int yPos );
   Void (*frameFromBuffer)( Pel *in, Pel*** out, UInt width, UInt height );
-  Void (*bufferFromFrame)( Pel* out, Pel ***in, UInt width, UInt height );
+  Void (*bufferFromFrame)( Pel ***in, Pel* out, UInt width, UInt height );
   Void (*fillRGBbuffer)( Pel*** in, UChar* out, UInt width, UInt height );
   Int ffmpegPelFormat;
 } PlaYUVerFramePelFormat;
@@ -60,6 +60,37 @@ typedef struct
 #define PLAYUVER_NUMBER_FORMATS 6
 
 extern PlaYUVerFramePelFormat g_PlaYUVerFramePelFormatsList[PLAYUVER_NUMBER_FORMATS];
+
+template<typename T>
+Void yuvToRgb( T iY, T iU, T iV, T &iR, T &iG, T &iB )
+{
+  iR = iY + 1402 * iV / 1000;
+  iG = iY - ( 101004 * iU + 209599 * iV ) / 293500;
+  iB = iY + 1772 * iU / 1000;
+
+  if( iR < 0 )
+    iR = 0;
+  if( iG < 0 )
+    iG = 0;
+  if( iB < 0 )
+    iB = 0;
+
+  if( iR > 255 )
+    iR = 255;
+  if( iG > 255 )
+    iG = 255;
+  if( iB > 255 )
+    iB = 255;
+}
+
+template<typename T>
+Void rgbToYuv( T iR, T iG, T iB, T &iY, T &iU, T &iV )
+{
+  iY = ( 299 * iR + 587 * iG + 114 * iB + 500 ) / 1000;
+  iU = ( 1000 * ( iB - iY ) + 226816 ) / 1772;
+  iV = ( 1000 * ( iR - iY ) + 179456 ) / 1402;
+}
+
 
 class PlaYUVerFrame
 {
@@ -123,10 +154,15 @@ public:
 
   UChar* getQImageBuffer() const
   {
-    return m_pcRGBPelInterlaced;
+    return m_pcRGB32;
   }
 
   static Pixel ConvertPixel( Pixel, Int );
+
+  template<typename T>
+  static Void YUV2RGB( T iY, T iU, T iV, T &iR, T &iG, T &iB );
+  template<typename T>
+  static Void RGB2YUV( T iR, T iG, T iB, T &iY, T &iU, T &iV );
 
 #ifdef USE_OPENCV
   cv::Mat getCvMat();
@@ -200,7 +236,7 @@ private:
 
   Bool m_bHasRGBPel;
   Pel*** m_pppcInputPel;
-  UChar* m_pcRGBPelInterlaced;
+  UChar* m_pcRGB32;
 
   Void adjustSelectedAreaDims( QRect &area, Int pel_format );
   Void init( UInt width, UInt height, Int pel_format );

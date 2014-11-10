@@ -343,13 +343,8 @@ void PlaYUVerFrameStatistics::calcHistogramValues()
       }
       if( d->calcLuma && ( d->imageColorSpace == PlaYUVerFrame::COLOR_RGB || d->imageColorSpace == PlaYUVerFrame::COLOR_ARGB ) )
       {
-        Pixel pixel_value =
-        {
-            d->imageColorSpace,
-            *( data[COLOR_R] ),
-            *( data[COLOR_G] ),
-            *( data[COLOR_B] ) };
-        luma = PlaYUVerFrame::ConvertPixel( pixel_value, PlaYUVerFrame::COLOR_YUV ).Luma;
+        PlaYUVerFrame::Pixel currPixel( d->imageColorSpace, *( data[COLOR_R] ), *( data[COLOR_G] ), *( data[COLOR_B] ) );
+        luma = PlaYUVerFrame::ConvertPixel( currPixel, PlaYUVerFrame::COLOR_YUV ).Y();
         d->histogram[luma + j * d->histoSegments]++;
       }
       for( j = 0; j < d->imageChannels; j++ )

@@ -532,8 +532,9 @@ Void PlaYUVerStream::readFrame()
     if( !m_cLibAvContext->decodeAvFormat() )
     {
       m_iErrorStatus = READING;
+      return;
     }
-    m_pcNextFrame->FrameFromBuffer( m_cLibAvContext->video_dst_data[0], m_iPixelFormat );
+    m_pcNextFrame->frameFromBuffer( m_cLibAvContext->m_pchFrameBuffer, m_cLibAvContext->m_uiFrameBufferSize );
   }
   else
 #endif
@@ -547,7 +548,7 @@ Void PlaYUVerStream::readFrame()
                 << endl;
       return;
     }
-    m_pcNextFrame->FrameFromBuffer( m_pStreamBuffer, m_iPixelFormat );
+    m_pcNextFrame->frameFromBuffer( m_pStreamBuffer, bytes_read );
   }
 //Int time = m_cTimer.elapsed();
 //m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time) / 2;
@@ -558,7 +559,7 @@ Void PlaYUVerStream::readFrame()
 Void PlaYUVerStream::writeFrame()
 {
   UInt64 frame_bytes_input = m_pcCurrFrame->getBytesPerFrame();
-  m_pcCurrFrame->FrameToBuffer( m_pStreamBuffer );
+  m_pcCurrFrame->frameToBuffer( m_pStreamBuffer );
   UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
   if( bytes_read != frame_bytes_input )
   {
@@ -570,7 +571,7 @@ Void PlaYUVerStream::writeFrame()
 Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
 {
   UInt64 frame_bytes_input = pcFrame->getBytesPerFrame();
-  pcFrame->FrameToBuffer( m_pStreamBuffer );
+  pcFrame->frameToBuffer( m_pStreamBuffer );
   UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
   if( bytes_read != frame_bytes_input )
   {

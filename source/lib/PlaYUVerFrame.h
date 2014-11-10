@@ -41,14 +41,42 @@
 class PixFcSSE;
 struct AVFrame;
 
-
 namespace plaYUVer
 {
-
 
 class PlaYUVerFrame
 {
 public:
+  class Pixel
+  {
+  private:
+    Int m_iColorSpace;
+    Pel PixelComponents[3];
+  public:
+    Pixel()
+    {
+      m_iColorSpace = PlaYUVerFrame::COLOR_INVALID;
+      PixelComponents[0] = 0;
+      PixelComponents[1] = 0;
+      PixelComponents[2] = 0;
+    }
+    Pixel( Int ColorSpace, Pel c0, Pel c1, Pel c2 )
+    {
+      m_iColorSpace = ColorSpace == PlaYUVerFrame::GRAY ? PlaYUVerFrame::COLOR_YUV : ColorSpace;
+      PixelComponents[0] = c0;
+      PixelComponents[1] = c1;
+      PixelComponents[2] = c2;
+    }
+    Int ColorSpace() { return m_iColorSpace; }
+    Pel* Components()  { return PixelComponents; }
+    Pel& Y()  { return PixelComponents[0]; }
+    Pel& Cb() { return PixelComponents[1]; }
+    Pel& Cr() { return PixelComponents[2]; }
+    Pel& R()  { return PixelComponents[0]; }
+    Pel& G()  { return PixelComponents[1]; }
+    Pel& B()  { return PixelComponents[2]; }
+  };
+
   enum ColorSpace
   {
     COLOR_INVALID = -1,
@@ -74,12 +102,12 @@ public:
   static QStringList supportedPixelFormatListNames();
 
   PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );
-  PlaYUVerFrame( PlaYUVerFrame *other );
-  PlaYUVerFrame( PlaYUVerFrame *other, QRect area );
+  PlaYUVerFrame( PlaYUVerFrame * );
+  PlaYUVerFrame( PlaYUVerFrame *, QRect area );
   ~PlaYUVerFrame();
 
   UInt64 getBytesPerFrame();
-  static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat );
+  static UInt64 getBytesPerFrame( UInt, UInt, Int );
 
   Int getColorSpace() const;
   Int getNumberChannels() const;
@@ -87,16 +115,16 @@ public:
   UInt getChromaHeight() const;
   UInt getChromaLength() const;
 
-  Void FrameFromBuffer( Pel*, Int );
-  Void FrameToBuffer( Pel* );
+  Void frameFromBuffer( Pel*, UInt64 );
+  Void frameToBuffer( Pel* );
 
   Void fillRGBBuffer();
 
   Void copyFrom( PlaYUVerFrame* );
   Void copyFrom( PlaYUVerFrame*, UInt, UInt );
 
-  Pixel getPixelValue( Int xPos, Int yPos, Int eColorSpace );
-  static Pixel ConvertPixel( Pixel, Int );
+  PlaYUVerFrame::Pixel getPixelValue( Int, Int, Int );
+  static PlaYUVerFrame::Pixel ConvertPixel( Pixel, Int );
 
   UInt getWidth() const
   {
@@ -140,7 +168,7 @@ public:
   /**
    * Interface to other libs
    */
-  Void copyFrom( struct AVFrame * );
+  Void copyFrom( struct AVFrame *, Int iPixelFormat );
 
 #ifdef USE_OPENCV
   cv::Mat getCvMat();

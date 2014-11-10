@@ -94,7 +94,6 @@ struct structPlaYUVerFramePelFormat
   UInt numberChannels;
   Int ratioChromaWidth;
   Int ratioChromaHeight;
-  Pixel (*getPixelValue)( Pel ***Img, Int xPos, Int yPos );
   Void (*frameFromBuffer)( Pel *in, Pel*** out, UInt width, UInt height );
   Void (*bufferFromFrame)( Pel ***in, Pel* out, UInt width, UInt height );
   Void (*fillRGBbuffer)( Pel*** in, UChar* out, UInt width, UInt height );
@@ -103,7 +102,7 @@ struct structPlaYUVerFramePelFormat
 
 typedef struct structPlaYUVerFramePelFormat PlaYUVerFramePelFormat;
 
-#define PLAYUVER_NUMBER_FORMATS 6
+#define PLAYUVER_NUMBER_FORMATS 7
 extern PlaYUVerFramePelFormat g_PlaYUVerFramePelFormatsList[PLAYUVER_NUMBER_FORMATS];
 
 }  // NAMESPACE

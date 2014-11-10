@@ -26,6 +26,7 @@
 #include "LibAvContextHandle.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"
+#include "LibMemory.h"
 
 namespace plaYUVer
 {
@@ -77,22 +78,20 @@ Void LibAvContextHandle::closeAvFormat()
       avformat_close_input( &fmt_ctx );
 
     av_free( frame );
-    av_free( video_dst_data[0] );
+    //av_free( video_dst_data[0] );
   }
   m_bHasStream = false;
 }
 
 Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate, UInt64& num_frames )
 {
-  int ret = 0;
-
   fmt_ctx = NULL;
   video_dec_ctx = NULL;
   video_stream = NULL;
-  video_dst_data[0] = NULL;
-  video_dst_data[1] = NULL;
-  video_dst_data[2] = NULL;
-  video_dst_data[3] = NULL;
+//  video_dst_data[0] = NULL;
+//  video_dst_data[1] = NULL;
+//  video_dst_data[2] = NULL;
+//  video_dst_data[3] = NULL;
   video_stream_idx = -1;
   frame = NULL;
   m_bHasStream = false;
@@ -136,15 +135,18 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
     video_stream = fmt_ctx->streams[video_stream_idx];
     video_dec_ctx = video_stream->codec;
 
-    /* allocate image where the decoded image will be put */
-    ret = av_image_alloc( video_dst_data, video_dst_linesize, video_dec_ctx->width, video_dec_ctx->height, video_dec_ctx->pix_fmt, 1 );
-    if( ret < 0 )
-    {
-      //qDebug( ) << " Could not allocate raw video buffer !!!" << endl;
-      closeAvFormat();
-      return false;
-    }
-    video_dst_bufsize = ret;
+//    /* allocate image where the decoded image will be put */
+//    ret = av_image_alloc( video_dst_data, video_dst_linesize, video_dec_ctx->width, video_dec_ctx->height, video_dec_ctx->pix_fmt, 1 );
+//    if( ret < 0 )
+//    {
+//      //qDebug( ) << " Could not allocate raw video buffer !!!" << endl;
+//      closeAvFormat();
+//      return false;
+//    }
+//    video_dst_bufsize = ret;
+
+    m_uiFrameBufferSize = av_image_get_buffer_size( video_dec_ctx->pix_fmt, video_dec_ctx->width, video_dec_ctx->height, 1);
+    getMem1D( &m_pchFrameBuffer, m_uiFrameBufferSize );
   }
 
   const char *codec_name = avcodec_get_name( video_dec_ctx->codec_id );
@@ -207,7 +209,7 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
   if( !frame )
   {
     //qDebug( ) << " Could not allocate frame !!!" << endl;
-    ret = AVERROR( ENOMEM );
+    //ret = AVERROR( ENOMEM );
     closeAvFormat();
     return false;
   }
@@ -240,10 +242,14 @@ Bool LibAvContextHandle::decodeAvFormat()
 
       if( got_frame )
       {
+        av_image_copy_to_buffer( m_pchFrameBuffer, m_uiFrameBufferSize,
+            frame->data,frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
+            video_dec_ctx->height, 1);
+
         /* copy decoded frame to destination buffer:
          * this is required since rawvideo expects non aligned data */
-        av_image_copy( video_dst_data, video_dst_linesize, ( const uint8_t ** )( frame->data ), frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
-            video_dec_ctx->height );
+  //        av_image_copy( video_dst_data, video_dst_linesize, ( const uint8_t ** )( frame->data ), frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
+  //            video_dec_ctx->height );
       }
     }
     av_free_packet( &pkt );

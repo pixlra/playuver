@@ -355,7 +355,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
   {
     Int imageWidth = m_pixmap.width();
     Int imageHeight = m_pixmap.height();
-    Pixel sPixelValue;
+    PlaYUVerFrame::Pixel sPixelValue;
 
     QFont font( "Helvetica" );
     font.setPixelSize( 12 );
@@ -378,39 +378,39 @@ void ViewArea::paintEvent( QPaintEvent *event )
         {
           sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_YUV );
 
-          if( sPixelValue.Luma < 128 )
+          if( sPixelValue.Y() < 128 )
             painter.setPen( QColor( Qt::white ) );
           else
             painter.setPen( QColor( Qt::black ) );
 
           painter.drawText( pixelRect, Qt::AlignCenter,
-              "Y: " + QString::number( sPixelValue.Luma ) + "\n" + "U: " + QString::number( sPixelValue.ChromaU ) + "\n" + "V: "
-                  + QString::number( sPixelValue.ChromaV ) );
+              "Y: " + QString::number( sPixelValue.Y() ) + "\n" + "U: " + QString::number( sPixelValue.Cb() ) + "\n" + "V: "
+                  + QString::number( sPixelValue.Cr() ) );
         }
         if( frFormat == PlaYUVerFrame::COLOR_GRAY )
         {
           sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_YUV );
 
-          if( sPixelValue.Luma < 128 )
+          if( sPixelValue.Y() < 128 )
             painter.setPen( QColor( Qt::white ) );
           else
             painter.setPen( QColor( Qt::black ) );
 
-          painter.drawText( pixelRect, Qt::AlignCenter, "Y: " + QString::number( sPixelValue.Luma ) );
+          painter.drawText( pixelRect, Qt::AlignCenter, "Y: " + QString::number( sPixelValue.Y() ) );
         }
 
         if( ( frFormat == PlaYUVerFrame::COLOR_RGB ) )
         {
           sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_RGB );
 
-          if( ( sPixelValue.ColorR + sPixelValue.ColorG + sPixelValue.ColorB ) < 128 * 3 )
+          if( ( sPixelValue.R() + sPixelValue.G() + sPixelValue.B() ) < 128 * 3 )
             painter.setPen( QColor( Qt::white ) );
           else
             painter.setPen( QColor( Qt::black ) );
 
           painter.drawText( pixelRect, Qt::AlignCenter,
-              "R: " + QString::number( sPixelValue.ColorR ) + "\n" + "G: " + QString::number( sPixelValue.ColorG ) + "\n" + "B: "
-                  + QString::number( sPixelValue.ColorB ) );
+              "R: " + QString::number( sPixelValue.R() ) + "\n" + "G: " + QString::number( sPixelValue.G() ) + "\n" + "B: "
+                  + QString::number( sPixelValue.B() ) );
         }
       }
     }

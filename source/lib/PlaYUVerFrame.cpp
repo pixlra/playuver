@@ -40,9 +40,6 @@
 namespace plaYUVer
 {
 
-
-
-
 Int PlaYUVerFrame::isRGBorYUVorGray( Int pixel_format )
 {
   switch( pixel_format )
@@ -225,16 +222,16 @@ UInt PlaYUVerFrame::getChromaLength() const
   return getChromaWidth() * getChromaHeight();
 }
 
-Void PlaYUVerFrame::FrameFromBuffer( Pel *input_buffer, Int pel_format )
+Void PlaYUVerFrame::frameFromBuffer( Pel *Buff, UInt64 uiBuffSize )
 {
-  if( m_iPixelFormat != pel_format )
+  if( uiBuffSize != getBytesPerFrame() )
     return;
-  m_pcPelFormat->frameFromBuffer( input_buffer, m_pppcInputPel, m_uiWidth, m_uiHeight );
+  m_pcPelFormat->frameFromBuffer( Buff, m_pppcInputPel, m_uiWidth, m_uiHeight );
   m_bHasRGBPel = false;
   fillRGBBuffer();
 }
 
-Void PlaYUVerFrame::FrameToBuffer( Pel *output_buffer )
+Void PlaYUVerFrame::frameToBuffer( Pel *output_buffer )
 {
   m_pcPelFormat->bufferFromFrame( m_pppcInputPel, output_buffer, m_uiWidth, m_uiHeight );
 }
@@ -261,7 +258,7 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
     return;
   m_bHasRGBPel = false;
   Pel ***pInput = input_frame->getPelBufferYUV();
-  for( Int ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
+  for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
   {
     Int ratioH = ch > 0 ? m_pcPelFormat->ratioChromaHeight : 1;
     Int ratioW = ch > 0 ? m_pcPelFormat->ratioChromaWidth : 1;
@@ -272,41 +269,41 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
   }
 }
 
-Pixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos, Int eColorSpace )
+PlaYUVerFrame::Pixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos, Int eColorSpace )
 {
-  Pixel PelValue = m_pcPelFormat->getPixelValue( m_pppcInputPel, xPos, yPos );
-  ConvertPixel( PelValue, eColorSpace );
-  return PelValue;
+  PlaYUVerFrame::Pixel PixelValue( m_pcPelFormat->colorSpace, 0, 0, 0 );
+  for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
+  {
+    Int ratioH = ch > 0 ? m_pcPelFormat->ratioChromaHeight : 1;
+    Int ratioW = ch > 0 ? m_pcPelFormat->ratioChromaWidth : 1;
+    PixelValue.Components()[ch] = m_pppcInputPel[ch][yPos / ratioH][xPos / ratioW];
+  }
+  return ConvertPixel( PixelValue, eColorSpace );
 }
 
-Pixel PlaYUVerFrame::ConvertPixel( Pixel sInputPixel, Int eOutputSpace )
+PlaYUVerFrame::Pixel PlaYUVerFrame::ConvertPixel( PlaYUVerFrame::Pixel inputPixel, Int eOutputSpace )
 {
   Int outA, outB, outC;
-  Pixel sOutputPixel =
-  {
-    COLOR_INVALID,
-    0,
-    0,
-    0 };
+  PlaYUVerFrame::Pixel outPixel(COLOR_INVALID, 0, 0, 0);
 
-  if( sInputPixel.color_space == eOutputSpace )
-    return sInputPixel;
+  if( inputPixel.ColorSpace() == eOutputSpace || eOutputSpace == COLOR_ARGB || eOutputSpace == COLOR_GRAY )
+    return inputPixel;
 
   if( eOutputSpace == COLOR_RGB )
   {
-    yuvToRgb<Int>( sInputPixel.Luma, sInputPixel.ChromaU, sInputPixel.ChromaV, outA, outB, outC );
-    sOutputPixel.ColorR = outA;
-    sOutputPixel.ColorG = outB;
-    sOutputPixel.ColorB = outC;
+    yuvToRgb<Int>( inputPixel.Y(), inputPixel.Cb(), inputPixel.Cr(), outA, outB, outC );
+    outPixel.R() = outA;
+    outPixel.G() = outB;
+    outPixel.B() = outC;
   }
   if( eOutputSpace == COLOR_YUV )
   {
-    rgbToYuv<Int>( sInputPixel.ColorR, sInputPixel.ColorG, sInputPixel.ColorB, outA, outB, outC );
-    sOutputPixel.Luma = outA;
-    sOutputPixel.ChromaU = outB;
-    sOutputPixel.ChromaV = outC;
+    rgbToYuv<Int>( inputPixel.R(), inputPixel.G(), inputPixel.B(), outA, outB, outC );
+    outPixel.Y() = outA;
+    outPixel.Cb() = outB;
+    outPixel.Cr() = outC;
   }
-  return sOutputPixel;
+  return outPixel;
 }
 
 /*
@@ -364,6 +361,32 @@ Void PlaYUVerFrame::FrametoRGB8Pixfc()
   m_bHasRGBPel = true;
 #endif
 }
+
+Void PlaYUVerFrame::copyFrom( struct AVFrame *ffAvFrame, Int iPixelFormat )
+{
+#ifdef USE_FFMPEG
+  if( m_iPixelFormat != iPixelFormat )
+    return;
+  m_bHasRGBPel = false;
+  for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
+  {
+    Pel *pPel = m_pppcInputPel[ch][0];
+    uint8_t *ffPel = ffAvFrame->data[ch];
+    if( !ffPel ) continue;
+    Int ratioH = ch > 0 ? m_pcPelFormat->ratioChromaHeight : 1;
+    Int ratioW = ch > 0 ? m_pcPelFormat->ratioChromaWidth : 1;
+    for( UInt y = 0; y < m_uiHeight / ratioH; y++ )
+    {
+      for( UInt x = 0; x < m_uiWidth / ratioW; x++ )
+      {
+        *pPel++ = ffPel[x];
+      }
+      ffPel +=  ffAvFrame->linesize[ch];
+    }
+  }
+#endif
+}
+
 
 #ifdef USE_OPENCV
 cv::Mat PlaYUVerFrame::getCvMat()

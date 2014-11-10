@@ -75,9 +75,12 @@ public:
     return m_uiSecs;
   }
 
-  uint8_t *video_dst_data[4];
-  int video_dst_linesize[4];
-  int video_dst_bufsize;
+//  uint8_t *video_dst_data[4];
+//  int video_dst_linesize[4];
+//  int video_dst_bufsize;
+
+  UChar* m_pchFrameBuffer;
+  UInt64 m_uiFrameBufferSize;
 
 private:
   AVFormatContext *fmt_ctx;

@@ -150,7 +150,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   m_comboBoxPixelFormat->setSizePolicy( sizePolicyPixelFormat );
   m_comboBoxPixelFormat->setAcceptDrops( true );
   m_comboBoxPixelFormat->clear();
-  m_comboBoxPixelFormat->insertItems( 0, PlaYUVerFrame::supportedPixelFormatList() );
+  m_comboBoxPixelFormat->insertItems( 0, PlaYUVerFrame::supportedPixelFormatListNames() );
   m_comboBoxPixelFormat->setCurrentIndex( 1 );
 
   MainLayout->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum ) );

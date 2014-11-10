@@ -18,20 +18,27 @@
  */
 
 /**
- * \file     PlaYUVerFrame.cpp
- * \brief    Video Frame handling
+ * \file     PlaYUVerFramePixelFormats.cpp
+ * \brief    Handling the pixel formats definition
  */
 
 #include "config.h"
 #include <cstdio>
 #include "LibMemory.h"
-#include "PlaYUVerFrame.h"
 #ifdef USE_FFMPEG
 #include "LibAvContextHandle.h"
 #endif
+#include "PlaYUVerFramePixelFormats.h"
 
 namespace plaYUVer
 {
+
+/*
+ **************************************************************
+ * Handle different pel formats
+ * Interface to generalise into one struct the pixel formats
+ **************************************************************
+ */
 
 #ifdef USE_FFMPEG
 #define ADD_FFMPEG_PEL_FMT( fmt ) fmt
@@ -75,7 +82,7 @@ Void fillRGBbufferYUV( Pel*** in, UChar* out, UInt width, UInt height, UInt rati
       iU = pU[y >> ratioChromaVer][x >> ratioChromaHor] - 128;
       iV = pV[y >> ratioChromaVer][x >> ratioChromaHor] - 128;
       yuvToRgb<Int>( iY, iU, iV, iR, iG, iB );
-      *buff = qRgb( iR, iG, iB );
+      *buff = pelRgb( iR, iG, iB );
       buff++;
     }
   }
@@ -259,10 +266,13 @@ Void bufferFromFrameGray( Pel ***in, Pel* out, UInt width, UInt height )
 Void fillRGBbufferGray( Pel*** in, UChar* out, UInt width, UInt height )
 {
   Pel *inPel = in[0][0];
+  Pel iY;
   UInt* buff = ( UInt* )out;
   for( UInt i = 0; i < height * width; i++ )
   {
-    *buff++ = qRgb( *inPel, *inPel, *inPel++ );
+    iY = *inPel;
+    *buff++ = pelRgb( iY, iY, iY );
+    inPel++;
   }
 }
 PlaYUVerFramePelFormat gray =
@@ -329,7 +339,7 @@ Void fillRGBbufferRGB24( Pel*** in, UChar* out, UInt width, UInt height )
     iR = *pR++;
     iG = *pG++;
     iB = *pB++;
-    *buff++ = qRgb( iR, iG, iB );
+    *buff++ = pelRgb( iR, iG, iB );
   }
 }
 PlaYUVerFramePelFormat rgb24 =
@@ -345,7 +355,7 @@ PlaYUVerFramePelFormat rgb24 =
   fillRGBbufferRGB24,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_RGB24 ), };
 
-extern PlaYUVerFramePelFormat g_PlaYUVerFramePelFormatsList[PLAYUVER_NUMBER_FORMATS] =
+PlaYUVerFramePelFormat g_PlaYUVerFramePelFormatsList[PLAYUVER_NUMBER_FORMATS] =
 {
   yuv420p,
   yuv444p,
@@ -353,5 +363,6 @@ extern PlaYUVerFramePelFormat g_PlaYUVerFramePelFormatsList[PLAYUVER_NUMBER_FORM
   yuyv422,
   gray,
   rgb24, };
+
 
 }  // NAMESPACE

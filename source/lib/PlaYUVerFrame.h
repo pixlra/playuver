@@ -39,72 +39,11 @@
 #endif
 
 class PixFcSSE;
+struct AVFrame;
+
 
 namespace plaYUVer
 {
-
-typedef struct
-{
-  const Char* name;
-  Int colorSpace;
-  UInt numberChannels;
-  Int ratioChromaWidth;
-  Int ratioChromaHeight;
-  Pixel (*getPixelValue)( Pel ***Img, Int xPos, Int yPos );
-  Void (*frameFromBuffer)( Pel *in, Pel*** out, UInt width, UInt height );
-  Void (*bufferFromFrame)( Pel ***in, Pel* out, UInt width, UInt height );
-  Void (*fillRGBbuffer)( Pel*** in, UChar* out, UInt width, UInt height );
-  Int ffmpegPelFormat;
-} PlaYUVerFramePelFormat;
-
-#define PLAYUVER_NUMBER_FORMATS 6
-
-extern PlaYUVerFramePelFormat g_PlaYUVerFramePelFormatsList[PLAYUVER_NUMBER_FORMATS];
-
-template<typename T>
-Void yuvToRgb( T iY, T iU, T iV, T &iR, T &iG, T &iB )
-{
-  iR = iY + 1402 * iV / 1000;
-  iG = iY - ( 101004 * iU + 209599 * iV ) / 293500;
-  iB = iY + 1772 * iU / 1000;
-
-  if( iR < 0 )
-    iR = 0;
-  if( iG < 0 )
-    iG = 0;
-  if( iB < 0 )
-    iB = 0;
-
-  if( iR > 255 )
-    iR = 255;
-  if( iG > 255 )
-    iG = 255;
-  if( iB > 255 )
-    iB = 255;
-}
-
-template<typename T>
-Void rgbToYuv( T iR, T iG, T iB, T &iY, T &iU, T &iV )
-{
-  iY = ( 299 * iR + 587 * iG + 114 * iB + 500 ) / 1000;
-  iU = ( 1000 * ( iB - iY ) + 226816 ) / 1772;
-  iV = ( 1000 * ( iR - iY ) + 179456 ) / 1402;
-}
-
-inline Q_DECL_CONSTEXPR Int qRed(UInt rgb)             // get red part of RGB
-{ return ((rgb >> 16) & 0xff); }
-
-inline Q_DECL_CONSTEXPR Int qGreen(UInt rgb)           // get green part of RGB
-{ return ((rgb >> 8) & 0xff); }
-
-inline Q_DECL_CONSTEXPR Int qBlue(UInt rgb)            // get blue part of RGB
-{ return (rgb & 0xff); }
-
-inline Q_DECL_CONSTEXPR Int qAlpha(UInt rgb)           // get alpha part of RGBA
-{ return rgb >> 24; }
-
-inline Q_DECL_CONSTEXPR UInt qRgb(Int r, Int g, Int b) // set RGB value
-{ return (0xffu << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff); }
 
 
 class PlaYUVerFrame
@@ -132,7 +71,7 @@ public:
   };
 
   static Int isRGBorYUVorGray( Int pixel_format );
-  static QStringList supportedPixelFormatList();
+  static QStringList supportedPixelFormatListNames();
 
   PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );
   PlaYUVerFrame( PlaYUVerFrame *other );
@@ -198,10 +137,19 @@ public:
     return m_pcRGB32;
   }
 
+  /**
+   * Interface to other libs
+   */
+  Void copyFrom( struct AVFrame * );
+
 #ifdef USE_OPENCV
   cv::Mat getCvMat();
   Void copyFrom( cv::Mat* );
 #endif
+
+  /**
+   * Quality metrics interface
+   */
 
   enum QualityMetrics
   {
@@ -230,7 +178,7 @@ public:
 
 private:
 
-  PlaYUVerFramePelFormat* m_pcPelFormat;
+  struct structPlaYUVerFramePelFormat* m_pcPelFormat;
 
   UInt m_uiWidth;
   UInt m_uiHeight;

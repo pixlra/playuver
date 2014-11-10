@@ -169,7 +169,7 @@ Void StreamPropertiesSideBar::setData( PlaYUVerStream* pcStream )
     UInt fps = m_pcStream->getFrameRate();
     value = QString( tr( "%1 x %2 @ %3 Hz" ) ).arg( width ).arg( height ).arg( fps );
     labelSizeValue->setText( value );
-    value = QString( PlaYUVerFrame::supportedPixelFormatList().at( m_pcStream->getCurrFrame()->getPelFormat() ) );
+    value = QString( PlaYUVerFrame::supportedPixelFormatListNames().at( m_pcStream->getCurrFrame()->getPelFormat() ) );
     labelColorSpaceValue->setText( value );
   }
 }

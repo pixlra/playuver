@@ -25,6 +25,7 @@
 #include <cstdio>
 #include "LibAvContextHandle.h"
 #include "PlaYUVerFrame.h"
+#include "PlaYUVerFramePixelFormats.h"
 
 namespace plaYUVer
 {

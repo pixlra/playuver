@@ -243,7 +243,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   m_cStreamInformationString.append( QString( " / " ) );
   m_cStreamInformationString.append( m_cCodedName );
   m_cStreamInformationString.append( QString( " / " ) );
-  m_cStreamInformationString.append( PlaYUVerFrame::supportedPixelFormatList().at( m_iPixelFormat ) );
+  m_cStreamInformationString.append( PlaYUVerFrame::supportedPixelFormatListNames().at( m_iPixelFormat ) );
   m_cStreamInformationString.append( "] " );
   m_cStreamInformationString.append( QFileInfo( m_cFilename ).fileName() );
 
@@ -348,7 +348,7 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
   {
     bRet = true;
     // Guess pixel format
-    QStringList formats_list = PlaYUVerFrame::supportedPixelFormatList();
+    QStringList formats_list = PlaYUVerFrame::supportedPixelFormatListNames();
     for( Int i = 0; i < formats_list.size(); i++ )
     {
       if( FilenameShort.contains( formats_list.at( i ), Qt::CaseInsensitive ) )
@@ -609,7 +609,7 @@ Bool PlaYUVerStream::saveFrame( const QString& filename, PlaYUVerFrame *saveFram
   else
   {
     saveFrame->fillRGBBuffer();
-    QImage qimg = QImage( saveFrame->getRGBBuffer(), saveFrame->getWidth(), saveFrame->getHeight(), QImage::Format_RGB888 );
+    QImage qimg = QImage( saveFrame->getRGBBuffer(), saveFrame->getWidth(), saveFrame->getHeight(), QImage::Format_RGB32 );
     return qimg.save( filename );
   }
   return false;

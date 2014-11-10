@@ -67,11 +67,13 @@ Void DisparityStereoVar::create( PlaYUVerFrame* InputFrame )
 
 PlaYUVerFrame* DisparityStereoVar::process( PlaYUVerFrame* InputLeft, PlaYUVerFrame* InputRight )
 {
-  cv::Mat leftImage = InputLeft->getCvMat();
-  cv::Mat rightImage = InputRight->getCvMat();
+  cv::Mat* leftImage;
+  InputLeft->getCvMat( &leftImage );
+  cv::Mat* rightImage;
+  InputRight->getCvMat( &rightImage );
   cv::Mat disparityImage, disparityImage8;
 
-  m_cStereoVar(leftImage,rightImage,disparityImage);
+  m_cStereoVar(*leftImage,*rightImage,disparityImage);
   disparityImage.convertTo(disparityImage8,CV_8U);
 
   m_pcDisparityFrame->copyFrom(&disparityImage8);

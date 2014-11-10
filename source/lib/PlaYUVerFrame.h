@@ -168,10 +168,8 @@ public:
   /**
    * Interface to other libs
    */
-  Void copyFrom( struct AVFrame *, Int iPixelFormat );
-
 #ifdef USE_OPENCV
-  cv::Mat getCvMat();
+  Void getCvMat( cv::Mat** );
   Void copyFrom( cv::Mat* );
 #endif
 

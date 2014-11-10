@@ -99,7 +99,6 @@ PlaYUVerStream::PlaYUVerStream()
   m_ppcFrameBuffer = NULL;
   m_uiFrameBufferSize = 2;
   m_uiFrameBufferIndex = 0;
-  m_uiAveragePlayInterval = 0;
 #ifdef USE_FFMPEG
   m_cLibAvContext = new LibAvContextHandle;
 #endif
@@ -259,9 +258,6 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
 
   seekInput( 0 );
 
-  m_cTimer.start();
-  m_uiAveragePlayInterval = 0;
-
   m_bInit = true;
   return m_bInit;
 }
@@ -312,10 +308,6 @@ Void PlaYUVerStream::close()
 
   if( m_pStreamBuffer )
     freeMem1D<Pel>( m_pStreamBuffer );
-
-  qDebug( ) << "Frame read time: "
-            << QString::number( 1000 / ( m_uiAveragePlayInterval + 1 ) )
-            << " fps";
 
   m_bLoadAll = false;
   m_bInit = false;
@@ -550,8 +542,6 @@ Void PlaYUVerStream::readFrame()
     }
     m_pcNextFrame->frameFromBuffer( m_pStreamBuffer, bytes_read );
   }
-//Int time = m_cTimer.elapsed();
-//m_uiAveragePlayInterval = ( m_uiAveragePlayInterval + time) / 2;
   m_pcNextFrame->fillRGBBuffer();
   return;
 }

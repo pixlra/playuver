@@ -22,8 +22,6 @@
  * \brief    Main side bar definition
  */
 
-#include "config.h"
-#include "PlaYUVerDefs.h"
 #include <cmath>
 #include <QtGui>
 #include <QtDebug>

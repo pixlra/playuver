@@ -25,13 +25,7 @@
 #ifndef __FILTERCOMPONENT_H__
 #define __FILTERCOMPONENT_H__
 
-#include "PlaYUVerDefs.h"
-#include <iostream>
-#include <cstdio>
-#include "PlaYUVerFrame.h"
 #include "PlaYUVerModuleIf.h"
-
-#include <cassert>
 
 namespace plaYUVer
 {

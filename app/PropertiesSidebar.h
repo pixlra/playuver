@@ -26,15 +26,15 @@
 #define __PROPERTIESSIDEBAR_H__
 
 #include "config.h"
-#include "PlaYUVerDefs.h"
+#include "lib/PlaYUVerDefs.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #include <QWidget>
 #endif
-#include "PlaYUVerStream.h"
-#include "PlaYUVerFrame.h"
+#include "lib/PlaYUVerStream.h"
+#include "lib/PlaYUVerFrame.h"
 #include "HistogramWidget.h"
 
 namespace plaYUVer

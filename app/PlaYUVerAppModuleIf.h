@@ -26,11 +26,11 @@
 #define __PLAYUVERAPPMODULESIF_H__
 
 #include "config.h"
-#include "PlaYUVerDefs.h"
+#include "lib/PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>
-#include "PlaYUVerFrame.h"
-#include "PlaYUVerStream.h"
+#include "lib/PlaYUVerFrame.h"
+#include "lib/PlaYUVerStream.h"
 #include "ModuleHandleDock.h"
 #include "PlaYUVerModuleIf.h"
 

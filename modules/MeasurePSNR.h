@@ -25,13 +25,7 @@
 #ifndef __MEASUREPSNR_H__
 #define __MEASUREPSNR_H__
 
-#include "PlaYUVerDefs.h"
-#include <iostream>
-#include <cstdio>
-#include "PlaYUVerFrame.h"
 #include "PlaYUVerModuleIf.h"
-
-#include <cassert>
 
 namespace plaYUVer
 {

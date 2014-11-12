@@ -26,7 +26,7 @@
 #define __CONFIGUREFORMATDIALOG_H__
 
 #include "config.h"
-#include "PlaYUVerDefs.h"
+#include "lib/PlaYUVerDefs.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )

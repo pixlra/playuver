@@ -25,11 +25,9 @@
 #ifndef __PLAYUVERMODULESIF_H__
 #define __PLAYUVERMODULESIF_H__
 
-#include "PlaYUVerDefs.h"
-#include <iostream>
-#include <cstdio>
-#include "PlaYUVerFrame.h"
-#include "PlaYUVerStream.h"
+#include "lib/PlaYUVerDefs.h"
+#include "lib/PlaYUVerFrame.h"
+#include "lib/PlaYUVerStream.h"
 
 namespace plaYUVer
 {

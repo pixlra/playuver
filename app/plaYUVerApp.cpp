@@ -23,7 +23,7 @@
  */
 
 #include "plaYUVerApp.h"
-#include "PlaYUVerStream.h"
+#include "lib/PlaYUVerStream.h"
 #include "DialogSubWindowSelector.h"
 #ifdef USE_FERVOR
 #include "fvupdater.h"

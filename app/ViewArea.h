@@ -27,13 +27,13 @@
 #define __VIEWAREA_H__
 
 #include "config.h"
-#include "PlaYUVerDefs.h"
+#include "lib/PlaYUVerDefs.h"
 #include <QWidget>
 #include <QPixmap>
 #include <QBitmap>
 #include <QColor>
 #include "GridManager.h"
-#include "PlaYUVerFrame.h"
+#include "lib/PlaYUVerFrame.h"
 
 namespace plaYUVer
 {

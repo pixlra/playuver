@@ -23,7 +23,6 @@
  */
 
 #include <cstdio>
-
 #include "FilterComponent.h"
 
 namespace plaYUVer

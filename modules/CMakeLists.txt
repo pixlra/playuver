@@ -2,7 +2,7 @@
 ### CMakeLists for playuver modules component
 ###
 
-INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/lib )
+INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR} )
 
 # set(plaYUver_Mod_SRCS
 #     PlaYUVerModuleIf.cpp
@@ -30,9 +30,9 @@ ADD_MODULE( FilterComponentChromaU "FilterComponent" )
 ADD_MODULE( FilterComponentChromaV "FilterComponent" )
 ADD_MODULE( FrameDifference "FrameDifference" )
 ADD_MODULE( MeasurePSNR "MeasurePSNR" )
-# IF( USE_OPENCV )
-#   ADD_MODULE( DisparityStereoVar "DisparityStereoVar" )
-# ENDIF()
+IF( USE_OPENCV )
+  ADD_MODULE( DisparityStereoVar "DisparityStereoVar" )
+ENDIF()
 
 
 #

@@ -22,10 +22,7 @@
  * \brief    Frame Difference module
  */
 
-#include <cstdio>
-
 #include "MeasurePSNR.h"
-#include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {

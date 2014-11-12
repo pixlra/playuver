@@ -23,7 +23,6 @@
  */
 
 #include "config.h"
-#include "PlaYUVerDefs.h"
 #include <QtCore>
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>

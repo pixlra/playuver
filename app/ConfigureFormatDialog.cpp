@@ -23,8 +23,8 @@
  */
 
 #include "ConfigureFormatDialog.h"
-#include "PlaYUVerFrame.h"
-#include "PlaYUVerStream.h"
+#include "lib/PlaYUVerFrame.h"
+#include "lib/PlaYUVerStream.h"
 
 namespace plaYUVer
 {

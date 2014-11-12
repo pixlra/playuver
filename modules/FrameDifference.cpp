@@ -22,10 +22,7 @@
  * \brief    Frame Difference module
  */
 
-#include <cstdio>
-
 #include "FrameDifference.h"
-#include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {

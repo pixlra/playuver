@@ -25,7 +25,7 @@
 #include <QApplication>
 #include "config.h"
 #include "plaYUVerApp.h"
-#include "PlaYUVerStream.h"
+#include "lib/PlaYUVerStream.h"
 #ifdef USE_FERVOR
 #include "fvupdater.h"
 #endif

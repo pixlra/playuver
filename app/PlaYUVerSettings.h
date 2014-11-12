@@ -26,7 +26,7 @@
 #define __PLAYUVERSETTINGS_H__
 
 #include "config.h"
-#include "PlaYUVerDefs.h"
+#include "lib/PlaYUVerDefs.h"
 #include <QtCore>
 #include "GridManager.h"
 #include "SubWindowHandle.h"

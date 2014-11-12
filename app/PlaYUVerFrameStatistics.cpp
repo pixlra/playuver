@@ -29,7 +29,7 @@
 
 #include <QtGui>
 #include "PlaYUVerFrameStatistics.h"
-#include "LibMemory.h"
+#include "lib/LibMemory.h"
 
 namespace plaYUVer
 {

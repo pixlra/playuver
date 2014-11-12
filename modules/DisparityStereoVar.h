@@ -25,10 +25,7 @@
 #ifndef __DISPARITYSTEREOVAR_H__
 #define __DISPARITYSTEREOVAR_H__
 
-#include "PlaYUVerDefs.h"
 #include <iostream>
-#include <cstdio>
-#include "PlaYUVerFrame.h"
 #include "PlaYUVerModuleIf.h"
 #include <opencv2/opencv.hpp>
 

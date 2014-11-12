@@ -25,7 +25,6 @@
 #include <cstdio>
 
 #include "DisparityStereoVar.h"
-#include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {

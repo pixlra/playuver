@@ -3,7 +3,7 @@
 ###
 
 # This is hard way - please fix
-INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ../lib ../modules ${CMAKE_BINARY_DIR}/modules )
+INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/modules ${CMAKE_BINARY_DIR}/modules )
 
 set(plaYUver_App_SRCS
 # Main

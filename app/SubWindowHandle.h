@@ -55,7 +55,7 @@ private:
   QRect m_cSelectedArea;
 
   QString m_cFilename;
-  PlaYUVerModuleIf* m_pcCurrentModule;
+  PlaYUVerAppModuleIf* m_pcCurrentModule;
 
   SubWindowHandle* m_pcReferenceSubWindow;
 
@@ -125,11 +125,11 @@ public:
     return m_cViewArea->getZoomFactor();
   }
 
-  Void setModule( PlaYUVerModuleIf* pcCurrentModule )
+  Void setModule( PlaYUVerAppModuleIf* pcCurrentModule )
   {
     m_pcCurrentModule = pcCurrentModule;
   }
-  PlaYUVerModuleIf* getModule()
+  PlaYUVerAppModuleIf* getModule()
   {
     return m_pcCurrentModule;
   }
@@ -147,7 +147,7 @@ public:
    * Functions to enable a module in the
    * current SubWindow
    */
-  Void enableModule( PlaYUVerModuleIf* select_module );
+  Void enableModule( PlaYUVerAppModuleIf* select_module );
   Void disableModule();
   Void swapModuleFrames();
   Void applyModuleAllFrames();

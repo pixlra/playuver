@@ -25,7 +25,6 @@
 #ifndef __FRAMEDIFFERENCE_H__
 #define __FRAMEDIFFERENCE_H__
 
-#include "config.h"
 #include "PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>

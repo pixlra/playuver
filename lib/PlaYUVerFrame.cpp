@@ -362,9 +362,10 @@ Void PlaYUVerFrame::FrametoRGB8Pixfc()
 #endif
 }
 
-#ifdef USE_OPENCV
-Void PlaYUVerFrame::getCvMat( cv::Mat** ppCvFrame )
+
+Void PlaYUVerFrame::getCvMat( Void** ppCvFrame )
 {
+#ifdef USE_OPENCV
   Int cvType = CV_8UC3;
   switch( m_iPixelFormat )
   {
@@ -383,8 +384,7 @@ Void PlaYUVerFrame::getCvMat( cv::Mat** ppCvFrame )
   default:
     break;
   }
-  cv::Mat *pcCvFrame = *ppCvFrame = new cv::Mat( m_uiHeight, m_uiWidth, cvType );
-
+  cv::Mat *pcCvFrame = new cv::Mat( m_uiHeight, m_uiWidth, cvType );
   if( m_iPixelFormat != GRAY )
   {
     fillRGBBuffer();
@@ -394,10 +394,14 @@ Void PlaYUVerFrame::getCvMat( cv::Mat** ppCvFrame )
   {
     memcpy( pcCvFrame->data, &( m_pppcInputPel[LUMA][0][0] ), m_uiWidth * m_uiHeight * sizeof(Pel) );
   }
+  *ppCvFrame = pcCvFrame;
+#endif
 }
 
-Void PlaYUVerFrame::copyFrom( cv::Mat* opencvFrame )
+Void PlaYUVerFrame::fromCvMat( Void* voidFrame )
 {
+#ifdef USE_OPENCV
+  cv::Mat* opencvFrame = (cv::Mat*)voidFrame;
   if( m_iPixelFormat == NO_FMT )
   {
     switch( opencvFrame->channels() )
@@ -440,8 +444,9 @@ Void PlaYUVerFrame::copyFrom( cv::Mat* opencvFrame )
   {
     memcpy( m_pppcInputPel[LUMA][0], opencvFrame->data, m_uiWidth * m_uiHeight * sizeof(Pel) );
   }
-}
 #endif
+}
+
 
 
 /*

@@ -18,23 +18,24 @@
  */
 
 /**
- * \file     PlaYUVerModuleIf.cpp
+ * \file     PlaYUVerAppModuleIf.cpp
  * \brief    PlaYUVer modules interface
  */
 
-#include "PlaYUVerModuleIf.h"
+#include "PlaYUVerAppModuleIf.h"
 #include "SubWindowHandle.h"
 
 namespace plaYUVer
 {
 
-PlaYUVerModuleIf::PlaYUVerModuleIf() :
+PlaYUVerAppModuleIf::PlaYUVerAppModuleIf() :
         m_pcAction( NULL ),
         m_pcDisplaySubWindow( NULL ),
         m_pcDockWidget( NULL ),
         m_pcModuleDock( NULL ),
         m_pcModuleStream( NULL ),
-        m_pcProcessedFrame( NULL )
+        m_pcProcessedFrame( NULL ),
+        m_dMeasurementResult( 0 )
 {
   for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
   {
@@ -42,38 +43,38 @@ PlaYUVerModuleIf::PlaYUVerModuleIf() :
   }
 }
 
-void PlaYUVerModuleIf::run()
+void PlaYUVerAppModuleIf::run()
 {
   m_pcProcessedFrame = NULL;
   m_dMeasurementResult = 0;
 
-  if( m_cModuleDef.m_iModuleType == FRAME_PROCESSING_MODULE )
+  if( m_pcModule->m_cModuleDef.m_iModuleType == FRAME_PROCESSING_MODULE )
   {
-    switch( m_cModuleDef.m_uiNumberOfFrames )
+    switch( m_pcModule->m_cModuleDef.m_uiNumberOfFrames )
     {
     case MODULE_REQUIRES_ONE_FRAME:
-      m_pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame() );
+      m_pcProcessedFrame = m_pcModule->process( m_pcSubWindow[0]->getCurrFrame() );
       break;
     case MODULE_REQUIRES_TWO_FRAMES:
-      m_pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
+      m_pcProcessedFrame = m_pcModule->process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
       break;
     case MODULE_REQUIRES_THREE_FRAMES:
-      m_pcProcessedFrame = process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame(), m_pcSubWindow[2]->getCurrFrame() );
+      m_pcProcessedFrame = m_pcModule->process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame(), m_pcSubWindow[2]->getCurrFrame() );
       break;
     }
   }
-  else if( m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
+  else if( m_pcModule->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
   {
-    switch( m_cModuleDef.m_uiNumberOfFrames )
+    switch( m_pcModule->m_cModuleDef.m_uiNumberOfFrames )
     {
     case MODULE_REQUIRES_ONE_FRAME:
-      m_dMeasurementResult = measure( m_pcSubWindow[0]->getCurrFrame() );
+      m_dMeasurementResult = m_pcModule->measure( m_pcSubWindow[0]->getCurrFrame() );
       break;
     case MODULE_REQUIRES_TWO_FRAMES:
-      m_dMeasurementResult = measure( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
+      m_dMeasurementResult = m_pcModule->measure( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
       break;
     case MODULE_REQUIRES_THREE_FRAMES:
-      m_dMeasurementResult = measure( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame(), m_pcSubWindow[2]->getCurrFrame() );
+      m_dMeasurementResult = m_pcModule->measure( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame(), m_pcSubWindow[2]->getCurrFrame() );
       break;
     }
   }
@@ -85,7 +86,7 @@ void PlaYUVerModuleIf::run()
   return;
 }
 
-Void PlaYUVerModuleIf::postProgress( Bool success )
+Void PlaYUVerAppModuleIf::postProgress( Bool success )
 {
   EventData *eventData = new EventData( success, this );
   if( parent() )

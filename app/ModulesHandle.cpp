@@ -50,9 +50,11 @@ ModulesHandle::~ModulesHandle()
 {
 }
 
-Void ModulesHandle::appendModule( PlaYUVerModuleIf* pIfModule )
+Void ModulesHandle::appendModule( PlaYUVerModuleIf* pModuleIf )
 {
-  m_pcPlaYUVerModules.append( pIfModule );
+  PlaYUVerAppModuleIf* pcAppModuleIf = new PlaYUVerAppModuleIf;
+  pcAppModuleIf->m_pcModule = pModuleIf;
+  m_pcPlaYUVerModules.append( pcAppModuleIf );
   m_uiModulesCount++;
 }
 
@@ -65,7 +67,7 @@ SubWindowHandle* ModulesHandle::processModuleHandlingOpt()
 {
   if( m_iOptionSelected >= 0 )
   {
-    PlaYUVerModuleIf* pcCurrModuleIf = m_pcPlaYUVerModules.at( m_iOptionSelected );
+    PlaYUVerAppModuleIf* pcCurrModuleIf = m_pcPlaYUVerModules.at( m_iOptionSelected );
     m_iOptionSelected = INVALID_OPT;
     if( pcCurrModuleIf->m_pcAction->isChecked() )
     {
@@ -98,7 +100,7 @@ SubWindowHandle* ModulesHandle::processModuleHandlingOpt()
   return NULL;
 }
 
-SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
+SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
   Bool bShowModulesNewWindow = m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked();
   SubWindowHandle* pcSubWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->activeSubWindow() );
@@ -106,7 +108,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   QString windowName;
 
   QVector<SubWindowHandle*> subWindowList;
-  UInt numberOfFrames = pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames;
+  UInt numberOfFrames = pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiNumberOfFrames;
   if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )  // Show dialog to select sub windows
   {
     DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMdiArea, numberOfFrames, numberOfFrames );
@@ -152,7 +154,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   }
 
   windowName.append( " <" );
-  windowName.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
+  windowName.append( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleName );
   windowName.append( ">" );
 
   for( Int i = 0; i < subWindowList.size(); i++ )
@@ -162,9 +164,9 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   }
 
   pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
-  if( pcCurrModuleIf->m_cModuleDef.m_iModuleType == FRAME_PROCESSING_MODULE )
+  if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_iModuleType == FRAME_PROCESSING_MODULE )
   {
-    if( ( pcCurrModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
+    if( ( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
       interfaceChild = new SubWindowHandle( m_pcParent, true );
       interfaceChild->setWindowName( windowName );
@@ -174,13 +176,13 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
       pcCurrModuleIf->m_pcDisplaySubWindow->setModule( pcCurrModuleIf );
     }
   }
-  else if( pcCurrModuleIf->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
+  else if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
   {
-    if( pcCurrModuleIf->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_SIDEBAR )
+    if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_SIDEBAR )
     {
       pcCurrModuleIf->m_pcModuleDock = new ModuleHandleDock( m_pcParent, pcCurrModuleIf );
       QString titleDockWidget;
-      titleDockWidget.append( pcCurrModuleIf->m_cModuleDef.m_pchModuleName );
+      titleDockWidget.append( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleName );
       titleDockWidget.append( " Information" );
       pcCurrModuleIf->m_pcDockWidget = new QDockWidget( titleDockWidget, m_pcParent );
       pcCurrModuleIf->m_pcDockWidget->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
@@ -191,7 +193,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   }
 
   // Create Module
-  pcCurrModuleIf->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
+  pcCurrModuleIf->m_pcModule->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
 
   // Associate module with subwindows
   for( UInt i = 0; i < numberOfFrames; i++ )
@@ -203,7 +205,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerModuleIf *pcCurrModuleIf
   return interfaceChild;
 }
 
-Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
+Void ModulesHandle::destroyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
   if( pcCurrModuleIf->m_pcModuleDock )
   {
@@ -234,7 +236,7 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
     pcCurrModuleIf->m_pcModuleStream = NULL;
   }
   pcCurrModuleIf->m_pcAction->setChecked( false );
-  pcCurrModuleIf->destroy();
+  pcCurrModuleIf->m_pcModule->destroy();
 }
 
 Void ModulesHandle::destroyAllModulesIf()
@@ -245,10 +247,10 @@ Void ModulesHandle::destroyAllModulesIf()
   }
 }
 
-Bool ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Bool isPlaying, Bool disableThreads )
+Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isPlaying, Bool disableThreads )
 {
   Bool bRet = false;
-  if( !isPlaying || ( isPlaying && pcCurrModuleIf->m_cModuleDef.m_bApplyWhilePlaying ) )
+  if( !isPlaying || ( isPlaying && pcCurrModuleIf->m_pcModule->m_cModuleDef.m_bApplyWhilePlaying ) )
   {
 #ifdef PLAYUVER_THREADED_MODULES
     if( !disableThreads )
@@ -257,7 +259,7 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Bool isPlay
 #endif
       pcCurrModuleIf->run();
 
-    if( pcCurrModuleIf->m_pcDisplaySubWindow || pcCurrModuleIf->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
+    if( pcCurrModuleIf->m_pcDisplaySubWindow || pcCurrModuleIf->m_pcModule->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
     {
       bRet = true;
     }
@@ -269,11 +271,11 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Bool isPlay
   return bRet;
 }
 
-Void ModulesHandle::applyAllModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
+Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
   if( pcCurrModuleIf->m_pcModuleStream )
   {
-    UInt numberOfWindows = pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames;
+    UInt numberOfWindows = pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiNumberOfFrames;
     UInt64 currFrames = 0;
     UInt64 numberOfFrames = INT_MAX;
     for( UInt i = 0; i < numberOfWindows; i++ )
@@ -303,7 +305,7 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerModuleIf *pcCurrModuleIf )
   }
 }
 
-Void ModulesHandle::openModuleIfStream( PlaYUVerModuleIf *pcCurrModuleIf )
+Void ModulesHandle::openModuleIfStream( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
   if( pcCurrModuleIf )
   {
@@ -353,7 +355,7 @@ Void ModulesHandle::openModuleIfStream( PlaYUVerModuleIf *pcCurrModuleIf )
   }
 }
 
-Bool ModulesHandle::showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame )
+Bool ModulesHandle::showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame )
 {
   Bool bRet = false;
   //if( processedFrame  )
@@ -371,16 +373,16 @@ Bool ModulesHandle::showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, PlaYUVerFram
   return bRet;
 }
 
-Bool ModulesHandle::showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Double moduleResult )
+Bool ModulesHandle::showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Double moduleResult )
 {
   Bool bRet = false;
   pcCurrModuleIf->m_pcModuleDock->setModulueReturnValue( moduleResult );
   return bRet;
 }
 
-Void ModulesHandle::swapModulesWindowsIf( PlaYUVerModuleIf *pcCurrModuleIf )
+Void ModulesHandle::swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
-  if( pcCurrModuleIf->m_cModuleDef.m_uiNumberOfFrames == MODULE_REQUIRES_TWO_FRAMES )
+  if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiNumberOfFrames == MODULE_REQUIRES_TWO_FRAMES )
   {
     SubWindowHandle* auxWindowHandle = pcCurrModuleIf->m_pcSubWindow[0];
     pcCurrModuleIf->m_pcSubWindow[0] = pcCurrModuleIf->m_pcSubWindow[1];
@@ -394,10 +396,10 @@ Void ModulesHandle::customEvent( QEvent *event )
   {
     return;
   }
-  PlaYUVerModuleIf::EventData *eventData = ( PlaYUVerModuleIf::EventData* )event;
+  PlaYUVerAppModuleIf::EventData *eventData = ( PlaYUVerAppModuleIf::EventData* )event;
   if( eventData->m_bSuccess )
   {
-    switch( eventData->m_pcModule->m_cModuleDef.m_iModuleType )
+    switch( eventData->m_pcModule->m_pcModule->m_cModuleDef.m_iModuleType )
     {
     case FRAME_PROCESSING_MODULE:
       showModuleIf( eventData->m_pcModule, eventData->m_pcModule->m_pcProcessedFrame );
@@ -411,7 +413,7 @@ Void ModulesHandle::customEvent( QEvent *event )
 
 QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 {
-  PlaYUVerModuleIf* pcCurrModuleIf;
+  PlaYUVerAppModuleIf* pcCurrModuleIf;
   QAction* currAction;
   QMenu* currSubMenu;
 
@@ -428,11 +430,11 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
     pcCurrModuleIf->setParent( this );
 
     currSubMenu = NULL;
-    if( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory )
+    if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleCategory )
     {
       for( Int j = 0; j < m_pcModulesSubMenuList.size(); j++ )
       {
-        if( m_pcModulesSubMenuList.at( j )->title() == QString( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory ) )
+        if( m_pcModulesSubMenuList.at( j )->title() == QString( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleCategory ) )
         {
           currSubMenu = m_pcModulesSubMenuList.at( j );
           break;
@@ -440,13 +442,13 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
       }
       if( !currSubMenu )
       {
-        currSubMenu = m_pcModulesMenu->addMenu( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory );
+        currSubMenu = m_pcModulesMenu->addMenu( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleCategory );
         m_pcModulesSubMenuList.append( currSubMenu );
       }
     }
 
-    currAction = new QAction( pcCurrModuleIf->m_cModuleDef.m_pchModuleName, parent() );
-    currAction->setStatusTip( pcCurrModuleIf->m_cModuleDef.m_pchModuleTooltip );
+    currAction = new QAction( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleName, parent() );
+    currAction->setStatusTip( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleTooltip );
     currAction->setCheckable( true );
     connect( currAction, SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
     m_pcActionMapper->setMapping( currAction, i );

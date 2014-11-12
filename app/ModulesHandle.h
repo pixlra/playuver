@@ -36,13 +36,13 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
-#include "PlaYUVerModuleIf.h"
+#include "PlaYUVerAppModuleIf.h"
 #include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {
 
-class PlaYUVerModuleIf;
+class PlaYUVerAppModuleIf;
 class SubWindowHandle;
 
 class ModulesHandle: public QObject
@@ -56,12 +56,12 @@ public:
   Void updateMenus( Bool hasSubWindow );
   SubWindowHandle* processModuleHandlingOpt();
 
-  static Void destroyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
-  static Bool applyModuleIf( PlaYUVerModuleIf* pcCurrModuleIf, Bool isPlaying, Bool disableThreads = false );
-  static Void swapModulesWindowsIf( PlaYUVerModuleIf *pcCurrModuleIf );
-  static Bool showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame );
-  static Bool showModuleIf( PlaYUVerModuleIf *pcCurrModuleIf, Double moduleResult );
-  static Void applyAllModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
+  static Void destroyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
+  static Bool applyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf, Bool isPlaying, Bool disableThreads = false );
+  static Void swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf );
+  static Bool showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame );
+  static Bool showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Double moduleResult );
+  static Void applyAllModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
 
 private:
   QMainWindow *m_pcParent;
@@ -78,7 +78,7 @@ private:
 
   QMenu* m_pcModulesMenu;
   QList<QMenu*> m_pcModulesSubMenuList;
-  QList<PlaYUVerModuleIf*> m_pcPlaYUVerModules;
+  QList<PlaYUVerAppModuleIf*> m_pcPlaYUVerModules;
   QSignalMapper* m_pcActionMapper;
   QVector<QAction*> m_arrayModulesActions;
 
@@ -93,9 +93,9 @@ private:
   };
   QVector<QAction*> m_arrayActions;
 
-  Void appendModule( PlaYUVerModuleIf* pcCurrModuleIf );
-  SubWindowHandle* enableModuleIf( PlaYUVerModuleIf* pcCurrModuleIf );
-  Void openModuleIfStream( PlaYUVerModuleIf *pcCurrModuleIf );
+  Void appendModule( PlaYUVerModuleIf* pModuleIf );
+  SubWindowHandle* enableModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
+  Void openModuleIfStream( PlaYUVerAppModuleIf *pcCurrModuleIf );
 
   Void customEvent( QEvent *event );
 

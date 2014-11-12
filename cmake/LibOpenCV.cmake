@@ -3,12 +3,14 @@
 ######################################################################################
 
 IF( USE_OPENCV )
+
   FIND_PACKAGE( OpenCV )
   IF( NOT OpenCV_FOUND)
     SET(USE_OPENCV FALSE)
   ELSE()
     LIST(APPEND LINKER_LIBS ${OpenCV_LIBRARIES} )
   ENDIF()
+
 ENDIF()
 
 IF( USE_OPENCV )
@@ -34,4 +36,7 @@ IF( USE_OPENCV )
     INSTALL(FILES ${OpenCV_DLL_DIR}/opencv_legacy${OpenCV_VERSION_MAJOR}${OpenCV_VERSION_MINOR}${OpenCV_VERSION_PATCH}.dll DESTINATION bin )
     INSTALL(FILES ${OpenCV_DLL_DIR}/opencv_gpu${OpenCV_VERSION_MAJOR}${OpenCV_VERSION_MINOR}${OpenCV_VERSION_PATCH}.dll DESTINATION bin )
   ENDIF()
+  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS ",")
+  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libopencv-dev (>= 2.4.8)")
+  SET( APPEND_VERSION "${APPEND_VERSION}_wOpenCV" )
 ENDIF()

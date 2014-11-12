@@ -43,6 +43,14 @@ static PlaYUVerModuleDefinition DisparityStereoVarDef =
 
 DisparityStereoVar::DisparityStereoVar()
 {
+  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_pchModuleCategory = "Disparity";
+  m_pchModuleName = "StereoVar";
+  m_pchModuleTooltip = "Measure the disparity between two images using the Stereo Var method (OpenCV)";
+  m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
+  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;
+  m_bApplyWhilePlaying = !APPLY_WHILE_PLAYING;
+
   setModuleDefinition( DisparityStereoVarDef );
   m_pcDisparityFrame = NULL;
   m_cStereoVar.levels = 3;                                 // ignored with USE_AUTO_PARAMS
@@ -68,15 +76,15 @@ Void DisparityStereoVar::create( PlaYUVerFrame* InputFrame )
 PlaYUVerFrame* DisparityStereoVar::process( PlaYUVerFrame* InputLeft, PlaYUVerFrame* InputRight )
 {
   cv::Mat* leftImage;
-  InputLeft->getCvMat( &leftImage );
+  InputLeft->getCvMat( (Void**)&leftImage );
   cv::Mat* rightImage;
-  InputRight->getCvMat( &rightImage );
+  InputRight->getCvMat( (Void**)&rightImage );
   cv::Mat disparityImage, disparityImage8;
 
   m_cStereoVar(*leftImage,*rightImage,disparityImage);
   disparityImage.convertTo(disparityImage8,CV_8U);
 
-  m_pcDisparityFrame->copyFrom(&disparityImage8);
+  m_pcDisparityFrame->fromCvMat( (Void*)&disparityImage8);
   return m_pcDisparityFrame;
 }
 

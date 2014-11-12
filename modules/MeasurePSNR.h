@@ -25,7 +25,6 @@
 #ifndef __MEASUREPSNR_H__
 #define __MEASUREPSNR_H__
 
-#include "config.h"
 #include "PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>

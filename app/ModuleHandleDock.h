@@ -38,13 +38,13 @@
 namespace plaYUVer
 {
 
-class PlaYUVerModuleIf;
+class PlaYUVerAppModuleIf;
 
 class ModuleHandleDock: public QWidget
 {
 Q_OBJECT
 public:
-  ModuleHandleDock( QWidget* parent, PlaYUVerModuleIf* moduleIf );
+  ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf );
   ~ModuleHandleDock();
 
   Void setModulueReturnValue( Double value );
@@ -53,7 +53,7 @@ public:
 
 private:
 
-  PlaYUVerModuleIf* m_pcCurrModuleIf;
+  PlaYUVerAppModuleIf* m_pcCurrModuleIf;
 
   Bool m_bIsVisible;
   QLabel* labelModulueValueLabel;

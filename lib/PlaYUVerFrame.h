@@ -25,21 +25,13 @@
 #ifndef __PLAYUVERFRAME_H__
 #define __PLAYUVERFRAME_H__
 
-#ifdef PLAYUVER
-#include "config.h"
-#endif
 #include "PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>
 #include <cassert>
 #include <QtCore>
 
-#ifdef USE_OPENCV
-#include <opencv2/opencv.hpp>
-#endif
-
 class PixFcSSE;
-struct AVFrame;
 
 namespace plaYUVer
 {
@@ -168,10 +160,8 @@ public:
   /**
    * Interface to other libs
    */
-#ifdef USE_OPENCV
-  Void getCvMat( cv::Mat** );
-  Void copyFrom( cv::Mat* );
-#endif
+  Void getCvMat( Void** );
+  Void fromCvMat( Void* );
 
   /**
    * Quality metrics interface

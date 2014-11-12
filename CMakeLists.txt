@@ -8,11 +8,6 @@ cmake_minimum_required( VERSION 2.8.9 )
 # Project Definition
 ######################################################################################
 
-IF(UNIX)
-  EXECUTE_PROCESS(COMMAND "date" "+%Y%m%d" OUTPUT_VARIABLE DAY)
-  string(STRIP ${DAY} DAY)
-ENDIF(UNIX)
-
 SET( PROJECT_NAME "playuver" )
 
 PROJECT( ${PROJECT_NAME} )
@@ -20,34 +15,11 @@ INCLUDE( cmake/PlaYUVerVersion.cmake )
 
 INCLUDE( cmake/CMakeMacros.cmake )
 
-# Project directories 
-SET( SRC_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/source )
-SET( LIB_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/source/lib )
-SET( RSC_DIR      ${CMAKE_CURRENT_SOURCE_DIR}/resources )
-SET( UI_DIR       ${CMAKE_CURRENT_SOURCE_DIR}/ui )
-SET( EXTERNAL_SRC ${CMAKE_CURRENT_SOURCE_DIR}/external )
-
-SET(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
-# Find includes in corresponding build directories
-SET( CMAKE_INCLUDE_CURRENT_DIR ON )
-# Instruct CMake to run moc automatically when needed.
-SET( CMAKE_AUTOMOC ON )
-
-INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${SRC_DIR}/app ${SRC_DIR}/lib ) 
-
-FILE( GLOB SOURCES_FILES   ${SRC_DIR}/app/*.cpp )
-FILE( GLOB FORMS_FILES     ${UI_DIR}/*.ui   )
-FILE( GLOB RESOURCES_FILES ${RSC_DIR}/*.qrc  )
-
 # must go before the project command
 SET(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
 IF(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")
   SET_PROPERTY( CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES} )
 ENDIF()
-
-SET( CMAKE_CXX_FLAGS "" )
-
-ADD_DEFINITIONS( "-DPLAYUVER" )
 
 ######################################################################################
 # Variables
@@ -55,74 +27,26 @@ ADD_DEFINITIONS( "-DPLAYUVER" )
 ADD_OPTION(PLAYUVER_LONGVERSIONNAME     "Use long version name in deb" OFF )
 ADD_OPTION(PLAYUVER_WERROR              "Warnings as errors"       OFF )
 ADD_OPTION(PLAYUVER_THREADED_MODULES    "Use threads for modules"  OFF )
-ADD_OPTION(PLAYUVER_INSTALL_LIBS        "Install PlaYUVer Lib"     ON  )
 ADD_OPTION(USE_QT4                      "Build with QT4"           OFF )
-ADD_OPTION(USE_OPENCV                   "Add OpenCV support"       OFF )
-ADD_OPTION(USE_FFMPEG                   "Add FFMPEG support"       OFF )
 ADD_OPTION(USE_FERVOR                   "Add Fervor support"       OFF )
-ADD_OPTION(USE_PIXFC                    "Add PIXFC support"        OFF )
 
-######################################################################################
-# PlaYUVer lib
-######################################################################################
-FILE( GLOB PLAYUVER_LIB_SOURCES_FILES ${SRC_DIR}/lib/*.cpp )
-INCLUDE_DIRECTORIES( ${SRC_DIR}/lib )
-ADD_LIBRARY( PlaYUVerLib ${PLAYUVER_LIB_SOURCES_FILES} )
-  
+
+
+
 ######################################################################################
 # Dependencies
 ######################################################################################
 INCLUDE( cmake/LibFervor.cmake )
 INCLUDE( cmake/LibQT.cmake )
-INCLUDE( cmake/LibOpenCV.cmake )
 INCLUDE( cmake/LibFFmpeg.cmake )
-INCLUDE( cmake/LibPixfc.cmake )
+INCLUDE( cmake/LibOpenCV.cmake )
 
 
-# Windows application icon
-if (WIN32)
-set(WINDOWS_RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/resources.obj)
-if (MSVC)
-add_custom_command(OUTPUT ${WINDOWS_RES_FILE}
-COMMAND rc.exe /fo ${WINDOWS_RES_FILE} playuver.rc
-WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/resources
-)
-else()
-add_custom_command(OUTPUT ${WINDOWS_RES_FILE}
-COMMAND windres.exe playuver.rc ${WINDOWS_RES_FILE}
-WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/resources
-)
-endif()
-endif()
-
-
-######################################################################################
-# PlaYUVer modules build
-######################################################################################
-SET( MODULES_DIR ${SRC_DIR}/modules )
-INCLUDE_DIRECTORIES( ${MODULES_DIR} )
-
-file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h  "// This files defines the macro to \n"
-                                                            "// define a list of modules\n"
-                                                            "#ifndef __MODULESLISTMACRO_H__\n#define __MODULESLISTMACRO_H__\n"
-                                                            "#define REGISTER_ALL_MODULES ") 
-
-file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "// This files add the header files of each module\n"
-  
-                                                            "#ifndef __MODULESLISTHEADER_H__\n#define __MODULESLISTHEADER_H__\n" )
-
-# FILE( GLOB ModuleCMakeFiles ModuleDefinition.cmake )
-# INCLUDE( ${ModuleCMakeFiles} )
-INCLUDE( ModuleDefinition.cmake )
-
-file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h    "\n#endif // __MODULESLISTMACRO_H__\n" )
-file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#endif // __MODULESLISTHEADER_H__\n" )
 
 ######################################################################################
 # Configuration
 ######################################################################################
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlaYUVerConfig.cmake.in ${CMAKE_BINARY_DIR}/PlaYUVerConfig.cmake @ONLY)
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlaYUVerUpdate.xml.in ${CMAKE_BINARY_DIR}/PlaYUVerUpdate.xml @ONLY)
 
 ######################################################################################
@@ -141,17 +65,51 @@ IF( PLAYUVER_WERROR )
   SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
 ENDIF()
 
-SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" )
+ADD_SUBDIRECTORY( lib )
+ADD_SUBDIRECTORY( modules )
+ADD_SUBDIRECTORY( app )
 
-ADD_EXECUTABLE( ${PROJECT_NAME} ${SOURCES_FILES} ${HEADERS_MOC_FILES} ${FORMS_HEADERS_FILES} ${RESOURCES_RCC_FILES} ${WINDOWS_RES_FILE} )
-
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib ${MODULES_LIBS}  ${LINKER_LIBS} )
-
-IF( NOT USE_QT4 )
-  QT5_USE_MODULES( ${PROJECT_NAME} ${QT_MODULES} )
+IF( WIN32 )
+  SET(MSVC_DLL_DIR "MSVC_DLL_DIR" CACHE PATH "Where to find MSVC dlls")
+  INSTALL(FILES ${MSVC_DLL_DIR}/msvcr120.dll DESTINATION bin )
+  INSTALL(FILES ${MSVC_DLL_DIR}/msvcp120.dll DESTINATION bin )
 ENDIF()
 
-INCLUDE(cmake/Install.cmake)
+######################################################################################
+# Create deb package
+######################################################################################
+
+SET(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+SET(CPACK_PACKAGE_CONTACT "Joao Carreira (jfmcarreira@gmail.com), Luis Lucas (luisfrlucas@gmail.com)")
+SET(CPACK_PACKAGE_VERSION_MAJOR ${PLAYUVER_VERSION_MAJOR})
+SET(CPACK_PACKAGE_VERSION_MINOR ${PLAYUVER_VERSION_MINOR})
+SET(CPACK_PACKAGE_VERSION_PATCH ${PLAYUVER_VERSION_PATH})
+SET(CPACK_PACKAGE_VERSION ${PLAYUVER_VERSION})
+SET(CPACK_PACKAGE_ARCHITECTURE "amd64")
+
+IF( UNIX )
+  SET(CPACK_GENERATOR "DEB;ZIP")
+  SET(OS "Linux")
+  SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION "plaYUVer is an open-source QT based raw video player")
+  SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Joao Carreira (jfmcarreira@gmail.com), Luis Lucas (luisfrlucas@gmail.com)")
+  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE ${CPACK_PACKAGE_ARCHITECTURE} )
+  STRING(REPLACE ";" "" CPACK_DEBIAN_PACKAGE_DEPENDS ${CPACK_DEBIAN_PACKAGE_DEPENDS} )
+ENDIF()
+IF( WIN32 )
+  SET(CPACK_GENERATOR "ZIP")
+  SET(OS "Windows")
+  SET(GIT_BRANCH "master") # temp work around
+ENDIF()
+
+IF( PLAYUVER_LONGVERSIONNAME )
+  SET( CPACK_PACKAGE_FILE_NAME  "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}${APPEND_VERSION}-${OS}-${CPACK_PACKAGE_ARCHITECTURE}" )
+  SET( PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME} )
+ELSE()
+  SET( CPACK_PACKAGE_FILE_NAME  "${CPACK_PACKAGE_NAME}-${PACK_NAME}${APPEND_VERSION}-${OS}-${CPACK_PACKAGE_ARCHITECTURE}" )
+  SET( PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME} )
+ENDIF()
+
+INCLUDE(CPack)
 
 ######################################################################################
 # Final information dump
@@ -168,5 +126,3 @@ status("    OpenCV:"              USE_OPENCV          THEN YES ELSE NO)
 status("    FFMPEG:"              USE_FFMPEG          THEN YES ELSE NO)
 status("    Fervor:"              USE_FERVOR          THEN YES ELSE NO)
 status("    Pixfc-sse:"           USE_PIXFC           THEN YES ELSE NO)
-status("Features:")
-status("    Modules List:"        "${MODULES_LIST}" )

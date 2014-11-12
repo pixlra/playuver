@@ -18,43 +18,72 @@
  */
 
 /**
- * \file     DisparityStereoVar.h
- * \brief    Measure the disparity between two images using the Stereo Var method (OpenCV)
+ * \file     FilterComponent.h
+ * \brief    Filter component frame module
  */
 
-#ifndef __DISPARITYSTEREOVAR_H__
-#define __DISPARITYSTEREOVAR_H__
+#ifndef __FILTERCOMPONENT_H__
+#define __FILTERCOMPONENT_H__
 
-#include "config.h"
 #include "PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerModuleIf.h"
-#include <opencv2/opencv.hpp>
 
 #include <cassert>
 
 namespace plaYUVer
 {
 
-class DisparityStereoVar: public PlaYUVerModuleIf
+class FilterComponent
 {
 private:
-  PlaYUVerFrame* m_pcDisparityFrame;
-  cv::StereoVar m_cStereoVar;
+  PlaYUVerFrame* m_pcFilteredFrame;
 public:
-  DisparityStereoVar();
-  virtual ~DisparityStereoVar()
+  FilterComponent();
+  virtual ~FilterComponent()
   {
   }
-
-  Void create( PlaYUVerFrame* InputFrame );
-  PlaYUVerFrame* process( PlaYUVerFrame* InputLeft, PlaYUVerFrame* InputRight );
+  Void createFilter( UInt uiWidth, UInt uiHeight );
+  PlaYUVerFrame* filterComponent( PlaYUVerFrame* InputFrame,  Int Component );
   Void destroy();
+};
+
+class FilterComponentLuma: public FilterComponent, public PlaYUVerModuleIf
+{
+public:
+  FilterComponentLuma();
+  virtual ~FilterComponentLuma()
+  {
+  }
+  Void create( PlaYUVerFrame* InputFrame );
+  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
+};
+
+class FilterComponentChromaU: public FilterComponent, public PlaYUVerModuleIf
+{
+public:
+  FilterComponentChromaU();
+  virtual ~FilterComponentChromaU()
+  {
+  }
+  Void create( PlaYUVerFrame* InputFrame );
+  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
+};
+
+class FilterComponentChromaV: public FilterComponent, public PlaYUVerModuleIf
+{
+public:
+  FilterComponentChromaV();
+  virtual ~FilterComponentChromaV()
+  {
+  }
+  Void create( PlaYUVerFrame* InputFrame );
+  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
 };
 
 }  // NAMESPACE
 
-#endif // __DISPARITYSTEREOVAR_H__
+#endif // __FILTERFRAME_H__
 

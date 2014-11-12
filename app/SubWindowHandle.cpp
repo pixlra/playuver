@@ -155,7 +155,7 @@ Void SubWindowHandle::updateSelectedArea( QRect area )
  * Functions to enable a module in the
  * current SubWindow
  */
-Void SubWindowHandle::enableModule( PlaYUVerModuleIf* select_module )
+Void SubWindowHandle::enableModule( PlaYUVerAppModuleIf* select_module )
 {
   if( m_pcCurrentModule )
   {
@@ -169,7 +169,7 @@ Void SubWindowHandle::disableModule()
 {
   if( m_pcCurrentModule )
   {
-    PlaYUVerModuleIf* pcCurrentModule = m_pcCurrentModule;
+    PlaYUVerAppModuleIf* pcCurrentModule = m_pcCurrentModule;
     m_pcCurrentModule = NULL;
     ModulesHandle::destroyModuleIf( pcCurrentModule );
     refreshFrame();

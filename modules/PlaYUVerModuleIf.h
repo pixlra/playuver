@@ -25,18 +25,20 @@
 #ifndef __PLAYUVERMODULESIF_H__
 #define __PLAYUVERMODULESIF_H__
 
-#include "config.h"
 #include "PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerStream.h"
-#include "ModuleHandleDock.h"
-
-class QAction;
 
 namespace plaYUVer
 {
+
+#define REGISTER_MODULE(X)                      \
+    {                                           \
+        X *pMod = new X();                      \
+        appendModule( pMod );                   \
+    }
 
 enum // Module type
 {
@@ -62,15 +64,6 @@ enum // Requirements
   MODULES_REQUIREMENTS_TOTAL,
 };
 
-#define REGISTER_MODULE(X)                      \
-    {                                           \
-      if( USE_##X )                             \
-      {                                         \
-        X *pMod = new X();                      \
-        appendModule( pMod );                   \
-      }                                         \
-    }
-
 typedef struct
 {
   Int m_iModuleType;
@@ -82,48 +75,22 @@ typedef struct
   Bool m_bApplyWhilePlaying;
 } PlaYUVerModuleDefinition;
 
-class SubWindowHandle;
-
 class PlaYUVerModuleIf
-#ifdef PLAYUVER_THREADED_MODULES
-    : public QThread
-#else
-    : public QObject
-#endif
 {
-  friend class ModulesHandle;
-
-private:
-  QAction* m_pcAction;
-  SubWindowHandle* m_pcSubWindow[MAX_NUMBER_FRAMES];
-
-  SubWindowHandle* m_pcDisplaySubWindow;
-
-  QDockWidget* m_pcDockWidget;
-  ModuleHandleDock* m_pcModuleDock;
-
-  PlaYUVerStream* m_pcModuleStream;
-  PlaYUVerFrame* m_pcProcessedFrame;
-  Double m_dMeasurementResult;
-
-  Void postProgress( Bool success );
 public:
-  class EventData: public QEvent
-  {
-  public:
-    EventData( bool success = false, PlaYUVerModuleIf* module = NULL ) :
-            QEvent( QEvent::User )
-    {
-      m_bSuccess = success;
-      m_pcModule = module;
-    }
-    Bool m_bSuccess;
-    PlaYUVerModuleIf* m_pcModule;
-  };
 
-  PlaYUVerModuleIf();
+  Int m_iModuleType;
+  const Char* m_pchModuleCategory;
+  const Char* m_pchModuleName;
+  const Char* m_pchModuleTooltip;
+  UInt m_uiNumberOfFrames;
+  UInt m_uiModuleRequirements;
+  Bool m_bApplyWhilePlaying;
+
+  PlaYUVerModuleDefinition m_cModuleDef;
+
+  PlaYUVerModuleIf() {}
   virtual ~PlaYUVerModuleIf() {}
-
 
   virtual Void create() {}
   virtual Void create( PlaYUVerFrame* ) {}
@@ -141,9 +108,6 @@ public:
   Void setModuleDefinition( PlaYUVerModuleDefinition def )  { m_cModuleDef = def;   }
   PlaYUVerModuleDefinition getModuleDefinition()            { return m_cModuleDef;  }
 
-protected:
-  PlaYUVerModuleDefinition m_cModuleDef;
-  virtual void run();
 };
 
 }  // NAMESPACE

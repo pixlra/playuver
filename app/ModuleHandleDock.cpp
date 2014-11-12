@@ -24,18 +24,18 @@
 
 #include <QtGui>
 #include "ModuleHandleDock.h"
-#include "PlaYUVerModuleIf.h"
+#include "PlaYUVerAppModuleIf.h"
 #include "ModulesHandle.h"
 
 namespace plaYUVer
 {
 
-ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerModuleIf* moduleIf ) :
+ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf ) :
         QWidget( parent ),
         m_pcCurrModuleIf( moduleIf )
 {
 
-  PlaYUVerModuleDefinition ModuleDef = moduleIf->getModuleDefinition();
+  PlaYUVerModuleDefinition ModuleDef = moduleIf->m_pcModule->getModuleDefinition();
 
   // ----------------- Dock definition -----------------
 
@@ -77,7 +77,7 @@ Void ModuleHandleDock::visibilityChangedSlot( bool visiblity )
 {
   if( !visiblity && m_pcCurrModuleIf )
   {
-    PlaYUVerModuleIf* pcCurrentModule = m_pcCurrModuleIf;
+    PlaYUVerAppModuleIf* pcCurrentModule = m_pcCurrModuleIf;
     m_pcCurrModuleIf = NULL;
     ModulesHandle::destroyModuleIf( pcCurrentModule );
   }

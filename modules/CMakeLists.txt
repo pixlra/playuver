@@ -2,7 +2,7 @@
 ### CMakeLists for playuver modules component
 ###
 
-INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
+INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/lib )
 
 # set(plaYUver_Mod_SRCS
 #     PlaYUVerModuleIf.cpp

@@ -1,20 +1,33 @@
 #####################################################################################
-# OpenCV library cmake file
+# DLLs and Win32 specific code
 ######################################################################################
 
-IF( USE_OPENCV )
 
-  FIND_PACKAGE( OpenCV )
-  IF( NOT OpenCV_FOUND)
-    SET(USE_OPENCV FALSE)
-  ELSE()
-    LIST(APPEND LINKER_LIBS ${OpenCV_LIBRARIES} )
-  ENDIF()
+SET(MSVC_DLL_DIR "MSVC_DLL_DIR" CACHE PATH "Where to find MSVC dlls")
+INSTALL(FILES ${MSVC_DLL_DIR}/msvcr120.dll DESTINATION bin )
+INSTALL(FILES ${MSVC_DLL_DIR}/msvcp120.dll DESTINATION bin )
 
+SET(QT_DIR "QT-Dir" CACHE PATH "Where to find QT Lib on Windows")
+SET(QT_DLL_POSTFIX "" CACHE STRING "Postfix to dll's name for debug" )
+SET(CMAKE_PREFIX_PATH ${QT_DIR} )
+
+
+IF( NOT USE_QT4 )
+  INSTALL(FILES ${QT_DIR}/bin/Qt5Core${QT_DLL_POSTFIX}.dll DESTINATION bin )
+  INSTALL(FILES ${QT_DIR}/bin/Qt5Gui${QT_DLL_POSTFIX}.dll DESTINATION bin )
+  INSTALL(FILES ${QT_DIR}/bin/Qt5Widgets${QT_DLL_POSTFIX}.dll DESTINATION bin )
+  INSTALL(FILES ${QT_DIR}/bin/libGLESv2${QT_DLL_POSTFIX}.dll DESTINATION bin )
+  INSTALL(FILES ${QT_DIR}/bin/libEGL${QT_DLL_POSTFIX}.dll DESTINATION bin )
+  INSTALL(FILES ${QT_DIR}/bin/icudt52.dll DESTINATION bin )
+  INSTALL(FILES ${QT_DIR}/bin/icuin52.dll DESTINATION bin )
+  INSTALL(FILES ${QT_DIR}/bin/icuuc52.dll DESTINATION bin )
+  INSTALL(FILES ${QT_DIR}/plugins/platforms/qminimal.dll DESTINATION bin/platforms )
+  INSTALL(FILES ${QT_DIR}/plugins/platforms/qoffscreen.dll DESTINATION bin/platforms )
+  INSTALL(FILES ${QT_DIR}/plugins/platforms/qwindows.dll DESTINATION bin/platforms )
 ENDIF()
 
 IF( USE_OPENCV )
-  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}OPENCV" )  
+  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}OPENCV" )
   IF( WIN32 )
     SET(OpenCV_DLL_DIR "${OpenCV_DIR}/bin" CACHE PATH "Where to find OpenCV dlls")
     INSTALL(FILES ${OpenCV_DLL_DIR}/opencv_core${OpenCV_VERSION_MAJOR}${OpenCV_VERSION_MINOR}${OpenCV_VERSION_PATCH}.dll DESTINATION bin )

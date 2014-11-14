@@ -11,9 +11,15 @@ cmake_minimum_required( VERSION 2.8.9 )
 SET( PROJECT_NAME "playuver" )
 
 PROJECT( ${PROJECT_NAME} )
-INCLUDE( cmake/PlaYUVerVersion.cmake )
 
-INCLUDE( cmake/CMakeMacros.cmake )
+
+######################################################################################
+# CMake Definitions
+######################################################################################
+
+SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake )
+INCLUDE(FeatureSummary)
+INCLUDE( cmake/PlaYUVerVersion.cmake )
 
 # must go before the project command
 SET(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
@@ -22,27 +28,63 @@ IF(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")
 ENDIF()
 SET( CMAKE_CXX_FLAGS "" )
 
+
 ######################################################################################
 # Variables
 ######################################################################################
-ADD_OPTION(PLAYUVER_LONGVERSIONNAME     "Use long version name in deb" OFF )
-ADD_OPTION(PLAYUVER_WERROR              "Warnings as errors"       OFF )
-ADD_OPTION(PLAYUVER_THREADED_MODULES    "Use threads for modules"  OFF )
-ADD_OPTION(USE_QT4                      "Build with QT4"           OFF )
-ADD_OPTION(USE_FERVOR                   "Add Fervor support"       OFF )
 
+OPTION( USE_FERVOR                   "Add Fervor support"       OFF )
+OPTION( PLAYUVER_LONGVERSIONNAME     "Use long version name in deb" OFF )
+OPTION( PLAYUVER_WERROR              "Warnings as errors"       OFF )
+OPTION( PLAYUVER_THREADED_MODULES    "Use threads for modules"  OFF )
+OPTION( USE_QT4                      "Build with QT4"           OFF )
 
-
+ADD_FEATURE_INFO(Fervor USE_FERVOR "Fervor lib includes check for updates feature.")
+ADD_FEATURE_INFO(WErrors PLAYUVER_WERROR "Warnings as errors"  )
 
 ######################################################################################
 # Dependencies
 ######################################################################################
-INCLUDE( cmake/LibFervor.cmake )
-INCLUDE( cmake/LibQT.cmake )
-INCLUDE( cmake/LibFFmpeg.cmake )
-INCLUDE( cmake/LibOpenCV.cmake )
 
+OPTION( USE_OPENCV "Add OpenCV support" OFF )
+IF( USE_OPENCV )
+  FIND_PACKAGE( OpenCV )
+  SET(USE_OPENCV ${OpenCV_FOUND})
+ENDIF()
+SET_PACKAGE_PROPERTIES(OpenCV PROPERTIES URL "http://opencv.willowgarage.com" DESCRIPTION "OpenCV library support in PlaYUVerFrame" TYPE OPTIONAL)
 
+OPTION( USE_FFMPEG "Add FFMPEG support" OFF )
+IF( USE_FFMPEG )
+  FIND_PACKAGE( OpenCV )
+  SET(USE_FFMPEG ${FFMPEG_FOUND})
+ENDIF()
+SET_PACKAGE_PROPERTIES(FFmpeg PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "Libav library support in PlaYUVerStream" TYPE OPTIONAL)
+
+#####################################################################################
+# Qt library
+######################################################################################
+
+IF( USE_QT4 )
+  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}QT4" )
+  FIND_PACKAGE( Qt4 REQUIRED QtCore QtGui QtNetwork QtWebKit )
+  IF( NOT QT4_FOUND )
+      SET(USE_QT4 FALSE)
+  ELSE()
+    INCLUDE( ${QT_USE_FILE} )
+    ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+    SET( QT_LINKER_LIBS ${QT_LIBRARIES} )
+  ENDIF()
+ENDIF()
+
+IF( NOT USE_QT4 )
+  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}QT5" )
+  FIND_PACKAGE( Qt5 REQUIRED Core Gui Widgets )
+  INCLUDE_DIRECTORIES( ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} )
+  # Add compiler flags for building executables (-fPIE)
+  SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}" )
+  LIST(APPEND QT_LINKER_LIBS Qt5::Core Qt5::Gui Qt5::Widgets )
+  LIST(APPEND QT_MODULES Core Gui Widgets )
+ENDIF()
 
 ######################################################################################
 # Configuration
@@ -59,6 +101,7 @@ IF (NOT CMAKE_BUILD_TYPE)
 ENDIF()
 
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" )
+
 IF( PLAYUVER_WERROR )
   SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
 ENDIF()
@@ -71,10 +114,10 @@ ADD_SUBDIRECTORY( modules )
 ADD_SUBDIRECTORY( app )
 
 IF( WIN32 )
-  SET(MSVC_DLL_DIR "MSVC_DLL_DIR" CACHE PATH "Where to find MSVC dlls")
-  INSTALL(FILES ${MSVC_DLL_DIR}/msvcr120.dll DESTINATION bin )
-  INSTALL(FILES ${MSVC_DLL_DIR}/msvcp120.dll DESTINATION bin )
+  INCLUDE( cmake/Win32.cmake )
 ENDIF()
+
+
 
 ######################################################################################
 # Create deb package
@@ -87,6 +130,29 @@ SET(CPACK_PACKAGE_VERSION_MINOR ${PLAYUVER_VERSION_MINOR})
 SET(CPACK_PACKAGE_VERSION_PATCH ${PLAYUVER_VERSION_PATH})
 SET(CPACK_PACKAGE_VERSION ${PLAYUVER_VERSION})
 SET(CPACK_PACKAGE_ARCHITECTURE "amd64")
+
+IF( USE_QT4 )
+  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}QT4" )
+  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libqtcore4 (>= 4:4.8.5), libqtgui4 (>= 4:4.8.5)" )
+  SET( APPEND_VERSION "${APPEND_VERSION}_wQT4" )
+ELSE()
+  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}QT5" )
+  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libqt5core5a, libqt5gui5, libqt5widgets5")
+  SET( APPEND_VERSION "${APPEND_VERSION}_wQT5" )
+ENDIF()
+
+IF( USE_OPENCV )
+  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}OPENCV" )
+  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS ",")
+  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libopencv-dev (>= 2.4.8)")
+ENDIF()
+
+IF( USE_FFMPEG )
+  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}FFMPEG" )
+  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS ",")
+  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libavformat54, libavcodec54, libavutil52")
+  SET( APPEND_VERSION "${APPEND_VERSION}_wFFmpeg" )
+ENDIF()
 
 IF( UNIX )
   SET(CPACK_GENERATOR "DEB;ZIP")
@@ -115,15 +181,14 @@ INCLUDE(CPack)
 ######################################################################################
 # Final information dump
 ######################################################################################
-status("Version:"                 "${PLAYUVER_VERSION}")
-status("Configuration:")
-status("    Build type:"          "${CMAKE_BUILD_TYPE}")
-status("    Build flags:"         "${CMAKE_CXX_FLAGS}")
-status("    Warnings as errors:"  USE_WERROR          THEN YES ELSE NO)
-status("    Package Name:"        "${PACKAGE_FILE_NAME}" )
-status("Dependencies:")
-status("    QT:"                  USE_QT4             THEN "QT4" ELSE "QT5")
-status("    OpenCV:"              USE_OPENCV          THEN YES ELSE NO)
-status("    FFMPEG:"              USE_FFMPEG          THEN YES ELSE NO)
-status("    Fervor:"              USE_FERVOR          THEN YES ELSE NO)
-status("    Pixfc-sse:"           USE_PIXFC           THEN YES ELSE NO)
+MESSAGE("")
+MESSAGE( STATUS "${PROJECT_NAME} INFORMATION"                      )
+MESSAGE( STATUS "Version: "                 "${PLAYUVER_VERSION}"  )
+MESSAGE( STATUS "Configuration:"                                   )
+MESSAGE( STATUS "    Build type:"          "${CMAKE_BUILD_TYPE}"   )
+MESSAGE( STATUS "    Build flags:"         "${CMAKE_CXX_FLAGS}"    )
+MESSAGE( STATUS "    Package Name:"        "${PACKAGE_FILE_NAME}"  )
+
+
+FEATURE_SUMMARY(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
+

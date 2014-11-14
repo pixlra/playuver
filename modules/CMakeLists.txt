@@ -4,9 +4,19 @@
 
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR} )
 
-# set(plaYUver_Mod_SRCS
-#     PlaYUVerModuleIf.cpp
-# )
+MACRO(ADD_MODULE name file )
+  set(__modulename "Module${name}")
+  OPTION(MODULE_${name}        "Use module ${name}"       ON )
+  ADD_FEATURE_INFO(${name} MODULE_${name} "Module ${name}" )
+  if( MODULE_${name} )
+    list(APPEND plaYUver_Mod_SRCS ${file} )
+    LIST(APPEND MODULES_LIST ${name} )
+    file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#include \"${file}.h\"\n")
+    file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h "\\\n  REGISTER_MODULE( ${name} ); ")
+  endif()
+  unset(__modulename)
+ENDMACRO()
+
 
 
 #
@@ -42,6 +52,3 @@ file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h    "\n#endif // __MO
 file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#endif // __MODULESLISTHEADER_H__\n" )
 
 ADD_LIBRARY( PlaYUVerModules ${plaYUver_Mod_SRCS} )
-
-
-status("Modules List:"        "${MODULES_LIST}" )

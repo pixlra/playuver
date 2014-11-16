@@ -9,7 +9,7 @@ INSTALL(FILES ${MSVC_DLL_DIR}/msvcp120.dll DESTINATION bin )
 
 SET(QT_DIR "QT-Dir" CACHE PATH "Where to find QT Lib on Windows")
 SET(QT_DLL_POSTFIX "" CACHE STRING "Postfix to dll's name for debug" )
-SET(CMAKE_PREFIX_PATH ${QT_DIR} )
+SET(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH} ${QT_DIR}" )
 
 
 IF( NOT USE_QT4 )

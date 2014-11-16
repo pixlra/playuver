@@ -55,7 +55,7 @@ SET_PACKAGE_PROPERTIES(OpenCV PROPERTIES URL "http://opencv.willowgarage.com" DE
 
 OPTION( USE_FFMPEG "Add FFMPEG support" OFF )
 IF( USE_FFMPEG )
-  FIND_PACKAGE( OpenCV )
+  FIND_PACKAGE( FFmpeg )
   SET(USE_FFMPEG ${FFMPEG_FOUND})
 ENDIF()
 SET_PACKAGE_PROPERTIES(FFmpeg PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "Libav library support in PlaYUVerStream" TYPE OPTIONAL)

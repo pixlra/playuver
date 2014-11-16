@@ -694,8 +694,7 @@ Void plaYUVerApp::seekEvent( Int direction )
   {
     if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
-      UInt64 frame_num = m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum();
-      if( !( (frame_num + 1) >= getMaxFrameNumber()  && direction > 0 ) )
+      if( !( (UInt)(m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() + 1 ) >= getMaxFrameNumber()  && direction > 0 ) )
       {
         for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
         {

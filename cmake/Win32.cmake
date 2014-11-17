@@ -2,10 +2,14 @@
 # DLLs and Win32 specific code
 ######################################################################################
 
-if (MSVC_IDE)
-  # hack to get around the "Debug" and "Release" directories cmake tries to add on Windows
-  set_target_properties (${PROJECT_NAME} PROPERTIES PREFIX "../")
-endif()
+foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
+    string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
+    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} "." )
+    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} "." )
+    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} "." )
+endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
+
+set(CMAKE_STATIC_LIBRARY_PREFIX "lib")
 
 SET(MSVC_DLL_DIR "MSVC_DLL_DIR" CACHE PATH "Where to find MSVC dlls")
 INSTALL(FILES ${MSVC_DLL_DIR}/msvcr120.dll DESTINATION bin )
@@ -56,4 +60,12 @@ IF( USE_OPENCV )
   LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS ",")
   LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libopencv-dev (>= 2.4.8)")
   SET( APPEND_VERSION "${APPEND_VERSION}_wOpenCV" )
+ENDIF()
+
+IF( USE_FFMPEG )
+  SET(FFMPEG_DIR "FFmpeg-Dir" CACHE PATH "Where to find FFmpeg Lib on Windows")
+  INSTALL(FILES ${FFMPEG_DIR}/bin/avcodec-${AVCODEC_VERSION}.dll DESTINATION bin )
+  INSTALL(FILES ${FFMPEG_DIR}/bin/avformat-${AVFORMAT_VERSION}.dll DESTINATION bin )
+  INSTALL(FILES ${FFMPEG_DIR}/bin/avutil-${AVUTIL_VERSION}.dll DESTINATION bin )
+  INSTALL(FILES ${FFMPEG_DIR}/bin/swresample-1.dll DESTINATION bin )
 ENDIF()

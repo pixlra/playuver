@@ -5,7 +5,7 @@ git_describe(__version --tags)
 
 string(REPLACE "-" ";" __version_list ${__version})
 list(GET __version_list 0 __version)
-list(LENGTH ${__version_list} __version_list_size )
+list(LENGTH __version_list __version_list_size )
 IF( ${__version_list_size} GREATER 1 )
   list(GET __version_list 1 PLAYUVER_VERSION_PATCH)
 ELSE()

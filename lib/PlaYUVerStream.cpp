@@ -139,6 +139,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     if( m_iFileFormat == INVALID_INPUT )
     {
       close();
+      throw "Invalid file format";
       return m_bInit;
     }
     m_cFormatName = PlaYUVerStream::supportedReadFormatsExt().at( m_iFileFormat ).toUpper();
@@ -171,8 +172,8 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
 
   if( m_uiWidth <= 0 || m_uiHeight <= 0 || m_iPixelFormat < 0 )
   {
-    qDebug( ) << "Incorrect configuration";
     close();
+    throw "[PlaYUVerStream] Incorrect configuration";
     return m_bInit;
   }
 
@@ -182,8 +183,8 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
     if( !m_ppcFrameBuffer[i] )
     {
-      qDebug( ) << "Cannot allocated frame buffer";
       close();
+      throw "[PlaYUVerStream] Cannot allocated frame buffer";
       return m_bInit;
     }
   }
@@ -197,6 +198,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     if( !openFile() )
     {
       close();
+      throw "[PlaYUVerStream] Cannot open file";
       return m_bInit;
     }
     m_cFormatName = QString::fromUtf8( "YUV" );
@@ -213,8 +215,8 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
       if( fileSize % frame_bytes_input )
       {
         Int remaining = fileSize % frame_bytes_input;
-        qDebug( ) << "Incorrect configuration: failed ( fileSize % frame_bytes_input = " << remaining << " )";
         close();
+        throw "[PlaYUVerStream] Incorrect configuration: failed ( fileSize % frame_bytes_input = " << remaining << " )";
         return m_bInit;
       }
 #endif
@@ -226,25 +228,20 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
 
   if( m_bIsInput && m_uiTotalFrameNum <= 0 )
   {
-    qDebug( ) << "Incorrect configuration: less than one frame";
     close();
+    throw "[PlaYUVerStream] Incorrect configuration: less than one frame";
     return m_bInit;
   }
 
   if( !getMem1D<Pel>( &m_pStreamBuffer, m_pcCurrFrame->getBytesPerFrame() ) )
   {
     close();
+    throw "[PlaYUVerStream] Cannot allocated memory";
     return m_bInit;
   }
 
-  m_cStreamInformationString = QString( "[" );
-  m_cStreamInformationString.append( m_cFormatName );
-  m_cStreamInformationString.append( QString( " / " ) );
-  m_cStreamInformationString.append( m_cCodedName );
-  m_cStreamInformationString.append( QString( " / " ) );
-  m_cStreamInformationString.append( PlaYUVerFrame::supportedPixelFormatListNames().at( m_iPixelFormat ) );
-  m_cStreamInformationString.append( "] " );
-  m_cStreamInformationString.append( QFileInfo( m_cFilename ).fileName() );
+  m_cStreamInformationString = "[" + m_cFormatName + " / " + m_cCodedName + " / " + PlaYUVerFrame::supportedPixelFormatListNames().at( m_iPixelFormat ) + "] "
+          + QFileInfo( m_cFilename ).fileName();
 
   m_sStreamInfo.m_cFilename = m_cFilename;
   m_sStreamInfo.m_uiWidth = m_uiWidth;
@@ -387,7 +384,6 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
         {
           resolutionString.remove( "_" );
           QStringList resolutionArgs = resolutionString.split( "x" );
-          qDebug( ) << "Found resolution = " << resolutionArgs;
           if( resolutionArgs.size() == 2 )
           {
             rWidth = resolutionArgs.at( 0 ).toUInt();

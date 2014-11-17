@@ -340,7 +340,7 @@ PlaYUVerFramePelFormat g_PlaYUVerFramePelFormatsList[PLAYUVER_NUMBER_FORMATS] =
   yuv422p,
   yuyv422,
   gray,
-  rgb24,
+  /*rgb24,*/
   BGR24, };
 
 

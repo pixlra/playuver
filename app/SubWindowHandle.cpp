@@ -60,6 +60,8 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, Bool isModule ) :
   m_cScrollArea->setWidget( m_cViewArea );
   m_cScrollArea->setWidgetResizable( true );
 
+  m_pCurrStream = new PlaYUVerStream;
+
   m_cWindowName = QString( " " );
   m_cLastScroll = QPoint();
 }
@@ -69,8 +71,7 @@ SubWindowHandle::~SubWindowHandle()
   disableModule();
   delete m_cViewArea;
   delete m_cScrollArea;
-  if( m_pCurrStream )
-    delete m_pCurrStream;
+  delete m_pCurrStream;
 }
 
 Void SubWindowHandle::reloadFile()
@@ -85,11 +86,6 @@ Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
   UInt Width = 0, Height = 0, FrameRate = 30;
   Int InputFormat = -1;
 
-  if( !m_pCurrStream )
-  {
-    m_pCurrStream = new PlaYUVerStream;
-  }
-
   m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
 
   if( m_pCurrStream->guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
@@ -102,10 +98,8 @@ Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
   }
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QApplication::restoreOverrideCursor();
-  if( !m_pCurrStream->open( cFilename, Width, Height, InputFormat, FrameRate ) )
-  {
-    return false;
-  }
+
+  m_pCurrStream->open( cFilename, Width, Height, InputFormat, FrameRate );
 
   m_cViewArea->setInputStream( m_pCurrStream );
 
@@ -117,16 +111,12 @@ Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
   m_cWindowName = m_pCurrStream->getStreamInformationString();
   m_cWindowShortName = QFileInfo( cFilename ).fileName();
   setWindowTitle( m_cWindowName );
+  qDebug() << "File " << m_cWindowName << "was successfully opened";
   return true;
 }
 
 Bool SubWindowHandle::loadFile( PlaYUVerStreamInfo* streamInfo )
 {
-  if( !m_pCurrStream )
-  {
-    m_pCurrStream = new PlaYUVerStream;
-  }
-
   if( !m_pCurrStream->open( streamInfo->m_cFilename, streamInfo->m_uiWidth, streamInfo->m_uiHeight, streamInfo->m_iPelFormat,
       streamInfo->m_uiFrameRate ) )
   {

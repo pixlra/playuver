@@ -126,26 +126,6 @@ enum RGBcomponent
   COLOR_B,
 };
 
-//typedef struct __pixel_definition
-//{
-//  Int color_space;
-//  union
-//  {
-//    Pel Luma;
-//    Pel ColorR;
-//  };
-//  union
-//  {
-//    Pel ChromaU;
-//    Pel ColorG;
-//  };
-//  union
-//  {
-//    Pel ChromaV;
-//    Pel ColorB;
-//  };
-//}Pixel;
-
 }  // NAMESPACE
 
 #endif // __TYPEDEF_H__

@@ -102,7 +102,7 @@ struct structPlaYUVerFramePelFormat
 
 typedef struct structPlaYUVerFramePelFormat PlaYUVerFramePelFormat;
 
-#define PLAYUVER_NUMBER_FORMATS 7
+#define PLAYUVER_NUMBER_FORMATS 6
 extern PlaYUVerFramePelFormat g_PlaYUVerFramePelFormatsList[PLAYUVER_NUMBER_FORMATS];
 
 }  // NAMESPACE

@@ -167,19 +167,19 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo )
     return;
   }
   interfaceChild = new SubWindowHandle( this );  //createSubWindow();
-  Bool retChild = false;
   if( !streamInfo )
   {
     Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
     streamInfo = ( PlaYUVerStreamInfo* )( idx >= 0 ? &m_aRecentFileStreamInfo.at( idx ) : NULL );
   }
 
-  if( !streamInfo )
-    retChild = interfaceChild->loadFile( fileName );
-  else
-    retChild = interfaceChild->loadFile( streamInfo );
-  if( retChild )
+  try
   {
+    if( !streamInfo )
+      interfaceChild->loadFile( fileName );
+    else
+      interfaceChild->loadFile( streamInfo );
+
     statusBar()->showMessage( tr( "Loading file..." ) );
     mdiArea->addSubWindow( interfaceChild );
     interfaceChild->show();
@@ -197,18 +197,18 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo )
       m_aRecentFileStreamInfo.remove( idx );
     m_aRecentFileStreamInfo.prepend( interfaceChild->getStreamInfo() );
     while( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
-//#if( QT_VERSION_PLAYUVER == 5)
-//      m_aRecentFileStreamInfo.removeLast();
-//#else
       m_aRecentFileStreamInfo.remove( m_aRecentFileStreamInfo.size() - 1 );
-//#endif
     updateRecentFileActions();
 
     statusBar()->showMessage( tr( "File loaded" ), 2000 );
   }
-  else
+  catch( const char *msg )
   {
     interfaceChild->close();
+    QString warningMsg = "Cannot open file " + QFileInfo( fileName ).fileName() + " with the following error: \n" + msg;
+    QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
+    statusBar()->showMessage( warningMsg, 2000 );
+    qDebug() << warningMsg;
   }
 }
 
@@ -306,7 +306,18 @@ Void plaYUVerApp::format()
 {
   if( m_pcCurrentSubWindow )
   {
-    m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->getCurrentFileName(), true );
+    try
+    {
+      m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->getCurrentFileName(), true );
+    }
+    catch( const char *msg )
+    {
+      QString warningMsg = "Cannot change format of " + QFileInfo( m_pcCurrentSubWindow->getCurrentFileName() ).fileName() + " with the following error: \n" + msg;
+      QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
+      statusBar()->showMessage( warningMsg, 2000 );
+      qDebug() << warningMsg;
+      m_pcCurrentSubWindow->close();
+    }
     m_pcCurrentSubWindow = NULL;
     chageSubWindowSelection();
   }

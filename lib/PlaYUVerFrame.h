@@ -90,7 +90,6 @@ public:
     NUMBER_FORMATS
   };
 
-  static Int isRGBorYUVorGray( Int pixel_format );
   static QStringList supportedPixelFormatListNames();
 
   PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );

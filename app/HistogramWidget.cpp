@@ -338,10 +338,9 @@ Void HistogramWidget::stopHistogramComputation()
 //                          Update Data Methods  
 ////////////////////////////////////////////////////////////////////////////////
 
-Void HistogramWidget::updateData( Pel ***imageData, UInt imageWidth, UInt imageHeight, Int bitsPerChannel, Int pixel_format, UInt chroma_size, Pel ***selData,
+Void HistogramWidget::updateData( Pel ***imageData, UInt imageWidth, UInt imageHeight, Int bitsPerChannel, Int colorSpace, UInt chroma_size, Pel ***selData,
     UInt selWidth, UInt selHeight )
 {
-  Int colorSpace = PlaYUVerFrame::isRGBorYUVorGray( pixel_format );
   d->sixteenBits = ( bool )( bitsPerChannel == 16 );
   d->imageColorSpace = colorSpace;
 
@@ -378,10 +377,10 @@ Void HistogramWidget::updateData( Pel ***imageData, UInt imageWidth, UInt imageH
     delete m_selectionHistogram;
 
   // Calc new histogram data
-  m_imageHistogram = new PlaYUVerFrameStatistics( imageData, imageWidth, imageHeight, bitsPerChannel, pixel_format, chroma_size, this );
+  m_imageHistogram = new PlaYUVerFrameStatistics( imageData, imageWidth, imageHeight, bitsPerChannel, colorSpace, chroma_size, this );
 
   if( selData && selWidth && selHeight )
-    m_selectionHistogram = new PlaYUVerFrameStatistics( selData, selWidth, selHeight, bitsPerChannel, pixel_format, chroma_size, this );
+    m_selectionHistogram = new PlaYUVerFrameStatistics( selData, selWidth, selHeight, bitsPerChannel, colorSpace, chroma_size, this );
   else
     m_selectionHistogram = 0L;
 }
@@ -390,7 +389,7 @@ Void HistogramWidget::updateData( const PlaYUVerFrame *playuver_frame, const Pla
 {
   d->sixteenBits = false;
   //d->imageColorSpace = image.getPelFormat();
-  d->imageColorSpace = PlaYUVerFrame::isRGBorYUVorGray( playuver_frame->getPelFormat() );
+  d->imageColorSpace = playuver_frame->getColorSpace();
   d->imageChannels = playuver_frame->getNumberChannels();
 
   // We are deleting the histogram data,
@@ -420,7 +419,7 @@ Void HistogramWidget::updateData( const PlaYUVerFrame *playuver_frame, const Pla
 
 }
 
-Void HistogramWidget::updateSelectionData( Pel ***selData, UInt selWidth, UInt selHeight, Int bitsPerChannel, Int pixel_format, UInt chroma_size )
+Void HistogramWidget::updateSelectionData( Pel ***selData, UInt selWidth, UInt selHeight, Int bitsPerChannel, Int colorSpace, UInt chroma_size )
 {
   // Remove old histogram data from memory.
 
@@ -428,7 +427,7 @@ Void HistogramWidget::updateSelectionData( Pel ***selData, UInt selWidth, UInt s
     delete m_selectionHistogram;
 
   // Calc new histogram data
-  m_selectionHistogram = new PlaYUVerFrameStatistics( selData, selWidth, selHeight, bitsPerChannel, pixel_format, chroma_size, this );
+  m_selectionHistogram = new PlaYUVerFrameStatistics( selData, selWidth, selHeight, bitsPerChannel, colorSpace, chroma_size, this );
 }
 
 Void HistogramWidget::updateSelectionData( const PlaYUVerFrame *selection )

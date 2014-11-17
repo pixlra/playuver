@@ -99,14 +99,14 @@ PlaYUVerFrameStatistics::PlaYUVerFrameStatistics( const PlaYUVerFrame *playuver_
         QThread()
 {
   setup( playuver_frame->getPelBufferYUV(), playuver_frame->getWidth(), playuver_frame->getHeight(), playuver_frame->getBitsChannel(),
-      playuver_frame->getPelFormat(), playuver_frame->getChromaLength(), parent, options );
+      playuver_frame->getColorSpace(), playuver_frame->getChromaLength(), parent, options );
 }
 
-PlaYUVerFrameStatistics::PlaYUVerFrameStatistics( Pel ***data, UInt width, UInt height, Int bitsPerChannel, Int pixel_format, UInt chroma_size, QObject *parent,
+PlaYUVerFrameStatistics::PlaYUVerFrameStatistics( Pel ***data, UInt width, UInt height, Int bitsPerChannel, Int colorSpace, UInt chroma_size, QObject *parent,
     Options options ) :
         QThread()
 {
-  setup( data, width, height, bitsPerChannel, pixel_format, chroma_size, parent, options );
+  setup( data, width, height, bitsPerChannel, colorSpace, chroma_size, parent, options );
 }
 
 PlaYUVerFrameStatistics::~PlaYUVerFrameStatistics()
@@ -122,7 +122,7 @@ PlaYUVerFrameStatistics::~PlaYUVerFrameStatistics()
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setup Function 
 ////////////////////////////////////////////////////////////////////////////////
-void PlaYUVerFrameStatistics::setup( Pel ***data, UInt width, UInt height, Int bitsPerChannel, Int pixel_format, UInt chroma_size, QObject *parent,
+void PlaYUVerFrameStatistics::setup( Pel ***data, UInt width, UInt height, Int bitsPerChannel, Int colorSpace, UInt chroma_size, QObject *parent,
     Options options )
 {
   d = new PlaYUVerFrameStatisticsPrivate;
@@ -131,7 +131,7 @@ void PlaYUVerFrameStatistics::setup( Pel ***data, UInt width, UInt height, Int b
   d->imageHeight = height;
   d->parent = parent;
   d->histoSegments = ( bitsPerChannel == 16 ) ? 65536 : 256;
-  d->imageColorSpace = PlaYUVerFrame::isRGBorYUVorGray( pixel_format );
+  d->imageColorSpace = colorSpace;
   d->imageChromaSize = chroma_size;
 
   if( options == CalcLumaWhenRGB )

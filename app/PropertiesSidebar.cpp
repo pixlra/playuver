@@ -419,11 +419,11 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
   }
   else
   {
-    Int pel_fmt = pcFrame->getPelFormat();
-    if( m_iLastFrameType != pel_fmt )
+    Int colorSpace = pcFrame->getColorSpace();
+    if( m_iLastFrameType != colorSpace )
     {
-      m_iLastFrameType = pel_fmt;
-      if( ( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_RGB || PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_ARGB ) )
+      m_iLastFrameType = colorSpace;
+      if ( colorSpace == PlaYUVerFrame::COLOR_RGB || colorSpace == PlaYUVerFrame::COLOR_ARGB )
       {
         channelCB->clear();
         channelCB->clear();
@@ -431,7 +431,7 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
         channelCB->insertItem( FirstChannel, QIcon( ":/images/channel-red.png" ), "Red" );
         channelCB->insertItem( SecondChannel, QIcon( ":/images/channel-green.png" ), "Green" );
         channelCB->insertItem( ThirdChannel, QIcon( ":/images/channel-blue.png" ), "Blue" );
-        if( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_ARGB )
+        if( colorSpace == PlaYUVerFrame::COLOR_ARGB )
         {
           channelCB->insertItem( AlphaChannel, QIcon( ":/images/channel-alpha.png" ), "Alpha" );
         }
@@ -449,7 +449,7 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
         colorsCB->show();
         colorsLabel->show();
       }
-      else if( PlaYUVerFrame::isRGBorYUVorGray( pel_fmt ) == PlaYUVerFrame::COLOR_YUV )
+      else if( colorSpace == PlaYUVerFrame::COLOR_YUV )
       {
         channelCB->clear();
         channelCB->insertItem( FirstChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
@@ -620,9 +620,9 @@ Void FramePropertiesSideBar::slotHistogramComputationFailed()
 
 Void FramePropertiesSideBar::slotChannelChanged( Int channel )
 {
-  if( PlaYUVerFrame::isRGBorYUVorGray( m_pcFrame->getPelFormat() ) == PlaYUVerFrame::COLOR_YUV )
+  if( m_pcFrame->getColorSpace() == PlaYUVerFrame::COLOR_YUV )
     channel += 1;
-  if( channel == AlphaChannel && PlaYUVerFrame::isRGBorYUVorGray( m_pcFrame->getPelFormat() ) != PlaYUVerFrame::COLOR_ARGB )
+  if( channel == AlphaChannel && m_pcFrame->getColorSpace() != PlaYUVerFrame::COLOR_ARGB )
     channel = ColorChannels;
 
   switch( channel )

@@ -120,7 +120,7 @@ public  :
 
   /** Update full image histogram data methods.*/
   Void updateData( Pel ***imageData, UInt imageWidth, UInt imageHeight,
-      Int bitsPerChannel, Int pixel_format, UInt chroma_size,
+      Int bitsPerChannel, Int colorSpace, UInt chroma_size,
       Pel ***selData = 0, UInt selWidth = 0, UInt selHeight = 0);
 
   /** Update full image histogram data from SImage.*/
@@ -128,7 +128,7 @@ public  :
 
   /** Update image selection histogram data methods.*/
   Void updateSelectionData( Pel ***selData, uint selWidth, uint selHeight,
-      Int bitsPerChannel, Int pixel_format, UInt chroma_size );
+      Int bitsPerChannel, Int colorSpace, UInt chroma_size );
 
   /** Update image selection histogram data from SImage.*/
   Void updateSelectionData( const PlaYUVerFrame *imageSelection );

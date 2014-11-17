@@ -2,6 +2,10 @@
 # DLLs and Win32 specific code
 ######################################################################################
 
+if (MSVC_IDE)
+  # hack to get around the "Debug" and "Release" directories cmake tries to add on Windows
+  set_target_properties (${PROJECT_NAME} PROPERTIES PREFIX "../")
+endif()
 
 SET(MSVC_DLL_DIR "MSVC_DLL_DIR" CACHE PATH "Where to find MSVC dlls")
 INSTALL(FILES ${MSVC_DLL_DIR}/msvcr120.dll DESTINATION bin )

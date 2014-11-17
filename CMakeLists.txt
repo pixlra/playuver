@@ -60,6 +60,10 @@ IF( USE_FFMPEG )
 ENDIF()
 SET_PACKAGE_PROPERTIES(FFmpeg PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "Libav library support in PlaYUVerStream" TYPE OPTIONAL)
 
+IF( WIN32 )
+  INCLUDE( cmake/Win32.cmake )
+ENDIF()
+
 #####################################################################################
 # Qt library
 ######################################################################################
@@ -112,11 +116,6 @@ SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2" )
 ADD_SUBDIRECTORY( lib )
 ADD_SUBDIRECTORY( modules )
 ADD_SUBDIRECTORY( app )
-
-IF( WIN32 )
-  INCLUDE( cmake/Win32.cmake )
-ENDIF()
-
 
 
 ######################################################################################

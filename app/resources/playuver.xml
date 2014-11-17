@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+It comes with ABSOLUTELY NO WARRANTY, to the extent permitted by law. You may
+redistribute copies of update-mime-database under the terms of the GNU General
+Public License. For more information about these matters, see the file named
+COPYING.
+-->
+<!--
+Notes:
+- the mime types in this file are valid with the version 0.40 of the
+  shared-mime-info package.
+- the "fdo #xxxxx" are the wish in the freedesktop.org bug database to include
+  the mime type there.
+-->
+
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+
+  <mime-type xmlns="http://www.freedesktop.org/standards/shared-mime-info" type="video/x-raw">
+    <comment>Raw YUV file</comment>
+    <icon name="video-x-generic"/>
+    <alias type="video/x-raw"/>
+    <glob pattern="*.yuv"/>
+  </mime-type>
+
+</mime-info>

@@ -116,4 +116,7 @@ ENDIF()
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION bin )
 INSTALL(FILES resources/playuver.desktop DESTINATION share/applications )
 INSTALL(FILES resources/playuver.png DESTINATION share/icons )
-INSTALL(FILES resources/x-raw.xml DESTINATION share/mime/video )
+INSTALL(FILES resources/playuver.xml DESTINATION share/mime/packages )
+
+
+

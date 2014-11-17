@@ -95,7 +95,7 @@ public:
 
   PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );
   PlaYUVerFrame( PlaYUVerFrame * );
-  PlaYUVerFrame( PlaYUVerFrame *, QRect area );
+  PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt areaWidth, UInt areaHeight );
   ~PlaYUVerFrame();
 
   UInt64 getBytesPerFrame();
@@ -113,6 +113,8 @@ public:
   Void fillRGBBuffer();
 
   Void copyFrom( PlaYUVerFrame* );
+
+  static Void adjustSelectedAreaDims( UInt& posX, UInt& posY, UInt& areaWidth, UInt& areaHeight, Int pelFormat );
   Void copyFrom( PlaYUVerFrame*, UInt, UInt );
 
   PlaYUVerFrame::Pixel getPixelValue( Int, Int, Int );

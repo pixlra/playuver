@@ -230,7 +230,8 @@ Bool SubWindowHandle::save( QString filename )
   PlaYUVerFrame* saveFrame = m_pcCurrFrame;
   if( m_cSelectedArea.isValid() )
   {
-    saveFrame = new PlaYUVerFrame( m_pcCurrFrame, m_cSelectedArea );
+    saveFrame = new PlaYUVerFrame( m_pcCurrFrame, m_cSelectedArea.x(), m_cSelectedArea.y(),
+        m_cSelectedArea.width(), m_cSelectedArea.height() );
   }
   if( !saveFrame )
   {

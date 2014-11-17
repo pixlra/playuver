@@ -82,11 +82,11 @@ PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other )
   copyFrom( other );
 }
 
-PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, QRect area )
+PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt areaWidth, UInt areaHeight )
 {
-  adjustSelectedAreaDims( area, other->getPelFormat() );
-  init( area.width(), area.height(), other->getPelFormat() );
-  copyFrom( other, area.x(), area.y() );
+  adjustSelectedAreaDims( posX, posY, areaWidth, areaHeight, other->getPelFormat() );
+  init( areaWidth, areaHeight, other->getPelFormat() );
+  copyFrom( other, posX, posY );
 }
 
 PlaYUVerFrame::~PlaYUVerFrame()
@@ -100,53 +100,6 @@ PlaYUVerFrame::~PlaYUVerFrame()
   closePixfc();
 }
 
-Void PlaYUVerFrame::adjustSelectedAreaDims( QRect &area, Int pel_format )
-{
-  Int posX = area.x();
-  Int posY = area.y();
-  Int width = area.width();
-  Int height = area.height();
-
-  switch( pel_format )
-  {
-  case YUV420p:
-    if( posX % 2 )
-      area.setX( posX - 1 );
-    if( posY % 2 )
-      area.setY( posY - 1 );
-
-    if( ( posX + width ) % 2 )
-      area.setWidth( ( posX + width ) - area.x() + 1 );
-    else
-      area.setWidth( ( posX + width ) - area.x() );
-
-    if( ( posY + height ) % 2 )
-      area.setHeight( ( posY + height ) - area.y() + 1 );
-    else
-      area.setHeight( ( posY + height ) - area.y() );
-
-    break;
-  case YUV444p:
-    break;
-  case YUV422p:
-  case YUYV422:
-    if( posX % 2 )
-      area.setX( posX - 1 );
-
-    if( ( posX + width ) % 2 )
-      area.setWidth( ( posX + width ) - area.x() + 1 );
-    else
-      area.setWidth( ( posX + width ) - area.x() );
-
-    break;
-  case GRAY:
-    break;
-  case RGB8:
-    break;
-  default:
-    break;
-  }
-}
 
 Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format )
 {
@@ -250,6 +203,19 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame )
     return;
   m_bHasRGBPel = false;
   memcpy( *m_pppcInputPel[LUMA], input_frame->getPelBufferYUV()[LUMA][0], getBytesPerFrame() * sizeof(Pel) );
+}
+
+Void PlaYUVerFrame::adjustSelectedAreaDims( UInt& posX, UInt& posY, UInt& areaWidth, UInt& areaHeight, Int pelFormat )
+{
+  PlaYUVerFramePelFormat* pcPelFormat = &( g_PlaYUVerFramePelFormatsList[pelFormat] );
+  if( posX % pcPelFormat->ratioChromaWidth )
+    posX--;
+  if( posY % pcPelFormat->ratioChromaHeight )
+    posY--;
+  if( ( posX + areaWidth ) % 2 )
+    areaWidth++;
+  if( ( posY + areaHeight ) % 2 )
+      areaHeight++;
 }
 
 Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )

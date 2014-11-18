@@ -25,10 +25,11 @@
 #include <QApplication>
 #include "config.h"
 #include "plaYUVerApp.h"
-#include "lib/PlaYUVerStream.h"
+#include "SubWindowHandle.h"
 #ifdef USE_FERVOR
 #include "fvupdater.h"
 #endif
+
 using namespace plaYUVer;
 
 #if _WIN32

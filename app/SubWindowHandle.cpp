@@ -29,6 +29,47 @@
 namespace plaYUVer
 {
 
+QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array )
+{
+  PlaYUVerStreamInfo d;
+  out << array.size();
+  for( Int i = 0; i < array.size(); i++ )
+  {
+    d = array.at( i );
+    out << d.m_cFilename << d.m_uiWidth
+                         << d.m_uiHeight
+                         << d.m_iPelFormat
+                         << d.m_uiFrameRate;
+
+  }
+  return out;
+}
+
+QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& array )
+{
+  PlaYUVerStreamInfo d;
+  Int array_size;
+  in >> array_size;
+  for( Int i = 0; i < array_size; i++ )
+  {
+    in >> d.m_cFilename;
+    in >> d.m_uiWidth;
+    in >> d.m_uiHeight;
+    in >> d.m_iPelFormat;
+    in >> d.m_uiFrameRate;
+    array.append( d );
+  }
+  return in;
+}
+
+Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename )
+{
+  for( Int i = 0; i < array.size(); i++ )
+    if( array.at( i ).m_cFilename == filename )
+      return i;
+  return -1;
+}
+
 SubWindowHandle::SubWindowHandle( QWidget * parent, Bool isModule ) :
         QMdiSubWindow( parent ),
         m_pCurrStream( NULL ),
@@ -101,6 +142,12 @@ Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
 
   m_pCurrStream->open( cFilename, Width, Height, InputFormat, FrameRate );
 
+  m_sStreamInfo.m_cFilename = m_cFilename;
+  m_sStreamInfo.m_uiWidth = Width;
+  m_sStreamInfo.m_uiHeight = Height;
+  m_sStreamInfo.m_iPelFormat = InputFormat;
+  m_sStreamInfo.m_uiFrameRate = FrameRate;
+
   m_cViewArea->setInputStream( m_pCurrStream );
 
   QApplication::restoreOverrideCursor();
@@ -122,6 +169,8 @@ Bool SubWindowHandle::loadFile( PlaYUVerStreamInfo* streamInfo )
   {
     return false;
   }
+
+  m_sStreamInfo = *streamInfo;
 
   m_cViewArea->setInputStream( m_pCurrStream );
 

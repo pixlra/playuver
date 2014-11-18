@@ -41,6 +41,20 @@ namespace plaYUVer
 
 class SubWindowHandle;
 
+typedef struct
+{
+  QString m_cFilename;
+  UInt m_uiWidth;
+  UInt m_uiHeight;
+  Int m_iPelFormat;
+  UInt m_uiFrameRate;
+}PlaYUVerStreamInfo;
+typedef QVector<PlaYUVerStreamInfo> PlaYUVerStreamInfoVector;
+
+QDataStream& operator<<(QDataStream& out, const PlaYUVerStreamInfoVector& d);
+QDataStream& operator>>(QDataStream& in, PlaYUVerStreamInfoVector& d);
+Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename );
+
 class SubWindowHandle: public QMdiSubWindow
 {
 Q_OBJECT
@@ -49,6 +63,8 @@ private:
 
   QScrollArea* m_cScrollArea;
   ViewArea* m_cViewArea;
+
+  PlaYUVerStreamInfo m_sStreamInfo;
 
   PlaYUVerStream* m_pCurrStream;
   PlaYUVerFrame* m_pcCurrFrame;
@@ -99,10 +115,7 @@ public:
 
   PlaYUVerStreamInfo getStreamInfo()
   {
-    PlaYUVerStreamInfo info;
-    if( m_pCurrStream )
-      info = m_pCurrStream->getStreamInfo();
-    return info;
+    return m_sStreamInfo;
   }
 
   PlaYUVerStream* getInputStream()
@@ -222,6 +235,9 @@ public Q_SLOTS:
 };
 
 }  // NAMESPACE
+
+Q_DECLARE_METATYPE(plaYUVer::PlaYUVerStreamInfo);
+Q_DECLARE_METATYPE(plaYUVer::PlaYUVerStreamInfoVector);
 
 #endif // __SUBWINDOWHANDLE_H__
 

@@ -33,7 +33,7 @@
 #include <QDebug>
 
 #include "GridManager.h"
-#include "PlaYUVerSettings.h"
+#include "Settings.h"
 
 namespace plaYUVer
 {
@@ -51,7 +51,7 @@ GridManager::GridManager()
 ////////////////////////////////////////////////////////////////////////////////
 void GridManager::drawGrid( QPixmap &image, const QRect& area, QPainter *painter )
 {
-  PlaYUVerSettings settings;
+  Settings settings;
 
   int offsetx = 0;                // Grid offset doesn't applies to SCODE
   int offsety = 0;                // project for now...
@@ -149,7 +149,7 @@ QRect GridManager::rectContains( int x, int y ) const
   int multiPosX;
   int multiPosY;
 
-  PlaYUVerSettings settings;
+  Settings settings;
   int hSpacing = settings.gridHSpacing();
   int vSpacing = settings.gridVSpacing();
 
@@ -176,7 +176,7 @@ bool GridManager::contains( int x, int y )
   int resX;
   int resY;
 
-  PlaYUVerSettings settings;
+  Settings settings;
   int hSpacing = settings.gridHSpacing();
   int vSpacing = settings.gridVSpacing();
 
@@ -215,7 +215,7 @@ bool GridManager::isNear( int x, int y )
   int multiPosX;
   int multiPosY;
 
-  PlaYUVerSettings settings;
+  Settings settings;
   int hSpacing = settings.gridHSpacing();
   int vSpacing = settings.gridVSpacing();
 

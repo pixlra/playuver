@@ -60,6 +60,9 @@ IF( USE_FFMPEG )
 ENDIF()
 SET_PACKAGE_PROPERTIES(FFmpeg PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "Libav library support in PlaYUVerStream" TYPE OPTIONAL)
 
+find_package( KF5CoreAddons )
+SET_PACKAGE_PROPERTIES(KF5CoreAddons PROPERTIES URL "http://kde.org/" DESCRIPTION "KF5 core addons support" TYPE OPTIONAL)
+
 IF( WIN32 )
   INCLUDE( cmake/Win32.cmake )
 ENDIF()

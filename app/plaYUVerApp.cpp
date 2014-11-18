@@ -36,8 +36,7 @@
 #endif
 #include <QtDebug>
 #include "WidgetFrameNumber.h"
-
-#include "PlaYUVerSettings.h"
+#include "Settings.h"
 
 #define SYNCHRONISED_ZOON 1
 
@@ -1505,7 +1504,7 @@ Void plaYUVerApp::createStatusBar()
 
 Void plaYUVerApp::readSettings()
 {
-  PlaYUVerSettings settings;
+  Settings settings;
   QPoint pos = settings.mainWindowPos();
   QSize size = settings.mainWindowSize();
   move( pos );
@@ -1532,7 +1531,7 @@ Void plaYUVerApp::readSettings()
 
 Void plaYUVerApp::writeSettings()
 {
-  PlaYUVerSettings settings;
+  Settings settings;
   settings.setMainWindowPos( pos() );
   settings.setMainWindowSize( size() );
   settings.setLastOpenPath( m_cLastOpenPath );

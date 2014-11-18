@@ -13,8 +13,8 @@ set(plaYUver_App_SRCS
     ViewArea.cpp
     ModulesHandle.cpp
     PlaYUVerAppModuleIf.cpp
-    PlaYUVerSettings.cpp
     GridManager.cpp
+    Settings.cpp
 # Dialogs
     AboutDialog.cpp
     ConfigureFormatDialog.cpp
@@ -108,6 +108,9 @@ ENDIF()
 ADD_EXECUTABLE( ${PROJECT_NAME} ${plaYUver_App_SRCS} ${HEADERS_MOC_FILES} ${plaYUver_App_UI_Wrap} ${plaYUver_App_RCC} ${WINDOWS_RES_FILE} )
 
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib PlaYUVerModules ${QT_LINKER_LIBS} ${APP_LINKER_LIBS} )
+IF( ${KF5CoreAddons_FOUND})
+  TARGET_LINK_LIBRARIES( ${PROJECT_NAME} KF5::CoreAddons)
+ENDIF()
 
 IF( NOT USE_QT4 )
   QT5_USE_MODULES( ${PROJECT_NAME} ${QT_MODULES} )

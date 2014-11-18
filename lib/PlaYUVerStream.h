@@ -36,20 +36,6 @@ namespace plaYUVer
 
 class LibAvContextHandle;
 
-typedef struct
-{
-  QString m_cFilename;
-  UInt m_uiWidth;
-  UInt m_uiHeight;
-  Int m_iPelFormat;
-  UInt m_uiFrameRate;
-}PlaYUVerStreamInfo;
-typedef QVector<PlaYUVerStreamInfo> PlaYUVerStreamInfoVector;
-
-QDataStream& operator<<(QDataStream& out, const PlaYUVerStreamInfoVector& d);
-QDataStream& operator>>(QDataStream& in, PlaYUVerStreamInfoVector& d);
-Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename );
-
 class PlaYUVerStream
 {
 private:
@@ -60,8 +46,6 @@ private:
 
   Bool m_bLoadAll;
   Int m_iErrorStatus;
-
-  PlaYUVerStreamInfo m_sStreamInfo;
 
   LibAvContextHandle* m_cLibAvContext;
 
@@ -313,15 +297,8 @@ public:
       m_uiHeight = new_height;
     }
   }
-  PlaYUVerStreamInfo getStreamInfo()
-  {
-    return m_sStreamInfo;
-  }
 };
 
 }  // NAMESPACE
-
-Q_DECLARE_METATYPE(plaYUVer::PlaYUVerStreamInfo);
-Q_DECLARE_METATYPE(plaYUVer::PlaYUVerStreamInfoVector);
 
 #endif // __PLAYUVERSTREAM_H__

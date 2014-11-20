@@ -22,8 +22,9 @@
  * \brief    main file
  */
 
-#include <QApplication>
 #include "config.h"
+#include <QApplication>
+#include <QDBusInterface>
 #include "plaYUVerApp.h"
 #include "SubWindowHandle.h"
 #ifdef USE_FERVOR
@@ -38,14 +39,23 @@ using namespace plaYUVer;
 
 int main( int argc, char *argv[] )
 {
-  QApplication a( argc, argv );
-  QApplication::setApplicationName("PlaYUVer");
-  QApplication::setApplicationVersion(PLAYUVER_VERSION_STRING);
-  QApplication::setOrganizationName("pixlra");
-  QApplication::setOrganizationDomain("playuver.pixlra");
-
   qRegisterMetaType<PlaYUVerStreamInfoVector>("PlaYUVerStreamInfoVector");
   qRegisterMetaTypeStreamOperators<PlaYUVerStreamInfoVector>("PlaYUVerStreamInfoVector");
+
+  QApplication a( argc, argv );
+  QApplication::setApplicationName( "PlaYUVer" );
+  QApplication::setApplicationVersion( PLAYUVER_VERSION_STRING );
+  QApplication::setOrganizationName( "pixlra" );
+  QApplication::setOrganizationDomain( "playuver.pixlra" );
+
+  /**
+   * use dbus, if available
+   * allows for resuse of running Kate instances
+   */
+  if( QDBusConnectionInterface * const sessionBusInterface = QDBusConnection::sessionBus().interface() )
+  {
+
+  }
 
   plaYUVerApp w;
   w.show();

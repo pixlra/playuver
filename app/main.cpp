@@ -97,6 +97,16 @@ int main( int argc, char *argv[] )
 //      }
 //    }
 
+    QStringList filenameList;
+    for( Int i = 1; i < argc; i++ )
+    {
+      filenameList.append( QString( argv[i] ) );
+    }
+    if( filenameList.isEmpty() )
+    {
+      force_new = true;
+    }
+
     if( ( !force_new ) && ( serviceName.isEmpty() ) )
     {
       if( playuverServices.count() > 0 )
@@ -125,9 +135,6 @@ int main( int argc, char *argv[] )
       bool needToBlock = false;
 
       QStringList tokens;
-
-      QStringList filenameList;
-      filenameList.append( QString( argv[1] ) );
 
       // open given files...
       foreach(const QString & file, filenameList){

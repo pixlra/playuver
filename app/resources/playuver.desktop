@@ -2,7 +2,7 @@
 [Desktop Entry]
 Type=Application
 Name=plaYUVer
-Exec=playuver
+Exec="playuver %U"
 Icon=playuver.png
 Terminal=false
 MimeType=video/x-raw;image/png;video/dv;video/mpeg;video/x-mpeg;video/msvideo;video/quicktime;video/x-anim;video/x-avi;video/x-ms-asf;video/x-ms-wmv;video/x-msvideo;video/x-nsv;video/x-flc;video/x-fli;video/x-flv;video/mp4;video/mp4v-es;video/mp2t;application/x-matroska;video/x-matroska;video/webm;x-content/video-vcd;x-content/video-svcd;image/gif;image/jpeg;image/png;image/bmp;image/x-portable-bitmap;image/x-portable-graymap;image/x-portable-pixmap;image/x-xbitmap;image/x-xpixmap;image/tiff;image/x-psd;

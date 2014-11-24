@@ -15,6 +15,8 @@ set(plaYUver_App_SRCS
     PlaYUVerAppModuleIf.cpp
     GridManager.cpp
     Settings.cpp
+    PlaYUVerAppAdaptor.cpp
+    RunningInstanceInfo.cpp
 # Dialogs
     AboutDialog.cpp
     ConfigureFormatDialog.cpp

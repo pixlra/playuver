@@ -30,7 +30,6 @@
 #include <QDBusMessage>
 #include <QDBusReply>
 #include "PlaYUVerAppAdaptor.h"
-#include "RunningInstanceInfo.h"
 #include "plaYUVerApp.h"
 #include "SubWindowHandle.h"
 #ifdef USE_FERVOR
@@ -61,42 +60,9 @@ int main( int argc, char *argv[] )
   QDBusConnectionInterface * const sessionBusInterface = QDBusConnection::sessionBus().interface();
   if( sessionBusInterface )
   {
-    RunningInstanceInfoMap mapSessionRii;
-    if( !fillinRunningAppInstances( &mapSessionRii ) )
-    {
-      return 1;
-    }
-    QStringList playuverServices;
-    for( RunningInstanceInfoMap::const_iterator it = mapSessionRii.constBegin(); it != mapSessionRii.constEnd(); ++it )
-    {
-      playuverServices << ( *it )->serviceName;
-    }
-    QString serviceName;
 
-    //const QStringList urls = parser.positionalArguments();
 
     Bool force_new = false;
-
-    //cleanup map
-    cleanupRunningAppInstanceMap( &mapSessionRii );
-
-    //if no new instance is forced and no already opened session is requested,
-    //check if a pid is given, which should be reused.
-    // two possibilities: pid given or not...
-//    if( ( !force_new ) && serviceName.isEmpty() )
-//    {
-//      if( /*( parser.isSet( usePidOption ) )*/|| ( !qgetenv( "PLAYUVER_PID" ).isEmpty() ) )
-//      {
-//        QString usePid = ( parser.isSet( usePidOption ) ) ? parser.value( usePidOption ) : QString::fromLocal8Bit( qgetenv( "KATE_PID" ) );
-//
-//        serviceName = QStringLiteral("org.kde.kate-")+ usePid;
-//        if( !playuverServices.contains( serviceName ) )
-//        {
-//          serviceName.clear();
-//        }
-//      }
-//    }
-
     QStringList filenameList;
     for( Int i = 1; i < argc; i++ )
     {
@@ -107,26 +73,18 @@ int main( int argc, char *argv[] )
       force_new = true;
     }
 
-    if( ( !force_new ) && ( serviceName.isEmpty() ) )
-    {
-      if( playuverServices.count() > 0 )
-      {
-        serviceName = playuverServices[0];
-      }
-    }
-
     //check again if service is still running
     bool foundRunningService = false;
-    if( !serviceName.isEmpty() )
+    if( !force_new )
     {
-      QDBusReply<bool> there = sessionBusInterface->isServiceRegistered( serviceName );
+      QDBusReply<bool> there = sessionBusInterface->isServiceRegistered( PLAYUVER_DBUS_SESSION_NAME );
       foundRunningService = there.isValid() && there.value();
     }
 
     if( foundRunningService )
     {
       // open given session
-      QDBusMessage m = QDBusMessage::createMethodCall( serviceName, QStringLiteral( PLAYUVER_DBUS_PATH ), QStringLiteral( PLAYUVER_DBUS_SESSION_NAME ),
+      QDBusMessage m = QDBusMessage::createMethodCall( PLAYUVER_DBUS_SESSION_NAME, QStringLiteral( PLAYUVER_DBUS_PATH ), QStringLiteral( PLAYUVER_DBUS_SESSION_NAME ),
           QStringLiteral( "activate" ) );
 
       QDBusConnection::sessionBus().call( m );
@@ -138,13 +96,11 @@ int main( int argc, char *argv[] )
 
       // open given files...
       foreach(const QString & file, filenameList){
-      QDBusMessage m = QDBusMessage::createMethodCall(serviceName,
+      QDBusMessage m = QDBusMessage::createMethodCall(PLAYUVER_DBUS_SESSION_NAME,
           QStringLiteral(PLAYUVER_DBUS_PATH), QStringLiteral(PLAYUVER_DBUS_SESSION_NAME), QStringLiteral("loadFile"));
 
       QList<QVariant> dbusargs;
-
       dbusargs.append( file );
-
       m.setArguments(dbusargs);
 
       QDBusMessage res = QDBusConnection::sessionBus().call(m);

@@ -101,8 +101,6 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, Bool isModule ) :
   m_cScrollArea->setWidget( m_cViewArea );
   m_cScrollArea->setWidgetResizable( true );
 
-  m_pCurrStream = new PlaYUVerStream;
-
   m_cWindowName = QString( " " );
   m_cLastScroll = QPoint();
 }
@@ -112,6 +110,7 @@ SubWindowHandle::~SubWindowHandle()
   disableModule();
   delete m_cViewArea;
   delete m_cScrollArea;
+  if( m_pCurrStream )
   delete m_pCurrStream;
 }
 
@@ -126,6 +125,11 @@ Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
 {
   UInt Width = 0, Height = 0, FrameRate = 30;
   Int InputFormat = -1;
+
+  if( !m_pCurrStream )
+    {
+      m_pCurrStream = new PlaYUVerStream;
+    }
 
   m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
 
@@ -164,6 +168,11 @@ Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
 
 Bool SubWindowHandle::loadFile( PlaYUVerStreamInfo* streamInfo )
 {
+  if( !m_pCurrStream )
+  {
+    m_pCurrStream = new PlaYUVerStream;
+  }
+
   if( !m_pCurrStream->open( streamInfo->m_cFilename, streamInfo->m_uiWidth, streamInfo->m_uiHeight, streamInfo->m_iPelFormat,
       streamInfo->m_uiFrameRate ) )
   {

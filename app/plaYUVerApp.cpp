@@ -155,7 +155,7 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
   }
 }
 
-Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo )
+Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 {
   SubWindowHandle *interfaceChild = plaYUVerApp::findSubWindow( mdiArea, fileName );
   if( interfaceChild )
@@ -164,18 +164,18 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo )
     return;
   }
   interfaceChild = new SubWindowHandle( this );  //createSubWindow();
-  if( !streamInfo )
+  if( !pStreamInfo )
   {
     Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
-    streamInfo = ( PlaYUVerStreamInfo* )( idx >= 0 ? &m_aRecentFileStreamInfo.at( idx ) : NULL );
+    pStreamInfo = ( PlaYUVerStreamInfo* )( idx >= 0 ? &m_aRecentFileStreamInfo.at( idx ) : NULL );
   }
 
   try
   {
-    if( !streamInfo )
+    if( !pStreamInfo )
       interfaceChild->loadFile( fileName );
     else
-      interfaceChild->loadFile( streamInfo );
+      interfaceChild->loadFile( pStreamInfo );
 
     statusBar()->showMessage( tr( "Loading file..." ) );
     mdiArea->addSubWindow( interfaceChild );
@@ -192,7 +192,9 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo )
     Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
     if( idx >= 0 )
       m_aRecentFileStreamInfo.remove( idx );
-    m_aRecentFileStreamInfo.prepend( interfaceChild->getStreamInfo() );
+    PlaYUVerStreamInfo streamInfo = interfaceChild->getStreamInfo();
+    qDebug() << streamInfo.m_cFilename;
+    m_aRecentFileStreamInfo.prepend( streamInfo );
     while( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
       m_aRecentFileStreamInfo.remove( m_aRecentFileStreamInfo.size() - 1 );
     updateRecentFileActions();

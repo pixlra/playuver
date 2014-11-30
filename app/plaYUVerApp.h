@@ -53,7 +53,7 @@ Q_OBJECT
 public:
   plaYUVerApp();
   Void parseArgs( Int argc, Char *argv[] );
-  Void loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo = NULL );
+  Void loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo = NULL );
 
 protected:
   Void closeEvent( QCloseEvent *event );

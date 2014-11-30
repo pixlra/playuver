@@ -153,7 +153,7 @@ private:
   QTime m_cTimer;
   UInt m_uiAveragePlayInterval;
 
-  Void loadFile( QString fileName, PlaYUVerStreamInfo* streamInfo = NULL );
+  Void loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo = NULL );
 
   Void readRecentFileList();
   Void writeRecentFileList();

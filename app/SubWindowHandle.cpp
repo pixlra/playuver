@@ -36,10 +36,11 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array
   for( Int i = 0; i < array.size(); i++ )
   {
     d = array.at( i );
-    out << d.m_cFilename << d.m_uiWidth
-                         << d.m_uiHeight
-                         << d.m_iPelFormat
-                         << d.m_uiFrameRate;
+    out << d.m_cFilename
+        << d.m_uiWidth
+        << d.m_uiHeight
+        << d.m_iPelFormat
+        << d.m_uiFrameRate;
 
   }
   return out;

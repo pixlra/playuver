@@ -147,7 +147,7 @@ Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
 
   m_pCurrStream->open( cFilename, Width, Height, InputFormat, FrameRate );
 
-  m_sStreamInfo.m_cFilename = m_cFilename;
+  m_sStreamInfo.m_cFilename = cFilename;
   m_sStreamInfo.m_uiWidth = Width;
   m_sStreamInfo.m_uiHeight = Height;
   m_sStreamInfo.m_iPelFormat = InputFormat;

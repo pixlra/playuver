@@ -33,7 +33,6 @@
 #endif
 #include <QMainWindow>
 #include "lib/PlaYUVerDefs.h"
-#include "PlaYUVerAppAdaptor.h"
 #include "SubWindowHandle.h"
 #include "ModulesHandle.h"
 #include "PropertiesSidebar.h"
@@ -45,6 +44,7 @@ namespace plaYUVer
 {
 
 class PlaYUVerStream;
+class PlaYUVerAppAdaptor;
 
 class plaYUVerApp: public QMainWindow
 {

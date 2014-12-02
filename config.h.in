@@ -45,6 +45,9 @@
   #define QT_VERSION_PLAYUVER 4
 #endif
 
+/* QtDBus */
+#cmakedefine USE_QTDBUS
+
 #cmakedefine PLAYUVER_THREADED_MODULES
 
 /* OpenCV */

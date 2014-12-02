@@ -25,6 +25,10 @@
 #ifndef __PlaYUVerAppAdaptor_H__
 #define __PlaYUVerAppAdaptor_H__
 
+#include <QDBusConnectionInterface>
+#include <QDBusInterface>
+#include <QDBusMessage>
+#include <QDBusReply>
 #include <QtDBus>
 #include <QtCore>
 

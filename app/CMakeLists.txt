@@ -15,7 +15,6 @@ set(plaYUver_App_SRCS
     PlaYUVerAppModuleIf.cpp
     GridManager.cpp
     Settings.cpp
-    PlaYUVerAppAdaptor.cpp
 # Dialogs
     AboutDialog.cpp
     ConfigureFormatDialog.cpp
@@ -30,6 +29,10 @@ set(plaYUver_App_SRCS
     WidgetFrameNumber.cpp
     WidgetFrameNumber.cpp
 )
+
+IF( USE_QTDBUS )
+  LIST( APPEND plaYUver_App_SRCS  PlaYUVerAppAdaptor.cpp )
+ENDIF()
 
 set(plaYUver_App_UI "" )
 

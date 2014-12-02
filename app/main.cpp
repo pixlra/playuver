@@ -25,13 +25,11 @@
 #include "config.h"
 #include "lib/PlaYUVerDefs.h"
 #include <QApplication>
-#include <QDBusConnectionInterface>
-#include <QDBusInterface>
-#include <QDBusMessage>
-#include <QDBusReply>
-#include "PlaYUVerAppAdaptor.h"
 #include "plaYUVerApp.h"
 #include "SubWindowHandle.h"
+#ifdef USE_QTDBUS
+#include "PlaYUVerAppAdaptor.h"
+#endif
 #ifdef USE_FERVOR
 #include "fvupdater.h"
 #endif
@@ -53,6 +51,7 @@ int main( int argc, char *argv[] )
   QApplication::setOrganizationName( "pixlra" );
   QApplication::setOrganizationDomain( "playuver.pixlra" );
 
+#ifdef USE_QTDBUS
   /**
    * use dbus, if available
    * allows for resuse of running Kate instances
@@ -128,6 +127,8 @@ int main( int argc, char *argv[] )
   /**
    * if we arrive here, we need to start a new playuver instance!
    */
+  QDBusConnection::sessionBus().registerService( PLAYUVER_DBUS_SESSION_NAME );
+#endif
   plaYUVerApp mainwindow;
   mainwindow.show();
   mainwindow.parseArgs( argc, argv );
@@ -136,7 +137,7 @@ int main( int argc, char *argv[] )
   FvUpdater::sharedUpdater()->SetDependencies(DEPENDENCIES_STRING);
 #endif
 
-  QDBusConnection::sessionBus().registerService( PLAYUVER_DBUS_SESSION_NAME );
+
 
   return application.exec();
 }

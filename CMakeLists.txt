@@ -42,6 +42,44 @@ OPTION( USE_QT4                      "Build with QT4"           OFF )
 ADD_FEATURE_INFO(Fervor USE_FERVOR "Fervor lib includes check for updates feature.")
 ADD_FEATURE_INFO(WErrors PLAYUVER_WERROR "Warnings as errors"  )
 
+#####################################################################################
+# Qt library
+######################################################################################
+
+IF( USE_QT4 )
+  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}QT4" )
+  FIND_PACKAGE( Qt4 REQUIRED COMPONENTS QtCore QtGui QtNetwork QtWebKit )
+  FIND_PACKAGE( Qt4 COMPONENTS QtDBus )
+  IF( NOT QT4_FOUND )
+      SET(USE_QT4 FALSE)
+  ELSE()
+    INCLUDE( ${QT_USE_FILE} )
+    ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+    SET( QT_LINKER_LIBS ${QT_LIBRARIES} )
+  ENDIF()
+ENDIF()
+
+IF( NOT USE_QT4 )
+
+  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}QT5" )
+
+  FIND_PACKAGE( Qt5 REQUIRED COMPONENTS Core Gui Widgets )
+# #   FIND_PACKAGE( Qt5 COMPONENTS DBus )
+
+
+  LIST(APPEND QT_LINKER_LIBS Qt5::Core Qt5::Gui Qt5::Widgets )
+  LIST(APPEND QT_MODULES Core Gui Widgets )
+  IF( ${Qt5DBus_FOUND} )
+    SET( USE_QTDBUS ${Qt5DBus_FOUND} )
+    LIST(APPEND QT_LINKER_LIBS Qt5::DBus )
+    LIST(APPEND QT_MODULES DBus )
+  ENDIF()
+
+  INCLUDE_DIRECTORIES( ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
+  SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}" )
+
+ENDIF()
+
 ######################################################################################
 # Dependencies
 ######################################################################################
@@ -62,32 +100,6 @@ SET_PACKAGE_PROPERTIES(FFmpeg PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "L
 
 IF( WIN32 )
   INCLUDE( cmake/Win32.cmake )
-ENDIF()
-
-#####################################################################################
-# Qt library
-######################################################################################
-
-IF( USE_QT4 )
-  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}QT4" )
-  FIND_PACKAGE( Qt4 REQUIRED QtCore QtGui QtNetwork QtWebKit )
-  IF( NOT QT4_FOUND )
-      SET(USE_QT4 FALSE)
-  ELSE()
-    INCLUDE( ${QT_USE_FILE} )
-    ADD_DEFINITIONS( ${QT_DEFINITIONS} )
-    SET( QT_LINKER_LIBS ${QT_LIBRARIES} )
-  ENDIF()
-ENDIF()
-
-IF( NOT USE_QT4 )
-  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}QT5" )
-  FIND_PACKAGE( Qt5 REQUIRED Core Gui Widgets DBus )
-  INCLUDE_DIRECTORIES( ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
-  # Add compiler flags for building executables (-fPIE)
-  SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}" )
-  LIST(APPEND QT_LINKER_LIBS Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus )
-  LIST(APPEND QT_MODULES Core Gui Widgets )
 ENDIF()
 
 ######################################################################################

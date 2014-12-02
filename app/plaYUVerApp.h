@@ -31,6 +31,9 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
+#ifdef USE_QTDBUS
+#include "PlaYUVerAppAdaptor.h"
+#endif
 #include <QMainWindow>
 #include "lib/PlaYUVerDefs.h"
 #include "SubWindowHandle.h"

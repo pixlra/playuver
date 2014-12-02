@@ -27,10 +27,6 @@
 #ifdef USE_FERVOR
 #include "fvupdater.h"
 #endif
-#ifdef USE_QTDBUS
-#include "PlaYUVerAppAdaptor.h"
-#endif
-
 #include "plaYUVerApp.h"
 #include "DialogSubWindowSelector.h"
 #include "WidgetFrameNumber.h"

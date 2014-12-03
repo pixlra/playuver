@@ -191,6 +191,11 @@ Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height
       break;
     }
   }
+  if( pixel_format ==  PlaYUVerFrame::NO_FMT )
+  {
+    closeAvFormat();
+    return false;
+  }
 
   /* dump input information to stderr */
   av_dump_format( fmt_ctx, 0, src_filename, 0 );

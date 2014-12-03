@@ -18,60 +18,55 @@
  */
 
 /**
- * \file     FrameDifference.cpp
- * \brief    Frame Difference module
+ * \file     AbsoluteFrameDifference.cpp
+ * \brief    Absolute Frame Difference module
  */
 
-#include "FrameDifference.h"
-#include <algorithm>
+#include "AbsoluteFrameDifference.h"
 
 namespace plaYUVer
 {
 
-static PlaYUVerModuleDefinition FrameDifferenceDef =
+static PlaYUVerModuleDefinition AbsoluteFrameDifferenceDef =
 {
     FRAME_PROCESSING_MODULE,
     "Measurements",
     "AbsoluteFrameDifference",
-    "Measure the difference between two images (Y plane),  Y1 - Y2, with max absolute diff of 128",
+    "Measure the absolute difference between two images (Y plane), e. g., abs( Y1 - Y2 )",
     MODULE_REQUIRES_TWO_FRAMES,
     MODULE_REQUIRES_NEW_WINDOW,
     APPLY_WHILE_PLAYING,
 };
 
-FrameDifference::FrameDifference()
+AbsoluteFrameDifference::AbsoluteFrameDifference()
 {
   m_pcFrameDifference = NULL;
-  setModuleDefinition( FrameDifferenceDef );
+  setModuleDefinition( AbsoluteFrameDifferenceDef );
 }
 
-Void FrameDifference::create( PlaYUVerFrame* Input )
+Void AbsoluteFrameDifference::create( PlaYUVerFrame* Input )
 {
   m_pcFrameDifference = new PlaYUVerFrame( Input->getWidth(), Input->getHeight(), PlaYUVerFrame::GRAY );
 }
 
-PlaYUVerFrame* FrameDifference::process( PlaYUVerFrame* Input1, PlaYUVerFrame* Input2 )
+PlaYUVerFrame* AbsoluteFrameDifference::process( PlaYUVerFrame* Input1, PlaYUVerFrame* Input2 )
 {
   Pel* pInput1PelYUV = Input1->getPelBufferYUV()[0][0];
   Pel* pInput2PelYUV = Input2->getPelBufferYUV()[0][0];
   Pel* pOutputPelYUV = m_pcFrameDifference->getPelBufferYUV()[0][0];
   Int aux_pel_1, aux_pel_2;
-  Int diff = 0;
 
   for( UInt y = 0; y < m_pcFrameDifference->getHeight(); y++ )
     for( UInt x = 0; x < m_pcFrameDifference->getWidth(); x++ )
     {
       aux_pel_1 = *pInput1PelYUV++;
       aux_pel_2 = *pInput2PelYUV++;
-      diff = aux_pel_1 - aux_pel_2;
-      diff = std::min( diff, 127 );
-      diff = std::max( diff, -128 );
-      *pOutputPelYUV++ = diff;
+      *pOutputPelYUV++ = abs( aux_pel_1 - aux_pel_2 );
     }
   return m_pcFrameDifference;
 }
 
-Void FrameDifference::destroy()
+Void AbsoluteFrameDifference::destroy()
 {
   if( m_pcFrameDifference )
     delete m_pcFrameDifference;

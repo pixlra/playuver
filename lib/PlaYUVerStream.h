@@ -47,6 +47,14 @@ private:
   Bool m_bLoadAll;
   Int m_iErrorStatus;
 
+  enum PlaYUVerStreamHandlers
+  {
+    INVALID_HANDLER = -1,
+    YUV_IO,
+    FFMPEG,
+    TOTAL_HANDLERR
+  };
+  UInt m_uiStreamHandler;
   LibAvContextHandle* m_cLibAvContext;
 
   QString m_cFilename;

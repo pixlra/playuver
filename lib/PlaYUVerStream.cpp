@@ -41,7 +41,7 @@ PlaYUVerStream::PlaYUVerStream()
   m_bIsOpened = false;
   m_bLoadAll = false;
   m_iErrorStatus = 0;
-
+  m_uiStreamHandler = 0;
   m_pFile = NULL;
   m_uiWidth = 0;
   m_uiHeight = 0;
@@ -70,8 +70,6 @@ PlaYUVerStream::~PlaYUVerStream()
 
 Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate, Bool bInput )
 {
-  Bool avStatus = false;
-
   if( m_bInit )
   {
     close();
@@ -103,11 +101,15 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     }
     m_cFormatName = PlaYUVerStream::supportedReadFormatsExt().at( m_iFileFormat ).toUpper();
 
+    if( m_iFileFormat == YUVINPUT )
+    {
+      m_uiStreamHandler = YUV_IO;
+    }
+
 #ifdef USE_FFMPEG
     if( m_iFileFormat != YUVINPUT )
     {
-      avStatus = m_cLibAvContext->initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum );
-      m_cCodedName = QString::fromUtf8( m_cLibAvContext->getCodecName() ).toUpper();
+      m_uiStreamHandler = FFMPEG;
     }
 #endif
 #if 0
@@ -126,14 +128,38 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   else
   {
     m_iFileFormat = YUVOUTPUT;
+    m_uiStreamHandler = YUV_IO;
     m_uiFrameBufferSize = 1;
   }
+
+#ifdef USE_FFMPEG
+  if( m_uiStreamHandler == FFMPEG )
+  {
+    if( !m_cLibAvContext->initAvFormat( m_cFilename.toLocal8Bit().data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum ) )
+    {
+      throw "Cannot open file using FFmpeg libs";
+    }
+    m_cCodedName = QString::fromUtf8( m_cLibAvContext->getCodecName() ).toUpper();
+  }
+#endif
 
   if( m_uiWidth <= 0 || m_uiHeight <= 0 || m_iPixelFormat < 0 )
   {
     close();
     throw "[PlaYUVerStream] Incorrect configuration";
     return m_bInit;
+  }
+
+  if( m_uiStreamHandler == YUV_IO )
+  {
+    if( !openFile() )
+    {
+      close();
+      throw "[PlaYUVerStream] Cannot open file";
+      return m_bInit;
+    }
+    m_cFormatName = QString::fromUtf8( "YUV" );
+    m_cCodedName = QString::fromUtf8( "Raw Video" );
   }
 
   getMem1D<PlaYUVerFrame*>( &m_ppcFrameBuffer, m_uiFrameBufferSize );
@@ -152,37 +178,21 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
 
   UInt64 frame_bytes_input = m_pcCurrFrame->getBytesPerFrame();
 
-  if( !avStatus )
+  if( m_uiStreamHandler == YUV_IO && m_bIsInput )
   {
-    if( !openFile() )
+    fseek( m_pFile, 0, SEEK_END );
+    UInt64 fileSize = ftell( m_pFile );
+#if 0
+    if( fileSize % frame_bytes_input )
     {
+      Int remaining = fileSize % frame_bytes_input;
       close();
-      throw "[PlaYUVerStream] Cannot open file";
+      throw "[PlaYUVerStream] Incorrect configuration: failed ( fileSize % frame_bytes_input = " << remaining << " )";
       return m_bInit;
     }
-    m_cFormatName = QString::fromUtf8( "YUV" );
-    m_cCodedName = QString::fromUtf8( "Raw Video" );
-  }
-
-  if( !avStatus && m_iFileFormat == YUVINPUT )
-  {
-    if( m_bIsInput )
-    {
-      fseek( m_pFile, 0, SEEK_END );
-      UInt64 fileSize = ftell( m_pFile );
-#if 0
-      if( fileSize % frame_bytes_input )
-      {
-        Int remaining = fileSize % frame_bytes_input;
-        close();
-        throw "[PlaYUVerStream] Incorrect configuration: failed ( fileSize % frame_bytes_input = " << remaining << " )";
-        return m_bInit;
-      }
 #endif
-      m_uiTotalFrameNum = fileSize / frame_bytes_input;
-      fseek( m_pFile, 0, SEEK_SET );
-    }
-
+    m_uiTotalFrameNum = fileSize / frame_bytes_input;
+    fseek( m_pFile, 0, SEEK_SET );
   }
 
   if( m_bIsInput && m_uiTotalFrameNum <= 0 )
@@ -200,7 +210,7 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
   }
 
   m_cStreamInformationString = "[" + m_cFormatName + " / " + m_cCodedName + " / " + PlaYUVerFrame::supportedPixelFormatListNames().at( m_iPixelFormat ) + "] "
-          + QFileInfo( m_cFilename ).fileName();
+      + QFileInfo( m_cFilename ).fileName();
 
   m_iCurrFrameNum = -1;
 
@@ -238,10 +248,12 @@ Void PlaYUVerStream::close()
   if( !m_bInit )
     return;
 
-  closeFile();
+  if( m_uiStreamHandler == YUV_IO )
+    closeFile();
 
 #ifdef USE_FFMPEG
-  m_cLibAvContext->closeAvFormat();
+  if( m_uiStreamHandler == FFMPEG )
+    m_cLibAvContext->closeAvFormat();
 #endif
 
   if( m_ppcFrameBuffer )
@@ -468,7 +480,7 @@ Void PlaYUVerStream::readFrame()
   }
 
 #ifdef USE_FFMPEG
-  if( m_cLibAvContext->getStatus() )
+  if( m_uiStreamHandler == FFMPEG )
   {
     if( !m_cLibAvContext->decodeAvFormat() )
     {
@@ -477,8 +489,8 @@ Void PlaYUVerStream::readFrame()
     }
     m_pcNextFrame->frameFromBuffer( m_cLibAvContext->m_pchFrameBuffer, m_cLibAvContext->m_uiFrameBufferSize );
   }
-  else
 #endif
+  if( m_uiStreamHandler == YUV_IO )
   {
     UInt64 frame_bytes_input = m_pcNextFrame->getBytesPerFrame();
     UInt64 bytes_read = fread( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
@@ -497,24 +509,30 @@ Void PlaYUVerStream::readFrame()
 
 Void PlaYUVerStream::writeFrame()
 {
-  UInt64 frame_bytes_input = m_pcCurrFrame->getBytesPerFrame();
-  m_pcCurrFrame->frameToBuffer( m_pStreamBuffer );
-  UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
-  if( bytes_read != frame_bytes_input )
+  if( m_uiStreamHandler == YUV_IO )
   {
-    m_iErrorStatus = WRITING;
+    UInt64 frame_bytes_input = m_pcCurrFrame->getBytesPerFrame();
+    m_pcCurrFrame->frameToBuffer( m_pStreamBuffer );
+    UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
+    if( bytes_read != frame_bytes_input )
+    {
+      m_iErrorStatus = WRITING;
+    }
   }
   return;
 }
 
 Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
 {
-  UInt64 frame_bytes_input = pcFrame->getBytesPerFrame();
-  pcFrame->frameToBuffer( m_pStreamBuffer );
-  UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
-  if( bytes_read != frame_bytes_input )
+  if( m_uiStreamHandler == YUV_IO )
   {
-    m_iErrorStatus = WRITING;
+    UInt64 frame_bytes_input = pcFrame->getBytesPerFrame();
+    pcFrame->frameToBuffer( m_pStreamBuffer );
+    UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
+    if( bytes_read != frame_bytes_input )
+    {
+      m_iErrorStatus = WRITING;
+    }
   }
   return;
 }
@@ -604,12 +622,12 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
     return true;
   }
 #ifdef USE_FFMPEG
-  if( m_cLibAvContext->getStatus() )
+  if( m_uiStreamHandler == FFMPEG )
   {
     m_cLibAvContext->seekAvFormat( new_frame_num );
   }
-  else
 #endif
+  if( m_uiStreamHandler == YUV_IO )
   {
     UInt64 frame_bytes_input = m_ppcFrameBuffer[0]->getBytesPerFrame();
     UInt64 nbytes_seek = frame_bytes_input * new_frame_num;

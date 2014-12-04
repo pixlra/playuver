@@ -32,7 +32,7 @@ static PlaYUVerModuleDefinition FrameDifferenceDef =
 {
     FRAME_PROCESSING_MODULE,
     "Measurements",
-    "AbsoluteFrameDifference",
+    "FrameDifference",
     "Measure the difference between two images (Y plane),  Y1 - Y2, with max absolute diff of 128",
     MODULE_REQUIRES_TWO_FRAMES,
     MODULE_REQUIRES_NEW_WINDOW,

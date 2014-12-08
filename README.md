@@ -18,12 +18,12 @@ Developers
 ----------------------------------------------------------------
 
 - Joao Carreira     (jfmcarreira@gmail.com)
-- Lui­s Lucas        (luisfrlucas@gmail.com) 
+- Lui­s Lucas        (luisfrlucas@gmail.com)
 
 
 Builds
 ----------------------------------------------------------------
-Download update build for windows and linux from our <a href="https://sourceforge.net/projects/playuver/">SourceForge project page</a> 
+Download update build for windows and linux from our <a href="https://sourceforge.net/projects/playuver/">SourceForge project page</a>
 
 
 Build/Install using cmake
@@ -34,16 +34,16 @@ Build/Install using cmake
   - cmake
   - a Qt development environment (libraries, headers, qmake, ...): only QtCore, QtGui and QtWidgets are required, at least in version 4
 
-2. Dependencies:
-  - QT
-  - OpenCv (optional)
-  - FFmpeg (optional)
+2. Optional Dependencies:
+  - QtDBus
+  - OpenCv
+  - FFmpeg
 
-3. Run the following commands: (this will create an executable named playuver) 
+3. Run the following commands: (this will create an executable named playuver)
 ```
 mkdir build
 cd build
-cmake -DUSE_FFMPEG=ON -DUSE_OPENCV=ON ..  (for FFmpeg and OpenCV support)
+cmake -DUSE_QT4=OFF -DUSE_FFMPEG=ON -DUSE_OPENCV=ON ..  (for FFmpeg and OpenCV support)
 make
-make install 
+make install
 ```

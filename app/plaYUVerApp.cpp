@@ -1166,8 +1166,7 @@ Void plaYUVerApp::createActions()
   connect( m_arrayActions[SAVE_ACT], SIGNAL( triggered() ), this, SLOT( save() ) );
 
   m_arrayActions[FORMAT_ACT] = new QAction( tr( "&Format" ), this );
-  m_arrayActions[FORMAT_ACT]->setIcon( QIcon( ":/images/configuredialog.png" ) );
-  m_arrayActions[FORMAT_ACT]->setIcon( QIcon::fromTheme( "transform-scale" ) );
+  m_arrayActions[FORMAT_ACT]->setIcon( QIcon::fromTheme( "transform-scale", QIcon( ":/images/configuredialog.png" ) ) );
   m_arrayActions[FORMAT_ACT]->setShortcut( Qt::CTRL + Qt::Key_F );
   m_arrayActions[FORMAT_ACT]->setStatusTip( tr( "Open format dialog" ) );
   connect( m_arrayActions[FORMAT_ACT], SIGNAL( triggered() ), this, SLOT( format() ) );
@@ -1179,18 +1178,15 @@ Void plaYUVerApp::createActions()
   connect( m_arrayActions[RELOAD_ACT], SIGNAL( triggered() ), this, SLOT( reload() ) );
 
   m_arrayActions[RELOAD_ALL_ACT] = new QAction( tr( "Reload All" ), this );
-  //m_arrayActions[RELOAD_ACT]->setIcon( QIcon( ":/images/configuredialog.png" ) );
   m_arrayActions[RELOAD_ALL_ACT]->setShortcut( Qt::CTRL + Qt::SHIFT + Qt::Key_R );
   m_arrayActions[RELOAD_ALL_ACT]->setStatusTip( tr( "Reload all sequences" ) );
   connect( m_arrayActions[RELOAD_ALL_ACT], SIGNAL( triggered() ), this, SLOT( reloadAll() ) );
 
   m_arrayActions[LOAD_ALL_ACT] = new QAction( tr( "Preload" ), this );
-  //m_arrayActions[LOAD_ALL_ACT]->setIcon( QIcon( ":/images/configuredialog.png" ) );
   m_arrayActions[LOAD_ALL_ACT]->setStatusTip( tr( "Load sequence into memory (caution)" ) );
   connect( m_arrayActions[LOAD_ALL_ACT], SIGNAL( triggered() ), this, SLOT( loadAll() ) );
 
   m_arrayActions[CLOSE_ACT] = new QAction( tr( "&Close" ), this );
-  // m_arrayActions[CLOSE_ACT]->setIcon( QIcon( ":/images/close.png" ) );
   m_arrayActions[CLOSE_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogCloseButton ) );
 
   m_arrayActions[CLOSE_ACT]->setStatusTip( tr( "Close the active window" ) );
@@ -1210,33 +1206,28 @@ Void plaYUVerApp::createActions()
   connect( mapperZoom, SIGNAL( mapped(int) ), this, SLOT( scaleFrame(int) ) );
 
   m_arrayActions[ZOOM_IN_ACT] = new QAction( tr( "Zoom &In (+25%)" ), this );
-  //m_arrayActions[ZOOM_IN_ACT]->setIcon( QIcon( ":/images/zoomin.png" ) );
-  m_arrayActions[ZOOM_IN_ACT]->setIcon( QIcon::fromTheme( "zoom-in" ) );
+  m_arrayActions[ZOOM_IN_ACT]->setIcon( QIcon::fromTheme( "zoom-in", QIcon( ":/images/zoomin.png" ) ) );
   m_arrayActions[ZOOM_IN_ACT]->setShortcut( tr( "Ctrl++" ) );
   m_arrayActions[ZOOM_IN_ACT]->setStatusTip( tr( "Scale the image up by 25%" ) );
   connect( m_arrayActions[ZOOM_IN_ACT], SIGNAL( triggered() ), mapperZoom, SLOT( map() ) );
   mapperZoom->setMapping( m_arrayActions[ZOOM_IN_ACT], 125 );
 
   m_arrayActions[ZOOM_OUT_ACT] = new QAction( tr( "Zoom &Out (-25%)" ), this );
-  m_arrayActions[ZOOM_OUT_ACT]->setIcon( QIcon( ":/images/zoomout.png" ) );
-  m_arrayActions[ZOOM_OUT_ACT]->setIcon( QIcon::fromTheme( "zoom-out" ) );
+  m_arrayActions[ZOOM_OUT_ACT]->setIcon( QIcon::fromTheme( "zoom-out", QIcon( ":/images/zoomout.png" ) ) );
   m_arrayActions[ZOOM_OUT_ACT]->setShortcut( tr( "Ctrl+-" ) );
   m_arrayActions[ZOOM_OUT_ACT]->setStatusTip( tr( "Scale the image down by 25%" ) );
   connect( m_arrayActions[ZOOM_OUT_ACT], SIGNAL( triggered() ), mapperZoom, SLOT( map() ) );
   mapperZoom->setMapping( m_arrayActions[ZOOM_OUT_ACT], 80 );
 
   m_arrayActions[ZOOM_NORMAL_ACT] = new QAction( tr( "&Normal Size" ), this );
-  m_arrayActions[ZOOM_NORMAL_ACT]->setIcon( QIcon( ":/images/zoomtonormal.png" ) );
-  m_arrayActions[ZOOM_NORMAL_ACT]->setIcon( QIcon::fromTheme( "zoom-original" ) );
+  m_arrayActions[ZOOM_NORMAL_ACT]->setIcon( QIcon::fromTheme( "zoom-original", QIcon( ":/images/zoomtonormal.png" ) ) );
   m_arrayActions[ZOOM_NORMAL_ACT]->setShortcut( tr( "Ctrl+N" ) );
   m_arrayActions[ZOOM_NORMAL_ACT]->setStatusTip( tr( "Show the image at its original size" ) );
   connect( m_arrayActions[ZOOM_NORMAL_ACT], SIGNAL( triggered() ), this, SLOT( normalSize() ) );
 
   m_arrayActions[ZOOM_FIT_ACT] = new QAction( tr( "Zoom to &Fit" ), this );
-  m_arrayActions[ZOOM_FIT_ACT]->setIcon( QIcon( ":/images/fittowindow.png" ) );
-  m_arrayActions[ZOOM_FIT_ACT]->setIcon( QIcon::fromTheme( "zoom-fit-best" ) );
+  m_arrayActions[ZOOM_FIT_ACT]->setIcon( QIcon::fromTheme( "zoom-fit-best", QIcon( ":/images/fittowindow.png" ) ) );
   m_arrayActions[ZOOM_FIT_ACT]->setStatusTip( tr( "Zoom in or out to fit on the window." ) );
-  //m_arrayActions[ZOOM_FIT_ACT]->setShortcut( tr( "Ctrl+F" ) );
   connect( m_arrayActions[ZOOM_FIT_ACT], SIGNAL( triggered() ), this, SLOT( zoomToFit() ) );
 
   // ------------ Playing ------------
@@ -1245,10 +1236,6 @@ Void plaYUVerApp::createActions()
   m_arrayActions[PLAY_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPlay ) ) );
   m_arrayActions[PLAY_ACT]->setShortcut( Qt::Key_Space );
   connect( m_arrayActions[PLAY_ACT], SIGNAL( triggered() ), this, SLOT( play() ) );
-
-//  m_arrayActions[PAUSE_ACT] = new QAction( "Pause", this );
-//  m_arrayActions[PAUSE_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPause ) ) );
-//  connect( m_arrayActions[PAUSE_ACT], SIGNAL( triggered() ), this, SLOT( pause() ) );
 
   m_arrayActions[STOP_ACT] = new QAction( "Stop", this );
   m_arrayActions[STOP_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaStop ) ) );

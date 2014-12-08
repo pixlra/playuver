@@ -42,8 +42,8 @@ using namespace plaYUVer;
 
 int main( int argc, char *argv[] )
 {
-  qRegisterMetaType<PlaYUVerStreamInfoVector>( "PlaYUVerStreamInfoVector" );
-  qRegisterMetaTypeStreamOperators<PlaYUVerStreamInfoVector>( "PlaYUVerStreamInfoVector" );
+  qRegisterMetaType<PlaYUVerStreamInfoVector>();
+  qRegisterMetaTypeStreamOperators<PlaYUVerStreamInfoVector>();
 
   QApplication application( argc, argv );
   QApplication::setApplicationName( "PlaYUVer" );
@@ -136,8 +136,6 @@ int main( int argc, char *argv[] )
   FvUpdater::sharedUpdater()->SetFeedURL("http://192.168.96.201/share/pixLRA/plaYUVer/PlaYUVerUpdate.xml");
   FvUpdater::sharedUpdater()->SetDependencies(DEPENDENCIES_STRING);
 #endif
-
-
 
   return application.exec();
 }

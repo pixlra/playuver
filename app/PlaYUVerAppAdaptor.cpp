@@ -61,7 +61,7 @@ QString PlaYUVerAppAdaptor::activeSession()
   return QString( "PlaYUVer" );
 }
 
-bool PlaYUVerAppAdaptor::loadFile( QString filename )
+bool PlaYUVerAppAdaptor::loadFile( const QString& filename )
 {
   m_app->loadFile( filename );
   return true;

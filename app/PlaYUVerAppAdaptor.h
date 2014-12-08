@@ -43,7 +43,7 @@ class plaYUVerApp;
 class PlaYUVerAppAdaptor: public QDBusAbstractAdaptor
 {
 Q_OBJECT
-Q_CLASSINFO("D-Bus Interface", PLAYUVER_DBUS_SESSION_NAME)
+Q_CLASSINFO("D-Bus Interface", "org.pixlra.PlaYUVer.application")
 Q_PROPERTY(QString activeSession READ activeSession)
 public:
   PlaYUVerAppAdaptor( plaYUVerApp *app );
@@ -61,7 +61,7 @@ public Q_SLOTS:
    * @param encoding encoding name
    * @return success
    */
-  bool loadFile( QString filename );
+  bool loadFile( const QString& filename );
 
   /**
    * activate this kate instance

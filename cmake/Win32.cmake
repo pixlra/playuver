@@ -2,6 +2,8 @@
 # DLLs and Win32 specific code
 ######################################################################################
 
+SET( USE_QTDBUS FALSE )
+
 foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
     string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
     set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} "." )

@@ -26,13 +26,16 @@
 #define __PLAYUVERAPP_H__
 
 #include "config.h"
-#include "lib/PlaYUVerDefs.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
+#ifdef USE_QTDBUS
+#include "PlaYUVerAppAdaptor.h"
+#endif
 #include <QMainWindow>
+#include "lib/PlaYUVerDefs.h"
 #include "SubWindowHandle.h"
 #include "ModulesHandle.h"
 #include "PropertiesSidebar.h"
@@ -44,6 +47,7 @@ namespace plaYUVer
 {
 
 class PlaYUVerStream;
+class PlaYUVerAppAdaptor;
 
 class plaYUVerApp: public QMainWindow
 {
@@ -52,6 +56,7 @@ Q_OBJECT
 public:
   plaYUVerApp();
   Void parseArgs( Int argc, Char *argv[] );
+  Void loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo = NULL );
 
 protected:
   Void closeEvent( QCloseEvent *event );
@@ -143,6 +148,7 @@ private:
     QPixmap m_pixmapLogo;
   };
 
+  PlaYUVerAppAdaptor* m_pDBusAdaptor;
   PlaYUVerMdiArea *mdiArea;
   SubWindowHandle *m_pcCurrentSubWindow;
   ModulesHandle *m_pcModulesHandle;
@@ -152,8 +158,6 @@ private:
   Bool m_bIsPlaying;
   QTime m_cTimer;
   UInt m_uiAveragePlayInterval;
-
-  Void loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo = NULL );
 
   Void readRecentFileList();
   Void writeRecentFileList();

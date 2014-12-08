@@ -30,6 +30,10 @@ set(plaYUver_App_SRCS
     WidgetFrameNumber.cpp
 )
 
+IF( USE_QTDBUS )
+  LIST( APPEND plaYUver_App_SRCS  PlaYUVerAppAdaptor.cpp )
+ENDIF()
+
 set(plaYUver_App_UI "" )
 
 set(plaYUver_App_RCC

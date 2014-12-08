@@ -22,19 +22,13 @@
  * \brief    Main definition of the plaYUVerApp app
  */
 
-#include "plaYUVerApp.h"
-#include "lib/PlaYUVerStream.h"
-#include "DialogSubWindowSelector.h"
+
+#include <QtDebug>
 #ifdef USE_FERVOR
 #include "fvupdater.h"
 #endif
-
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
-#include <QtDebug>
+#include "plaYUVerApp.h"
+#include "DialogSubWindowSelector.h"
 #include "WidgetFrameNumber.h"
 #include "Settings.h"
 
@@ -48,10 +42,13 @@ plaYUVerApp::plaYUVerApp()
 
   setWindowModality( Qt::ApplicationModal );
 
+  // DBus
+#ifdef USE_QTDBUS
+  m_pDBusAdaptor = new PlaYUVerAppAdaptor(this);
+#endif
+
   mdiArea = new PlaYUVerMdiArea;
   setCentralWidget( mdiArea );
-  //mdiArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-  //mdiArea->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
   mdiArea->setActivationOrder( QMdiArea::ActivationHistoryOrder );
 
   connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( chageSubWindowSelection() ) );

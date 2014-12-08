@@ -22,7 +22,6 @@
  * \brief    Main definition of the plaYUVerApp app
  */
 
-
 #include <QtDebug>
 #ifdef USE_FERVOR
 #include "fvupdater.h"
@@ -44,7 +43,7 @@ plaYUVerApp::plaYUVerApp()
 
   // DBus
 #ifdef USE_QTDBUS
-  m_pDBusAdaptor = new PlaYUVerAppAdaptor(this);
+  m_pDBusAdaptor = new PlaYUVerAppAdaptor( this );
 #endif
 
   mdiArea = new PlaYUVerMdiArea;
@@ -171,34 +170,42 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 
   try
   {
+    Bool opened = false;
+
     if( !pStreamInfo )
-      interfaceChild->loadFile( fileName );
+      opened = interfaceChild->loadFile( fileName );
     else
-      interfaceChild->loadFile( pStreamInfo );
+      opened = interfaceChild->loadFile( pStreamInfo );
 
-    statusBar()->showMessage( tr( "Loading file..." ) );
-    mdiArea->addSubWindow( interfaceChild );
-    interfaceChild->show();
-    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
-        SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
-    connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updatePropertiesSelectedArea( QRect ) ) );
-    connect( interfaceChild->getViewArea(), SIGNAL( zoomFactorChanged( double , QPoint ) ), this, SLOT( updateZoomFactorSBox() ) );
+    if( opened )
+    {
+      statusBar()->showMessage( tr( "Loading file..." ) );
+      mdiArea->addSubWindow( interfaceChild );
+      interfaceChild->show();
+      connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
+          SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
+      connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updatePropertiesSelectedArea( QRect ) ) );
+      connect( interfaceChild->getViewArea(), SIGNAL( zoomFactorChanged( double , QPoint ) ), this, SLOT( updateZoomFactorSBox() ) );
 
-    interfaceChild->zoomToFit();
-    interfaceChild->getViewArea()->setTool( m_appTool );
-    updateZoomFactorSBox();
+      interfaceChild->zoomToFit();
+      interfaceChild->getViewArea()->setTool( m_appTool );
+      updateZoomFactorSBox();
 
-    Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
-    if( idx >= 0 )
-      m_aRecentFileStreamInfo.remove( idx );
-    PlaYUVerStreamInfo streamInfo = interfaceChild->getStreamInfo();
-    qDebug() << streamInfo.m_cFilename;
-    m_aRecentFileStreamInfo.prepend( streamInfo );
-    while( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
-      m_aRecentFileStreamInfo.remove( m_aRecentFileStreamInfo.size() - 1 );
-    updateRecentFileActions();
+      Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
+      if( idx >= 0 )
+        m_aRecentFileStreamInfo.remove( idx );
+      PlaYUVerStreamInfo streamInfo = interfaceChild->getStreamInfo();
+      m_aRecentFileStreamInfo.prepend( streamInfo );
+      while( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
+        m_aRecentFileStreamInfo.remove( m_aRecentFileStreamInfo.size() - 1 );
+      updateRecentFileActions();
 
-    statusBar()->showMessage( tr( "File loaded" ), 2000 );
+      statusBar()->showMessage( tr( "File loaded" ), 2000 );
+    }
+    else
+    {
+      interfaceChild->close();
+    }
   }
   catch( const char *msg )
   {
@@ -206,7 +213,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     QString warningMsg = "Cannot open file " + QFileInfo( fileName ).fileName() + " with the following error: \n" + msg;
     QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
     statusBar()->showMessage( warningMsg, 2000 );
-    qDebug() << warningMsg;
+    qDebug( ) << warningMsg;
   }
 }
 
@@ -310,10 +317,11 @@ Void plaYUVerApp::format()
     }
     catch( const char *msg )
     {
-      QString warningMsg = "Cannot change format of " + QFileInfo( m_pcCurrentSubWindow->getCurrentFileName() ).fileName() + " with the following error: \n" + msg;
+      QString warningMsg = "Cannot change format of " + QFileInfo( m_pcCurrentSubWindow->getCurrentFileName() ).fileName() + " with the following error: \n"
+          + msg;
       QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
       statusBar()->showMessage( warningMsg, 2000 );
-      qDebug() << warningMsg;
+      qDebug( ) << warningMsg;
       m_pcCurrentSubWindow->close();
     }
     m_pcCurrentSubWindow = NULL;
@@ -703,7 +711,7 @@ Void plaYUVerApp::seekEvent( Int direction )
   {
     if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
     {
-      if( !( (UInt)(m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() + 1 ) >= getMaxFrameNumber()  && direction > 0 ) )
+      if( !( ( UInt )( m_pcCurrentSubWindow->getInputStream()->getCurrFrameNum() + 1 ) >= getMaxFrameNumber() && direction > 0 ) )
       {
         for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
         {
@@ -999,7 +1007,7 @@ return 0;
 
 Void plaYUVerApp::setTool( Int idxTool )
 {
-  m_appTool = (ViewArea::eTool ) idxTool;
+  m_appTool = ( ViewArea::eTool )idxTool;
   setAllSubWindowTool();
 }
 
@@ -1159,6 +1167,7 @@ Void plaYUVerApp::createActions()
 
   m_arrayActions[FORMAT_ACT] = new QAction( tr( "&Format" ), this );
   m_arrayActions[FORMAT_ACT]->setIcon( QIcon( ":/images/configuredialog.png" ) );
+  m_arrayActions[FORMAT_ACT]->setIcon( QIcon::fromTheme( "transform-scale" ) );
   m_arrayActions[FORMAT_ACT]->setShortcut( Qt::CTRL + Qt::Key_F );
   m_arrayActions[FORMAT_ACT]->setStatusTip( tr( "Open format dialog" ) );
   connect( m_arrayActions[FORMAT_ACT], SIGNAL( triggered() ), this, SLOT( format() ) );
@@ -1201,7 +1210,8 @@ Void plaYUVerApp::createActions()
   connect( mapperZoom, SIGNAL( mapped(int) ), this, SLOT( scaleFrame(int) ) );
 
   m_arrayActions[ZOOM_IN_ACT] = new QAction( tr( "Zoom &In (+25%)" ), this );
-  m_arrayActions[ZOOM_IN_ACT]->setIcon( QIcon( ":/images/zoomin.png" ) );
+  //m_arrayActions[ZOOM_IN_ACT]->setIcon( QIcon( ":/images/zoomin.png" ) );
+  m_arrayActions[ZOOM_IN_ACT]->setIcon( QIcon::fromTheme( "zoom-in" ) );
   m_arrayActions[ZOOM_IN_ACT]->setShortcut( tr( "Ctrl++" ) );
   m_arrayActions[ZOOM_IN_ACT]->setStatusTip( tr( "Scale the image up by 25%" ) );
   connect( m_arrayActions[ZOOM_IN_ACT], SIGNAL( triggered() ), mapperZoom, SLOT( map() ) );
@@ -1209,6 +1219,7 @@ Void plaYUVerApp::createActions()
 
   m_arrayActions[ZOOM_OUT_ACT] = new QAction( tr( "Zoom &Out (-25%)" ), this );
   m_arrayActions[ZOOM_OUT_ACT]->setIcon( QIcon( ":/images/zoomout.png" ) );
+  m_arrayActions[ZOOM_OUT_ACT]->setIcon( QIcon::fromTheme( "zoom-out" ) );
   m_arrayActions[ZOOM_OUT_ACT]->setShortcut( tr( "Ctrl+-" ) );
   m_arrayActions[ZOOM_OUT_ACT]->setStatusTip( tr( "Scale the image down by 25%" ) );
   connect( m_arrayActions[ZOOM_OUT_ACT], SIGNAL( triggered() ), mapperZoom, SLOT( map() ) );
@@ -1216,12 +1227,14 @@ Void plaYUVerApp::createActions()
 
   m_arrayActions[ZOOM_NORMAL_ACT] = new QAction( tr( "&Normal Size" ), this );
   m_arrayActions[ZOOM_NORMAL_ACT]->setIcon( QIcon( ":/images/zoomtonormal.png" ) );
+  m_arrayActions[ZOOM_NORMAL_ACT]->setIcon( QIcon::fromTheme( "zoom-original" ) );
   m_arrayActions[ZOOM_NORMAL_ACT]->setShortcut( tr( "Ctrl+N" ) );
   m_arrayActions[ZOOM_NORMAL_ACT]->setStatusTip( tr( "Show the image at its original size" ) );
   connect( m_arrayActions[ZOOM_NORMAL_ACT], SIGNAL( triggered() ), this, SLOT( normalSize() ) );
 
   m_arrayActions[ZOOM_FIT_ACT] = new QAction( tr( "Zoom to &Fit" ), this );
   m_arrayActions[ZOOM_FIT_ACT]->setIcon( QIcon( ":/images/fittowindow.png" ) );
+  m_arrayActions[ZOOM_FIT_ACT]->setIcon( QIcon::fromTheme( "zoom-fit-best" ) );
   m_arrayActions[ZOOM_FIT_ACT]->setStatusTip( tr( "Zoom in or out to fit on the window." ) );
   //m_arrayActions[ZOOM_FIT_ACT]->setShortcut( tr( "Ctrl+F" ) );
   connect( m_arrayActions[ZOOM_FIT_ACT], SIGNAL( triggered() ), this, SLOT( zoomToFit() ) );
@@ -1299,7 +1312,6 @@ Void plaYUVerApp::createActions()
   actionGroupTools->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
   connect( m_arrayActions[SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
   m_mapperTools->setMapping( m_arrayActions[SELECTION_TOOL_ACT], ViewArea::NormalSelectionTool );
-
 
   // ------------ Window ------------
 

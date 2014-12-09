@@ -190,7 +190,7 @@ private:
 
   SubWindowHandle *activeSubWindow();
 
-  static SubWindowHandle* findSubWindow( const QMdiArea* mdiArea, const QString& fileName );
+  static VideoSubWindow* findVideoSubWindow( const QMdiArea* mdiArea, const QString& fileName );
   static SubWindowHandle* findSubWindow( const QMdiArea* mdiArea, const SubWindowHandle* subWindow );
 
   QVector<SubWindowHandle*> m_acPlayingSubWindows;

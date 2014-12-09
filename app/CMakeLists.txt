@@ -9,12 +9,15 @@ set(plaYUver_App_SRCS
 # Main
     main.cpp
     plaYUVerApp.cpp
-    SubWindowHandle.cpp
     ViewArea.cpp
     ModulesHandle.cpp
     PlaYUVerAppModuleIf.cpp
     GridManager.cpp
     Settings.cpp
+# Sub Window
+    SubWindowHandle.cpp
+    VideoSubWindow.cpp
+    PlotSubWindow.cpp
 # Dialogs
     AboutDialog.cpp
     ConfigureFormatDialog.cpp
@@ -33,6 +36,12 @@ set(plaYUver_App_SRCS
 IF( USE_QTDBUS )
   LIST( APPEND plaYUver_App_SRCS  PlaYUVerAppAdaptor.cpp )
 ENDIF()
+
+#Append External source code
+INCLUDE_DIRECTORIES( external )
+LIST( APPEND plaYUver_App_SRCS
+    external/qcustomplot.cpp
+)
 
 set(plaYUver_App_UI "" )
 

@@ -155,13 +155,13 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
 
 Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 {
-  SubWindowHandle *interfaceChild = plaYUVerApp::findSubWindow( mdiArea, fileName );
-  if( interfaceChild )
+  VideoSubWindow *videoSubWindow = plaYUVerApp::findVideoSubWindow( mdiArea, fileName );
+  if( videoSubWindow )
   {
-    mdiArea->setActiveSubWindow( interfaceChild );
+    mdiArea->setActiveSubWindow( videoSubWindow );
     return;
   }
-  interfaceChild = new SubWindowHandle( this );  //createSubWindow();
+  videoSubWindow = new VideoSubWindow( this );  //createSubWindow();
   if( !pStreamInfo )
   {
     Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
@@ -173,28 +173,28 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     Bool opened = false;
 
     if( !pStreamInfo )
-      opened = interfaceChild->loadFile( fileName );
+      opened = videoSubWindow->loadFile( fileName );
     else
-      opened = interfaceChild->loadFile( pStreamInfo );
+      opened = videoSubWindow->loadFile( pStreamInfo );
 
     if( opened )
     {
       statusBar()->showMessage( tr( "Loading file..." ) );
-      mdiArea->addSubWindow( interfaceChild );
-      interfaceChild->show();
-      connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
+      mdiArea->addSubWindow( videoSubWindow );
+      videoSubWindow->show();
+      connect( videoSubWindow->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
           SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
-      connect( interfaceChild->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updatePropertiesSelectedArea( QRect ) ) );
-      connect( interfaceChild->getViewArea(), SIGNAL( zoomFactorChanged( double , QPoint ) ), this, SLOT( updateZoomFactorSBox() ) );
+      connect( videoSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updatePropertiesSelectedArea( QRect ) ) );
+      connect( videoSubWindow->getViewArea(), SIGNAL( zoomFactorChanged( double , QPoint ) ), this, SLOT( updateZoomFactorSBox() ) );
 
-      interfaceChild->zoomToFit();
-      interfaceChild->getViewArea()->setTool( m_appTool );
+      videoSubWindow->zoomToFit();
+      videoSubWindow->getViewArea()->setTool( m_appTool );
       updateZoomFactorSBox();
 
       Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
       if( idx >= 0 )
         m_aRecentFileStreamInfo.remove( idx );
-      PlaYUVerStreamInfo streamInfo = interfaceChild->getStreamInfo();
+      PlaYUVerStreamInfo streamInfo = videoSubWindow->getStreamInfo();
       m_aRecentFileStreamInfo.prepend( streamInfo );
       while( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
         m_aRecentFileStreamInfo.remove( m_aRecentFileStreamInfo.size() - 1 );
@@ -204,12 +204,12 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     }
     else
     {
-      interfaceChild->close();
+      videoSubWindow->close();
     }
   }
   catch( const char *msg )
   {
-    interfaceChild->close();
+    videoSubWindow->close();
     QString warningMsg = "Cannot open file " + QFileInfo( fileName ).fileName() + " with the following error: \n" + msg;
     QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
     statusBar()->showMessage( warningMsg, 2000 );
@@ -983,12 +983,12 @@ SubWindowHandle *plaYUVerApp::activeSubWindow()
   return 0;
 }
 
-SubWindowHandle* plaYUVerApp::findSubWindow( const QMdiArea* mdiArea, const QString& fileName )
+VideoSubWindow* plaYUVerApp::findVideoSubWindow( const QMdiArea* mdiArea, const QString& fileName )
 {
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
 
   foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
-  SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
+  VideoSubWindow *mdiChild = qobject_cast<VideoSubWindow *>( window);
   if( mdiChild->getCurrentFileName() == canonicalFilePath )
   return mdiChild;
 }

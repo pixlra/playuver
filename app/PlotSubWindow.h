@@ -18,12 +18,12 @@
  */
 
 /**
- * \file     SubWindowHandle.h
- * \brief    Sub windows handling
+ * \file     PlotWindowHandle.h
+ * \brief    Window to handle plots
  */
 
-#ifndef __SUBWINDOWHANDLE_H__
-#define __SUBWINDOWHANDLE_H__
+#ifndef __PLOTWINDOWHANDLE_H__
+#define __PLOTWINDOWHANDLE_H__
 
 #include "config.h"
 #include "lib/PlaYUVerDefs.h"
@@ -32,30 +32,25 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
-#include "ModulesHandle.h"
+#include "qcustomplot.h"
 
 namespace plaYUVer
 {
 
-class SubWindowHandle: public QMdiSubWindow
+class PlotWindowHandle: public QMdiSubWindow
 {
 Q_OBJECT
 
 private:
-  UInt m_uiCategory;
+  QCustomPlot* m_cPlotArea;
 
 public:
-  enum SubWindowCategories
-  {
-    VIDEO_SUBWINDOW = 0,
-    MODULE_SUBWINDOW,
-    PLOT_SUBWINDOW,
-  }
-  SubWindowHandle( QWidget * parent, UInt category );
-  ~SubWindowHandle();
+  PlotWindowHandle( QWidget * parent = 0 );
+  ~PlotWindowHandle();
+
 };
 
 }  // NAMESPACE
 
-#endif // __SUBWINDOWHANDLE_H__
+#endif // __PLOTWINDOWHANDLE_H__
 

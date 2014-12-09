@@ -309,15 +309,16 @@ Void plaYUVerApp::save()
 
 Void plaYUVerApp::format()
 {
-  if( m_pcCurrentSubWindow )
+  if( m_pcCurrentSubWindow->getCategory() == SubWindowHandle::VIDEO_SUBWINDOW )
   {
+    VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow*>( m_pcCurrentSubWindow );
     try
     {
-      m_pcCurrentSubWindow->loadFile( m_pcCurrentSubWindow->getCurrentFileName(), true );
+      pcVideoSubWindow->loadFile( pcVideoSubWindow->getCurrentFileName(), true );
     }
     catch( const char *msg )
     {
-      QString warningMsg = "Cannot change format of " + QFileInfo( m_pcCurrentSubWindow->getCurrentFileName() ).fileName() + " with the following error: \n"
+      QString warningMsg = "Cannot change format of " + QFileInfo( pcVideoSubWindow->getCurrentFileName() ).fileName() + " with the following error: \n"
           + msg;
       QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
       statusBar()->showMessage( warningMsg, 2000 );
@@ -331,9 +332,10 @@ Void plaYUVerApp::format()
 
 Void plaYUVerApp::reload()
 {
-  if( m_pcCurrentSubWindow )
+  if( m_pcCurrentSubWindow->getCategory() == SubWindowHandle::VIDEO_SUBWINDOW )
   {
-    m_pcCurrentSubWindow->reloadFile();
+    VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow*>( m_pcCurrentSubWindow );
+    pcVideoSubWindow->reloadFile();
     m_pcCurrentSubWindow = NULL;
     chageSubWindowSelection();
   }
@@ -901,7 +903,10 @@ Void plaYUVerApp::chageSubWindowSelection()
     if( activeSubWindow() )
     {
       m_pcCurrentSubWindow = new_window;
+
       setWindowTitle( QApplication::applicationName() + " - " + m_pcCurrentSubWindow->getWindowName() );
+
+      if( )
       if( !plaYUVerApp::findSubWindow( mdiArea, m_pcCurrentSubWindow->getRefSubWindow() ) )
       {
         m_pcCurrentSubWindow->setRefSubWindow( NULL );

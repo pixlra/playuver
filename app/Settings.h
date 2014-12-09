@@ -29,7 +29,7 @@
 #include "lib/PlaYUVerDefs.h"
 #include <QtCore>
 #include "GridManager.h"
-#include "SubWindowHandle.h"
+#include "VideoSubWindow.h"
 
 namespace plaYUVer
 {

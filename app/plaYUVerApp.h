@@ -193,7 +193,7 @@ private:
   static VideoSubWindow* findVideoSubWindow( const QMdiArea* mdiArea, const QString& fileName );
   static SubWindowHandle* findSubWindow( const QMdiArea* mdiArea, const SubWindowHandle* subWindow );
 
-  QVector<SubWindowHandle*> m_acPlayingSubWindows;
+  QVector<VideoSubWindow*> m_acPlayingSubWindows;
   QSlider *m_pcFrameSlider;
 
   WidgetFrameNumber* m_pcFrameNumInfo;

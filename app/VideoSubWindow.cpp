@@ -516,11 +516,6 @@ QSize VideoSubWindow::sizeHint() const
   return maxSize;
 }
 
-Bool VideoSubWindow::mayClose()
-{
-  return true;
-}
-
 void VideoSubWindow::closeEvent( QCloseEvent *event )
 {
   Bool bAccept = mayClose();

@@ -28,14 +28,23 @@ namespace plaYUVer
 {
 
 SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
-        QMdiSubWindow( parent ),
-        m_uiCategory( category )
+        QMdiSubWindow( parent )
 {
-
+  m_uiCategory = category;
 }
 
 SubWindowHandle::~SubWindowHandle()
 {
+}
+
+QString SubWindowHandle::getWindowName()
+{
+  return QString();
+}
+
+Bool SubWindowHandle::mayClose()
+{
+  return true;
 }
 
 }  // NAMESPACE

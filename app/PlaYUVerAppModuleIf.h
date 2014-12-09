@@ -40,6 +40,7 @@ namespace plaYUVer
 {
 
 class SubWindowHandle;
+class VideoSubWindow;
 
 class PlaYUVerAppModuleIf
 #ifdef PLAYUVER_THREADED_MODULES
@@ -56,7 +57,7 @@ private:
   PlaYUVerModuleIf* m_pcModule;
 
   QAction* m_pcAction;
-  SubWindowHandle* m_pcSubWindow[MAX_NUMBER_FRAMES];
+  VideoSubWindow* m_pcSubWindow[MAX_NUMBER_FRAMES];
 
   SubWindowHandle* m_pcDisplaySubWindow;
 
@@ -84,20 +85,6 @@ public:
 
   PlaYUVerAppModuleIf();
   virtual ~PlaYUVerAppModuleIf() {}
-
-
-//  virtual Void create() {}
-//  virtual Void create( PlaYUVerFrame* ) {}
-//
-//  virtual PlaYUVerFrame*  process( PlaYUVerFrame* ) { return NULL; }
-//  virtual PlaYUVerFrame*  process( PlaYUVerFrame*, PlaYUVerFrame* ) { return NULL; }
-//  virtual PlaYUVerFrame*  process( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* ) { return NULL; }
-//
-//  virtual Double          measure( PlaYUVerFrame* ) { return 0; }
-//  virtual Double          measure( PlaYUVerFrame*, PlaYUVerFrame* ) { return 0; }
-//  virtual Double          measure( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* ) { return 0; }
-//
-//  virtual Void destroy() { }
 
 protected:
   virtual void run();

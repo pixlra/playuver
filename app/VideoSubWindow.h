@@ -49,11 +49,11 @@ typedef struct
   UInt m_uiHeight;
   Int m_iPelFormat;
   UInt m_uiFrameRate;
-}PlaYUVerStreamInfo;
+} PlaYUVerStreamInfo;
 typedef QVector<PlaYUVerStreamInfo> PlaYUVerStreamInfoVector;
 
-QDataStream& operator<<(QDataStream& out, const PlaYUVerStreamInfoVector& d);
-QDataStream& operator>>(QDataStream& in, PlaYUVerStreamInfoVector& d);
+QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& d );
+QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& d );
 Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename );
 
 class VideoSubWindow: public SubWindowHandle
@@ -90,7 +90,6 @@ public:
   VideoSubWindow( QWidget * parent = 0, Bool isModule = false );
   ~VideoSubWindow();
 
-  Bool mayClose();
   Bool loadFile( QString cFilename, Bool bForceDialog = false );
   Bool loadFile( PlaYUVerStreamInfo* streamInfo );
   Void reloadFile();
@@ -167,31 +166,12 @@ public:
   Void applyModuleAllFrames();
 
   /**
-   * Show the image at its original size
+   * Reimplemented function from SubWindowHandle
    */
   Void normalSize();
-  /**
-   * Scale the image (zoomed in or out) to fit on the window.
-   */
   Void zoomToFit();
-  /**
-   * Scale the image by a given factor
-   * @param factor factor of scale. Ex: 1.2 scale the image up by 20% and
-   *        0.8 scale the image down by 25%
-   */
   Void scaleView( Double scale );
-
-  /**
-   * The current image size is scaled to a rectangle as large as possible
-   * inside (@p width, @p height ) preserving the aspect ratio.
-   */
   Void scaleView( Int width, Int height );
-
-  /**
-   * This is an overloaded member function, provided for convenience.
-   * Scales the image to a rectangle with the given size, preserving the
-   * aspect ratio.
-   */
   Void scaleView( const QSize & size );
 
   Void scaleViewByRatio( Double ratio );
@@ -237,8 +217,8 @@ public Q_SLOTS:
 
 }  // NAMESPACE
 
-Q_DECLARE_METATYPE(plaYUVer::PlaYUVerStreamInfo);
-Q_DECLARE_METATYPE(plaYUVer::PlaYUVerStreamInfoVector);
+Q_DECLARE_METATYPE( plaYUVer::PlaYUVerStreamInfo );
+Q_DECLARE_METATYPE( plaYUVer::PlaYUVerStreamInfoVector );
 
 #endif // __VIDEOSUBWINDOW_H__
 

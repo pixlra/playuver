@@ -29,6 +29,7 @@
 #include "ModulesListMacro.h"
 #include "DialogSubWindowSelector.h"
 #include "SubWindowHandle.h"
+#include "VideoSubWindow.h"
 
 namespace plaYUVer
 {
@@ -80,7 +81,7 @@ SubWindowHandle* ModulesHandle::processModuleHandlingOpt()
   }
   else
   {
-    SubWindowHandle* pcSubWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->activeSubWindow() );
+    VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
     switch( m_iOptionSelected )
     {
     case INVALID_OPT:

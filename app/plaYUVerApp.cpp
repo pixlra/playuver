@@ -758,26 +758,25 @@ Void plaYUVerApp::seekSliderEvent( Int new_frame_num )
 
 Void plaYUVerApp::lockButtonEvent()
 {
-  if( !m_arrayActions[VIDEO_LOCK_ACT]->isChecked() )
+  if( m_arrayActions[VIDEO_LOCK_ACT]->isChecked() )
   {
-    if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
-    {
+    if( m_acPlayingSubWindows.size() > 1 )
       m_acPlayingSubWindows.clear();
-      m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
-    }
-    else
-    {
-      if( m_acPlayingSubWindows.size() > 1 )
-        m_acPlayingSubWindows.clear();
 
-      SubWindowHandle *subWindow;
-      for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
+    SubWindowHandle *subWindow;
+    for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
+    {
+      subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
+      if( !subWindow->getIsModule() )
       {
-        subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
-        if( !subWindow->getIsModule() )
-          m_acPlayingSubWindows.append( subWindow );
+        m_acPlayingSubWindows.append( subWindow );
+        m_pcFrameSlider->setMaximum( qMin( m_pcFrameSlider->maximum(), ( Int )subWindow->getInputStream()->getFrameNum() - 1 ) );
       }
     }
+  }
+  else
+  {
+    stop();
   }
   updateCurrFrameNum();
   updateTotalFrameNum();

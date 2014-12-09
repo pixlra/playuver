@@ -128,9 +128,9 @@ Bool SubWindowHandle::loadFile( QString cFilename, Bool bForceDialog )
   Int InputFormat = -1;
 
   if( !m_pCurrStream )
-    {
-      m_pCurrStream = new PlaYUVerStream;
-    }
+  {
+    m_pCurrStream = new PlaYUVerStream;
+  }
 
   m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
 

@@ -54,8 +54,7 @@ public:
   Void setSelectedTool( Int);
 
   Bool getRepeat();
-  Bool getVideoLock();
-  Void setPlayingSettings( Bool repeat, Bool lock );
+  Void setPlayingSettings( Bool repeat );
 
   Void setDockVisibility( Bool statusStreamProperties, Bool statusFrameProperties, Bool statusQualityMeasurement );
   Void getDockVisibility( Bool& statusStreamProperties, Bool& statusFrameProperties, Bool& statusQualityMeasurement );

@@ -155,6 +155,11 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
 
 Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 {
+  if( !QFileInfo( fileName ).exists() )
+  {
+    statusBar()->showMessage( "File do not exists!" );
+  }
+
   SubWindowHandle *interfaceChild = plaYUVerApp::findSubWindow( mdiArea, fileName );
   if( interfaceChild )
   {
@@ -637,6 +642,7 @@ Void plaYUVerApp::stop()
     }
   }
   m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPlay ) );
+  m_arrayActions[VIDEO_LOCK_ACT]->setChecked( false );
   updateTotalFrameNum();
 }
 
@@ -763,6 +769,14 @@ Void plaYUVerApp::lockButtonEvent()
     {
       if( m_acPlayingSubWindows.size() > 1 )
         m_acPlayingSubWindows.clear();
+
+      SubWindowHandle *subWindow;
+      for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
+      {
+        subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
+        if( !subWindow->getIsModule() )
+          m_acPlayingSubWindows.append( subWindow );
+      }
     }
   }
   updateCurrFrameNum();
@@ -1511,7 +1525,7 @@ Void plaYUVerApp::readSettings()
   //m_appTool = ( ViewArea::eTool )settings.getSelectedTool();
   //setAllSubWindowTool();
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
-  m_arrayActions[VIDEO_LOCK_ACT]->setChecked( settings.getVideoLock() );
+  m_arrayActions[VIDEO_LOCK_ACT]->setChecked( false );
 
   m_aRecentFileStreamInfo = settings.getRecentFileList();
   updateRecentFileActions();
@@ -1536,7 +1550,7 @@ Void plaYUVerApp::writeSettings()
   settings.setSelectedTool( ( Int )m_appTool );
   settings.setRecentFileList( m_aRecentFileStreamInfo );
   settings.setDockVisibility( m_pcStreamProperties->isVisible(), m_pcFrameProperties->isVisible(), m_pcQualityMeasurement->isVisible() );
-  settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked(), m_arrayActions[VIDEO_LOCK_ACT]->isChecked() );
+  settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked() );
 }
 
 }  // NAMESPACE

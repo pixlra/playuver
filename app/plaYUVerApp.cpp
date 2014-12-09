@@ -206,6 +206,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       updateRecentFileActions();
 
       statusBar()->showMessage( tr( "File loaded" ), 2000 );
+      m_cLastOpenPath = QFileInfo( fileName ).path();
     }
     else
     {
@@ -255,7 +256,6 @@ Void plaYUVerApp::open()
   {
     if( !fileNameList.at( i ).isEmpty() )
     {
-      m_cLastOpenPath = QFileInfo( fileNameList.at( i ) ).path();
       loadFile( fileNameList.at( i ) );
     }
   }

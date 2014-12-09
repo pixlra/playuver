@@ -93,14 +93,9 @@ Bool Settings::getRepeat()
 {
   return m_settings.value( "Playing/Repeat", false ).toBool();
 }
-Bool Settings::getVideoLock()
-{
-  return m_settings.value( "Playing/VideoLock", false ).toBool();
-}
-Void Settings::setPlayingSettings( Bool repeat, Bool lock )
+Void Settings::setPlayingSettings( Bool repeat)
 {
   m_settings.setValue( "Playing/Repeat", repeat );
-  m_settings.setValue( "Playing/VideoLock", lock );
 }
 
 Void Settings::setRecentFileList( PlaYUVerStreamInfoVector recentFileList )

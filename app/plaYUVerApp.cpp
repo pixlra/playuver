@@ -155,6 +155,10 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
 
 Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 {
+  if( !QFileInfo( fileName ).exists() )
+  {
+    statusBar()->showMessage( "File do not exists!" );
+  }
   VideoSubWindow *videoSubWindow = plaYUVerApp::findVideoSubWindow( mdiArea, fileName );
   if( videoSubWindow )
   {
@@ -201,6 +205,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       updateRecentFileActions();
 
       statusBar()->showMessage( tr( "File loaded" ), 2000 );
+      m_cLastOpenPath = QFileInfo( fileName ).path();
     }
     else
     {
@@ -250,7 +255,6 @@ Void plaYUVerApp::open()
   {
     if( !fileNameList.at( i ).isEmpty() )
     {
-      m_cLastOpenPath = QFileInfo( fileNameList.at( i ) ).path();
       loadFile( fileNameList.at( i ) );
     }
   }
@@ -639,6 +643,7 @@ Void plaYUVerApp::stop()
     }
   }
   m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPlay ) );
+  m_arrayActions[VIDEO_LOCK_ACT]->setChecked( false );
   updateTotalFrameNum();
 }
 
@@ -754,18 +759,25 @@ Void plaYUVerApp::seekSliderEvent( Int new_frame_num )
 
 Void plaYUVerApp::lockButtonEvent()
 {
-  if( !m_arrayActions[VIDEO_LOCK_ACT]->isChecked() )
+  if( m_arrayActions[VIDEO_LOCK_ACT]->isChecked() )
   {
-    if( m_acPlayingSubWindows.contains( m_pcCurrentSubWindow ) )
-    {
+    if( m_acPlayingSubWindows.size() > 1 )
       m_acPlayingSubWindows.clear();
-      m_acPlayingSubWindows.append( m_pcCurrentSubWindow );
-    }
-    else
+
+    SubWindowHandle *subWindow;
+    for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
     {
-      if( m_acPlayingSubWindows.size() > 1 )
-        m_acPlayingSubWindows.clear();
+      subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
+      if( !subWindow->getIsModule() )
+      {
+        m_acPlayingSubWindows.append( subWindow );
+        m_pcFrameSlider->setMaximum( qMin( m_pcFrameSlider->maximum(), ( Int )subWindow->getInputStream()->getFrameNum() - 1 ) );
+      }
     }
+  }
+  else
+  {
+    stop();
   }
   updateCurrFrameNum();
   updateTotalFrameNum();
@@ -1516,7 +1528,7 @@ Void plaYUVerApp::readSettings()
   //m_appTool = ( ViewArea::eTool )settings.getSelectedTool();
   //setAllSubWindowTool();
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
-  m_arrayActions[VIDEO_LOCK_ACT]->setChecked( settings.getVideoLock() );
+  m_arrayActions[VIDEO_LOCK_ACT]->setChecked( false );
 
   m_aRecentFileStreamInfo = settings.getRecentFileList();
   updateRecentFileActions();
@@ -1541,7 +1553,7 @@ Void plaYUVerApp::writeSettings()
   settings.setSelectedTool( ( Int )m_appTool );
   settings.setRecentFileList( m_aRecentFileStreamInfo );
   settings.setDockVisibility( m_pcStreamProperties->isVisible(), m_pcFrameProperties->isVisible(), m_pcQualityMeasurement->isVisible() );
-  settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked(), m_arrayActions[VIDEO_LOCK_ACT]->isChecked() );
+  settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked() );
 }
 
 }  // NAMESPACE

@@ -362,17 +362,16 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
     // Guess resolution by file size
     if( rWidth == 0 && rHeight == 0 )
     {
-
       Char *filename_char = new char[filename.length() + 1];
       memcpy( filename_char, filename.toUtf8().constData(), filename.length() + 1 * sizeof(char) );
       FILE* pF = fopen( filename_char, "rb" );
-      fseek( pF, 0, SEEK_END );
-      UInt64 uiFileSize = ftell( pF );
-      fclose( pF );
-      delete[] filename_char;
-
-      if( pF != NULL )
+      if( pF )
       {
+        fseek( pF, 0, SEEK_END );
+        UInt64 uiFileSize = ftell( pF );
+        fclose( pF );
+        delete[] filename_char;
+
         Int count = 0, module, frame_bytes, match;
         QVector<QSize> sizeResolution = standardResolutionSizes().sizeResolution;
         for( Int i = 0; i < sizeResolution.size(); i++ )
@@ -391,7 +390,6 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
           rHeight = sizeResolution.at( match ).height();
         }
       }
-
     }
 
     if( rWidth > 0 && rHeight > 0 && rInputFormat >= 0 )

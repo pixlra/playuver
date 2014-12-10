@@ -37,10 +37,10 @@ IF( USE_QTDBUS )
 ENDIF()
 
 #Append External source code
-INCLUDE_DIRECTORIES( external )
-LIST( APPEND plaYUver_App_SRCS
-    external/qcustomplot.cpp
-)
+#INCLUDE_DIRECTORIES( external )
+#LIST( APPEND plaYUver_App_SRCS
+#    external/qcustomplot.cpp
+#)
 
 set(plaYUver_App_UI "" )
 

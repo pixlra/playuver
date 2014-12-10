@@ -158,6 +158,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
   if( !QFileInfo( fileName ).exists() )
   {
     statusBar()->showMessage( "File do not exists!" );
+    return;
   }
 
   SubWindowHandle *interfaceChild = plaYUVerApp::findSubWindow( mdiArea, fileName );

@@ -81,7 +81,6 @@ private Q_SLOTS:
    *  Playing functions slots
    */
   void play();
-  void pause();
   void stop();
   void playEvent();
   void seekSliderEvent( int new_frame_num );
@@ -199,6 +198,7 @@ private:
 
   QVector<VideoSubWindow*> m_acPlayingSubWindows;
 
+  QLabel* m_pcLockLabel;
   QSlider* m_pcFrameSlider;
   WidgetFrameNumber* m_pcFrameNumInfo;
   QDoubleSpinBox *m_pcZoomFactorSBox;

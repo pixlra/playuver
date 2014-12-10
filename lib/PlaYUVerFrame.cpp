@@ -80,7 +80,6 @@ PlaYUVerFrame::~PlaYUVerFrame()
   closePixfc();
 }
 
-
 Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format )
 {
   m_pppcInputPel = NULL;
@@ -120,9 +119,9 @@ Int PlaYUVerFrame::getColorSpace() const
 }
 
 Int PlaYUVerFrame::getNumberChannels() const
-  {
-    return m_pcPelFormat->numberChannels;
-  }
+{
+  return m_pcPelFormat->numberChannels;
+}
 
 UInt64 PlaYUVerFrame::getBytesPerFrame()
 {
@@ -195,7 +194,7 @@ Void PlaYUVerFrame::adjustSelectedAreaDims( UInt& posX, UInt& posY, UInt& areaWi
   if( ( posX + areaWidth ) % 2 )
     areaWidth++;
   if( ( posY + areaHeight ) % 2 )
-      areaHeight++;
+    areaHeight++;
 }
 
 Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
@@ -230,7 +229,7 @@ PlaYUVerFrame::Pixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos, Int eColo
 PlaYUVerFrame::Pixel PlaYUVerFrame::ConvertPixel( PlaYUVerFrame::Pixel inputPixel, Int eOutputSpace )
 {
   Int outA, outB, outC;
-  PlaYUVerFrame::Pixel outPixel(COLOR_INVALID, 0, 0, 0);
+  PlaYUVerFrame::Pixel outPixel( COLOR_INVALID, 0, 0, 0 );
 
   if( inputPixel.ColorSpace() == eOutputSpace || eOutputSpace == COLOR_ARGB || eOutputSpace == COLOR_GRAY )
     return inputPixel;
@@ -308,26 +307,25 @@ Void PlaYUVerFrame::FrametoRGB8Pixfc()
 #endif
 }
 
-
 Void PlaYUVerFrame::getCvMat( Void** ppCvFrame )
 {
 #ifdef USE_OPENCV
   Int cvType = CV_8UC3;
   switch( m_iPixelFormat )
   {
-  case YUV420p:
-  case YUV444p:
-  case YUV422p:
-  case YUYV422:
+    case YUV420p:
+    case YUV444p:
+    case YUV422p:
+    case YUYV422:
     cvType = CV_8UC4;
     break;
-  case GRAY:
+    case GRAY:
     cvType = CV_8UC1;
     break;
-  case RGB8:
+    case RGB8:
     cvType = CV_8UC3;
     break;
-  default:
+    default:
     break;
   }
   cv::Mat *pcCvFrame = new cv::Mat( m_uiHeight, m_uiWidth, cvType );
@@ -352,13 +350,13 @@ Void PlaYUVerFrame::fromCvMat( Void* voidFrame )
   {
     switch( opencvFrame->channels() )
     {
-    case 1:
+      case 1:
       m_iPixelFormat = GRAY;
       break;
-    case 4:
+      case 4:
       m_iPixelFormat = RGB8;
       break;
-    default:
+      default:
       return;
     }
   }
@@ -393,14 +391,11 @@ Void PlaYUVerFrame::fromCvMat( Void* voidFrame )
 #endif
 }
 
-
-
 /*
  **************************************************************
  * Quality Related Function API
  **************************************************************
  */
-
 
 Double PlaYUVerFrame::getQuality( Int Metric, PlaYUVerFrame* Org, Int component )
 {

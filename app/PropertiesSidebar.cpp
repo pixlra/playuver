@@ -176,13 +176,14 @@ Void StreamPropertiesSideBar::setData( PlaYUVerStream* pcStream )
 //                FramePropertiesSideBar
 ////////////////////////////////////////////////////////////////////////////////
 
-FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent, Bool *pbIsPlaying ) :
-        QWidget( parent )
+FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent, Bool* pbMainPlaySwitch ) :
+        QWidget( parent ),
+        pbMainPlaySwitch( pbMainPlaySwitch )
 {
   // -------------- Variables definition --------------
   m_pcFrame = NULL;
   m_iLastFrameType = -1;
-  m_pbIsPlaying = pbIsPlaying;
+  m_pbIsPlaying = false;
 
   // Histogram area -----------------------------------------------------
 
@@ -401,10 +402,12 @@ QSize FramePropertiesSideBar::sizeHint() const
   return bestSize( size() );
 }
 
-Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
+Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame, Bool isPlaying )
 {
+  m_pbIsPlaying = isPlaying;
   if( !pcFrame )
   {
+    m_pcFrame = NULL;
     m_iLastFrameType = -1;
     labelMeanValue->clear();
     labelPixelsValue->clear();
@@ -479,8 +482,11 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame )
       }
     }
     setEnabled( true );
-    m_pcFrame = pcFrame;
-    updateDataHistogram();
+    if( m_pcFrame != pcFrame || !(*pbMainPlaySwitch) )
+    {
+      m_pcFrame = pcFrame;
+      updateDataHistogram();
+    }
   }
 }
 
@@ -517,7 +523,7 @@ Void FramePropertiesSideBar::updateDataHistogram()
 {
   if( m_pcFrame->isValid() && isVisible() )
   {
-    if( !(*m_pbIsPlaying) )
+    if( !( *pbMainPlaySwitch && m_pbIsPlaying ) )
     {
       // If a selection area is done in Image Editor and if the current
       // image is the same in Image Viewer, then compute too the histogram

@@ -68,12 +68,12 @@ class FramePropertiesSideBar: public QWidget
 {
 Q_OBJECT
 public:
-  FramePropertiesSideBar( QWidget* parent, Bool *pbIsPlaying );
+  FramePropertiesSideBar( QWidget* parent, Bool* pbMainPlaySwitch );
   ~FramePropertiesSideBar();
 
   QSize sizeHint() const;
 
-  Void setData( PlaYUVerFrame* m_pcStream );
+  Void setData( PlaYUVerFrame* m_pcStream, Bool isPlaying );
   Void setSelection( const QRect &selectionArea );
 
   Void stopHistogram();
@@ -97,8 +97,11 @@ private:
   };
 
   PlaYUVerFrame *m_pcFrame;
-  Bool* m_pbIsPlaying;
   Int m_iLastFrameType;
+
+  Bool* pbMainPlaySwitch;
+  Bool m_pbIsPlaying;
+
 
   QComboBox *channelCB;
   QComboBox *colorsCB;

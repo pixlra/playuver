@@ -436,9 +436,6 @@ Void plaYUVerApp::updateStreamProperties()
 {
   if( m_pcCurrentVideoSubWindow )
   {
-    m_pcStreamProperties->setData( m_pcCurrentVideoSubWindow->getInputStream() );
-    m_pcFrameProperties->setData( m_pcCurrentVideoSubWindow->getCurrFrame() );
-
     Int frame_num = 0;
     UInt64 total_frame_num = 1;
     if( m_pcCurrentVideoSubWindow->getInputStream() )
@@ -446,11 +443,16 @@ Void plaYUVerApp::updateStreamProperties()
       frame_num = m_pcCurrentVideoSubWindow->getInputStream()->getCurrFrameNum();
       m_pcFrameNumInfo->setCurrFrameNum( frame_num );
       total_frame_num = getMaxFrameNumber();
+      m_pcStreamProperties->setData( m_pcCurrentVideoSubWindow->getInputStream() );
     }
     else
     {
+      m_pcStreamProperties->setData( NULL );
       m_pcFrameNumInfo->setCurrFrameNum( 0 );
     }
+
+    m_pcFrameProperties->setData( m_pcCurrentVideoSubWindow->getCurrFrame(), m_pcCurrentVideoSubWindow->isPlaying() );
+
     m_pcFrameSlider->setValue( frame_num );
     m_pcFrameSlider->setMaximum( total_frame_num - 1 );
     m_pcFrameNumInfo->setTotalFrameNum( total_frame_num );
@@ -464,7 +466,7 @@ Void plaYUVerApp::updateStreamProperties()
     return;
   }
   m_pcStreamProperties->setData( NULL );
-  m_pcFrameProperties->setData( NULL );
+  m_pcFrameProperties->setData( NULL, false );
   m_pcFrameNumInfo->setCurrFrameNum( 0 );
   m_pcFrameNumInfo->setTotalFrameNum( 0 );
   m_pcZoomFactorSBox->setValue( 0.0 );
@@ -481,7 +483,7 @@ Void plaYUVerApp::updatePropertiesSelectedArea( QRect area )
   }
   else
   {
-    m_pcFrameProperties->setData( NULL );
+    m_pcFrameProperties->setData( NULL, false );
   }
 }
 
@@ -525,46 +527,27 @@ Void plaYUVerApp::play()
   {
     UInt frameRate;
     UInt timeInterval;
-    if( m_acPlayingSubWindows.size() > 0 )
-    {
-      if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
-      {
-        for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-        {
-          m_acPlayingSubWindows.at( i )->play();
-        }
-        frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
-      }
-    }
-    else
-    {
-      m_pcCurrentVideoSubWindow->play();
-      frameRate = m_pcCurrentVideoSubWindow->getInputStream()->getFrameRate();
-    }
-    timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
-    m_pcPlayingTimer->setInterval( timeInterval );
-  }
-  else
-  {
-    if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
+    if( m_acPlayingSubWindows.size() < 2 )
     {
       for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
       {
         m_acPlayingSubWindows.at( i )->pause();
       }
+      m_acPlayingSubWindows.clear();
+      m_acPlayingSubWindows.append( m_pcCurrentVideoSubWindow );
     }
-    else
+    if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
     {
-      m_pcCurrentVideoSubWindow->pause();
+      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      {
+        m_acPlayingSubWindows.at( i )->play();
+      }
+      frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
+      timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
+      m_pcPlayingTimer->setInterval( timeInterval );
     }
   }
-  setTimerStatus();
-  updateStreamProperties();
-}
-
-Void plaYUVerApp::pause()
-{
-  if( m_pcCurrentVideoSubWindow )
+  else
   {
     if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
     {
@@ -601,6 +584,7 @@ Void plaYUVerApp::stop()
     }
   }
   updateStreamProperties();
+  m_pcLockLabel->setVisible( false );
 }
 
 Void plaYUVerApp::playEvent()
@@ -608,19 +592,9 @@ Void plaYUVerApp::playEvent()
   Bool bEndOfSequence = false;
   try
   {
-    if( m_acPlayingSubWindows.size() > 0 )
+    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
     {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-      {
-        bEndOfSequence |= m_acPlayingSubWindows.at( i )->playEvent();
-      }
-    }
-    else
-    {
-      if( m_pcCurrentVideoSubWindow )
-      {
-        bEndOfSequence |= m_pcCurrentVideoSubWindow->playEvent();
-      }
+      bEndOfSequence |= m_acPlayingSubWindows.at( i )->playEvent();
     }
     if( bEndOfSequence && !m_arrayActions[VIDEO_LOOP_ACT]->isChecked() )
     {
@@ -712,6 +686,7 @@ Void plaYUVerApp::videoSelectionButtonEvent()
         pcVideoSubWinodw->scaleView( scaleFactor );
       }
     }
+    m_pcLockLabel->setVisible( true );
     return;
   }
 }
@@ -786,6 +761,7 @@ Void plaYUVerApp::chageSubWindowSelection()
   SubWindowHandle *new_window = activeSubWindow();
   if( activeSubWindow() != m_pcCurrentSubWindow )
   {
+    m_pcCurrentVideoSubWindow = NULL;
     if( activeSubWindow() )
     {
       m_pcCurrentSubWindow = new_window;
@@ -808,10 +784,10 @@ Void plaYUVerApp::chageSubWindowSelection()
         }
         m_pcQualityMeasurement->updateCurrentWindow( m_pcCurrentVideoSubWindow );
       }
+      updateZoomFactorSBox();
     }
   }
   updateStreamProperties();
-  updateZoomFactorSBox();
   m_pcQualityMeasurement->updateSubWindowList();
   updateMenus();
 }
@@ -1171,6 +1147,9 @@ Void plaYUVerApp::createActions()
   m_arrayActions[VIDEO_FORWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
   connect( m_arrayActions[VIDEO_LOCK_SELECTION_ACT], SIGNAL( triggered() ), this, SLOT( videoSelectionButtonEvent() ) );
 
+  m_pcLockLabel = new QLabel( "Playing Lock" );
+  m_pcLockLabel->setVisible( true );
+
   m_pcFrameSlider = new QSlider;
   m_pcFrameSlider->setOrientation( Qt::Horizontal );
   m_pcFrameSlider->setMaximumWidth( 100 );
@@ -1356,6 +1335,7 @@ Void plaYUVerApp::createToolBars()
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[PLAY_ACT] );
 //m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[PAUSE_ACT] );
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[STOP_ACT] );
+  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcLockLabel );
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
   m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcFrameSlider );
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );

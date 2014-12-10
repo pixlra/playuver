@@ -76,8 +76,6 @@ private:
 
   VideoSubWindow* m_pcReferenceSubWindow;
 
-  QString m_cWindowName;
-
   QString m_cWindowShortName;
   QString m_cCurrFileName;
 
@@ -97,7 +95,7 @@ public:
 
   Bool play();
   Void pause();
-  Int playEvent();
+  Bool playEvent();
   Void stop();
 
   Bool isPlaying()
@@ -131,11 +129,6 @@ public:
   ViewArea* getViewArea()
   {
     return m_cViewArea;
-  }
-
-  Double getZoomFactor()
-  {
-    return m_cViewArea->getZoomFactor();
   }
 
   Void setModule( PlaYUVerAppModuleIf* pcCurrentModule )
@@ -173,7 +166,6 @@ public:
   Void scaleView( Double scale );
   Void scaleView( Int width, Int height );
   Void scaleView( const QSize & size );
-
   Void scaleViewByRatio( Double ratio );
   Double getScaleFactor()
   {
@@ -182,15 +174,6 @@ public:
 
   QSize sizeHint() const;
 
-  Void setWindowName( QString name )
-  {
-    m_cWindowName = name;
-    setWindowTitle( m_cWindowName );
-  }
-  QString getWindowName()
-  {
-    return m_cWindowName;
-  }
   QString getWindowShortName()
   {
     return m_cWindowShortName;

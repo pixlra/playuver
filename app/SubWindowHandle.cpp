@@ -31,17 +31,22 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
         QMdiSubWindow( parent )
 {
   m_uiCategory = category;
+  m_cWindowName = QString( " " );
 }
 
 SubWindowHandle::~SubWindowHandle()
 {
 }
 
-QString SubWindowHandle::getWindowName()
-{
-  return QString();
-}
-
+Void SubWindowHandle::setWindowName( QString name )
+ {
+   m_cWindowName = name;
+   setWindowTitle( m_cWindowName );
+ }
+ QString SubWindowHandle::getWindowName()
+ {
+   return m_cWindowName;
+ }
 Bool SubWindowHandle::mayClose()
 {
   return true;

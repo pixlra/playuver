@@ -32,7 +32,6 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
-#include "ModulesHandle.h"
 
 namespace plaYUVer
 {
@@ -43,6 +42,7 @@ Q_OBJECT
 
 private:
   UInt m_uiCategory;
+  QString m_cWindowName;
 
 public:
   enum SubWindowCategories
@@ -50,39 +50,46 @@ public:
     VIDEO_SUBWINDOW = 0,
     MODULE_SUBWINDOW,
     PLOT_SUBWINDOW,
-  }
+  };
+
   SubWindowHandle( QWidget *, UInt );
   ~SubWindowHandle();
 
   /**
    * Show the image at its original size
    */
-  virtual Void normalSize() {};
+  virtual Void normalSize() = 0;
   /**
    * Scale the image (zoomed in or out) to fit on the window.
    */
-  virtual Void zoomToFit() {};
+  virtual Void zoomToFit() = 0;
   /**
    * Scale the image by a given factor
    * @param factor factor of scale. Ex: 1.2 scale the image up by 20% and
    *        0.8 scale the image down by 25%
    */
-  virtual Void scaleView( Double scale ) {};
+  virtual Void scaleView( Double ) = 0;
 
   /**
    * The current image size is scaled to a rectangle as large as possible
    * inside (@p width, @p height ) preserving the aspect ratio.
    */
-  virtual Void scaleView( Int width, Int height ) {};
+  virtual Void scaleView( Int, Int ) = 0;
 
   /**
    * This is an overloaded member function, provided for convenience.
    * Scales the image to a rectangle with the given size, preserving the
    * aspect ratio.
    */
-  Void scaleView( const QSize & size ) {};
+  virtual Void scaleView( const QSize &  ) = 0;
 
-  virtual QString getWindowName();
+  virtual Void scaleViewByRatio( Double ) = 0;
+
+  virtual Double getScaleFactor() = 0;
+
+  Void setWindowName( QString );
+  QString getWindowName();
+
   virtual Bool mayClose();
 
   UInt getCategory()

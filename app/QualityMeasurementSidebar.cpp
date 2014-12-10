@@ -25,7 +25,7 @@
 #include "lib/PlaYUVerDefs.h"
 #include <QtGui>
 #include "QualityMeasurementSidebar.h"
-#include "SubWindowHandle.h"
+#include "VideoSubWindow.h"
 
 namespace plaYUVer
 {
@@ -33,7 +33,7 @@ namespace plaYUVer
 QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, QMdiArea *mdiArea ) :
         QWidget( parent ),
         m_pcMainWindowMdiArea( mdiArea ),
-        m_pcCurrentSubWindow( NULL )
+        m_pcCurrentVideoSubWindow( NULL )
 {
 
   // Side bar area -----------------------------------------------------
@@ -119,16 +119,19 @@ QSize QualityMeasurementSidebar::sizeHint() const
 
 Void QualityMeasurementSidebar::updateSubWindowList()
 {
-  SubWindowHandle *subWindow;
+  VideoSubWindow* pcVideoSubWindow;
   QString currSubWindowName;
   m_pcWindowListNames.clear();
-  for( Int i = 0; i < m_pcMainWindowMdiArea->subWindowList().size(); i++ )
+
+
+  QList<VideoSubWindow*> videoSubWindowList = m_pcMainWindowMdiArea->findChildren<VideoSubWindow*>();
+  for( Int i = 0; i < videoSubWindowList.size(); i++ )
   {
-    subWindow = qobject_cast<SubWindowHandle *>( m_pcMainWindowMdiArea->subWindowList().at( i ) );
-    if( subWindow )
+    pcVideoSubWindow = videoSubWindowList.at( i );
+    if( pcVideoSubWindow )
     {
-      currSubWindowName = subWindow->getWindowShortName();
-      if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) && !subWindow->getIsModule() )
+      currSubWindowName = pcVideoSubWindow->getWindowShortName();
+      if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) && !pcVideoSubWindow->getIsModule() )
       {
         m_pcWindowListNames.append( currSubWindowName );
         //m_comboBoxRef->setItemText( currIdx++, currSubWindowName );
@@ -138,9 +141,9 @@ Void QualityMeasurementSidebar::updateSubWindowList()
   m_comboBoxRef->clear();
   m_comboBoxRef->insertItems( -1, m_pcWindowListNames );
   m_comboBoxRef->setCurrentIndex( -1 );
-  if( m_pcCurrentSubWindow )
+  if( m_pcCurrentVideoSubWindow )
   {
-    if( SubWindowHandle* refSubWindow = m_pcCurrentSubWindow->getRefSubWindow() )
+    if( VideoSubWindow* refSubWindow = m_pcCurrentVideoSubWindow->getRefSubWindow() )
     {
       Int index = m_pcWindowListNames.indexOf( refSubWindow->getWindowShortName() );
       m_comboBoxRef->setCurrentIndex( index );
@@ -149,13 +152,13 @@ Void QualityMeasurementSidebar::updateSubWindowList()
   m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToContents );
 }
 
-Void QualityMeasurementSidebar::updateCurrentWindow( SubWindowHandle *subWindow )
+Void QualityMeasurementSidebar::updateCurrentWindow( VideoSubWindow *subWindow )
 {
-  m_pcCurrentSubWindow = subWindow;
-  if( m_pcCurrentSubWindow )
+  m_pcCurrentVideoSubWindow = subWindow;
+  if( m_pcCurrentVideoSubWindow )
   {
     Int index = -1;
-    if( SubWindowHandle* refSubWindow = m_pcCurrentSubWindow->getRefSubWindow() )
+    if( VideoSubWindow* refSubWindow = m_pcCurrentVideoSubWindow->getRefSubWindow() )
     {
       index = m_pcWindowListNames.indexOf( refSubWindow->getWindowName() );
     }
@@ -167,12 +170,12 @@ Void QualityMeasurementSidebar::updateCurrentWindow( SubWindowHandle *subWindow 
 Void QualityMeasurementSidebar::updateSidebarData()
 {
   QString value( "0.00" );
-  if( m_pcCurrentSubWindow )
+  if( m_pcCurrentVideoSubWindow )
   {
-    SubWindowHandle* refSubWindow = m_pcCurrentSubWindow->getRefSubWindow();
+    VideoSubWindow* refSubWindow = m_pcCurrentVideoSubWindow->getRefSubWindow();
     if( refSubWindow )
     {
-      PlaYUVerFrame* currFrame = m_pcCurrentSubWindow->getCurrFrame();
+      PlaYUVerFrame* currFrame = m_pcCurrentVideoSubWindow->getCurrFrame();
       PlaYUVerFrame* refFrame = refSubWindow->getCurrFrame();
       Double quality;
 
@@ -197,14 +200,14 @@ Void QualityMeasurementSidebar::updateSidebarData()
 
 Void QualityMeasurementSidebar::slotReferenceChanged( Int index )
 {
-  if( index > -1 && m_pcCurrentSubWindow )
+  if( index > -1 && m_pcCurrentVideoSubWindow )
   {
-    SubWindowHandle *subWindow = qobject_cast<SubWindowHandle *>( m_pcMainWindowMdiArea->subWindowList().at( index ) );
-    if( subWindow )
+    VideoSubWindow *pcVideoSubWindow = m_pcMainWindowMdiArea->findChildren<VideoSubWindow*>().at( index );
+    if( pcVideoSubWindow )
     {
-      if( m_pcCurrentSubWindow->getCurrFrame()->haveSameFmt( subWindow->getCurrFrame() ) )
+      if( m_pcCurrentVideoSubWindow->getCurrFrame()->haveSameFmt( pcVideoSubWindow->getCurrFrame() ) )
       {
-        m_pcCurrentSubWindow->setRefSubWindow( subWindow );
+        m_pcCurrentVideoSubWindow->setRefSubWindow( pcVideoSubWindow );
         updateSidebarData();
         m_comboBoxRef->setCurrentIndex( index );
         return;

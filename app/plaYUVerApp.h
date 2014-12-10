@@ -37,6 +37,7 @@
 #include <QMainWindow>
 #include "lib/PlaYUVerDefs.h"
 #include "SubWindowHandle.h"
+#include "VideoSubWindow.h"
 #include "ModulesHandle.h"
 #include "PropertiesSidebar.h"
 #include "QualityMeasurementSidebar.h"
@@ -85,7 +86,7 @@ private Q_SLOTS:
   void playEvent();
   void seekSliderEvent( int new_frame_num );
   void seekEvent( int direction );
-  void lockButtonEvent();
+
   void videoSelectionButtonEvent();
 
   void ModuleHandling( QAction * );
@@ -97,14 +98,16 @@ private Q_SLOTS:
    */
   void scaleFrame( int ratio = 100.0 );
   void setZoomFromSBox( double ratio );
-
   void normalSize();
   void zoomToFit();
 
-  void about();
-
   void chageSubWindowSelection();
   void updateWindowMenu();
+  void updateZoomFactorSBox();
+  void updateStreamProperties();
+
+  void about();
+
   void dragEnterEvent( QDragEnterEvent *event );
   void dropEvent( QDropEvent *event );
 
@@ -112,10 +115,7 @@ private Q_SLOTS:
 
   void updatePixelValueStatusBar( const QPoint & pos, PlaYUVerFrame* frame );
 
-  void updateProperties();
   void updatePropertiesSelectedArea( QRect area );
-
-  void updateZoomFactorSBox();
 
   void setAllSubWindowTool();
   void setTool( int idxTool );
@@ -150,14 +150,18 @@ private:
 
   PlaYUVerAppAdaptor* m_pDBusAdaptor;
   PlaYUVerMdiArea *mdiArea;
-  SubWindowHandle *m_pcCurrentSubWindow;
+
+  /**
+   * Save the current subwindow for every category
+   */
+  SubWindowHandle* m_pcCurrentSubWindow; //!< General always set
+  VideoSubWindow* m_pcCurrentVideoSubWindow;
+
   ModulesHandle *m_pcModulesHandle;
 
   QString m_cLastOpenPath;
   QTimer *m_pcPlayingTimer;
   Bool m_bIsPlaying;
-  QTime m_cTimer;
-  UInt m_uiAveragePlayInterval;
 
   Void readRecentFileList();
   Void writeRecentFileList();
@@ -168,14 +172,10 @@ private:
    *  Playing functions
    */
   UInt64 getMaxFrameNumber();
-  Void startPlay();
   Void setTimerStatus();
-  Void updateCurrFrameNum();
-  Void updateTotalFrameNum();
+
 
   Void updateMenus();
-  Void updateStreamProperties();
-  Void updateFrameProperties();
 
   Void updateRecentFileActions();
 
@@ -190,12 +190,16 @@ private:
 
   SubWindowHandle *activeSubWindow();
 
+  template<typename T>
+  T findSubWindow( const QMdiArea* mdiArea, const QString& name );
+  template<typename T>
+  T findSubWindow( const QMdiArea* mdiArea, const T subWindow );
+
   static VideoSubWindow* findVideoSubWindow( const QMdiArea* mdiArea, const QString& fileName );
-  static SubWindowHandle* findSubWindow( const QMdiArea* mdiArea, const SubWindowHandle* subWindow );
 
   QVector<VideoSubWindow*> m_acPlayingSubWindows;
-  QSlider *m_pcFrameSlider;
 
+  QSlider* m_pcFrameSlider;
   WidgetFrameNumber* m_pcFrameNumInfo;
   QDoubleSpinBox *m_pcZoomFactorSBox;
 
@@ -276,7 +280,6 @@ private:
     VIDEO_FORWARD_ACT,
     VIDEO_BACKWARD_ACT,
     VIDEO_LOOP_ACT,
-    VIDEO_LOCK_ACT,
     VIDEO_LOCK_SELECTION_ACT,
     NAVIGATION_TOOL_ACT,
     SELECTION_TOOL_ACT,

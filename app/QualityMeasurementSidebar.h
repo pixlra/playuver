@@ -39,7 +39,7 @@
 namespace plaYUVer
 {
 
-class SubWindowHandle;
+class VideoSubWindow;
 
 class QualityMeasurementSidebar: public QWidget
 {
@@ -51,7 +51,7 @@ public:
   QSize sizeHint() const;
 
   Void updateSubWindowList();
-  Void updateCurrentWindow( SubWindowHandle * );
+  Void updateCurrentWindow( VideoSubWindow * );
   Void updateSidebarData();
 
 private:
@@ -60,7 +60,7 @@ private:
   QStringList m_pcWindowListNames;
   QStringList m_pcSelectedWindowListNames;
 
-  SubWindowHandle *m_pcCurrentSubWindow;
+  VideoSubWindow *m_pcCurrentVideoSubWindow;
 
   QComboBox *m_comboBoxMetric;
 

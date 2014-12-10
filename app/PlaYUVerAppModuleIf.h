@@ -39,7 +39,6 @@ class QAction;
 namespace plaYUVer
 {
 
-class SubWindowHandle;
 class VideoSubWindow;
 
 class PlaYUVerAppModuleIf
@@ -59,7 +58,7 @@ private:
   QAction* m_pcAction;
   VideoSubWindow* m_pcSubWindow[MAX_NUMBER_FRAMES];
 
-  SubWindowHandle* m_pcDisplaySubWindow;
+  VideoSubWindow* m_pcDisplaySubWindow;
 
   QDockWidget* m_pcDockWidget;
   ModuleHandleDock* m_pcModuleDock;

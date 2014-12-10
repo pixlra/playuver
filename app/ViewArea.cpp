@@ -101,13 +101,6 @@ void ViewArea::clearMask()
   m_mask.clear();
 }
 
-// QSize ViewArea::sizeHint() const
-// {
-//     int w = m_pixmap.width()*m_zoomFactor;
-//     int h = m_pixmap.height()*m_zoomFactor;
-//     return QSize( w, h );
-// }
-
 Void ViewArea::setZoomFactor( Double f )
 {
   m_zoomFactor = f;

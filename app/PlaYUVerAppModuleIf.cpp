@@ -23,7 +23,7 @@
  */
 
 #include "PlaYUVerAppModuleIf.h"
-#include "SubWindowHandle.h"
+#include "VideoSubWindow.h"
 
 namespace plaYUVer
 {

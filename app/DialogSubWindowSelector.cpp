@@ -23,7 +23,7 @@
  */
 
 #include "DialogSubWindowSelector.h"
-#include "SubWindowHandle.h"
+#include "VideoSubWindow.h"
 
 namespace plaYUVer
 {
@@ -108,14 +108,19 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
 Void DialogSubWindowSelector::updateSubWindowList()
 {
   SubWindowHandle *subWindow;
+  VideoSubWindow *videoSubWindow;
   QString currSubWindowName;
   m_pcWindowListNames.clear();
   for( Int i = 0; i < m_pcMainWindowMdiArea->subWindowList().size(); i++ )
   {
     subWindow = qobject_cast<SubWindowHandle *>( m_pcMainWindowMdiArea->subWindowList().at( i ) );
-    currSubWindowName = subWindow->getWindowName();
-    if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) && !subWindow->getIsModule() )
-      m_pcWindowListNames.append( currSubWindowName );
+    if( subWindow->getCategory() == SubWindowHandle::VIDEO_SUBWINDOW )
+    {
+      videoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowMdiArea->subWindowList().at( i ) );
+      currSubWindowName = videoSubWindow->getWindowName();
+      if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) && !videoSubWindow->getIsModule() )
+        m_pcWindowListNames.append( currSubWindowName );
+    }
   }
   m_comboBoxWindowList->clear();
   m_comboBoxWindowList->insertItems( 0, m_pcWindowListNames );
@@ -133,7 +138,7 @@ Void DialogSubWindowSelector::updateSubWindowList()
     {
       m_pushButtonAdd->setEnabled( true );
     }
-    if(  m_pcWindowListNames.size() > m_iMaxSlectedWindows )
+    if( m_pcWindowListNames.size() > m_iMaxSlectedWindows )
     {
       enableAddAll = false;
     }

@@ -23,6 +23,7 @@
  */
 
 #include "VideoSubWindow.h"
+#include "SubWindowHandle.h"
 #include "ConfigureFormatDialog.h"
 #include "ViewArea.h"
 
@@ -102,7 +103,6 @@ VideoSubWindow::VideoSubWindow( QWidget * parent, Bool isModule ) :
   m_cScrollArea->setWidget( m_cViewArea );
   m_cScrollArea->setWidgetResizable( true );
 
-  m_cWindowName = QString( " " );
   m_cLastScroll = QPoint();
 }
 
@@ -160,10 +160,8 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   refreshFrame();
 
   m_cFilename = cFilename;
-  m_cWindowName = m_pCurrStream->getStreamInformationString();
   m_cWindowShortName = QFileInfo( cFilename ).fileName();
-  setWindowTitle( m_cWindowName );
-  qDebug() << "File " << m_cWindowName << "was successfully opened";
+  setWindowName( m_pCurrStream->getStreamInformationString() );
   return true;
 }
 
@@ -189,9 +187,8 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
   refreshFrame();
 
   m_cFilename = streamInfo->m_cFilename;
-  m_cWindowName = m_pCurrStream->getStreamInformationString();
   m_cWindowShortName = QFileInfo( streamInfo->m_cFilename ).fileName();
-  setWindowTitle( m_cWindowName );
+  setWindowName( m_pCurrStream->getStreamInformationString() );
   return true;
 }
 
@@ -314,7 +311,7 @@ Bool VideoSubWindow::play()
   return m_bIsPlaying;
 }
 
-Int VideoSubWindow::playEvent()
+Bool VideoSubWindow::playEvent()
 {
   if( m_pCurrStream && m_bIsPlaying )
   {
@@ -322,17 +319,11 @@ Int VideoSubWindow::playEvent()
     refreshFrame();
     if( m_pCurrStream->checkErrors( PlaYUVerStream::END_OF_SEQ ) )
     {
-      return -2;
+      return true;
     }
     m_pCurrStream->readFrame();
-    if( m_pCurrStream->checkErrors( PlaYUVerStream::READING ) )
-    {
-      QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot read %1." ).arg( m_cFilename ) );
-      return -3;
-    }
-    return 0;
   }
-  return -4;
+  return false;
 }
 
 Void VideoSubWindow::pause()
@@ -384,6 +375,12 @@ Void VideoSubWindow::zoomToFit()
   scaleView( niceFit );
 }
 
+Void VideoSubWindow::scaleViewByRatio( Double ratio )
+{
+  Q_ASSERT( m_cViewArea->image() );
+  m_cViewArea->zoomChangeEvent( ratio, QPoint() );
+}
+
 Void VideoSubWindow::scaleView( Double scale )
 {
   Q_ASSERT( m_cViewArea->image() );
@@ -417,12 +414,6 @@ Void VideoSubWindow::scaleView( const QSize & size )
     scaleView( wfactor );
   else
     scaleView( hfactor );
-}
-
-Void VideoSubWindow::scaleViewByRatio( Double ratio )
-{
-  Q_ASSERT( m_cViewArea->image() );
-  m_cViewArea->zoomChangeEvent( ratio, QPoint() );
 }
 
 void VideoSubWindow::adjustScrollBarByOffset( QPoint Offset )

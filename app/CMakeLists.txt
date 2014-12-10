@@ -17,7 +17,6 @@ set(plaYUver_App_SRCS
 # Sub Window
     SubWindowHandle.cpp
     VideoSubWindow.cpp
-    PlotSubWindow.cpp
 # Dialogs
     AboutDialog.cpp
     ConfigureFormatDialog.cpp

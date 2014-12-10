@@ -104,11 +104,11 @@ SubWindowHandle* ModulesHandle::processModuleHandlingOpt()
 SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
   Bool bShowModulesNewWindow = m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked();
-  SubWindowHandle* pcSubWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->activeSubWindow() );
-  SubWindowHandle* interfaceChild = NULL;
+  VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
+
   QString windowName;
 
-  QVector<SubWindowHandle*> subWindowList;
+  QVector<VideoSubWindow*> subWindowList;
   UInt numberOfFrames = pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiNumberOfFrames;
   if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )  // Show dialog to select sub windows
   {
@@ -122,11 +122,11 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModul
       {
         for( Int i = 0; i < m_pcMdiArea->subWindowList().size(); i++ )
         {
-          subWindow = qobject_cast<SubWindowHandle *>( m_pcMdiArea->subWindowList().at( i ) );
-          if( subWindow->getWindowName() == selectedWindows.at( j ) )
+          subWindow = qobject_cast<SubWindowHandle*>( m_pcMdiArea->subWindowList().at( i ) );
+          if( subWindow->windowTitle() == selectedWindows.at( j ) )
           {
-            subWindowList.append( subWindow );
-            pcCurrModuleIf->m_pcSubWindow[j] = subWindow;
+            subWindowList.append( qobject_cast<VideoSubWindow*>( m_pcMdiArea->subWindowList().at( i ) ) );
+            pcCurrModuleIf->m_pcSubWindow[j] = qobject_cast<VideoSubWindow*>( m_pcMdiArea->subWindowList().at( i ) );
           }
         }
       }
@@ -143,15 +143,15 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModul
   }
   else
   {
-    windowName.append( pcSubWindow->getWindowName() );
-    subWindowList.append( pcSubWindow );
+    windowName.append( pcVideoSubWindow->windowTitle() );
+    subWindowList.append( pcVideoSubWindow );
   }
 
   if( subWindowList.size() == 0 )
   {
     pcCurrModuleIf->m_pcAction->setChecked( false );
     m_pcParent->statusBar()->showMessage( "Error! Module cannot be applied", 2000 );
-    return interfaceChild;
+    return NULL;
   }
 
   windowName.append( " <" );
@@ -165,11 +165,13 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModul
   }
 
   pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
+
+  VideoSubWindow* interfaceChild = NULL;
   if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_iModuleType == FRAME_PROCESSING_MODULE )
   {
     if( ( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
-      interfaceChild = new SubWindowHandle( m_pcParent, true );
+      interfaceChild = new VideoSubWindow( m_pcParent, true );
       interfaceChild->setWindowName( windowName );
       connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), m_pcParent,
           SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
@@ -385,7 +387,7 @@ Void ModulesHandle::swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
   if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiNumberOfFrames == MODULE_REQUIRES_TWO_FRAMES )
   {
-    SubWindowHandle* auxWindowHandle = pcCurrModuleIf->m_pcSubWindow[0];
+    VideoSubWindow* auxWindowHandle = pcCurrModuleIf->m_pcSubWindow[0];
     pcCurrModuleIf->m_pcSubWindow[0] = pcCurrModuleIf->m_pcSubWindow[1];
     pcCurrModuleIf->m_pcSubWindow[1] = auxWindowHandle;
   }

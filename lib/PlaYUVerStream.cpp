@@ -495,8 +495,7 @@ Void PlaYUVerStream::readFrame()
     if( bytes_read != frame_bytes_input )
     {
       m_iErrorStatus = READING;
-      qDebug( ) << " Reading error !!!"
-                << endl;
+      throw "[PlaYUVerStream] Cannot read file";
       return;
     }
     m_pcNextFrame->frameFromBuffer( m_pStreamBuffer, bytes_read );

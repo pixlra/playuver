@@ -159,7 +159,8 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 {
   if( !QFileInfo( fileName ).exists() )
   {
-    statusBar()->showMessage( "File do not exists!" );
+    statusBar()->showMessage( "File " + fileName + " do not exist!", 2000 );
+    return;
   }
   VideoSubWindow *videoSubWindow = plaYUVerApp::findVideoSubWindow( mdiArea, fileName );
   if( videoSubWindow )
@@ -524,14 +525,16 @@ Void plaYUVerApp::play()
   {
     UInt frameRate;
     UInt timeInterval;
-    if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
+    if( m_acPlayingSubWindows.size() > 0 )
     {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
       {
-        m_acPlayingSubWindows.at( i )->play();
+        for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+        {
+          m_acPlayingSubWindows.at( i )->play();
+        }
+        frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
       }
-      frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
-
     }
     else
     {
@@ -605,7 +608,7 @@ Void plaYUVerApp::playEvent()
   Bool bEndOfSequence = false;
   try
   {
-    if( m_acPlayingSubWindows.size() > 0)
+    if( m_acPlayingSubWindows.size() > 0 )
     {
       for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
       {
@@ -626,7 +629,8 @@ Void plaYUVerApp::playEvent()
   }
   catch( const char *msg )
   {
-    QString warningMsg = "Error while playing " + QFileInfo( m_pcCurrentVideoSubWindow->getCurrentFileName() ).fileName() + " with the following error: \n" + msg;
+    QString warningMsg = "Error while playing " + QFileInfo( m_pcCurrentVideoSubWindow->getCurrentFileName() ).fileName() + " with the following error: \n"
+        + msg;
     QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
     statusBar()->showMessage( warningMsg, 2000 );
     qDebug( ) << warningMsg;
@@ -843,7 +847,7 @@ Void plaYUVerApp::updatePixelValueStatusBar( const QPoint & pos, PlaYUVerFrame* 
 
 Void plaYUVerApp::dragEnterEvent( QDragEnterEvent *event )
 {
-  //setText(tr("<drop content>"));
+//setText(tr("<drop content>"));
   mdiArea->setBackgroundRole( QPalette::Highlight );
   event->acceptProposedAction();
 }
@@ -951,7 +955,7 @@ Void plaYUVerApp::updateMenus()
   m_pcZoomFactorSBox->setEnabled( hasSubWindow );
 
   m_arrayActions[PLAY_ACT]->setEnabled( hasSubWindow );
-  //m_arrayActions[PAUSE_ACT]->setEnabled( hasSubWindow );
+//m_arrayActions[PAUSE_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[STOP_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_BACKWARD_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_FORWARD_ACT]->setEnabled( hasSubWindow );
@@ -1047,7 +1051,7 @@ Void plaYUVerApp::createActions()
 {
   m_arrayActions.resize( TOTAL_ACT );
 
-  // ------------ File ------------
+// ------------ File ------------
   m_arrayActions[OPEN_ACT] = new QAction( QIcon( ":/images/open.png" ), tr( "&Open" ), this );
   m_arrayActions[OPEN_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogOpenButton ) );
   m_arrayActions[OPEN_ACT]->setShortcuts( QKeySequence::Open );
@@ -1104,7 +1108,7 @@ Void plaYUVerApp::createActions()
   m_arrayActions[EXIT_ACT]->setStatusTip( tr( "Exit the application" ) );
   connect( m_arrayActions[EXIT_ACT], SIGNAL( triggered() ), qApp, SLOT( closeAllWindows() ) );
 
-  // ------------ View ------------
+// ------------ View ------------
   mapperZoom = new QSignalMapper( this );
   connect( mapperZoom, SIGNAL( mapped(int) ), this, SLOT( scaleFrame(int) ) );
 
@@ -1133,7 +1137,7 @@ Void plaYUVerApp::createActions()
   m_arrayActions[ZOOM_FIT_ACT]->setStatusTip( tr( "Zoom in or out to fit on the window." ) );
   connect( m_arrayActions[ZOOM_FIT_ACT], SIGNAL( triggered() ), this, SLOT( zoomToFit() ) );
 
-  // ------------ Playing ------------
+// ------------ Playing ------------
 
   m_arrayActions[PLAY_ACT] = new QAction( "Play", this );
   m_arrayActions[PLAY_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPlay ) ) );
@@ -1175,7 +1179,7 @@ Void plaYUVerApp::createActions()
   m_pcFrameSlider->setEnabled( false );
   connect( m_pcFrameSlider, SIGNAL( sliderMoved(int) ), this, SLOT( seekSliderEvent(int) ) );
 
-  // ------------ Tools ------------
+// ------------ Tools ------------
   actionGroupTools = new QActionGroup( this );
   actionGroupTools->setExclusive( true );
 
@@ -1198,7 +1202,7 @@ Void plaYUVerApp::createActions()
   connect( m_arrayActions[SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
   m_mapperTools->setMapping( m_arrayActions[SELECTION_TOOL_ACT], ViewArea::NormalSelectionTool );
 
-  // ------------ Window ------------
+// ------------ Window ------------
 
   m_arrayActions[TILE_WINDOWS_ACT] = new QAction( tr( "Tile" ), this );
   m_arrayActions[TILE_WINDOWS_ACT]->setIcon( QIcon( ":images/windowstile.png" ) );
@@ -1225,7 +1229,7 @@ Void plaYUVerApp::createActions()
   m_arrayActions[SEPARATOR_ACT] = new QAction( this );
   m_arrayActions[SEPARATOR_ACT]->setSeparator( true );
 
-  // ------------ About ------------
+// ------------ About ------------
 
 #ifdef USE_FERVOR
   m_arrayActions[UPDATE_ACT] = new QAction( tr( "&Update" ), this );
@@ -1276,8 +1280,8 @@ Void plaYUVerApp::createMenus()
 
   m_arrayMenu[VIEW_MENU]->addSeparator();
 
-  // createPopupMenu() Returns a popup menu containing checkable entries for
-  // the toolbars and dock widgets present in the main window.
+// createPopupMenu() Returns a popup menu containing checkable entries for
+// the toolbars and dock widgets present in the main window.
   m_arrayMenu[DOCK_VIEW_MENU] = createPopupMenu();
   if( m_arrayMenu[DOCK_VIEW_MENU] )
   {
@@ -1291,7 +1295,7 @@ Void plaYUVerApp::createMenus()
 
   m_arrayMenu[VIDEO_MENU] = menuBar()->addMenu( tr( "Video" ) );
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[PLAY_ACT] );
-  //m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[PAUSE_ACT] );
+//m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[PAUSE_ACT] );
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[STOP_ACT] );
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
@@ -1350,7 +1354,7 @@ Void plaYUVerApp::createToolBars()
   m_arrayToolBars[VIDEO_TOOLBAR] = new QToolBar( tr( "Video" ) );
   m_arrayToolBars[VIDEO_TOOLBAR]->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[PLAY_ACT] );
-  //m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[PAUSE_ACT] );
+//m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[PAUSE_ACT] );
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[STOP_ACT] );
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
   m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcFrameSlider );
@@ -1364,7 +1368,7 @@ Void plaYUVerApp::createToolBars()
 
 Void plaYUVerApp::createDockWidgets()
 {
-  // Properties Dock Window
+// Properties Dock Window
   m_arraySideBars.resize( TOTAL_DOCK );
 
   m_pcStreamProperties = new StreamPropertiesSideBar( this );
@@ -1382,7 +1386,7 @@ Void plaYUVerApp::createDockWidgets()
   connect( m_arraySideBars[FRAME_DOCK], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateStreamProperties() ) );
 
   QMainWindow::tabifyDockWidget( m_arraySideBars[FRAME_DOCK], m_arraySideBars[STREAM_DOCK] );
-  //QMainWindow::setTabPosition(Qt::RightDockWidgetArea, QTabWidget::North);
+//QMainWindow::setTabPosition(Qt::RightDockWidgetArea, QTabWidget::North);
 
   m_pcQualityMeasurement = new QualityMeasurementSidebar( this, mdiArea );
   m_arraySideBars[QUALITY_DOCK] = new QDockWidget( tr( "Quality Measurement" ), this );
@@ -1405,8 +1409,8 @@ Void plaYUVerApp::readSettings()
   move( pos );
   resize( size );
   m_cLastOpenPath = settings.lastOpenPath();
-  //m_appTool = ( ViewArea::eTool )settings.getSelectedTool();
-  //setAllSubWindowTool();
+//m_appTool = ( ViewArea::eTool )settings.getSelectedTool();
+//setAllSubWindowTool();
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
 
   m_aRecentFileStreamInfo = settings.getRecentFileList();

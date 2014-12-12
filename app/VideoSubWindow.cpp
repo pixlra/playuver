@@ -375,22 +375,10 @@ Void VideoSubWindow::zoomToFit()
   scaleView( niceFit );
 }
 
-Void VideoSubWindow::scaleViewByRatio( Double ratio )
-{
-  Q_ASSERT( m_cViewArea->image() );
-  m_cViewArea->zoomChangeEvent( ratio, QPoint() );
-}
-
 Void VideoSubWindow::scaleView( Double scale )
 {
   Q_ASSERT( m_cViewArea->image() );
-  m_cViewArea->setZoomFactor( scale );
-  updateLastScrollValue();
-}
-
-Void VideoSubWindow::scaleView( Int width, Int height )
-{
-  scaleView( QSize( width, height ) );
+  m_cViewArea->zoomChangeEvent( scale, QPoint() );
 }
 
 Void VideoSubWindow::scaleView( const QSize & size )
@@ -411,9 +399,11 @@ Void VideoSubWindow::scaleView( const QSize & size )
   hfactor = ( Double )newSize.height() / imgViewSize.height();
 
   if( wfactor < hfactor )
-    scaleView( wfactor );
+    m_cViewArea->setZoomFactor( wfactor );
   else
-    scaleView( hfactor );
+    m_cViewArea->setZoomFactor( hfactor );
+
+  updateLastScrollValue();
 }
 
 void VideoSubWindow::adjustScrollBarByOffset( QPoint Offset )

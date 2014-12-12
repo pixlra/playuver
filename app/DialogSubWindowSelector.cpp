@@ -61,7 +61,9 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
   m_pushButtonAdd = new QPushButton( "Add", this );
   m_pushButtonAddAll = new QPushButton( "Add all", this );
   m_pushButtonRemove = new QPushButton( "Remove", this );
+  m_pushButtonRemoveAll = new QPushButton( "Remove All", this );
   m_pushButtonRemove->setEnabled( false );
+  m_pushButtonRemoveAll->setEnabled( false );
 
   // Selected Sub Window List
   m_listSelectedWindows = new QListWidget( this );
@@ -83,6 +85,7 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
   RightVLayout->addWidget( m_pushButtonAdd );
   RightVLayout->addWidget( m_pushButtonAddAll );
   RightVLayout->addWidget( m_pushButtonRemove );
+  RightVLayout->addWidget( m_pushButtonRemoveAll );
   RightVLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
   RightVLayout->addWidget( m_pushButtonOkCancel );
 
@@ -99,28 +102,29 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
   connect( m_pushButtonAdd, SIGNAL( clicked() ), this, SLOT( addSubWindow() ) );
   connect( m_pushButtonAddAll, SIGNAL( clicked() ), this, SLOT( addAllSubWindow() ) );
   connect( m_pushButtonRemove, SIGNAL( clicked() ), this, SLOT( removeSubWindow() ) );
+  connect( m_pushButtonRemoveAll, SIGNAL( clicked() ), this, SLOT( removeAllSubWindow() ) );
   QMetaObject::connectSlotsByName( this );
 
+//  SubWindowHandle* activeSubWindow = qobject_cast<SubWindowHandle *>( m_pcMainWindowMdiArea->activeSubWindow() );
+//  if( activeSubWindow->getCategory() == SubWindowHandle::VIDEO_SUBWINDOW )
+//  {
+//    m_pcSelectedWindowListNames.append( activeSubWindow->getWindowName() );
+//  }
   updateSubWindowList();
-
 }
 
 Void DialogSubWindowSelector::updateSubWindowList()
 {
-  SubWindowHandle *subWindow;
   VideoSubWindow *videoSubWindow;
   QString currSubWindowName;
   m_pcWindowListNames.clear();
-  for( Int i = 0; i < m_pcMainWindowMdiArea->subWindowList().size(); i++ )
+  QList<VideoSubWindow*> subWindowList = m_pcMainWindowMdiArea->findChildren<VideoSubWindow*>();
+  for( Int i = 0; i < subWindowList.size(); i++ )
   {
-    subWindow = qobject_cast<SubWindowHandle *>( m_pcMainWindowMdiArea->subWindowList().at( i ) );
-    if( subWindow->getCategory() == SubWindowHandle::VIDEO_SUBWINDOW )
-    {
-      videoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowMdiArea->subWindowList().at( i ) );
-      currSubWindowName = videoSubWindow->getWindowName();
-      if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) && !videoSubWindow->getIsModule() )
-        m_pcWindowListNames.append( currSubWindowName );
-    }
+    videoSubWindow = subWindowList.at( i );
+    currSubWindowName = videoSubWindow->getWindowName();
+    if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) && !videoSubWindow->getIsModule() )
+      m_pcWindowListNames.append( currSubWindowName );
   }
   m_comboBoxWindowList->clear();
   m_comboBoxWindowList->insertItems( 0, m_pcWindowListNames );
@@ -148,10 +152,12 @@ Void DialogSubWindowSelector::updateSubWindowList()
   if( m_pcSelectedWindowListNames.size() > 0 )
   {
     m_pushButtonRemove->setEnabled( true );
+    m_pushButtonRemoveAll->setEnabled( true );
   }
   else
   {
     m_pushButtonRemove->setEnabled( false );
+    m_pushButtonRemoveAll->setEnabled( false );
   }
 
   if( m_pcSelectedWindowListNames.size() >= m_iMinSelectedWindows )
@@ -219,7 +225,14 @@ Void DialogSubWindowSelector::removeSubWindow()
     m_listSelectedWindows->insertItems( 0, m_pcSelectedWindowListNames );
     updateSubWindowList();
   }
+}
 
+Void DialogSubWindowSelector::removeAllSubWindow()
+{
+  QList<QListWidgetItem*> selectedWindows = m_listSelectedWindows->selectedItems();
+  m_listSelectedWindows->clear();
+  m_pcSelectedWindowListNames.clear();
+  updateSubWindowList();
 }
 
 }  // Namespace SCode

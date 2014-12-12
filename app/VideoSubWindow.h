@@ -164,8 +164,7 @@ public:
   Void normalSize();
   Void zoomToFit();
   Void scaleView( Double scale );
-  Void scaleView( Int width, Int height );
-  Void scaleView( const QSize & size );
+
   Void scaleViewByRatio( Double ratio );
   Double getScaleFactor()
   {
@@ -188,6 +187,12 @@ public:
     return m_bIsModule;
   }
 
+private:
+  /**
+   * Private zoom function to handle
+   * zoom to fit
+   */
+  Void scaleView( const QSize & size );
 protected:
   void closeEvent( QCloseEvent *event );
 

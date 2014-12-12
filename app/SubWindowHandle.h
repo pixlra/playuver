@@ -70,21 +70,6 @@ public:
    */
   virtual Void scaleView( Double ) = 0;
 
-  /**
-   * The current image size is scaled to a rectangle as large as possible
-   * inside (@p width, @p height ) preserving the aspect ratio.
-   */
-  virtual Void scaleView( Int, Int ) = 0;
-
-  /**
-   * This is an overloaded member function, provided for convenience.
-   * Scales the image to a rectangle with the given size, preserving the
-   * aspect ratio.
-   */
-  virtual Void scaleView( const QSize &  ) = 0;
-
-  virtual Void scaleViewByRatio( Double ) = 0;
-
   virtual Double getScaleFactor() = 0;
 
   Void setWindowName( QString );

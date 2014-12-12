@@ -68,6 +68,7 @@ private:
   QPushButton* m_pushButtonAdd;
   QPushButton* m_pushButtonAddAll;
   QPushButton* m_pushButtonRemove;
+  QPushButton* m_pushButtonRemoveAll;
   QListWidget* m_listSelectedWindows;
 
   Void updateSubWindowList();
@@ -76,6 +77,7 @@ private Q_SLOTS:
   void addSubWindow();
   void addAllSubWindow();
   void removeSubWindow();
+  void removeAllSubWindow();
 
 };
 

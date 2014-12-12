@@ -673,7 +673,6 @@ Void plaYUVerApp::videoSelectionButtonEvent()
     m_acPlayingSubWindows.clear();
     SubWindowHandle *subWindow;
     QString windowName;
-    Double scaleFactor = qobject_cast<SubWindowHandle*>( mdiArea->subWindowList().at( 0 ) )->getScaleFactor();
     for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
     {
       subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
@@ -683,11 +682,27 @@ Void plaYUVerApp::videoSelectionButtonEvent()
         VideoSubWindow* pcVideoSubWinodw = qobject_cast<VideoSubWindow*>( subWindow );
         m_acPlayingSubWindows.append( pcVideoSubWinodw );
         pcVideoSubWinodw->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
-        pcVideoSubWinodw->scaleView( scaleFactor );
       }
     }
-    m_acPlayingSubWindows.at( 0 )->activateWindow();
-    m_arrayActions[VIDEO_LOCK_ACT]->setVisible( true );
+    if( m_acPlayingSubWindows.size() > 0 )
+    {
+      m_acPlayingSubWindows.at( 0 )->activateWindow();
+      if( m_acPlayingSubWindows.size() > 1 )
+      {
+        m_arrayActions[VIDEO_LOCK_ACT]->setVisible( true );
+      }
+      if( m_bIsPlaying )
+      {
+        for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+        {
+          m_acPlayingSubWindows.at( i )->play();
+        }
+      }
+    }
+    else
+    {
+      stop();
+    }
     return;
   }
 }
@@ -728,7 +743,7 @@ Void plaYUVerApp::scaleFrame( int ratio )
 {
   if( m_pcCurrentSubWindow )
   {
-    m_pcCurrentSubWindow->scaleViewByRatio( ( Double )( ratio ) / 100.0 );
+    m_pcCurrentSubWindow->scaleView( ( Double )( ratio ) / 100.0 );
     updateZoomFactorSBox();
   }
 }
@@ -740,7 +755,7 @@ Void plaYUVerApp::setZoomFromSBox( double zoom )
   {
     lastZoom = activeSubWindow()->getScaleFactor() * 100;
     if( zoom / lastZoom != 1.0 )
-      activeSubWindow()->scaleViewByRatio( zoom / lastZoom );
+      activeSubWindow()->scaleView( zoom / lastZoom );
   }
 }
 

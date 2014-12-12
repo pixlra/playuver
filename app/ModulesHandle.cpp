@@ -53,8 +53,10 @@ ModulesHandle::~ModulesHandle()
 
 Void ModulesHandle::appendModule( PlaYUVerModuleIf* pModuleIf )
 {
+  m_pcPlaYUVerModulesIf.append( pModuleIf );
   PlaYUVerAppModuleIf* pcAppModuleIf = new PlaYUVerAppModuleIf;
   pcAppModuleIf->m_pcModule = pModuleIf;
+  pcAppModuleIf->setParent( this );
   m_pcPlaYUVerModules.append( pcAppModuleIf );
   m_uiModulesCount++;
 }
@@ -416,7 +418,7 @@ Void ModulesHandle::customEvent( QEvent *event )
 
 QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 {
-  PlaYUVerAppModuleIf* pcCurrModuleIf;
+  PlaYUVerModuleIf* pcCurrModuleIf;
   QAction* currAction;
   QMenu* currSubMenu;
 
@@ -427,17 +429,16 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
 
   m_pcModulesMenu = MainAppMenuBar->addMenu( "&Modules" );
 
-  for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
+  for( Int i = 0; i < m_pcPlaYUVerModulesIf.size(); i++ )
   {
-    pcCurrModuleIf = m_pcPlaYUVerModules.at( i );
-    pcCurrModuleIf->setParent( this );
+    pcCurrModuleIf = m_pcPlaYUVerModulesIf.at( i );
 
     currSubMenu = NULL;
-    if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleCategory )
+    if( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory )
     {
       for( Int j = 0; j < m_pcModulesSubMenuList.size(); j++ )
       {
-        if( m_pcModulesSubMenuList.at( j )->title() == QString( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleCategory ) )
+        if( m_pcModulesSubMenuList.at( j )->title() == QString( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory ) )
         {
           currSubMenu = m_pcModulesSubMenuList.at( j );
           break;
@@ -445,13 +446,13 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
       }
       if( !currSubMenu )
       {
-        currSubMenu = m_pcModulesMenu->addMenu( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleCategory );
+        currSubMenu = m_pcModulesMenu->addMenu( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory );
         m_pcModulesSubMenuList.append( currSubMenu );
       }
     }
 
-    currAction = new QAction( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleName, parent() );
-    currAction->setStatusTip( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleTooltip );
+    currAction = new QAction( pcCurrModuleIf->m_cModuleDef.m_pchModuleName, parent() );
+    currAction->setStatusTip( pcCurrModuleIf->m_cModuleDef.m_pchModuleTooltip );
     currAction->setCheckable( true );
     connect( currAction, SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
     m_pcActionMapper->setMapping( currAction, i );
@@ -462,7 +463,7 @@ QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
     else
       m_pcModulesMenu->addAction( currAction );
 
-    pcCurrModuleIf->m_pcAction = currAction;
+    m_pcPlaYUVerModules.at( i )->m_pcAction = currAction;
   }
 
   m_arrayActions[FORCE_NEW_WINDOW_ACT] = new QAction( "Use New Window", parent() );

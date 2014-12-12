@@ -78,6 +78,7 @@ private:
 
   QMenu* m_pcModulesMenu;
   QList<QMenu*> m_pcModulesSubMenuList;
+  QList<PlaYUVerModuleIf*> m_pcPlaYUVerModulesIf;
   QList<PlaYUVerAppModuleIf*> m_pcPlaYUVerModules;
   QSignalMapper* m_pcActionMapper;
   QVector<QAction*> m_arrayModulesActions;

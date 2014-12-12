@@ -584,7 +584,7 @@ Void plaYUVerApp::stop()
     }
   }
   updateStreamProperties();
-  m_pcLockLabel->setVisible( false );
+  m_arrayActions[VIDEO_LOCK_ACT]->setVisible( false );
 }
 
 Void plaYUVerApp::playEvent()
@@ -686,7 +686,8 @@ Void plaYUVerApp::videoSelectionButtonEvent()
         pcVideoSubWinodw->scaleView( scaleFactor );
       }
     }
-    m_pcLockLabel->setVisible( true );
+    m_acPlayingSubWindows.at( 0 )->activateWindow();
+    m_arrayActions[VIDEO_LOCK_ACT]->setVisible( true );
     return;
   }
 }
@@ -1147,9 +1148,6 @@ Void plaYUVerApp::createActions()
   m_arrayActions[VIDEO_FORWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
   connect( m_arrayActions[VIDEO_LOCK_SELECTION_ACT], SIGNAL( triggered() ), this, SLOT( videoSelectionButtonEvent() ) );
 
-  m_pcLockLabel = new QLabel( "Playing Lock" );
-  m_pcLockLabel->setVisible( true );
-
   m_pcFrameSlider = new QSlider;
   m_pcFrameSlider->setOrientation( Qt::Horizontal );
   m_pcFrameSlider->setMaximumWidth( 100 );
@@ -1333,9 +1331,11 @@ Void plaYUVerApp::createToolBars()
   m_arrayToolBars[VIDEO_TOOLBAR] = new QToolBar( tr( "Video" ) );
   m_arrayToolBars[VIDEO_TOOLBAR]->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[PLAY_ACT] );
-//m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[PAUSE_ACT] );
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[STOP_ACT] );
-  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcLockLabel );
+
+  m_pcLockLabel = new QLabel( "PlayingLock", this );
+  m_arrayActions[VIDEO_LOCK_ACT] = m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcLockLabel );
+
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
   m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcFrameSlider );
   m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
@@ -1344,6 +1344,7 @@ Void plaYUVerApp::createToolBars()
   m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcFrameNumInfo );
 
   addToolBar( Qt::TopToolBarArea, m_arrayToolBars[VIDEO_TOOLBAR] );
+  m_arrayActions[VIDEO_LOCK_ACT]->setVisible( false );
 }
 
 Void plaYUVerApp::createDockWidgets()

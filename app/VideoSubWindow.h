@@ -188,11 +188,13 @@ public:
   }
 
 private:
+
   /**
    * Private zoom function to handle
    * zoom to fit
    */
   Void scaleView( const QSize & size );
+
 protected:
   void closeEvent( QCloseEvent *event );
 

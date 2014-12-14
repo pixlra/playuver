@@ -169,6 +169,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     return;
   }
   videoSubWindow = new VideoSubWindow( this );  //createSubWindow();
+  SubWindowHandle *subWindow = videoSubWindow;
   if( !pStreamInfo )
   {
     Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
@@ -192,7 +193,8 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       connect( videoSubWindow->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
           SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
       connect( videoSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updatePropertiesSelectedArea( QRect ) ) );
-      connect( videoSubWindow->getViewArea(), SIGNAL( zoomFactorChanged( double , QPoint ) ), this, SLOT( updateZoomFactorSBox() ) );
+
+      connect( subWindow, SIGNAL( zoomChanged() ), this, SLOT( updateZoomFactorSBox() ) );
 
       videoSubWindow->zoomToFit();
       videoSubWindow->getViewArea()->setTool( m_appTool );
@@ -744,7 +746,6 @@ Void plaYUVerApp::scaleFrame( int ratio )
   if( m_pcCurrentSubWindow )
   {
     m_pcCurrentSubWindow->scaleView( ( Double )( ratio ) / 100.0 );
-    updateZoomFactorSBox();
   }
 }
 

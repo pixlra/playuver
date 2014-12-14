@@ -93,7 +93,8 @@ VideoSubWindow::VideoSubWindow( QWidget * parent, Bool isModule ) :
 
   // Create a new interface to show images
   m_cViewArea = new ViewArea( m_cScrollArea );
-  connect( m_cViewArea, SIGNAL( zoomFactorChanged( double , QPoint) ), this, SLOT( adjustScrollBarByZoom(double, QPoint) ) );
+  connect( m_cViewArea, SIGNAL( zoomFactorChanged( double , QPoint) ), this, SLOT( processZoomChanged(double, QPoint) ) );
+
   connect( m_cViewArea, SIGNAL( moveScroll( QPoint ) ), this, SLOT( adjustScrollBarByOffset(QPoint) ) );
   connect( m_cViewArea, SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectedArea( QRect ) ) );
   connect( m_cScrollArea->horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
@@ -406,6 +407,12 @@ Void VideoSubWindow::scaleView( const QSize & size )
   updateLastScrollValue();
 }
 
+Void VideoSubWindow::processZoomChanged( Double factor, QPoint center )
+{
+  adjustScrollBarByZoom( factor, center );
+  emit zoomChanged();
+}
+
 void VideoSubWindow::adjustScrollBarByOffset( QPoint Offset )
 {
   QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
@@ -420,7 +427,7 @@ void VideoSubWindow::adjustScrollBarByOffset( QPoint Offset )
 
 // This function was developed with help of the schematics presented in
 // http://stackoverflow.com/questions/13155382/jscrollpane-zoom-relative-to-mouse-position
-void VideoSubWindow::adjustScrollBarByZoom( double factor, QPoint center )
+Void VideoSubWindow::adjustScrollBarByZoom( Double factor, QPoint center )
 {
   QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
   if( center.isNull() )

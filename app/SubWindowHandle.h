@@ -81,6 +81,10 @@ public:
   {
     return m_uiCategory;
   }
+
+Q_SIGNALS:
+  void zoomChanged();
+
 };
 
 }  // NAMESPACE

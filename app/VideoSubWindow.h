@@ -159,17 +159,18 @@ public:
   Void applyModuleAllFrames();
 
   /**
-   * Reimplemented function from SubWindowHandle
+   * Virtual functions from SubWindowHandle
    */
   Void normalSize();
   Void zoomToFit();
   Void scaleView( Double scale );
 
-  Void scaleViewByRatio( Double ratio );
   Double getScaleFactor()
   {
     return m_cViewArea->getZoomFactor();
   }
+
+  Void adjustScrollBarByZoom( Double factor, QPoint center );
 
   QSize sizeHint() const;
 
@@ -200,7 +201,7 @@ protected:
 
 public Q_SLOTS:
   void updateSelectedArea( QRect area );
-  void adjustScrollBarByZoom( double factor, QPoint center );
+  void processZoomChanged( double , QPoint );
   void adjustScrollBarByOffset( QPoint Offset );
   void updateLastScrollValue();
 };

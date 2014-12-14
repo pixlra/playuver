@@ -175,8 +175,13 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModul
     {
       interfaceChild = new VideoSubWindow( m_pcParent, true );
       interfaceChild->setWindowName( windowName );
-      connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), m_pcParent,
-          SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
+
+  //    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), m_pcParent,
+//          SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
+
+      connect( interfaceChild, SIGNAL( updateStatusBar( const QString& ) ), m_pcParent, SLOT( updateStatusBar( const QString& ) ) );
+      connect( interfaceChild, SIGNAL( zoomChanged() ), m_pcParent, SLOT( updateZoomFactorSBox() ) );
+
       pcCurrModuleIf->m_pcDisplaySubWindow = interfaceChild;
       pcCurrModuleIf->m_pcDisplaySubWindow->setModule( pcCurrModuleIf );
     }

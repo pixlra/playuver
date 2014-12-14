@@ -638,7 +638,7 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
   QPoint actualPos = windowToView( event->pos() );
   QRect updateRect;
 
-  emit positionChanged( actualPos, m_pcCurrFrame );
+  emit positionChanged( actualPos );
 
   // If mouse left button pressed
   if( event->buttons() == Qt::LeftButton && m_lastPos != QPoint( -1, -1 ) )

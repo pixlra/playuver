@@ -123,7 +123,7 @@ public:
 
 Q_SIGNALS:
   void selectionChanged( const QRect &rect );
-  void positionChanged( const QPoint &pos, PlaYUVerFrame *frame );
+  void positionChanged( const QPoint &pos );
   void moveScroll( QPoint offset );
   void zoomFactorChanged( double factor , QPoint center);
 

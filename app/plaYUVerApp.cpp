@@ -190,10 +190,10 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       statusBar()->showMessage( tr( "Loading file..." ) );
       mdiArea->addSubWindow( videoSubWindow );
       videoSubWindow->show();
-      connect( videoSubWindow->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), this,
-          SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
+
       connect( videoSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updatePropertiesSelectedArea( QRect ) ) );
 
+      connect( subWindow, SIGNAL( updateStatusBar( const QString& ) ), this, SLOT( updateStatusBar( const QString& ) ) );
       connect( subWindow, SIGNAL( zoomChanged() ), this, SLOT( updateZoomFactorSBox() ) );
 
       videoSubWindow->zoomToFit();
@@ -810,6 +810,18 @@ Void plaYUVerApp::chageSubWindowSelection()
 }
 
 // -----------------------  Status bar Functions  -----------------------
+
+Void plaYUVerApp::updateStatusBar( const QString& statusBarString )
+{
+  if( !statusBarString.isEmpty() )
+  {
+    statusBar()->showMessage( statusBarString, 5000 );
+  }
+  else
+  {
+    statusBar()->showMessage( " " );
+  }
+}
 
 Void plaYUVerApp::updatePixelValueStatusBar( const QPoint & pos, PlaYUVerFrame* frame )
 {

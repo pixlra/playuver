@@ -113,6 +113,7 @@ private Q_SLOTS:
   void setActiveSubWindow( QWidget *window );
 
   void updatePixelValueStatusBar( const QPoint & pos, PlaYUVerFrame* frame );
+  void updateStatusBar( const QString& );
 
   void updatePropertiesSelectedArea( QRect area );
 

@@ -204,6 +204,7 @@ public Q_SLOTS:
   void processZoomChanged( double , QPoint );
   void adjustScrollBarByOffset( QPoint Offset );
   void updateLastScrollValue();
+  void updatePixelValueStatusBar( const QPoint& );
 };
 
 }  // NAMESPACE

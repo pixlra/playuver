@@ -84,6 +84,7 @@ public:
 
 Q_SIGNALS:
   void zoomChanged();
+  void updateStatusBar( const QString& );
 
 };
 

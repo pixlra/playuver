@@ -37,11 +37,10 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array
   for( Int i = 0; i < array.size(); i++ )
   {
     d = array.at( i );
-    out << d.m_cFilename
-        << d.m_uiWidth
-        << d.m_uiHeight
-        << d.m_iPelFormat
-        << d.m_uiFrameRate;
+    out << d.m_cFilename << d.m_uiWidth
+                         << d.m_uiHeight
+                         << d.m_iPelFormat
+                         << d.m_uiFrameRate;
 
   }
   return out;
@@ -97,6 +96,7 @@ VideoSubWindow::VideoSubWindow( QWidget * parent, Bool isModule ) :
 
   connect( m_cViewArea, SIGNAL( moveScroll( QPoint ) ), this, SLOT( adjustScrollBarByOffset(QPoint) ) );
   connect( m_cViewArea, SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectedArea( QRect ) ) );
+  connect( m_cViewArea, SIGNAL( positionChanged( const QPoint & ) ), this, SLOT( updatePixelValueStatusBar( const QPoint & ) ) );
   connect( m_cScrollArea->horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
   connect( m_cScrollArea->verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
 
@@ -113,7 +113,7 @@ VideoSubWindow::~VideoSubWindow()
   delete m_cViewArea;
   delete m_cScrollArea;
   if( m_pCurrStream )
-  delete m_pCurrStream;
+    delete m_pCurrStream;
 }
 
 Void VideoSubWindow::reloadFile()
@@ -129,9 +129,9 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   Int InputFormat = -1;
 
   if( !m_pCurrStream )
-    {
-      m_pCurrStream = new PlaYUVerStream;
-    }
+  {
+    m_pCurrStream = new PlaYUVerStream;
+  }
 
   m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
 
@@ -173,8 +173,7 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
     m_pCurrStream = new PlaYUVerStream;
   }
 
-  if( !m_pCurrStream->open( streamInfo->m_cFilename, streamInfo->m_uiWidth, streamInfo->m_uiHeight, streamInfo->m_iPelFormat,
-      streamInfo->m_uiFrameRate ) )
+  if( !m_pCurrStream->open( streamInfo->m_cFilename, streamInfo->m_uiWidth, streamInfo->m_uiHeight, streamInfo->m_iPelFormat, streamInfo->m_uiFrameRate ) )
   {
     return false;
   }
@@ -287,8 +286,7 @@ Bool VideoSubWindow::save( QString filename )
   PlaYUVerFrame* saveFrame = m_pcCurrFrame;
   if( m_cSelectedArea.isValid() )
   {
-    saveFrame = new PlaYUVerFrame( m_pcCurrFrame, m_cSelectedArea.x(), m_cSelectedArea.y(),
-        m_cSelectedArea.width(), m_cSelectedArea.height() );
+    saveFrame = new PlaYUVerFrame( m_pcCurrFrame, m_cSelectedArea.x(), m_cSelectedArea.y(), m_cSelectedArea.width(), m_cSelectedArea.height() );
   }
   if( !saveFrame )
   {
@@ -470,6 +468,29 @@ void VideoSubWindow::updateLastScrollValue()
   m_cLastScroll.setX( scrollBar->value() );
   scrollBar = m_cScrollArea->verticalScrollBar();
   m_cLastScroll.setY( scrollBar->value() );
+}
+
+Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
+{
+  if( m_pcCurrFrame )
+  {
+    PlaYUVerFrame::Pixel sPixelValue;
+    Int iWidth, iHeight;
+    Int posX = pos.x();
+    Int posY = pos.y();
+    QString strStatus;
+
+    iWidth = m_pcCurrFrame->getWidth();
+    iHeight = m_pcCurrFrame->getHeight();
+
+    if( ( posX < iWidth ) && ( posX >= 0 ) && ( posY < iHeight ) && ( posY >= 0 ) )
+    {
+      strStatus = QString( "(%1,%2)   " ).arg( posX ).arg( posY );
+      sPixelValue = m_pcCurrFrame->getPixelValue( pos.x(), pos.y(), PlaYUVerFrame::COLOR_YUV );
+      strStatus.append( QString( "Y: %1   U: %2   V: %3" ).arg( sPixelValue.Y() ).arg( sPixelValue.Cb() ).arg( sPixelValue.Cr() ) );
+      emit updateStatusBar( strStatus );
+    }
+  }
 }
 
 QSize VideoSubWindow::sizeHint() const

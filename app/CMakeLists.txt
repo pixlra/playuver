@@ -36,11 +36,6 @@ IF( USE_QTDBUS )
   LIST( APPEND plaYUver_App_SRCS  PlaYUVerAppAdaptor.cpp )
 ENDIF()
 
-#Append External source code
-#INCLUDE_DIRECTORIES( external )
-#LIST( APPEND plaYUver_App_SRCS
-#    external/qcustomplot.cpp
-#)
 
 set(plaYUver_App_UI "" )
 

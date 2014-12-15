@@ -948,6 +948,9 @@ Void plaYUVerApp::updateMenus()
   m_arrayActions[SAVE_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[FORMAT_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSE_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[RELOAD_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[RELOAD_ALL_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[LOAD_ALL_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSEALL_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[TILE_WINDOWS_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CASCADE_WINDOWS_ACT]->setEnabled( hasSubWindow );

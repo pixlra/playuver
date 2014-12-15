@@ -486,8 +486,24 @@ Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
     if( ( posX < iWidth ) && ( posX >= 0 ) && ( posY < iHeight ) && ( posY >= 0 ) )
     {
       strStatus = QString( "(%1,%2)   " ).arg( posX ).arg( posY );
-      sPixelValue = m_pcCurrFrame->getPixelValue( pos.x(), pos.y(), PlaYUVerFrame::COLOR_YUV );
-      strStatus.append( QString( "Y: %1   U: %2   V: %3" ).arg( sPixelValue.Y() ).arg( sPixelValue.Cb() ).arg( sPixelValue.Cr() ) );
+
+      Int ColorSpace = m_pcCurrFrame->getColorSpace();
+      if( ColorSpace == PlaYUVerFrame::COLOR_GRAY )
+      {
+        sPixelValue = m_pcCurrFrame->getPixelValue( pos.x(), pos.y(), PlaYUVerFrame::COLOR_YUV );
+        strStatus.append( QString( "Y: %1" ).arg( sPixelValue.Y() ) );
+      }
+      if( ColorSpace == PlaYUVerFrame::COLOR_YUV )
+      {
+        sPixelValue = m_pcCurrFrame->getPixelValue( pos.x(), pos.y(), PlaYUVerFrame::COLOR_YUV );
+        strStatus.append( QString( "Y: %1   U: %2   V: %3" ).arg( sPixelValue.Y() ).arg( sPixelValue.Cb() ).arg( sPixelValue.Cr() ) );
+      }
+
+      if( ( ColorSpace == PlaYUVerFrame::COLOR_RGB ) )
+      {
+        sPixelValue = m_pcCurrFrame->getPixelValue( pos.x(), pos.y(), PlaYUVerFrame::COLOR_YUV );
+        strStatus.append( QString( "R: %1   G: %2   B: %3" ).arg( sPixelValue.R() ).arg( sPixelValue.G() ).arg( sPixelValue.B() ) );
+      }
       emit updateStatusBar( strStatus );
     }
   }

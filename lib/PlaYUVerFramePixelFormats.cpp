@@ -299,7 +299,7 @@ Void bufferFromFrameRGB24( Pel ***in, Pel* out, UInt width, UInt height )
   bufferFromFrameRGB( in, out, width * height, in[COLOR_R][0], in[COLOR_G][0], in[COLOR_B][0] );
 }
 
-PlaYUVerFramePelFormat rgb24 =
+PlaYUVerFramePelFormat RGB24 =
 {
   "RGB24",
   PlaYUVerFrame::COLOR_RGB,
@@ -340,7 +340,7 @@ PlaYUVerFramePelFormat g_PlaYUVerFramePelFormatsList[PLAYUVER_NUMBER_FORMATS] =
   yuv422p,
   yuyv422,
   gray,
-  /*rgb24,*/
+  RGB24,
   BGR24, };
 
 

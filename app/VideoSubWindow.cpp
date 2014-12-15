@@ -132,6 +132,11 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   {
     m_pCurrStream = new PlaYUVerStream;
   }
+  else
+  {
+    delete m_pCurrStream;
+    m_pCurrStream = new PlaYUVerStream;
+  }
 
   m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
 

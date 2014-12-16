@@ -142,7 +142,14 @@ public:
   }
   Bool haveSameFmt( PlaYUVerFrame* other ) const
   {
-    return ( m_uiWidth == other->getWidth() ) && ( m_uiHeight == other->getHeight() ) && ( m_iPixelFormat == other->getPelFormat() );
+    if( other )
+    {
+      return ( m_uiWidth == other->getWidth() ) && ( m_uiHeight == other->getHeight() ) && ( m_iPixelFormat == other->getPelFormat() );
+    }
+    else
+    {
+      return false;
+    }
   }
   Pel*** getPelBufferYUV() const
   {

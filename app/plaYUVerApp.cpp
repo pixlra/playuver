@@ -353,15 +353,18 @@ Void plaYUVerApp::reload()
 
 Void plaYUVerApp::reloadAll()
 {
-  SubWindowHandle *subWindow;
-  for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
+  VideoSubWindow *subWindow;
+
+  QList<VideoSubWindow*> videoSubWindowList = mdiArea->findChildren<VideoSubWindow*>();
+  for( Int i = 0; i < videoSubWindowList.size(); i++ )
   {
-    subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
-    if( subWindow->getCategory() == SubWindowHandle::VIDEO_SUBWINDOW )
-      qobject_cast<VideoSubWindow*>( subWindow )->reloadFile();
+    subWindow = videoSubWindowList.at( i );
+    if( !subWindow->getIsModule() )
+    {
+      subWindow->reloadFile();
+    }
   }
 }
-
 Void plaYUVerApp::loadAll()
 {
   if( m_pcCurrentVideoSubWindow )

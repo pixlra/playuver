@@ -39,7 +39,6 @@
 #include "SubWindowHandle.h"
 #include "VideoSubWindow.h"
 #include "QualityMeasurement.h"
-#include "QualityMeasurementSidebar.h"
 #include "ModulesHandle.h"
 #include "PropertiesSidebar.h"
 #include "AboutDialog.h"
@@ -252,7 +251,6 @@ private:
 
   StreamPropertiesSideBar* m_pcStreamProperties;
   FramePropertiesSideBar* m_pcFrameProperties;
-  QualityMeasurementSidebar* m_pcQualityMeasurement;
 
   /**
    * Array of tool bars for the main app

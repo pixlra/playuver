@@ -466,7 +466,7 @@ Void plaYUVerApp::updateStreamProperties()
     else
       m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPlay ) );
 
-    m_pcQualityMeasurement->updateSidebarData();
+    m_appModuleQuality->update( m_pcCurrentVideoSubWindow );
     return;
   }
   m_pcStreamProperties->setData( NULL );
@@ -636,9 +636,7 @@ Void plaYUVerApp::seekEvent( Int direction )
     {
       m_pcCurrentVideoSubWindow->seekRelativeEvent( direction > 0 ? true : false );
     }
-    m_pcQualityMeasurement->updateSidebarData();
     updateStreamProperties();
-
   }
 }
 
@@ -657,7 +655,6 @@ Void plaYUVerApp::seekSliderEvent( Int new_frame_num )
     {
       m_pcCurrentVideoSubWindow->seekAbsoluteEvent( ( UInt )new_frame_num );
     }
-    m_pcQualityMeasurement->updateSidebarData();
     updateStreamProperties();
   }
 }
@@ -801,14 +798,12 @@ Void plaYUVerApp::chageSubWindowSelection()
         {
           m_pcCurrentVideoSubWindow->setRefSubWindow( NULL );
         }
-        m_pcQualityMeasurement->updateCurrentWindow( m_pcCurrentVideoSubWindow );
       }
       updateZoomFactorSBox();
     }
   }
   updateStreamProperties();
   m_appModuleQuality->update( m_pcCurrentVideoSubWindow );
-  m_pcQualityMeasurement->updateSubWindowList();
   updateMenus();
 }
 
@@ -1408,12 +1403,10 @@ Void plaYUVerApp::createDockWidgets()
   QMainWindow::tabifyDockWidget( m_arraySideBars[FRAME_DOCK], m_arraySideBars[STREAM_DOCK] );
 //QMainWindow::setTabPosition(Qt::RightDockWidgetArea, QTabWidget::North);
 
-  m_pcQualityMeasurement = new QualityMeasurementSidebar( this, mdiArea );
   m_arraySideBars[QUALITY_DOCK] = new QDockWidget( tr( "Quality Measurement" ), this );
   m_arraySideBars[QUALITY_DOCK]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  m_arraySideBars[QUALITY_DOCK]->setWidget( m_pcQualityMeasurement );
+  m_arraySideBars[QUALITY_DOCK]->setWidget( m_appModuleQuality->createDock() );
   addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[QUALITY_DOCK] );
-
 }
 
 Void plaYUVerApp::createStatusBar()
@@ -1455,7 +1448,7 @@ Void plaYUVerApp::writeSettings()
   settings.setLastOpenPath( m_cLastOpenPath );
   settings.setSelectedTool( ( Int )m_appTool );
   settings.setRecentFileList( m_aRecentFileStreamInfo );
-  settings.setDockVisibility( m_pcStreamProperties->isVisible(), m_pcFrameProperties->isVisible(), m_pcQualityMeasurement->isVisible() );
+  settings.setDockVisibility( m_pcStreamProperties->isVisible(), m_pcFrameProperties->isVisible(), true );
   settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked() );
 }
 

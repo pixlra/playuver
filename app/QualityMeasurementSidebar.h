@@ -57,6 +57,7 @@ public:
 private:
   QMdiArea* m_pcMainWindowMdiArea;
 
+  QVector<VideoSubWindow*> m_pcVideoWindowList;
   QStringList m_pcWindowListNames;
   QStringList m_pcSelectedWindowListNames;
 

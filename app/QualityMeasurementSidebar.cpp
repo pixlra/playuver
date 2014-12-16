@@ -122,7 +122,7 @@ Void QualityMeasurementSidebar::updateSubWindowList()
   VideoSubWindow* pcVideoSubWindow;
   QString currSubWindowName;
   m_pcWindowListNames.clear();
-
+  m_pcVideoWindowList.clear();
 
   QList<VideoSubWindow*> videoSubWindowList = m_pcMainWindowMdiArea->findChildren<VideoSubWindow*>();
   for( Int i = 0; i < videoSubWindowList.size(); i++ )
@@ -131,11 +131,8 @@ Void QualityMeasurementSidebar::updateSubWindowList()
     if( pcVideoSubWindow )
     {
       currSubWindowName = pcVideoSubWindow->getWindowShortName();
-      if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) && !pcVideoSubWindow->getIsModule() )
-      {
-        m_pcWindowListNames.append( currSubWindowName );
-        //m_comboBoxRef->setItemText( currIdx++, currSubWindowName );
-      }
+      m_pcWindowListNames.append( currSubWindowName );
+      m_pcVideoWindowList.append( pcVideoSubWindow );
     }
   }
   m_comboBoxRef->clear();
@@ -145,7 +142,7 @@ Void QualityMeasurementSidebar::updateSubWindowList()
   {
     if( VideoSubWindow* refSubWindow = m_pcCurrentVideoSubWindow->getRefSubWindow() )
     {
-      Int index = m_pcWindowListNames.indexOf( refSubWindow->getWindowShortName() );
+      Int index = m_pcVideoWindowList.indexOf( refSubWindow );
       m_comboBoxRef->setCurrentIndex( index );
     }
   }
@@ -160,7 +157,7 @@ Void QualityMeasurementSidebar::updateCurrentWindow( VideoSubWindow *subWindow )
     Int index = -1;
     if( VideoSubWindow* refSubWindow = m_pcCurrentVideoSubWindow->getRefSubWindow() )
     {
-      index = m_pcWindowListNames.indexOf( refSubWindow->getWindowName() );
+      index = m_pcVideoWindowList.indexOf( refSubWindow );
     }
     m_comboBoxRef->setCurrentIndex( index );
     updateSidebarData();
@@ -202,7 +199,7 @@ Void QualityMeasurementSidebar::slotReferenceChanged( Int index )
 {
   if( index > -1 && m_pcCurrentVideoSubWindow )
   {
-    VideoSubWindow *pcVideoSubWindow = m_pcMainWindowMdiArea->findChildren<VideoSubWindow*>().at( index );
+    VideoSubWindow *pcVideoSubWindow = m_pcVideoWindowList.at( index );
     if( pcVideoSubWindow )
     {
       if( m_pcCurrentVideoSubWindow->getCurrFrame()->haveSameFmt( pcVideoSubWindow->getCurrFrame() ) )

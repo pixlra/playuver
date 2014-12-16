@@ -57,6 +57,8 @@ plaYUVerApp::plaYUVerApp()
 
   m_pcModulesHandle = new ModulesHandle( this, mdiArea );
 
+  m_appModuleQuality = new QualityMeasurement( this, mdiArea );
+
   createActions();
   createToolBars();
   createDockWidgets();
@@ -805,6 +807,7 @@ Void plaYUVerApp::chageSubWindowSelection()
     }
   }
   updateStreamProperties();
+  m_appModuleQuality->update( m_pcCurrentVideoSubWindow );
   m_pcQualityMeasurement->updateSubWindowList();
   updateMenus();
 }
@@ -1210,6 +1213,8 @@ Void plaYUVerApp::createActions()
   connect( m_arrayActions[SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
   m_mapperTools->setMapping( m_arrayActions[SELECTION_TOOL_ACT], ViewArea::NormalSelectionTool );
 
+  m_appModuleQuality->createActions();
+
 // ------------ Window ------------
 
   m_arrayActions[TILE_WINDOWS_ACT] = new QAction( tr( "Tile" ), this );
@@ -1309,6 +1314,9 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_LOOP_ACT] );
   m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_LOCK_SELECTION_ACT] );
+
+  QMenu* QualityMenu = m_appModuleQuality->createMenu();
+  menuBar()->addMenu( QualityMenu );
 
   QMenu* modules_menu = m_pcModulesHandle->createMenus( menuBar() );
   connect( modules_menu, SIGNAL( triggered(QAction *) ), this, SLOT( ModuleHandling(QAction *) ) );

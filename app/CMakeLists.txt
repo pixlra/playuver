@@ -12,6 +12,7 @@ set(plaYUver_App_SRCS
     ViewArea.cpp
     ModulesHandle.cpp
     PlaYUVerAppModuleIf.cpp
+    QualityMeasurement.cpp
     GridManager.cpp
     Settings.cpp
 # Sub Window

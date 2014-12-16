@@ -38,9 +38,10 @@
 #include "lib/PlaYUVerDefs.h"
 #include "SubWindowHandle.h"
 #include "VideoSubWindow.h"
+#include "QualityMeasurement.h"
+#include "QualityMeasurementSidebar.h"
 #include "ModulesHandle.h"
 #include "PropertiesSidebar.h"
-#include "QualityMeasurementSidebar.h"
 #include "AboutDialog.h"
 #include "WidgetFrameNumber.h"
 
@@ -207,6 +208,14 @@ private:
   QSignalMapper *mapperZoom;
   QSignalMapper *mapperSeekVideo;
   QSignalMapper *mapperWindow;
+
+  /**
+   * App modules
+   * Video
+   * Quality
+   * Modules
+   */
+  QualityMeasurement* m_appModuleQuality;
 
   /**
    * Array of menus for the main app

@@ -215,9 +215,7 @@ Void DialogSubWindowSelector::removeSubWindow()
     for( Int i = 0; i < selectedWindows.size(); i++ )
     {
       QString currName = selectedWindows.at( i )->text();
-      qDebug( ) << currName;
       Int indexCurrName = m_pcSelectedWindowListNames.indexOf( currName );
-      qDebug( ) << indexCurrName;
       m_pcSelectedWindowListNames.removeAt( indexCurrName );
       m_listSelectedWindows->removeItemWidget( selectedWindows[i] );
     }

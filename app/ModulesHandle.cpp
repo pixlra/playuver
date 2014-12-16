@@ -125,7 +125,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModul
         for( Int i = 0; i < m_pcMdiArea->subWindowList().size(); i++ )
         {
           subWindow = qobject_cast<SubWindowHandle*>( m_pcMdiArea->subWindowList().at( i ) );
-          if( subWindow->windowTitle() == selectedWindows.at( j ) )
+          if( subWindow->getWindowName() == selectedWindows.at( j ) )
           {
             subWindowList.append( qobject_cast<VideoSubWindow*>( m_pcMdiArea->subWindowList().at( i ) ) );
             pcCurrModuleIf->m_pcSubWindow[j] = qobject_cast<VideoSubWindow*>( m_pcMdiArea->subWindowList().at( i ) );

@@ -142,7 +142,10 @@ public:
 
   Void setRefSubWindow( VideoSubWindow* subWindow )
   {
-    m_pcReferenceSubWindow = subWindow;
+    m_pcReferenceSubWindow = NULL;
+    if( subWindow )
+      if( m_pcCurrFrame->haveSameFmt( subWindow->getCurrFrame() ) )
+        m_pcReferenceSubWindow = subWindow;
   }
   VideoSubWindow* getRefSubWindow()
   {

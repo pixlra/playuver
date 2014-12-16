@@ -1403,10 +1403,7 @@ Void plaYUVerApp::createDockWidgets()
   QMainWindow::tabifyDockWidget( m_arraySideBars[FRAME_DOCK], m_arraySideBars[STREAM_DOCK] );
 //QMainWindow::setTabPosition(Qt::RightDockWidgetArea, QTabWidget::North);
 
-  m_arraySideBars[QUALITY_DOCK] = new QDockWidget( tr( "Quality Measurement" ), this );
-  m_arraySideBars[QUALITY_DOCK]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  m_arraySideBars[QUALITY_DOCK]->setWidget( m_appModuleQuality->createDock() );
-  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[QUALITY_DOCK] );
+  addDockWidget( Qt::RightDockWidgetArea,  m_appModuleQuality->createDock() );
 }
 
 Void plaYUVerApp::createStatusBar()

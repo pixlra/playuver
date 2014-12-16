@@ -130,6 +130,13 @@ Void QualityMeasurementSidebar::updateSubWindowList()
     pcVideoSubWindow = videoSubWindowList.at( i );
     if( pcVideoSubWindow )
     {
+      if( m_pcCurrentVideoSubWindow )
+      {
+        if( !m_pcCurrentVideoSubWindow->getCurrFrame()->haveSameFmt( pcVideoSubWindow->getCurrFrame() ) )
+        {
+          continue;
+        }
+      }
       currSubWindowName = pcVideoSubWindow->getWindowShortName();
       m_pcWindowListNames.append( currSubWindowName );
       m_pcVideoWindowList.append( pcVideoSubWindow );
@@ -199,12 +206,12 @@ Void QualityMeasurementSidebar::slotReferenceChanged( Int index )
 {
   if( index > -1 && m_pcCurrentVideoSubWindow )
   {
-    VideoSubWindow *pcVideoSubWindow = m_pcVideoWindowList.at( index );
-    if( pcVideoSubWindow )
+    VideoSubWindow *pcRefSubWindow = m_pcVideoWindowList.at( index );
+    if( pcRefSubWindow )
     {
-      if( m_pcCurrentVideoSubWindow->getCurrFrame()->haveSameFmt( pcVideoSubWindow->getCurrFrame() ) )
+      if( m_pcCurrentVideoSubWindow->getCurrFrame()->haveSameFmt( pcRefSubWindow->getCurrFrame() ) )
       {
-        m_pcCurrentVideoSubWindow->setRefSubWindow( pcVideoSubWindow );
+        m_pcCurrentVideoSubWindow->setRefSubWindow( pcRefSubWindow );
         updateSidebarData();
         m_comboBoxRef->setCurrentIndex( index );
         return;

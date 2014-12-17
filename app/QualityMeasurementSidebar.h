@@ -53,6 +53,7 @@ public:
   Void updateSubWindowList();
   Void updateCurrentWindow( VideoSubWindow * );
   Void updateSidebarData();
+  Void updateQualityMetric( Int );
 
 private:
   QMdiArea* m_pcMainWindowMdiArea;
@@ -73,9 +74,12 @@ private:
 
   HistogramWidget *histogramWidget;
 
+Q_SIGNALS:
+  void signalQualityMetricChanged( int );
+
 private Q_SLOTS:
   void slotReferenceChanged( int );
-  void slotQualityMetricChanged();
+  void slotQualityMetricChanged( int );
 
 };
 

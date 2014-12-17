@@ -63,12 +63,16 @@ private:
     TOTAL_ACT,
   };
   QVector<QAction*> m_arrayActions;
+  QActionGroup* m_actionGroupQualityMetric;
+  QSignalMapper* m_mapperQualityMetric;
+
   QMenu* m_pcMenuQuality;
 
   QDockWidget* m_pcQualityMeasurementDock;
   QualityMeasurementSidebar* m_pcQualityMeasurementSideBar;
 
 private Q_SLOTS:
+  void slotQualityMetricChanged( int );
   void slotSelectReference();
 
 };

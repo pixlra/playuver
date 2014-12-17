@@ -44,6 +44,22 @@ QualityMeasurement::~QualityMeasurement()
 
 Void QualityMeasurement::createActions()
 {
+  m_actionGroupQualityMetric = new QActionGroup( this );
+  m_actionGroupQualityMetric->setExclusive( true );
+
+  m_mapperQualityMetric = new QSignalMapper( this );
+
+  QStringList qualityMetrics = PlaYUVerFrame::supportedQualityMetricsList();
+  QAction* currAction;
+  for( Int i = 0; i < qualityMetrics.size(); i++ )
+  {
+    currAction = new QAction( qualityMetrics.at( i ), this );
+    currAction->setCheckable( true );
+    m_actionGroupQualityMetric->addAction( currAction );
+    connect( currAction, SIGNAL( triggered() ), m_mapperQualityMetric, SLOT( map() ) );
+    m_mapperQualityMetric->setMapping( currAction, i );
+  }
+
   m_arrayActions.resize( TOTAL_ACT );
   m_arrayActions[SELECT_REF_ACT] = new QAction( "Select Reference", this );
   connect( m_arrayActions[SELECT_REF_ACT], SIGNAL( triggered() ), this, SLOT( slotSelectReference() ) );
@@ -52,6 +68,10 @@ Void QualityMeasurement::createActions()
 QMenu* QualityMeasurement::createMenu()
 {
   m_pcMenuQuality = new QMenu( "Quality", this );
+  QMenu* metricsSubMenu = m_pcMenuQuality->addMenu( "Quality Metrics" );
+  metricsSubMenu->addActions( m_actionGroupQualityMetric->actions() );
+  //m_pcMenuQuality->addActions( m_actionGroupQualityMetric->actions() );
+  //m_pcMenuQuality->addSeparator();
   m_pcMenuQuality->addAction( m_arrayActions[SELECT_REF_ACT] );
   return m_pcMenuQuality;
 }
@@ -62,6 +82,9 @@ QDockWidget* QualityMeasurement::createDock()
   m_pcQualityMeasurementDock = new QDockWidget( tr( "Quality Measurement" ), this );
   m_pcQualityMeasurementDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   m_pcQualityMeasurementDock->setWidget( m_pcQualityMeasurementSideBar );
+
+  connect( m_pcQualityMeasurementSideBar, SIGNAL( signalQualityMetricChanged(int) ), this, SLOT( slotQualityMetricChanged(int) ) );
+  connect( m_mapperQualityMetric, SIGNAL( mapped(int) ), this, SLOT( slotQualityMetricChanged(int) ) );
 
   return m_pcQualityMeasurementDock;
 }
@@ -75,6 +98,13 @@ Void QualityMeasurement::update( VideoSubWindow* currSubWindow )
 {
   m_pcQualityMeasurementSideBar->updateSubWindowList();
   m_pcQualityMeasurementSideBar->updateCurrentWindow( currSubWindow );
+}
+
+Void QualityMeasurement::slotQualityMetricChanged( Int idx )
+{
+  m_actionGroupQualityMetric->actions().at( idx )->setChecked( true );
+  m_pcQualityMeasurementSideBar->updateQualityMetric( idx );
+  m_pcQualityMeasurementDock->show();
 }
 
 Void QualityMeasurement::slotSelectReference()

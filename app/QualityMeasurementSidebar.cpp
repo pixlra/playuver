@@ -98,7 +98,7 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, QMdiArea 
   setLayout( mainLayout );
 
   connect( m_comboBoxRef, SIGNAL( activated(int) ), this, SLOT( slotReferenceChanged(int) ) );
-  connect( m_comboBoxMetric, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotQualityMetricChanged() ) );
+  connect( m_comboBoxMetric, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotQualityMetricChanged(int) ) );
 
 }
 
@@ -202,6 +202,16 @@ Void QualityMeasurementSidebar::updateSidebarData()
 
 }
 
+Void QualityMeasurementSidebar::updateQualityMetric( Int idx )
+{
+  m_comboBoxMetric->setCurrentIndex( idx );
+  QString labelQuality = PlaYUVerFrame::supportedQualityMetricsList().at( idx );
+  m_ppcLabelQualityLabel[LUMA]->setText( labelQuality + " Y" );
+  m_ppcLabelQualityLabel[CHROMA_U]->setText( labelQuality + " U" );
+  m_ppcLabelQualityLabel[CHROMA_V]->setText( labelQuality + " V" );
+  updateSidebarData();
+}
+
 Void QualityMeasurementSidebar::slotReferenceChanged( Int index )
 {
   if( index > -1 && m_pcCurrentVideoSubWindow )
@@ -224,13 +234,11 @@ Void QualityMeasurementSidebar::slotReferenceChanged( Int index )
   }
 }
 
-Void QualityMeasurementSidebar::slotQualityMetricChanged()
+Void QualityMeasurementSidebar::slotQualityMetricChanged( Int idx )
 {
-  QString labelQuality = PlaYUVerFrame::supportedQualityMetricsList().at( m_comboBoxMetric->currentIndex() );
-  m_ppcLabelQualityLabel[LUMA]->setText( labelQuality + " Y" );
-  m_ppcLabelQualityLabel[CHROMA_U]->setText( labelQuality + " U" );
-  m_ppcLabelQualityLabel[CHROMA_V]->setText( labelQuality + " V" );
-  updateSidebarData();
+  emit signalQualityMetricChanged( idx );
+  //updateQualityMetric( idx );
 }
+
 }   // NAMESPACE
 

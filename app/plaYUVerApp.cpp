@@ -375,6 +375,22 @@ Void plaYUVerApp::loadAll()
   }
 }
 
+Void plaYUVerApp::setTool( Int idxTool )
+{
+  m_appTool = ( ViewArea::eTool )idxTool;
+  actionGroupTools->actions().at( m_appTool )->setChecked( true );
+  setAllSubWindowTool();
+}
+
+Void plaYUVerApp::setAllSubWindowTool()
+{
+  QList<VideoSubWindow*> videoSubWindowList = mdiArea->findChildren<VideoSubWindow*>();
+  for( Int i = 0; i < videoSubWindowList.size(); i++ )
+  {
+    videoSubWindowList.at( i )->getViewArea()->setTool( m_appTool );
+  }
+}
+
 Void plaYUVerApp::closeActiveWindow()
 {
   SubWindowHandle *currSubWindow = activeSubWindow();
@@ -824,31 +840,6 @@ Void plaYUVerApp::updateStatusBar( const QString& statusBarString )
   }
 }
 
-Void plaYUVerApp::updatePixelValueStatusBar( const QPoint & pos, PlaYUVerFrame* frame )
-{
-  PlaYUVerFrame::Pixel sPixelValue;
-  Int iWidth, iHeight;
-  Int posX = pos.x(), posY = pos.y();
-  QString strPixel;
-  QString strStatus = QString( "(%1,%2)   " ).arg( posX ).arg( posY );
-  PlaYUVerFrame *curFrame = frame;
-
-  iWidth = frame->getWidth();
-  iHeight = frame->getHeight();
-
-  if( ( posX < iWidth ) && ( posX >= 0 ) && ( posY < iHeight ) && ( posY >= 0 ) )
-  {
-    sPixelValue = curFrame->getPixelValue( pos.x(), pos.y(), PlaYUVerFrame::COLOR_YUV );
-    strPixel = QString( "Y: %1   U: %2   V: %3" ).arg( sPixelValue.Y() ).arg( sPixelValue.Cb() ).arg( sPixelValue.Cr() );
-    strStatus.append( strPixel );
-    statusBar()->showMessage( strStatus, 3000 );
-  }
-  else
-  {
-    statusBar()->showMessage( " " );
-  }
-}
-
 // -----------------------  Drag and drop functions  ----------------------
 
 Void plaYUVerApp::dragEnterEvent( QDragEnterEvent *event )
@@ -917,20 +908,6 @@ VideoSubWindow* plaYUVerApp::findVideoSubWindow( const QMdiArea* mdiArea, const 
       return pcVideoSubWindow;
   }
   return 0;
-}
-
-Void plaYUVerApp::setTool( Int idxTool )
-{
-  m_appTool = ( ViewArea::eTool )idxTool;
-  setAllSubWindowTool();
-}
-
-Void plaYUVerApp::setAllSubWindowTool()
-{
-//  foreach( QMdiSubWindow * window, mdiArea->subWindowList() ){
-//  SubWindowHandle *mdiChild = qobject_cast<SubWindowHandle *>( window);
-//  mdiChild->getViewArea()->setTool( m_appTool );
-//}
 }
 
 Void plaYUVerApp::setActiveSubWindow( QWidget *window )
@@ -1422,8 +1399,8 @@ Void plaYUVerApp::readSettings()
   move( pos );
   resize( size );
   m_cLastOpenPath = settings.lastOpenPath();
-//m_appTool = ( ViewArea::eTool )settings.getSelectedTool();
-//setAllSubWindowTool();
+  m_appTool = ( ViewArea::eTool )settings.getSelectedTool();
+  setTool( m_appTool );
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
 
   m_aRecentFileStreamInfo = settings.getRecentFileList();

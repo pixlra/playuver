@@ -113,7 +113,7 @@ Void QualityMeasurement::slotSelectReference()
   if( dialogWindowSelection.exec() == QDialog::Accepted )
   {
     VideoSubWindow* pcVideoSubWindow;
-    VideoSubWindow* pcRefSubWindow;
+    VideoSubWindow* pcRefSubWindow = NULL;
     QStringList selectedWindows = dialogWindowSelection.getSelectedWindows();
     QList<VideoSubWindow*> subWindowList = m_pcMainWindowMdiArea->findChildren<VideoSubWindow*>();
     for( Int i = 0; i < subWindowList.size(); i++ )

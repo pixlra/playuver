@@ -25,18 +25,19 @@
 #ifndef __PLAYUVERFRAME_H__
 #define __PLAYUVERFRAME_H__
 
-#include "PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>
 #include <cassert>
 #include <QtCore>
+#include "PlaYUVerDefs.h"
+#include "PlaYUVerFrameStats.h"
 
 class PixFcSSE;
 
 namespace plaYUVer
 {
 
-class PlaYUVerFrame
+class PlaYUVerFrame : public PlaYUVerFrameStats
 {
 public:
   class Pixel
@@ -131,7 +132,6 @@ public:
   {
     return m_iPixelFormat;
   }
-
   Int getBitsChannel() const
   {
     return m_iBitsChannels;
@@ -157,6 +157,7 @@ public:
   }
   Pel*** getPelBufferYUV()
   {
+    m_bHasHistogram = false;
     m_bHasRGBPel = false;
     return m_pppcInputPel;
   }

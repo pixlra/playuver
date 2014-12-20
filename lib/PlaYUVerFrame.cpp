@@ -110,6 +110,7 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format )
   }
   getMem1D( &m_pcRGB32, m_uiHeight * m_uiWidth * 4 );
 
+  xSetupStatistics( this );
   openPixfc();
 }
 

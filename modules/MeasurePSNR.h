@@ -32,6 +32,8 @@ namespace plaYUVer
 
 class MeasurePSNR: public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( MeasurePSNR )
+
 private:
 public:
   MeasurePSNR();

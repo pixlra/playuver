@@ -34,6 +34,8 @@ namespace plaYUVer
 
 class FrameDifference: public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( FrameDifference )
+
 private:
   PlaYUVerFrame* m_pcFrameDifference;
 

@@ -53,9 +53,10 @@ class PlaYUVerAppModuleIf
 
 private:
 
+  QAction* m_pcModuleAction;
   PlaYUVerModuleIf* m_pcModule;
 
-  QAction* m_pcAction;
+
   VideoSubWindow* m_pcSubWindow[MAX_NUMBER_FRAMES];
 
   VideoSubWindow* m_pcDisplaySubWindow;
@@ -82,7 +83,7 @@ public:
     PlaYUVerAppModuleIf* m_pcModule;
   };
 
-  PlaYUVerAppModuleIf();
+  PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module  );
   virtual ~PlaYUVerAppModuleIf() {}
 
 protected:

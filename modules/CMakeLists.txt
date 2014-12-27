@@ -2,7 +2,11 @@
 ### CMakeLists for playuver modules component
 ###
 
-INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR} )
+INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
+
+set(plaYUver_Mod_SRCS
+  PlaYUVerModuleFactory.cpp
+)
 
 MACRO(ADD_MODULE name file )
   set(__modulename "Module${name}")

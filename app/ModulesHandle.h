@@ -45,16 +45,20 @@ namespace plaYUVer
 class PlaYUVerAppModuleIf;
 class SubWindowHandle;
 
-class ModulesHandle: public QObject
+class ModulesHandle: public QWidget
 {
 Q_OBJECT
 public:
   ModulesHandle( QMainWindow* parent = 0, QMdiArea *mdiArea = 0 );
   ~ModulesHandle();
 
-  QMenu* createMenus( QMenuBar* MainAppMenuBar );
-  Void updateMenus( Bool hasSubWindow );
+  Void createActions();
+  QMenu* createMenu();
+  //QDockWidget* createDock();
+  Void updateMenus(  );
+
   SubWindowHandle* processModuleHandlingOpt();
+
 
   static Void destroyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
   static Bool applyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf, Bool isPlaying, Bool disableThreads = false );
@@ -66,6 +70,7 @@ public:
 private:
   QMainWindow *m_pcParent;
   QMdiArea *m_pcMdiArea;
+
   UInt m_uiModulesCount;
   Int m_iOptionSelected;
 
@@ -78,10 +83,11 @@ private:
 
   QMenu* m_pcModulesMenu;
   QList<QMenu*> m_pcModulesSubMenuList;
-  QList<PlaYUVerModuleIf*> m_pcPlaYUVerModulesIf;
-  QList<PlaYUVerAppModuleIf*> m_pcPlaYUVerModules;
-  QSignalMapper* m_pcActionMapper;
+  QList<PlaYUVerModuleIf*> m_pcPlaYUVerModulesIfList;
+  QList<PlaYUVerAppModuleIf*> m_pcPlaYUVerAppModuleIfList;
+
   QVector<QAction*> m_arrayModulesActions;
+  QSignalMapper* m_pcModulesActionMapper;
 
   enum MODULES_ACTION_LIST
   {
@@ -93,15 +99,16 @@ private:
     MODULES_TOTAL_ACT
   };
   QVector<QAction*> m_arrayActions;
+  QSignalMapper* m_pcActionMapper;
 
-  Void appendModule( PlaYUVerModuleIf* pModuleIf );
-  SubWindowHandle* enableModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
+  Void enableModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
   Void openModuleIfStream( PlaYUVerAppModuleIf *pcCurrModuleIf );
 
   Void customEvent( QEvent *event );
 
 private Q_SLOTS:
-  void selectModule( int index );
+  void activateModule();
+  void processOpt( int index );
   void destroyAllModulesIf();
 
 };

@@ -28,8 +28,9 @@
 namespace plaYUVer
 {
 
-PlaYUVerAppModuleIf::PlaYUVerAppModuleIf() :
-        m_pcAction( NULL ),
+PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module ) :
+        m_pcModuleAction( action ),
+        m_pcModule( module ),
         m_pcDisplaySubWindow( NULL ),
         m_pcDockWidget( NULL ),
         m_pcModuleDock( NULL ),
@@ -37,6 +38,7 @@ PlaYUVerAppModuleIf::PlaYUVerAppModuleIf() :
         m_pcProcessedFrame( NULL ),
         m_dMeasurementResult( 0 )
 {
+  setParent( parent );
   for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
   {
     m_pcSubWindow[i] = NULL;

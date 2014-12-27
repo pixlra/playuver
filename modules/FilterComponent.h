@@ -46,6 +46,7 @@ public:
 
 class FilterComponentLuma: public FilterComponent, public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( FilterComponentLuma )
 public:
   FilterComponentLuma();
   virtual ~FilterComponentLuma()
@@ -57,6 +58,7 @@ public:
 
 class FilterComponentChromaU: public FilterComponent, public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( FilterComponentChromaU )
 public:
   FilterComponentChromaU();
   virtual ~FilterComponentChromaU()
@@ -68,6 +70,7 @@ public:
 
 class FilterComponentChromaV: public FilterComponent, public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( FilterComponentChromaV )
 public:
   FilterComponentChromaV();
   virtual ~FilterComponentChromaV()

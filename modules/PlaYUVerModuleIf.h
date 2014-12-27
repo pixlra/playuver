@@ -32,10 +32,16 @@
 namespace plaYUVer
 {
 
+#define REGISTER_CLASS_FACTORY(X) \
+public: \
+  static PlaYUVerModuleIf* Create() { return new X(); } \
+  void Delete() { delete this; }
+
+
 #define REGISTER_MODULE(X)                      \
     {                                           \
-        X *pMod = new X();                      \
-        appendModule( pMod );                   \
+  X *pMod = new X();                      \
+  appendModule( pMod );                   \
     }
 
 enum // Module type
@@ -89,6 +95,8 @@ public:
 
   PlaYUVerModuleIf() {}
   virtual ~PlaYUVerModuleIf() {}
+
+  virtual void Delete() = 0;
 
   virtual Void create() {}
   virtual Void create( PlaYUVerFrame* ) {}

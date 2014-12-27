@@ -55,9 +55,8 @@ plaYUVerApp::plaYUVerApp()
   mapperWindow = new QSignalMapper( this );
   connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
 
-  m_pcModulesHandle = new ModulesHandle( this, mdiArea );
-
   m_appModuleQuality = new QualityMeasurement( this, mdiArea );
+  m_appModuleExtensions = new ModulesHandle( this, mdiArea );
 
   createActions();
   createToolBars();
@@ -410,24 +409,6 @@ Void plaYUVerApp::closeActiveWindow()
 Void plaYUVerApp::closeAll()
 {
   mdiArea->closeAllSubWindows();
-}
-
-// -----------------------  Modules Selection  --------------------
-
-Void plaYUVerApp::ModuleHandling( QAction *curr_action )
-{
-  m_pcFrameProperties->stopHistogram();
-  SubWindowHandle *interfaceChild = m_pcModulesHandle->processModuleHandlingOpt();
-  if( interfaceChild )
-  {
-    mdiArea->addSubWindow( interfaceChild );
-    //interfaceChild->getViewArea()->setTool( m_appTool );
-  }
-  if( activeSubWindow() )
-    m_pcCurrentSubWindow = activeSubWindow();
-
-  updateStreamProperties();
-  return;
 }
 
 // -----------------------  Update Properties   --------------------
@@ -956,7 +937,8 @@ Void plaYUVerApp::updateMenus()
   m_arrayActions[NAVIGATION_TOOL_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[SELECTION_TOOL_ACT]->setEnabled( hasSubWindow );
 
-  m_pcModulesHandle->updateMenus( hasSubWindow );
+  m_appModuleQuality->updateMenus();
+  m_appModuleExtensions->updateMenus();
 }
 
 Void plaYUVerApp::updateWindowMenu()
@@ -1189,6 +1171,7 @@ Void plaYUVerApp::createActions()
   m_mapperTools->setMapping( m_arrayActions[SELECTION_TOOL_ACT], ViewArea::NormalSelectionTool );
 
   m_appModuleQuality->createActions();
+  m_appModuleExtensions->createActions();
 
 // ------------ Window ------------
 
@@ -1292,9 +1275,9 @@ Void plaYUVerApp::createMenus()
 
   QMenu* QualityMenu = m_appModuleQuality->createMenu();
   menuBar()->addMenu( QualityMenu );
-
-  QMenu* modules_menu = m_pcModulesHandle->createMenus( menuBar() );
-  connect( modules_menu, SIGNAL( triggered(QAction *) ), this, SLOT( ModuleHandling(QAction *) ) );
+  QMenu* ModuleMenu = m_appModuleExtensions->createMenu();
+  menuBar()->addMenu( ModuleMenu );
+  //connect( ModuleMenu, SIGNAL( triggered(QAction *) ), this, SLOT( ModuleHandling(QAction *) ) );
 
   m_arrayMenu[WINDOW_MENU] = menuBar()->addMenu( tr( "&Window" ) );
   updateWindowMenu();

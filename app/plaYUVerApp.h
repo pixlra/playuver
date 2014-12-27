@@ -88,8 +88,6 @@ private Q_SLOTS:
 
   void videoSelectionButtonEvent();
 
-  void ModuleHandling( QAction * );
-
   /**
    * Scale the image by a given factor
    * @param factor factor of scale. Ex: 120 scale the image up by 20% and
@@ -156,8 +154,6 @@ private:
   SubWindowHandle* m_pcCurrentSubWindow; //!< General always set
   VideoSubWindow* m_pcCurrentVideoSubWindow;
 
-  ModulesHandle *m_pcModulesHandle;
-
   QString m_cLastOpenPath;
   QTimer *m_pcPlayingTimer;
   Bool m_bIsPlaying;
@@ -214,6 +210,8 @@ private:
    * Modules
    */
   QualityMeasurement* m_appModuleQuality;
+  ModulesHandle *m_appModuleExtensions;
+
 
   /**
    * Array of menus for the main app

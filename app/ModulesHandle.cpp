@@ -27,6 +27,7 @@
 #include "ModulesHandle.h"
 #include "ModulesListHeader.h"
 #include "ModulesListMacro.h"
+#include "PlaYUVerModuleFactory.h"
 #include "DialogSubWindowSelector.h"
 #include "SubWindowHandle.h"
 #include "VideoSubWindow.h"
@@ -35,55 +36,179 @@ namespace plaYUVer
 {
 
 ModulesHandle::ModulesHandle( QMainWindow * parent, QMdiArea *mdiArea ) :
-        QObject( parent ),
+        QWidget( parent ),
         m_pcParent( parent ),
         m_pcMdiArea( mdiArea ),
         m_uiModulesCount( 0 ),
         m_iOptionSelected( INVALID_OPT )
 {
-  // configure class
   setParent( m_pcParent );
-  // Register Modules
-  REGISTER_ALL_MODULES
 }
 
 ModulesHandle::~ModulesHandle()
 {
 }
 
-Void ModulesHandle::appendModule( PlaYUVerModuleIf* pModuleIf )
+Void ModulesHandle::createActions()
 {
-  m_pcPlaYUVerModulesIf.append( pModuleIf );
-  PlaYUVerAppModuleIf* pcAppModuleIf = new PlaYUVerAppModuleIf;
-  pcAppModuleIf->m_pcModule = pModuleIf;
-  pcAppModuleIf->setParent( this );
-  m_pcPlaYUVerModules.append( pcAppModuleIf );
-  m_uiModulesCount++;
+  m_arrayActions.resize( MODULES_TOTAL_ACT );
+
+  m_pcActionMapper = new QSignalMapper( this );
+  connect( m_pcActionMapper, SIGNAL( mapped(int) ), this, SLOT( processOpt(int) ) );
+
+  m_arrayActions[FORCE_NEW_WINDOW_ACT] = new QAction( "Use New Window", parent() );
+  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setStatusTip( "Show module result in a new window. Some modules already force this feature" );
+  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setCheckable( true );
+  m_arrayActions[FORCE_PLAYING_REFRESH_ACT] = new QAction( "Refresh while playing", parent() );
+  m_arrayActions[FORCE_PLAYING_REFRESH_ACT]->setStatusTip( "Force module refreshing while playing" );
+  m_arrayActions[FORCE_PLAYING_REFRESH_ACT]->setCheckable( true );
+
+  m_arrayActions[APPLY_ALL_ACT] = new QAction( "Apply to All", parent() );
+  m_arrayActions[APPLY_ALL_ACT]->setStatusTip( "Apply module to all frames and save the result" );
+  connect( m_arrayActions[APPLY_ALL_ACT], SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
+  m_pcActionMapper->setMapping( m_arrayActions[APPLY_ALL_ACT], APPLY_ALL_OPT );
+
+  m_arrayActions[SWAP_FRAMES_ACT] = new QAction( "Swap frames", parent() );
+  m_arrayActions[SWAP_FRAMES_ACT]->setStatusTip( "Swap Sub Window order" );
+  connect( m_arrayActions[SWAP_FRAMES_ACT], SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
+  m_pcActionMapper->setMapping( m_arrayActions[SWAP_FRAMES_ACT], SWAP_FRAMES_OPT );
+
+  m_arrayActions[DISABLE_ALL_ACT] = new QAction( "Disable All Modules", parent() );
+  connect( m_arrayActions[DISABLE_ALL_ACT], SIGNAL( triggered() ), this, SLOT( destroyAllModulesIf() ) );
+
 }
 
-Void ModulesHandle::selectModule( Int index )
+QMenu* ModulesHandle::createMenu()
 {
-  m_iOptionSelected = index;
-}
+  PlaYUVerModuleIf* pcCurrModuleIf;
+  QString ModuleIfInternalName;
+  QAction* currAction;
+  QMenu* currSubMenu;
 
-SubWindowHandle* ModulesHandle::processModuleHandlingOpt()
-{
-  if( m_iOptionSelected >= 0 )
+  m_pcModulesMenu = new QMenu( "&Modules", this );
+
+  m_pcModulesActionMapper = new QSignalMapper( this );
+  connect( m_pcModulesActionMapper, SIGNAL( mapped(int) ), this, SLOT( activateModule(int) ) );
+
+  UInt i = 0;
+  PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
+  PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
+  for( ; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ )
   {
-    PlaYUVerAppModuleIf* pcCurrModuleIf = m_pcPlaYUVerModules.at( m_iOptionSelected );
-    m_iOptionSelected = INVALID_OPT;
-    if( pcCurrModuleIf->m_pcAction->isChecked() )
+    pcCurrModuleIf = it->second();
+    ModuleIfInternalName = QString::fromLocal8Bit( it->first );
+
+    currSubMenu = NULL;
+    if( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory )
     {
-      return enableModuleIf( pcCurrModuleIf );
+      for( Int j = 0; j < m_pcModulesSubMenuList.size(); j++ )
+      {
+        if( m_pcModulesSubMenuList.at( j )->title() == QString( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory ) )
+        {
+          currSubMenu = m_pcModulesSubMenuList.at( j );
+          break;
+        }
+      }
+      if( !currSubMenu )
+      {
+        currSubMenu = m_pcModulesMenu->addMenu( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory );
+        m_pcModulesSubMenuList.append( currSubMenu );
+      }
     }
+
+    currAction = new QAction( pcCurrModuleIf->m_cModuleDef.m_pchModuleName, parent() );
+    currAction->setStatusTip( pcCurrModuleIf->m_cModuleDef.m_pchModuleTooltip );
+    currAction->setData( ModuleIfInternalName );
+    currAction->setCheckable( true );
+    connect( currAction, SIGNAL( triggered() ), this, SLOT( activateModule() ) );
+    //connect( currAction, SIGNAL( triggered() ), m_pcModulesActionMapper, SLOT( map() ) );
+    m_pcModulesActionMapper->setMapping( currAction, i );
+    m_arrayModulesActions.append( currAction );
+
+    if( currSubMenu )
+      currSubMenu->addAction( currAction );
     else
+      m_pcModulesMenu->addAction( currAction );
+
+  }
+
+//  for( Int i = 0; i < m_pcPlaYUVerModulesIf.size(); i++ )
+//  {
+//    pcCurrModuleIf = m_pcPlaYUVerModulesIf.at( i );
+//
+//    currSubMenu = NULL;
+//    if( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory )
+//    {
+//      for( Int j = 0; j < m_pcModulesSubMenuList.size(); j++ )
+//      {
+//        if( m_pcModulesSubMenuList.at( j )->title() == QString( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory ) )
+//        {
+//          currSubMenu = m_pcModulesSubMenuList.at( j );
+//          break;
+//        }
+//      }
+//      if( !currSubMenu )
+//      {
+//        currSubMenu = m_pcModulesMenu->addMenu( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory );
+//        m_pcModulesSubMenuList.append( currSubMenu );
+//      }
+//    }
+//
+//    currAction = new QAction( pcCurrModuleIf->m_cModuleDef.m_pchModuleName, parent() );
+//    currAction->setStatusTip( pcCurrModuleIf->m_cModuleDef.m_pchModuleTooltip );
+//    currAction->setCheckable( true );
+//    connect( currAction, SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
+//    m_pcActionMapper->setMapping( currAction, i );
+//    m_arrayModulesActions.append( currAction );
+//
+//    if( currSubMenu )
+//      currSubMenu->addAction( currAction );
+//    else
+//      m_pcModulesMenu->addAction( currAction );
+//
+//    m_pcPlaYUVerModules.at( i )->m_pcAction = currAction;
+//  }
+
+  m_pcModulesMenu->addSeparator();
+  m_pcModulesMenu->addAction( m_arrayActions[APPLY_ALL_ACT] );
+  m_pcModulesMenu->addAction( m_arrayActions[SWAP_FRAMES_ACT] );
+  m_pcModulesMenu->addAction( m_arrayActions[DISABLE_ALL_ACT] );
+  m_pcModulesMenu->addAction( m_arrayActions[FORCE_NEW_WINDOW_ACT] );
+
+  return m_pcModulesMenu;
+}
+
+Void ModulesHandle::updateMenus()
+{
+  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
+  Bool hasSubWindow = pcSubWindow ? true : false;
+  QAction* currModuleAction;
+
+  for( Int i = 0; i < m_arrayModulesActions.size(); i++ )
+  {
+    currModuleAction = m_arrayModulesActions.at( i );
+    currModuleAction->setEnabled( hasSubWindow );
+    currModuleAction->setChecked( false );
+  }
+  for( Int i = 0; i < m_arrayActions.size(); i++ )
+  {
+    m_arrayActions.at( i )->setEnabled( hasSubWindow );
+  }
+  if( pcSubWindow )
+  {
+    if( pcSubWindow->getModule() )
     {
-      destroyModuleIf( pcCurrModuleIf );
+      currModuleAction = pcSubWindow->getModule()->m_pcModuleAction;
+      currModuleAction->setChecked( true );
     }
   }
-  else
+}
+
+Void ModulesHandle::processOpt( Int index )
+{
+  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
+  if( pcSubWindow )
   {
-    VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
     switch( m_iOptionSelected )
     {
     case INVALID_OPT:
@@ -99,11 +224,34 @@ SubWindowHandle* ModulesHandle::processModuleHandlingOpt()
       Q_ASSERT( 0 );
     }
   }
-  m_iOptionSelected = INVALID_OPT;
-  return NULL;
 }
 
-SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
+Void ModulesHandle::activateModule()
+{
+  QAction *pcAction = qobject_cast<QAction *>( sender() );
+  VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
+  if( pcVideoSubWindow )
+  {
+    if( pcAction->isChecked() )
+    {
+      QString ModuleIfName = pcAction->data().toString();
+      PlaYUVerModuleIf* pcCurrModuleIf = PlaYUVerModuleFactory::Get()->CreateModule( ModuleIfName.toLocal8Bit().constData() );
+
+      PlaYUVerAppModuleIf* pcCurrAppModuleIf = new PlaYUVerAppModuleIf( this, pcAction, pcCurrModuleIf );
+      enableModuleIf( pcCurrAppModuleIf );
+      m_pcPlaYUVerAppModuleIfList.append( pcCurrAppModuleIf );
+    }
+    else
+    {
+      pcVideoSubWindow->disableModule();
+    }
+
+    m_iOptionSelected = INVALID_OPT;
+
+  }
+}
+
+Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
   Bool bShowModulesNewWindow = m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked();
   VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
@@ -136,7 +284,7 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModul
     // Check for same fmt in more than one frame modules
     for( Int i = 1; i < subWindowList.size(); i++ )
     {
-      if( !subWindowList.at( i )->getCurrFrame()->haveSameFmt( subWindowList.at( 0 )->getCurrFrame()) )
+      if( !subWindowList.at( i )->getCurrFrame()->haveSameFmt( subWindowList.at( 0 )->getCurrFrame() ) )
       {
         subWindowList.clear();
         break;
@@ -151,9 +299,9 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModul
 
   if( subWindowList.size() == 0 )
   {
-    pcCurrModuleIf->m_pcAction->setChecked( false );
     m_pcParent->statusBar()->showMessage( "Error! Module cannot be applied", 2000 );
-    return NULL;
+    destroyModuleIf( pcCurrModuleIf );
+    return;
   }
 
   windowName.append( " <" );
@@ -168,22 +316,19 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModul
 
   pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
 
-  VideoSubWindow* interfaceChild = NULL;
   if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_iModuleType == FRAME_PROCESSING_MODULE )
   {
     if( ( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
-      interfaceChild = new VideoSubWindow( m_pcParent, true );
+      VideoSubWindow* interfaceChild = new VideoSubWindow( m_pcParent, true );
       interfaceChild->setWindowName( windowName );
-
-  //    connect( interfaceChild->getViewArea(), SIGNAL( positionChanged(const QPoint &, PlaYUVerFrame *) ), m_pcParent,
-//          SLOT( updatePixelValueStatusBar(const QPoint &, PlaYUVerFrame *) ) );
 
       connect( interfaceChild, SIGNAL( updateStatusBar( const QString& ) ), m_pcParent, SLOT( updateStatusBar( const QString& ) ) );
       connect( interfaceChild, SIGNAL( zoomChanged() ), m_pcParent, SLOT( updateZoomFactorSBox() ) );
 
       pcCurrModuleIf->m_pcDisplaySubWindow = interfaceChild;
       pcCurrModuleIf->m_pcDisplaySubWindow->setModule( pcCurrModuleIf );
+      m_pcMdiArea->addSubWindow( interfaceChild );
     }
   }
   else if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
@@ -212,48 +357,51 @@ SubWindowHandle* ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModul
   }
   applyModuleIf( pcCurrModuleIf, false );
 
-  return interfaceChild;
+  return;
 }
 
 Void ModulesHandle::destroyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
-  if( pcCurrModuleIf->m_pcModuleDock )
+  if( pcCurrModuleIf )
   {
-    pcCurrModuleIf->m_pcModuleDock->close();
-    pcCurrModuleIf->m_pcModuleDock = NULL;
-  }
-  if( pcCurrModuleIf->m_pcDockWidget )
-  {
-    pcCurrModuleIf->m_pcDockWidget->close();
-    pcCurrModuleIf->m_pcDockWidget = NULL;
-  }
-  if( pcCurrModuleIf->m_pcDisplaySubWindow )
-    pcCurrModuleIf->m_pcDisplaySubWindow->close();
-  pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
-
-  for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
-  {
-    if( pcCurrModuleIf->m_pcSubWindow[i] )
+    if( pcCurrModuleIf->m_pcModuleDock )
     {
-      pcCurrModuleIf->m_pcSubWindow[i]->disableModule();
-      pcCurrModuleIf->m_pcSubWindow[i] = NULL;
+      pcCurrModuleIf->m_pcModuleDock->close();
+      pcCurrModuleIf->m_pcModuleDock = NULL;
     }
+    if( pcCurrModuleIf->m_pcDockWidget )
+    {
+      pcCurrModuleIf->m_pcDockWidget->close();
+      pcCurrModuleIf->m_pcDockWidget = NULL;
+    }
+    if( pcCurrModuleIf->m_pcDisplaySubWindow )
+      pcCurrModuleIf->m_pcDisplaySubWindow->close();
+    pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
+
+    for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
+    {
+      if( pcCurrModuleIf->m_pcSubWindow[i] )
+      {
+        pcCurrModuleIf->m_pcSubWindow[i]->disableModule();
+        pcCurrModuleIf->m_pcSubWindow[i] = NULL;
+      }
+    }
+    if( pcCurrModuleIf->m_pcModuleStream )
+    {
+      pcCurrModuleIf->m_pcModuleStream->close();
+      delete pcCurrModuleIf->m_pcModuleStream;
+      pcCurrModuleIf->m_pcModuleStream = NULL;
+    }
+    pcCurrModuleIf->m_pcModule->destroy();
+    //pcCurrModuleIf->m_pcModule->Delete();
   }
-  if( pcCurrModuleIf->m_pcModuleStream )
-  {
-    pcCurrModuleIf->m_pcModuleStream->close();
-    delete pcCurrModuleIf->m_pcModuleStream;
-    pcCurrModuleIf->m_pcModuleStream = NULL;
-  }
-  pcCurrModuleIf->m_pcAction->setChecked( false );
-  pcCurrModuleIf->m_pcModule->destroy();
 }
 
 Void ModulesHandle::destroyAllModulesIf()
 {
-  for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
+  for( Int i = 0; i < m_pcPlaYUVerAppModuleIfList.size(); i++ )
   {
-    destroyModuleIf( m_pcPlaYUVerModules.at( i ) );
+    destroyModuleIf( m_pcPlaYUVerAppModuleIfList.at( i ) );
   }
 }
 
@@ -264,10 +412,10 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isP
   {
 #ifdef PLAYUVER_THREADED_MODULES
     if( !disableThreads )
-      pcCurrModuleIf->start();
+    pcCurrModuleIf->start();
     else
 #endif
-      pcCurrModuleIf->run();
+    pcCurrModuleIf->run();
 
     if( pcCurrModuleIf->m_pcDisplaySubWindow || pcCurrModuleIf->m_pcModule->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
     {
@@ -419,97 +567,6 @@ Void ModulesHandle::customEvent( QEvent *event )
       break;
     }
   }
-}
-
-QMenu* ModulesHandle::createMenus( QMenuBar *MainAppMenuBar )
-{
-  PlaYUVerModuleIf* pcCurrModuleIf;
-  QAction* currAction;
-  QMenu* currSubMenu;
-
-  m_arrayActions.resize( MODULES_TOTAL_ACT );
-
-  m_pcActionMapper = new QSignalMapper( this );
-  connect( m_pcActionMapper, SIGNAL( mapped(int) ), this, SLOT( selectModule(int) ) );
-
-  m_pcModulesMenu = MainAppMenuBar->addMenu( "&Modules" );
-
-  for( Int i = 0; i < m_pcPlaYUVerModulesIf.size(); i++ )
-  {
-    pcCurrModuleIf = m_pcPlaYUVerModulesIf.at( i );
-
-    currSubMenu = NULL;
-    if( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory )
-    {
-      for( Int j = 0; j < m_pcModulesSubMenuList.size(); j++ )
-      {
-        if( m_pcModulesSubMenuList.at( j )->title() == QString( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory ) )
-        {
-          currSubMenu = m_pcModulesSubMenuList.at( j );
-          break;
-        }
-      }
-      if( !currSubMenu )
-      {
-        currSubMenu = m_pcModulesMenu->addMenu( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory );
-        m_pcModulesSubMenuList.append( currSubMenu );
-      }
-    }
-
-    currAction = new QAction( pcCurrModuleIf->m_cModuleDef.m_pchModuleName, parent() );
-    currAction->setStatusTip( pcCurrModuleIf->m_cModuleDef.m_pchModuleTooltip );
-    currAction->setCheckable( true );
-    connect( currAction, SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
-    m_pcActionMapper->setMapping( currAction, i );
-    m_arrayModulesActions.append( currAction );
-
-    if( currSubMenu )
-      currSubMenu->addAction( currAction );
-    else
-      m_pcModulesMenu->addAction( currAction );
-
-    m_pcPlaYUVerModules.at( i )->m_pcAction = currAction;
-  }
-
-  m_arrayActions[FORCE_NEW_WINDOW_ACT] = new QAction( "Use New Window", parent() );
-  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setStatusTip( "Show module result in a new window. Some modules already force this feature" );
-  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setCheckable( true );
-  m_arrayActions[FORCE_PLAYING_REFRESH_ACT] = new QAction( "Refresh while playing", parent() );
-  m_arrayActions[FORCE_PLAYING_REFRESH_ACT]->setStatusTip( "Force module refreshing while playing" );
-  m_arrayActions[FORCE_PLAYING_REFRESH_ACT]->setCheckable( true );
-
-  m_arrayActions[APPLY_ALL_ACT] = new QAction( "Apply to All", parent() );
-  m_arrayActions[APPLY_ALL_ACT]->setStatusTip( "Apply module to all frames and save the result" );
-  connect( m_arrayActions[APPLY_ALL_ACT], SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
-  m_pcActionMapper->setMapping( m_arrayActions[APPLY_ALL_ACT], APPLY_ALL_OPT );
-
-  m_arrayActions[SWAP_FRAMES_ACT] = new QAction( "Swap frames", parent() );
-  m_arrayActions[SWAP_FRAMES_ACT]->setStatusTip( "Swap Sub Window order" );
-  connect( m_arrayActions[SWAP_FRAMES_ACT], SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
-  m_pcActionMapper->setMapping( m_arrayActions[SWAP_FRAMES_ACT], SWAP_FRAMES_OPT );
-
-  m_arrayActions[DISABLE_ALL_ACT] = new QAction( "Disable All Modules", parent() );
-  connect( m_arrayActions[DISABLE_ALL_ACT], SIGNAL( triggered() ), this, SLOT( destroyAllModulesIf() ) );
-
-  m_pcModulesMenu->addSeparator();
-  m_pcModulesMenu->addAction( m_arrayActions[APPLY_ALL_ACT] );
-  m_pcModulesMenu->addAction( m_arrayActions[SWAP_FRAMES_ACT] );
-  m_pcModulesMenu->addAction( m_arrayActions[DISABLE_ALL_ACT] );
-  m_pcModulesMenu->addAction( m_arrayActions[FORCE_NEW_WINDOW_ACT] );
-
-  return m_pcModulesMenu;
-}
-
-Void ModulesHandle::updateMenus( Bool hasSubWindow )
-{
-  QAction* currModuleAction;
-  for( Int i = 0; i < m_pcPlaYUVerModules.size(); i++ )
-  {
-    currModuleAction = m_arrayModulesActions.at( i );
-    currModuleAction->setEnabled( hasSubWindow );
-  }
-  m_arrayActions[APPLY_ALL_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[SWAP_FRAMES_ACT]->setEnabled( hasSubWindow );
 }
 
 }  // NAMESPACE

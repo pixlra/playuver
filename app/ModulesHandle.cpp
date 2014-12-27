@@ -88,7 +88,7 @@ QMenu* ModulesHandle::createMenu()
   m_pcModulesMenu = new QMenu( "&Modules", this );
 
   m_pcModulesActionMapper = new QSignalMapper( this );
-  connect( m_pcModulesActionMapper, SIGNAL( mapped(int) ), this, SLOT( activateModule(int) ) );
+  //connect( m_pcModulesActionMapper, SIGNAL( mapped(int) ), this, SLOT( activateModule(int) ) );
 
   UInt i = 0;
   PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
@@ -131,43 +131,6 @@ QMenu* ModulesHandle::createMenu()
       m_pcModulesMenu->addAction( currAction );
 
   }
-
-//  for( Int i = 0; i < m_pcPlaYUVerModulesIf.size(); i++ )
-//  {
-//    pcCurrModuleIf = m_pcPlaYUVerModulesIf.at( i );
-//
-//    currSubMenu = NULL;
-//    if( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory )
-//    {
-//      for( Int j = 0; j < m_pcModulesSubMenuList.size(); j++ )
-//      {
-//        if( m_pcModulesSubMenuList.at( j )->title() == QString( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory ) )
-//        {
-//          currSubMenu = m_pcModulesSubMenuList.at( j );
-//          break;
-//        }
-//      }
-//      if( !currSubMenu )
-//      {
-//        currSubMenu = m_pcModulesMenu->addMenu( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory );
-//        m_pcModulesSubMenuList.append( currSubMenu );
-//      }
-//    }
-//
-//    currAction = new QAction( pcCurrModuleIf->m_cModuleDef.m_pchModuleName, parent() );
-//    currAction->setStatusTip( pcCurrModuleIf->m_cModuleDef.m_pchModuleTooltip );
-//    currAction->setCheckable( true );
-//    connect( currAction, SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
-//    m_pcActionMapper->setMapping( currAction, i );
-//    m_arrayModulesActions.append( currAction );
-//
-//    if( currSubMenu )
-//      currSubMenu->addAction( currAction );
-//    else
-//      m_pcModulesMenu->addAction( currAction );
-//
-//    m_pcPlaYUVerModules.at( i )->m_pcAction = currAction;
-//  }
 
   m_pcModulesMenu->addSeparator();
   m_pcModulesMenu->addAction( m_arrayActions[APPLY_ALL_ACT] );
@@ -392,8 +355,12 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
       delete pcCurrModuleIf->m_pcModuleStream;
       pcCurrModuleIf->m_pcModuleStream = NULL;
     }
-    pcCurrModuleIf->m_pcModule->destroy();
-    //pcCurrModuleIf->m_pcModule->Delete();
+    if( pcCurrModuleIf->m_pcModule )
+    {
+      pcCurrModuleIf->m_pcModule->destroy();
+      pcCurrModuleIf->m_pcModule->Delete();
+      pcCurrModuleIf->m_pcModule = NULL;
+    }
   }
 }
 

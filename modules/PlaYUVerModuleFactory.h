@@ -31,6 +31,8 @@
 namespace plaYUVer
 {
 
+#define REGISTER_MODULE(X) Register( "X", &(X::Create) );
+
 typedef PlaYUVerModuleIf* (*CreateModuleFn)( void );
 typedef std::map<const char *, CreateModuleFn> PlaYUVerModuleFactoryMap;
 

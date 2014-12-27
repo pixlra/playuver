@@ -25,8 +25,6 @@
 #include <cstdio>
 
 #include "ModulesHandle.h"
-#include "ModulesListHeader.h"
-#include "ModulesListMacro.h"
 #include "PlaYUVerModuleFactory.h"
 #include "DialogSubWindowSelector.h"
 #include "SubWindowHandle.h"
@@ -130,6 +128,7 @@ QMenu* ModulesHandle::createMenu()
     else
       m_pcModulesMenu->addAction( currAction );
 
+    pcCurrModuleIf->Delete();
   }
 
   m_pcModulesMenu->addSeparator();

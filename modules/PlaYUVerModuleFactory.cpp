@@ -26,7 +26,6 @@
 #include <cstring>
 #include "PlaYUVerModuleFactory.h"
 #include "ModulesListHeader.h"
-#include "ModulesListMacro.h"
 
 namespace plaYUVer
 {
@@ -36,8 +35,9 @@ PlaYUVerModuleFactory::PlaYUVerModuleFactory()
   Register( "FilterComponentLuma", &FilterComponentLuma::Create );
   Register( "FilterComponentChromaU", &FilterComponentChromaU::Create );
   Register( "FilterComponentChromaV", &FilterComponentChromaV::Create );
-  Register( "AbsoluteFrameDifference", &AbsoluteFrameDifference::Create );
   Register( "FrameDifference", &FrameDifference::Create );
+  Register( "AbsoluteFrameDifference", &AbsoluteFrameDifference::Create );
+  Register( "DisparityStereoVar", &DisparityStereoVar::Create );
 }
 
 PlaYUVerModuleFactory::~PlaYUVerModuleFactory()

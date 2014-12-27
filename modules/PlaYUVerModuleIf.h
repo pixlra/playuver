@@ -37,13 +37,6 @@ public: \
   static PlaYUVerModuleIf* Create() { return new X(); } \
   void Delete() { delete this; }
 
-
-#define REGISTER_MODULE(X)                      \
-    {                                           \
-  X *pMod = new X();                      \
-  appendModule( pMod );                   \
-    }
-
 enum // Module type
 {
   FRAME_PROCESSING_MODULE,

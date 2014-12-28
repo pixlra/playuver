@@ -38,7 +38,7 @@
 #include "lib/PlaYUVerDefs.h"
 #include "SubWindowHandle.h"
 #include "VideoSubWindow.h"
-#include "QualityMeasurement.h"
+#include "QualityHandle.h"
 #include "ModulesHandle.h"
 #include "PropertiesSidebar.h"
 #include "AboutDialog.h"

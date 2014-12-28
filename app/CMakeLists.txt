@@ -9,15 +9,15 @@ set(plaYUver_App_SRCS
 # Main
     main.cpp
     plaYUVerApp.cpp
-    ViewArea.cpp
+    QualityHandle.cpp
     ModulesHandle.cpp
     PlaYUVerAppModuleIf.cpp
-    QualityMeasurement.cpp
     GridManager.cpp
     Settings.cpp
 # Sub Window
     SubWindowHandle.cpp
     VideoSubWindow.cpp
+    ViewArea.cpp
 # Dialogs
     AboutDialog.cpp
     ConfigureFormatDialog.cpp

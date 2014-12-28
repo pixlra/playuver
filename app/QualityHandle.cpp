@@ -24,7 +24,7 @@
 
 #include "lib/PlaYUVerDefs.h"
 #include <QtGui>
-#include "QualityMeasurement.h"
+#include "QualityHandle.h"
 #include "DialogSubWindowSelector.h"
 
 namespace plaYUVer

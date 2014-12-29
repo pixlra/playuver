@@ -18,37 +18,47 @@
  */
 
 /**
- * \file     MeasurePSNR.h
- * \brief    Frame Difference module
+ * \file     LumaAverage.cpp
+ * \brief    Luma frame average
  */
 
-#ifndef __MEASUREPSNR_H__
-#define __MEASUREPSNR_H__
-
-#include "PlaYUVerModuleIf.h"
+#include "LumaAverage.h"
 
 namespace plaYUVer
 {
 
-class MeasurePSNR: public PlaYUVerModuleIf
+LumaAverage::LumaAverage()
 {
-  REGISTER_CLASS_FACTORY( MeasurePSNR )
+  /* Module Definition */
+  m_iModuleType = FRAME_MEASUREMENT_MODULE;
+  m_pchModuleCategory = "Measurements";
+  m_pchModuleName = "Luma Average";
+  m_pchModuleTooltip = "Measure the average of luma component";
+  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
+  m_uiModuleRequirements = MODULE_REQUIRES_SIDEBAR;
+  m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;
+}
 
-private:
-public:
-  MeasurePSNR();
-  virtual ~MeasurePSNR()
-  {
-  }
-  Void create( PlaYUVerFrame* );
-  Double measure( PlaYUVerFrame*, PlaYUVerFrame* );
-  Void destroy();
+Void LumaAverage::create( PlaYUVerFrame* frame )
+{
+}
 
-  static Double getMSE( PlaYUVerFrame* Org, PlaYUVerFrame* Rec, Int component );
+Double LumaAverage::measure( PlaYUVerFrame* frame )
+{
+  Double average = 0;
+  Pel* pPel = frame->getPelBufferYUV()[0][0];
+  for( UInt y = 0; y < frame->getHeight(); y++ )
+    for( UInt x = 0; x < frame->getWidth(); x++ )
+    {
+      average += *pPel;
+    }
+  return average / Double( frame->getHeight() * frame->getWidth() );
+}
 
-};
+Void LumaAverage::destroy()
+{
+
+}
 
 }  // NAMESPACE
-
-#endif // __MEASUREPSNR_H__
 

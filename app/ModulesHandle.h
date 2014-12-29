@@ -70,9 +70,6 @@ private:
   QMainWindow *m_pcParent;
   QMdiArea *m_pcMdiArea;
 
-  UInt m_uiModulesCount;
-  Int m_iOptionSelected;
-
   enum
   {
     INVALID_OPT = -1,

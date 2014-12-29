@@ -36,9 +36,7 @@ namespace plaYUVer
 ModulesHandle::ModulesHandle( QMainWindow * parent, QMdiArea *mdiArea ) :
         QWidget( parent ),
         m_pcParent( parent ),
-        m_pcMdiArea( mdiArea ),
-        m_uiModulesCount( 0 ),
-        m_iOptionSelected( INVALID_OPT )
+        m_pcMdiArea( mdiArea )
 {
   setParent( m_pcParent );
 }
@@ -184,11 +182,9 @@ Void ModulesHandle::processOpt( Int index )
         break;
       case SWAP_FRAMES_ACT:
         swapModulesWindowsIf( pcCurrModule );
-        //pcSubWindow->swapModuleFrames();
         break;
       case APPLY_ALL_ACT:
         applyAllModuleIf( pcCurrModule );
-        //pcSubWindow->applyModuleAllFrames();
         break;
       default:
         Q_ASSERT( 0 );
@@ -216,9 +212,6 @@ Void ModulesHandle::activateModule()
     {
       pcVideoSubWindow->disableModule();
     }
-
-    m_iOptionSelected = INVALID_OPT;
-
   }
 }
 

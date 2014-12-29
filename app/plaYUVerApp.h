@@ -38,6 +38,7 @@
 #include "lib/PlaYUVerDefs.h"
 #include "SubWindowHandle.h"
 #include "VideoSubWindow.h"
+#include "VideoHandle.h"
 #include "QualityHandle.h"
 #include "ModulesHandle.h"
 #include "PropertiesSidebar.h"
@@ -78,17 +79,6 @@ private Q_SLOTS:
   void closeAll();
 
   /**
-   *  Playing functions slots
-   */
-  void play();
-  void stop();
-  void playEvent();
-  void seekSliderEvent( int new_frame_num );
-  void seekEvent( int direction );
-
-  void videoSelectionButtonEvent();
-
-  /**
    * Scale the image by a given factor
    * @param factor factor of scale. Ex: 120 scale the image up by 20% and
    *        80 scale the image down by 25%
@@ -101,7 +91,6 @@ private Q_SLOTS:
   void chageSubWindowSelection();
   void updateWindowMenu();
   void updateZoomFactorSBox();
-  void updateStreamProperties();
 
   void about();
 
@@ -155,20 +144,11 @@ private:
   VideoSubWindow* m_pcCurrentVideoSubWindow;
 
   QString m_cLastOpenPath;
-  QTimer *m_pcPlayingTimer;
-  Bool m_bIsPlaying;
 
   Void readRecentFileList();
   Void writeRecentFileList();
 
   Void zoomToFitAll();
-
-  /**
-   *  Playing functions
-   */
-  UInt64 getMaxFrameNumber();
-  Void setTimerStatus();
-
 
   Void updateMenus();
 
@@ -192,15 +172,9 @@ private:
 
   static VideoSubWindow* findVideoSubWindow( const QMdiArea* mdiArea, const QString& fileName );
 
-  QVector<VideoSubWindow*> m_acPlayingSubWindows;
-
-  QLabel* m_pcLockLabel;
-  QSlider* m_pcFrameSlider;
-  WidgetFrameNumber* m_pcFrameNumInfo;
   QDoubleSpinBox *m_pcZoomFactorSBox;
 
   QSignalMapper *mapperZoom;
-  QSignalMapper *mapperSeekVideo;
   QSignalMapper *mapperWindow;
 
   /**
@@ -209,6 +183,7 @@ private:
    * Quality
    * Modules
    */
+  VideoHandle* m_appModuleVideo;
   QualityMeasurement* m_appModuleQuality;
   ModulesHandle *m_appModuleExtensions;
 
@@ -247,7 +222,6 @@ private:
   QVector<QDockWidget*> m_arraySideBars;
 
   StreamPropertiesSideBar* m_pcStreamProperties;
-  FramePropertiesSideBar* m_pcFrameProperties;
 
   /**
    * Array of tool bars for the main app
@@ -279,14 +253,6 @@ private:
     ZOOM_OUT_ACT,
     ZOOM_FIT_ACT,
     ZOOM_NORMAL_ACT,
-    PLAY_ACT,
-    /*PAUSE_ACT,*/
-    STOP_ACT,
-    VIDEO_FORWARD_ACT,
-    VIDEO_BACKWARD_ACT,
-    VIDEO_LOOP_ACT,
-    VIDEO_LOCK_ACT,
-    VIDEO_LOCK_SELECTION_ACT,
     NAVIGATION_TOOL_ACT,
     SELECTION_TOOL_ACT,
     TILE_WINDOWS_ACT,

@@ -55,6 +55,7 @@ plaYUVerApp::plaYUVerApp()
   mapperWindow = new QSignalMapper( this );
   connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
 
+  m_appModuleVideo = new VideoHandle( this, mdiArea );
   m_appModuleQuality = new QualityMeasurement( this, mdiArea );
   m_appModuleExtensions = new ModulesHandle( this, mdiArea );
 
@@ -70,14 +71,6 @@ plaYUVerApp::plaYUVerApp()
   setWindowTitle( QApplication::applicationName() );
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
   setUnifiedTitleAndToolBarOnMac( true );
-
-  m_bIsPlaying = false;
-  m_pcPlayingTimer = new QTimer;
-#if( QT_VERSION_PLAYUVER == 5 )
-  m_pcPlayingTimer->setTimerType( Qt::CoarseTimer );
-#endif
-  connect( m_pcPlayingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
-  m_acPlayingSubWindows.clear();
 
   setAcceptDrops( true );
   mdiArea->setAcceptDrops( true );
@@ -105,13 +98,6 @@ Void plaYUVerApp::about()
   if( !m_pcAboutDialog )
     m_pcAboutDialog = new AboutDialog( this );
   m_pcAboutDialog->exec();
-//  QString about_message;
-//  about_message.append( "The <b>plaYUVer</b> is an open-source raw video player! " );
-//  about_message.append( "Developed by " );
-//  about_message.append( "João Carreira " );
-//  about_message.append( "and " );
-//  about_message.append( "Luís Lucas" );
-//  QMessageBox::about( this, "About plaYUVer", about_message );
 }
 
 Void plaYUVerApp::closeEvent( QCloseEvent *event )
@@ -140,7 +126,7 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
 
     if( mayCloseAll )
     {
-      m_pcPlayingTimer->stop();
+      //m_pcPlayingTimer->stop();
       closeAll();
       writeSettings();
       event->accept();
@@ -393,16 +379,7 @@ Void plaYUVerApp::setAllSubWindowTool()
 Void plaYUVerApp::closeActiveWindow()
 {
   SubWindowHandle *currSubWindow = activeSubWindow();
-  if( currSubWindow->getCategory() == SubWindowHandle::VIDEO_SUBWINDOW )
-  {
-    VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow*>( currSubWindow );
-    if( m_acPlayingSubWindows.contains( pcVideoSubWindow ) )
-    {
-      Int pos = m_acPlayingSubWindows.indexOf( pcVideoSubWindow );
-      m_acPlayingSubWindows.at( pos )->stop();
-      m_acPlayingSubWindows.remove( pos );
-    }
-  }
+  m_appModuleVideo->closeSubWindow( qobject_cast<VideoSubWindow*>( currSubWindow ) );
   mdiArea->closeActiveSubWindow();
 }
 
@@ -410,302 +387,59 @@ Void plaYUVerApp::closeAll()
 {
   mdiArea->closeAllSubWindows();
 }
-
-// -----------------------  Update Properties   --------------------
-
-UInt64 plaYUVerApp::getMaxFrameNumber()
-{
-  UInt currFrames;
-  UInt64 maxFrames = INT_MAX;
-  if( m_pcCurrentVideoSubWindow )
-  {
-    if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
-    {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-      {
-        currFrames = m_acPlayingSubWindows.at( i )->getInputStream()->getFrameNum();
-        if( currFrames < maxFrames )
-          maxFrames = currFrames;
-      }
-    }
-    else
-    {
-      maxFrames = m_pcCurrentVideoSubWindow->getInputStream()->getFrameNum();
-    }
-  }
-  return maxFrames;
-}
-
-Void plaYUVerApp::updateStreamProperties()
-{
-  if( m_pcCurrentVideoSubWindow )
-  {
-    Int frame_num = 0;
-    UInt64 total_frame_num = 1;
-    if( m_pcCurrentVideoSubWindow->getInputStream() )
-    {
-      frame_num = m_pcCurrentVideoSubWindow->getInputStream()->getCurrFrameNum();
-      m_pcFrameNumInfo->setCurrFrameNum( frame_num );
-      total_frame_num = getMaxFrameNumber();
-      m_pcStreamProperties->setData( m_pcCurrentVideoSubWindow->getInputStream() );
-    }
-    else
-    {
-      m_pcStreamProperties->setData( NULL );
-      m_pcFrameNumInfo->setCurrFrameNum( 0 );
-    }
-
-    m_pcFrameProperties->setData( m_pcCurrentVideoSubWindow->getCurrFrame(), m_pcCurrentVideoSubWindow->isPlaying() );
-
-    m_pcFrameSlider->setValue( frame_num );
-    m_pcFrameSlider->setMaximum( total_frame_num - 1 );
-    m_pcFrameNumInfo->setTotalFrameNum( total_frame_num );
-
-    if( m_pcCurrentVideoSubWindow->isPlaying() )
-      m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPause ) );
-    else
-      m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPlay ) );
-
-    m_appModuleQuality->update( m_pcCurrentVideoSubWindow );
-    return;
-  }
-  m_pcStreamProperties->setData( NULL );
-  m_pcFrameProperties->setData( NULL, false );
-  m_pcFrameNumInfo->setCurrFrameNum( 0 );
-  m_pcFrameNumInfo->setTotalFrameNum( 0 );
-  m_pcZoomFactorSBox->setValue( 0.0 );
-}
+//
+//Void plaYUVerApp::updateStreamProperties()
+//{
+//  if( m_pcCurrentVideoSubWindow )
+//  {
+//    Int frame_num = 0;
+//    UInt64 total_frame_num = 1;
+//    if( m_pcCurrentVideoSubWindow->getInputStream() )
+//    {
+//      frame_num = m_pcCurrentVideoSubWindow->getInputStream()->getCurrFrameNum();
+//      m_pcFrameNumInfo->setCurrFrameNum( frame_num );
+//      total_frame_num = getMaxFrameNumber();
+//      m_pcStreamProperties->setData( m_pcCurrentVideoSubWindow->getInputStream() );
+//    }
+//    else
+//    {
+//      m_pcStreamProperties->setData( NULL );
+//      m_pcFrameNumInfo->setCurrFrameNum( 0 );
+//    }
+//
+//    m_pcFrameProperties->setData( m_pcCurrentVideoSubWindow->getCurrFrame(), m_pcCurrentVideoSubWindow->isPlaying() );
+//
+//    m_pcFrameSlider->setValue( frame_num );
+//    m_pcFrameSlider->setMaximum( total_frame_num - 1 );
+//    m_pcFrameNumInfo->setTotalFrameNum( total_frame_num );
+//
+//    if( m_pcCurrentVideoSubWindow->isPlaying() )
+//      m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPause ) );
+//    else
+//      m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPlay ) );
+//
+//    return;
+//  }
+//  m_pcStreamProperties->setData( NULL );
+//  m_pcFrameProperties->setData( NULL, false );
+//  m_pcFrameNumInfo->setCurrFrameNum( 0 );
+//  m_pcFrameNumInfo->setTotalFrameNum( 0 );
+//  m_pcZoomFactorSBox->setValue( 0.0 );
+//}
 
 Void plaYUVerApp::updatePropertiesSelectedArea( QRect area )
 {
-  if( m_pcCurrentSubWindow )
-  {
-    if( area.isValid() )
-    {
-      m_pcFrameProperties->setSelection( area );
-    }
-  }
-  else
-  {
-    m_pcFrameProperties->setData( NULL, false );
-  }
-}
-
-// -----------------------  Playing Functions  --------------------
-
-Void plaYUVerApp::setTimerStatus()
-{
-  Bool status = false;
-  for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-  {
-    status |= m_acPlayingSubWindows.at( i )->isPlaying();
-  }
-  if( m_pcCurrentVideoSubWindow )
-  {
-    status |= m_pcCurrentVideoSubWindow->isPlaying();
-  }
-  if( status )
-  {
-    if( !m_bIsPlaying )
-    {
-      m_pcPlayingTimer->start();
-      m_bIsPlaying = true;
-    }
-  }
-  else
-  {
-    m_pcPlayingTimer->stop();
-    m_bIsPlaying = false;
-  }
-}
-
-Void plaYUVerApp::play()
-{
-  if( !m_pcCurrentVideoSubWindow )
-    return;
-
-  if( !m_pcCurrentVideoSubWindow->getInputStream() )
-    return;
-
-  if( !m_pcCurrentVideoSubWindow->isPlaying() )  // Not playing
-  {
-    UInt frameRate;
-    UInt timeInterval;
-    if( m_acPlayingSubWindows.size() < 2 )
-    {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-      {
-        m_acPlayingSubWindows.at( i )->pause();
-      }
-      m_acPlayingSubWindows.clear();
-      m_acPlayingSubWindows.append( m_pcCurrentVideoSubWindow );
-    }
-    if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
-    {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-      {
-        m_acPlayingSubWindows.at( i )->play();
-      }
-      frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
-      timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
-      m_pcPlayingTimer->setInterval( timeInterval );
-    }
-  }
-  else
-  {
-    if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
-    {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-      {
-        m_acPlayingSubWindows.at( i )->pause();
-      }
-    }
-    else
-    {
-      m_pcCurrentVideoSubWindow->pause();
-    }
-  }
-  setTimerStatus();
-  updateStreamProperties();
-}
-
-Void plaYUVerApp::stop()
-{
-  if( m_acPlayingSubWindows.size() > 0 )
-  {
-    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-    {
-      m_acPlayingSubWindows.at( i )->stop();
-    }
-    m_acPlayingSubWindows.clear();
-    setTimerStatus();
-  }
-  else
-  {
-    if( m_pcCurrentVideoSubWindow )
-    {
-      m_pcCurrentVideoSubWindow->stop();
-    }
-  }
-  updateStreamProperties();
-  m_arrayActions[VIDEO_LOCK_ACT]->setVisible( false );
-}
-
-Void plaYUVerApp::playEvent()
-{
-  Bool bEndOfSequence = false;
-  try
-  {
-    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-    {
-      bEndOfSequence |= m_acPlayingSubWindows.at( i )->playEvent();
-    }
-    if( bEndOfSequence && !m_arrayActions[VIDEO_LOOP_ACT]->isChecked() )
-    {
-      stop();
-    }
-  }
-  catch( const char *msg )
-  {
-    QString warningMsg = "Error while playing " + QFileInfo( m_pcCurrentVideoSubWindow->getCurrentFileName() ).fileName() + " with the following error: \n"
-        + msg;
-    QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
-    statusBar()->showMessage( warningMsg, 2000 );
-    qDebug( ) << warningMsg;
-    stop();
-    m_pcCurrentVideoSubWindow->close();
-  }
-  updateStreamProperties();
-}
-
-Void plaYUVerApp::seekEvent( Int direction )
-{
-  if( m_pcCurrentVideoSubWindow )
-  {
-    if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
-    {
-      if( !( ( UInt )( m_pcCurrentVideoSubWindow->getInputStream()->getCurrFrameNum() + 1 ) >= getMaxFrameNumber() && direction > 0 ) )
-      {
-        for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-        {
-          m_acPlayingSubWindows.at( i )->seekRelativeEvent( direction > 0 ? true : false );
-        }
-      }
-    }
-    else
-    {
-      m_pcCurrentVideoSubWindow->seekRelativeEvent( direction > 0 ? true : false );
-    }
-    updateStreamProperties();
-  }
-}
-
-Void plaYUVerApp::seekSliderEvent( Int new_frame_num )
-{
-  if( m_pcCurrentVideoSubWindow )
-  {
-    if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
-    {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-      {
-        m_acPlayingSubWindows.at( i )->seekAbsoluteEvent( ( UInt )new_frame_num );
-      }
-    }
-    else
-    {
-      m_pcCurrentVideoSubWindow->seekAbsoluteEvent( ( UInt )new_frame_num );
-    }
-    updateStreamProperties();
-  }
-}
-
-Void plaYUVerApp::videoSelectionButtonEvent()
-{
-  DialogSubWindowSelector dialogWindowsSelection( this, mdiArea );
-  QStringList cWindowListNames;
-  for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-  {
-    cWindowListNames.append( m_acPlayingSubWindows.at( i )->getWindowName() );
-    dialogWindowsSelection.setSubWindowList( cWindowListNames );
-  }
-  if( dialogWindowsSelection.exec() == QDialog::Accepted )
-  {
-    QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();
-    m_acPlayingSubWindows.clear();
-    SubWindowHandle *subWindow;
-    QString windowName;
-    for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
-    {
-      subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
-      windowName = subWindow->getWindowName();
-      if( selectedWindows.contains( windowName ) )
-      {
-        VideoSubWindow* pcVideoSubWinodw = qobject_cast<VideoSubWindow*>( subWindow );
-        m_acPlayingSubWindows.append( pcVideoSubWinodw );
-        pcVideoSubWinodw->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
-      }
-    }
-    if( m_acPlayingSubWindows.size() > 0 )
-    {
-      m_acPlayingSubWindows.at( 0 )->activateWindow();
-      if( m_acPlayingSubWindows.size() > 1 )
-      {
-        m_arrayActions[VIDEO_LOCK_ACT]->setVisible( true );
-      }
-      if( m_bIsPlaying )
-      {
-        for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
-        {
-          m_acPlayingSubWindows.at( i )->play();
-        }
-      }
-    }
-    else
-    {
-      stop();
-    }
-    return;
-  }
+//  if( m_pcCurrentSubWindow )
+//  {
+//    if( area.isValid() )
+//    {
+//      m_pcFrameProperties->setSelection( area );
+//    }
+//  }
+//  else
+//  {
+//    m_pcFrameProperties->setData( NULL, false );
+//  }
 }
 
 // -----------------------  Zoom Functions  -----------------------
@@ -802,7 +536,7 @@ Void plaYUVerApp::chageSubWindowSelection()
       updateZoomFactorSBox();
     }
   }
-  updateStreamProperties();
+  m_appModuleVideo->update( m_pcCurrentVideoSubWindow );
   m_appModuleQuality->update( m_pcCurrentVideoSubWindow );
   updateMenus();
 }
@@ -921,22 +655,10 @@ Void plaYUVerApp::updateMenus()
   m_arrayActions[ZOOM_FIT_ACT]->setEnabled( hasSubWindow );
   m_pcZoomFactorSBox->setEnabled( hasSubWindow );
 
-  m_arrayActions[PLAY_ACT]->setEnabled( hasSubWindow );
-//m_arrayActions[PAUSE_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[STOP_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[VIDEO_BACKWARD_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[VIDEO_FORWARD_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[VIDEO_LOOP_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[VIDEO_LOCK_SELECTION_ACT]->setEnabled( hasSubWindow );
-  m_pcFrameSlider->setEnabled( hasSubWindow );
-  if( !hasSubWindow )
-  {
-    m_pcFrameSlider->setValue( 0 );
-    m_pcFrameNumInfo->clear();
-  }
   m_arrayActions[NAVIGATION_TOOL_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[SELECTION_TOOL_ACT]->setEnabled( hasSubWindow );
 
+  m_appModuleVideo->updateMenus();
   m_appModuleQuality->updateMenus();
   m_appModuleExtensions->updateMenus();
 }
@@ -1105,48 +827,6 @@ Void plaYUVerApp::createActions()
   m_arrayActions[ZOOM_FIT_ACT]->setStatusTip( tr( "Zoom in or out to fit on the window." ) );
   connect( m_arrayActions[ZOOM_FIT_ACT], SIGNAL( triggered() ), this, SLOT( zoomToFit() ) );
 
-// ------------ Playing ------------
-
-  m_arrayActions[PLAY_ACT] = new QAction( "Play", this );
-  m_arrayActions[PLAY_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPlay ) ) );
-  m_arrayActions[PLAY_ACT]->setShortcut( Qt::Key_Space );
-  connect( m_arrayActions[PLAY_ACT], SIGNAL( triggered() ), this, SLOT( play() ) );
-
-  m_arrayActions[STOP_ACT] = new QAction( "Stop", this );
-  m_arrayActions[STOP_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaStop ) ) );
-  connect( m_arrayActions[STOP_ACT], SIGNAL( triggered() ), this, SLOT( stop() ) );
-
-  mapperSeekVideo = new QSignalMapper( this );
-  connect( mapperSeekVideo, SIGNAL( mapped(int) ), this, SLOT( seekEvent(int) ) );
-
-  m_arrayActions[VIDEO_BACKWARD_ACT] = new QAction( "Video Backward", this );
-  m_arrayActions[VIDEO_BACKWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
-  m_arrayActions[VIDEO_BACKWARD_ACT]->setShortcut( Qt::Key_Left );
-  connect( m_arrayActions[VIDEO_BACKWARD_ACT], SIGNAL( triggered() ), mapperSeekVideo, SLOT( map() ) );
-  mapperSeekVideo->setMapping( m_arrayActions[VIDEO_BACKWARD_ACT], 0 );
-
-  m_arrayActions[VIDEO_FORWARD_ACT] = new QAction( "Video Forward", this );
-  m_arrayActions[VIDEO_FORWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
-  m_arrayActions[VIDEO_FORWARD_ACT]->setShortcut( Qt::Key_Right );
-  connect( m_arrayActions[VIDEO_FORWARD_ACT], SIGNAL( triggered() ), mapperSeekVideo, SLOT( map() ) );
-  mapperSeekVideo->setMapping( m_arrayActions[VIDEO_FORWARD_ACT], 1 );
-
-  m_arrayActions[VIDEO_LOOP_ACT] = new QAction( "Repeat", this );
-  m_arrayActions[VIDEO_LOOP_ACT]->setCheckable( true );
-  m_arrayActions[VIDEO_LOOP_ACT]->setChecked( false );
-
-  m_arrayActions[VIDEO_LOCK_SELECTION_ACT] = new QAction( "Video Lock Window Selection", this );
-  m_arrayActions[VIDEO_FORWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
-  connect( m_arrayActions[VIDEO_LOCK_SELECTION_ACT], SIGNAL( triggered() ), this, SLOT( videoSelectionButtonEvent() ) );
-
-  m_pcFrameSlider = new QSlider;
-  m_pcFrameSlider->setOrientation( Qt::Horizontal );
-  m_pcFrameSlider->setMaximumWidth( 100 );
-  m_pcFrameSlider->setMaximumWidth( /* 300 */2000 );
-  m_pcFrameSlider->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
-  m_pcFrameSlider->setEnabled( false );
-  connect( m_pcFrameSlider, SIGNAL( sliderMoved(int) ), this, SLOT( seekSliderEvent(int) ) );
-
 // ------------ Tools ------------
   actionGroupTools = new QActionGroup( this );
   actionGroupTools->setExclusive( true );
@@ -1170,6 +850,7 @@ Void plaYUVerApp::createActions()
   connect( m_arrayActions[SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
   m_mapperTools->setMapping( m_arrayActions[SELECTION_TOOL_ACT], ViewArea::NormalSelectionTool );
 
+  m_appModuleVideo->createActions();
   m_appModuleQuality->createActions();
   m_appModuleExtensions->createActions();
 
@@ -1264,15 +945,8 @@ Void plaYUVerApp::createMenus()
 //  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
 //  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
 
-  m_arrayMenu[VIDEO_MENU] = menuBar()->addMenu( tr( "Video" ) );
-  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[PLAY_ACT] );
-//m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[PAUSE_ACT] );
-  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[STOP_ACT] );
-  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
-  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
-  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_LOOP_ACT] );
-  m_arrayMenu[VIDEO_MENU]->addAction( m_arrayActions[VIDEO_LOCK_SELECTION_ACT] );
-
+  QMenu* VideoMenu = m_appModuleVideo->createMenu();
+  menuBar()->addMenu( VideoMenu );
   QMenu* QualityMenu = m_appModuleQuality->createMenu();
   menuBar()->addMenu( QualityMenu );
   QMenu* ModuleMenu = m_appModuleExtensions->createMenu();
@@ -1325,23 +999,8 @@ Void plaYUVerApp::createToolBars()
   m_arrayToolBars[FILE_TOOLBAR]->setMovable( false );
   addToolBar( Qt::TopToolBarArea, m_arrayToolBars[VIEW_TOOLBAR] );
 
-  m_arrayToolBars[VIDEO_TOOLBAR] = new QToolBar( tr( "Video" ) );
-  m_arrayToolBars[VIDEO_TOOLBAR]->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
-  m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[PLAY_ACT] );
-  m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[STOP_ACT] );
+  addToolBar( Qt::TopToolBarArea, m_appModuleVideo->createToolBar() );
 
-  m_pcLockLabel = new QLabel( "PlayingLock", this );
-  m_arrayActions[VIDEO_LOCK_ACT] = m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcLockLabel );
-
-  m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
-  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcFrameSlider );
-  m_arrayToolBars[VIDEO_TOOLBAR]->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
-  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( new QLabel );
-  m_pcFrameNumInfo = new WidgetFrameNumber;
-  m_arrayToolBars[VIDEO_TOOLBAR]->addWidget( m_pcFrameNumInfo );
-
-  addToolBar( Qt::TopToolBarArea, m_arrayToolBars[VIDEO_TOOLBAR] );
-  m_arrayActions[VIDEO_LOCK_ACT]->setVisible( false );
 }
 
 Void plaYUVerApp::createDockWidgets()
@@ -1356,17 +1015,8 @@ Void plaYUVerApp::createDockWidgets()
   addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[STREAM_DOCK] );
   connect( m_arraySideBars[STREAM_DOCK], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateStreamProperties() ) );
 
-  m_pcFrameProperties = new FramePropertiesSideBar( this, &m_bIsPlaying );
-  m_arraySideBars[FRAME_DOCK] = new QDockWidget( tr( "Frame Information" ), this );
-  m_arraySideBars[FRAME_DOCK]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  m_arraySideBars[FRAME_DOCK]->setWidget( m_pcFrameProperties );
-  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[FRAME_DOCK] );
-  connect( m_arraySideBars[FRAME_DOCK], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateStreamProperties() ) );
-
-  QMainWindow::tabifyDockWidget( m_arraySideBars[FRAME_DOCK], m_arraySideBars[STREAM_DOCK] );
-//QMainWindow::setTabPosition(Qt::RightDockWidgetArea, QTabWidget::North);
-
-  addDockWidget( Qt::RightDockWidgetArea,  m_appModuleQuality->createDock() );
+  addDockWidget( Qt::RightDockWidgetArea, m_appModuleVideo->createDock() );
+  addDockWidget( Qt::RightDockWidgetArea, m_appModuleQuality->createDock() );
 }
 
 Void plaYUVerApp::createStatusBar()
@@ -1384,7 +1034,7 @@ Void plaYUVerApp::readSettings()
   m_cLastOpenPath = settings.lastOpenPath();
   m_appTool = ( ViewArea::eTool )settings.getSelectedTool();
   setTool( m_appTool );
-  m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
+  //m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
 
   m_aRecentFileStreamInfo = settings.getRecentFileList();
   updateRecentFileActions();
@@ -1408,8 +1058,8 @@ Void plaYUVerApp::writeSettings()
   settings.setLastOpenPath( m_cLastOpenPath );
   settings.setSelectedTool( ( Int )m_appTool );
   settings.setRecentFileList( m_aRecentFileStreamInfo );
-  settings.setDockVisibility( m_pcStreamProperties->isVisible(), m_pcFrameProperties->isVisible(), true );
-  settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked() );
+  //settings.setDockVisibility( m_pcStreamProperties->isVisible(), m_pcFrameProperties->isVisible(), true );
+  //settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked() );
 }
 
 }  // NAMESPACE

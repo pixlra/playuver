@@ -9,6 +9,7 @@ set(plaYUver_App_SRCS
 # Main
     main.cpp
     plaYUVerApp.cpp
+    VideoHandle.cpp
     QualityHandle.cpp
     ModulesHandle.cpp
     PlaYUVerAppModuleIf.cpp

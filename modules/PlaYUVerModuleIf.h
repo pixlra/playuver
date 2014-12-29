@@ -84,8 +84,6 @@ public:
   UInt m_uiModuleRequirements;
   Bool m_bApplyWhilePlaying;
 
-  PlaYUVerModuleDefinition m_cModuleDef;
-
   PlaYUVerModuleIf() {}
   virtual ~PlaYUVerModuleIf() {}
 
@@ -103,9 +101,6 @@ public:
   virtual Double          measure( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* ) { return 0; }
 
   virtual Void destroy() { }
-
-  Void setModuleDefinition( PlaYUVerModuleDefinition def )  { m_cModuleDef = def;   }
-  PlaYUVerModuleDefinition getModuleDefinition()            { return m_cModuleDef;  }
 
 };
 

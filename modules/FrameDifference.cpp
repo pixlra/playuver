@@ -28,17 +28,6 @@
 namespace plaYUVer
 {
 
-static PlaYUVerModuleDefinition FrameDifferenceDef =
-{
-    FRAME_PROCESSING_MODULE,
-    "Measurements",
-    "FrameDifference",
-    "Measure the difference between two images (Y plane),  Y1 - Y2, with max absolute diff of 128",
-    MODULE_REQUIRES_TWO_FRAMES,
-    MODULE_REQUIRES_NEW_WINDOW,
-    APPLY_WHILE_PLAYING,
-};
-
 FrameDifference::FrameDifference()
 {
   /* Module Definition */
@@ -51,7 +40,6 @@ FrameDifference::FrameDifference()
   m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;
 
   m_pcFrameDifference = NULL;
-  setModuleDefinition( FrameDifferenceDef );
 }
 
 Void FrameDifference::create( PlaYUVerFrame* Input )

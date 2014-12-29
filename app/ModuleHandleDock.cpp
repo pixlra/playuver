@@ -34,13 +34,10 @@ ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* module
         QWidget( parent ),
         m_pcCurrModuleIf( moduleIf )
 {
-
-  PlaYUVerModuleDefinition ModuleDef = moduleIf->m_pcModule->getModuleDefinition();
-
   // ----------------- Dock definition -----------------
 
   QString labelStr;
-  labelStr.append( ModuleDef.m_pchModuleName );
+  labelStr.append( moduleIf->m_pcModule->m_pchModuleName );
   labelStr.append( " Result:" );
   labelModulueValueLabel = new QLabel( labelStr );
   labelModulueValueLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );

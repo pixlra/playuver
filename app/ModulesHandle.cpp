@@ -95,11 +95,11 @@ QMenu* ModulesHandle::createMenu()
     ModuleIfInternalName = QString::fromLocal8Bit( it->first );
 
     currSubMenu = NULL;
-    if( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory )
+    if( pcCurrModuleIf->m_pchModuleCategory )
     {
       for( Int j = 0; j < m_pcModulesSubMenuList.size(); j++ )
       {
-        if( m_pcModulesSubMenuList.at( j )->title() == QString( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory ) )
+        if( m_pcModulesSubMenuList.at( j )->title() == QString( pcCurrModuleIf->m_pchModuleCategory ) )
         {
           currSubMenu = m_pcModulesSubMenuList.at( j );
           break;
@@ -107,13 +107,13 @@ QMenu* ModulesHandle::createMenu()
       }
       if( !currSubMenu )
       {
-        currSubMenu = m_pcModulesMenu->addMenu( pcCurrModuleIf->m_cModuleDef.m_pchModuleCategory );
+        currSubMenu = m_pcModulesMenu->addMenu( pcCurrModuleIf->m_pchModuleCategory );
         m_pcModulesSubMenuList.append( currSubMenu );
       }
     }
 
-    currAction = new QAction( pcCurrModuleIf->m_cModuleDef.m_pchModuleName, parent() );
-    currAction->setStatusTip( pcCurrModuleIf->m_cModuleDef.m_pchModuleTooltip );
+    currAction = new QAction( pcCurrModuleIf->m_pchModuleName, parent() );
+    currAction->setStatusTip( pcCurrModuleIf->m_pchModuleTooltip );
     currAction->setData( ModuleIfInternalName );
     currAction->setCheckable( true );
     connect( currAction, SIGNAL( triggered() ), this, SLOT( activateModule() ) );
@@ -223,7 +223,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   QString windowName;
 
   QVector<VideoSubWindow*> subWindowList;
-  UInt numberOfFrames = pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiNumberOfFrames;
+  UInt numberOfFrames = pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames;
   if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )  // Show dialog to select sub windows
   {
     DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMdiArea, numberOfFrames, numberOfFrames );
@@ -269,7 +269,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   }
 
   windowName.append( " <" );
-  windowName.append( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleName );
+  windowName.append( pcCurrModuleIf->m_pcModule->m_pchModuleName );
   windowName.append( ">" );
 
   for( Int i = 0; i < subWindowList.size(); i++ )
@@ -280,9 +280,9 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 
   pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
 
-  if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_iModuleType == FRAME_PROCESSING_MODULE )
+  if( pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_PROCESSING_MODULE )
   {
-    if( ( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
+    if( ( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
       VideoSubWindow* interfaceChild = new VideoSubWindow( m_pcParent, true );
       interfaceChild->setWindowName( windowName );
@@ -295,13 +295,13 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
       m_pcMdiArea->addSubWindow( interfaceChild );
     }
   }
-  else if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
+  else if( pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
   {
-    if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiModuleRequirements & MODULE_REQUIRES_SIDEBAR )
+    if( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_SIDEBAR )
     {
       pcCurrModuleIf->m_pcModuleDock = new ModuleHandleDock( m_pcParent, pcCurrModuleIf );
       QString titleDockWidget;
-      titleDockWidget.append( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_pchModuleName );
+      titleDockWidget.append( pcCurrModuleIf->m_pcModule->m_pchModuleName );
       titleDockWidget.append( " Information" );
       pcCurrModuleIf->m_pcDockWidget = new QDockWidget( titleDockWidget, m_pcParent );
       pcCurrModuleIf->m_pcDockWidget->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
@@ -376,7 +376,7 @@ Void ModulesHandle::destroyAllModulesIf()
 Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isPlaying, Bool disableThreads )
 {
   Bool bRet = false;
-  if( !isPlaying || ( isPlaying && pcCurrModuleIf->m_pcModule->m_cModuleDef.m_bApplyWhilePlaying ) )
+  if( !isPlaying || ( isPlaying && pcCurrModuleIf->m_pcModule->m_bApplyWhilePlaying ) )
   {
 #ifdef PLAYUVER_THREADED_MODULES
     if( !disableThreads )
@@ -385,7 +385,7 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isP
 #endif
     pcCurrModuleIf->run();
 
-    if( pcCurrModuleIf->m_pcDisplaySubWindow || pcCurrModuleIf->m_pcModule->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
+    if( pcCurrModuleIf->m_pcDisplaySubWindow || pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
     {
       bRet = true;
     }
@@ -447,7 +447,7 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   }
   if( pcCurrModuleIf->m_pcModuleStream )
   {
-    UInt numberOfWindows = pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiNumberOfFrames;
+    UInt numberOfWindows = pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames;
     UInt64 currFrames = 0;
     UInt64 numberOfFrames = INT_MAX;
     for( UInt i = 0; i < numberOfWindows; i++ )
@@ -504,7 +504,7 @@ Bool ModulesHandle::showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Double mo
 
 Void ModulesHandle::swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
-  if( pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiNumberOfFrames == MODULE_REQUIRES_TWO_FRAMES )
+  if( pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames == MODULE_REQUIRES_TWO_FRAMES )
   {
     VideoSubWindow* auxWindowHandle = pcCurrModuleIf->m_pcSubWindow[0];
     pcCurrModuleIf->m_pcSubWindow[0] = pcCurrModuleIf->m_pcSubWindow[1];
@@ -522,7 +522,7 @@ Void ModulesHandle::customEvent( QEvent *event )
   PlaYUVerAppModuleIf::EventData *eventData = ( PlaYUVerAppModuleIf::EventData* )event;
   if( eventData->m_bSuccess )
   {
-    switch( eventData->m_pcModule->m_pcModule->m_cModuleDef.m_iModuleType )
+    switch( eventData->m_pcModule->m_pcModule->m_iModuleType )
     {
     case FRAME_PROCESSING_MODULE:
       showModuleIf( eventData->m_pcModule, eventData->m_pcModule->m_pcProcessedFrame );

@@ -27,19 +27,16 @@
 namespace plaYUVer
 {
 
-static PlaYUVerModuleDefinition MeasurePSNRDef =
-{
-    FRAME_MEASUREMENT_MODULE,
-    "Quality",
-    "PSNR Y",
-    "Measure the PSNR between two images",
-    MODULE_REQUIRES_TWO_FRAMES,
-    MODULE_REQUIRES_SIDEBAR,
-    APPLY_WHILE_PLAYING, };
-
 MeasurePSNR::MeasurePSNR()
 {
-  setModuleDefinition( MeasurePSNRDef );
+  /* Module Definition */
+  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_pchModuleCategory = "Quality";
+  m_pchModuleName = "PSNR Y";
+  m_pchModuleTooltip = "Measure the PSNR between two images";
+  m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
+  m_uiModuleRequirements = MODULE_REQUIRES_SIDEBAR;
+  m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;
 }
 
 Void MeasurePSNR::create( PlaYUVerFrame* Org )

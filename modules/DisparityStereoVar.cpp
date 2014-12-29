@@ -29,19 +29,9 @@
 namespace plaYUVer
 {
 
-static PlaYUVerModuleDefinition DisparityStereoVarDef =
-{
-    FRAME_PROCESSING_MODULE,
-    "Disparity",
-    "StereoVar",
-    "Measure the disparity between two images using the Stereo Var method (OpenCV)",
-    MODULE_REQUIRES_TWO_FRAMES,
-    MODULE_REQUIRES_NEW_WINDOW,
-    !APPLY_WHILE_PLAYING,
-};
-
 DisparityStereoVar::DisparityStereoVar()
 {
+  /* Module Definition */
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Disparity";
   m_pchModuleName = "StereoVar";
@@ -50,7 +40,6 @@ DisparityStereoVar::DisparityStereoVar()
   m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;
   m_bApplyWhilePlaying = !APPLY_WHILE_PLAYING;
 
-  setModuleDefinition( DisparityStereoVarDef );
   m_pcDisparityFrame = NULL;
   m_cStereoVar.levels = 3;                                 // ignored with USE_AUTO_PARAMS
   m_cStereoVar.pyrScale = 0.5;                             // ignored with USE_AUTO_PARAMS

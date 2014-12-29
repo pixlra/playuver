@@ -54,22 +54,18 @@ Void FilterComponent::destroy()
   m_pcFilteredFrame = NULL;
 }
 
-
-PlaYUVerModuleDefinition FilterComponentLumaDef = {
-    FRAME_PROCESSING_MODULE,        // Apply module to the frames or to the whole sequence.
-                                    // Currently only support for frame
-    "Filter Component",             // Category (sub-menu)
-    "Luma",                         // Name
-    "Filter Y matrix of YUV frame", // Description
-    MODULE_REQUIRES_ONE_FRAME,      // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
-    MODULE_REQUIRES_NOTHING,        // Module requirements (check PlaYUVerModulesIf.h).
-                                    // Several requirements should be "or" between each others.
-    APPLY_WHILE_PLAYING,            // Apply module while playing
-};
-
 FilterComponentLuma::FilterComponentLuma()
 {
-  setModuleDefinition( FilterComponentLumaDef );
+  /* Module Definition */
+  m_iModuleType = FRAME_PROCESSING_MODULE;              // Apply module to the frames or to the whole sequence.
+                                                        // Currently only support for frame
+  m_pchModuleCategory = "Filter Component";             // Category (sub-menu)
+  m_pchModuleName = "Luma";                             // Name
+  m_pchModuleTooltip = "Filter Y matrix of YUV frame";  // Description
+  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;       // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
+  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;     // Module requirements (check PlaYUVerModulesIf.h).
+                                                        // Several requirements should be "or" between each others.
+  m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;           // Apply module while playing
 }
 
 Void FilterComponentLuma::create( PlaYUVerFrame* InputFrame )
@@ -82,21 +78,16 @@ PlaYUVerFrame* FilterComponentLuma::process( PlaYUVerFrame* InputFrame )
   return filterComponent( InputFrame, LUMA );
 }
 
-PlaYUVerModuleDefinition FilterComponentCbDef = {
-    FRAME_PROCESSING_MODULE,        // Apply module to the frames or to the whole sequence.
-                                    // Currently only support for frame
-    "Filter Component",                      // Category (sub-menu)
-    "Chroma U",                     // Name
-    "Filter Y matrix of YUV frame", // Description
-    MODULE_REQUIRES_ONE_FRAME,      // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
-    MODULE_REQUIRES_NOTHING,        // Module requirements (check PlaYUVerModulesIf.h).
-                                    // Several requirements should be "or" between each others.
-    APPLY_WHILE_PLAYING,            // Apply module while playing
-};
-
 FilterComponentChromaU::FilterComponentChromaU()
 {
-  setModuleDefinition( FilterComponentCbDef );
+  /* Module Definition */
+  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_pchModuleCategory = "Filter Component";
+  m_pchModuleName = "Chroma U";
+  m_pchModuleTooltip = "Filter U matrix of YUV frame";
+  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
+  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
+  m_bApplyWhilePlaying = !APPLY_WHILE_PLAYING;
 }
 
 Void FilterComponentChromaU::create( PlaYUVerFrame* InputFrame )
@@ -109,21 +100,16 @@ PlaYUVerFrame* FilterComponentChromaU::process( PlaYUVerFrame* InputFrame )
   return filterComponent( InputFrame, CHROMA_U );
 }
 
-PlaYUVerModuleDefinition FilterComponentCrDef = {
-    FRAME_PROCESSING_MODULE,        // Apply module to the frames or to the whole sequence.
-                                    // Currently only support for frame
-    "Filter Component",                      // Category (sub-menu)
-    "Chroma R",                     // Name
-    "Filter Y matrix of YUV frame", // Description
-    MODULE_REQUIRES_ONE_FRAME,      // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
-    MODULE_REQUIRES_NOTHING,        // Module requirements (check PlaYUVerModulesIf.h).
-                                    // Several requirements should be "or" between each others.
-    APPLY_WHILE_PLAYING,            // Apply module while playing
-};
-
 FilterComponentChromaV::FilterComponentChromaV()
 {
-  setModuleDefinition( FilterComponentCrDef );
+  /* Module Definition */
+  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_pchModuleCategory = "Filter Component";
+  m_pchModuleName = "Chroma V";
+  m_pchModuleTooltip = "Filter V matrix of YUV frame";
+  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
+  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
+  m_bApplyWhilePlaying = !APPLY_WHILE_PLAYING;
 }
 
 Void FilterComponentChromaV::create( PlaYUVerFrame* InputFrame )

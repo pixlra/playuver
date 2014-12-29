@@ -61,11 +61,10 @@ public:
 
 
   static Void destroyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
-  static Bool applyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf, Bool isPlaying, Bool disableThreads = false );
-  static Void swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf );
+  static Bool applyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf, Bool isPlaying = false, Bool disableThreads = false );
+
   static Bool showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame );
   static Bool showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Double moduleResult );
-  static Void applyAllModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
 
 private:
   QMainWindow *m_pcParent;
@@ -77,8 +76,8 @@ private:
   enum
   {
     INVALID_OPT = -1,
-    SWAP_FRAMES_OPT = -2,
-    APPLY_ALL_OPT = -3,
+    SWAP_FRAMES_OPT = 0,
+    APPLY_ALL_OPT = 1,
   };
 
   QMenu* m_pcModulesMenu;
@@ -102,7 +101,8 @@ private:
   QSignalMapper* m_pcActionMapper;
 
   Void enableModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
-  Void openModuleIfStream( PlaYUVerAppModuleIf *pcCurrModuleIf );
+  Void applyAllModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
+  Void swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf );
 
   Void customEvent( QEvent *event );
 

@@ -64,12 +64,12 @@ Void ModulesHandle::createActions()
   m_arrayActions[APPLY_ALL_ACT] = new QAction( "Apply to All", parent() );
   m_arrayActions[APPLY_ALL_ACT]->setStatusTip( "Apply module to all frames and save the result" );
   connect( m_arrayActions[APPLY_ALL_ACT], SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
-  m_pcActionMapper->setMapping( m_arrayActions[APPLY_ALL_ACT], APPLY_ALL_OPT );
+  m_pcActionMapper->setMapping( m_arrayActions[APPLY_ALL_ACT], APPLY_ALL_ACT );
 
   m_arrayActions[SWAP_FRAMES_ACT] = new QAction( "Swap frames", parent() );
   m_arrayActions[SWAP_FRAMES_ACT]->setStatusTip( "Swap Sub Window order" );
   connect( m_arrayActions[SWAP_FRAMES_ACT], SIGNAL( triggered() ), m_pcActionMapper, SLOT( map() ) );
-  m_pcActionMapper->setMapping( m_arrayActions[SWAP_FRAMES_ACT], SWAP_FRAMES_OPT );
+  m_pcActionMapper->setMapping( m_arrayActions[SWAP_FRAMES_ACT], SWAP_FRAMES_ACT );
 
   m_arrayActions[DISABLE_ALL_ACT] = new QAction( "Disable All Modules", parent() );
   connect( m_arrayActions[DISABLE_ALL_ACT], SIGNAL( triggered() ), this, SLOT( destroyAllModulesIf() ) );
@@ -154,14 +154,18 @@ Void ModulesHandle::updateMenus()
   }
   for( Int i = 0; i < m_arrayActions.size(); i++ )
   {
-    m_arrayActions.at( i )->setEnabled( hasSubWindow );
+    m_arrayActions.at( i )->setEnabled( false );
   }
+  m_arrayActions[DISABLE_ALL_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setEnabled( hasSubWindow );
   if( pcSubWindow )
   {
     if( pcSubWindow->getModule() )
     {
       currModuleAction = pcSubWindow->getModule()->m_pcModuleAction;
       currModuleAction->setChecked( true );
+      m_arrayActions[APPLY_ALL_ACT]->setEnabled( true );
+      m_arrayActions[SWAP_FRAMES_ACT]->setEnabled( true );
     }
   }
 }
@@ -171,19 +175,24 @@ Void ModulesHandle::processOpt( Int index )
   VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
   if( pcSubWindow )
   {
-    switch( m_iOptionSelected )
+    PlaYUVerAppModuleIf* pcCurrModule = pcSubWindow->getModule();
+    if( pcCurrModule )
     {
-    case INVALID_OPT:
-      break;
-    case SWAP_FRAMES_OPT:
-      pcSubWindow->swapModuleFrames();
-      break;
-    case APPLY_ALL_OPT:
-      openModuleIfStream( pcSubWindow->getModule() );
-      pcSubWindow->applyModuleAllFrames();
-      break;
-    default:
-      Q_ASSERT( 0 );
+      switch( index )
+      {
+      case INVALID_OPT:
+        break;
+      case SWAP_FRAMES_ACT:
+        swapModulesWindowsIf( pcCurrModule );
+        //pcSubWindow->swapModuleFrames();
+        break;
+      case APPLY_ALL_ACT:
+        applyAllModuleIf( pcCurrModule );
+        //pcSubWindow->applyModuleAllFrames();
+        break;
+      default:
+        Q_ASSERT( 0 );
+      }
     }
   }
 }
@@ -397,40 +406,6 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isP
 
 Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
-  if( pcCurrModuleIf->m_pcModuleStream )
-  {
-    UInt numberOfWindows = pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiNumberOfFrames;
-    UInt64 currFrames = 0;
-    UInt64 numberOfFrames = INT_MAX;
-    for( UInt i = 0; i < numberOfWindows; i++ )
-    {
-      currFrames = pcCurrModuleIf->m_pcSubWindow[i]->getInputStream()->getFrameNum();
-      if( currFrames < numberOfFrames )
-        numberOfFrames = currFrames;
-      pcCurrModuleIf->m_pcSubWindow[i]->stop();
-    }
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-    for( UInt f = 1; f < numberOfFrames; f++ )
-    {
-      applyModuleIf( pcCurrModuleIf, false, true );
-      QCoreApplication::processEvents();
-      pcCurrModuleIf->m_pcModuleStream->writeFrame( pcCurrModuleIf->m_pcProcessedFrame );
-      for( UInt i = 0; i < numberOfWindows; i++ )
-      {
-        pcCurrModuleIf->m_pcSubWindow[i]->play();
-        pcCurrModuleIf->m_pcSubWindow[i]->playEvent();
-      }
-    }
-    for( UInt i = 0; i < numberOfWindows; i++ )
-    {
-      pcCurrModuleIf->m_pcSubWindow[i]->stop();
-    }
-    QApplication::restoreOverrideCursor();
-  }
-}
-
-Void ModulesHandle::openModuleIfStream( PlaYUVerAppModuleIf *pcCurrModuleIf )
-{
   if( pcCurrModuleIf )
   {
     if( !pcCurrModuleIf->m_pcModuleStream )
@@ -477,6 +452,36 @@ Void ModulesHandle::openModuleIfStream( PlaYUVerAppModuleIf *pcCurrModuleIf )
       }
     }
   }
+  if( pcCurrModuleIf->m_pcModuleStream )
+  {
+    UInt numberOfWindows = pcCurrModuleIf->m_pcModule->m_cModuleDef.m_uiNumberOfFrames;
+    UInt64 currFrames = 0;
+    UInt64 numberOfFrames = INT_MAX;
+    for( UInt i = 0; i < numberOfWindows; i++ )
+    {
+      currFrames = pcCurrModuleIf->m_pcSubWindow[i]->getInputStream()->getFrameNum();
+      if( currFrames < numberOfFrames )
+        numberOfFrames = currFrames;
+      pcCurrModuleIf->m_pcSubWindow[i]->stop();
+    }
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+    for( UInt f = 1; f < numberOfFrames; f++ )
+    {
+      applyModuleIf( pcCurrModuleIf, false, true );
+      QCoreApplication::processEvents();
+      pcCurrModuleIf->m_pcModuleStream->writeFrame( pcCurrModuleIf->m_pcProcessedFrame );
+      for( UInt i = 0; i < numberOfWindows; i++ )
+      {
+        pcCurrModuleIf->m_pcSubWindow[i]->play();
+        pcCurrModuleIf->m_pcSubWindow[i]->playEvent();
+      }
+    }
+    for( UInt i = 0; i < numberOfWindows; i++ )
+    {
+      pcCurrModuleIf->m_pcSubWindow[i]->stop();
+    }
+    QApplication::restoreOverrideCursor();
+  }
 }
 
 Bool ModulesHandle::showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame )
@@ -511,6 +516,7 @@ Void ModulesHandle::swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     VideoSubWindow* auxWindowHandle = pcCurrModuleIf->m_pcSubWindow[0];
     pcCurrModuleIf->m_pcSubWindow[0] = pcCurrModuleIf->m_pcSubWindow[1];
     pcCurrModuleIf->m_pcSubWindow[1] = auxWindowHandle;
+    applyModuleIf( pcCurrModuleIf );
   }
 }
 

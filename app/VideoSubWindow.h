@@ -158,8 +158,6 @@ public:
    */
   Void enableModule( PlaYUVerAppModuleIf* select_module );
   Void disableModule();
-  Void swapModuleFrames();
-  Void applyModuleAllFrames();
 
   /**
    * Virtual functions from SubWindowHandle

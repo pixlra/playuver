@@ -227,24 +227,6 @@ Void VideoSubWindow::disableModule()
   }
 }
 
-Void VideoSubWindow::swapModuleFrames()
-{
-  if( m_pcCurrentModule )
-  {
-    ModulesHandle::swapModulesWindowsIf( m_pcCurrentModule );
-    refreshFrame();
-  }
-}
-
-Void VideoSubWindow::applyModuleAllFrames()
-{
-  if( m_pcCurrentModule )
-  {
-    ModulesHandle::applyAllModuleIf( m_pcCurrentModule );
-    stop();
-  }
-}
-
 Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
   m_pcCurrFrame = pcCurrFrame;

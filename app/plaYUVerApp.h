@@ -88,9 +88,11 @@ private Q_SLOTS:
   void normalSize();
   void zoomToFit();
 
-  void chageSubWindowSelection();
+  void update();
   void updateWindowMenu();
   void updateZoomFactorSBox();
+  void updateStatusBar( const QString& );
+  void updatePropertiesSelectedArea( QRect area );
 
   void about();
 
@@ -98,10 +100,6 @@ private Q_SLOTS:
   void dropEvent( QDropEvent *event );
 
   void setActiveSubWindow( QWidget *window );
-
-  void updateStatusBar( const QString& );
-
-  void updatePropertiesSelectedArea( QRect area );
 
   void setAllSubWindowTool();
   void setTool( int idxTool );

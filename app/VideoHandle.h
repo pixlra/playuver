@@ -102,6 +102,9 @@ private:
   UInt64 getMaxFrameNumber();
   Void setTimerStatus();
 
+Q_SIGNALS:
+  void changed();
+
 private Q_SLOTS:
   void update();
   void play();

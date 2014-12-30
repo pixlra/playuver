@@ -223,6 +223,7 @@ Void ModulesHandle::activateModule()
       pcVideoSubWindow->disableModule();
     }
   }
+  emit changed();
 }
 
 Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )

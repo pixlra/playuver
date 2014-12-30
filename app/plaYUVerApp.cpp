@@ -50,8 +50,6 @@ plaYUVerApp::plaYUVerApp()
   setCentralWidget( mdiArea );
   mdiArea->setActivationOrder( QMdiArea::ActivationHistoryOrder );
 
-  connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( chageSubWindowSelection() ) );
-
   mapperWindow = new QSignalMapper( this );
   connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
 
@@ -74,6 +72,11 @@ plaYUVerApp::plaYUVerApp()
 
   setAcceptDrops( true );
   mdiArea->setAcceptDrops( true );
+
+  connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( update() ) );
+  connect( m_appModuleVideo, SIGNAL( changed() ), this, SLOT( update() ) );
+  connect( m_appModuleQuality, SIGNAL( changed() ), this, SLOT( update() ) );
+  connect( m_appModuleExtensions, SIGNAL( changed() ), this, SLOT( update() ) );
 
   m_pcAboutDialog = NULL;
   m_pcCurrentSubWindow = NULL;
@@ -321,7 +324,7 @@ Void plaYUVerApp::format()
       m_pcCurrentSubWindow->close();
     }
     m_pcCurrentSubWindow = NULL;
-    chageSubWindowSelection();
+    update();
   }
 }
 
@@ -332,7 +335,7 @@ Void plaYUVerApp::reload()
     VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow*>( m_pcCurrentVideoSubWindow );
     pcVideoSubWindow->reloadFile();
     m_pcCurrentSubWindow = NULL;
-    chageSubWindowSelection();
+    update();
   }
 }
 
@@ -506,7 +509,7 @@ Void plaYUVerApp::updateZoomFactorSBox()
   }
 }
 
-Void plaYUVerApp::chageSubWindowSelection()
+Void plaYUVerApp::update()
 {
   SubWindowHandle *new_window = activeSubWindow();
   if( activeSubWindow() != m_pcCurrentSubWindow )

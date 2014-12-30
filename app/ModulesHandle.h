@@ -105,6 +105,9 @@ private:
 
   Void customEvent( QEvent *event );
 
+Q_SIGNALS:
+  void changed();
+
 private Q_SLOTS:
   void activateModule();
   void processOpt( int index );

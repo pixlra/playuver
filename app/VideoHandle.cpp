@@ -373,7 +373,8 @@ Void VideoHandle::play()
     }
   }
   setTimerStatus();
-  update();
+  emit changed();
+  //update();
 }
 
 Void VideoHandle::stop()
@@ -394,7 +395,8 @@ Void VideoHandle::stop()
       m_pcCurrentVideoSubWindow->stop();
     }
   }
-  update();
+  emit changed();
+  //update();
   m_arrayActions[VIDEO_LOCK_ACT]->setVisible( false );
 }
 
@@ -422,7 +424,8 @@ Void VideoHandle::playEvent()
     stop();
     m_pcCurrentVideoSubWindow->close();
   }
-  update();
+  emit changed();
+  //update();
 }
 
 Void VideoHandle::seekEvent( Int direction )
@@ -443,7 +446,8 @@ Void VideoHandle::seekEvent( Int direction )
     {
       m_pcCurrentVideoSubWindow->seekRelativeEvent( direction > 0 ? true : false );
     }
-    update();
+    emit changed();
+    //update();
   }
 }
 
@@ -462,7 +466,8 @@ Void VideoHandle::seekSliderEvent( Int new_frame_num )
     {
       m_pcCurrentVideoSubWindow->seekAbsoluteEvent( ( UInt )new_frame_num );
     }
-    update();
+    emit changed();
+    //update();
   }
 }
 

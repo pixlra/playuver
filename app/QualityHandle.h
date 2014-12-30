@@ -74,6 +74,9 @@ private:
   QDockWidget* m_pcQualityHandleDock;
   QualityMeasurementSidebar* m_pcQualityHandleSideBar;
 
+Q_SIGNALS:
+  void changed();
+
 private Q_SLOTS:
   void slotQualityMetricChanged( int );
   void slotSelectReference();

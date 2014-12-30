@@ -18,7 +18,7 @@
  */
 
 /**
- * \file     QualityMeasurement.h
+ * \file     QualityHandle.h
  * \brief    Definition of the quality measurement sidebar
  */
 
@@ -40,17 +40,20 @@ namespace plaYUVer
 
 class VideoSubWindow;
 
-class QualityMeasurement: public QWidget
+class QualityHandle: public QWidget
 {
 Q_OBJECT
 public:
-  QualityMeasurement( QWidget*, QMdiArea * );
-  ~QualityMeasurement();
+  QualityHandle( QWidget*, QMdiArea * );
+  ~QualityHandle();
 
   Void createActions();
   QMenu* createMenu();
   QDockWidget* createDock();
   Void updateMenus();
+
+  Void readSettings();
+  Void writeSettings();
 
   Void update( VideoSubWindow* currSubWindow );
 
@@ -68,8 +71,8 @@ private:
 
   QMenu* m_pcMenuQuality;
 
-  QDockWidget* m_pcQualityMeasurementDock;
-  QualityMeasurementSidebar* m_pcQualityMeasurementSideBar;
+  QDockWidget* m_pcQualityHandleDock;
+  QualityMeasurementSidebar* m_pcQualityHandleSideBar;
 
 private Q_SLOTS:
   void slotQualityMetricChanged( int );

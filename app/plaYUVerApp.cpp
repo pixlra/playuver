@@ -56,7 +56,7 @@ plaYUVerApp::plaYUVerApp()
   connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
 
   m_appModuleVideo = new VideoHandle( this, mdiArea );
-  m_appModuleQuality = new QualityMeasurement( this, mdiArea );
+  m_appModuleQuality = new QualityHandle( this, mdiArea );
   m_appModuleExtensions = new ModulesHandle( this, mdiArea );
 
   createActions();
@@ -1008,19 +1008,13 @@ Void plaYUVerApp::createDockWidgets()
 // Properties Dock Window
   m_arraySideBars.resize( TOTAL_DOCK );
 
-  m_pcStreamProperties = new StreamPropertiesSideBar( this );
-  m_arraySideBars[STREAM_DOCK] = new QDockWidget( tr( "Stream Information" ), this );
-  m_arraySideBars[STREAM_DOCK]->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  m_arraySideBars[STREAM_DOCK]->setWidget( m_pcStreamProperties );
-  addDockWidget( Qt::RightDockWidgetArea, m_arraySideBars[STREAM_DOCK] );
-  connect( m_arraySideBars[STREAM_DOCK], SIGNAL( visibilityChanged(bool) ), this, SLOT( updateStreamProperties() ) );
-
   addDockWidget( Qt::RightDockWidgetArea, m_appModuleVideo->createDock() );
   addDockWidget( Qt::RightDockWidgetArea, m_appModuleQuality->createDock() );
 }
 
 Void plaYUVerApp::createStatusBar()
 {
+  statusBar()->addPermanentWidget(   m_appModuleVideo->createStatusBarMessage() );
   statusBar()->showMessage( tr( "Ready" ) );
 }
 
@@ -1034,19 +1028,11 @@ Void plaYUVerApp::readSettings()
   m_cLastOpenPath = settings.lastOpenPath();
   m_appTool = ( ViewArea::eTool )settings.getSelectedTool();
   setTool( m_appTool );
-  //m_arrayActions[VIDEO_LOOP_ACT]->setChecked( settings.getRepeat() );
 
   m_aRecentFileStreamInfo = settings.getRecentFileList();
   updateRecentFileActions();
 
-  Bool visibleStreamProp, visibleFrameProp, visibleQualityMeasure;
-  settings.getDockVisibility( visibleStreamProp, visibleFrameProp, visibleQualityMeasure );
-  if( !visibleStreamProp )
-    m_arraySideBars[STREAM_DOCK]->close();
-  if( !visibleFrameProp )
-    m_arraySideBars[FRAME_DOCK]->close();
-  if( !visibleQualityMeasure )
-    m_arraySideBars[QUALITY_DOCK]->close();
+  m_appModuleVideo->readSettings();
 
 }
 
@@ -1058,8 +1044,8 @@ Void plaYUVerApp::writeSettings()
   settings.setLastOpenPath( m_cLastOpenPath );
   settings.setSelectedTool( ( Int )m_appTool );
   settings.setRecentFileList( m_aRecentFileStreamInfo );
-  //settings.setDockVisibility( m_pcStreamProperties->isVisible(), m_pcFrameProperties->isVisible(), true );
-  //settings.setPlayingSettings( m_arrayActions[VIDEO_LOOP_ACT]->isChecked() );
+
+  m_appModuleVideo->writeSettings();
 }
 
 }  // NAMESPACE

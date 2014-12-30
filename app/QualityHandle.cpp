@@ -18,7 +18,7 @@
  */
 
 /**
- * \file     QualityMeasurement.cpp
+ * \file     QualityHandle.cpp
  * \brief    Definition of the quality measurement sidebar
  */
 
@@ -30,19 +30,19 @@
 namespace plaYUVer
 {
 
-QualityMeasurement::QualityMeasurement( QWidget* parent, QMdiArea* mdiArea ) :
+QualityHandle::QualityHandle( QWidget* parent, QMdiArea* mdiArea ) :
         m_pcParet( parent ),
         m_pcMainWindowMdiArea( mdiArea )
 {
 
 }
 
-QualityMeasurement::~QualityMeasurement()
+QualityHandle::~QualityHandle()
 {
 
 }
 
-Void QualityMeasurement::createActions()
+Void QualityHandle::createActions()
 {
   m_actionGroupQualityMetric = new QActionGroup( this );
   m_actionGroupQualityMetric->setExclusive( true );
@@ -65,7 +65,7 @@ Void QualityMeasurement::createActions()
   connect( m_arrayActions[SELECT_REF_ACT], SIGNAL( triggered() ), this, SLOT( slotSelectReference() ) );
 }
 
-QMenu* QualityMeasurement::createMenu()
+QMenu* QualityHandle::createMenu()
 {
   m_pcMenuQuality = new QMenu( "Quality", this );
   QMenu* metricsSubMenu = m_pcMenuQuality->addMenu( "Quality Metrics" );
@@ -76,38 +76,48 @@ QMenu* QualityMeasurement::createMenu()
   return m_pcMenuQuality;
 }
 
-QDockWidget* QualityMeasurement::createDock()
+QDockWidget* QualityHandle::createDock()
 {
-  m_pcQualityMeasurementSideBar = new QualityMeasurementSidebar( m_pcParet, m_pcMainWindowMdiArea );
-  m_pcQualityMeasurementDock = new QDockWidget( tr( "Quality Measurement" ), this );
-  m_pcQualityMeasurementDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  m_pcQualityMeasurementDock->setWidget( m_pcQualityMeasurementSideBar );
+  m_pcQualityHandleSideBar = new QualityMeasurementSidebar( m_pcParet, m_pcMainWindowMdiArea );
+  m_pcQualityHandleDock = new QDockWidget( tr( "Quality Measurement" ), this );
+  m_pcQualityHandleDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  m_pcQualityHandleDock->setWidget( m_pcQualityHandleSideBar );
 
-  connect( m_pcQualityMeasurementSideBar, SIGNAL( signalQualityMetricChanged(int) ), this, SLOT( slotQualityMetricChanged(int) ) );
+  connect( m_pcQualityHandleSideBar, SIGNAL( signalQualityMetricChanged(int) ), this, SLOT( slotQualityMetricChanged(int) ) );
   connect( m_mapperQualityMetric, SIGNAL( mapped(int) ), this, SLOT( slotQualityMetricChanged(int) ) );
 
-  return m_pcQualityMeasurementDock;
+  return m_pcQualityHandleDock;
 }
 
-Void QualityMeasurement::updateMenus()
+Void QualityHandle::updateMenus()
 {
 
 }
 
-Void QualityMeasurement::update( VideoSubWindow* currSubWindow )
+Void QualityHandle::readSettings()
 {
-  m_pcQualityMeasurementSideBar->updateSubWindowList();
-  m_pcQualityMeasurementSideBar->updateCurrentWindow( currSubWindow );
+
 }
 
-Void QualityMeasurement::slotQualityMetricChanged( Int idx )
+Void QualityHandle::writeSettings()
+{
+
+}
+
+Void QualityHandle::update( VideoSubWindow* currSubWindow )
+{
+  m_pcQualityHandleSideBar->updateSubWindowList();
+  m_pcQualityHandleSideBar->updateCurrentWindow( currSubWindow );
+}
+
+Void QualityHandle::slotQualityMetricChanged( Int idx )
 {
   m_actionGroupQualityMetric->actions().at( idx )->setChecked( true );
-  m_pcQualityMeasurementSideBar->updateQualityMetric( idx );
-  m_pcQualityMeasurementDock->show();
+  m_pcQualityHandleSideBar->updateQualityMetric( idx );
+  m_pcQualityHandleDock->show();
 }
 
-Void QualityMeasurement::slotSelectReference()
+Void QualityHandle::slotSelectReference()
 {
   DialogSubWindowSelector dialogWindowSelection( this, m_pcMainWindowMdiArea, 1, 1 );
   if( dialogWindowSelection.exec() == QDialog::Accepted )
@@ -130,8 +140,8 @@ Void QualityMeasurement::slotSelectReference()
       pcVideoSubWindow = subWindowList.at( i );
       pcVideoSubWindow->setRefSubWindow( pcRefSubWindow );
     }
-    m_pcQualityMeasurementSideBar->updateSidebarData();
-    m_pcQualityMeasurementDock->show();
+    m_pcQualityHandleSideBar->updateSidebarData();
+    m_pcQualityHandleDock->show();
   }
 }
 

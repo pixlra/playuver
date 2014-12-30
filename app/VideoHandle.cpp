@@ -96,7 +96,7 @@ Void VideoHandle::createActions()
 
 QMenu* VideoHandle::createMenu()
 {
-  m_pcMenuVideo = new QMenu( "Video1", this );
+  m_pcMenuVideo = new QMenu( "Video", this );
   m_pcMenuVideo->addAction( m_arrayActions[PLAY_ACT] );
   m_pcMenuVideo->addAction( m_arrayActions[STOP_ACT] );
   m_pcMenuVideo->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
@@ -138,6 +138,37 @@ QDockWidget* VideoHandle::createDock()
   return m_pcFramePropertiesDock;
 }
 
+QWidget* VideoHandle::createStatusBarMessage()
+{
+  QWidget* statusBarWidget = new QWidget;
+  QHBoxLayout* mainlayout = new QHBoxLayout;
+
+  m_pcFormatCodeLabel = new QLabel;
+  m_pcFormatCodeLabel->setText( " " );
+  m_pcFormatCodeLabel->setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) );
+  m_pcFormatCodeLabel->setMinimumWidth( 100 );
+  m_pcFormatCodeLabel->setAlignment( Qt::AlignCenter );
+
+  m_pcResolutionLabel = new QLabel;
+  m_pcResolutionLabel->setText( " " );
+  m_pcResolutionLabel->setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) );
+  m_pcResolutionLabel->setMinimumWidth( 90 );
+  m_pcResolutionLabel->setAlignment( Qt::AlignCenter );
+
+  m_pcColorSpace = new QLabel;
+  m_pcColorSpace->setText( " " );
+  m_pcColorSpace->setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) );
+  m_pcColorSpace->setMinimumWidth( 60 );
+  m_pcColorSpace->setAlignment( Qt::AlignCenter );
+
+  mainlayout->addWidget( m_pcFormatCodeLabel );
+  mainlayout->addWidget( m_pcResolutionLabel );
+  mainlayout->addWidget( m_pcColorSpace );
+  statusBarWidget->setLayout( mainlayout );
+
+  return statusBarWidget;
+}
+
 Void VideoHandle::updateMenus()
 {
   VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowMdiArea->activeSubWindow() );
@@ -158,26 +189,58 @@ Void VideoHandle::updateMenus()
   }
 }
 
+Void VideoHandle::readSettings()
+{
+  QSettings appSettings;
+  m_arrayActions[VIDEO_LOOP_ACT]->setChecked( appSettings.value( "VideoHandle/Repeat", false ).toBool() );
+  if( !appSettings.value( "VideoHandle/FrameProperties", true ).toBool() )
+    m_pcFramePropertiesDock->close();
+}
+
+Void VideoHandle::writeSettings()
+{
+  QSettings appSettings;
+  appSettings.setValue( "VideoHandle/Repeat", m_arrayActions[VIDEO_LOOP_ACT]->isChecked() );
+  appSettings.setValue( "VideoHandle/FrameProperties", m_pcFramePropertiesSideBar->isVisible() );
+}
+
 Void VideoHandle::update()
 {
   if( m_pcCurrentVideoSubWindow )
   {
+    PlaYUVerStream* pcStream = m_pcCurrentVideoSubWindow->getInputStream();
+    PlaYUVerFrame* pcFrame = m_pcCurrentVideoSubWindow->getCurrFrame();
+
     Int frame_num = 0;
     UInt64 total_frame_num = 1;
-    if( m_pcCurrentVideoSubWindow->getInputStream() )
+
+    QString resolution;
+    if( pcFrame )
     {
-      frame_num = m_pcCurrentVideoSubWindow->getInputStream()->getCurrFrameNum();
+      m_pcColorSpace->setText( PlaYUVerFrame::supportedPixelFormatListNames().at( pcFrame->getPelFormat() ) );
+      resolution.append( QString( "%1x%2" ).arg( pcFrame->getWidth() ).arg( pcFrame->getHeight() ) );
+    }
+
+    if( pcStream )
+    {
+      frame_num = pcStream->getCurrFrameNum();
       m_pcFrameNumInfo->setCurrFrameNum( frame_num );
       total_frame_num = getMaxFrameNumber();
-      //m_pcStreamProperties->setData( m_pcCurrentVideoSubWindow->getInputStream() );
+
+      resolution.append( QString( "@%1" ).arg( pcStream->getFrameRate() ) );
+      m_pcFormatCodeLabel->setText( QString( "%1 | %2" ).arg( pcStream->getFormatName() ).arg( pcStream->getCodecName() ) );
     }
     else
     {
       //m_pcStreamProperties->setData( NULL );
       m_pcFrameNumInfo->setCurrFrameNum( 0 );
+      m_pcFormatCodeLabel->clear();
     }
 
-    m_pcFramePropertiesSideBar->setData( m_pcCurrentVideoSubWindow->getCurrFrame(), m_pcCurrentVideoSubWindow->isPlaying() );
+    if( pcFrame )
+      m_pcResolutionLabel->setText( resolution );
+
+    m_pcFramePropertiesSideBar->setData( pcFrame, m_pcCurrentVideoSubWindow->isPlaying() );
 
     m_pcFrameSlider->setValue( frame_num );
     m_pcFrameSlider->setMaximum( total_frame_num - 1 );

@@ -73,31 +73,6 @@ Void Settings::setSelectedTool( Int tool )
   m_settings.setValue( "MainWindow/SelectedTool", tool );
 }
 
-Void Settings::setDockVisibility( Bool statusStreamProperties, Bool statusFrameProperties, Bool statusQualityMeasurement )
-{
-  m_settings.setValue( "Dock/StreamProperties", statusStreamProperties );
-  m_settings.setValue( "Dock/FrameProperties", statusFrameProperties );
-  m_settings.setValue( "Dock/QualityMeasurement", statusQualityMeasurement );
-}
-
-Void Settings::getDockVisibility( Bool& statusStreamProperties, Bool& statusFrameProperties, Bool& statusQualityMeasurement )
-{
-  statusStreamProperties = m_settings.value( "Dock/StreamProperties", true ).toBool();
-  statusFrameProperties = m_settings.value( "Dock/FrameProperties", true ).toBool();
-  statusQualityMeasurement = m_settings.value( "Dock/QualityMeasurement", true ).toBool();
-}
-
-// - - - - - - - - - - - -  PLaying Settings - - - - - - - - - - - - - - - -
-
-Bool Settings::getRepeat()
-{
-  return m_settings.value( "Playing/Repeat", false ).toBool();
-}
-Void Settings::setPlayingSettings( Bool repeat)
-{
-  m_settings.setValue( "Playing/Repeat", repeat );
-}
-
 Void Settings::setRecentFileList( PlaYUVerStreamInfoVector recentFileList )
 {
   QVariant var;

@@ -55,10 +55,12 @@ public:
   Void createActions();
   QMenu* createMenu();
   //QDockWidget* createDock();
-  Void updateMenus(  );
+  Void updateMenus();
+
+  Void readSettings();
+  Void writeSettings();
 
   SubWindowHandle* processModuleHandlingOpt();
-
 
   static Void destroyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
   static Bool applyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf, Bool isPlaying = false, Bool disableThreads = false );

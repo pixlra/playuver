@@ -184,7 +184,7 @@ private:
    * Modules
    */
   VideoHandle* m_appModuleVideo;
-  QualityMeasurement* m_appModuleQuality;
+  QualityHandle* m_appModuleQuality;
   ModulesHandle *m_appModuleExtensions;
 
 
@@ -214,14 +214,9 @@ private:
    */
   enum SIDEBAR_LIST
   {
-    STREAM_DOCK = 0,
-    FRAME_DOCK,
-    QUALITY_DOCK,
     TOTAL_DOCK,
   };
   QVector<QDockWidget*> m_arraySideBars;
-
-  StreamPropertiesSideBar* m_pcStreamProperties;
 
   /**
    * Array of tool bars for the main app

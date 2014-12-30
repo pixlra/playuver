@@ -168,6 +168,16 @@ Void ModulesHandle::updateMenus()
   }
 }
 
+Void ModulesHandle::readSettings()
+{
+
+}
+
+Void ModulesHandle::writeSettings()
+{
+
+}
+
 Void ModulesHandle::processOpt( Int index )
 {
   VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );

@@ -53,12 +53,6 @@ public:
   Int getSelectedTool();
   Void setSelectedTool( Int);
 
-  Bool getRepeat();
-  Void setPlayingSettings( Bool repeat );
-
-  Void setDockVisibility( Bool statusStreamProperties, Bool statusFrameProperties, Bool statusQualityMeasurement );
-  Void getDockVisibility( Bool& statusStreamProperties, Bool& statusFrameProperties, Bool& statusQualityMeasurement );
-
   // - - - - - - - - - - Recent Files Settings - - - - - - - - - - - - -
   Void setRecentFileList( PlaYUVerStreamInfoVector recentFileList );
   PlaYUVerStreamInfoVector getRecentFileList();

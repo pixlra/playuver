@@ -52,11 +52,14 @@ public:
   QMenu* createMenu();
   QToolBar* createToolBar();
   QDockWidget* createDock();
+  QWidget* createStatusBarMessage();
   Void updateMenus();
+
+  Void readSettings();
+  Void writeSettings();
 
   Void update( VideoSubWindow* currSubWindow );
 
-  Bool* getIsPlayingPtr() { return &m_bIsPlaying; }
   Void closeSubWindow( VideoSubWindow* currSubWindow );
 
 private:
@@ -84,6 +87,10 @@ private:
 
   QDockWidget* m_pcFramePropertiesDock;
   FramePropertiesSideBar* m_pcFramePropertiesSideBar;
+
+  QLabel* m_pcFormatCodeLabel;
+  QLabel* m_pcResolutionLabel;
+  QLabel* m_pcColorSpace;
 
   VideoSubWindow* m_pcCurrentVideoSubWindow;
   QVector<VideoSubWindow*> m_acPlayingSubWindows;

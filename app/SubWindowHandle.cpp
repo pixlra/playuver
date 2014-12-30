@@ -39,14 +39,16 @@ SubWindowHandle::~SubWindowHandle()
 }
 
 Void SubWindowHandle::setWindowName( QString name )
- {
-   m_cWindowName = name;
-   setWindowTitle( m_cWindowName );
- }
- QString SubWindowHandle::getWindowName()
- {
-   return m_cWindowName;
- }
+{
+  m_cWindowName = name;
+  setWindowTitle( m_cWindowName );
+}
+
+QString SubWindowHandle::getWindowName()
+{
+  return m_cWindowName;
+}
+
 Bool SubWindowHandle::mayClose()
 {
   return true;

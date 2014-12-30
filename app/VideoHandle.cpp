@@ -267,6 +267,14 @@ Void VideoHandle::update( VideoSubWindow* currSubWindow )
   update();
 }
 
+Void VideoHandle::updateSelectionArea( QRect area )
+{
+  if( m_pcCurrentVideoSubWindow )
+  {
+    m_pcFramePropertiesSideBar->setSelection( area );
+  }
+}
+
 Void VideoHandle::closeSubWindow( VideoSubWindow* currSubWindow )
 {
   if( m_acPlayingSubWindows.contains( currSubWindow ) )
@@ -274,6 +282,10 @@ Void VideoHandle::closeSubWindow( VideoSubWindow* currSubWindow )
     Int pos = m_acPlayingSubWindows.indexOf( currSubWindow );
     m_acPlayingSubWindows.at( pos )->stop();
     m_acPlayingSubWindows.remove( pos );
+    if( m_acPlayingSubWindows.size() < 2 )
+    {
+      m_arrayActions[VIDEO_LOCK_ACT]->setVisible( false );
+    }
   }
 }
 

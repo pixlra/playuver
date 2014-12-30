@@ -107,6 +107,7 @@ Q_SIGNALS:
 
 private Q_SLOTS:
   void update();
+  void updateSelectionArea( QRect area );
   void play();
   void stop();
   void playEvent();

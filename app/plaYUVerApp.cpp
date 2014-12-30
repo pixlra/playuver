@@ -145,6 +145,18 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
   }
 }
 
+Void plaYUVerApp::closeActiveWindow()
+{
+  SubWindowHandle *currSubWindow = activeSubWindow();
+  m_appModuleVideo->closeSubWindow( qobject_cast<VideoSubWindow*>( currSubWindow ) );
+  mdiArea->closeActiveSubWindow();
+}
+
+Void plaYUVerApp::closeAll()
+{
+  mdiArea->closeAllSubWindows();
+}
+
 Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 {
   if( !QFileInfo( fileName ).exists() )
@@ -181,7 +193,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       mdiArea->addSubWindow( videoSubWindow );
       videoSubWindow->show();
 
-      connect( videoSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updatePropertiesSelectedArea( QRect ) ) );
+      connect( videoSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
 
       connect( subWindow, SIGNAL( updateStatusBar( const QString& ) ), this, SLOT( updateStatusBar( const QString& ) ) );
       connect( subWindow, SIGNAL( zoomChanged() ), this, SLOT( updateZoomFactorSBox() ) );
@@ -367,82 +379,11 @@ Void plaYUVerApp::setTool( Int idxTool )
 {
   m_appTool = ( ViewArea::eTool )idxTool;
   actionGroupTools->actions().at( m_appTool )->setChecked( true );
-  setAllSubWindowTool();
-}
-
-Void plaYUVerApp::setAllSubWindowTool()
-{
   QList<VideoSubWindow*> videoSubWindowList = mdiArea->findChildren<VideoSubWindow*>();
   for( Int i = 0; i < videoSubWindowList.size(); i++ )
   {
     videoSubWindowList.at( i )->getViewArea()->setTool( m_appTool );
   }
-}
-
-Void plaYUVerApp::closeActiveWindow()
-{
-  SubWindowHandle *currSubWindow = activeSubWindow();
-  m_appModuleVideo->closeSubWindow( qobject_cast<VideoSubWindow*>( currSubWindow ) );
-  mdiArea->closeActiveSubWindow();
-}
-
-Void plaYUVerApp::closeAll()
-{
-  mdiArea->closeAllSubWindows();
-}
-//
-//Void plaYUVerApp::updateStreamProperties()
-//{
-//  if( m_pcCurrentVideoSubWindow )
-//  {
-//    Int frame_num = 0;
-//    UInt64 total_frame_num = 1;
-//    if( m_pcCurrentVideoSubWindow->getInputStream() )
-//    {
-//      frame_num = m_pcCurrentVideoSubWindow->getInputStream()->getCurrFrameNum();
-//      m_pcFrameNumInfo->setCurrFrameNum( frame_num );
-//      total_frame_num = getMaxFrameNumber();
-//      m_pcStreamProperties->setData( m_pcCurrentVideoSubWindow->getInputStream() );
-//    }
-//    else
-//    {
-//      m_pcStreamProperties->setData( NULL );
-//      m_pcFrameNumInfo->setCurrFrameNum( 0 );
-//    }
-//
-//    m_pcFrameProperties->setData( m_pcCurrentVideoSubWindow->getCurrFrame(), m_pcCurrentVideoSubWindow->isPlaying() );
-//
-//    m_pcFrameSlider->setValue( frame_num );
-//    m_pcFrameSlider->setMaximum( total_frame_num - 1 );
-//    m_pcFrameNumInfo->setTotalFrameNum( total_frame_num );
-//
-//    if( m_pcCurrentVideoSubWindow->isPlaying() )
-//      m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPause ) );
-//    else
-//      m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPlay ) );
-//
-//    return;
-//  }
-//  m_pcStreamProperties->setData( NULL );
-//  m_pcFrameProperties->setData( NULL, false );
-//  m_pcFrameNumInfo->setCurrFrameNum( 0 );
-//  m_pcFrameNumInfo->setTotalFrameNum( 0 );
-//  m_pcZoomFactorSBox->setValue( 0.0 );
-//}
-
-Void plaYUVerApp::updatePropertiesSelectedArea( QRect area )
-{
-//  if( m_pcCurrentSubWindow )
-//  {
-//    if( area.isValid() )
-//    {
-//      m_pcFrameProperties->setSelection( area );
-//    }
-//  }
-//  else
-//  {
-//    m_pcFrameProperties->setData( NULL, false );
-//  }
 }
 
 // -----------------------  Zoom Functions  -----------------------

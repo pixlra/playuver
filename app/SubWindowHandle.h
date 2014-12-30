@@ -82,6 +82,9 @@ public:
     return m_uiCategory;
   }
 
+protected:
+  virtual void closeEvent( QCloseEvent *event ) = 0;
+
 Q_SIGNALS:
   void zoomChanged();
   void updateStatusBar( const QString& );

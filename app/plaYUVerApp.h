@@ -88,11 +88,12 @@ private Q_SLOTS:
   void normalSize();
   void zoomToFit();
 
+  void setTool( int idxTool );
+
   void update();
   void updateWindowMenu();
   void updateZoomFactorSBox();
   void updateStatusBar( const QString& );
-  void updatePropertiesSelectedArea( QRect area );
 
   void about();
 
@@ -100,9 +101,6 @@ private Q_SLOTS:
   void dropEvent( QDropEvent *event );
 
   void setActiveSubWindow( QWidget *window );
-
-  void setAllSubWindowTool();
-  void setTool( int idxTool );
 
 private:
 
@@ -138,7 +136,7 @@ private:
   /**
    * Save the current subwindow for every category
    */
-  SubWindowHandle* m_pcCurrentSubWindow; //!< General always set
+  SubWindowHandle* m_pcCurrentSubWindow;  //!< General always set
   VideoSubWindow* m_pcCurrentVideoSubWindow;
 
   QString m_cLastOpenPath;
@@ -175,6 +173,17 @@ private:
   QSignalMapper *mapperZoom;
   QSignalMapper *mapperWindow;
 
+  // Tools Actions;
+  QActionGroup *actionGroupTools;
+  enum APP_TOOLS_ACTION_LIST
+  {
+    NAVIGATION_TOOL,
+    SELECTION_TOOL,
+    TOTAL_TOOLS,
+  };
+  QSignalMapper *m_mapperTools;
+  ViewArea::eTool m_appTool;
+
   /**
    * App modules
    * Video
@@ -184,7 +193,6 @@ private:
   VideoHandle* m_appModuleVideo;
   QualityHandle* m_appModuleQuality;
   ModulesHandle *m_appModuleExtensions;
-
 
   /**
    * Array of menus for the main app
@@ -260,26 +268,11 @@ private:
   };
   QVector<QAction*> m_arrayActions;
 
-#define MAX_RECENT_FILES 10
+#define MAX_RECENT_FILES 20
   QVector<QAction*> m_arrayRecentFilesActions;
-  //QAction *actionPopupMenu;
-
-  // Tools Actions;
-  QActionGroup *actionGroupTools;
-  enum APP_TOOLS_ACTION_LIST
- {
-  NAVIGATION_TOOL,
-  SELECTION_TOOL,
-  TOTAL_TOOLS,
- };
- QVector<QAction*> m_arrayTools;
- QSignalMapper *m_mapperTools;
- ViewArea::eTool m_appTool;
-
   PlaYUVerStreamInfoVector m_aRecentFileStreamInfo;
 
   AboutDialog* m_pcAboutDialog;
-
 };
 
 }  // NAMESPACE

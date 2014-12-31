@@ -38,7 +38,10 @@ PlaYUVerModuleFactory::PlaYUVerModuleFactory()
   Register( "FrameDifference", &FrameDifference::Create );
   Register( "AbsoluteFrameDifference", &AbsoluteFrameDifference::Create );
   Register( "LumaAverage", &LumaAverage::Create );
+#ifdef USE_OPENCV
   Register( "DisparityStereoVar", &DisparityStereoVar::Create );
+#endif
+
 }
 
 PlaYUVerModuleFactory::~PlaYUVerModuleFactory()

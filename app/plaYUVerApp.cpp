@@ -344,8 +344,7 @@ Void plaYUVerApp::reload()
 {
   if( m_pcCurrentVideoSubWindow )
   {
-    VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow*>( m_pcCurrentVideoSubWindow );
-    pcVideoSubWindow->reloadFile();
+    m_pcCurrentVideoSubWindow->reloadFile();
     m_pcCurrentSubWindow = NULL;
     update();
   }
@@ -354,7 +353,6 @@ Void plaYUVerApp::reload()
 Void plaYUVerApp::reloadAll()
 {
   VideoSubWindow *subWindow;
-
   QList<VideoSubWindow*> videoSubWindowList = mdiArea->findChildren<VideoSubWindow*>();
   for( Int i = 0; i < videoSubWindowList.size(); i++ )
   {
@@ -364,7 +362,10 @@ Void plaYUVerApp::reloadAll()
       subWindow->reloadFile();
     }
   }
+  m_pcCurrentSubWindow = NULL;
+  update();
 }
+
 Void plaYUVerApp::loadAll()
 {
   if( m_pcCurrentVideoSubWindow )

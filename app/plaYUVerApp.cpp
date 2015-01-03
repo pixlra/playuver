@@ -456,7 +456,6 @@ Void plaYUVerApp::update()
   SubWindowHandle *new_window = activeSubWindow();
   if( activeSubWindow() != m_pcCurrentSubWindow )
   {
-    m_pcCurrentVideoSubWindow = NULL;
     if( activeSubWindow() )
     {
       m_pcCurrentSubWindow = new_window;

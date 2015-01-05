@@ -130,16 +130,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   Int InputFormat = -1;
 
   if( !m_pCurrStream )
-  {
-    m_pCurrStream = new PlaYUVerStream;
-  }
-  else
-  {
-    delete m_pCurrStream;
-    m_pCurrStream = new PlaYUVerStream;
-  }
-
-  m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
+    m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
 
   if( m_pCurrStream->guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
   {
@@ -151,6 +142,16 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   }
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QApplication::restoreOverrideCursor();
+
+  if( !m_pCurrStream )
+  {
+    m_pCurrStream = new PlaYUVerStream;
+  }
+  else
+  {
+    delete m_pCurrStream;
+    m_pCurrStream = new PlaYUVerStream;
+  }
 
   m_pCurrStream->open( cFilename, Width, Height, InputFormat, FrameRate );
 

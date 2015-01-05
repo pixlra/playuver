@@ -72,7 +72,8 @@ private:
   QRect m_cSelectedArea;
 
   QString m_cFilename;
-  PlaYUVerAppModuleIf* m_pcCurrentModule;
+  //PlaYUVerAppModuleIf* m_pcCurrentModule;
+  QVector<PlaYUVerAppModuleIf*> m_apcCurrentModule;
 
   VideoSubWindow* m_pcReferenceSubWindow;
 
@@ -131,15 +132,6 @@ public:
     return m_cViewArea;
   }
 
-  Void setModule( PlaYUVerAppModuleIf* pcCurrentModule )
-  {
-    m_pcCurrentModule = pcCurrentModule;
-  }
-  PlaYUVerAppModuleIf* getModule()
-  {
-    return m_pcCurrentModule;
-  }
-
   Void setRefSubWindow( VideoSubWindow* subWindow )
   {
     m_pcReferenceSubWindow = NULL;
@@ -156,8 +148,12 @@ public:
    * Functions to enable a module in the
    * current SubWindow
    */
-  Void enableModule( PlaYUVerAppModuleIf* select_module );
-  Void disableModule();
+  Void enableModule( PlaYUVerAppModuleIf* pcModule, Bool bThisWindow = true );
+  Void disableModule( PlaYUVerAppModuleIf* pcModule = NULL );
+  QVector<PlaYUVerAppModuleIf*> getModuleArray()
+  {
+    return m_apcCurrentModule;
+  }
 
   /**
    * Virtual functions from SubWindowHandle

@@ -158,10 +158,14 @@ Void ModulesHandle::updateMenus()
   m_arrayActions[FORCE_NEW_WINDOW_ACT]->setEnabled( hasSubWindow );
   if( pcSubWindow )
   {
-    if( pcSubWindow->getModule() )
+    QVector<PlaYUVerAppModuleIf*> apcCurrentModule = pcSubWindow->getModuleArray();
+    for( Int i = 0; i < apcCurrentModule.size(); i++ )
     {
-      currModuleAction = pcSubWindow->getModule()->m_pcModuleAction;
+      currModuleAction = apcCurrentModule.at( i )->m_pcModuleAction;
       currModuleAction->setChecked( true );
+    }
+    if( apcCurrentModule.size() )
+    {
       m_arrayActions[APPLY_ALL_ACT]->setEnabled( true );
       m_arrayActions[SWAP_FRAMES_ACT]->setEnabled( true );
     }
@@ -183,9 +187,10 @@ Void ModulesHandle::processOpt( Int index )
   VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
   if( pcSubWindow )
   {
-    PlaYUVerAppModuleIf* pcCurrModule = pcSubWindow->getModule();
-    if( pcCurrModule )
+    QVector<PlaYUVerAppModuleIf*> apcCurrentModule = pcSubWindow->getModuleArray();
+    if( apcCurrentModule.size() > 1 )
     {
+      PlaYUVerAppModuleIf* pcCurrModule = apcCurrentModule.at( 0 );
       switch( index )
       {
       case INVALID_OPT:
@@ -286,7 +291,6 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     pcCurrModuleIf->m_pcSubWindow[i] = subWindowList.at( i );
-    pcCurrModuleIf->m_pcSubWindow[i]->disableModule();
   }
 
   pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
@@ -302,7 +306,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
       connect( interfaceChild, SIGNAL( zoomChanged() ), m_pcParent, SLOT( updateZoomFactorSBox() ) );
 
       pcCurrModuleIf->m_pcDisplaySubWindow = interfaceChild;
-      pcCurrModuleIf->m_pcDisplaySubWindow->setModule( pcCurrModuleIf );
+      pcCurrModuleIf->m_pcDisplaySubWindow->enableModule( pcCurrModuleIf, true );
       m_pcMdiArea->addSubWindow( interfaceChild );
     }
   }
@@ -322,14 +326,15 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     }
   }
 
-  // Create Module
-  pcCurrModuleIf->m_pcModule->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
-
   // Associate module with subwindows
   for( UInt i = 0; i < numberOfFrames; i++ )
   {
     pcCurrModuleIf->m_pcSubWindow[i]->enableModule( pcCurrModuleIf );
   }
+
+  // Create Module
+  pcCurrModuleIf->m_pcModule->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
+
   applyModuleIf( pcCurrModuleIf, false );
 
   return;
@@ -357,7 +362,7 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     {
       if( pcCurrModuleIf->m_pcSubWindow[i] )
       {
-        pcCurrModuleIf->m_pcSubWindow[i]->disableModule();
+        pcCurrModuleIf->m_pcSubWindow[i]->disableModule( pcCurrModuleIf );
         pcCurrModuleIf->m_pcSubWindow[i] = NULL;
       }
     }

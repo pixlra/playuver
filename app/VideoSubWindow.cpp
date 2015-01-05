@@ -235,7 +235,7 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
     {
       ModulesHandle::destroyModuleIf( apcCurrentModule.at( i ) );
     }
-    assert( m_apcCurrentModule.size() == 0 );
+    //assert( m_apcCurrentModule.size() == 0 );
   }
   refreshFrame();
 }

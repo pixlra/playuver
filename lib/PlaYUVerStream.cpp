@@ -295,12 +295,13 @@ Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, 
 
 Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
 {
-  Bool bRet = false;
+  Bool bGuessed = true;
+  Bool bGuessedByFilesize = false;
   QString FilenameShort = QFileInfo( filename ).fileName();
   QString fileExtension = QFileInfo( filename ).suffix();
   if( !fileExtension.compare( "yuv" ) )
   {
-    bRet = true;
+    bGuessed = false;
     // Guess pixel format
     QStringList formats_list = PlaYUVerFrame::supportedPixelFormatListNames();
     for( Int i = 0; i < formats_list.size(); i++ )
@@ -388,14 +389,15 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
         {
           rWidth = sizeResolution.at( match ).width();
           rHeight = sizeResolution.at( match ).height();
+          bGuessedByFilesize = true;
         }
       }
     }
 
     if( rWidth > 0 && rHeight > 0 && rInputFormat >= 0 )
-      bRet = false;
+      bGuessed = true && !bGuessedByFilesize;
   }
-  return bRet;
+  return !bGuessed;
 }
 
 Void PlaYUVerStream::loadAll()

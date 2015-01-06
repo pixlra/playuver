@@ -73,7 +73,7 @@ private:
 
   QString m_cFilename;
   //PlaYUVerAppModuleIf* m_pcCurrentModule;
-  QVector<PlaYUVerAppModuleIf*> m_apcCurrentModule;
+  QList<PlaYUVerAppModuleIf*> m_apcCurrentModule;
 
   VideoSubWindow* m_pcReferenceSubWindow;
 
@@ -150,7 +150,7 @@ public:
    */
   Void enableModule( PlaYUVerAppModuleIf* pcModule, Bool bThisWindow = true );
   Void disableModule( PlaYUVerAppModuleIf* pcModule = NULL );
-  QVector<PlaYUVerAppModuleIf*> getModuleArray()
+  QList<PlaYUVerAppModuleIf*> getModuleArray()
   {
     return m_apcCurrentModule;
   }

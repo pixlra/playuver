@@ -158,7 +158,7 @@ Void ModulesHandle::updateMenus()
   m_arrayActions[FORCE_NEW_WINDOW_ACT]->setEnabled( hasSubWindow );
   if( pcSubWindow )
   {
-    QVector<PlaYUVerAppModuleIf*> apcCurrentModule = pcSubWindow->getModuleArray();
+    QList<PlaYUVerAppModuleIf*> apcCurrentModule = pcSubWindow->getModuleArray();
     for( Int i = 0; i < apcCurrentModule.size(); i++ )
     {
       currModuleAction = apcCurrentModule.at( i )->m_pcModuleAction;
@@ -187,7 +187,7 @@ Void ModulesHandle::processOpt( Int index )
   VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
   if( pcSubWindow )
   {
-    QVector<PlaYUVerAppModuleIf*> apcCurrentModule = pcSubWindow->getModuleArray();
+    QList<PlaYUVerAppModuleIf*> apcCurrentModule = pcSubWindow->getModuleArray();
     if( apcCurrentModule.size() > 1 )
     {
       PlaYUVerAppModuleIf* pcCurrModule = apcCurrentModule.at( 0 );

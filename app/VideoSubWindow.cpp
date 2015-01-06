@@ -225,13 +225,13 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
     Int modIdx = m_apcCurrentModule.indexOf( pcModule );
     if( modIdx != -1 )
     {
-      m_apcCurrentModule.remove( modIdx );
+      m_apcCurrentModule.removeAt( modIdx );
       ModulesHandle::destroyModuleIf( pcModule );
     }
   }
   else
   {
-    QVector<PlaYUVerAppModuleIf*> apcCurrentModule = m_apcCurrentModule;
+    QList<PlaYUVerAppModuleIf*> apcCurrentModule = m_apcCurrentModule;
     for( Int i = 0; i < apcCurrentModule.size(); i++ )
     {
       m_apcCurrentModule.removeOne( apcCurrentModule.at( i ) );

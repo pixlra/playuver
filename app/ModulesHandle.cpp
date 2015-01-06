@@ -205,6 +205,7 @@ Void ModulesHandle::processOpt( Int index )
         Q_ASSERT( 0 );
       }
     }
+    emit changed();
   }
 }
 

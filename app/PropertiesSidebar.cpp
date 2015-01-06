@@ -482,7 +482,7 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame, Bool isPlaying )
       }
     }
     setEnabled( true );
-    if( m_pcFrame != pcFrame || !(*pbMainPlaySwitch) )
+    if( m_pcFrame || !(*pbMainPlaySwitch) )
     {
       m_pcFrame = pcFrame;
       updateDataHistogram();

@@ -454,6 +454,7 @@ Void plaYUVerApp::updateZoomFactorSBox()
 Void plaYUVerApp::update()
 {
   SubWindowHandle *new_window = activeSubWindow();
+  QCoreApplication::processEvents();
   if( activeSubWindow() != m_pcCurrentSubWindow )
   {
     if( activeSubWindow() )

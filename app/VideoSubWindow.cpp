@@ -129,7 +129,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   UInt Width = 0, Height = 0, FrameRate = 30;
   Int InputFormat = -1;
 
-  if( !m_pCurrStream )
+  if( m_pCurrStream )
     m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
 
   if( m_pCurrStream->guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
@@ -234,9 +234,10 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
     QVector<PlaYUVerAppModuleIf*> apcCurrentModule = m_apcCurrentModule;
     for( Int i = 0; i < apcCurrentModule.size(); i++ )
     {
+      m_apcCurrentModule.removeOne( apcCurrentModule.at( i ) );
       ModulesHandle::destroyModuleIf( apcCurrentModule.at( i ) );
     }
-    //assert( m_apcCurrentModule.size() == 0 );
+    assert( m_apcCurrentModule.size() == 0 );
   }
   refreshFrame();
 }

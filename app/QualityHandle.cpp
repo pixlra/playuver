@@ -106,7 +106,6 @@ Void QualityHandle::writeSettings()
 
 Void QualityHandle::update( VideoSubWindow* currSubWindow )
 {
-  m_pcQualityHandleSideBar->updateSubWindowList();
   m_pcQualityHandleSideBar->updateCurrentWindow( currSubWindow );
 }
 

@@ -167,6 +167,7 @@ Void QualityMeasurementSidebar::updateCurrentWindow( VideoSubWindow *subWindow )
       index = m_pcVideoWindowList.indexOf( refSubWindow );
     }
     m_comboBoxRef->setCurrentIndex( index );
+    updateSubWindowList();
     updateSidebarData();
   }
 }

@@ -455,8 +455,9 @@ Void plaYUVerApp::update()
 {
   SubWindowHandle *new_window = activeSubWindow();
   QCoreApplication::processEvents();
-  if( activeSubWindow() != m_pcCurrentSubWindow )
+  //if( activeSubWindow() != m_pcCurrentSubWindow )
   {
+    m_pcCurrentSubWindow = NULL;
     if( activeSubWindow() )
     {
       m_pcCurrentSubWindow = new_window;

@@ -234,6 +234,7 @@ Void ModulesHandle::activateModule()
 
 Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
+  VideoSubWindow* pcModuleSubWindow = NULL;
   Bool bShowModulesNewWindow = m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked();
   VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
 
@@ -300,15 +301,16 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   {
     if( ( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
-      VideoSubWindow* interfaceChild = new VideoSubWindow( m_pcParent, true );
-      interfaceChild->setWindowName( windowName );
+      pcModuleSubWindow = new VideoSubWindow( m_pcParent, true );
+      pcModuleSubWindow->setWindowShortName( windowName );
+      pcModuleSubWindow->setWindowName( windowName );
 
-      connect( interfaceChild, SIGNAL( updateStatusBar( const QString& ) ), m_pcParent, SLOT( updateStatusBar( const QString& ) ) );
-      connect( interfaceChild, SIGNAL( zoomChanged() ), m_pcParent, SLOT( updateZoomFactorSBox() ) );
+      connect( pcModuleSubWindow, SIGNAL( updateStatusBar( const QString& ) ), m_pcParent, SLOT( updateStatusBar( const QString& ) ) );
+      connect( pcModuleSubWindow, SIGNAL( zoomChanged() ), m_pcParent, SLOT( updateZoomFactorSBox() ) );
 
-      pcCurrModuleIf->m_pcDisplaySubWindow = interfaceChild;
+      pcCurrModuleIf->m_pcDisplaySubWindow = pcModuleSubWindow;
       pcCurrModuleIf->m_pcDisplaySubWindow->enableModule( pcCurrModuleIf, true );
-      m_pcMdiArea->addSubWindow( interfaceChild );
+      m_pcMdiArea->addSubWindow( pcModuleSubWindow );
     }
   }
   else if( pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
@@ -337,7 +339,8 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   pcCurrModuleIf->m_pcModule->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
 
   applyModuleIf( pcCurrModuleIf, false );
-
+  QCoreApplication::processEvents();
+  //pcModuleSubWindow->show();
   return;
 }
 

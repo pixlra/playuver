@@ -139,6 +139,7 @@ public:
       if( m_pcCurrFrame->haveSameFmt( subWindow->getCurrFrame() ) )
         m_pcReferenceSubWindow = subWindow;
   }
+
   VideoSubWindow* getRefSubWindow()
   {
     return m_pcReferenceSubWindow;
@@ -171,6 +172,10 @@ public:
 
   QSize sizeHint() const;
 
+  Void setWindowShortName( const QString& name)
+  {
+    m_cWindowShortName = name;
+  }
   QString getWindowShortName()
   {
     return m_cWindowShortName;

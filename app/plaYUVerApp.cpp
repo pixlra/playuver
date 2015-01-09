@@ -48,7 +48,7 @@ plaYUVerApp::plaYUVerApp()
 
   mdiArea = new PlaYUVerMdiArea;
   setCentralWidget( mdiArea );
-  mdiArea->setActivationOrder( QMdiArea::ActivationHistoryOrder );
+  //mdiArea->setActivationOrder( QMdiArea::ActivationHistoryOrder );
 
   mapperWindow = new QSignalMapper( this );
   connect( mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );

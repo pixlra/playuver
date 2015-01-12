@@ -26,7 +26,6 @@ set(plaYUver_App_SRCS
 # Docks / Sidebars
     ModuleHandleDock.cpp
     PropertiesSidebar.cpp
-    PlaYUVerFrameStatistics.cpp
     QualityMeasurementSidebar.cpp
 # Widgets
     HistogramWidget.cpp

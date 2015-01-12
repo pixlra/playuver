@@ -72,6 +72,7 @@ Void PlaYUVerFrameStats::xSetupStatistics( const PlaYUVerFrame *pcFrame, UInt op
 
 Void PlaYUVerFrameStats::calcHistogram()
 {
+  m_bRunningFlag = true;
   m_bHasHistogram = false;
   getMem1D<Double>( &( m_pdHistogram ), m_uiHistoSegments * histoChannels );
 
@@ -97,7 +98,7 @@ Void PlaYUVerFrameStats::calcHistogram()
       m_pdHistogram[*( data[LUMA] ) + LUMA * m_uiHistoSegments]++;
       data[LUMA] += 1;
     }
-    for( i = 0; ( i < imageChromaSize ) && runningFlag; i++ )
+    for( i = 0; ( i < imageChromaSize ) && m_bRunningFlag; i++ )
     {
       for( j = 1; j < m_uiChannels; j++ )
       {
@@ -115,7 +116,7 @@ Void PlaYUVerFrameStats::calcHistogram()
     data[COLOR_G] = m_pppImageData[COLOR_G][0];
     data[COLOR_B] = m_pppImageData[COLOR_B][0];
 
-    for( i = 0; ( i < m_uiImageHeight * m_uiImageWidth ) && runningFlag; i++ )
+    for( i = 0; ( i < m_uiImageHeight * m_uiImageWidth ) && m_bRunningFlag; i++ )
     {
       for( j = 0; j < m_uiChannels; j++ )
       {

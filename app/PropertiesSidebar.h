@@ -40,30 +40,6 @@
 namespace plaYUVer
 {
 
-class StreamPropertiesSideBar: public QWidget
-{
-Q_OBJECT
-public:
-  StreamPropertiesSideBar( QWidget* parent );
-  ~StreamPropertiesSideBar();
-
-  QSize sizeHint() const;
-
-  Void setData( PlaYUVerStream* m_pcStream );
-
-private:
-  PlaYUVerStream* m_pcStream;
-
-  Bool m_bIsVisible;
-  QLabel* labelNameValue;
-  QLabel* labelFormatValue;
-  QLabel* labelCodecValue;
-  QLabel* labelDurationValueTime;
-  QLabel* labelDurationValueFrames;
-  QLabel* labelSizeValue;
-  QLabel* labelColorSpaceValue;
-};
-
 class FramePropertiesSideBar: public QWidget
 {
 Q_OBJECT

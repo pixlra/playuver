@@ -80,6 +80,17 @@ public:
    */
   Int getHistogramSegment();
 
+  /**
+   * Control calculation
+   */
+  Void setRunningFlag( Bool bFlag )
+  {
+    m_bRunningFlag = bFlag;
+  }
+  Bool getHasHistogram()
+  {
+    return m_bHasHistogram;
+  }
 private:
 
   /** The histogram data.*/
@@ -103,7 +114,7 @@ private:
   UInt m_uiHistoSegments;
 
   /** Used to stop thread during calculations.*/
-  Bool runningFlag;
+  Bool m_bRunningFlag;
 
   Int getRealHistoChannel( Int channel );
 

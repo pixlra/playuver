@@ -458,11 +458,11 @@ Void plaYUVerApp::update()
   //if( activeSubWindow() != m_pcCurrentSubWindow )
   {
     m_pcCurrentSubWindow = NULL;
+    m_pcCurrentVideoSubWindow = NULL;
     if( activeSubWindow() )
     {
       m_pcCurrentSubWindow = new_window;
 
-      m_pcCurrentVideoSubWindow = NULL;
       switch( m_pcCurrentSubWindow->getCategory() )
       {
       case SubWindowHandle::VIDEO_SUBWINDOW:

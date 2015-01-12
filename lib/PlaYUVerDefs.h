@@ -124,6 +124,7 @@ enum RGBcomponent
   COLOR_R = 0,
   COLOR_G,
   COLOR_B,
+  COLOR_A,
 };
 
 }  // NAMESPACE

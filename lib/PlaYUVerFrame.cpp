@@ -188,14 +188,22 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame )
 Void PlaYUVerFrame::adjustSelectedAreaDims( UInt& posX, UInt& posY, UInt& areaWidth, UInt& areaHeight, Int pelFormat )
 {
   PlaYUVerFramePelFormat* pcPelFormat = &( g_PlaYUVerFramePelFormatsList[pelFormat] );
-  if( posX % pcPelFormat->ratioChromaWidth )
-    posX--;
-  if( posY % pcPelFormat->ratioChromaHeight )
-    posY--;
-  if( ( posX + areaWidth ) % 2 )
-    areaWidth++;
-  if( ( posY + areaHeight ) % 2 )
-    areaHeight++;
+  if( pcPelFormat->ratioChromaWidth )
+  {
+    if( posX % pcPelFormat->ratioChromaWidth )
+      posX--;
+    if( ( posX + areaWidth ) % pcPelFormat->ratioChromaWidth )
+      areaWidth++;
+  }
+
+  if( pcPelFormat->ratioChromaHeight )
+  {
+    if( posY % pcPelFormat->ratioChromaHeight )
+      posY--;
+
+    if( ( posY + areaHeight ) % pcPelFormat->ratioChromaHeight )
+      areaHeight++;
+  }
 }
 
 Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
@@ -314,19 +322,19 @@ Void PlaYUVerFrame::getCvMat( Void** ppCvFrame )
   Int cvType = CV_8UC3;
   switch( m_iPixelFormat )
   {
-    case YUV420p:
-    case YUV444p:
-    case YUV422p:
-    case YUYV422:
+  case YUV420p:
+  case YUV444p:
+  case YUV422p:
+  case YUYV422:
     cvType = CV_8UC4;
     break;
-    case GRAY:
+  case GRAY:
     cvType = CV_8UC1;
     break;
-    case RGB8:
+  case RGB8:
     cvType = CV_8UC3;
     break;
-    default:
+  default:
     break;
   }
   cv::Mat *pcCvFrame = new cv::Mat( m_uiHeight, m_uiWidth, cvType );
@@ -346,18 +354,18 @@ Void PlaYUVerFrame::getCvMat( Void** ppCvFrame )
 Void PlaYUVerFrame::fromCvMat( Void* voidFrame )
 {
 #ifdef USE_OPENCV
-  cv::Mat* opencvFrame = (cv::Mat*)voidFrame;
+  cv::Mat* opencvFrame = ( cv::Mat* )voidFrame;
   if( m_iPixelFormat == NO_FMT )
   {
     switch( opencvFrame->channels() )
     {
-      case 1:
+    case 1:
       m_iPixelFormat = GRAY;
       break;
-      case 4:
+    case 4:
       m_iPixelFormat = RGB8;
       break;
-      default:
+    default:
       return;
     }
   }
@@ -376,7 +384,7 @@ Void PlaYUVerFrame::fromCvMat( Void* voidFrame )
     Pel* pInputPelV = m_pppcInputPel[CHROMA_V][0];
     Pel* pcRGBPelInterlaced = m_pcRGB32;
     memcpy( pcRGBPelInterlaced, opencvFrame->data, m_uiWidth * m_uiHeight * 4 * sizeof(Pel) );
-    UInt* buff = (UInt*)pcRGBPelInterlaced;
+    UInt* buff = ( UInt* )pcRGBPelInterlaced;
     for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )
     {
       *pInputPelY++ = pelRed( *buff );

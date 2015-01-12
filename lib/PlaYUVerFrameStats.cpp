@@ -73,7 +73,9 @@ Void PlaYUVerFrameStats::xSetupStatistics( const PlaYUVerFrame *pcFrame, UInt op
 Void PlaYUVerFrameStats::calcHistogram()
 {
   m_bRunningFlag = true;
-  m_bHasHistogram = false;
+  //m_bHasHistogram = false;
+  if( m_bHasHistogram )
+    return;
   getMem1D<Double>( &( m_pdHistogram ), m_uiHistoSegments * histoChannels );
 
   if( !m_pdHistogram )

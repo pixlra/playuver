@@ -87,6 +87,7 @@ private Q_SLOTS:
   void setZoomFromSBox( double ratio );
   void normalSize();
   void zoomToFit();
+  void zoomToFitAll();
 
   void setTool( int idxTool );
 
@@ -141,11 +142,7 @@ private:
 
   QString m_cLastOpenPath;
 
-  Void zoomToFitAll();
-
   Void updateMenus();
-
-
 
   Void createActions();
   Void createMenus();
@@ -252,8 +249,9 @@ private:
     EXIT_ACT,
     ZOOM_IN_ACT,
     ZOOM_OUT_ACT,
-    ZOOM_FIT_ACT,
     ZOOM_NORMAL_ACT,
+    ZOOM_FIT_ACT,
+    ZOOM_FIT_ALL_ACT,
     NAVIGATION_TOOL_ACT,
     SELECTION_TOOL_ACT,
     TILE_WINDOWS_ACT,

@@ -596,6 +596,7 @@ Void plaYUVerApp::updateMenus()
   m_arrayActions[ZOOM_OUT_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[ZOOM_NORMAL_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[ZOOM_FIT_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[ZOOM_FIT_ALL_ACT]->setEnabled( hasSubWindow );
   m_pcZoomFactorSBox->setEnabled( hasSubWindow );
 
   m_arrayActions[NAVIGATION_TOOL_ACT]->setEnabled( hasSubWindow );
@@ -749,6 +750,11 @@ Void plaYUVerApp::createActions()
   m_arrayActions[ZOOM_FIT_ACT]->setStatusTip( tr( "Zoom in or out to fit on the window." ) );
   connect( m_arrayActions[ZOOM_FIT_ACT], SIGNAL( triggered() ), this, SLOT( zoomToFit() ) );
 
+  m_arrayActions[ZOOM_FIT_ALL_ACT] = new QAction( tr( "Zoom to Fit All" ), this );
+  //m_arrayActions[ZOOM_FIT_ALL_ACT]->setIcon( QIcon::fromTheme( "zoom-fit-best", QIcon( ":/images/fittowindow.png" ) ) );
+  m_arrayActions[ZOOM_FIT_ALL_ACT]->setStatusTip( tr( "Apply zoom to fit to all windows" ) );
+  connect( m_arrayActions[ZOOM_FIT_ALL_ACT], SIGNAL( triggered() ), this, SLOT( zoomToFitAll() ) );
+
   // ------------ Tools ------------
   actionGroupTools = new QActionGroup( this );
   actionGroupTools->setExclusive( true );
@@ -851,6 +857,7 @@ Void plaYUVerApp::createMenus()
   m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_OUT_ACT] );
   m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_NORMAL_ACT] );
   m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_FIT_ACT] );
+  m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_FIT_ALL_ACT] );
 
   m_arrayMenu[VIEW_MENU]->addSeparator();
 

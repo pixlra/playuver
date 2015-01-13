@@ -940,7 +940,6 @@ Void plaYUVerApp::createStatusBar()
   statusBar()->showMessage( tr( "Ready" ) );
 }
 
-
 Void plaYUVerApp::addStreamInfoToRecentList( PlaYUVerStreamInfo streamInfo )
 {
   Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, streamInfo.m_cFilename );

@@ -749,7 +749,6 @@ Void plaYUVerApp::createActions()
   m_arrayActions[ZOOM_FIT_ACT]->setStatusTip( tr( "Zoom in or out to fit on the window." ) );
   connect( m_arrayActions[ZOOM_FIT_ACT], SIGNAL( triggered() ), this, SLOT( zoomToFit() ) );
 
-
   // ------------ Tools ------------
   actionGroupTools = new QActionGroup( this );
   actionGroupTools->setExclusive( true );
@@ -930,8 +929,6 @@ Void plaYUVerApp::createDockWidgets()
 {
   // Properties Dock Window
   m_arraySideBars.resize( TOTAL_DOCK );
-  addDockWidget( Qt::RightDockWidgetArea, m_appModuleVideo->createDock() );
-  addDockWidget( Qt::RightDockWidgetArea, m_appModuleQuality->createDock() );
 }
 
 Void plaYUVerApp::createStatusBar()

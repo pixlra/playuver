@@ -41,7 +41,6 @@
 #include "VideoHandle.h"
 #include "QualityHandle.h"
 #include "ModulesHandle.h"
-#include "PropertiesSidebar.h"
 #include "AboutDialog.h"
 #include "WidgetFrameNumber.h"
 

@@ -18,26 +18,17 @@
  */
 
 /**
- * \file     PropertiesSidebar.cpp
+ * \file     FramePropertiesSideBar.cpp
  * \brief    Main side bar definition
  */
 
 #include <cmath>
 #include <QtGui>
 #include <QtDebug>
-#include "PropertiesSidebar.h"
+#include "FramePropertiesSidebar.h"
 
 namespace plaYUVer
 {
-
-static inline QSize bestSize( QSize currSize )
-{
-  QSize bestSize( 180, currSize.height() );
-  if( currSize.width() < bestSize.width() )
-    return bestSize;
-  else
-    return currSize;
-}
 
 FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent, Bool* pbMainPlaySwitch ) :
         QWidget( parent ),
@@ -262,7 +253,11 @@ FramePropertiesSideBar::~FramePropertiesSideBar()
 
 QSize FramePropertiesSideBar::sizeHint() const
 {
-  return bestSize( size() );
+  QSize currSize = size();
+  QSize bestSize( 180, currSize.height() );
+  if( currSize.width() < bestSize.width() )
+    return bestSize;
+  return currSize;
 }
 
 Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame, Bool isPlaying )
@@ -392,7 +387,7 @@ Void FramePropertiesSideBar::updateDataHistogram()
       // image is the same in Image Viewer, then compute too the histogram
       // for this selection.
       // New frame required to separate from the thread
-      histogramWidget->updateData( new PlaYUVerFrame(m_pcFrame), NULL );
+      histogramWidget->updateData( m_pcFrame, NULL );
       fullImageButton->hide();
       selectionImageButton->hide();
     }

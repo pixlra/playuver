@@ -254,6 +254,7 @@ Void PlaYUVerStream::close()
 #ifdef USE_FFMPEG
   if( m_uiStreamHandler == FFMPEG )
     m_cLibAvContext->closeAvFormat();
+    delete m_cLibAvContext;
 #endif
 
   if( m_ppcFrameBuffer )

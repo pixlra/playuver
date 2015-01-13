@@ -27,63 +27,8 @@
 namespace plaYUVer
 {
 
-Settings::Settings() :
-        m_settings( "pixLRA", "plaYUVer" )
+Settings::Settings()
 {
-}
-// - - - - - - - - - - - -  Main Window Settings - - - - - - - - - - - - - - - - 
-
-QPoint Settings::mainWindowPos()
-{
-  return m_settings.value( "MainWindow/pos", QPoint( 200, 200 ) ).toPoint();
-}
-
-Void Settings::setMainWindowPos( const QPoint & pos )
-{
-  m_settings.setValue( "MainWindow/pos", pos );
-}
-
-QSize Settings::mainWindowSize()
-{
-  return m_settings.value( "MainWindow/size", QSize( 500, 400 ) ).toSize();
-}
-
-Void Settings::setMainWindowSize( const QSize & size )
-{
-  m_settings.setValue( "MainWindow/size", size );
-}
-
-QString Settings::lastOpenPath()
-{
-  return m_settings.value( "MainWindow/lastOpenPath", QDir::homePath() ).toString();
-}
-
-Void Settings::setLastOpenPath( const QString & path )
-{
-  m_settings.setValue( "MainWindow/lastOpenPath", path );
-}
-
-Int Settings::getSelectedTool()
-{
-  return m_settings.value( "MainWindow/SelectedTool", ViewArea::NavigationTool ).toInt();
-}
-
-Void Settings::setSelectedTool( Int tool )
-{
-  m_settings.setValue( "MainWindow/SelectedTool", tool );
-}
-
-Void Settings::setRecentFileList( PlaYUVerStreamInfoVector recentFileList )
-{
-  QVariant var;
-  var.setValue<PlaYUVerStreamInfoVector>( recentFileList );
-  m_settings.setValue("MainWindow/RecentFileList", var );
-}
-
-QVector<PlaYUVerStreamInfo> Settings::getRecentFileList()
-{
-  QVariant value = m_settings.value("MainWindow/RecentFileList");
-  return value.value<PlaYUVerStreamInfoVector>();
 }
 
 // - - - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - - - - -

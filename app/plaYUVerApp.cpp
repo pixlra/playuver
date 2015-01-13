@@ -29,7 +29,6 @@
 #include "plaYUVerApp.h"
 #include "DialogSubWindowSelector.h"
 #include "WidgetFrameNumber.h"
-#include "Settings.h"
 
 #define SYNCHRONISED_ZOON 1
 
@@ -202,14 +201,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       videoSubWindow->getViewArea()->setTool( m_appTool );
       updateZoomFactorSBox();
 
-      Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
-      if( idx >= 0 )
-        m_aRecentFileStreamInfo.remove( idx );
-      PlaYUVerStreamInfo streamInfo = videoSubWindow->getStreamInfo();
-      m_aRecentFileStreamInfo.prepend( streamInfo );
-      while( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
-        m_aRecentFileStreamInfo.remove( m_aRecentFileStreamInfo.size() - 1 );
-      updateRecentFileActions();
+      addStreamInfoToRecentList( videoSubWindow->getStreamInfo() );
 
       statusBar()->showMessage( tr( "File loaded" ), 2000 );
       m_cLastOpenPath = QFileInfo( fileName ).path();
@@ -253,8 +245,8 @@ Void plaYUVerApp::open()
 
   QStringList filter;
   filter << supported
-         << formatsList
-         << tr( "All Files (*)" );
+      << formatsList
+      << tr( "All Files (*)" );
 
   QStringList fileNameList = QFileDialog::getOpenFileNames( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );
 
@@ -300,8 +292,8 @@ Void plaYUVerApp::save()
 
     QStringList filter;
     filter << supported
-           << formatsList
-           << tr( "All Files (*)" );
+        << formatsList
+        << tr( "All Files (*)" );
 
     QString fileName = QFileDialog::getSaveFileName( this, tr( "Open File" ), QString(), filter.join( ";;" ) );
 
@@ -318,6 +310,8 @@ Void plaYUVerApp::save()
   }
 }
 
+
+
 Void plaYUVerApp::format()
 {
   if( m_pcCurrentVideoSubWindow )
@@ -325,7 +319,10 @@ Void plaYUVerApp::format()
     VideoSubWindow* pcVideoSubWindow = m_pcCurrentVideoSubWindow;
     try
     {
-      pcVideoSubWindow->loadFile( pcVideoSubWindow->getCurrentFileName(), true );
+      if( pcVideoSubWindow->loadFile( pcVideoSubWindow->getCurrentFileName(), true ) )
+      {
+        addStreamInfoToRecentList( pcVideoSubWindow->getStreamInfo() );
+      }
     }
     catch( const char *msg )
     {
@@ -505,7 +502,7 @@ Void plaYUVerApp::updateStatusBar( const QString& statusBarString )
 
 Void plaYUVerApp::dragEnterEvent( QDragEnterEvent *event )
 {
-//setText(tr("<drop content>"));
+  //setText(tr("<drop content>"));
   mdiArea->setBackgroundRole( QPalette::Highlight );
   event->acceptProposedAction();
 }
@@ -660,34 +657,13 @@ Void plaYUVerApp::updateWindowMenu()
   }
 }
 
-Void plaYUVerApp::updateRecentFileActions()
-{
-  Int numRecentFiles = m_aRecentFileStreamInfo.size();
-  numRecentFiles = qMin( numRecentFiles, MAX_RECENT_FILES );
-  Int actionIdx = 0;
-  while( actionIdx < numRecentFiles )
-  {
-    QString text = m_aRecentFileStreamInfo.at( actionIdx ).m_cFilename;
-    m_arrayRecentFilesActions.at( actionIdx )->setText( QFileInfo( text ).fileName() );
-    m_arrayRecentFilesActions.at( actionIdx )->setToolTip( "Open File " + text );
-    m_arrayRecentFilesActions.at( actionIdx )->setStatusTip( "Open File " + text );
-    m_arrayRecentFilesActions.at( actionIdx )->setData( QVariant::fromValue( m_aRecentFileStreamInfo.at( actionIdx ) ) );
-    m_arrayRecentFilesActions.at( actionIdx )->setVisible( true );
-    actionIdx++;
-  }
-  while( actionIdx < MAX_RECENT_FILES )
-  {
-    m_arrayRecentFilesActions.at( actionIdx )->setVisible( false );
-    actionIdx++;
-  }
-  m_arrayMenu[RECENT_MENU]->setEnabled( m_aRecentFileStreamInfo.size() > 0 ? true : false );
-}
+
 
 Void plaYUVerApp::createActions()
 {
   m_arrayActions.resize( TOTAL_ACT );
 
-// ------------ File ------------
+  // ------------ File ------------
   m_arrayActions[OPEN_ACT] = new QAction( QIcon( ":/images/open.png" ), tr( "&Open" ), this );
   m_arrayActions[OPEN_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogOpenButton ) );
   m_arrayActions[OPEN_ACT]->setShortcuts( QKeySequence::Open );
@@ -744,7 +720,7 @@ Void plaYUVerApp::createActions()
   m_arrayActions[EXIT_ACT]->setStatusTip( tr( "Exit the application" ) );
   connect( m_arrayActions[EXIT_ACT], SIGNAL( triggered() ), qApp, SLOT( closeAllWindows() ) );
 
-// ------------ View ------------
+  // ------------ View ------------
   mapperZoom = new QSignalMapper( this );
   connect( mapperZoom, SIGNAL( mapped(int) ), this, SLOT( scaleFrame(int) ) );
 
@@ -773,7 +749,8 @@ Void plaYUVerApp::createActions()
   m_arrayActions[ZOOM_FIT_ACT]->setStatusTip( tr( "Zoom in or out to fit on the window." ) );
   connect( m_arrayActions[ZOOM_FIT_ACT], SIGNAL( triggered() ), this, SLOT( zoomToFit() ) );
 
-// ------------ Tools ------------
+
+  // ------------ Tools ------------
   actionGroupTools = new QActionGroup( this );
   actionGroupTools->setExclusive( true );
 
@@ -800,7 +777,7 @@ Void plaYUVerApp::createActions()
   m_appModuleQuality->createActions();
   m_appModuleExtensions->createActions();
 
-// ------------ Window ------------
+  // ------------ Window ------------
 
   m_arrayActions[TILE_WINDOWS_ACT] = new QAction( tr( "Tile" ), this );
   m_arrayActions[TILE_WINDOWS_ACT]->setIcon( QIcon( ":images/windowstile.png" ) );
@@ -827,7 +804,7 @@ Void plaYUVerApp::createActions()
   m_arrayActions[SEPARATOR_ACT] = new QAction( this );
   m_arrayActions[SEPARATOR_ACT]->setSeparator( true );
 
-// ------------ About ------------
+  // ------------ About ------------
 
 #ifdef USE_FERVOR
   m_arrayActions[UPDATE_ACT] = new QAction( tr( "&Update" ), this );
@@ -878,8 +855,8 @@ Void plaYUVerApp::createMenus()
 
   m_arrayMenu[VIEW_MENU]->addSeparator();
 
-// createPopupMenu() Returns a popup menu containing checkable entries for
-// the toolbars and dock widgets present in the main window.
+  // createPopupMenu() Returns a popup menu containing checkable entries for
+  // the toolbars and dock widgets present in the main window.
   m_arrayMenu[DOCK_VIEW_MENU] = createPopupMenu();
   if( m_arrayMenu[DOCK_VIEW_MENU] )
   {
@@ -887,9 +864,9 @@ Void plaYUVerApp::createMenus()
     actionPopupMenu->setText( tr( "&Toolbars/Docks" ) );
   }
 
-//  m_arrayMenu[TOOLS_MENU] = menuBar()->addMenu( tr( "Tools" ) );
-//  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
-//  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
+  //  m_arrayMenu[TOOLS_MENU] = menuBar()->addMenu( tr( "Tools" ) );
+  //  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
+  //  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
 
   QMenu* VideoMenu = m_appModuleVideo->createMenu();
   menuBar()->addMenu( VideoMenu );
@@ -951,9 +928,8 @@ Void plaYUVerApp::createToolBars()
 
 Void plaYUVerApp::createDockWidgets()
 {
-// Properties Dock Window
+  // Properties Dock Window
   m_arraySideBars.resize( TOTAL_DOCK );
-
   addDockWidget( Qt::RightDockWidgetArea, m_appModuleVideo->createDock() );
   addDockWidget( Qt::RightDockWidgetArea, m_appModuleQuality->createDock() );
 }
@@ -964,32 +940,74 @@ Void plaYUVerApp::createStatusBar()
   statusBar()->showMessage( tr( "Ready" ) );
 }
 
+
+Void plaYUVerApp::addStreamInfoToRecentList( PlaYUVerStreamInfo streamInfo )
+{
+  Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, streamInfo.m_cFilename );
+  if( idx >= 0 )
+    m_aRecentFileStreamInfo.remove( idx );
+  m_aRecentFileStreamInfo.prepend( streamInfo );
+  while( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
+    m_aRecentFileStreamInfo.remove( m_aRecentFileStreamInfo.size() - 1 );
+  updateRecentFileActions();
+}
+
+Void plaYUVerApp::updateRecentFileActions()
+{
+  Int numRecentFiles = m_aRecentFileStreamInfo.size();
+  numRecentFiles = qMin( numRecentFiles, MAX_RECENT_FILES );
+  Int actionIdx = 0;
+  while( actionIdx < numRecentFiles )
+  {
+    QString text = m_aRecentFileStreamInfo.at( actionIdx ).m_cFilename;
+    m_arrayRecentFilesActions.at( actionIdx )->setText( QFileInfo( text ).fileName() );
+    m_arrayRecentFilesActions.at( actionIdx )->setToolTip( "Open File " + text );
+    m_arrayRecentFilesActions.at( actionIdx )->setStatusTip( "Open File " + text );
+    m_arrayRecentFilesActions.at( actionIdx )->setData( QVariant::fromValue( m_aRecentFileStreamInfo.at( actionIdx ) ) );
+    m_arrayRecentFilesActions.at( actionIdx )->setVisible( true );
+    actionIdx++;
+  }
+  while( actionIdx < MAX_RECENT_FILES )
+  {
+    m_arrayRecentFilesActions.at( actionIdx )->setVisible( false );
+    actionIdx++;
+  }
+  m_arrayMenu[RECENT_MENU]->setEnabled( m_aRecentFileStreamInfo.size() > 0 ? true : false );
+}
+
 Void plaYUVerApp::readSettings()
 {
-  Settings settings;
-  QPoint pos = settings.mainWindowPos();
-  QSize size = settings.mainWindowSize();
+  QSettings appSettings;
+
+  QPoint pos = appSettings.value( "MainWindow/Position", QPoint( 200, 200 ) ).toPoint();
+  QSize size = appSettings.value( "MainWindow/Size", QSize( 500, 400 ) ).toSize();
   move( pos );
   resize( size );
-  m_cLastOpenPath = settings.lastOpenPath();
-  m_appTool = ( ViewArea::eTool )settings.getSelectedTool();
+
+  m_cLastOpenPath = appSettings.value( "MainWindow/LastOpenPath", QDir::homePath() ).toString();
+
+  m_appTool = ( ViewArea::eTool )appSettings.value( "MainWindow/SelectedTool", ViewArea::NavigationTool ).toInt();
   setTool( m_appTool );
 
-  m_aRecentFileStreamInfo = settings.getRecentFileList();
+  QVariant value = appSettings.value("MainWindow/RecentFileList");
+  m_aRecentFileStreamInfo = value.value<PlaYUVerStreamInfoVector>();
   updateRecentFileActions();
 
   m_appModuleVideo->readSettings();
-
 }
 
 Void plaYUVerApp::writeSettings()
 {
-  Settings settings;
-  settings.setMainWindowPos( pos() );
-  settings.setMainWindowSize( size() );
-  settings.setLastOpenPath( m_cLastOpenPath );
-  settings.setSelectedTool( ( Int )m_appTool );
-  settings.setRecentFileList( m_aRecentFileStreamInfo );
+  QSettings appSettings;
+
+  appSettings.setValue( "MainWindow/Position", pos() );
+  appSettings.setValue( "MainWindow/Size", size() );
+  appSettings.setValue( "MainWindow/LastOpenPath", m_cLastOpenPath );
+  appSettings.setValue( "MainWindow/SelectedTool", ( Int )m_appTool );
+
+  QVariant var;
+  var.setValue<PlaYUVerStreamInfoVector>( m_aRecentFileStreamInfo );
+  appSettings.setValue("MainWindow/RecentFileList", var );
 
   m_appModuleVideo->writeSettings();
 }

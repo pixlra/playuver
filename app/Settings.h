@@ -40,23 +40,6 @@ class Settings
 public:
   Settings();
 
-  // - - - - - - - - - - Main Window Settings - - - - - - - - - - - - - 
-  QPoint mainWindowPos();
-  Void setMainWindowPos( const QPoint &v );
-
-  QSize mainWindowSize();
-  Void setMainWindowSize( const QSize &v );
-
-  QString lastOpenPath();
-  Void setLastOpenPath( const QString &v );
-
-  Int getSelectedTool();
-  Void setSelectedTool( Int);
-
-  // - - - - - - - - - - Recent Files Settings - - - - - - - - - - - - -
-  Void setRecentFileList( PlaYUVerStreamInfoVector recentFileList );
-  PlaYUVerStreamInfoVector getRecentFileList();
-
   // - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - -
   GridManager::Style gridStyle();
   Void setGridStyle( GridManager::Style v );

@@ -141,20 +141,20 @@ private:
 
   QString m_cLastOpenPath;
 
-  Void readRecentFileList();
-  Void writeRecentFileList();
-
   Void zoomToFitAll();
 
   Void updateMenus();
 
-  Void updateRecentFileActions();
+
 
   Void createActions();
   Void createMenus();
   Void createToolBars();
   Void createDockWidgets();
   Void createStatusBar();
+
+  Void addStreamInfoToRecentList( PlaYUVerStreamInfo streamInfo );
+  Void updateRecentFileActions();
 
   Void readSettings();
   Void writeSettings();

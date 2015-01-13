@@ -30,21 +30,24 @@
 namespace plaYUVer
 {
 
-class FilterComponent
+class FilterComponentModule: public PlaYUVerModuleIf
 {
 private:
   PlaYUVerFrame* m_pcFilteredFrame;
 public:
-  FilterComponent();
-  virtual ~FilterComponent()
+  FilterComponentModule();
+  virtual ~FilterComponentModule()
   {
   }
+  Void create( PlaYUVerFrame* ) = 0;
+  PlaYUVerFrame* process( PlaYUVerFrame* ) = 0;
+  Void destroy();
+
   Void createFilter( UInt uiWidth, UInt uiHeight );
   PlaYUVerFrame* filterComponent( PlaYUVerFrame* InputFrame,  Int Component );
-  Void destroy();
 };
 
-class FilterComponentLuma: public FilterComponent, public PlaYUVerModuleIf
+class FilterComponentLuma: public FilterComponentModule
 {
   REGISTER_CLASS_FACTORY( FilterComponentLuma )
 public:
@@ -56,7 +59,7 @@ public:
   PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
 };
 
-class FilterComponentChromaU: public FilterComponent, public PlaYUVerModuleIf
+class FilterComponentChromaU: public FilterComponentModule
 {
   REGISTER_CLASS_FACTORY( FilterComponentChromaU )
 public:
@@ -68,7 +71,7 @@ public:
   PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
 };
 
-class FilterComponentChromaV: public FilterComponent, public PlaYUVerModuleIf
+class FilterComponentChromaV: public FilterComponentModule
 {
   REGISTER_CLASS_FACTORY( FilterComponentChromaV )
 public:

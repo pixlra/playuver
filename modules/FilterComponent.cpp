@@ -28,18 +28,18 @@
 namespace plaYUVer
 {
 
-FilterComponent::FilterComponent()
+FilterComponentModule::FilterComponentModule()
 {
   m_pcFilteredFrame = NULL;
 }
 
-Void FilterComponent::createFilter( UInt uiWidth, UInt uiHeight )
+Void FilterComponentModule::createFilter( UInt uiWidth, UInt uiHeight )
 {
   m_pcFilteredFrame = NULL;
   m_pcFilteredFrame = new PlaYUVerFrame( uiWidth, uiHeight, PlaYUVerFrame::GRAY );
 }
 
-PlaYUVerFrame* FilterComponent::filterComponent( PlaYUVerFrame* InputFrame, Int Component )
+PlaYUVerFrame* FilterComponentModule::filterComponent( PlaYUVerFrame* InputFrame, Int Component )
 {
   Pel*** pppOutputPelYUV = m_pcFilteredFrame->getPelBufferYUV();
   Pel*** pppInputPelYUV = InputFrame->getPelBufferYUV();
@@ -47,7 +47,7 @@ PlaYUVerFrame* FilterComponent::filterComponent( PlaYUVerFrame* InputFrame, Int 
   return m_pcFilteredFrame;
 }
 
-Void FilterComponent::destroy()
+Void FilterComponentModule::destroy()
 {
   if( m_pcFilteredFrame )
     delete m_pcFilteredFrame;

@@ -929,6 +929,8 @@ Void plaYUVerApp::createDockWidgets()
 {
   // Properties Dock Window
   m_arraySideBars.resize( TOTAL_DOCK );
+  addDockWidget( Qt::RightDockWidgetArea, m_appModuleVideo->createDock() );
+  addDockWidget( Qt::RightDockWidgetArea, m_appModuleQuality->createDock() );
 }
 
 Void plaYUVerApp::createStatusBar()

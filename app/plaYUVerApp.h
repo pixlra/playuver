@@ -162,9 +162,6 @@ private:
   QTimer *m_pcPlayingTimer;
   Bool m_bIsPlaying;
 
-  Void readRecentFileList();
-  Void writeRecentFileList();
-
   Void zoomToFitAll();
 
   /**
@@ -176,13 +173,16 @@ private:
 
   Void updateMenus();
 
-  Void updateRecentFileActions();
+
 
   Void createActions();
   Void createMenus();
   Void createToolBars();
   Void createDockWidgets();
   Void createStatusBar();
+
+  Void addStreamInfoToRecentList( PlaYUVerStreamInfo streamInfo );
+  Void updateRecentFileActions();
 
   Void readSettings();
   Void writeSettings();

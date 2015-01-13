@@ -86,6 +86,8 @@ QDockWidget* QualityHandle::createDock()
   connect( m_pcQualityHandleSideBar, SIGNAL( signalQualityMetricChanged(int) ), this, SLOT( slotQualityMetricChanged(int) ) );
   connect( m_mapperQualityMetric, SIGNAL( mapped(int) ), this, SLOT( slotQualityMetricChanged(int) ) );
 
+  slotQualityMetricChanged( 0 );
+
   return m_pcQualityHandleDock;
 }
 
@@ -96,12 +98,15 @@ Void QualityHandle::updateMenus()
 
 Void QualityHandle::readSettings()
 {
-
+  QSettings appSettings;
+  Int metric = appSettings.value( "QualityHandle/Metric", 0 ).toInt();
+  slotQualityMetricChanged( metric );
 }
 
 Void QualityHandle::writeSettings()
 {
-
+  QSettings appSettings;
+  appSettings.setValue( "QualityHandle/Metric", m_iQualityMetricIdx );
 }
 
 Void QualityHandle::update( VideoSubWindow* currSubWindow )
@@ -114,6 +119,7 @@ Void QualityHandle::slotQualityMetricChanged( Int idx )
   m_actionGroupQualityMetric->actions().at( idx )->setChecked( true );
   m_pcQualityHandleSideBar->updateQualityMetric( idx );
   m_pcQualityHandleDock->show();
+  m_iQualityMetricIdx = idx;
 }
 
 Void QualityHandle::slotSelectReference()

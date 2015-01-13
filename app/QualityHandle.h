@@ -68,6 +68,7 @@ private:
   QVector<QAction*> m_arrayActions;
   QActionGroup* m_actionGroupQualityMetric;
   QSignalMapper* m_mapperQualityMetric;
+  Int m_iQualityMetricIdx;
 
   QMenu* m_pcMenuQuality;
 

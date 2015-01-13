@@ -999,6 +999,8 @@ Void plaYUVerApp::readSettings()
   updateRecentFileActions();
 
   m_appModuleVideo->readSettings();
+  m_appModuleQuality->readSettings();
+  m_appModuleExtensions->readSettings();
 }
 
 Void plaYUVerApp::writeSettings()
@@ -1015,6 +1017,8 @@ Void plaYUVerApp::writeSettings()
   appSettings.setValue("MainWindow/RecentFileList", var );
 
   m_appModuleVideo->writeSettings();
+  m_appModuleQuality->writeSettings();
+  m_appModuleExtensions->writeSettings();
 }
 
 }  // NAMESPACE

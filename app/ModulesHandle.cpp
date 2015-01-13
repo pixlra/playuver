@@ -174,12 +174,14 @@ Void ModulesHandle::updateMenus()
 
 Void ModulesHandle::readSettings()
 {
-
+  QSettings appSettings;
+  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setChecked( appSettings.value( "ModulesHandle/UseNewWindow", false ).toBool() );
 }
 
 Void ModulesHandle::writeSettings()
 {
-
+  QSettings appSettings;
+  appSettings.setValue( "ModulesHandle/UseNewWindow", m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked() );
 }
 
 Void ModulesHandle::processOpt( Int index )

@@ -18,12 +18,12 @@
  */
 
 /**
- * \file     PropertiesSidebar.h
+ * \file     FramePropertiesSidebar.h
  * \brief    Main side bar definition
  */
 
-#ifndef __PROPERTIESSIDEBAR_H__
-#define __PROPERTIESSIDEBAR_H__
+#ifndef __FRAMEPROPERTIESSIDEBAR_H__
+#define __FRAMEPROPERTIESSIDEBAR_H__
 
 #include "config.h"
 #include "lib/PlaYUVerDefs.h"
@@ -132,4 +132,4 @@ private Q_SLOTS:
 
 }   // NAMESPACE
 
-#endif // __PROPERTIESSIDEBAR_H__
+#endif // __FRAMEPROPERTIESSIDEBAR_H__

@@ -34,7 +34,7 @@
 #endif
 #include "VideoSubWindow.h"
 #include "WidgetFrameNumber.h"
-#include "PropertiesSidebar.h"
+#include "FramePropertiesSidebar.h"
 
 namespace plaYUVer
 {

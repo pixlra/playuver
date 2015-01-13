@@ -43,7 +43,7 @@ PlaYUVerFrameStats::PlaYUVerFrameStats() :
 PlaYUVerFrameStats::~PlaYUVerFrameStats()
 {
   if( m_pdHistogram )
-    delete[] m_pdHistogram;
+    freeMem1D( m_pdHistogram );
 
 }
 

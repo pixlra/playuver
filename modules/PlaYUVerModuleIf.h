@@ -100,7 +100,7 @@ public:
   virtual Double          measure( PlaYUVerFrame*, PlaYUVerFrame* ) { return 0; }
   virtual Double          measure( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* ) { return 0; }
 
-  virtual Void destroy() { }
+  virtual Void destroy() = 0;
 
 };
 

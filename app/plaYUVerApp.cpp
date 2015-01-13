@@ -325,7 +325,14 @@ Void plaYUVerApp::format()
     VideoSubWindow* pcVideoSubWindow = m_pcCurrentVideoSubWindow;
     try
     {
-      pcVideoSubWindow->loadFile( pcVideoSubWindow->getCurrentFileName(), true );
+      if( pcVideoSubWindow->loadFile( pcVideoSubWindow->getCurrentFileName(), true ) )
+      {
+        PlaYUVerStreamInfo streamInfo = pcVideoSubWindow->getStreamInfo();
+        m_aRecentFileStreamInfo.prepend( streamInfo );
+        while( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
+          m_aRecentFileStreamInfo.remove( m_aRecentFileStreamInfo.size() - 1 );
+        updateRecentFileActions();
+      }
     }
     catch( const char *msg )
     {

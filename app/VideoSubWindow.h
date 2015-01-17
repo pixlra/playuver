@@ -62,7 +62,6 @@ Q_OBJECT
 
 private:
 
-  QScrollArea* m_cScrollArea;
   ViewArea* m_cViewArea;
 
   PlaYUVerStreamInfo m_sStreamInfo;
@@ -83,7 +82,13 @@ private:
   Bool m_bIsPlaying;
   Bool m_bIsModule;
 
-  QPoint m_cLastScroll;
+
+
+  /**
+   * Private zoom function to handle
+   * zoom to fit
+   */
+  Void scaleView( const QSize & size );
 
 public:
   VideoSubWindow( QWidget * parent = 0, Bool isModule = false );
@@ -168,8 +173,6 @@ public:
     return m_cViewArea->getZoomFactor();
   }
 
-  Void adjustScrollBarByZoom( Double factor, QPoint center );
-
   QSize sizeHint() const;
 
   Void setWindowShortName( const QString& name)
@@ -190,22 +193,11 @@ public:
     return m_bIsModule;
   }
 
-private:
-
-  /**
-   * Private zoom function to handle
-   * zoom to fit
-   */
-  Void scaleView( const QSize & size );
-
 protected:
   void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:
   void updateSelectedArea( QRect area );
-  void processZoomChanged( double , QPoint );
-  void adjustScrollBarByOffset( QPoint Offset );
-  void updateLastScrollValue();
   void updatePixelValueStatusBar( const QPoint& );
 };
 

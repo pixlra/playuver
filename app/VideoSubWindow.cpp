@@ -38,9 +38,9 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array
   {
     d = array.at( i );
     out << d.m_cFilename << d.m_uiWidth
-                         << d.m_uiHeight
-                         << d.m_iPelFormat
-                         << d.m_uiFrameRate;
+        << d.m_uiHeight
+        << d.m_iPelFormat
+        << d.m_uiFrameRate;
 
   }
   return out;
@@ -72,47 +72,34 @@ Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename )
 }
 
 VideoSubWindow::VideoSubWindow( QWidget * parent, Bool isModule ) :
-        SubWindowHandle( parent, SubWindowHandle::VIDEO_SUBWINDOW ),
-        m_pCurrStream( NULL ),
-        m_pcCurrFrame( NULL ),
-        m_pcReferenceSubWindow( NULL ),
-        m_bIsPlaying( false ),
-        m_bIsModule( isModule )
+            SubWindowHandle( parent, SubWindowHandle::VIDEO_SUBWINDOW ),
+            m_pCurrStream( NULL ),
+            m_pcCurrFrame( NULL ),
+            m_pcReferenceSubWindow( NULL ),
+            m_bIsPlaying( false ),
+            m_bIsModule( isModule )
 {
-  setParent( parent );
-
-  setAttribute( Qt::WA_DeleteOnClose );
-  setBackgroundRole( QPalette::Light );
   setVisible( false );
 
-  // Create a new scroll area inside the sub-window
-  m_cScrollArea = new QScrollArea( this );
-  setWidget( m_cScrollArea );
-
   // Create a new interface to show images
-  m_cViewArea = new ViewArea( m_cScrollArea );
+  m_cViewArea = new ViewArea( this );
   connect( m_cViewArea, SIGNAL( zoomFactorChanged( double , QPoint) ), this, SLOT( processZoomChanged(double, QPoint) ) );
-
   connect( m_cViewArea, SIGNAL( moveScroll( QPoint ) ), this, SLOT( adjustScrollBarByOffset(QPoint) ) );
+
   connect( m_cViewArea, SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectedArea( QRect ) ) );
   connect( m_cViewArea, SIGNAL( positionChanged( const QPoint & ) ), this, SLOT( updatePixelValueStatusBar( const QPoint & ) ) );
-  connect( m_cScrollArea->horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
-  connect( m_cScrollArea->verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
 
-// Define the cViewArea as the widget inside the scroll area
-  m_cScrollArea->setWidget( m_cViewArea );
-  m_cScrollArea->setWidgetResizable( true );
+  // Define the cViewArea as the widget inside the scroll area
+  setMainWidget( m_cViewArea );
 
   m_apcCurrentModule.clear();
 
-  m_cLastScroll = QPoint();
 }
 
 VideoSubWindow::~VideoSubWindow()
 {
   disableModule();
   delete m_cViewArea;
-  delete m_cScrollArea;
   if( m_pCurrStream )
     delete m_pCurrStream;
 }
@@ -248,12 +235,6 @@ Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
   m_pcCurrFrame = pcCurrFrame;
   m_cViewArea->setImage( m_pcCurrFrame );
-//  if( !isVisible() )
-//  {
-//    show();
-//    resize( sizeHint() );
-//    zoomToFit();
-//  }
 }
 
 Void VideoSubWindow::refreshFrame()
@@ -365,9 +346,8 @@ Void VideoSubWindow::normalSize()
 
 Void VideoSubWindow::zoomToFit()
 {
-// Scale to a smaller size that the real to a nicer look
-  QSize niceFit( m_cScrollArea->viewport()->size().width() - 5, m_cScrollArea->viewport()->size().height() - 5 );
-  scaleView( niceFit );
+  // Scale to a smaller size that the real to a nicer look
+  scaleView( getScrollSize() );
 }
 
 Void VideoSubWindow::scaleView( Double scale )
@@ -386,7 +366,7 @@ Void VideoSubWindow::scaleView( const QSize & size )
   QSize newSize = imgViewSize;
   newSize.scale( size, Qt::KeepAspectRatio );
 
-// Calc the zoom factor
+  // Calc the zoom factor
   Double wfactor = 1;
   Double hfactor = 1;
 
@@ -401,70 +381,7 @@ Void VideoSubWindow::scaleView( const QSize & size )
   updateLastScrollValue();
 }
 
-Void VideoSubWindow::processZoomChanged( Double factor, QPoint center )
-{
-  adjustScrollBarByZoom( factor, center );
-  emit zoomChanged();
-}
 
-void VideoSubWindow::adjustScrollBarByOffset( QPoint Offset )
-{
-  QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
-  scrollBar->setValue( int( scrollBar->value() + Offset.x() ) );
-  m_cLastScroll.setX( scrollBar->value() );
-  scrollBar = m_cScrollArea->verticalScrollBar();
-  scrollBar->setValue( int( scrollBar->value() + Offset.y() ) );
-  m_cLastScroll.setY( scrollBar->value() );
-
-  updateLastScrollValue();
-}
-
-// This function was developed with help of the schematics presented in
-// http://stackoverflow.com/questions/13155382/jscrollpane-zoom-relative-to-mouse-position
-Void VideoSubWindow::adjustScrollBarByZoom( Double factor, QPoint center )
-{
-  QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
-  if( center.isNull() )
-  {
-    scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
-  }
-  else
-  {
-    Int x = center.x() - m_cLastScroll.x();
-    Int value = int( factor * m_cLastScroll.x() + ( ( factor - 1 ) * x ) );
-    if( value > scrollBar->maximum() )
-      value = scrollBar->maximum();
-    if( value < scrollBar->minimum() )
-      value = scrollBar->minimum();
-    scrollBar->setValue( value );
-  }
-
-  scrollBar = m_cScrollArea->verticalScrollBar();
-  if( center.isNull() )
-  {
-    scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
-  }
-  else
-  {
-    Int y = center.y() - m_cLastScroll.y();
-    Int value = int( factor * m_cLastScroll.y() + ( ( factor - 1 ) * y ) );
-    if( value > scrollBar->maximum() )
-      value = scrollBar->maximum();
-    if( value < scrollBar->minimum() )
-      value = scrollBar->minimum();
-    scrollBar->setValue( value );
-  }
-
-  updateLastScrollValue();
-}
-
-void VideoSubWindow::updateLastScrollValue()
-{
-  QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
-  m_cLastScroll.setX( scrollBar->value() );
-  scrollBar = m_cScrollArea->verticalScrollBar();
-  m_cLastScroll.setY( scrollBar->value() );
-}
 
 Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
 {
@@ -505,10 +422,11 @@ Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
   }
 }
 
+
 QSize VideoSubWindow::sizeHint() const
 {
   QSize maxSize;  // The size of the parent (viewport widget
-// of the QMdiArea).
+  // of the QMdiArea).
 
   QWidget *p = parentWidget();
   if( p )
@@ -522,8 +440,8 @@ QSize VideoSubWindow::sizeHint() const
   else if( m_pCurrStream )
     isize = QSize( m_pCurrStream->getWidth() + 50, m_pCurrStream->getHeight() + 50 );
 
-// If the VideoSubWindow needs more space that the avaiable, we'll give
-// to the subwindow a reasonable size preserving the image aspect ratio.
+  // If the VideoSubWindow needs more space that the avaiable, we'll give
+  // to the subwindow a reasonable size preserving the image aspect ratio.
   if( isize.width() < maxSize.width() && isize.height() < maxSize.height() )
   {
     return isize;

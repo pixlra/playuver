@@ -41,8 +41,13 @@ class SubWindowHandle: public QMdiSubWindow
 Q_OBJECT
 
 private:
+  QScrollArea* m_cScrollArea;
+  QPoint m_cLastScroll;
+
   UInt m_uiCategory;
   QString m_cWindowName;
+
+  Void adjustScrollBarByZoom( Double factor, QPoint center );
 
 public:
   enum SubWindowCategories
@@ -84,10 +89,17 @@ public:
 
 protected:
   virtual void closeEvent( QCloseEvent *event ) = 0;
+  virtual Void setMainWidget( QWidget *widget );
+  QSize getScrollSize();
 
 Q_SIGNALS:
   void zoomChanged();
   void updateStatusBar( const QString& );
+
+public Q_SLOTS:
+  void processZoomChanged( double factor, QPoint center );
+  void adjustScrollBarByOffset( QPoint Offset );
+  void updateLastScrollValue();
 
 };
 

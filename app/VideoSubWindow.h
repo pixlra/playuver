@@ -112,8 +112,6 @@ public:
   Void seekAbsoluteEvent( UInt new_frame_num );
   Void seekRelativeEvent( Bool bIsFoward );
 
-  QImage* FrameToQImage( PlaYUVerFrame* curr_frame );
-
   Void refreshFrame();
   Void setCurrFrame( PlaYUVerFrame* pcCurrFrame );
 

@@ -245,8 +245,8 @@ Void plaYUVerApp::open()
 
   QStringList filter;
   filter << supported
-         << formatsList
-         << tr( "All Files (*)" );
+      << formatsList
+      << tr( "All Files (*)" );
 
   QStringList fileNameList = QFileDialog::getOpenFileNames( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );
 
@@ -292,8 +292,8 @@ Void plaYUVerApp::save()
 
     QStringList filter;
     filter << supported
-           << formatsList
-           << tr( "All Files (*)" );
+        << formatsList
+        << tr( "All Files (*)" );
 
     QString fileName = QFileDialog::getSaveFileName( this, tr( "Open File" ), QString(), filter.join( ";;" ) );
 
@@ -309,6 +309,8 @@ Void plaYUVerApp::save()
     }
   }
 }
+
+
 
 Void plaYUVerApp::format()
 {

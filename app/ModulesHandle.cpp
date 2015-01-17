@@ -174,12 +174,14 @@ Void ModulesHandle::updateMenus()
 
 Void ModulesHandle::readSettings()
 {
-
+  QSettings appSettings;
+  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setChecked( appSettings.value( "ModulesHandle/UseNewWindow", false ).toBool() );
 }
 
 Void ModulesHandle::writeSettings()
 {
-
+  QSettings appSettings;
+  appSettings.setValue( "ModulesHandle/UseNewWindow", m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked() );
 }
 
 Void ModulesHandle::processOpt( Int index )
@@ -301,7 +303,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   {
     if( ( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
-      pcModuleSubWindow = new VideoSubWindow( m_pcParent, true );
+      pcModuleSubWindow = new VideoSubWindow( this , true );
       pcModuleSubWindow->setWindowShortName( windowName );
       pcModuleSubWindow->setWindowName( windowName );
 
@@ -310,7 +312,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 
       pcCurrModuleIf->m_pcDisplaySubWindow = pcModuleSubWindow;
       pcCurrModuleIf->m_pcDisplaySubWindow->enableModule( pcCurrModuleIf, true );
-      m_pcMdiArea->addSubWindow( pcModuleSubWindow );
+      //m_pcMdiArea->addSubWindow( pcModuleSubWindow );
     }
   }
   else if( pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
@@ -340,7 +342,13 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 
   applyModuleIf( pcCurrModuleIf, false );
   QCoreApplication::processEvents();
-  //pcModuleSubWindow->show();
+
+  if( pcModuleSubWindow )
+  {
+    QMdiSubWindow* window = m_pcMdiArea->addSubWindow( pcModuleSubWindow );
+    window->show();
+  }
+
   return;
 }
 

@@ -64,6 +64,8 @@ protected:
 
 private Q_SLOTS:
 
+  void about();
+
   /**
    *  File functions slots
    */
@@ -90,17 +92,17 @@ private Q_SLOTS:
 
   void setTool( int idxTool );
 
+  void dragEnterEvent( QDragEnterEvent *event );
+  void dropEvent( QDropEvent *event );
+
+  void tileSubWindows();
+  void setActiveSubWindow( QWidget *window );
+
+
   void update();
   void updateWindowMenu();
   void updateZoomFactorSBox();
   void updateStatusBar( const QString& );
-
-  void about();
-
-  void dragEnterEvent( QDragEnterEvent *event );
-  void dropEvent( QDropEvent *event );
-
-  void setActiveSubWindow( QWidget *window );
 
 private:
 
@@ -141,6 +143,13 @@ private:
 
   QString m_cLastOpenPath;
 
+  SubWindowHandle *activeSubWindow();
+  template<typename T>
+  T findSubWindow( const QMdiArea* mdiArea, const QString& name );
+  template<typename T>
+  T findSubWindow( const QMdiArea* mdiArea, const T subWindow );
+  static VideoSubWindow* findVideoSubWindow( const QMdiArea* mdiArea, const QString& fileName );
+
   Void updateMenus();
 
   Void createActions();
@@ -155,14 +164,6 @@ private:
   Void readSettings();
   Void writeSettings();
 
-  SubWindowHandle *activeSubWindow();
-
-  template<typename T>
-  T findSubWindow( const QMdiArea* mdiArea, const QString& name );
-  template<typename T>
-  T findSubWindow( const QMdiArea* mdiArea, const T subWindow );
-
-  static VideoSubWindow* findVideoSubWindow( const QMdiArea* mdiArea, const QString& fileName );
 
   QDoubleSpinBox *m_pcZoomFactorSBox;
 

@@ -140,7 +140,7 @@ QDockWidget* VideoHandle::createDock()
 
 QWidget* VideoHandle::createStatusBarMessage()
 {
-  QWidget* statusBarWidget = new QWidget;
+  QWidget* pcStatusBarWidget = new QWidget;
   QHBoxLayout* mainlayout = new QHBoxLayout;
 
   m_pcFormatCodeLabel = new QLabel;
@@ -164,9 +164,9 @@ QWidget* VideoHandle::createStatusBarMessage()
   mainlayout->addWidget( m_pcFormatCodeLabel );
   mainlayout->addWidget( m_pcResolutionLabel );
   mainlayout->addWidget( m_pcColorSpace );
-  statusBarWidget->setLayout( mainlayout );
+  pcStatusBarWidget->setLayout( mainlayout );
 
-  return statusBarWidget;
+  return pcStatusBarWidget;
 }
 
 Void VideoHandle::updateMenus()
@@ -232,9 +232,10 @@ Void VideoHandle::update()
     }
     else
     {
-      //m_pcStreamProperties->setData( NULL );
       m_pcFrameNumInfo->setCurrFrameNum( 0 );
-      m_pcFormatCodeLabel->clear();
+      m_pcFormatCodeLabel->setText( QString( ""));
+      if( m_pcCurrentVideoSubWindow->getIsModule() )
+        m_pcFormatCodeLabel->setText( QString( "Module"));
     }
 
     if( pcFrame )
@@ -251,14 +252,13 @@ Void VideoHandle::update()
     else
       m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPlay ) );
 
-    //m_appModuleQuality->update( m_pcCurrentVideoSubWindow );
-    return;
   }
-  //m_pcStreamProperties->setData( NULL );
-  m_pcFramePropertiesSideBar->setData( NULL, false );
-  m_pcFrameSlider->setValue( 0 );
-  m_pcFrameNumInfo->setCurrFrameNum( 0 );
-  m_pcFrameNumInfo->setTotalFrameNum( 0 );
+  else
+  {
+    m_pcFramePropertiesSideBar->setData( NULL, false );
+    m_pcFrameSlider->setValue( 0 );
+    m_pcFrameNumInfo->clear();
+  }
 }
 
 Void VideoHandle::update( VideoSubWindow* currSubWindow )

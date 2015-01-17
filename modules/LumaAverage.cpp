@@ -51,6 +51,7 @@ Double LumaAverage::measure( PlaYUVerFrame* frame )
     for( UInt x = 0; x < frame->getWidth(); x++ )
     {
       average += *pPel;
+      pPel++;
     }
   return average / Double( frame->getHeight() * frame->getWidth() );
 }

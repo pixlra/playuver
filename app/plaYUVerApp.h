@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -38,9 +38,9 @@
 #include "lib/PlaYUVerDefs.h"
 #include "SubWindowHandle.h"
 #include "VideoSubWindow.h"
-#include "QualityMeasurement.h"
+#include "VideoHandle.h"
+#include "QualityHandle.h"
 #include "ModulesHandle.h"
-#include "PropertiesSidebar.h"
 #include "AboutDialog.h"
 #include "WidgetFrameNumber.h"
 
@@ -64,6 +64,8 @@ protected:
 
 private Q_SLOTS:
 
+  void about();
+
   /**
    *  File functions slots
    */
@@ -78,19 +80,6 @@ private Q_SLOTS:
   void closeAll();
 
   /**
-   *  Playing functions slots
-   */
-  void play();
-  void stop();
-  void playEvent();
-  void seekSliderEvent( int new_frame_num );
-  void seekEvent( int direction );
-
-  void videoSelectionButtonEvent();
-
-  void ModuleHandling( QAction * );
-
-  /**
    * Scale the image by a given factor
    * @param factor factor of scale. Ex: 120 scale the image up by 20% and
    *        80 scale the image down by 25%
@@ -99,25 +88,21 @@ private Q_SLOTS:
   void setZoomFromSBox( double ratio );
   void normalSize();
   void zoomToFit();
+  void zoomToFitAll();
 
-  void chageSubWindowSelection();
-  void updateWindowMenu();
-  void updateZoomFactorSBox();
-  void updateStreamProperties();
-
-  void about();
+  void setTool( int idxTool );
 
   void dragEnterEvent( QDragEnterEvent *event );
   void dropEvent( QDropEvent *event );
 
+  void tileSubWindows();
   void setActiveSubWindow( QWidget *window );
 
+
+  void update();
+  void updateWindowMenu();
+  void updateZoomFactorSBox();
   void updateStatusBar( const QString& );
-
-  void updatePropertiesSelectedArea( QRect area );
-
-  void setAllSubWindowTool();
-  void setTool( int idxTool );
 
 private:
 
@@ -153,27 +138,19 @@ private:
   /**
    * Save the current subwindow for every category
    */
-  SubWindowHandle* m_pcCurrentSubWindow; //!< General always set
+  SubWindowHandle* m_pcCurrentSubWindow;  //!< General always set
   VideoSubWindow* m_pcCurrentVideoSubWindow;
 
-  ModulesHandle *m_pcModulesHandle;
-
   QString m_cLastOpenPath;
-  QTimer *m_pcPlayingTimer;
-  Bool m_bIsPlaying;
 
-  Void zoomToFitAll();
-
-  /**
-   *  Playing functions
-   */
-  UInt64 getMaxFrameNumber();
-  Void setTimerStatus();
-
+  SubWindowHandle *activeSubWindow();
+  template<typename T>
+  T findSubWindow( const QMdiArea* mdiArea, const QString& name );
+  template<typename T>
+  T findSubWindow( const QMdiArea* mdiArea, const T subWindow );
+  static VideoSubWindow* findVideoSubWindow( const QMdiArea* mdiArea, const QString& fileName );
 
   Void updateMenus();
-
-
 
   Void createActions();
   Void createMenus();
@@ -187,25 +164,22 @@ private:
   Void readSettings();
   Void writeSettings();
 
-  SubWindowHandle *activeSubWindow();
 
-  template<typename T>
-  T findSubWindow( const QMdiArea* mdiArea, const QString& name );
-  template<typename T>
-  T findSubWindow( const QMdiArea* mdiArea, const T subWindow );
-
-  static VideoSubWindow* findVideoSubWindow( const QMdiArea* mdiArea, const QString& fileName );
-
-  QVector<VideoSubWindow*> m_acPlayingSubWindows;
-
-  QLabel* m_pcLockLabel;
-  QSlider* m_pcFrameSlider;
-  WidgetFrameNumber* m_pcFrameNumInfo;
   QDoubleSpinBox *m_pcZoomFactorSBox;
 
   QSignalMapper *mapperZoom;
-  QSignalMapper *mapperSeekVideo;
   QSignalMapper *mapperWindow;
+
+  // Tools Actions;
+  QActionGroup *actionGroupTools;
+  enum APP_TOOLS_ACTION_LIST
+  {
+    NAVIGATION_TOOL,
+    SELECTION_TOOL,
+    TOTAL_TOOLS,
+  };
+  QSignalMapper *m_mapperTools;
+  ViewArea::eTool m_appTool;
 
   /**
    * App modules
@@ -213,7 +187,9 @@ private:
    * Quality
    * Modules
    */
-  QualityMeasurement* m_appModuleQuality;
+  VideoHandle* m_appModuleVideo;
+  QualityHandle* m_appModuleQuality;
+  ModulesHandle *m_appModuleExtensions;
 
   /**
    * Array of menus for the main app
@@ -241,15 +217,9 @@ private:
    */
   enum SIDEBAR_LIST
   {
-    STREAM_DOCK = 0,
-    FRAME_DOCK,
-    QUALITY_DOCK,
     TOTAL_DOCK,
   };
   QVector<QDockWidget*> m_arraySideBars;
-
-  StreamPropertiesSideBar* m_pcStreamProperties;
-  FramePropertiesSideBar* m_pcFrameProperties;
 
   /**
    * Array of tool bars for the main app
@@ -279,16 +249,9 @@ private:
     EXIT_ACT,
     ZOOM_IN_ACT,
     ZOOM_OUT_ACT,
-    ZOOM_FIT_ACT,
     ZOOM_NORMAL_ACT,
-    PLAY_ACT,
-    /*PAUSE_ACT,*/
-    STOP_ACT,
-    VIDEO_FORWARD_ACT,
-    VIDEO_BACKWARD_ACT,
-    VIDEO_LOOP_ACT,
-    VIDEO_LOCK_ACT,
-    VIDEO_LOCK_SELECTION_ACT,
+    ZOOM_FIT_ACT,
+    ZOOM_FIT_ALL_ACT,
     NAVIGATION_TOOL_ACT,
     SELECTION_TOOL_ACT,
     TILE_WINDOWS_ACT,
@@ -303,26 +266,11 @@ private:
   };
   QVector<QAction*> m_arrayActions;
 
-#define MAX_RECENT_FILES 10
+#define MAX_RECENT_FILES 20
   QVector<QAction*> m_arrayRecentFilesActions;
-  //QAction *actionPopupMenu;
-
-  // Tools Actions;
-  QActionGroup *actionGroupTools;
-  enum APP_TOOLS_ACTION_LIST
- {
-  NAVIGATION_TOOL,
-  SELECTION_TOOL,
-  TOTAL_TOOLS,
- };
- QVector<QAction*> m_arrayTools;
- QSignalMapper *m_mapperTools;
- ViewArea::eTool m_appTool;
-
   PlaYUVerStreamInfoVector m_aRecentFileStreamInfo;
 
   AboutDialog* m_pcAboutDialog;
-
 };
 
 }  // NAMESPACE

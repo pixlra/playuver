@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -161,6 +161,7 @@ Void PlaYUVerFrame::frameFromBuffer( Pel *Buff, UInt64 uiBuffSize )
     return;
   m_pcPelFormat->frameFromBuffer( Buff, m_pppcInputPel, m_uiWidth, m_uiHeight );
   m_bHasRGBPel = false;
+  m_bHasHistogram = false;
   fillRGBBuffer();
 }
 
@@ -182,6 +183,7 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame )
   if( m_iPixelFormat != input_frame->getPelFormat() && m_uiWidth == input_frame->getWidth() && m_uiHeight == input_frame->getHeight() )
     return;
   m_bHasRGBPel = false;
+  m_bHasHistogram = false;
   memcpy( *m_pppcInputPel[LUMA], input_frame->getPelBufferYUV()[LUMA][0], getBytesPerFrame() * sizeof(Pel) );
 }
 
@@ -210,7 +212,6 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
 {
   if( m_iPixelFormat != input_frame->getPelFormat() )
     return;
-  m_bHasRGBPel = false;
   Pel ***pInput = input_frame->getPelBufferYUV();
   for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
   {
@@ -221,6 +222,8 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
       memcpy( m_pppcInputPel[ch][i], &( pInput[ch][yPos / ratioH + i][xPos / ratioW] ), m_uiWidth / ratioW * sizeof(Pel) );
     }
   }
+  m_bHasRGBPel = false;
+  m_bHasHistogram = false;
 }
 
 PlaYUVerFrame::Pixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos, Int eColorSpace )
@@ -376,6 +379,7 @@ Void PlaYUVerFrame::fromCvMat( Void* voidFrame )
   }
 
   m_bHasRGBPel = false;
+  m_bHasHistogram = false;
 
   if( m_iPixelFormat != GRAY )
   {

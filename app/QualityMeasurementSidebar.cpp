@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -167,13 +167,14 @@ Void QualityMeasurementSidebar::updateCurrentWindow( VideoSubWindow *subWindow )
       index = m_pcVideoWindowList.indexOf( refSubWindow );
     }
     m_comboBoxRef->setCurrentIndex( index );
+    updateSubWindowList();
     updateSidebarData();
   }
 }
 
 Void QualityMeasurementSidebar::updateSidebarData()
 {
-  QString value( "0.00" );
+  QString value( "0.0000" );
   if( m_pcCurrentVideoSubWindow )
   {
     VideoSubWindow* refSubWindow = m_pcCurrentVideoSubWindow->getRefSubWindow();
@@ -186,7 +187,7 @@ Void QualityMeasurementSidebar::updateSidebarData()
       for( Int component = 0; component < 3; component++ )
       {
         quality = currFrame->getQuality( m_comboBoxMetric->currentIndex(), refFrame, component );
-        m_ppcLabelQualityValue[component]->setText( value.setNum( quality, 'f', 2 ) );
+        m_ppcLabelQualityValue[component]->setText( value.setNum( quality, 'f', 4 ) );
       }
       return;
     }

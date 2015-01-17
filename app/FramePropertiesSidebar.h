@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@
  */
 
 /**
- * \file     PropertiesSidebar.h
+ * \file     FramePropertiesSidebar.h
  * \brief    Main side bar definition
  */
 
-#ifndef __PROPERTIESSIDEBAR_H__
-#define __PROPERTIESSIDEBAR_H__
+#ifndef __FRAMEPROPERTIESSIDEBAR_H__
+#define __FRAMEPROPERTIESSIDEBAR_H__
 
 #include "config.h"
 #include "lib/PlaYUVerDefs.h"
@@ -39,30 +39,6 @@
 
 namespace plaYUVer
 {
-
-class StreamPropertiesSideBar: public QWidget
-{
-Q_OBJECT
-public:
-  StreamPropertiesSideBar( QWidget* parent );
-  ~StreamPropertiesSideBar();
-
-  QSize sizeHint() const;
-
-  Void setData( PlaYUVerStream* m_pcStream );
-
-private:
-  PlaYUVerStream* m_pcStream;
-
-  Bool m_bIsVisible;
-  QLabel* labelNameValue;
-  QLabel* labelFormatValue;
-  QLabel* labelCodecValue;
-  QLabel* labelDurationValueTime;
-  QLabel* labelDurationValueFrames;
-  QLabel* labelSizeValue;
-  QLabel* labelColorSpaceValue;
-};
 
 class FramePropertiesSideBar: public QWidget
 {
@@ -156,4 +132,4 @@ private Q_SLOTS:
 
 }   // NAMESPACE
 
-#endif // __PROPERTIESSIDEBAR_H__
+#endif // __FRAMEPROPERTIESSIDEBAR_H__

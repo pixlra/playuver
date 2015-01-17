@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -18,35 +18,36 @@
  */
 
 /**
- * \file     MeasurePSNR.h
- * \brief    Frame Difference module
+ * \file     LumaAverage.h
+ * \brief    Luma frame average
  */
 
-#ifndef __MEASUREPSNR_H__
-#define __MEASUREPSNR_H__
+
+#ifndef __LUMAAVERAGE_H__
+#define __LUMAAVERAGE_H__
 
 #include "PlaYUVerModuleIf.h"
 
 namespace plaYUVer
 {
 
-class MeasurePSNR: public PlaYUVerModuleIf
+class LumaAverage: public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( LumaAverage )
+
 private:
 public:
-  MeasurePSNR();
-  virtual ~MeasurePSNR()
+  LumaAverage();
+  virtual ~LumaAverage()
   {
   }
   Void create( PlaYUVerFrame* );
-  Double measure( PlaYUVerFrame*, PlaYUVerFrame* );
+  Double measure( PlaYUVerFrame* );
   Void destroy();
-
-  static Double getMSE( PlaYUVerFrame* Org, PlaYUVerFrame* Rec, Int component );
 
 };
 
 }  // NAMESPACE
 
-#endif // __MEASUREPSNR_H__
+#endif // __LUMAAVERAGE_H__
 

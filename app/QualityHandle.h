@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  */
 
 /**
- * \file     QualityMeasurement.h
+ * \file     QualityHandle.h
  * \brief    Definition of the quality measurement sidebar
  */
 
@@ -40,17 +40,20 @@ namespace plaYUVer
 
 class VideoSubWindow;
 
-class QualityMeasurement: public QWidget
+class QualityHandle: public QWidget
 {
 Q_OBJECT
 public:
-  QualityMeasurement( QWidget*, QMdiArea * );
-  ~QualityMeasurement();
+  QualityHandle( QWidget*, QMdiArea * );
+  ~QualityHandle();
 
   Void createActions();
   QMenu* createMenu();
   QDockWidget* createDock();
   Void updateMenus();
+
+  Void readSettings();
+  Void writeSettings();
 
   Void update( VideoSubWindow* currSubWindow );
 
@@ -65,11 +68,15 @@ private:
   QVector<QAction*> m_arrayActions;
   QActionGroup* m_actionGroupQualityMetric;
   QSignalMapper* m_mapperQualityMetric;
+  Int m_iQualityMetricIdx;
 
   QMenu* m_pcMenuQuality;
 
-  QDockWidget* m_pcQualityMeasurementDock;
-  QualityMeasurementSidebar* m_pcQualityMeasurementSideBar;
+  QDockWidget* m_pcQualityHandleDock;
+  QualityMeasurementSidebar* m_pcQualityHandleSideBar;
+
+Q_SIGNALS:
+  void changed();
 
 private Q_SLOTS:
   void slotQualityMetricChanged( int );

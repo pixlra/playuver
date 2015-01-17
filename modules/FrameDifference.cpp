@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -28,21 +28,18 @@
 namespace plaYUVer
 {
 
-static PlaYUVerModuleDefinition FrameDifferenceDef =
-{
-    FRAME_PROCESSING_MODULE,
-    "Measurements",
-    "FrameDifference",
-    "Measure the difference between two images (Y plane),  Y1 - Y2, with max absolute diff of 128",
-    MODULE_REQUIRES_TWO_FRAMES,
-    MODULE_REQUIRES_NEW_WINDOW,
-    APPLY_WHILE_PLAYING,
-};
-
 FrameDifference::FrameDifference()
 {
+  /* Module Definition */
+  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_pchModuleCategory = "Measurements";
+  m_pchModuleName = "FrameDifference";
+  m_pchModuleTooltip = "Measure the difference between two images (Y plane),  Y1 - Y2, with max absolute diff of 128";
+  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;
+  m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
+  m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;
+
   m_pcFrameDifference = NULL;
-  setModuleDefinition( FrameDifferenceDef );
 }
 
 Void FrameDifference::create( PlaYUVerFrame* Input )

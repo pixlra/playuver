@@ -9,24 +9,25 @@ set(plaYUver_App_SRCS
 # Main
     main.cpp
     plaYUVerApp.cpp
-    ViewArea.cpp
-    ModulesHandle.cpp
-    PlaYUVerAppModuleIf.cpp
-    QualityMeasurement.cpp
-    GridManager.cpp
-    Settings.cpp
-# Sub Window
     SubWindowHandle.cpp
+    Settings.cpp
+# Module Video
     VideoSubWindow.cpp
+    ViewArea.cpp
+    VideoHandle.cpp
+    FramePropertiesSidebar.cpp
+# Module Quality
+    QualityHandle.cpp
+    QualityMeasurementSidebar.cpp
+# Module Plugins
+    ModulesHandle.cpp
+    ModuleHandleDock.cpp
+    PlaYUVerAppModuleIf.cpp
+    GridManager.cpp
 # Dialogs
     AboutDialog.cpp
     ConfigureFormatDialog.cpp
     DialogSubWindowSelector.cpp
-# Docks / Sidebars
-    ModuleHandleDock.cpp
-    PropertiesSidebar.cpp
-    PlaYUVerFrameStatistics.cpp
-    QualityMeasurementSidebar.cpp
 # Widgets
     HistogramWidget.cpp
     WidgetFrameNumber.cpp

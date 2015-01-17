@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -39,29 +39,6 @@ class Settings
 
 public:
   Settings();
-
-  // - - - - - - - - - - Main Window Settings - - - - - - - - - - - - - 
-  QPoint mainWindowPos();
-  Void setMainWindowPos( const QPoint &v );
-
-  QSize mainWindowSize();
-  Void setMainWindowSize( const QSize &v );
-
-  QString lastOpenPath();
-  Void setLastOpenPath( const QString &v );
-
-  Int getSelectedTool();
-  Void setSelectedTool( Int);
-
-  Bool getRepeat();
-  Void setPlayingSettings( Bool repeat );
-
-  Void setDockVisibility( Bool statusStreamProperties, Bool statusFrameProperties, Bool statusQualityMeasurement );
-  Void getDockVisibility( Bool& statusStreamProperties, Bool& statusFrameProperties, Bool& statusQualityMeasurement );
-
-  // - - - - - - - - - - Recent Files Settings - - - - - - - - - - - - -
-  Void setRecentFileList( PlaYUVerStreamInfoVector recentFileList );
-  PlaYUVerStreamInfoVector getRecentFileList();
 
   // - - - - - - - - - - - - Grid Settings - - - - - - - - - - - - - - -
   GridManager::Style gridStyle();

@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ PlaYUVerFrameStats::PlaYUVerFrameStats() :
 PlaYUVerFrameStats::~PlaYUVerFrameStats()
 {
   if( m_pdHistogram )
-    delete[] m_pdHistogram;
+    freeMem1D( m_pdHistogram );
 
 }
 
@@ -72,7 +72,10 @@ Void PlaYUVerFrameStats::xSetupStatistics( const PlaYUVerFrame *pcFrame, UInt op
 
 Void PlaYUVerFrameStats::calcHistogram()
 {
-  m_bHasHistogram = false;
+  m_bRunningFlag = true;
+  //m_bHasHistogram = false;
+  if( m_bHasHistogram )
+    return;
   getMem1D<Double>( &( m_pdHistogram ), m_uiHistoSegments * histoChannels );
 
   if( !m_pdHistogram )
@@ -97,7 +100,7 @@ Void PlaYUVerFrameStats::calcHistogram()
       m_pdHistogram[*( data[LUMA] ) + LUMA * m_uiHistoSegments]++;
       data[LUMA] += 1;
     }
-    for( i = 0; ( i < imageChromaSize ) && runningFlag; i++ )
+    for( i = 0; ( i < imageChromaSize ) && m_bRunningFlag; i++ )
     {
       for( j = 1; j < m_uiChannels; j++ )
       {
@@ -115,7 +118,7 @@ Void PlaYUVerFrameStats::calcHistogram()
     data[COLOR_G] = m_pppImageData[COLOR_G][0];
     data[COLOR_B] = m_pppImageData[COLOR_B][0];
 
-    for( i = 0; ( i < m_uiImageHeight * m_uiImageWidth ) && runningFlag; i++ )
+    for( i = 0; ( i < m_uiImageHeight * m_uiImageWidth ) && m_bRunningFlag; i++ )
     {
       for( j = 0; j < m_uiChannels; j++ )
       {

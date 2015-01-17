@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -30,22 +30,26 @@
 namespace plaYUVer
 {
 
-class FilterComponent
+class FilterComponentModule: public PlaYUVerModuleIf
 {
 private:
   PlaYUVerFrame* m_pcFilteredFrame;
 public:
-  FilterComponent();
-  virtual ~FilterComponent()
+  FilterComponentModule();
+  virtual ~FilterComponentModule()
   {
   }
+  Void create( PlaYUVerFrame* ) = 0;
+  PlaYUVerFrame* process( PlaYUVerFrame* ) = 0;
+  Void destroy();
+
   Void createFilter( UInt uiWidth, UInt uiHeight );
   PlaYUVerFrame* filterComponent( PlaYUVerFrame* InputFrame,  Int Component );
-  Void destroy();
 };
 
-class FilterComponentLuma: public FilterComponent, public PlaYUVerModuleIf
+class FilterComponentLuma: public FilterComponentModule
 {
+  REGISTER_CLASS_FACTORY( FilterComponentLuma )
 public:
   FilterComponentLuma();
   virtual ~FilterComponentLuma()
@@ -55,8 +59,9 @@ public:
   PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
 };
 
-class FilterComponentChromaU: public FilterComponent, public PlaYUVerModuleIf
+class FilterComponentChromaU: public FilterComponentModule
 {
+  REGISTER_CLASS_FACTORY( FilterComponentChromaU )
 public:
   FilterComponentChromaU();
   virtual ~FilterComponentChromaU()
@@ -66,8 +71,9 @@ public:
   PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
 };
 
-class FilterComponentChromaV: public FilterComponent, public PlaYUVerModuleIf
+class FilterComponentChromaV: public FilterComponentModule
 {
+  REGISTER_CLASS_FACTORY( FilterComponentChromaV )
 public:
   FilterComponentChromaV();
   virtual ~FilterComponentChromaV()

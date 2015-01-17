@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -18,163 +18,17 @@
  */
 
 /**
- * \file     PropertiesSidebar.cpp
+ * \file     FramePropertiesSideBar.cpp
  * \brief    Main side bar definition
  */
 
 #include <cmath>
 #include <QtGui>
 #include <QtDebug>
-#include "PropertiesSidebar.h"
+#include "FramePropertiesSidebar.h"
 
 namespace plaYUVer
 {
-
-static inline QSize bestSize( QSize currSize )
-{
-  QSize bestSize( 180, currSize.height() );
-  if( currSize.width() < bestSize.width() )
-    return bestSize;
-  else
-    return currSize;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//                       StreamPropertiesSideBar
-////////////////////////////////////////////////////////////////////////////////
-
-StreamPropertiesSideBar::StreamPropertiesSideBar( QWidget* parent ) :
-        QWidget( parent )
-{
-  // -------------- Variables definition --------------
-  m_pcStream = NULL;
-
-  // ----------------- GUI definition -----------------
-
-  QLabel *streamNameLabel = new QLabel( tr( "Name:" ) );
-  streamNameLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
-  labelNameValue = new QLabel;
-  labelNameValue->setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) );
-  labelNameValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
-
-  QLabel *formatLabel = new QLabel( tr( "File Format:" ) );
-  formatLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
-  labelFormatValue = new QLabel;
-  labelFormatValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
-
-  QLabel *codecLabel = new QLabel( tr( "Codec:" ) );
-  codecLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
-  labelCodecValue = new QLabel;
-  labelCodecValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
-
-  QLabel *durationLabel = new QLabel( tr( "Duration:" ) );
-  durationLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
-  labelDurationValueTime = new QLabel;
-  labelDurationValueTime->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
-
-  labelDurationValueFrames = new QLabel;
-  labelDurationValueFrames->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
-
-  QLabel *sizeLabel = new QLabel( tr( "Resolution:" ) );
-  sizeLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
-  labelSizeValue = new QLabel;
-  labelSizeValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
-
-  QLabel *colorSpaceLabel = new QLabel( tr( "Color Space:" ) );
-  colorSpaceLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
-  labelColorSpaceValue = new QLabel;
-  labelColorSpaceValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
-
-  QGridLayout *propertiesLayout = new QGridLayout;
-  Int layout_line = 0;
-//  propertiesLayout->addWidget( streamNameLabel, layout_line, 0 );
-//  propertiesLayout->addWidget( labelNameValue, layout_line, 1 );
-//  layout_line++;
-  propertiesLayout->addWidget( formatLabel, layout_line, 0 );
-  propertiesLayout->addWidget( labelFormatValue, layout_line, 1 );
-  layout_line++;
-  propertiesLayout->addWidget( codecLabel, layout_line, 0 );
-  propertiesLayout->addWidget( labelCodecValue, layout_line, 1 );
-  layout_line++;
-  propertiesLayout->addWidget( durationLabel, layout_line, 0 );
-  propertiesLayout->addWidget( labelDurationValueTime, layout_line, 1 );
-  layout_line++;
-  propertiesLayout->addWidget( labelDurationValueFrames, layout_line, 1 );
-  layout_line++;
-  propertiesLayout->addWidget( sizeLabel, layout_line, 0 );
-  propertiesLayout->addWidget( labelSizeValue, layout_line, 1 );
-  layout_line++;
-  propertiesLayout->addWidget( colorSpaceLabel, layout_line, 0 );
-  propertiesLayout->addWidget( labelColorSpaceValue, layout_line, 1 );
-
-  propertiesLayout->setRowStretch( 8, 10 );
-  setLayout( propertiesLayout );
-
-  //QGroupBox *propertiesGroup = new QGroupBox;
-  //propertiesGroup->setLayout( propertiesLayout );
-  //QGridLayout *mainLayout = new QGridLayout;
-  //mainLayout->addWidget( propertiesGroup );
-  //mainLayout->setRowStretch( 8, 10 );
-  //setLayout( mainLayout );
-
-  setEnabled( false );
-}
-
-StreamPropertiesSideBar::~StreamPropertiesSideBar()
-{
-
-}
-
-QSize StreamPropertiesSideBar::sizeHint() const
-{
-  return bestSize( size() );
-}
-
-Void StreamPropertiesSideBar::setData( PlaYUVerStream* pcStream )
-{
-  // Clear information.
-  labelNameValue->clear();
-  labelFormatValue->clear();
-  labelCodecValue->clear();
-  labelDurationValueTime->clear();
-  labelDurationValueFrames->clear();
-  labelSizeValue->clear();
-  labelColorSpaceValue->clear();
-
-  if( !pcStream || !pcStream->getCurrFrame() )
-  {
-    setEnabled( false );
-    return;
-  }
-  else
-  {
-    m_pcStream = pcStream;
-    setEnabled( true );
-
-
-    labelNameValue->setText( QFileInfo( m_pcStream->getFileName() ).fileName() );
-    labelFormatValue->setText( m_pcStream->getFormatName() );
-    labelCodecValue->setText( m_pcStream->getCodecName() );
-    Int duration[3];
-    m_pcStream->getDuration( duration );
-    QString value;
-    value = QString( tr( "%1h:%2m:%3s" ) ).arg( duration[0] ).arg( duration[1] ).arg( duration[2] );
-    labelDurationValueTime->setText( value );
-    value = QString( tr( "%1 frms" ) ).arg( m_pcStream->getFrameNum() );
-    labelDurationValueFrames->setText( value );
-    UInt width = m_pcStream->getWidth();
-    UInt height = m_pcStream->getHeight();
-    UInt fps = m_pcStream->getFrameRate();
-    value = QString( tr( "%1 x %2 @ %3 Hz" ) ).arg( width ).arg( height ).arg( fps );
-    labelSizeValue->setText( value );
-    value = QString( PlaYUVerFrame::supportedPixelFormatListNames().at( m_pcStream->getCurrFrame()->getPelFormat() ) );
-    labelColorSpaceValue->setText( value );
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//                FramePropertiesSideBar
-////////////////////////////////////////////////////////////////////////////////
 
 FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent, Bool* pbMainPlaySwitch ) :
         QWidget( parent ),
@@ -399,7 +253,11 @@ FramePropertiesSideBar::~FramePropertiesSideBar()
 
 QSize FramePropertiesSideBar::sizeHint() const
 {
-  return bestSize( size() );
+  QSize currSize = size();
+  QSize bestSize( 180, currSize.height() );
+  if( currSize.width() < bestSize.width() )
+    return bestSize;
+  return currSize;
 }
 
 Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame, Bool isPlaying )
@@ -482,7 +340,7 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame, Bool isPlaying )
       }
     }
     setEnabled( true );
-    if( m_pcFrame != pcFrame || !(*pbMainPlaySwitch) )
+    if( m_pcFrame || !(*pbMainPlaySwitch) )
     {
       m_pcFrame = pcFrame;
       updateDataHistogram();
@@ -529,7 +387,7 @@ Void FramePropertiesSideBar::updateDataHistogram()
       // image is the same in Image Viewer, then compute too the histogram
       // for this selection.
       // New frame required to separate from the thread
-      histogramWidget->updateData( new PlaYUVerFrame(m_pcFrame), NULL );
+      histogramWidget->updateData( m_pcFrame, NULL );
       fullImageButton->hide();
       selectionImageButton->hide();
     }
@@ -558,7 +416,7 @@ Void FramePropertiesSideBar::updateStatistiques()
   if( channel == HistogramWidget::ColorChannelsHistogram )
     channel = colorsCB->currentIndex() + 1;
 
-  PlaYUVerFrameStatistics *histogram;
+  PlaYUVerFrameStats* histogram;
 
   if( histogramWidget->m_renderingType == HistogramWidget::FullImageHistogram )
     histogram = histogramWidget->m_imageHistogram;

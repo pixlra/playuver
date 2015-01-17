@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -32,11 +32,10 @@
 namespace plaYUVer
 {
 
-#define REGISTER_MODULE(X)                      \
-    {                                           \
-        X *pMod = new X();                      \
-        appendModule( pMod );                   \
-    }
+#define REGISTER_CLASS_FACTORY(X) \
+public: \
+  static PlaYUVerModuleIf* Create() { return new X(); } \
+  void Delete() { delete this; }
 
 enum // Module type
 {
@@ -85,10 +84,10 @@ public:
   UInt m_uiModuleRequirements;
   Bool m_bApplyWhilePlaying;
 
-  PlaYUVerModuleDefinition m_cModuleDef;
-
   PlaYUVerModuleIf() {}
   virtual ~PlaYUVerModuleIf() {}
+
+  virtual void Delete() = 0;
 
   virtual Void create() {}
   virtual Void create( PlaYUVerFrame* ) {}
@@ -101,10 +100,7 @@ public:
   virtual Double          measure( PlaYUVerFrame*, PlaYUVerFrame* ) { return 0; }
   virtual Double          measure( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* ) { return 0; }
 
-  virtual Void destroy() { }
-
-  Void setModuleDefinition( PlaYUVerModuleDefinition def )  { m_cModuleDef = def;   }
-  PlaYUVerModuleDefinition getModuleDefinition()            { return m_cModuleDef;  }
+  virtual Void destroy() = 0;
 
 };
 

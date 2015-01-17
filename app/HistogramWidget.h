@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -31,14 +31,13 @@
 #include <QWidget>
 #include <QColor>
 #include "lib/PlaYUVerFrame.h"
-#include "PlaYUVerFrameStatistics.h"
 
 class QEvent;
 
 namespace plaYUVer
 {
 
-class PlaYUVerFrameStatistics;
+class HistogramWorker;
 class HistogramWidgetPrivate;
 
 class HistogramWidget: public QWidget
@@ -118,20 +117,11 @@ public  :
   /** Stop current histogram computations.*/
   Void stopHistogramComputation();
 
-  /** Update full image histogram data methods.*/
-  Void updateData( Pel ***imageData, UInt imageWidth, UInt imageHeight,
-      Int bitsPerChannel, Int colorSpace, UInt chroma_size,
-      Pel ***selData = 0, UInt selWidth = 0, UInt selHeight = 0);
-
   /** Update full image histogram data from SImage.*/
-  Void updateData( const PlaYUVerFrame *playuver_frame, const PlaYUVerFrame *playuver_selection );
-
-  /** Update image selection histogram data methods.*/
-  Void updateSelectionData( Pel ***selData, uint selWidth, uint selHeight,
-      Int bitsPerChannel, Int colorSpace, UInt chroma_size );
+  Void updateData( const PlaYUVerFrame *pcFrame, const PlaYUVerFrame *pcFrameSelection );
 
   /** Update image selection histogram data from SImage.*/
-  Void updateSelectionData( const PlaYUVerFrame *imageSelection );
+  Void updateSelectionData( const PlaYUVerFrame *pcFrameSelection );
 
   /** @see @p HistogramOption */
   Void setOptions( HistogramOptions options = AllOptions );
@@ -153,9 +143,11 @@ public:
   Int m_renderingType;
 
   /** Full image */
-  PlaYUVerFrameStatistics *m_imageHistogram;
+  HistogramWorker* m_imageWorker;
+  PlaYUVerFrameStats* m_imageHistogram;
   /** Histogram area selection */
-  PlaYUVerFrameStatistics *m_selectionHistogram;
+  HistogramWorker* m_selectionWorker;
+  PlaYUVerFrameStats* m_selectionHistogram;
 
   Q_SIGNALS:
   void signalIntervalChanged( int min, int max );

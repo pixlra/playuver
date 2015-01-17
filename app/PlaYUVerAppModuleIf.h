@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -53,9 +53,10 @@ class PlaYUVerAppModuleIf
 
 private:
 
+  QAction* m_pcModuleAction;
   PlaYUVerModuleIf* m_pcModule;
 
-  QAction* m_pcAction;
+
   VideoSubWindow* m_pcSubWindow[MAX_NUMBER_FRAMES];
 
   VideoSubWindow* m_pcDisplaySubWindow;
@@ -82,7 +83,7 @@ public:
     PlaYUVerAppModuleIf* m_pcModule;
   };
 
-  PlaYUVerAppModuleIf();
+  PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module  );
   virtual ~PlaYUVerAppModuleIf() {}
 
 protected:

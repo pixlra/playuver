@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -45,43 +45,45 @@ namespace plaYUVer
 class PlaYUVerAppModuleIf;
 class SubWindowHandle;
 
-class ModulesHandle: public QObject
+class ModulesHandle: public QWidget
 {
 Q_OBJECT
 public:
   ModulesHandle( QMainWindow* parent = 0, QMdiArea *mdiArea = 0 );
   ~ModulesHandle();
 
-  QMenu* createMenus( QMenuBar* MainAppMenuBar );
-  Void updateMenus( Bool hasSubWindow );
-  SubWindowHandle* processModuleHandlingOpt();
+  Void createActions();
+  QMenu* createMenu();
+  //QDockWidget* createDock();
+  Void updateMenus();
+
+  Void readSettings();
+  Void writeSettings();
 
   static Void destroyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
-  static Bool applyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf, Bool isPlaying, Bool disableThreads = false );
-  static Void swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf );
+  static Bool applyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf, Bool isPlaying = false, Bool disableThreads = false );
+
   static Bool showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame );
   static Bool showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Double moduleResult );
-  static Void applyAllModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
 
 private:
   QMainWindow *m_pcParent;
   QMdiArea *m_pcMdiArea;
-  UInt m_uiModulesCount;
-  Int m_iOptionSelected;
 
   enum
   {
     INVALID_OPT = -1,
-    SWAP_FRAMES_OPT = -2,
-    APPLY_ALL_OPT = -3,
+    SWAP_FRAMES_OPT = 0,
+    APPLY_ALL_OPT = 1,
   };
 
   QMenu* m_pcModulesMenu;
   QList<QMenu*> m_pcModulesSubMenuList;
-  QList<PlaYUVerModuleIf*> m_pcPlaYUVerModulesIf;
-  QList<PlaYUVerAppModuleIf*> m_pcPlaYUVerModules;
-  QSignalMapper* m_pcActionMapper;
+  QList<PlaYUVerModuleIf*> m_pcPlaYUVerModulesIfList;
+  QList<PlaYUVerAppModuleIf*> m_pcPlaYUVerAppModuleIfList;
+
   QVector<QAction*> m_arrayModulesActions;
+  QSignalMapper* m_pcModulesActionMapper;
 
   enum MODULES_ACTION_LIST
   {
@@ -93,15 +95,20 @@ private:
     MODULES_TOTAL_ACT
   };
   QVector<QAction*> m_arrayActions;
+  QSignalMapper* m_pcActionMapper;
 
-  Void appendModule( PlaYUVerModuleIf* pModuleIf );
-  SubWindowHandle* enableModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
-  Void openModuleIfStream( PlaYUVerAppModuleIf *pcCurrModuleIf );
+  Void enableModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
+  Void applyAllModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
+  Void swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf );
 
   Void customEvent( QEvent *event );
 
+Q_SIGNALS:
+  void changed();
+
 private Q_SLOTS:
-  void selectModule( int index );
+  void activateModule();
+  void processOpt( int index );
   void destroyAllModulesIf();
 
 };

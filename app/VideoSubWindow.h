@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -72,7 +72,8 @@ private:
   QRect m_cSelectedArea;
 
   QString m_cFilename;
-  PlaYUVerAppModuleIf* m_pcCurrentModule;
+  //PlaYUVerAppModuleIf* m_pcCurrentModule;
+  QList<PlaYUVerAppModuleIf*> m_apcCurrentModule;
 
   VideoSubWindow* m_pcReferenceSubWindow;
 
@@ -131,15 +132,6 @@ public:
     return m_cViewArea;
   }
 
-  Void setModule( PlaYUVerAppModuleIf* pcCurrentModule )
-  {
-    m_pcCurrentModule = pcCurrentModule;
-  }
-  PlaYUVerAppModuleIf* getModule()
-  {
-    return m_pcCurrentModule;
-  }
-
   Void setRefSubWindow( VideoSubWindow* subWindow )
   {
     m_pcReferenceSubWindow = NULL;
@@ -147,6 +139,7 @@ public:
       if( m_pcCurrFrame->haveSameFmt( subWindow->getCurrFrame() ) )
         m_pcReferenceSubWindow = subWindow;
   }
+
   VideoSubWindow* getRefSubWindow()
   {
     return m_pcReferenceSubWindow;
@@ -156,10 +149,12 @@ public:
    * Functions to enable a module in the
    * current SubWindow
    */
-  Void enableModule( PlaYUVerAppModuleIf* select_module );
-  Void disableModule();
-  Void swapModuleFrames();
-  Void applyModuleAllFrames();
+  Void enableModule( PlaYUVerAppModuleIf* pcModule, Bool bThisWindow = true );
+  Void disableModule( PlaYUVerAppModuleIf* pcModule = NULL );
+  QList<PlaYUVerAppModuleIf*> getModuleArray()
+  {
+    return m_apcCurrentModule;
+  }
 
   /**
    * Virtual functions from SubWindowHandle
@@ -177,6 +172,10 @@ public:
 
   QSize sizeHint() const;
 
+  Void setWindowShortName( const QString& name)
+  {
+    m_cWindowShortName = name;
+  }
   QString getWindowShortName()
   {
     return m_cWindowShortName;

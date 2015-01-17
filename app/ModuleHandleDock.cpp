@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -34,13 +34,10 @@ ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* module
         QWidget( parent ),
         m_pcCurrModuleIf( moduleIf )
 {
-
-  PlaYUVerModuleDefinition ModuleDef = moduleIf->m_pcModule->getModuleDefinition();
-
   // ----------------- Dock definition -----------------
 
   QString labelStr;
-  labelStr.append( ModuleDef.m_pchModuleName );
+  labelStr.append( moduleIf->m_pcModule->m_pchModuleName );
   labelStr.append( " Result:" );
   labelModulueValueLabel = new QLabel( labelStr );
   labelModulueValueLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );

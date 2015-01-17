@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -36,6 +36,8 @@ namespace plaYUVer
 
 class DisparityStereoVar: public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( DisparityStereoVar )
+
 private:
   PlaYUVerFrame* m_pcDisparityFrame;
   cv::StereoVar m_cStereoVar;

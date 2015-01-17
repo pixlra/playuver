@@ -18,40 +18,47 @@
  */
 
 /**
- * \file     SubWindowHandle.cpp
- * \brief    Sub windows handling
+ * \file     LumaAverage.cpp
+ * \brief    Luma frame average
  */
 
-#include "SubWindowHandle.h"
+#include "LumaAverage.h"
 
 namespace plaYUVer
 {
 
-SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
-        QMdiSubWindow( parent )
+LumaAverage::LumaAverage()
 {
-  m_uiCategory = category;
-  m_cWindowName = QString( " " );
+  /* Module Definition */
+  m_iModuleType = FRAME_MEASUREMENT_MODULE;
+  m_pchModuleCategory = "Measurements";
+  m_pchModuleName = "Luma Average";
+  m_pchModuleTooltip = "Measure the average of luma component";
+  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
+  m_uiModuleRequirements = MODULE_REQUIRES_SIDEBAR;
+  m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;
 }
 
-SubWindowHandle::~SubWindowHandle()
+Void LumaAverage::create( PlaYUVerFrame* frame )
 {
 }
 
-Void SubWindowHandle::setWindowName( QString name )
+Double LumaAverage::measure( PlaYUVerFrame* frame )
 {
-  m_cWindowName = name;
-  setWindowTitle( m_cWindowName );
+  Double average = 0;
+  Pel* pPel = frame->getPelBufferYUV()[0][0];
+  for( UInt y = 0; y < frame->getHeight(); y++ )
+    for( UInt x = 0; x < frame->getWidth(); x++ )
+    {
+      average += *pPel;
+    }
+  return average / Double( frame->getHeight() * frame->getWidth() );
 }
 
-QString SubWindowHandle::getWindowName()
+Void LumaAverage::destroy()
 {
-  return m_cWindowName;
-}
 
-Bool SubWindowHandle::mayClose()
-{
-  return true;
 }
 
 }  // NAMESPACE
+

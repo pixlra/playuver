@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -28,8 +28,9 @@
 namespace plaYUVer
 {
 
-PlaYUVerAppModuleIf::PlaYUVerAppModuleIf() :
-        m_pcAction( NULL ),
+PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module ) :
+        m_pcModuleAction( action ),
+        m_pcModule( module ),
         m_pcDisplaySubWindow( NULL ),
         m_pcDockWidget( NULL ),
         m_pcModuleDock( NULL ),
@@ -37,6 +38,7 @@ PlaYUVerAppModuleIf::PlaYUVerAppModuleIf() :
         m_pcProcessedFrame( NULL ),
         m_dMeasurementResult( 0 )
 {
+  setParent( parent );
   for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
   {
     m_pcSubWindow[i] = NULL;
@@ -48,9 +50,9 @@ void PlaYUVerAppModuleIf::run()
   m_pcProcessedFrame = NULL;
   m_dMeasurementResult = 0;
 
-  if( m_pcModule->m_cModuleDef.m_iModuleType == FRAME_PROCESSING_MODULE )
+  if( m_pcModule->m_iModuleType == FRAME_PROCESSING_MODULE )
   {
-    switch( m_pcModule->m_cModuleDef.m_uiNumberOfFrames )
+    switch( m_pcModule->m_uiNumberOfFrames )
     {
     case MODULE_REQUIRES_ONE_FRAME:
       m_pcProcessedFrame = m_pcModule->process( m_pcSubWindow[0]->getCurrFrame() );
@@ -63,9 +65,9 @@ void PlaYUVerAppModuleIf::run()
       break;
     }
   }
-  else if( m_pcModule->m_cModuleDef.m_iModuleType == FRAME_MEASUREMENT_MODULE )
+  else if( m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
   {
-    switch( m_pcModule->m_cModuleDef.m_uiNumberOfFrames )
+    switch( m_pcModule->m_uiNumberOfFrames )
     {
     case MODULE_REQUIRES_ONE_FRAME:
       m_dMeasurementResult = m_pcModule->measure( m_pcSubWindow[0]->getCurrFrame() );

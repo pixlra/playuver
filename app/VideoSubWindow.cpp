@@ -75,7 +75,6 @@ VideoSubWindow::VideoSubWindow( QWidget * parent, Bool isModule ) :
         SubWindowHandle( parent, SubWindowHandle::VIDEO_SUBWINDOW ),
         m_pCurrStream( NULL ),
         m_pcCurrFrame( NULL ),
-        m_pcCurrentModule( NULL ),
         m_pcReferenceSubWindow( NULL ),
         m_bIsPlaying( false ),
         m_bIsModule( isModule )
@@ -103,6 +102,8 @@ VideoSubWindow::VideoSubWindow( QWidget * parent, Bool isModule ) :
 // Define the cViewArea as the widget inside the scroll area
   m_cScrollArea->setWidget( m_cViewArea );
   m_cScrollArea->setWidgetResizable( true );
+
+  m_apcCurrentModule.clear();
 
   m_cLastScroll = QPoint();
 }
@@ -207,56 +208,50 @@ Void VideoSubWindow::updateSelectedArea( QRect area )
  * Functions to enable a module in the
  * current SubWindow
  */
-Void VideoSubWindow::enableModule( PlaYUVerAppModuleIf* select_module )
+Void VideoSubWindow::enableModule( PlaYUVerAppModuleIf* pcModule, Bool bThisWindow )
 {
-  if( m_pcCurrentModule )
+  if( bThisWindow )
   {
+    m_apcCurrentModule.clear();
     disableModule();
   }
-  m_pcCurrentModule = select_module;
-// refreshFrame();
+  m_apcCurrentModule.append( pcModule );
 }
 
-Void VideoSubWindow::disableModule()
+Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
 {
-  if( m_pcCurrentModule )
+  if( pcModule )
   {
-    PlaYUVerAppModuleIf* pcCurrentModule = m_pcCurrentModule;
-    m_pcCurrentModule = NULL;
-    ModulesHandle::destroyModuleIf( pcCurrentModule );
-    refreshFrame();
+    Int modIdx = m_apcCurrentModule.indexOf( pcModule );
+    if( modIdx != -1 )
+    {
+      m_apcCurrentModule.removeAt( modIdx );
+      ModulesHandle::destroyModuleIf( pcModule );
+    }
   }
-}
-
-Void VideoSubWindow::swapModuleFrames()
-{
-  if( m_pcCurrentModule )
+  else
   {
-    ModulesHandle::swapModulesWindowsIf( m_pcCurrentModule );
-    refreshFrame();
+    QList<PlaYUVerAppModuleIf*> apcCurrentModule = m_apcCurrentModule;
+    for( Int i = 0; i < apcCurrentModule.size(); i++ )
+    {
+      m_apcCurrentModule.removeOne( apcCurrentModule.at( i ) );
+      ModulesHandle::destroyModuleIf( apcCurrentModule.at( i ) );
+    }
+    assert( m_apcCurrentModule.size() == 0 );
   }
-}
-
-Void VideoSubWindow::applyModuleAllFrames()
-{
-  if( m_pcCurrentModule )
-  {
-    ModulesHandle::applyAllModuleIf( m_pcCurrentModule );
-    stop();
-  }
+  refreshFrame();
 }
 
 Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
   m_pcCurrFrame = pcCurrFrame;
   m_cViewArea->setImage( m_pcCurrFrame );
-  if( !isVisible() )
-  {
-    show();
-    resize( sizeHint() );
-    zoomToFit();
-
-  }
+//  if( !isVisible() )
+//  {
+//    show();
+//    resize( sizeHint() );
+//    zoomToFit();
+//  }
 }
 
 Void VideoSubWindow::refreshFrame()
@@ -266,17 +261,10 @@ Void VideoSubWindow::refreshFrame()
   {
     m_pcCurrFrame = m_pCurrStream->getCurrFrame();
     bSetFrame = true;
-    if( m_pcCurrentModule )
-    {
-      bSetFrame = ModulesHandle::applyModuleIf( m_pcCurrentModule, m_bIsPlaying );
-    }
   }
-  else
+  for( Int i = 0; i < m_apcCurrentModule.size(); i++ )
   {
-    if( m_pcCurrentModule )
-    {
-      bSetFrame = ModulesHandle::applyModuleIf( m_pcCurrentModule, m_bIsPlaying );
-    }
+    bSetFrame = ModulesHandle::applyModuleIf( m_apcCurrentModule.at( i ), m_bIsPlaying );
   }
   if( bSetFrame )
   {
@@ -547,10 +535,9 @@ QSize VideoSubWindow::sizeHint() const
   return maxSize;
 }
 
-void VideoSubWindow::closeEvent( QCloseEvent *event )
+Void VideoSubWindow::closeEvent( QCloseEvent *event )
 {
-  Bool bAccept = mayClose();
-  bAccept = m_bIsPlaying ? false : bAccept;
+  Bool bAccept = m_bIsPlaying ? false : true;
   if( bAccept )
   {
     event->accept();

@@ -2,7 +2,11 @@
 ### CMakeLists for playuver modules component
 ###
 
-INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR} )
+INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
+
+set(plaYUver_Mod_SRCS
+  PlaYUVerModuleFactory.cpp
+)
 
 MACRO(ADD_MODULE name file )
   set(__modulename "Module${name}")
@@ -18,15 +22,6 @@ MACRO(ADD_MODULE name file )
 ENDMACRO()
 
 
-
-#
-# Init header
-#
-file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h  "// This files defines the macro to \n"
-                                                            "// define a list of modules\n"
-                                                            "#ifndef __MODULESLISTMACRO_H__\n#define __MODULESLISTMACRO_H__\n"
-                                                            "#define REGISTER_ALL_MODULES ")
-
 file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "// This files add the header files of each module\n"
 
                                                             "#ifndef __MODULESLISTHEADER_H__\n#define __MODULESLISTHEADER_H__\n" )
@@ -35,13 +30,20 @@ file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "// This files add
 #
 # Modules List
 #
-INCLUDE( ModulesList.cmake )
+ADD_MODULE( FilterComponentLuma "FilterComponent" )
+ADD_MODULE( FilterComponentChromaU "FilterComponent" )
+ADD_MODULE( FilterComponentChromaV "FilterComponent" )
+ADD_MODULE( FrameDifference "FrameDifference" )
+ADD_MODULE( AbsoluteFrameDifference "AbsoluteFrameDifference" )
+ADD_MODULE( LumaAverage "LumaAverage" )
+IF( USE_OPENCV )
+  ADD_MODULE( DisparityStereoVar "DisparityStereoVar" )
+ENDIF()
 
 
 #
 # Finish header
 #
-file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListMacro.h    "\n#endif // __MODULESLISTMACRO_H__\n" )
 file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#endif // __MODULESLISTHEADER_H__\n" )
 
 ADD_LIBRARY( PlaYUVerModules ${plaYUver_Mod_SRCS} )

@@ -45,7 +45,7 @@ plaYUVerApp::plaYUVerApp()
   m_pDBusAdaptor = new PlaYUVerAppAdaptor( this );
 #endif
 
-  mdiArea = new PlaYUVerMdiArea;
+  mdiArea = new PlaYUVerMdiArea( this );
   setCentralWidget( mdiArea );
   //mdiArea->setActivationOrder( QMdiArea::ActivationHistoryOrder );
 
@@ -245,8 +245,8 @@ Void plaYUVerApp::open()
 
   QStringList filter;
   filter << supported
-      << formatsList
-      << tr( "All Files (*)" );
+         << formatsList
+         << tr( "All Files (*)" );
 
   QStringList fileNameList = QFileDialog::getOpenFileNames( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );
 
@@ -292,8 +292,8 @@ Void plaYUVerApp::save()
 
     QStringList filter;
     filter << supported
-        << formatsList
-        << tr( "All Files (*)" );
+           << formatsList
+           << tr( "All Files (*)" );
 
     QString fileName = QFileDialog::getSaveFileName( this, tr( "Open File" ), QString(), filter.join( ";;" ) );
 
@@ -309,8 +309,6 @@ Void plaYUVerApp::save()
     }
   }
 }
-
-
 
 Void plaYUVerApp::format()
 {
@@ -448,56 +446,6 @@ Void plaYUVerApp::updateZoomFactorSBox()
   }
 }
 
-Void plaYUVerApp::update()
-{
-  SubWindowHandle *new_window = activeSubWindow();
-  QCoreApplication::processEvents();
-  //if( activeSubWindow() != m_pcCurrentSubWindow )
-  {
-    m_pcCurrentSubWindow = NULL;
-    m_pcCurrentVideoSubWindow = NULL;
-    if( activeSubWindow() )
-    {
-      m_pcCurrentSubWindow = new_window;
-
-      switch( m_pcCurrentSubWindow->getCategory() )
-      {
-      case SubWindowHandle::VIDEO_SUBWINDOW:
-        m_pcCurrentVideoSubWindow = qobject_cast<VideoSubWindow*>( m_pcCurrentSubWindow );
-        break;
-      }
-
-      setWindowTitle( QApplication::applicationName() + " - " + m_pcCurrentSubWindow->getWindowName() );
-
-      if( m_pcCurrentVideoSubWindow )
-      {
-        if( !plaYUVerApp::findSubWindow( mdiArea, m_pcCurrentVideoSubWindow->getRefSubWindow() ) )
-        {
-          m_pcCurrentVideoSubWindow->setRefSubWindow( NULL );
-        }
-      }
-      updateZoomFactorSBox();
-    }
-  }
-  m_appModuleVideo->update( m_pcCurrentVideoSubWindow );
-  m_appModuleQuality->update( m_pcCurrentVideoSubWindow );
-  updateMenus();
-}
-
-// -----------------------  Status bar Functions  -----------------------
-
-Void plaYUVerApp::updateStatusBar( const QString& statusBarString )
-{
-  if( !statusBarString.isEmpty() )
-  {
-    statusBar()->showMessage( statusBarString, 5000 );
-  }
-  else
-  {
-    statusBar()->showMessage( " " );
-  }
-}
-
 // -----------------------  Drag and drop functions  ----------------------
 
 Void plaYUVerApp::dragEnterEvent( QDragEnterEvent *event )
@@ -519,7 +467,12 @@ Void plaYUVerApp::dropEvent( QDropEvent *event )
   }
 }
 
-// -----------------------  Gui Functions  -----------------------
+// -----------------------  Sub Window Functions  -----------------------
+
+void plaYUVerApp::tileSubWindows()
+{
+  mdiArea->tileSubWindows();
+}
 
 SubWindowHandle *plaYUVerApp::activeSubWindow()
 {
@@ -573,6 +526,56 @@ Void plaYUVerApp::setActiveSubWindow( QWidget *window )
   if( !window )
     return;
   mdiArea->setActiveSubWindow( qobject_cast<QMdiSubWindow *>( window ) );
+}
+
+// -----------------------  Update Functions  -----------------------
+
+Void plaYUVerApp::update()
+{
+  SubWindowHandle *new_window = activeSubWindow();
+  QCoreApplication::processEvents();
+  //if( activeSubWindow() != m_pcCurrentSubWindow )
+  {
+    m_pcCurrentSubWindow = NULL;
+    m_pcCurrentVideoSubWindow = NULL;
+    if( activeSubWindow() )
+    {
+      m_pcCurrentSubWindow = new_window;
+
+      switch( m_pcCurrentSubWindow->getCategory() )
+      {
+      case SubWindowHandle::VIDEO_SUBWINDOW:
+        m_pcCurrentVideoSubWindow = qobject_cast<VideoSubWindow*>( m_pcCurrentSubWindow );
+        break;
+      }
+
+      setWindowTitle( QApplication::applicationName() + " - " + m_pcCurrentSubWindow->getWindowName() );
+
+      if( m_pcCurrentVideoSubWindow )
+      {
+        if( !plaYUVerApp::findSubWindow( mdiArea, m_pcCurrentVideoSubWindow->getRefSubWindow() ) )
+        {
+          m_pcCurrentVideoSubWindow->setRefSubWindow( NULL );
+        }
+      }
+      updateZoomFactorSBox();
+    }
+  }
+  m_appModuleVideo->update( m_pcCurrentVideoSubWindow );
+  m_appModuleQuality->update( m_pcCurrentVideoSubWindow );
+  updateMenus();
+}
+
+Void plaYUVerApp::updateStatusBar( const QString& statusBarString )
+{
+  if( !statusBarString.isEmpty() )
+  {
+    statusBar()->showMessage( statusBarString, 5000 );
+  }
+  else
+  {
+    statusBar()->showMessage( " " );
+  }
 }
 
 Void plaYUVerApp::updateMenus()
@@ -658,7 +661,7 @@ Void plaYUVerApp::updateWindowMenu()
   }
 }
 
-
+// -----------------------  Create Functions  -----------------------
 
 Void plaYUVerApp::createActions()
 {
@@ -787,7 +790,8 @@ Void plaYUVerApp::createActions()
   m_arrayActions[TILE_WINDOWS_ACT] = new QAction( tr( "Tile" ), this );
   m_arrayActions[TILE_WINDOWS_ACT]->setIcon( QIcon( ":images/windowstile.png" ) );
   m_arrayActions[TILE_WINDOWS_ACT]->setStatusTip( tr( "Tile the windows" ) );
-  connect( m_arrayActions[TILE_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea, SLOT( tileSubWindows() ) );
+  //connect( m_arrayActions[TILE_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea, SLOT( tileSubWindows() ) );
+  connect( m_arrayActions[TILE_WINDOWS_ACT], SIGNAL( triggered() ), this, SLOT( tileSubWindows() ) );
 
   m_arrayActions[CASCADE_WINDOWS_ACT] = new QAction( tr( "Cascade" ), this );
   m_arrayActions[CASCADE_WINDOWS_ACT]->setIcon( QIcon( ":images/windowscascade.png" ) );
@@ -942,7 +946,7 @@ Void plaYUVerApp::createDockWidgets()
 
 Void plaYUVerApp::createStatusBar()
 {
-  statusBar()->addPermanentWidget(   m_appModuleVideo->createStatusBarMessage() );
+  statusBar()->addPermanentWidget( m_appModuleVideo->createStatusBarMessage() );
   statusBar()->showMessage( tr( "Ready" ) );
 }
 
@@ -994,7 +998,7 @@ Void plaYUVerApp::readSettings()
   m_appTool = ( ViewArea::eTool )appSettings.value( "MainWindow/SelectedTool", ViewArea::NavigationTool ).toInt();
   setTool( m_appTool );
 
-  QVariant value = appSettings.value("MainWindow/RecentFileList");
+  QVariant value = appSettings.value( "MainWindow/RecentFileList" );
   m_aRecentFileStreamInfo = value.value<PlaYUVerStreamInfoVector>();
   updateRecentFileActions();
 
@@ -1014,7 +1018,7 @@ Void plaYUVerApp::writeSettings()
 
   QVariant var;
   var.setValue<PlaYUVerStreamInfoVector>( m_aRecentFileStreamInfo );
-  appSettings.setValue("MainWindow/RecentFileList", var );
+  appSettings.setValue( "MainWindow/RecentFileList", var );
 
   m_appModuleVideo->writeSettings();
   m_appModuleQuality->writeSettings();

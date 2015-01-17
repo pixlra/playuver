@@ -246,12 +246,12 @@ Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
   m_pcCurrFrame = pcCurrFrame;
   m_cViewArea->setImage( m_pcCurrFrame );
-  if( !isVisible() )
-  {
-    show();
-    resize( sizeHint() );
-    zoomToFit();
-  }
+//  if( !isVisible() )
+//  {
+//    show();
+//    resize( sizeHint() );
+//    zoomToFit();
+//  }
 }
 
 Void VideoSubWindow::refreshFrame()

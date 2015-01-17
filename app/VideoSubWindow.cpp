@@ -169,7 +169,8 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
 
   m_cFilename = cFilename;
   m_cWindowShortName = QFileInfo( cFilename ).fileName();
-  setWindowName( m_pCurrStream->getStreamInformationString() );
+  //setWindowName( m_pCurrStream->getStreamInformationString() );
+  setWindowName( m_cWindowShortName );
   return true;
 }
 
@@ -195,7 +196,8 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
 
   m_cFilename = streamInfo->m_cFilename;
   m_cWindowShortName = QFileInfo( streamInfo->m_cFilename ).fileName();
-  setWindowName( m_pCurrStream->getStreamInformationString() );
+  //setWindowName( m_pCurrStream->getStreamInformationString() );
+  setWindowName( m_cWindowShortName );
   return true;
 }
 

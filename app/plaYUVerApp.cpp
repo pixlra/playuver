@@ -948,8 +948,8 @@ Void plaYUVerApp::createDockWidgets()
 
 Void plaYUVerApp::createStatusBar()
 {
-  m_appModuleVideo->createStatusBarMessage();
-  //statusBar()->addPermanentWidget( m_appModuleVideo->createStatusBarMessage() );
+  //! Warning: the following widget cannot change size too much
+  statusBar()->addPermanentWidget( m_appModuleVideo->createStatusBarMessage() );
   statusBar()->showMessage( tr( "Ready" ) );
 }
 

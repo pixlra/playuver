@@ -946,7 +946,8 @@ Void plaYUVerApp::createDockWidgets()
 
 Void plaYUVerApp::createStatusBar()
 {
-  statusBar()->addPermanentWidget( m_appModuleVideo->createStatusBarMessage() );
+  m_appModuleVideo->createStatusBarMessage();
+  //statusBar()->addPermanentWidget( m_appModuleVideo->createStatusBarMessage() );
   statusBar()->showMessage( tr( "Ready" ) );
 }
 

@@ -115,7 +115,7 @@ public:
   void setInputStream( PlaYUVerStream *stream );
   PlaYUVerStream* getInputStream();
 
-  Void zoomChangeEvent(Double factor, QPoint center);
+  Void scaleZoomFactor(Double scale, QPoint center);
 
   void setTool( eTool tool );
 
@@ -137,7 +137,6 @@ public Q_SLOTS:
   void setGridVisible( bool enable );
   void setSnapToGrid( bool enable );
   void setSelectedArea( QRect &rect );
-  void setZoomFactor( double );
 
 protected:
   void paintEvent( QPaintEvent *event );
@@ -154,6 +153,7 @@ private:
 
   bool isPosValid( const QPoint &pos ) const;
   void updateMask( const QRect &rect );
+  void setZoomFactor( double );
 
   QPoint windowToView( const QPoint& pt ) const;
   QRect windowToView( const QRect& rc ) const;

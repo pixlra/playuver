@@ -195,7 +195,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       connect( videoSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
 
       connect( subWindow, SIGNAL( updateStatusBar( const QString& ) ), this, SLOT( updateStatusBar( const QString& ) ) );
-      connect( subWindow, SIGNAL( zoomChanged() ), this, SLOT( updateZoomFactorSBox() ) );
+      connect( subWindow, SIGNAL( zoomChangedOnSubWindow() ), this, SLOT( updateZoomFactorSBox() ) );
 
       videoSubWindow->zoomToFit();
       videoSubWindow->getViewArea()->setTool( m_appTool );
@@ -399,7 +399,6 @@ Void plaYUVerApp::zoomToFit()
 {
   if( m_pcCurrentSubWindow )
   {
-
     m_pcCurrentSubWindow->zoomToFit();
     updateZoomFactorSBox();
   }
@@ -413,7 +412,8 @@ Void plaYUVerApp::zoomToFitAll()
     subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
     subWindow->zoomToFit();
   }
-  updateZoomFactorSBox();
+  if( m_pcCurrentSubWindow )
+    updateZoomFactorSBox();
 }
 
 Void plaYUVerApp::scaleFrame( int ratio )
@@ -421,17 +421,15 @@ Void plaYUVerApp::scaleFrame( int ratio )
   if( m_pcCurrentSubWindow )
   {
     m_pcCurrentSubWindow->scaleView( ( Double )( ratio ) / 100.0 );
+    updateZoomFactorSBox();
   }
 }
 
-Void plaYUVerApp::setZoomFromSBox( double zoom )
+Void plaYUVerApp::zoomFromSBox( double zoom )
 {
-  Double lastZoom;
   if( activeSubWindow() )
   {
-    lastZoom = activeSubWindow()->getScaleFactor() * 100;
-    if( zoom / lastZoom != 1.0 )
-      activeSubWindow()->scaleView( zoom / lastZoom );
+    activeSubWindow()->zoomToFactor( zoom/100 );
   }
 }
 
@@ -924,7 +922,7 @@ Void plaYUVerApp::createToolBars()
   m_pcZoomFactorSBox->setSingleStep( 10.0 );
   m_pcZoomFactorSBox->setValue( 100.0 );
   m_pcZoomFactorSBox->setSuffix( "%" );
-  connect( m_pcZoomFactorSBox, SIGNAL( valueChanged(double) ), this, SLOT( setZoomFromSBox(double) ) );
+  connect( m_pcZoomFactorSBox, SIGNAL( valueChanged(double) ), this, SLOT( zoomFromSBox(double) ) );
   m_arrayToolBars[VIEW_TOOLBAR]->addWidget( m_pcZoomFactorSBox );
   m_arrayToolBars[VIEW_TOOLBAR]->addAction( m_arrayActions[ZOOM_IN_ACT] );
   m_arrayToolBars[VIEW_TOOLBAR]->addAction( m_arrayActions[ZOOM_OUT_ACT] );

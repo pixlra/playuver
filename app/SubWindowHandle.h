@@ -47,7 +47,7 @@ private:
   UInt m_uiCategory;
   QString m_cWindowName;
 
-  Void adjustScrollBarByZoom( Double factor, QPoint center );
+  Void adjustScrollBarByScale( Double scale, QPoint center );
 
 public:
   enum SubWindowCategories
@@ -68,12 +68,17 @@ public:
    * Scale the image (zoomed in or out) to fit on the window.
    */
   virtual Void zoomToFit() = 0;
+  /*
+   * Scale the image (zoomed in or out) to speficied absolute zoom value (1.0 = original size).
+   */
+  virtual Void zoomToFactor( Double ) = 0;
   /**
    * Scale the image by a given factor
    * @param factor factor of scale. Ex: 1.2 scale the image up by 20% and
    *        0.8 scale the image down by 25%
    */
   virtual Void scaleView( Double ) = 0;
+
 
   virtual Double getScaleFactor() = 0;
 
@@ -93,11 +98,11 @@ protected:
   QSize getScrollSize();
 
 Q_SIGNALS:
-  void zoomChanged();
+  void zoomChangedOnSubWindow();
   void updateStatusBar( const QString& );
 
 public Q_SLOTS:
-  void processZoomChanged( double factor, QPoint center );
+  void processZoomChange( double factor, QPoint center );
   void adjustScrollBarByOffset( QPoint Offset );
   void updateLastScrollValue();
 

@@ -85,7 +85,7 @@ private Q_SLOTS:
    *        80 scale the image down by 25%
    */
   void scaleFrame( int ratio = 100.0 );
-  void setZoomFromSBox( double ratio );
+  void zoomFromSBox( double ratio );
   void normalSize();
   void zoomToFit();
   void zoomToFitAll();

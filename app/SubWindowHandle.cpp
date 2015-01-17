@@ -58,10 +58,10 @@ Void SubWindowHandle::setMainWidget( QWidget *widget )
   m_cScrollArea->setWidget( widget );
 }
 
-Void SubWindowHandle::processZoomChanged( Double factor, QPoint center )
+Void SubWindowHandle::processZoomChange( Double scale, QPoint center )
 {
-  adjustScrollBarByZoom( factor, center );
-  emit zoomChanged();
+  adjustScrollBarByScale( scale, center );
+  emit zoomChangedOnSubWindow();
 }
 
 QSize SubWindowHandle::getScrollSize()
@@ -82,17 +82,17 @@ Void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
 
 // This function was developed with help of the schematics presented in
 // http://stackoverflow.com/questions/13155382/jscrollpane-zoom-relative-to-mouse-position
-Void SubWindowHandle::adjustScrollBarByZoom( Double factor, QPoint center )
+Void SubWindowHandle::adjustScrollBarByScale( Double scale, QPoint center )
 {
   QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
   if( center.isNull() )
   {
-    scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
+    scrollBar->setValue( int( scale * scrollBar->value() + ( ( scale - 1 ) * scrollBar->pageStep() / 2 ) ) );
   }
   else
   {
     Int x = center.x() - m_cLastScroll.x();
-    Int value = int( factor * m_cLastScroll.x() + ( ( factor - 1 ) * x ) );
+    Int value = int( scale * m_cLastScroll.x() + ( ( scale - 1 ) * x ) );
     if( value > scrollBar->maximum() )
       value = scrollBar->maximum();
     if( value < scrollBar->minimum() )
@@ -103,12 +103,12 @@ Void SubWindowHandle::adjustScrollBarByZoom( Double factor, QPoint center )
   scrollBar = m_cScrollArea->verticalScrollBar();
   if( center.isNull() )
   {
-    scrollBar->setValue( int( factor * scrollBar->value() + ( ( factor - 1 ) * scrollBar->pageStep() / 2 ) ) );
+    scrollBar->setValue( int( scale * scrollBar->value() + ( ( scale - 1 ) * scrollBar->pageStep() / 2 ) ) );
   }
   else
   {
     Int y = center.y() - m_cLastScroll.y();
-    Int value = int( factor * m_cLastScroll.y() + ( ( factor - 1 ) * y ) );
+    Int value = int( scale * m_cLastScroll.y() + ( ( scale - 1 ) * y ) );
     if( value > scrollBar->maximum() )
       value = scrollBar->maximum();
     if( value < scrollBar->minimum() )

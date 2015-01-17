@@ -165,6 +165,7 @@ public:
   Void normalSize();
   Void zoomToFit();
   Void scaleView( Double scale );
+  Void zoomToFactor( Double factor );
 
   Double getScaleFactor()
   {

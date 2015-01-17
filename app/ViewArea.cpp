@@ -109,19 +109,19 @@ Void ViewArea::setZoomFactor( Double f )
   update();
 }
 
-Void ViewArea::zoomChangeEvent( Double factor, QPoint center )
+Void ViewArea::scaleZoomFactor( Double scale, QPoint center )
 {
   Double zoomFactor;
   Double maxZoom = 100.0;
   Double minZoom = 0.01;  //( 1.0 / m_pixmap.width() );
 
-  if( ( m_zoomFactor == minZoom ) && ( factor < 1 ) )
+  if( ( m_zoomFactor == minZoom ) && ( scale < 1 ) )
     return;
 
-  if( ( m_zoomFactor == maxZoom ) && ( factor > 1 ) )
+  if( ( m_zoomFactor == maxZoom ) && ( scale > 1 ) )
     return;
 
-  zoomFactor = m_zoomFactor * factor;
+  zoomFactor = m_zoomFactor * scale;
 
   if( zoomFactor < minZoom )
     zoomFactor = minZoom;
@@ -130,8 +130,8 @@ Void ViewArea::zoomChangeEvent( Double factor, QPoint center )
     zoomFactor = maxZoom;
 
   setZoomFactor( zoomFactor );
-  emit zoomFactorChanged( factor, center );
 
+  emit zoomFactorChanged( scale, center );
 }
 
 void ViewArea::setMode( ViewMode mode )
@@ -544,16 +544,17 @@ void ViewArea::paintEvent( QPaintEvent *event )
 ////////////////////////////////////////////////////////////////////////////////
 void ViewArea::wheelEvent( QWheelEvent *event )
 {
-  Double factor;
+  Double scale;
 
   if( event->modifiers() & Qt::ControlModifier )
   {
-    factor = 0.001 * event->delta();
-    if(factor>0)
-      factor=1.25;
+    scale = 0.001 * event->delta();
+    if(scale>0)
+      scale=1.25;
     else
-      factor=0.8;
-    zoomChangeEvent( factor , event->pos() );
+      scale=0.8;
+
+    scaleZoomFactor( scale , event->pos() );
   }
 }
 
@@ -809,6 +810,7 @@ void ViewArea::mouseReleaseEvent( QMouseEvent *event )
     }
   }
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 

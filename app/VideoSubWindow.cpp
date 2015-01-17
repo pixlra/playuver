@@ -83,7 +83,7 @@ VideoSubWindow::VideoSubWindow( QWidget * parent, Bool isModule ) :
 
   // Create a new interface to show images
   m_cViewArea = new ViewArea( this );
-  connect( m_cViewArea, SIGNAL( zoomFactorChanged( double , QPoint) ), this, SLOT( processZoomChanged(double, QPoint) ) );
+  connect( m_cViewArea, SIGNAL( zoomFactorChanged( double , QPoint) ), this, SLOT( processZoomChange(double, QPoint) ) );
   connect( m_cViewArea, SIGNAL( moveScroll( QPoint ) ), this, SLOT( adjustScrollBarByOffset(QPoint) ) );
 
   connect( m_cViewArea, SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectedArea( QRect ) ) );
@@ -339,9 +339,10 @@ Void VideoSubWindow::stop()
 
 Void VideoSubWindow::normalSize()
 {
-  Double scaleFactor = 1.0;
-  m_cViewArea->setZoomFactor( scaleFactor );
-  updateLastScrollValue();
+  Double factor = 1.0;
+  Double curFactor = getScaleFactor() ;
+  if( factor != curFactor )
+    m_cViewArea->scaleZoomFactor( factor/curFactor, QPoint() );
 }
 
 Void VideoSubWindow::zoomToFit()
@@ -350,10 +351,18 @@ Void VideoSubWindow::zoomToFit()
   scaleView( getScrollSize() );
 }
 
+Void VideoSubWindow::zoomToFactor(Double factor)
+{
+  Double curFactor;
+  curFactor = getScaleFactor() ;
+  if( factor != curFactor )
+    m_cViewArea->scaleZoomFactor( factor/curFactor, QPoint() );
+}
+
 Void VideoSubWindow::scaleView( Double scale )
 {
   Q_ASSERT( m_cViewArea->image() );
-  m_cViewArea->zoomChangeEvent( scale, QPoint() );
+  m_cViewArea->scaleZoomFactor( scale, QPoint() );
 }
 
 Void VideoSubWindow::scaleView( const QSize & size )
@@ -369,16 +378,19 @@ Void VideoSubWindow::scaleView( const QSize & size )
   // Calc the zoom factor
   Double wfactor = 1;
   Double hfactor = 1;
+  Double factor;
 
   wfactor = ( Double )newSize.width() / imgViewSize.width();
   hfactor = ( Double )newSize.height() / imgViewSize.height();
 
   if( wfactor < hfactor )
-    m_cViewArea->setZoomFactor( wfactor );
+    factor = wfactor;
   else
-    m_cViewArea->setZoomFactor( hfactor );
+    factor = hfactor;
 
-  updateLastScrollValue();
+  Double curFactor = getScaleFactor() ;
+  if( factor != curFactor )
+    m_cViewArea->scaleZoomFactor( factor/curFactor, QPoint() );
 }
 
 

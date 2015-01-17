@@ -944,6 +944,7 @@ Void plaYUVerApp::createDockWidgets()
   m_arraySideBars.resize( TOTAL_DOCK );
   addDockWidget( Qt::RightDockWidgetArea, m_appModuleVideo->createDock() );
   addDockWidget( Qt::RightDockWidgetArea, m_appModuleQuality->createDock() );
+<<<<<<< HEAD
 }
 
 Void plaYUVerApp::createStatusBar()
@@ -953,6 +954,48 @@ Void plaYUVerApp::createStatusBar()
   statusBar()->showMessage( tr( "Ready" ) );
 }
 
+
+Void plaYUVerApp::addStreamInfoToRecentList( PlaYUVerStreamInfo streamInfo )
+{
+  Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, streamInfo.m_cFilename );
+  if( idx >= 0 )
+    m_aRecentFileStreamInfo.remove( idx );
+  m_aRecentFileStreamInfo.prepend( streamInfo );
+  while( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
+    m_aRecentFileStreamInfo.remove( m_aRecentFileStreamInfo.size() - 1 );
+  updateRecentFileActions();
+=======
+>>>>>>> devel
+}
+
+Void plaYUVerApp::updateRecentFileActions()
+{
+<<<<<<< HEAD
+  Int numRecentFiles = m_aRecentFileStreamInfo.size();
+  numRecentFiles = qMin( numRecentFiles, MAX_RECENT_FILES );
+  Int actionIdx = 0;
+  while( actionIdx < numRecentFiles )
+  {
+    QString text = m_aRecentFileStreamInfo.at( actionIdx ).m_cFilename;
+    m_arrayRecentFilesActions.at( actionIdx )->setText( QFileInfo( text ).fileName() );
+    m_arrayRecentFilesActions.at( actionIdx )->setToolTip( "Open File " + text );
+    m_arrayRecentFilesActions.at( actionIdx )->setStatusTip( "Open File " + text );
+    m_arrayRecentFilesActions.at( actionIdx )->setData( QVariant::fromValue( m_aRecentFileStreamInfo.at( actionIdx ) ) );
+    m_arrayRecentFilesActions.at( actionIdx )->setVisible( true );
+    actionIdx++;
+  }
+  while( actionIdx < MAX_RECENT_FILES )
+  {
+    m_arrayRecentFilesActions.at( actionIdx )->setVisible( false );
+    actionIdx++;
+  }
+  m_arrayMenu[RECENT_MENU]->setEnabled( m_aRecentFileStreamInfo.size() > 0 ? true : false );
+=======
+  m_appModuleVideo->createStatusBarMessage();
+  //statusBar()->addPermanentWidget( m_appModuleVideo->createStatusBarMessage() );
+  statusBar()->showMessage( tr( "Ready" ) );
+>>>>>>> devel
+}
 
 Void plaYUVerApp::addStreamInfoToRecentList( PlaYUVerStreamInfo streamInfo )
 {

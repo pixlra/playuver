@@ -420,7 +420,6 @@ Void plaYUVerApp::zoomToFitAll()
 
 Void plaYUVerApp::zoomToFactorAll( const double scale, const QPoint center )
 {
-  qDebug() << scale << center;
   double factor;
   if( m_pcCurrentSubWindow )
     factor = m_pcCurrentSubWindow->getScaleFactor();

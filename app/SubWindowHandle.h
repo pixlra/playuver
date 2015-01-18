@@ -66,7 +66,7 @@ public:
    * Scale the image (zoomed in or out) to fit on the window.
    */
   virtual Void zoomToFit() = 0;
-  /*
+  /**
    * Scale the image (zoomed in or out) to speficied absolute zoom value (1.0 = original size).
    */
   virtual Void zoomToFactor( Double factor , QPoint center = QPoint() ) = 0;
@@ -96,8 +96,15 @@ protected:
   QSize getScrollSize();
 
 Q_SIGNALS:
+  /**
+   * Notify that zoom factor was changed by internal event (e.g. by mouse wheel)
+   */
   void zoomFactorChanged_SWindow( const double, const QPoint );
+  /**
+   * Notify that scrollbar position was changed by internal event (e.g. by mouse panning )
+   */
   void scrollBarMoved_SWindow( const QPoint );
+
   void updateStatusBar( const QString& );
 
 public Q_SLOTS:

@@ -197,7 +197,7 @@ protected:
 
 public Q_SLOTS:
   void updateSelectedArea( QRect area );
-  void updatePixelValueStatusBar( const QPoint& );
+  void updatePixelValueStatusBar( const QPoint& pos );
 };
 
 }  // NAMESPACE

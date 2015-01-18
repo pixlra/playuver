@@ -109,29 +109,39 @@ Void ViewArea::setZoomFactor( Double f )
   update();
 }
 
-int ViewArea::scaleZoomFactor( Double scale, QPoint center )
+Double ViewArea::scaleZoomFactor( Double scale, QPoint center )
 {
   Double zoomFactor;
   Double maxZoom = 100.0;
   Double minZoom = 0.01;  //( 1.0 / m_pixmap.width() );
+  Double new_scale = 1.0;
 
   if( ( m_zoomFactor == minZoom ) && ( scale < 1 ) )
-    return 1;
+    return new_scale;
 
   if( ( m_zoomFactor == maxZoom ) && ( scale > 1 ) )
-    return 1;
+    return new_scale;
 
   zoomFactor = m_zoomFactor * scale;
+  new_scale = scale;
 
   if( zoomFactor < minZoom )
+  {
     zoomFactor = minZoom;
-
-  if( zoomFactor > maxZoom )
-    zoomFactor = maxZoom;
+    new_scale = zoomFactor/m_zoomFactor;
+  }
+  else
+  {
+    if( zoomFactor > maxZoom )
+    {
+      zoomFactor = maxZoom;
+      new_scale = zoomFactor/m_zoomFactor;
+    }
+  }
 
   setZoomFactor( zoomFactor );
 
-  return 0;
+  return new_scale;
 }
 
 void ViewArea::setMode( ViewMode mode )
@@ -228,6 +238,7 @@ void ViewArea::setSelectedArea( QRect &rect )
   updateRect.adjust( 0, 0, 1, 1 );
   update( updateRect.normalized() );
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 //                            Geometry Updates 
 ////////////////////////////////////////////////////////////////////////////////
@@ -545,6 +556,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
 void ViewArea::wheelEvent( QWheelEvent *event )
 {
   Double scale;
+  Double usedScale;
 
   if( event->modifiers() & Qt::ControlModifier )
   {
@@ -554,8 +566,11 @@ void ViewArea::wheelEvent( QWheelEvent *event )
     else
       scale=0.8;
 
-    if(scaleZoomFactor( scale , event->pos() ) == 0)
-      emit zoomFactorChanged( scale, event->pos() );
+    usedScale = scaleZoomFactor( scale , event->pos() );
+    if( usedScale != 1.0 )
+    {
+      emit zoomFactorChanged_byWheel( usedScale, event->pos() );
+    }
   }
 }
 

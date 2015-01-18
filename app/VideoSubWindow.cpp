@@ -83,8 +83,8 @@ VideoSubWindow::VideoSubWindow( QWidget * parent, Bool isModule ) :
 
   // Create a new interface to show images
   m_cViewArea = new ViewArea( this );
-  connect( m_cViewArea, SIGNAL( zoomFactorChanged( double , QPoint) ), this, SLOT( adjustScrollBarByScale( double, QPoint ) ) );
-  connect( m_cViewArea, SIGNAL( zoomFactorChanged( double , QPoint) ), this, SIGNAL( zoomFactorChanged_SWindow( double, QPoint ) ) );
+  connect( m_cViewArea, SIGNAL( zoomFactorChanged_byWheel( double , QPoint) ), this, SLOT( adjustScrollBarByScale( double, QPoint ) ) );
+  connect( m_cViewArea, SIGNAL( zoomFactorChanged_byWheel( double , QPoint) ), this, SIGNAL( zoomFactorChanged_SWindow( double, QPoint ) ) );
 
   connect( m_cViewArea, SIGNAL( scrollBarMoved( QPoint ) ), this, SLOT( adjustScrollBarByOffset( QPoint ) ) );
   connect( m_cViewArea, SIGNAL( scrollBarMoved( QPoint ) ), this, SIGNAL( scrollBarMoved_SWindow( QPoint ) ) );
@@ -346,8 +346,9 @@ Void VideoSubWindow::normalSize()
   Double curFactor = getScaleFactor() ;
   if( factor != curFactor )
   {
-    m_cViewArea->scaleZoomFactor( factor/curFactor, QPoint() );
-    adjustScrollBarByScale( factor/curFactor, QPoint() );
+    Double usedScale;
+    usedScale = m_cViewArea->scaleZoomFactor( factor/curFactor, QPoint() );
+    adjustScrollBarByScale( usedScale, QPoint() );
   }
 }
 
@@ -363,8 +364,9 @@ Void VideoSubWindow::zoomToFactor( Double factor , QPoint center )
   curFactor = getScaleFactor() ;
   if( factor != curFactor )
   {
-    m_cViewArea->scaleZoomFactor( factor/curFactor, center );
-    adjustScrollBarByScale( factor/curFactor, center );
+    Double usedScale;
+    usedScale = m_cViewArea->scaleZoomFactor( factor/curFactor, center );
+    adjustScrollBarByScale( usedScale, center );
   }
 }
 
@@ -373,8 +375,9 @@ Void VideoSubWindow::scaleView( Double scale , QPoint center )
   Q_ASSERT( m_cViewArea->image() );
   if(scale!=1.0)
   {
-    m_cViewArea->scaleZoomFactor( scale, center );
-    adjustScrollBarByScale( scale, center );
+    Double usedScale;
+    usedScale = m_cViewArea->scaleZoomFactor( scale, center );
+    adjustScrollBarByScale( usedScale, center );
   }
 }
 
@@ -404,12 +407,11 @@ Void VideoSubWindow::scaleView( const QSize & size, QPoint center )
   Double curFactor = getScaleFactor() ;
   if( factor != curFactor )
   {
-    m_cViewArea->scaleZoomFactor( factor/curFactor, center );
-    adjustScrollBarByScale( factor/curFactor, center );
+    Double usedScale;
+    usedScale = m_cViewArea->scaleZoomFactor( factor/curFactor, center );
+    adjustScrollBarByScale( usedScale, center );
   }
 }
-
-
 
 Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
 {

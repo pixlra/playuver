@@ -347,11 +347,11 @@ void ViewArea::paintEvent( QPaintEvent *event )
   painter.restore();
 
   // Draw a border around the image.
-  if( m_xOffset || m_yOffset )
+/*  if( m_xOffset || m_yOffset )
   {
     painter.setPen( Qt::black );
     painter.drawRect( m_xOffset - 1, m_yOffset - 1, m_pixmap.width() * m_zoomFactor + 1, m_pixmap.height() * m_zoomFactor + 1 );
-  }
+  }*/
 
   // Draw pixel values in grid
   if( m_zoomFactor >= 50.0 )

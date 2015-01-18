@@ -58,12 +58,6 @@ Void SubWindowHandle::setMainWidget( QWidget *widget )
   m_cScrollArea->setWidget( widget );
 }
 
-Void SubWindowHandle::processZoomChange( Double scale, QPoint center )
-{
-  adjustScrollBarByScale( scale, center );
-  emit zoomChangedOnSubWindow();
-}
-
 QSize SubWindowHandle::getScrollSize()
 {
   return QSize(  m_cScrollArea->viewport()->size().width() - 5, m_cScrollArea->viewport()->size().height() - 5 );

@@ -115,7 +115,8 @@ public:
   void setInputStream( PlaYUVerStream *stream );
   PlaYUVerStream* getInputStream();
 
-  Void scaleZoomFactor(Double scale, QPoint center);
+  // Scale function. Return 0 when scale is performed. Return 1 otherwise
+  int scaleZoomFactor(Double scale, QPoint center);
 
   void setTool( eTool tool );
 
@@ -124,8 +125,8 @@ public:
 Q_SIGNALS:
   void selectionChanged( const QRect &rect );
   void positionChanged( const QPoint &pos );
-  void moveScroll( QPoint offset );
-  void zoomFactorChanged( double factor , QPoint center);
+  void scrollBarMoved( QPoint offset );
+  void zoomFactorChanged( const double factor , const QPoint center);
 
 public Q_SLOTS:
   void setNormalMode();

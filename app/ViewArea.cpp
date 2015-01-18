@@ -109,17 +109,17 @@ Void ViewArea::setZoomFactor( Double f )
   update();
 }
 
-Void ViewArea::scaleZoomFactor( Double scale, QPoint center )
+int ViewArea::scaleZoomFactor( Double scale, QPoint center )
 {
   Double zoomFactor;
   Double maxZoom = 100.0;
   Double minZoom = 0.01;  //( 1.0 / m_pixmap.width() );
 
   if( ( m_zoomFactor == minZoom ) && ( scale < 1 ) )
-    return;
+    return 1;
 
   if( ( m_zoomFactor == maxZoom ) && ( scale > 1 ) )
-    return;
+    return 1;
 
   zoomFactor = m_zoomFactor * scale;
 
@@ -131,7 +131,7 @@ Void ViewArea::scaleZoomFactor( Double scale, QPoint center )
 
   setZoomFactor( zoomFactor );
 
-  emit zoomFactorChanged( scale, center );
+  return 0;
 }
 
 void ViewArea::setMode( ViewMode mode )
@@ -554,7 +554,8 @@ void ViewArea::wheelEvent( QWheelEvent *event )
     else
       scale=0.8;
 
-    scaleZoomFactor( scale , event->pos() );
+    if(scaleZoomFactor( scale , event->pos() ) == 0)
+      emit zoomFactorChanged( scale, event->pos() );
   }
 }
 
@@ -660,7 +661,7 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
     if( tool() == NavigationTool )
     {
       QPoint offset = m_lastWindowPos - event->pos();
-      emit moveScroll( offset );
+      emit scrollBarMoved( offset );
     }
 
     updateRect = viewToWindow( m_selectedArea );

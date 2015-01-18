@@ -47,8 +47,6 @@ private:
   UInt m_uiCategory;
   QString m_cWindowName;
 
-  Void adjustScrollBarByScale( Double scale, QPoint center );
-
 public:
   enum SubWindowCategories
   {
@@ -98,12 +96,12 @@ protected:
   QSize getScrollSize();
 
 Q_SIGNALS:
-  void zoomChangedOnSubWindow();
-  void scrollBarMoved( const QPoint );
+  void zoomFactorChanged_SWindow( const double, const QPoint );
+  void scrollBarMoved_SWindow( const QPoint );
   void updateStatusBar( const QString& );
 
 public Q_SLOTS:
-  void processZoomChange( double factor, QPoint center );
+  void adjustScrollBarByScale( double scale, QPoint center );
   void adjustScrollBarByOffset( QPoint Offset );
   void updateLastScrollValue();
 

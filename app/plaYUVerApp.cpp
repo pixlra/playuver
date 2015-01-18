@@ -195,8 +195,9 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       connect( videoSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
 
       connect( subWindow, SIGNAL( updateStatusBar( const QString& ) ), this, SLOT( updateStatusBar( const QString& ) ) );
-      connect( subWindow, SIGNAL( zoomChangedOnSubWindow() ), this, SLOT( updateZoomFactorSBox() ) );
-      connect( subWindow, SIGNAL( scrollBarMoved( const QPoint ) ), this, SLOT( moveAllScrollBars( const QPoint ) ) );
+      connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), this, SLOT( updateZoomFactorSBox() ) );
+      connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), this, SLOT( zoomToFactorAll( double, QPoint ) ) );
+      connect( subWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), this, SLOT( moveAllScrollBars( const QPoint ) ) );
 
       videoSubWindow->zoomToFit();
       videoSubWindow->getViewArea()->setTool( m_appTool );
@@ -417,8 +418,13 @@ Void plaYUVerApp::zoomToFitAll()
     updateZoomFactorSBox();
 }
 
-Void plaYUVerApp::zoomToFactorAll( double factor )
+Void plaYUVerApp::zoomToFactorAll( const double scale, const QPoint center )
 {
+  qDebug() << scale << center;
+  double factor;
+  if( m_pcCurrentSubWindow )
+    factor = m_pcCurrentSubWindow->getScaleFactor();
+
   SubWindowHandle *subWindow;
   for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
   {
@@ -426,7 +432,9 @@ Void plaYUVerApp::zoomToFactorAll( double factor )
     if( m_pcCurrentSubWindow == subWindow )
       continue;
     else
-      subWindow->zoomToFactor(factor);
+    {
+      subWindow->zoomToFactor( factor , center );
+    }
   }
 }
 
@@ -446,20 +454,15 @@ Void plaYUVerApp::zoomFromSBox( double zoom )
   {
     activeSubWindow()->zoomToFactor( factor );
   }
-
-  zoomToFactorAll( factor );
 }
 
-Void plaYUVerApp::updateZoomFactorSBox()
+Void plaYUVerApp::updateZoomFactorSBox( )
 {
+  Double factor;
   if( m_pcCurrentSubWindow )
   {
-    Double factor = m_pcCurrentSubWindow->getScaleFactor();
+    factor = m_pcCurrentSubWindow->getScaleFactor();
     m_pcZoomFactorSBox->setValue( factor * 100 );
-  }
-  else
-  {
-    m_pcZoomFactorSBox->setValue( 0.0 );
   }
 }
 

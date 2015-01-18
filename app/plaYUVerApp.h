@@ -89,7 +89,7 @@ private Q_SLOTS:
   void normalSize();
   void zoomToFit();
   void zoomToFitAll();
-  void zoomToFactorAll( double factor );
+  void zoomToFactorAll( const double factor, const QPoint center = QPoint() );
 
   void setTool( int idxTool );
 

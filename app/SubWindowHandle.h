@@ -99,6 +99,7 @@ protected:
 
 Q_SIGNALS:
   void zoomChangedOnSubWindow();
+  void scrollBarMoved( const QPoint );
   void updateStatusBar( const QString& );
 
 public Q_SLOTS:

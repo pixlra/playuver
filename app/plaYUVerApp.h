@@ -105,6 +105,8 @@ private Q_SLOTS:
   void updateZoomFactorSBox();
   void updateStatusBar( const QString& );
 
+  void moveAllScrollBars( const QPoint offset );
+
 private:
 
   class PlaYUVerMdiArea: public QMdiArea

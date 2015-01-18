@@ -83,8 +83,9 @@ VideoSubWindow::VideoSubWindow( QWidget * parent, Bool isModule ) :
 
   // Create a new interface to show images
   m_cViewArea = new ViewArea( this );
-  connect( m_cViewArea, SIGNAL( zoomFactorChanged( double , QPoint) ), this, SLOT( processZoomChange(double, QPoint) ) );
-  connect( m_cViewArea, SIGNAL( moveScroll( QPoint ) ), this, SLOT( adjustScrollBarByOffset(QPoint) ) );
+  connect( m_cViewArea, SIGNAL( zoomFactorChanged( double , QPoint) ), this, SLOT( processZoomChange( double, QPoint ) ) );
+  connect( m_cViewArea, SIGNAL( moveScroll( QPoint ) ), this, SLOT( adjustScrollBarByOffset( QPoint ) ) );
+  connect( m_cViewArea, SIGNAL( moveScroll( QPoint ) ), this, SIGNAL( scrollBarMoved( QPoint ) ) );
 
   connect( m_cViewArea, SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectedArea( QRect ) ) );
   connect( m_cViewArea, SIGNAL( positionChanged( const QPoint & ) ), this, SLOT( updatePixelValueStatusBar( const QPoint & ) ) );

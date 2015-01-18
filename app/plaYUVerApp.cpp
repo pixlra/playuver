@@ -196,6 +196,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 
       connect( subWindow, SIGNAL( updateStatusBar( const QString& ) ), this, SLOT( updateStatusBar( const QString& ) ) );
       connect( subWindow, SIGNAL( zoomChangedOnSubWindow() ), this, SLOT( updateZoomFactorSBox() ) );
+      connect( subWindow, SIGNAL( scrollBarMoved( const QPoint ) ), this, SLOT( moveAllScrollBars( const QPoint ) ) );
 
       videoSubWindow->zoomToFit();
       videoSubWindow->getViewArea()->setTool( m_appTool );
@@ -422,7 +423,10 @@ Void plaYUVerApp::zoomToFactorAll( double factor )
   for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
   {
     subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
-    subWindow->zoomToFactor(factor);
+    if( m_pcCurrentSubWindow == subWindow )
+      continue;
+    else
+      subWindow->zoomToFactor(factor);
   }
 }
 
@@ -457,6 +461,21 @@ Void plaYUVerApp::updateZoomFactorSBox()
   {
     m_pcZoomFactorSBox->setValue( 0.0 );
   }
+}
+
+Void plaYUVerApp::moveAllScrollBars( const QPoint offset )
+{
+  SubWindowHandle *subWindow;
+  for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
+  {
+    subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
+
+    if( m_pcCurrentSubWindow == subWindow )
+      continue;
+    else
+      subWindow->adjustScrollBarByOffset(offset);
+  }
+
 }
 
 // -----------------------  Drag and drop functions  ----------------------

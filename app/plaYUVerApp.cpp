@@ -416,6 +416,16 @@ Void plaYUVerApp::zoomToFitAll()
     updateZoomFactorSBox();
 }
 
+Void plaYUVerApp::zoomToFactorAll( double factor )
+{
+  SubWindowHandle *subWindow;
+  for( Int i = 0; i < mdiArea->subWindowList().size(); i++ )
+  {
+    subWindow = qobject_cast<SubWindowHandle *>( mdiArea->subWindowList().at( i ) );
+    subWindow->zoomToFactor(factor);
+  }
+}
+
 Void plaYUVerApp::scaleFrame( int ratio )
 {
   if( m_pcCurrentSubWindow )
@@ -427,10 +437,13 @@ Void plaYUVerApp::scaleFrame( int ratio )
 
 Void plaYUVerApp::zoomFromSBox( double zoom )
 {
+  Double factor = zoom/100;
   if( activeSubWindow() )
   {
-    activeSubWindow()->zoomToFactor( zoom/100 );
+    activeSubWindow()->zoomToFactor( factor );
   }
+
+  zoomToFactorAll( factor );
 }
 
 Void plaYUVerApp::updateZoomFactorSBox()

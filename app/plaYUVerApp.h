@@ -89,6 +89,7 @@ private Q_SLOTS:
   void normalSize();
   void zoomToFit();
   void zoomToFitAll();
+  void zoomToFactorAll( double factor );
 
   void setTool( int idxTool );
 

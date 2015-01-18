@@ -88,7 +88,7 @@ private:
    * Private zoom function to handle
    * zoom to fit
    */
-  Void scaleView( const QSize & size );
+  Void scaleView( const QSize & size , QPoint center = QPoint() );
 
 public:
   VideoSubWindow( QWidget * parent = 0, Bool isModule = false );
@@ -164,8 +164,8 @@ public:
    */
   Void normalSize();
   Void zoomToFit();
-  Void scaleView( Double scale );
-  Void zoomToFactor( Double factor );
+  Void scaleView( Double scale , QPoint center = QPoint() );
+  Void zoomToFactor( Double factor , QPoint center = QPoint() );
 
   Double getScaleFactor()
   {

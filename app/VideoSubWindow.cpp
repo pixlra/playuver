@@ -351,21 +351,21 @@ Void VideoSubWindow::zoomToFit()
   scaleView( getScrollSize() );
 }
 
-Void VideoSubWindow::zoomToFactor(Double factor)
+Void VideoSubWindow::zoomToFactor( Double factor , QPoint center )
 {
   Double curFactor;
   curFactor = getScaleFactor() ;
   if( factor != curFactor )
-    m_cViewArea->scaleZoomFactor( factor/curFactor, QPoint() );
+    m_cViewArea->scaleZoomFactor( factor/curFactor, center );
 }
 
-Void VideoSubWindow::scaleView( Double scale )
+Void VideoSubWindow::scaleView( Double scale , QPoint center )
 {
   Q_ASSERT( m_cViewArea->image() );
-  m_cViewArea->scaleZoomFactor( scale, QPoint() );
+  m_cViewArea->scaleZoomFactor( scale, center );
 }
 
-Void VideoSubWindow::scaleView( const QSize & size )
+Void VideoSubWindow::scaleView( const QSize & size, QPoint center )
 {
   QSize imgViewSize;
   if( m_pcCurrFrame )
@@ -390,7 +390,7 @@ Void VideoSubWindow::scaleView( const QSize & size )
 
   Double curFactor = getScaleFactor() ;
   if( factor != curFactor )
-    m_cViewArea->scaleZoomFactor( factor/curFactor, QPoint() );
+    m_cViewArea->scaleZoomFactor( factor/curFactor, center );
 }
 
 

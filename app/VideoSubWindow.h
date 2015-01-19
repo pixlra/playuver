@@ -33,14 +33,14 @@
 #include <QtGui>
 #endif
 #include "lib/PlaYUVerStream.h"
-#include "ViewArea.h"
-#include "ModulesHandle.h"
 #include "SubWindowHandle.h"
+#include "ViewArea.h"
 
 namespace plaYUVer
 {
 
 class VideoSubWindow;
+class PlaYUVerAppModuleIf;
 
 typedef struct
 {

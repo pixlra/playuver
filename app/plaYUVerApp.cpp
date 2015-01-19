@@ -28,7 +28,7 @@
 #endif
 #include "plaYUVerApp.h"
 #include "DialogSubWindowSelector.h"
-#include "WidgetFrameNumber.h"
+
 
 #define SYNCHRONISED_ZOON 1
 
@@ -54,6 +54,7 @@ plaYUVerApp::plaYUVerApp()
 
   m_appModuleVideo = new VideoHandle( this, mdiArea );
   m_appModuleQuality = new QualityHandle( this, mdiArea );
+
   m_appModuleExtensions = new ModulesHandle( this, mdiArea );
 
   createActions();
@@ -200,7 +201,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       connect( subWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), this, SLOT( moveAllScrollBars( const QPoint ) ) );
 
       videoSubWindow->zoomToFit();
-      videoSubWindow->getViewArea()->setTool( m_appTool );
+      videoSubWindow->getViewArea()->setTool( ( ViewArea::eTool ) m_uiViewTool );
       updateZoomFactorSBox();
 
       addStreamInfoToRecentList( videoSubWindow->getStreamInfo() );
@@ -312,8 +313,6 @@ Void plaYUVerApp::save()
   }
 }
 
-
-
 Void plaYUVerApp::format()
 {
   if( m_pcCurrentVideoSubWindow )
@@ -377,12 +376,12 @@ Void plaYUVerApp::loadAll()
 
 Void plaYUVerApp::setTool( Int idxTool )
 {
-  m_appTool = ( ViewArea::eTool )idxTool;
-  actionGroupTools->actions().at( m_appTool )->setChecked( true );
+  m_uiViewTool = idxTool;
+  actionGroupTools->actions().at( m_uiViewTool )->setChecked( true );
   QList<VideoSubWindow*> videoSubWindowList = mdiArea->findChildren<VideoSubWindow*>();
   for( Int i = 0; i < videoSubWindowList.size(); i++ )
   {
-    videoSubWindowList.at( i )->getViewArea()->setTool( m_appTool );
+    videoSubWindowList.at( i )->getViewArea()->setTool( ( ViewArea::eTool ) m_uiViewTool );
   }
 }
 
@@ -799,7 +798,7 @@ Void plaYUVerApp::createActions()
   m_mapperTools = new QSignalMapper( this );
   connect( m_mapperTools, SIGNAL( mapped(int) ), this, SLOT( setTool(int) ) );
 
-  m_appTool = ViewArea::NavigationTool;
+  m_uiViewTool = ViewArea::NavigationTool;
 
   m_arrayActions[NAVIGATION_TOOL_ACT] = new QAction( tr( "&Navigation Tool" ), this );
   m_arrayActions[NAVIGATION_TOOL_ACT]->setCheckable( true );
@@ -1032,8 +1031,8 @@ Void plaYUVerApp::readSettings()
 
   m_cLastOpenPath = appSettings.value( "MainWindow/LastOpenPath", QDir::homePath() ).toString();
 
-  m_appTool = ( ViewArea::eTool )appSettings.value( "MainWindow/SelectedTool", ViewArea::NavigationTool ).toInt();
-  setTool( m_appTool );
+  m_uiViewTool = appSettings.value( "MainWindow/SelectedTool", ViewArea::NavigationTool ).toUInt();
+  setTool(  ( ViewArea::eTool ) m_uiViewTool );
 
   QVariant value = appSettings.value( "MainWindow/RecentFileList" );
   m_aRecentFileStreamInfo = value.value<PlaYUVerStreamInfoVector>();
@@ -1051,7 +1050,7 @@ Void plaYUVerApp::writeSettings()
   appSettings.setValue( "MainWindow/Position", pos() );
   appSettings.setValue( "MainWindow/Size", size() );
   appSettings.setValue( "MainWindow/LastOpenPath", m_cLastOpenPath );
-  appSettings.setValue( "MainWindow/SelectedTool", ( Int )m_appTool );
+  appSettings.setValue( "MainWindow/SelectedTool", m_uiViewTool );
 
   QVariant var;
   var.setValue<PlaYUVerStreamInfoVector>( m_aRecentFileStreamInfo );

@@ -26,13 +26,13 @@
 #define __QUALITYMEASUREMENT_H__
 
 #include "config.h"
+#include "lib/PlaYUVerDefs.h"
 #include <QtCore>
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
-#include "VideoSubWindow.h"
 #include "QualityMeasurementSidebar.h"
 
 namespace plaYUVer
@@ -63,6 +63,7 @@ private:
   enum
   {
     SELECT_REF_ACT,
+    CREATE_PLOT,
     TOTAL_ACT,
   };
   QVector<QAction*> m_arrayActions;
@@ -81,7 +82,7 @@ Q_SIGNALS:
 private Q_SLOTS:
   void slotQualityMetricChanged( int );
   void slotSelectReference();
-
+  void slotCreatePlot();
 };
 
 }   // NAMESPACE

@@ -22,9 +22,10 @@
  * \brief    Definition of the quality measurement sidebar
  */
 
-#include "lib/PlaYUVerDefs.h"
 #include <QtGui>
 #include "QualityHandle.h"
+#include "VideoSubWindow.h"
+#include "PlotSubWindow.h"
 #include "DialogSubWindowSelector.h"
 
 namespace plaYUVer
@@ -63,6 +64,8 @@ Void QualityHandle::createActions()
   m_arrayActions.resize( TOTAL_ACT );
   m_arrayActions[SELECT_REF_ACT] = new QAction( "Select Reference", this );
   connect( m_arrayActions[SELECT_REF_ACT], SIGNAL( triggered() ), this, SLOT( slotSelectReference() ) );
+  m_arrayActions[CREATE_PLOT] = new QAction( "CREATE_PLOT", this );
+  connect( m_arrayActions[CREATE_PLOT], SIGNAL( triggered() ), this, SLOT( slotCreatePlot() ) );
 }
 
 QMenu* QualityHandle::createMenu()
@@ -73,6 +76,7 @@ QMenu* QualityHandle::createMenu()
   //m_pcMenuQuality->addActions( m_actionGroupQualityMetric->actions() );
   //m_pcMenuQuality->addSeparator();
   m_pcMenuQuality->addAction( m_arrayActions[SELECT_REF_ACT] );
+  m_pcMenuQuality->addAction( m_arrayActions[CREATE_PLOT] );
   return m_pcMenuQuality;
 }
 
@@ -149,6 +153,15 @@ Void QualityHandle::slotSelectReference()
     m_pcQualityHandleDock->show();
   }
 }
+
+Void QualityHandle::slotCreatePlot()
+{
+  PlotSubWindow* pcPlotWindow = new PlotSubWindow( m_pcParet );
+  m_pcMainWindowMdiArea->addSubWindow( pcPlotWindow );
+  pcPlotWindow->show();
+
+}
+
 
 }   // NAMESPACE
 

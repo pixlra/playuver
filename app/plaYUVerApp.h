@@ -26,6 +26,7 @@
 #define __PLAYUVERAPP_H__
 
 #include "config.h"
+#include "lib/PlaYUVerDefs.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )
@@ -35,14 +36,12 @@
 #include "PlaYUVerAppAdaptor.h"
 #endif
 #include <QMainWindow>
-#include "lib/PlaYUVerDefs.h"
-#include "SubWindowHandle.h"
-#include "VideoSubWindow.h"
 #include "VideoHandle.h"
 #include "QualityHandle.h"
 #include "ModulesHandle.h"
+#include "SubWindowHandle.h"
 #include "AboutDialog.h"
-#include "WidgetFrameNumber.h"
+#include "VideoSubWindow.h"
 
 namespace plaYUVer
 {
@@ -182,7 +181,7 @@ private:
     TOTAL_TOOLS,
   };
   QSignalMapper *m_mapperTools;
-  ViewArea::eTool m_appTool;
+  UInt m_uiViewTool;
 
   /**
    * App modules

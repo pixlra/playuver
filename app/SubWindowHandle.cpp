@@ -28,19 +28,20 @@ namespace plaYUVer
 {
 
 SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
-        QMdiSubWindow( parent )
+        QScrollArea( parent )
 {
   setParent( parent );
   setAttribute( Qt::WA_DeleteOnClose );
   setBackgroundRole( QPalette::Light );
 
   // Create a new scroll area inside the sub-window
-  m_cScrollArea = new QScrollArea( this );
-  connect( m_cScrollArea->horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
-  connect( m_cScrollArea->verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
+  connect( horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
+  connect( verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
 
-  setWidget( m_cScrollArea );
-  m_cScrollArea->setWidgetResizable( true );
+  setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+
+  setWidgetResizable( true );
 
   m_cLastScroll = QPoint();
 
@@ -50,25 +51,19 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
 
 SubWindowHandle::~SubWindowHandle()
 {
-  delete m_cScrollArea;
-}
-
-Void SubWindowHandle::setMainWidget( QWidget *widget )
-{
-  m_cScrollArea->setWidget( widget );
 }
 
 QSize SubWindowHandle::getScrollSize()
 {
-  return QSize(  m_cScrollArea->viewport()->size().width() - 5, m_cScrollArea->viewport()->size().height() - 5 );
+  return QSize(  viewport()->size().width() - 5, viewport()->size().height() - 5 );
 }
 
 Void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
 {
-  QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
+  QScrollBar *scrollBar = horizontalScrollBar();
   scrollBar->setValue( int( scrollBar->value() + Offset.x() ) );
   m_cLastScroll.setX( scrollBar->value() );
-  scrollBar = m_cScrollArea->verticalScrollBar();
+  scrollBar = verticalScrollBar();
   scrollBar->setValue( int( scrollBar->value() + Offset.y() ) );
   m_cLastScroll.setY( scrollBar->value() );
   updateLastScrollValue();
@@ -78,7 +73,7 @@ Void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
 // http://stackoverflow.com/questions/13155382/jscrollpane-zoom-relative-to-mouse-position
 Void SubWindowHandle::adjustScrollBarByScale( Double scale, QPoint center )
 {
-  QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
+  QScrollBar *scrollBar = horizontalScrollBar();
   if( center.isNull() )
   {
     scrollBar->setValue( int( scale * scrollBar->value() + ( ( scale - 1 ) * scrollBar->pageStep() / 2 ) ) );
@@ -94,7 +89,7 @@ Void SubWindowHandle::adjustScrollBarByScale( Double scale, QPoint center )
     scrollBar->setValue( value );
   }
 
-  scrollBar = m_cScrollArea->verticalScrollBar();
+  scrollBar = verticalScrollBar();
   if( center.isNull() )
   {
     scrollBar->setValue( int( scale * scrollBar->value() + ( ( scale - 1 ) * scrollBar->pageStep() / 2 ) ) );
@@ -115,9 +110,9 @@ Void SubWindowHandle::adjustScrollBarByScale( Double scale, QPoint center )
 
 Void SubWindowHandle::updateLastScrollValue()
 {
-  QScrollBar *scrollBar = m_cScrollArea->horizontalScrollBar();
+  QScrollBar *scrollBar = horizontalScrollBar();
   m_cLastScroll.setX( scrollBar->value() );
-  scrollBar = m_cScrollArea->verticalScrollBar();
+  scrollBar = verticalScrollBar();
   m_cLastScroll.setY( scrollBar->value() );
 }
 

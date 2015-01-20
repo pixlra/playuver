@@ -37,7 +37,7 @@ PlotSubWindow::PlotSubWindow( QWidget * parent ) :
   setVisible( false );
 
   m_cPlotArea = new QCustomPlot( this );
-  setMainWidget( m_cPlotArea );
+  setWidget( m_cPlotArea );
 
   Example();
 

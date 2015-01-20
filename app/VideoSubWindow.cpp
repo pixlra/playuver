@@ -93,7 +93,7 @@ VideoSubWindow::VideoSubWindow( QWidget * parent, Bool isModule ) :
   connect( m_cViewArea, SIGNAL( positionChanged( const QPoint & ) ), this, SLOT( updatePixelValueStatusBar( const QPoint & ) ) );
 
   // Define the cViewArea as the widget inside the scroll area
-  setMainWidget( m_cViewArea );
+  setWidget( m_cViewArea );
 
   m_apcCurrentModule.clear();
 

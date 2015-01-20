@@ -34,7 +34,6 @@
 #include <QPixmapCache>
 #include <QRectF>
 #include <QDebug>
-
 #include "ViewArea.h"
 #include "GridManager.h"
 
@@ -66,6 +65,7 @@ ViewArea::ViewArea( QWidget *parent ) :
   m_snapToGrid = false;
   m_blockTrackEnable = false;
   m_pStream = NULL;
+
 }
 
 void ViewArea::setImage( PlaYUVerFrame* pcFrame )
@@ -345,6 +345,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
   }
 
   painter.restore();
+
 
   // Draw a border around the image.
 /*  if( m_xOffset || m_yOffset )

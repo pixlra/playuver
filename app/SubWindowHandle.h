@@ -36,12 +36,11 @@
 namespace plaYUVer
 {
 
-class SubWindowHandle: public QMdiSubWindow
+class SubWindowHandle: public QScrollArea
 {
 Q_OBJECT
 
 private:
-  QScrollArea* m_cScrollArea;
   QPoint m_cLastScroll;
 
   UInt m_uiCategory;
@@ -92,7 +91,6 @@ public:
 
 protected:
   virtual void closeEvent( QCloseEvent *event ) = 0;
-  virtual Void setMainWidget( QWidget *widget );
   QSize getScrollSize();
 
 Q_SIGNALS:

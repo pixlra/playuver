@@ -72,6 +72,7 @@ plaYUVerApp::plaYUVerApp()
 
   setAcceptDrops( true );
   mdiArea->setAcceptDrops( true );
+  //mdiArea->hide();
 
   connect( mdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( update() ) );
   connect( m_appModuleVideo, SIGNAL( changed() ), this, SLOT( update() ) );
@@ -167,7 +168,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
   VideoSubWindow *videoSubWindow = plaYUVerApp::findVideoSubWindow( mdiArea, fileName );
   if( videoSubWindow )
   {
-    mdiArea->setActiveSubWindow( videoSubWindow );
+    //mdiArea->setActiveSubWindow( videoSubWindow );
     return;
   }
   videoSubWindow = new VideoSubWindow( this );  //createSubWindow();
@@ -190,15 +191,16 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     if( opened )
     {
       statusBar()->showMessage( tr( "Loading file..." ) );
-      mdiArea->addSubWindow( videoSubWindow );
+      //mdiArea->addSubWindow( videoSubWindow );
+      videoSubWindow->setWindowFlags(Qt::Window);
       videoSubWindow->show();
 
       connect( videoSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
 
       connect( subWindow, SIGNAL( updateStatusBar( const QString& ) ), this, SLOT( updateStatusBar( const QString& ) ) );
       connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), this, SLOT( updateZoomFactorSBox() ) );
-      connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), this, SLOT( zoomToFactorAll( double, QPoint ) ) );
-      connect( subWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), this, SLOT( moveAllScrollBars( const QPoint ) ) );
+//      connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), this, SLOT( zoomToFactorAll( double, QPoint ) ) );
+//      connect( subWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), this, SLOT( moveAllScrollBars( const QPoint ) ) );
 
       videoSubWindow->zoomToFit();
       videoSubWindow->getViewArea()->setTool( ( ViewArea::eTool ) m_uiViewTool );
@@ -510,7 +512,7 @@ void plaYUVerApp::tileSubWindows()
 SubWindowHandle *plaYUVerApp::activeSubWindow()
 {
   if( QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow() )
-    return qobject_cast<SubWindowHandle *>( activeSubWindow );
+    return qobject_cast<SubWindowHandle *>( activeSubWindow->widget() );
   return 0;
 }
 
@@ -675,7 +677,7 @@ Void plaYUVerApp::updateWindowMenu()
 
   for( Int i = 0; i < number_windows; ++i )
   {
-    SubWindowHandle *child = qobject_cast<SubWindowHandle *>( windows.at( i ) );
+    SubWindowHandle *child = qobject_cast<SubWindowHandle *>( windows.at(i)->widget());
 
     QString text;
     if( i < 9 )

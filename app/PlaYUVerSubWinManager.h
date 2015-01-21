@@ -46,6 +46,8 @@ private:
   Bool m_bMdiModeEnabled;
 	QList<SubWindowHandle*> m_apcSubWindowList;
 	QList<QMdiSubWindow*> m_apcMdiSubWindowList;
+
+	QHBoxLayout* m_pcWindowManagerLayout;
 	QMdiArea* m_pcMdiArea;
 
 	SubWindowHandle* m_pcActiveWindow;

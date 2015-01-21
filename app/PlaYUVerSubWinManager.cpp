@@ -35,6 +35,11 @@ PlaYUVerSubWinManager::PlaYUVerSubWinManager( QWidget *parent ) :
   m_bMdiModeEnabled = true;
 
   m_pcMdiArea = new QMdiArea( this );
+  m_pcMdiArea->setActivationOrder( QMdiArea::ActivationHistoryOrder );
+
+  QHBoxLayout* m_pcWindowManagerLayout = new QHBoxLayout( this );
+  m_pcWindowManagerLayout->addWidget( m_pcMdiArea );
+  setLayout( m_pcWindowManagerLayout );
 
   connect( m_pcMdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( updateActiveSubWindow() ) );
 

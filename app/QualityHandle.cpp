@@ -106,12 +106,15 @@ Void QualityHandle::readSettings()
   QSettings appSettings;
   Int metric = appSettings.value( "QualityHandle/Metric", 0 ).toInt();
   slotQualityMetricChanged( metric );
+  if( !appSettings.value( "QualityHandle/QualitySideBar", true ).toBool() )
+    m_pcQualityHandleDock->close();
 }
 
 Void QualityHandle::writeSettings()
 {
   QSettings appSettings;
   appSettings.setValue( "QualityHandle/Metric", m_iQualityMetricIdx );
+  appSettings.setValue( "QualityHandle/QualitySideBar", m_pcQualityHandleDock->isVisible() );
 }
 
 Void QualityHandle::update( VideoSubWindow* currSubWindow )

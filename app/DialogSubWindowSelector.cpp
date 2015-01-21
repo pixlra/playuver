@@ -22,17 +22,19 @@
  * \brief    Dialog box to select sub windows
  */
 
+#include "PlaYUVerSubWinManager.h"
 #include "DialogSubWindowSelector.h"
 #include "VideoSubWindow.h"
 
 namespace plaYUVer
 {
 
-DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdiArea, Int minWindowsSelected, Int maxWindowsSelected ) :
+DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWinManager *windowManager, UInt uiCategory, Int minWindowsSelected, Int maxWindowsSelected ) :
         QDialog( parent ),
+        m_uiCategory( uiCategory ),
         m_iMinSelectedWindows( minWindowsSelected ),
         m_iMaxSlectedWindows( maxWindowsSelected ),
-        m_pcMainWindowMdiArea( mdiArea )
+        m_pcMainWindowManager( windowManager )
 {
   QFont titleFont, menusFont;
 
@@ -115,15 +117,15 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, QMdiArea *mdi
 
 Void DialogSubWindowSelector::updateSubWindowList()
 {
-  VideoSubWindow *videoSubWindow;
+  SubWindowHandle *subWindow;
   QString currSubWindowName;
   m_pcWindowListNames.clear();
-  QList<VideoSubWindow*> subWindowList = m_pcMainWindowMdiArea->findChildren<VideoSubWindow*>();
+  QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( m_uiCategory );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
-    videoSubWindow = subWindowList.at( i );
-    currSubWindowName = videoSubWindow->getWindowName();
-    if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) && !videoSubWindow->getIsModule() )
+    subWindow = subWindowList.at( i );
+    currSubWindowName = subWindow->getWindowName();
+    if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) )
       m_pcWindowListNames.append( currSubWindowName );
   }
   m_comboBoxWindowList->clear();

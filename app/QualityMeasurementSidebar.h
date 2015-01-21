@@ -39,13 +39,14 @@
 namespace plaYUVer
 {
 
+class PlaYUVerSubWinManager;
 class VideoSubWindow;
 
 class QualityMeasurementSidebar: public QWidget
 {
 Q_OBJECT
 public:
-  QualityMeasurementSidebar( QWidget*, QMdiArea * );
+  QualityMeasurementSidebar( QWidget*, PlaYUVerSubWinManager * );
   ~QualityMeasurementSidebar();
 
   QSize sizeHint() const;
@@ -56,7 +57,7 @@ public:
   Void updateQualityMetric( Int );
 
 private:
-  QMdiArea* m_pcMainWindowMdiArea;
+  PlaYUVerSubWinManager* m_pcMainWindowManager;
 
   QVector<VideoSubWindow*> m_pcVideoWindowList;
   QStringList m_pcWindowListNames;

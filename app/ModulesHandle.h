@@ -42,6 +42,7 @@
 namespace plaYUVer
 {
 
+class PlaYUVerSubWinManager;
 class PlaYUVerAppModuleIf;
 class SubWindowHandle;
 
@@ -49,7 +50,7 @@ class ModulesHandle: public QWidget
 {
 Q_OBJECT
 public:
-  ModulesHandle( QMainWindow* parent = 0, QMdiArea *mdiArea = 0 );
+  ModulesHandle( QWidget*, PlaYUVerSubWinManager* );
   ~ModulesHandle();
 
   Void createActions();
@@ -67,8 +68,8 @@ public:
   static Bool showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Double moduleResult );
 
 private:
-  QMainWindow *m_pcParent;
-  QMdiArea *m_pcMdiArea;
+  QWidget* m_pcParent;
+  PlaYUVerSubWinManager* m_pcMainWindowManager;
 
   enum
   {

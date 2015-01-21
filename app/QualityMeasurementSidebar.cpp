@@ -24,15 +24,16 @@
 
 #include "lib/PlaYUVerDefs.h"
 #include <QtGui>
+#include "PlaYUVerSubWinManager.h"
 #include "QualityMeasurementSidebar.h"
 #include "VideoSubWindow.h"
 
 namespace plaYUVer
 {
 
-QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, QMdiArea *mdiArea ) :
+QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerSubWinManager *windowManager ) :
         QWidget( parent ),
-        m_pcMainWindowMdiArea( mdiArea ),
+        m_pcMainWindowManager( windowManager ),
         m_pcCurrentVideoSubWindow( NULL )
 {
 
@@ -119,28 +120,25 @@ QSize QualityMeasurementSidebar::sizeHint() const
 
 Void QualityMeasurementSidebar::updateSubWindowList()
 {
-  VideoSubWindow* pcVideoSubWindow;
   QString currSubWindowName;
   m_pcWindowListNames.clear();
   m_pcVideoWindowList.clear();
 
-  QList<VideoSubWindow*> videoSubWindowList = m_pcMainWindowMdiArea->findChildren<VideoSubWindow*>();
-  for( Int i = 0; i < videoSubWindowList.size(); i++ )
+  VideoSubWindow* pcVideoSubWindow;
+  QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+  for( Int i = 0; i < subWindowList.size(); i++ )
   {
-    pcVideoSubWindow = videoSubWindowList.at( i );
-    if( pcVideoSubWindow )
+    pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
+    if( m_pcCurrentVideoSubWindow )
     {
-      if( m_pcCurrentVideoSubWindow )
+      if( !m_pcCurrentVideoSubWindow->getCurrFrame()->haveSameFmt( pcVideoSubWindow->getCurrFrame() ) )
       {
-        if( !m_pcCurrentVideoSubWindow->getCurrFrame()->haveSameFmt( pcVideoSubWindow->getCurrFrame() ) )
-        {
-          continue;
-        }
+        continue;
       }
-      currSubWindowName = pcVideoSubWindow->getWindowShortName();
-      m_pcWindowListNames.append( currSubWindowName );
-      m_pcVideoWindowList.append( pcVideoSubWindow );
     }
+    currSubWindowName = pcVideoSubWindow->getWindowShortName();
+    m_pcWindowListNames.append( currSubWindowName );
+    m_pcVideoWindowList.append( pcVideoSubWindow );
   }
   m_comboBoxRef->clear();
   m_comboBoxRef->insertItems( -1, m_pcWindowListNames );

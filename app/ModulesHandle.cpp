@@ -24,6 +24,7 @@
 
 #include <cstdio>
 
+#include "PlaYUVerSubWinManager.h"
 #include "ModulesHandle.h"
 #include "PlaYUVerModuleFactory.h"
 #include "DialogSubWindowSelector.h"
@@ -33,10 +34,10 @@
 namespace plaYUVer
 {
 
-ModulesHandle::ModulesHandle( QMainWindow * parent, QMdiArea *mdiArea ) :
+ModulesHandle::ModulesHandle( QWidget* parent, PlaYUVerSubWinManager *windowManager ) :
         QWidget( parent ),
         m_pcParent( parent ),
-        m_pcMdiArea( mdiArea )
+        m_pcMainWindowManager( windowManager )
 {
   setParent( m_pcParent );
 }
@@ -140,7 +141,7 @@ QMenu* ModulesHandle::createMenu()
 
 Void ModulesHandle::updateMenus()
 {
-  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
+  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
   Bool hasSubWindow = pcSubWindow ? true : false;
   QAction* currModuleAction;
 
@@ -186,7 +187,7 @@ Void ModulesHandle::writeSettings()
 
 Void ModulesHandle::processOpt( Int index )
 {
-  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
+  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
   if( pcSubWindow )
   {
     QList<PlaYUVerAppModuleIf*> apcCurrentModule = pcSubWindow->getModuleArray();
@@ -214,7 +215,7 @@ Void ModulesHandle::processOpt( Int index )
 Void ModulesHandle::activateModule()
 {
   QAction *pcAction = qobject_cast<QAction *>( sender() );
-  VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
+  VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
   if( pcVideoSubWindow )
   {
     if( pcAction->isChecked() )
@@ -238,39 +239,39 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
   VideoSubWindow* pcModuleSubWindow = NULL;
   Bool bShowModulesNewWindow = m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked();
-  VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMdiArea->activeSubWindow() );
+  VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
 
   QString windowName;
 
-  QVector<VideoSubWindow*> subWindowList;
+  QList<VideoSubWindow*> videoSubWindowList;
   UInt numberOfFrames = pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames;
   if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )  // Show dialog to select sub windows
   {
-    DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMdiArea, numberOfFrames, numberOfFrames );
+    DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMainWindowManager, SubWindowHandle::VIDEO_SUBWINDOW, numberOfFrames, numberOfFrames );
     if( dialogWindowsSelection.exec() == QDialog::Accepted )
     {
       QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();
-      SubWindowHandle *subWindow;
-
+      VideoSubWindow *videoSubWindow;
+      QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow();
       for( Int j = 0; j < selectedWindows.size(); j++ )
       {
-        for( Int i = 0; i < m_pcMdiArea->subWindowList().size(); i++ )
+        for( Int i = 0; i < subWindowList.size(); i++ )
         {
-          subWindow = qobject_cast<SubWindowHandle*>( m_pcMdiArea->subWindowList().at( i ) );
-          if( subWindow->getWindowName() == selectedWindows.at( j ) )
+          videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
+          if( videoSubWindow->getWindowName() == selectedWindows.at( j ) )
           {
-            subWindowList.append( qobject_cast<VideoSubWindow*>( m_pcMdiArea->subWindowList().at( i ) ) );
-            pcCurrModuleIf->m_pcSubWindow[j] = qobject_cast<VideoSubWindow*>( m_pcMdiArea->subWindowList().at( i ) );
+            videoSubWindowList.append( videoSubWindow );
+            pcCurrModuleIf->m_pcSubWindow[j] = videoSubWindow;
           }
         }
       }
     }
     // Check for same fmt in more than one frame modules
-    for( Int i = 1; i < subWindowList.size(); i++ )
+    for( Int i = 1; i < videoSubWindowList.size(); i++ )
     {
-      if( !subWindowList.at( i )->getCurrFrame()->haveSameFmt( subWindowList.at( 0 )->getCurrFrame() ) )
+      if( !videoSubWindowList.at( i )->getCurrFrame()->haveSameFmt( videoSubWindowList.at( 0 )->getCurrFrame() ) )
       {
-        subWindowList.clear();
+        videoSubWindowList.clear();
         break;
       }
     }
@@ -278,12 +279,12 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   else
   {
     windowName.append( pcVideoSubWindow->windowTitle() );
-    subWindowList.append( pcVideoSubWindow );
+    videoSubWindowList.append( pcVideoSubWindow );
   }
 
-  if( subWindowList.size() == 0 )
+  if( videoSubWindowList.size() == 0 )
   {
-    m_pcParent->statusBar()->showMessage( "Error! Module cannot be applied", 2000 );
+    qobject_cast<QMainWindow*>( m_pcParent )->statusBar()->showMessage( "Error! Module cannot be applied", 2000 );
     destroyModuleIf( pcCurrModuleIf );
     return;
   }
@@ -292,9 +293,9 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   windowName.append( pcCurrModuleIf->m_pcModule->m_pchModuleName );
   windowName.append( ">" );
 
-  for( Int i = 0; i < subWindowList.size(); i++ )
+  for( Int i = 0; i < videoSubWindowList.size(); i++ )
   {
-    pcCurrModuleIf->m_pcSubWindow[i] = subWindowList.at( i );
+    pcCurrModuleIf->m_pcSubWindow[i] = videoSubWindowList.at( i );
   }
 
   pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
@@ -303,7 +304,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   {
     if( ( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
-      pcModuleSubWindow = new VideoSubWindow( this , true );
+      pcModuleSubWindow = new VideoSubWindow( this, true );
       pcModuleSubWindow->setWindowShortName( windowName );
       pcModuleSubWindow->setWindowName( windowName );
 
@@ -327,7 +328,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
       pcCurrModuleIf->m_pcDockWidget->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
       pcCurrModuleIf->m_pcDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
       pcCurrModuleIf->m_pcDockWidget->setWidget( pcCurrModuleIf->m_pcModuleDock );
-      m_pcParent->addDockWidget( Qt::RightDockWidgetArea, pcCurrModuleIf->m_pcDockWidget );
+      qobject_cast<QMainWindow*>( m_pcParent )->addDockWidget( Qt::RightDockWidgetArea, pcCurrModuleIf->m_pcDockWidget );
     }
   }
 
@@ -345,8 +346,8 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 
   if( pcModuleSubWindow )
   {
-    QMdiSubWindow* window = m_pcMdiArea->addSubWindow( pcModuleSubWindow );
-    window->show();
+    m_pcMainWindowManager->addSubWindow( pcModuleSubWindow );
+    pcModuleSubWindow->show();
   }
 
   return;

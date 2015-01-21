@@ -38,13 +38,14 @@
 namespace plaYUVer
 {
 
+class PlaYUVerSubWinManager;
 class VideoSubWindow;
 
 class QualityHandle: public QWidget
 {
 Q_OBJECT
 public:
-  QualityHandle( QWidget*, QMdiArea * );
+  QualityHandle( QWidget*, PlaYUVerSubWinManager * );
   ~QualityHandle();
 
   Void createActions();
@@ -59,7 +60,7 @@ public:
 
 private:
   QWidget* m_pcParet;
-  QMdiArea* m_pcMainWindowMdiArea;
+  PlaYUVerSubWinManager* m_pcMainWindowManager;
   enum
   {
     SELECT_REF_ACT,

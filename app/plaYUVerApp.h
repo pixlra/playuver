@@ -47,6 +47,7 @@ namespace plaYUVer
 {
 
 class PlaYUVerStream;
+class PlaYUVerSubWinManager;
 class PlaYUVerAppAdaptor;
 
 class plaYUVerApp: public QMainWindow
@@ -95,10 +96,6 @@ private Q_SLOTS:
   void dragEnterEvent( QDragEnterEvent *event );
   void dropEvent( QDropEvent *event );
 
-  void tileSubWindows();
-  void setActiveSubWindow( QWidget *window );
-
-
   void update();
   void updateWindowMenu();
   void updateZoomFactorSBox();
@@ -108,34 +105,8 @@ private Q_SLOTS:
 
 private:
 
-  class PlaYUVerMdiArea: public QMdiArea
-  {
-  public:
-    PlaYUVerMdiArea( QWidget *parent = 0 ) :
-            QMdiArea( parent ),
-            m_pixmapLogo( ":/images/playuver-backgroud-logo.png" )
-    {
-    }
-  protected:
-    void paintEvent( QPaintEvent *event )
-    {
-      QMdiArea::paintEvent( event );
-      QPainter painter( viewport() );
-      QSize logoSize = 2 * size() / 3;
-
-      QPixmap pixFinalLogo = m_pixmapLogo.scaled( logoSize, Qt::KeepAspectRatio );
-
-      // Calculate the logo position - the bottom right corner of the mdi area.
-      int x = width() / 2 - pixFinalLogo.width() / 2;
-      int y = height() / 2 - pixFinalLogo.height() / 2;
-      painter.drawPixmap( x, y, pixFinalLogo );
-    }
-  private:
-    QPixmap m_pixmapLogo;
-  };
-
   PlaYUVerAppAdaptor* m_pDBusAdaptor;
-  PlaYUVerMdiArea *mdiArea;
+  PlaYUVerSubWinManager* m_pcWindowManager;
 
   /**
    * Save the current subwindow for every category
@@ -146,11 +117,7 @@ private:
   QString m_cLastOpenPath;
 
   SubWindowHandle *activeSubWindow();
-  template<typename T>
-  T findSubWindow( const QMdiArea* mdiArea, const QString& name );
-  template<typename T>
-  T findSubWindow( const QMdiArea* mdiArea, const T subWindow );
-  static VideoSubWindow* findVideoSubWindow( const QMdiArea* mdiArea, const QString& fileName );
+  static VideoSubWindow* findVideoStreamSubWindow( const PlaYUVerSubWinManager* windowManager, const QString& fileName );
 
   Void updateMenus();
 
@@ -165,7 +132,6 @@ private:
 
   Void readSettings();
   Void writeSettings();
-
 
   QDoubleSpinBox *m_pcZoomFactorSBox;
 

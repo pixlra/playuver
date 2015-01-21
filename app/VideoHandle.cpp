@@ -24,15 +24,16 @@
 
 #include "lib/PlaYUVerDefs.h"
 #include <QtGui>
+#include "PlaYUVerSubWinManager.h"
 #include "VideoHandle.h"
 #include "DialogSubWindowSelector.h"
 
 namespace plaYUVer
 {
 
-VideoHandle::VideoHandle( QWidget* parent, QMdiArea* mdiArea ) :
+VideoHandle::VideoHandle( QWidget* parent, PlaYUVerSubWinManager* windowManager ) :
         m_pcParet( parent ),
-        m_pcMainWindowMdiArea( mdiArea )
+        m_pcMainWindowManager( windowManager )
 {
   m_pcCurrentVideoSubWindow = NULL;
   m_bIsPlaying = false;
@@ -171,7 +172,7 @@ QWidget* VideoHandle::createStatusBarMessage()
 
 Void VideoHandle::updateMenus()
 {
-  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowMdiArea->activeSubWindow() );
+  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
   Bool hasSubWindow = pcSubWindow ? true : false;
 
   m_arrayActions[PLAY_ACT]->setEnabled( hasSubWindow );
@@ -485,7 +486,7 @@ Void VideoHandle::seekSliderEvent( Int new_frame_num )
 
 Void VideoHandle::videoSelectionButtonEvent()
 {
-  DialogSubWindowSelector dialogWindowsSelection( this, m_pcMainWindowMdiArea );
+  DialogSubWindowSelector dialogWindowsSelection( this, m_pcMainWindowManager, SubWindowHandle::VIDEO_STREAM_SUBWINDOW );
   QStringList cWindowListNames;
   for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
   {
@@ -496,18 +497,17 @@ Void VideoHandle::videoSelectionButtonEvent()
   {
     QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();
     m_acPlayingSubWindows.clear();
-    SubWindowHandle *subWindow;
+    VideoSubWindow *videoSubWindow;
     QString windowName;
-    QList<VideoSubWindow*> subWindowList = m_pcMainWindowMdiArea->findChildren<VideoSubWindow*>();
+    QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_STREAM_SUBWINDOW );
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
-      subWindow = subWindowList.at( i );
-      windowName = subWindow->getWindowName();
+      videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
+      windowName = videoSubWindow->getWindowName();
       if( selectedWindows.contains( windowName ) )
       {
-        VideoSubWindow* pcVideoSubWinodw = qobject_cast<VideoSubWindow*>( subWindow );
-        m_acPlayingSubWindows.append( pcVideoSubWinodw );
-        pcVideoSubWinodw->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
+        m_acPlayingSubWindows.append( videoSubWindow );
+        videoSubWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
       }
     }
     if( m_acPlayingSubWindows.size() > 0 )

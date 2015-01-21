@@ -49,9 +49,11 @@ private:
 public:
   enum SubWindowCategories
   {
-    VIDEO_SUBWINDOW = 0,
-    MODULE_SUBWINDOW,
-    PLOT_SUBWINDOW,
+    SUBWINDOW = 0,
+    VIDEO_SUBWINDOW = 1,
+    VIDEO_STREAM_SUBWINDOW = 2,
+    MODULE_SUBWINDOW = 4,
+    PLOT_SUBWINDOW = 8,
   };
 
   SubWindowHandle( QWidget *, UInt );

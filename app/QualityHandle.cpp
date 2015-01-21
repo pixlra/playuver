@@ -23,6 +23,7 @@
  */
 
 #include <QtGui>
+#include "PlaYUVerSubWinManager.h"
 #include "QualityHandle.h"
 #include "VideoSubWindow.h"
 #include "PlotSubWindow.h"
@@ -31,9 +32,9 @@
 namespace plaYUVer
 {
 
-QualityHandle::QualityHandle( QWidget* parent, QMdiArea* mdiArea ) :
+QualityHandle::QualityHandle( QWidget* parent, PlaYUVerSubWinManager* windowManager ) :
         m_pcParet( parent ),
-        m_pcMainWindowMdiArea( mdiArea )
+        m_pcMainWindowManager( windowManager )
 {
 
 }
@@ -82,7 +83,7 @@ QMenu* QualityHandle::createMenu()
 
 QDockWidget* QualityHandle::createDock()
 {
-  m_pcQualityHandleSideBar = new QualityMeasurementSidebar( m_pcParet, m_pcMainWindowMdiArea );
+  m_pcQualityHandleSideBar = new QualityMeasurementSidebar( m_pcParet, m_pcMainWindowManager );
   m_pcQualityHandleDock = new QDockWidget( tr( "Quality Measurement" ), this );
   m_pcQualityHandleDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   m_pcQualityHandleDock->setWidget( m_pcQualityHandleSideBar );
@@ -128,16 +129,16 @@ Void QualityHandle::slotQualityMetricChanged( Int idx )
 
 Void QualityHandle::slotSelectReference()
 {
-  DialogSubWindowSelector dialogWindowSelection( this, m_pcMainWindowMdiArea, 1, 1 );
+  DialogSubWindowSelector dialogWindowSelection( this, m_pcMainWindowManager, 1, 1 );
   if( dialogWindowSelection.exec() == QDialog::Accepted )
   {
     VideoSubWindow* pcVideoSubWindow;
     VideoSubWindow* pcRefSubWindow = NULL;
     QStringList selectedWindows = dialogWindowSelection.getSelectedWindows();
-    QList<VideoSubWindow*> subWindowList = m_pcMainWindowMdiArea->findChildren<VideoSubWindow*>();
+    QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
-      pcVideoSubWindow = subWindowList.at( i );
+      pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
       if( pcVideoSubWindow->getWindowName() == selectedWindows.at( 0 ) )
       {
         pcRefSubWindow = pcVideoSubWindow;
@@ -146,7 +147,7 @@ Void QualityHandle::slotSelectReference()
     }
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
-      pcVideoSubWindow = subWindowList.at( i );
+      pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
       pcVideoSubWindow->setRefSubWindow( pcRefSubWindow );
     }
     m_pcQualityHandleSideBar->updateSidebarData();
@@ -157,11 +158,10 @@ Void QualityHandle::slotSelectReference()
 Void QualityHandle::slotCreatePlot()
 {
   PlotSubWindow* pcPlotWindow = new PlotSubWindow( m_pcParet );
-  m_pcMainWindowMdiArea->addSubWindow( pcPlotWindow );
+  m_pcMainWindowManager->addSubWindow( pcPlotWindow );
   pcPlotWindow->show();
 
 }
-
 
 }   // NAMESPACE
 

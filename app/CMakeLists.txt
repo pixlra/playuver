@@ -9,6 +9,7 @@ set(plaYUver_App_SRCS
 # Main
     main.cpp
     plaYUVerApp.cpp
+    PlaYUVerSubWinManager.cpp
     SubWindowHandle.cpp
     Settings.cpp
 # Module Video

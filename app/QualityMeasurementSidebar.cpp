@@ -24,14 +24,14 @@
 
 #include "lib/PlaYUVerDefs.h"
 #include <QtGui>
-#include "PlaYUVerSubWinManager.h"
+#include "PlaYUVerSubWindowHandle.h"
 #include "QualityMeasurementSidebar.h"
 #include "VideoSubWindow.h"
 
 namespace plaYUVer
 {
 
-QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerSubWinManager *windowManager ) :
+QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerSubWindowHandle *windowManager ) :
         QWidget( parent ),
         m_pcMainWindowManager( windowManager ),
         m_pcCurrentVideoSubWindow( NULL )

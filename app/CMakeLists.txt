@@ -9,7 +9,7 @@ set(plaYUver_App_SRCS
 # Main
     main.cpp
     plaYUVerApp.cpp
-    PlaYUVerSubWinManager.cpp
+    PlaYUVerSubWindowHandle.cpp
     PlaYUVerMdiSubWindow.cpp
     SubWindowHandle.cpp
     Settings.cpp

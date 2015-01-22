@@ -24,14 +24,14 @@
 
 #include "lib/PlaYUVerDefs.h"
 #include <QtGui>
-#include "PlaYUVerSubWinManager.h"
+#include "PlaYUVerSubWindowHandle.h"
 #include "VideoHandle.h"
 #include "DialogSubWindowSelector.h"
 
 namespace plaYUVer
 {
 
-VideoHandle::VideoHandle( QWidget* parent, PlaYUVerSubWinManager* windowManager ) :
+VideoHandle::VideoHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManager ) :
         m_pcParet( parent ),
         m_pcMainWindowManager( windowManager )
 {

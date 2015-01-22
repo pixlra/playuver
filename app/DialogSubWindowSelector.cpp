@@ -22,14 +22,14 @@
  * \brief    Dialog box to select sub windows
  */
 
-#include "PlaYUVerSubWinManager.h"
+#include "PlaYUVerSubWindowHandle.h"
 #include "DialogSubWindowSelector.h"
 #include "VideoSubWindow.h"
 
 namespace plaYUVer
 {
 
-DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWinManager *windowManager, UInt uiCategory, Int minWindowsSelected, Int maxWindowsSelected ) :
+DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWindowHandle *windowManager, UInt uiCategory, Int minWindowsSelected, Int maxWindowsSelected ) :
         QDialog( parent ),
         m_uiCategory( uiCategory ),
         m_iMinSelectedWindows( minWindowsSelected ),

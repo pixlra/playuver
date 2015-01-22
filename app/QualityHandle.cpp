@@ -23,7 +23,7 @@
  */
 
 #include <QtGui>
-#include "PlaYUVerSubWinManager.h"
+#include "PlaYUVerSubWindowHandle.h"
 #include "QualityHandle.h"
 #include "VideoSubWindow.h"
 #include "PlotSubWindow.h"
@@ -32,7 +32,7 @@
 namespace plaYUVer
 {
 
-QualityHandle::QualityHandle( QWidget* parent, PlaYUVerSubWinManager* windowManager ) :
+QualityHandle::QualityHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManager ) :
         m_pcParet( parent ),
         m_pcMainWindowManager( windowManager )
 {

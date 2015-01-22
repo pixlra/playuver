@@ -27,7 +27,7 @@
 #include "fvupdater.h"
 #endif
 #include "plaYUVerApp.h"
-#include "PlaYUVerSubWinManager.h"
+#include "PlaYUVerSubWindowHandle.h"
 #include "DialogSubWindowSelector.h"
 
 #define SYNCHRONISED_ZOON 1
@@ -45,17 +45,11 @@ plaYUVerApp::plaYUVerApp()
   m_pDBusAdaptor = new PlaYUVerAppAdaptor( this );
 #endif
 
-  m_pcWindowManager = new PlaYUVerSubWinManager( this );
-  setCentralWidget( m_pcWindowManager );
-  //mdiArea->setActivationOrder( QMdiArea::ActivationHistoryOrder );
+  m_pcWindowHandle = new PlaYUVerSubWindowHandle( this );
 
-  mapperWindow = new QSignalMapper( this );
-  connect( mapperWindow, SIGNAL( mapped(QWidget*) ), m_pcWindowManager, SLOT( setActiveSubWindow(QWidget*) ) );
-
-  m_appModuleVideo = new VideoHandle( this, m_pcWindowManager );
-  m_appModuleQuality = new QualityHandle( this, m_pcWindowManager );
-
-  m_appModuleExtensions = new ModulesHandle( this, m_pcWindowManager );
+  m_appModuleVideo = new VideoHandle( this, m_pcWindowHandle );
+  m_appModuleQuality = new QualityHandle( this, m_pcWindowHandle );
+  m_appModuleExtensions = new ModulesHandle( this, m_pcWindowHandle );
 
   createActions();
   createToolBars();
@@ -69,12 +63,12 @@ plaYUVerApp::plaYUVerApp()
   setWindowTitle( QApplication::applicationName() );
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
   setUnifiedTitleAndToolBarOnMac( true );
-
+  setCentralWidget( m_pcWindowHandle );
   setAcceptDrops( true );
   //mdiArea->setAcceptDrops( true );
   //mdiArea->hide();
 
-  connect( m_pcWindowManager, SIGNAL( windowActivated() ), this, SLOT( update() ) );
+  connect( m_pcWindowHandle, SIGNAL( windowActivated() ), this, SLOT( update() ) );
   connect( m_appModuleVideo, SIGNAL( changed() ), this, SLOT( update() ) );
   connect( m_appModuleQuality, SIGNAL( changed() ), this, SLOT( update() ) );
   connect( m_appModuleExtensions, SIGNAL( changed() ), this, SLOT( update() ) );
@@ -92,7 +86,7 @@ Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
     {
       loadFile( argv[i] );
     }
-    m_pcWindowManager->tileSubWindows();
+    m_pcWindowHandle->tileSubWindows();
     zoomToFitAll();
   }
 }
@@ -109,7 +103,7 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
   Int mayCloseAll = true;
   Int msgBoxCloseRet = QMessageBox::Yes;
 
-  QList<SubWindowHandle*> subWindowList = m_pcWindowManager->findSubWindow();
+  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow();
   if( subWindowList.size() >= 1 )
   {
     QMessageBox msgBoxClose( QMessageBox::Question, "PlaYUVer", "There are open files!", QMessageBox::Yes | QMessageBox::No, this );
@@ -120,7 +114,6 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
   switch( msgBoxCloseRet )
   {
   case QMessageBox::Yes:
-
     mayCloseAll = true;
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
@@ -149,12 +142,12 @@ Void plaYUVerApp::closeActiveWindow()
 {
   SubWindowHandle *currSubWindow = activeSubWindow();
   m_appModuleVideo->closeSubWindow( qobject_cast<VideoSubWindow*>( currSubWindow ) );
-  m_pcWindowManager->removeSubWindow( currSubWindow );
+  m_pcWindowHandle->removeSubWindow( currSubWindow );
 }
 
 Void plaYUVerApp::closeAll()
 {
-  m_pcWindowManager->removeAllSubWindow();
+  m_pcWindowHandle->removeAllSubWindow();
 }
 
 Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
@@ -164,10 +157,10 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     statusBar()->showMessage( "File " + fileName + " do not exist!", 2000 );
     return;
   }
-  VideoSubWindow *videoSubWindow = plaYUVerApp::findVideoStreamSubWindow( m_pcWindowManager, fileName );
+  VideoSubWindow *videoSubWindow = plaYUVerApp::findVideoStreamSubWindow( m_pcWindowHandle, fileName );
   if( videoSubWindow )
   {
-    m_pcWindowManager->setActiveSubWindow( videoSubWindow );
+    m_pcWindowHandle->setActiveSubWindow( videoSubWindow );
     return;
   }
   videoSubWindow = new VideoSubWindow( this );  //createSubWindow();
@@ -190,7 +183,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     if( opened )
     {
       statusBar()->showMessage( tr( "Loading file..." ) );
-      m_pcWindowManager->addSubWindow( videoSubWindow );
+      m_pcWindowHandle->addSubWindow( videoSubWindow );
       videoSubWindow->show();
 
       connect( videoSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
@@ -351,7 +344,7 @@ Void plaYUVerApp::reload()
 Void plaYUVerApp::reloadAll()
 {
   VideoSubWindow *videoSubWindow;
-  QList<SubWindowHandle*> subWindowList = m_pcWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
@@ -379,7 +372,7 @@ Void plaYUVerApp::setTool( Int idxTool )
   m_uiViewTool = idxTool;
   actionGroupTools->actions().at( m_uiViewTool )->setChecked( true );
   VideoSubWindow* videoSubWindow;
-  QList<SubWindowHandle*> subWindowList = m_pcWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
@@ -410,7 +403,7 @@ Void plaYUVerApp::zoomToFit()
 Void plaYUVerApp::zoomToFitAll()
 {
   VideoSubWindow *videoSubWindow;
-  QList<SubWindowHandle*> subWindowList = m_pcWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
@@ -429,7 +422,7 @@ Void plaYUVerApp::zoomToFactorAll( const double scale, const QPoint center )
     factor = m_pcCurrentSubWindow->getScaleFactor();
 
   SubWindowHandle *subWindow;
-  QList<SubWindowHandle*> subWindowList = m_pcWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     subWindow = subWindowList.at( i );
@@ -473,7 +466,7 @@ Void plaYUVerApp::updateZoomFactorSBox()
 
 Void plaYUVerApp::moveAllScrollBars( const QPoint offset )
 {
-  QList<SubWindowHandle*> subWindowList = m_pcWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     if( m_pcCurrentSubWindow == subWindowList.at( i ) )
@@ -508,12 +501,12 @@ Void plaYUVerApp::dropEvent( QDropEvent *event )
 
 SubWindowHandle *plaYUVerApp::activeSubWindow()
 {
-  if( SubWindowHandle *activeSubWindow = m_pcWindowManager->activeSubWindow() )
+  if( SubWindowHandle *activeSubWindow = m_pcWindowHandle->activeSubWindow() )
     return activeSubWindow;
   return NULL;
 }
 
-VideoSubWindow* plaYUVerApp::findVideoStreamSubWindow( const PlaYUVerSubWinManager* windowManager, const QString& fileName )
+VideoSubWindow* plaYUVerApp::findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager, const QString& fileName )
 {
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
   VideoSubWindow* pcSubWindow;
@@ -552,7 +545,7 @@ Void plaYUVerApp::update()
 
       if( m_pcCurrentVideoSubWindow )
       {
-        if( !m_pcWindowManager->findSubWindow( m_pcCurrentVideoSubWindow->getRefSubWindow() ) )
+        if( !m_pcWindowHandle->findSubWindow( m_pcCurrentVideoSubWindow->getRefSubWindow() ) )
         {
           m_pcCurrentVideoSubWindow->setRefSubWindow( NULL );
         }
@@ -590,9 +583,6 @@ Void plaYUVerApp::updateMenus()
   m_arrayActions[RELOAD_ALL_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[LOAD_ALL_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSEALL_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[TILE_WINDOWS_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[CASCADE_WINDOWS_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[SEPARATOR_ACT]->setVisible( hasSubWindow );
 
   m_arrayActions[ZOOM_IN_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[ZOOM_OUT_ACT]->setEnabled( hasSubWindow );
@@ -609,64 +599,13 @@ Void plaYUVerApp::updateMenus()
   m_appModuleExtensions->updateMenus();
 }
 
-Void plaYUVerApp::updateWindowMenu()
-{
-  m_arrayMenu[WINDOW_MENU]->clear();
-  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[CLOSE_ACT] );
-  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[CLOSEALL_ACT] );
-  m_arrayMenu[WINDOW_MENU]->addSeparator();
-  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[TILE_WINDOWS_ACT] );
-  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[CASCADE_WINDOWS_ACT] );
-  m_arrayMenu[WINDOW_MENU]->addSeparator();
-  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[NEXT_WINDOWS_ACT] );
-  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[PREVIOUS_WINDOWS_ACT] );
-  m_arrayMenu[WINDOW_MENU]->addAction( m_arrayActions[SEPARATOR_ACT] );
-
-  updateMenus();
-
-  QList<SubWindowHandle *> subWindowList = m_pcWindowManager->findSubWindow();
-  m_arrayActions[SEPARATOR_ACT]->setVisible( !subWindowList.isEmpty() );
-  Int number_windows = subWindowList.size();
-
-  if( number_windows > 1 )
-  {
-    m_arrayActions[NEXT_WINDOWS_ACT]->setEnabled( true );
-    m_arrayActions[PREVIOUS_WINDOWS_ACT]->setEnabled( true );
-  }
-  else
-  {
-    m_arrayActions[NEXT_WINDOWS_ACT]->setEnabled( false );
-    m_arrayActions[PREVIOUS_WINDOWS_ACT]->setEnabled( false );
-  }
-
-  for( Int i = 0; i < number_windows; ++i )
-  {
-    SubWindowHandle *child = subWindowList.at( i );
-
-    QString text;
-    if( i < 9 )
-    {
-      text = tr( "&%1 %2" ).arg( i + 1 ).arg( child->getWindowName() );
-    }
-    else
-    {
-      text = tr( "%1 %2" ).arg( i + 1 ).arg( child->getWindowName() );
-    }
-    QAction *action = m_arrayMenu[WINDOW_MENU]->addAction( text );
-    action->setCheckable( true );
-    action->setChecked( child == activeSubWindow() );
-    connect( action, SIGNAL( triggered() ), mapperWindow, SLOT( map() ) );
-    mapperWindow->setMapping( action, subWindowList.at( i ) );
-  }
-}
-
 // -----------------------  Create Functions  -----------------------
 
 Void plaYUVerApp::createActions()
 {
   m_arrayActions.resize( TOTAL_ACT );
 
-// ------------ File ------------
+  // ------------ File ------------
   m_arrayActions[OPEN_ACT] = new QAction( QIcon( ":/images/open.png" ), tr( "&Open" ), this );
   m_arrayActions[OPEN_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogOpenButton ) );
   m_arrayActions[OPEN_ACT]->setShortcuts( QKeySequence::Open );
@@ -710,7 +649,6 @@ Void plaYUVerApp::createActions()
 
   m_arrayActions[CLOSE_ACT] = new QAction( tr( "&Close" ), this );
   m_arrayActions[CLOSE_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogCloseButton ) );
-
   m_arrayActions[CLOSE_ACT]->setStatusTip( tr( "Close the active window" ) );
   connect( m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), this, SLOT( closeActiveWindow() ) );
 
@@ -723,7 +661,7 @@ Void plaYUVerApp::createActions()
   m_arrayActions[EXIT_ACT]->setStatusTip( tr( "Exit the application" ) );
   connect( m_arrayActions[EXIT_ACT], SIGNAL( triggered() ), qApp, SLOT( closeAllWindows() ) );
 
-// ------------ View ------------
+  // ------------ View ------------
   mapperZoom = new QSignalMapper( this );
   connect( mapperZoom, SIGNAL( mapped(int) ), this, SLOT( scaleFrame(int) ) );
 
@@ -757,7 +695,7 @@ Void plaYUVerApp::createActions()
   m_arrayActions[ZOOM_FIT_ALL_ACT]->setStatusTip( tr( "Apply zoom to fit to all windows" ) );
   connect( m_arrayActions[ZOOM_FIT_ALL_ACT], SIGNAL( triggered() ), this, SLOT( zoomToFitAll() ) );
 
-// ------------ Tools ------------
+  // ------------ Tools ------------
   actionGroupTools = new QActionGroup( this );
   actionGroupTools->setExclusive( true );
 
@@ -783,34 +721,7 @@ Void plaYUVerApp::createActions()
   m_appModuleVideo->createActions();
   m_appModuleQuality->createActions();
   m_appModuleExtensions->createActions();
-
-// ------------ Window ------------
-
-  m_arrayActions[TILE_WINDOWS_ACT] = new QAction( tr( "Tile" ), this );
-  m_arrayActions[TILE_WINDOWS_ACT]->setIcon( QIcon( ":images/windowstile.png" ) );
-  m_arrayActions[TILE_WINDOWS_ACT]->setStatusTip( tr( "Tile the windows" ) );
-//connect( m_arrayActions[TILE_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea, SLOT( tileSubWindows() ) );
-  connect( m_arrayActions[TILE_WINDOWS_ACT], SIGNAL( triggered() ), m_pcWindowManager, SLOT( tileSubWindows() ) );
-
-  m_arrayActions[CASCADE_WINDOWS_ACT] = new QAction( tr( "Cascade" ), this );
-  m_arrayActions[CASCADE_WINDOWS_ACT]->setIcon( QIcon( ":images/windowscascade.png" ) );
-  m_arrayActions[CASCADE_WINDOWS_ACT]->setStatusTip( tr( "Cascade the windows" ) );
-  connect( m_arrayActions[CASCADE_WINDOWS_ACT], SIGNAL( triggered() ), m_pcWindowManager, SLOT( cascadeSubWindows() ) );
-
-  m_arrayActions[NEXT_WINDOWS_ACT] = new QAction( tr( "Ne&xt" ), this );
-  m_arrayActions[NEXT_WINDOWS_ACT]->setShortcuts( QKeySequence::NextChild );
-  m_arrayActions[NEXT_WINDOWS_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_ArrowRight ) ) );
-  m_arrayActions[NEXT_WINDOWS_ACT]->setStatusTip( tr( "Move the focus to the next window" ) );
-//  connect( m_arrayActions[NEXT_WINDOWS_ACT], SIGNAL( triggered() ), m_pcWindowManager, SLOT( activateNextSubWindow() ) );
-
-  m_arrayActions[PREVIOUS_WINDOWS_ACT] = new QAction( tr( "Pre&vious" ), this );
-  m_arrayActions[PREVIOUS_WINDOWS_ACT]->setShortcuts( QKeySequence::PreviousChild );
-  m_arrayActions[PREVIOUS_WINDOWS_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_ArrowLeft ) ) );
-  m_arrayActions[PREVIOUS_WINDOWS_ACT]->setStatusTip( tr( "Move the focus to the previous window" ) );
-//  connect( m_arrayActions[PREVIOUS_WINDOWS_ACT], SIGNAL( triggered() ), m_pcWindowManager, SLOT( activatePreviousSubWindow() ) );
-
-  m_arrayActions[SEPARATOR_ACT] = new QAction( this );
-  m_arrayActions[SEPARATOR_ACT]->setSeparator( true );
+  m_pcWindowHandle->createActions();
 
 // ------------ About ------------
 
@@ -883,11 +794,8 @@ Void plaYUVerApp::createMenus()
   menuBar()->addMenu( QualityMenu );
   QMenu* ModuleMenu = m_appModuleExtensions->createMenu();
   menuBar()->addMenu( ModuleMenu );
-//connect( ModuleMenu, SIGNAL( triggered(QAction *) ), this, SLOT( ModuleHandling(QAction *) ) );
-
-  m_arrayMenu[WINDOW_MENU] = menuBar()->addMenu( tr( "&Window" ) );
-  updateWindowMenu();
-  connect( m_arrayMenu[WINDOW_MENU], SIGNAL( aboutToShow() ), this, SLOT( updateWindowMenu() ) );
+  QMenu* windowMenu = m_pcWindowHandle->createMenu();
+  menuBar()->addMenu( windowMenu );
 
   menuBar()->addSeparator();
 

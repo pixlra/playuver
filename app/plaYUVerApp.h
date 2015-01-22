@@ -47,7 +47,7 @@ namespace plaYUVer
 {
 
 class PlaYUVerStream;
-class PlaYUVerSubWinManager;
+class PlaYUVerSubWindowHandle;
 class PlaYUVerAppAdaptor;
 
 class plaYUVerApp: public QMainWindow
@@ -97,7 +97,6 @@ private Q_SLOTS:
   void dropEvent( QDropEvent *event );
 
   void update();
-  void updateWindowMenu();
   void updateZoomFactorSBox();
   void updateStatusBar( const QString& );
 
@@ -106,7 +105,6 @@ private Q_SLOTS:
 private:
 
   PlaYUVerAppAdaptor* m_pDBusAdaptor;
-  PlaYUVerSubWinManager* m_pcWindowManager;
 
   /**
    * Save the current subwindow for every category
@@ -117,7 +115,7 @@ private:
   QString m_cLastOpenPath;
 
   SubWindowHandle *activeSubWindow();
-  static VideoSubWindow* findVideoStreamSubWindow( const PlaYUVerSubWinManager* windowManager, const QString& fileName );
+  static VideoSubWindow* findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager, const QString& fileName );
 
   Void updateMenus();
 
@@ -158,6 +156,7 @@ private:
   VideoHandle* m_appModuleVideo;
   QualityHandle* m_appModuleQuality;
   ModulesHandle *m_appModuleExtensions;
+  PlaYUVerSubWindowHandle* m_pcWindowHandle;
 
   /**
    * Array of menus for the main app
@@ -222,11 +221,6 @@ private:
     ZOOM_FIT_ALL_ACT,
     NAVIGATION_TOOL_ACT,
     SELECTION_TOOL_ACT,
-    TILE_WINDOWS_ACT,
-    CASCADE_WINDOWS_ACT,
-    PREVIOUS_WINDOWS_ACT,
-    NEXT_WINDOWS_ACT,
-    SEPARATOR_ACT,
     UPDATE_ACT,
     ABOUT_ACT,
     ABOUTQT_ACT,

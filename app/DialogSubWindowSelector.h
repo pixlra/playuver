@@ -40,7 +40,7 @@ class QColor;
 namespace plaYUVer
 {
 
-class PlaYUVerSubWinManager;
+class PlaYUVerSubWindowHandle;
 /**
  * Class to define the dialog box to select sub windows
  * This class enable the selection of several group of windows
@@ -50,7 +50,7 @@ class DialogSubWindowSelector: public QDialog
 Q_OBJECT
 
 public:
-  DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWinManager *windowManager, UInt uiCategory, Int minWindowsSelected = 0, Int maxWindowsSelected = -1 );
+  DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWindowHandle *windowManager, UInt uiCategory, Int minWindowsSelected = 0, Int maxWindowsSelected = -1 );
 
   Void setSubWindowList( QStringList cWindowListNames );
   QStringList getSelectedWindows()
@@ -61,7 +61,7 @@ private:
   UInt m_uiCategory;
   Int m_iMinSelectedWindows;
   Int m_iMaxSlectedWindows;
-  PlaYUVerSubWinManager* m_pcMainWindowManager;
+  PlaYUVerSubWindowHandle* m_pcMainWindowManager;
   QStringList m_pcWindowListNames;
   QStringList m_pcSelectedWindowListNames;
 

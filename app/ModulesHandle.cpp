@@ -24,7 +24,7 @@
 
 #include <cstdio>
 
-#include "PlaYUVerSubWinManager.h"
+#include "PlaYUVerSubWindowHandle.h"
 #include "ModulesHandle.h"
 #include "PlaYUVerModuleFactory.h"
 #include "DialogSubWindowSelector.h"
@@ -34,7 +34,7 @@
 namespace plaYUVer
 {
 
-ModulesHandle::ModulesHandle( QWidget* parent, PlaYUVerSubWinManager *windowManager ) :
+ModulesHandle::ModulesHandle( QWidget* parent, PlaYUVerSubWindowHandle *windowManager ) :
         QWidget( parent ),
         m_pcParent( parent ),
         m_pcMainWindowManager( windowManager )

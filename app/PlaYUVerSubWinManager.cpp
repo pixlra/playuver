@@ -111,12 +111,14 @@ Void PlaYUVerSubWinManager::removeSubWindow( Int windowIdx )
   {
     if( m_bMdiModeEnabled )
     {
-      m_pcMdiArea->removeSubWindow( m_apcSubWindowList.at( windowIdx ) );
-      m_apcMdiSubWindowList.at( windowIdx )->close();
+      PlaYUVerMdiSubWindow* mdiSubWindow = m_apcMdiSubWindowList.at( windowIdx );
       m_apcMdiSubWindowList.removeAt( windowIdx );
+      m_pcMdiArea->removeSubWindow( m_apcSubWindowList.at( windowIdx ) );
+      mdiSubWindow->close();
     }
     m_apcSubWindowList.removeAt( windowIdx );
   }
+  m_apcSubWindowList.front()->activateWindow();
 }
 
 Void PlaYUVerSubWinManager::removeSubWindow( SubWindowHandle* window )
@@ -126,13 +128,7 @@ Void PlaYUVerSubWinManager::removeSubWindow( SubWindowHandle* window )
 
 Void PlaYUVerSubWinManager::removeMdiSubWindow( PlaYUVerMdiSubWindow* window )
 {
-  Int windowIdx = m_apcMdiSubWindowList.indexOf( window );
-  if( windowIdx >= 0 )
-  {
-
-    m_apcMdiSubWindowList.removeAt( windowIdx );
-    m_apcSubWindowList.removeAt( windowIdx );
-  }
+  removeSubWindow( m_apcMdiSubWindowList.indexOf( window ) );
 }
 
 Void PlaYUVerSubWinManager::removeAllSubWindow()
@@ -195,7 +191,7 @@ Void PlaYUVerSubWinManager::setActiveSubWindow( QWidget *window )
     return;
 
   m_pcActiveWindow = qobject_cast<SubWindowHandle *>( window );
-  window->font();
+  m_pcActiveWindow->window()->activateWindow();
 }
 
 Void PlaYUVerSubWinManager::tileSubWindows()

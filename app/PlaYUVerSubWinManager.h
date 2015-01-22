@@ -54,11 +54,15 @@ private:
 
 	SubWindowHandle* m_pcActiveWindow;
 
+	/**
+	 * Internal functions
+	 */
+	Void removeSubWindow( Int windowIdx );
+
 public:
 	PlaYUVerSubWinManager(QWidget *parent = 0);
 
 	Void addSubWindow(SubWindowHandle *widget, Qt::WindowFlags flags = 0);
-	Void removeSubWindow( Int windowIdx );
 	Void removeSubWindow( SubWindowHandle *window);
 
   Void removeAllSubWindow();

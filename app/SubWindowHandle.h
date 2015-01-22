@@ -70,14 +70,13 @@ public:
   /**
    * Scale the image (zoomed in or out) to speficied absolute zoom value (1.0 = original size).
    */
-  virtual Void zoomToFactor( Double factor , QPoint center = QPoint() ) = 0;
+  virtual Void zoomToFactor( Double factor, QPoint center = QPoint() ) = 0;
   /**
    * Scale the image by a given factor
    * @param factor factor of scale. Ex: 1.2 scale the image up by 20% and
    *        0.8 scale the image down by 25%
    */
-  virtual Void scaleView( Double , QPoint center = QPoint() ) = 0;
-
+  virtual Void scaleView( Double, QPoint center = QPoint() ) = 0;
 
   virtual Double getScaleFactor() = 0;
 
@@ -92,7 +91,7 @@ public:
   }
 
 protected:
-  virtual void closeEvent( QCloseEvent *event ) = 0;
+  virtual void closeEvent( QCloseEvent *event );
   QSize getScrollSize();
 
 Q_SIGNALS:
@@ -104,7 +103,9 @@ Q_SIGNALS:
    * Notify that scrollbar position was changed by internal event (e.g. by mouse panning )
    */
   void scrollBarMoved_SWindow( const QPoint );
-
+  /**
+   * Update stauts bars
+   */
   void updateStatusBar( const QString& );
 
 public Q_SLOTS:

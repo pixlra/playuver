@@ -1,6 +1,6 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@
  */
 
 /**
- * \file     PlotSubWindow.h
- * \brief    Window to handle plots
+ * \file     PlaYUVerMdiSubWindow.h
+ * \brief    Re-implementation QMdiSubWindow
  */
 
-#ifndef __PLOTWINDOWHANDLE_H__
-#define __PLOTWINDOWHANDLE_H__
+#ifndef __PLAYUVERMDISUBWINDOW_H__
+#define __PLAYUVERMDISUBWINDOW_H__
 
 #include "config.h"
 #include "lib/PlaYUVerDefs.h"
@@ -32,41 +32,26 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
-#include "SubWindowHandle.h"
-#include "qcustomplot.h"
 
 namespace plaYUVer
 {
 
-class PlotSubWindow: public SubWindowHandle
+class PlaYUVerMdiSubWindow: public QMdiSubWindow
 {
 Q_OBJECT
 
-private:
-  QCustomPlot* m_cPlotArea;
-
-  Void Example();
-
 public:
-  PlotSubWindow( QWidget * parent = 0 );
-  ~PlotSubWindow();
+  PlaYUVerMdiSubWindow( QWidget *parent = 0 );
 
-  /**
-   * Virtual functions from SubWindowHandle
-   */
-  Void normalSize();
-  Void zoomToFit();
-  Void zoomToFactor( Double factor, QPoint center = QPoint() );
-  Void scaleView( Double scale, QPoint center = QPoint() );
+Q_SIGNALS:
+  void aboutToClose( PlaYUVerMdiSubWindow* );
 
-  Double getScaleFactor()
-  {
-    return 0;
-  }
-  //QSize sizeHint() const;
+protected:
+  void closeEvent( QCloseEvent *event );
+
 };
 
 }  // NAMESPACE
 
-#endif // __PLOTWINDOWHANDLE_H__
+#endif // __PLAYUVERMDISUBWINDOW_H__
 

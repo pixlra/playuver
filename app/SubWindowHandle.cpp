@@ -55,7 +55,7 @@ SubWindowHandle::~SubWindowHandle()
 
 QSize SubWindowHandle::getScrollSize()
 {
-  return QSize(  viewport()->size().width() - 5, viewport()->size().height() - 5 );
+  return QSize( viewport()->size().width() - 5, viewport()->size().height() - 5 );
 }
 
 Void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
@@ -116,7 +116,6 @@ Void SubWindowHandle::updateLastScrollValue()
   m_cLastScroll.setY( scrollBar->value() );
 }
 
-
 Void SubWindowHandle::setWindowName( QString name )
 {
   m_cWindowName = name;
@@ -131,6 +130,11 @@ QString SubWindowHandle::getWindowName()
 Bool SubWindowHandle::mayClose()
 {
   return true;
+}
+
+Void SubWindowHandle::closeEvent( QCloseEvent *event )
+{
+  event->accept();
 }
 
 }  // NAMESPACE

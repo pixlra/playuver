@@ -37,6 +37,8 @@ namespace plaYUVer
 {
 
 class SubWindowHandle;
+class PlaYUVerMdiArea;
+class PlaYUVerMdiSubWindow;
 
 class PlaYUVerSubWinManager : public QWidget
 {
@@ -45,21 +47,20 @@ class PlaYUVerSubWinManager : public QWidget
 private:
   Bool m_bMdiModeEnabled;
 	QList<SubWindowHandle*> m_apcSubWindowList;
-	QList<QMdiSubWindow*> m_apcMdiSubWindowList;
 
 	QHBoxLayout* m_pcWindowManagerLayout;
-	QMdiArea* m_pcMdiArea;
+	PlaYUVerMdiArea* m_pcMdiArea;
+	QList<PlaYUVerMdiSubWindow*> m_apcMdiSubWindowList;
 
 	SubWindowHandle* m_pcActiveWindow;
-
-	QPixmap m_pixmapLogo;
 
 public:
 	PlaYUVerSubWinManager(QWidget *parent = 0);
 
 	Void addSubWindow(SubWindowHandle *widget, Qt::WindowFlags flags = 0);
 	Void removeSubWindow( Int windowIdx );
-  Void removeSubWindow( SubWindowHandle *window);
+	Void removeSubWindow( SubWindowHandle *window);
+
   Void removeAllSubWindow();
 
 	SubWindowHandle *activeSubWindow() const;
@@ -71,14 +72,13 @@ public:
 public Q_SLOTS:
   void updateActiveSubWindow();
   void setActiveSubWindow(QWidget *window);
+  void removeMdiSubWindow( PlaYUVerMdiSubWindow* window );
   void tileSubWindows();
   void cascadeSubWindows();
 
 Q_SIGNALS:
   void windowActivated();
 
-protected:
-	void paintEvent( QPaintEvent *event );
 };
 
 }  // NAMESPACE

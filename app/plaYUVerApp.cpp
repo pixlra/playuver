@@ -125,7 +125,6 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
       mayCloseAll &= subWindowList.at( i )->mayClose();
-      ;
     }
 
     if( mayCloseAll )

@@ -111,17 +111,4 @@ Void PlotSubWindow::scaleView( Double scale, QPoint center )
 //
 //}
 
-Void PlotSubWindow::closeEvent( QCloseEvent *event )
-{
-  Bool bAccept = true;
-  if( bAccept )
-  {
-    event->accept();
-  }
-  else
-  {
-    event->ignore();
-  }
-}
-
 }  // NAMESPACE

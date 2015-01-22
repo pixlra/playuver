@@ -23,18 +23,43 @@
  */
 
 #include "PlaYUVerSubWinManager.h"
+#include "PlaYUVerMdiSubWindow.h"
 #include "SubWindowHandle.h"
 
 namespace plaYUVer
 {
 
+class PlaYUVerMdiArea: public QMdiArea
+{
+public:
+  PlaYUVerMdiArea( QWidget *parent = 0 ) :
+          QMdiArea( parent ),
+          m_pixmapLogo( ":/images/playuver-backgroud-logo.png" )
+  {
+  }
+protected:
+  void paintEvent( QPaintEvent *event )
+  {
+    QMdiArea::paintEvent( event );
+    QPainter painter( viewport() );
+
+    QPixmap pixFinalLogo = m_pixmapLogo.scaled( 2 * size() / 3, Qt::KeepAspectRatio );
+
+    // Calculate the logo position - the bottom right corner of the mdi area.
+    int x = width() / 2 - pixFinalLogo.width() / 2;
+    int y = height() / 2 - pixFinalLogo.height() / 2;
+    painter.drawPixmap( x, y, pixFinalLogo );
+  }
+private:
+  QPixmap m_pixmapLogo;
+};
+
 PlaYUVerSubWinManager::PlaYUVerSubWinManager( QWidget *parent ) :
-            QWidget( parent ),
-            m_pixmapLogo( ":/images/playuver-backgroud-logo.png" )
+        QWidget( parent )
 {
   m_bMdiModeEnabled = true;
 
-  m_pcMdiArea = new QMdiArea( this );
+  m_pcMdiArea = new PlaYUVerMdiArea( this );
   m_pcMdiArea->setActivationOrder( QMdiArea::ActivationHistoryOrder );
 
   QHBoxLayout* m_pcWindowManagerLayout = new QHBoxLayout( this );
@@ -48,27 +73,13 @@ PlaYUVerSubWinManager::PlaYUVerSubWinManager( QWidget *parent ) :
   m_apcMdiSubWindowList.clear();
 }
 
-void PlaYUVerSubWinManager::paintEvent( QPaintEvent *event )
-{
-  //  QWidget::paintEvent( event );
-  //  QPainter painter( m_pcMdiArea->viewport() );
-  //  QSize logoSize = 2 * size() / 3;
-  //
-  //  QPixmap pixFinalLogo = m_pixmapLogo.scaled( logoSize, Qt::KeepAspectRatio );
-  //
-  //  // Calculate the logo position - the bottom right corner of the mdi area.
-  //  int x = width() / 2 - pixFinalLogo.width() / 2;
-  //  int y = height() / 2 - pixFinalLogo.height() / 2;
-  //  painter.drawPixmap( x, y, pixFinalLogo );
-}
-
 Void PlaYUVerSubWinManager::updateActiveSubWindow()
 {
   if( m_bMdiModeEnabled )
   {
     m_pcActiveWindow = NULL;
     QMdiSubWindow* mdiSubWindow = m_pcMdiArea->activeSubWindow();
-    if( mdiSubWindow)
+    if( mdiSubWindow )
     {
       QWidget* activeWidget = m_pcMdiArea->activeSubWindow()->widget();
       Int windowIdx = m_apcSubWindowList.indexOf( qobject_cast<SubWindowHandle *>( activeWidget ) );
@@ -85,9 +96,12 @@ Void PlaYUVerSubWinManager::addSubWindow( SubWindowHandle *window, Qt::WindowFla
 {
   if( m_bMdiModeEnabled )
   {
-    m_apcMdiSubWindowList.append( m_pcMdiArea->addSubWindow( window ) );
+    PlaYUVerMdiSubWindow* mdiSubWindow = new PlaYUVerMdiSubWindow( this );
+    mdiSubWindow->setWidget( window );
+    m_pcMdiArea->addSubWindow( mdiSubWindow );
+    m_apcMdiSubWindowList.append( mdiSubWindow );
+    connect( mdiSubWindow, SIGNAL( aboutToClose( PlaYUVerMdiSubWindow* ) ), this, SLOT( removeMdiSubWindow( PlaYUVerMdiSubWindow* ) ) );
   }
-
   m_apcSubWindowList.append( window );
 }
 
@@ -105,20 +119,29 @@ Void PlaYUVerSubWinManager::removeSubWindow( Int windowIdx )
   }
 }
 
-
 Void PlaYUVerSubWinManager::removeSubWindow( SubWindowHandle* window )
 {
   removeSubWindow( m_apcSubWindowList.indexOf( window ) );
 }
 
+Void PlaYUVerSubWinManager::removeMdiSubWindow( PlaYUVerMdiSubWindow* window )
+{
+  Int windowIdx = m_apcMdiSubWindowList.indexOf( window );
+  if( windowIdx >= 0 )
+  {
+
+    m_apcMdiSubWindowList.removeAt( windowIdx );
+    m_apcSubWindowList.removeAt( windowIdx );
+  }
+}
+
 Void PlaYUVerSubWinManager::removeAllSubWindow()
 {
-  while( m_apcSubWindowList.size() > 0)
+  while( m_apcSubWindowList.size() > 0 )
   {
     removeSubWindow( 0 );
   }
 }
-
 
 SubWindowHandle* PlaYUVerSubWinManager::activeSubWindow() const
 {

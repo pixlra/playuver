@@ -31,6 +31,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
         QScrollArea( parent )
 {
   setParent( parent );
+  setFocusPolicy( Qt::StrongFocus );
   setAttribute( Qt::WA_DeleteOnClose );
   setBackgroundRole( QPalette::Light );
 
@@ -43,9 +44,8 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
 
   setWidgetResizable( true );
 
-  m_cLastScroll = QPoint();
-
   m_uiCategory = category;
+  m_cLastScroll = QPoint();
   m_cWindowName = QString( " " );
 }
 
@@ -132,8 +132,14 @@ Bool SubWindowHandle::mayClose()
   return true;
 }
 
+Void SubWindowHandle::focusInEvent( QFocusEvent * event )
+{
+  emit aboutToActivate( this );
+}
+
 Void SubWindowHandle::closeEvent( QCloseEvent *event )
 {
+  emit aboutToClose( this );
   event->accept();
 }
 

@@ -32,6 +32,13 @@ PlaYUVerMdiSubWindow::PlaYUVerMdiSubWindow( QWidget *parent ) :
 {
 }
 
+QSize PlaYUVerMdiSubWindow::sizeHint() const
+{
+  QSize sizeHint = widget()->sizeHint();
+  return sizeHint;
+}
+
+
 Void PlaYUVerMdiSubWindow::closeEvent( QCloseEvent *event )
 {
   emit aboutToClose( this );

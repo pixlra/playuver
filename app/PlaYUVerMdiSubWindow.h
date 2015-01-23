@@ -47,6 +47,7 @@ Q_SIGNALS:
   void aboutToClose( PlaYUVerMdiSubWindow* );
 
 protected:
+  QSize sizeHint() const;
   void closeEvent( QCloseEvent *event );
 
 };

@@ -76,7 +76,6 @@ private Q_SLOTS:
   void reload();
   void reloadAll();
   void loadAll();
-  void closeActiveWindow();
   void closeAll();
 
   /**
@@ -114,7 +113,6 @@ private:
 
   QString m_cLastOpenPath;
 
-  SubWindowHandle *activeSubWindow();
   static VideoSubWindow* findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager, const QString& fileName );
 
   Void updateMenus();

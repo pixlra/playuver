@@ -38,9 +38,9 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array
   {
     d = array.at( i );
     out << d.m_cFilename << d.m_uiWidth
-        << d.m_uiHeight
-        << d.m_iPelFormat
-        << d.m_uiFrameRate;
+                         << d.m_uiHeight
+                         << d.m_iPelFormat
+                         << d.m_uiFrameRate;
 
   }
   return out;
@@ -72,12 +72,12 @@ Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename )
 }
 
 VideoSubWindow::VideoSubWindow( QWidget * parent, Bool isModule ) :
-            SubWindowHandle( parent, SubWindowHandle::VIDEO_SUBWINDOW ),
-            m_pCurrStream( NULL ),
-            m_pcCurrFrame( NULL ),
-            m_pcReferenceSubWindow( NULL ),
-            m_bIsPlaying( false ),
-            m_bIsModule( isModule )
+        SubWindowHandle( parent, SubWindowHandle::VIDEO_SUBWINDOW ),
+        m_pCurrStream( NULL ),
+        m_pcCurrFrame( NULL ),
+        m_pcReferenceSubWindow( NULL ),
+        m_bIsPlaying( false ),
+        m_bIsModule( isModule )
 {
   setVisible( false );
 
@@ -343,11 +343,11 @@ Void VideoSubWindow::stop()
 Void VideoSubWindow::normalSize()
 {
   Double factor = 1.0;
-  Double curFactor = getScaleFactor() ;
+  Double curFactor = getScaleFactor();
   if( factor != curFactor )
   {
     Double usedScale;
-    usedScale = m_cViewArea->scaleZoomFactor( factor/curFactor, QPoint() );
+    usedScale = m_cViewArea->scaleZoomFactor( factor / curFactor, QPoint() );
     adjustScrollBarByScale( usedScale, QPoint() );
   }
 }
@@ -358,22 +358,22 @@ Void VideoSubWindow::zoomToFit()
   scaleView( getScrollSize() );
 }
 
-Void VideoSubWindow::zoomToFactor( Double factor , QPoint center )
+Void VideoSubWindow::zoomToFactor( Double factor, QPoint center )
 {
   Double curFactor;
-  curFactor = getScaleFactor() ;
+  curFactor = getScaleFactor();
   if( factor != curFactor )
   {
     Double usedScale;
-    usedScale = m_cViewArea->scaleZoomFactor( factor/curFactor, center );
+    usedScale = m_cViewArea->scaleZoomFactor( factor / curFactor, center );
     adjustScrollBarByScale( usedScale, center );
   }
 }
 
-Void VideoSubWindow::scaleView( Double scale , QPoint center )
+Void VideoSubWindow::scaleView( Double scale, QPoint center )
 {
   Q_ASSERT( m_cViewArea->image() );
-  if(scale!=1.0)
+  if( scale != 1.0 )
   {
     Double usedScale;
     usedScale = m_cViewArea->scaleZoomFactor( scale, center );
@@ -404,11 +404,11 @@ Void VideoSubWindow::scaleView( const QSize & size, QPoint center )
   else
     factor = hfactor;
 
-  Double curFactor = getScaleFactor() ;
+  Double curFactor = getScaleFactor();
   if( factor != curFactor )
   {
     Double usedScale;
-    usedScale = m_cViewArea->scaleZoomFactor( factor/curFactor, center );
+    usedScale = m_cViewArea->scaleZoomFactor( factor / curFactor, center );
     adjustScrollBarByScale( usedScale, center );
   }
 }
@@ -452,7 +452,6 @@ Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
   }
 }
 
-
 QSize VideoSubWindow::sizeHint() const
 {
   QSize maxSize;  // The size of the parent (viewport widget
@@ -462,6 +461,10 @@ QSize VideoSubWindow::sizeHint() const
   if( p )
   {
     maxSize = p->size();
+  }
+  else
+  {
+    maxSize = QApplication::desktop()->availableGeometry().size();
   }
 
   QSize isize;

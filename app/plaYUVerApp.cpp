@@ -39,6 +39,7 @@ plaYUVerApp::plaYUVerApp()
 {
 
   setWindowModality( Qt::ApplicationModal );
+  setWindowModality( Qt::NonModal );
 
   // DBus
 #ifdef USE_QTDBUS
@@ -138,13 +139,6 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
   }
 }
 
-Void plaYUVerApp::closeActiveWindow()
-{
-  SubWindowHandle *currSubWindow = activeSubWindow();
-  m_appModuleVideo->closeSubWindow( qobject_cast<VideoSubWindow*>( currSubWindow ) );
-  m_pcWindowHandle->removeSubWindow( currSubWindow );
-}
-
 Void plaYUVerApp::closeAll()
 {
   m_pcWindowHandle->removeAllSubWindow();
@@ -163,7 +157,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     m_pcWindowHandle->setActiveSubWindow( videoSubWindow );
     return;
   }
-  videoSubWindow = new VideoSubWindow( this );  //createSubWindow();
+  videoSubWindow = new VideoSubWindow;  //createSubWindow();
   SubWindowHandle *subWindow = videoSubWindow;
   if( !pStreamInfo )
   {
@@ -190,8 +184,8 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 
       connect( subWindow, SIGNAL( updateStatusBar( const QString& ) ), this, SLOT( updateStatusBar( const QString& ) ) );
       connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), this, SLOT( updateZoomFactorSBox() ) );
-      connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), this, SLOT( zoomToFactorAll( double, QPoint ) ) );
-      connect( subWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), this, SLOT( moveAllScrollBars( const QPoint ) ) );
+      //connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), this, SLOT( zoomToFactorAll( double, QPoint ) ) );
+      //connect( subWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), this, SLOT( moveAllScrollBars( const QPoint ) ) );
 
       videoSubWindow->zoomToFit();
       videoSubWindow->getViewArea()->setTool( ( ViewArea::eTool )m_uiViewTool );
@@ -447,10 +441,11 @@ Void plaYUVerApp::scaleFrame( int ratio )
 
 Void plaYUVerApp::zoomFromSBox( double zoom )
 {
+  SubWindowHandle *activeSubWindow = m_pcWindowHandle->activeSubWindow();
   Double factor = zoom / 100;
-  if( activeSubWindow() )
+  if( activeSubWindow )
   {
-    activeSubWindow()->zoomToFactor( factor );
+    activeSubWindow->zoomToFactor( factor );
   }
 }
 
@@ -499,13 +494,6 @@ Void plaYUVerApp::dropEvent( QDropEvent *event )
 
 // -----------------------  Sub Window Functions  -----------------------
 
-SubWindowHandle *plaYUVerApp::activeSubWindow()
-{
-  if( SubWindowHandle *activeSubWindow = m_pcWindowHandle->activeSubWindow() )
-    return activeSubWindow;
-  return NULL;
-}
-
 VideoSubWindow* plaYUVerApp::findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager, const QString& fileName )
 {
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
@@ -524,15 +512,15 @@ VideoSubWindow* plaYUVerApp::findVideoStreamSubWindow( const PlaYUVerSubWindowHa
 
 Void plaYUVerApp::update()
 {
-  SubWindowHandle *new_window = activeSubWindow();
+  SubWindowHandle *activeSubWindow = m_pcWindowHandle->activeSubWindow();
   QCoreApplication::processEvents();
 //if( activeSubWindow() != m_pcCurrentSubWindow )
   {
     m_pcCurrentSubWindow = NULL;
     m_pcCurrentVideoSubWindow = NULL;
-    if( activeSubWindow() )
+    if( activeSubWindow )
     {
-      m_pcCurrentSubWindow = new_window;
+      m_pcCurrentSubWindow = activeSubWindow;
 
       switch( m_pcCurrentSubWindow->getCategory() )
       {
@@ -572,7 +560,7 @@ Void plaYUVerApp::updateStatusBar( const QString& statusBarString )
 
 Void plaYUVerApp::updateMenus()
 {
-  Bool hasSubWindow = ( activeSubWindow() != 0 );
+  Bool hasSubWindow = ( m_pcWindowHandle->activeSubWindow() != 0 );
 
   m_arrayMenu[RECENT_MENU]->setEnabled( m_aRecentFileStreamInfo.size() > 0 ? true : false );
 
@@ -650,7 +638,7 @@ Void plaYUVerApp::createActions()
   m_arrayActions[CLOSE_ACT] = new QAction( tr( "&Close" ), this );
   m_arrayActions[CLOSE_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogCloseButton ) );
   m_arrayActions[CLOSE_ACT]->setStatusTip( tr( "Close the active window" ) );
-  connect( m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), this, SLOT( closeActiveWindow() ) );
+  connect( m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), m_pcWindowHandle, SLOT( removeActiveSubWindow() ) );
 
   m_arrayActions[CLOSEALL_ACT] = new QAction( tr( "Close &All" ), this );
   m_arrayActions[CLOSEALL_ACT]->setStatusTip( tr( "Close all the windows" ) );

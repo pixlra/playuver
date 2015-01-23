@@ -48,13 +48,12 @@ public:
   PlaYUVerSubWindowHandle( QWidget *parent = 0 );
 
   Void addSubWindow( SubWindowHandle *widget, Qt::WindowFlags flags = 0 );
-  Void removeSubWindow( SubWindowHandle *window );
 
   SubWindowHandle *activeSubWindow() const;
 
   QList<SubWindowHandle*> findSubWindow( const QString &aName = QString() ) const;
   QList<SubWindowHandle*> findSubWindow( const UInt uiCategory ) const;
-  SubWindowHandle* findSubWindow( const SubWindowHandle* subWindow );
+  SubWindowHandle* findSubWindow( const SubWindowHandle* subWindow ) const;
 
   Void createActions();
   QMenu* createMenu();
@@ -62,8 +61,14 @@ public:
   Void readSettings();
   Void writeSettings();
 
+  enum WindowMode
+  {
+    NormalSubWindows = 0,
+    MdiWSubWindows = 1,
+  };
+
 private:
-  Bool m_bMdiModeEnabled;
+  UInt m_uiWindowMode;
   QList<SubWindowHandle*> m_apcSubWindowList;
 
   QHBoxLayout* m_pcWindowManagerLayout;
@@ -90,11 +95,14 @@ private:
   /**
    * Internal functions
    */
+  Void resetWindowMode();
+  Void setWindowMode( UInt uiWindowMode );
   Void removeSubWindow( Int windowIdx );
 
 public Q_SLOTS:
-  void updateActiveSubWindow();
+  void updateActiveSubWindow( SubWindowHandle *window = 0 );
   void setActiveSubWindow( QWidget *window );
+  void removeSubWindow( SubWindowHandle *window );
   void removeMdiSubWindow( PlaYUVerMdiSubWindow* window );
   void removeActiveSubWindow();
   void removeAllSubWindow();

@@ -91,6 +91,7 @@ public:
   }
 
 protected:
+  virtual void focusInEvent( QFocusEvent * event );
   virtual void closeEvent( QCloseEvent *event );
   QSize getScrollSize();
 
@@ -107,6 +108,9 @@ Q_SIGNALS:
    * Update stauts bars
    */
   void updateStatusBar( const QString& );
+
+  void aboutToActivate( SubWindowHandle* );
+  void aboutToClose( SubWindowHandle* );
 
 public Q_SLOTS:
   void adjustScrollBarByScale( double scale, QPoint center );

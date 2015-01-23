@@ -66,8 +66,6 @@ plaYUVerApp::plaYUVerApp()
   setUnifiedTitleAndToolBarOnMac( true );
   setCentralWidget( m_pcWindowHandle );
   setAcceptDrops( true );
-  //mdiArea->setAcceptDrops( true );
-  //mdiArea->hide();
 
   connect( m_pcWindowHandle, SIGNAL( windowActivated() ), this, SLOT( update() ) );
   connect( m_appModuleVideo, SIGNAL( changed() ), this, SLOT( update() ) );
@@ -408,26 +406,27 @@ Void plaYUVerApp::zoomToFitAll()
     updateZoomFactorSBox();
 }
 
-Void plaYUVerApp::zoomToFactorAll( const double scale, const QPoint center )
+Void plaYUVerApp::zoomToFactorAll( const Double scale, const QPoint center )
 {
   Double factor;
 
   if( m_pcCurrentSubWindow )
+  {
     factor = m_pcCurrentSubWindow->getScaleFactor();
 
-  SubWindowHandle *subWindow;
-  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
-  for( Int i = 0; i < subWindowList.size(); i++ )
-  {
-    subWindow = subWindowList.at( i );
-    if( m_pcCurrentSubWindow == subWindow )
-      continue;
-    else
+    SubWindowHandle *subWindow;
+    QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+    for( Int i = 0; i < subWindowList.size(); i++ )
     {
-      subWindow->zoomToFactor( factor, center );
+      subWindow = subWindowList.at( i );
+      if( m_pcCurrentSubWindow == subWindow )
+        continue;
+      else
+      {
+        subWindow->zoomToFactor( factor, center );
+      }
     }
   }
-
 }
 
 Void plaYUVerApp::scaleFrame( int ratio )

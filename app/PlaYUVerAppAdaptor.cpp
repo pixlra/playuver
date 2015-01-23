@@ -48,10 +48,7 @@ void PlaYUVerAppAdaptor::activate()
   {
     return;
   }
-
-  m_app->show();
-  //m_app->activateWindow();
-  //m_app->raise();
+  m_app->raise();
 
 }
 

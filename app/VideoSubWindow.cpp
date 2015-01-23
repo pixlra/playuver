@@ -93,6 +93,7 @@ VideoSubWindow::VideoSubWindow( QWidget * parent, Bool isModule ) :
   connect( m_cViewArea, SIGNAL( positionChanged( const QPoint & ) ), this, SLOT( updatePixelValueStatusBar( const QPoint & ) ) );
 
   // Define the cViewArea as the widget inside the scroll area
+  m_cViewArea->setMinimumSize( size() );
   setWidget( m_cViewArea );
 
   m_apcCurrentModule.clear();
@@ -454,8 +455,7 @@ Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
 
 QSize VideoSubWindow::sizeHint() const
 {
-  QSize maxSize;  // The size of the parent (viewport widget
-  // of the QMdiArea).
+  QSize maxSize;
 
   QWidget *p = parentWidget();
   if( p )
@@ -466,7 +466,11 @@ QSize VideoSubWindow::sizeHint() const
   {
     maxSize = QApplication::desktop()->availableGeometry().size();
   }
+  return sizeHint( maxSize );
+}
 
+QSize VideoSubWindow::sizeHint( const QSize & maxSize ) const
+{
   QSize isize;
   if( m_pcCurrFrame )
     isize = QSize( m_pcCurrFrame->getWidth() + 50, m_pcCurrFrame->getHeight() + 50 );
@@ -475,17 +479,16 @@ QSize VideoSubWindow::sizeHint() const
 
   // If the VideoSubWindow needs more space that the avaiable, we'll give
   // to the subwindow a reasonable size preserving the image aspect ratio.
-  if( isize.width() < maxSize.width() && isize.height() < maxSize.height() )
-  {
-    return isize;
-  }
-  else
+  if( !( isize.width() < maxSize.width() && isize.height() < maxSize.height() ) )
   {
     isize.scale( maxSize, Qt::KeepAspectRatio );
-    maxSize = isize;
   }
+  return isize;
+}
 
-  return maxSize;
+Void VideoSubWindow::resizeEvent( QResizeEvent * event )
+{
+  m_cViewArea->setMinimumSize( size() );
 }
 
 Void VideoSubWindow::closeEvent( QCloseEvent *event )

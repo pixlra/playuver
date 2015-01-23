@@ -63,7 +63,13 @@ public:
   {
     return 0;
   }
-  //QSize sizeHint() const;
+
+  /**
+   * Size related functions
+   */
+//  QSize sizeHint() const;
+//  QSize sizeHint( const QSize & ) const;
+
 };
 
 }  // NAMESPACE

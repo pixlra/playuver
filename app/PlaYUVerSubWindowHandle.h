@@ -45,7 +45,7 @@ class PlaYUVerSubWindowHandle: public QWidget
 Q_OBJECT
 
 public:
-  PlaYUVerSubWindowHandle( QWidget *parent = 0 );
+  PlaYUVerSubWindowHandle( QWidget *parent );
 
   Void addSubWindow( SubWindowHandle *widget, Qt::WindowFlags flags = 0 );
 

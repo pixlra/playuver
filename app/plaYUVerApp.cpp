@@ -87,8 +87,8 @@ Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
     {
       loadFile( argv[i] );
     }
-    m_pcWindowHandle->tileSubWindows();
-    zoomToFitAll();
+//    m_pcWindowHandle->tileSubWindows();
+//    zoomToFitAll();
   }
 }
 

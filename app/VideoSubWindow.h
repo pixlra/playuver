@@ -172,7 +172,12 @@ public:
     return m_cViewArea->getZoomFactor();
   }
 
-  QSize sizeHint() const;
+  /**
+   * Size related functions
+   */
+  QSize sizeHint() const ;
+  QSize sizeHint( const QSize & ) const ;
+
 
   Void setWindowShortName( const QString& name)
   {
@@ -193,6 +198,7 @@ public:
   }
 
 protected:
+  void  resizeEvent(QResizeEvent * event);
   void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:

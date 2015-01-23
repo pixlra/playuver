@@ -80,6 +80,16 @@ public:
 
   virtual Double getScaleFactor() = 0;
 
+  /**
+   * Size related functions
+   */
+  //virtual QSize sizeHint() const;
+  virtual QSize sizeHint( const QSize & ) const;
+
+  /**
+   * Window name
+   */
+
   Void setWindowName( QString );
   QString getWindowName();
 
@@ -91,8 +101,8 @@ public:
   }
 
 protected:
-  virtual void focusInEvent( QFocusEvent * event );
-  virtual void closeEvent( QCloseEvent *event );
+  void focusInEvent( QFocusEvent * event );
+  void closeEvent( QCloseEvent *event );
   QSize getScrollSize();
 
 Q_SIGNALS:

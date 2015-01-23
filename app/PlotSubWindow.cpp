@@ -110,5 +110,11 @@ Void PlotSubWindow::scaleView( Double scale, QPoint center )
 //{
 //
 //}
+//
+//
+//QSize PlotSubWindow::sizeHint( const QSize & maxSize ) const
+//{
+//
+//}
 
 }  // NAMESPACE

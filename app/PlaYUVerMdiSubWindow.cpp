@@ -23,6 +23,7 @@
  */
 
 #include "PlaYUVerMdiSubWindow.h"
+#include "SubWindowHandle.h"
 
 namespace plaYUVer
 {
@@ -34,10 +35,12 @@ PlaYUVerMdiSubWindow::PlaYUVerMdiSubWindow( QWidget *parent ) :
 
 QSize PlaYUVerMdiSubWindow::sizeHint() const
 {
-  QSize sizeHint = widget()->sizeHint();
+  QSize maxSize;
+  if( parent() )
+    maxSize = parentWidget()->size();
+  QSize sizeHint = qobject_cast<SubWindowHandle*>( widget() )->sizeHint( maxSize );
   return sizeHint;
 }
-
 
 Void PlaYUVerMdiSubWindow::closeEvent( QCloseEvent *event )
 {

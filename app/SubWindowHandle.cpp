@@ -132,6 +132,11 @@ Bool SubWindowHandle::mayClose()
   return true;
 }
 
+QSize SubWindowHandle::sizeHint( const QSize & ) const
+{
+  return QSize();
+}
+
 Void SubWindowHandle::focusInEvent( QFocusEvent * event )
 {
   emit aboutToActivate( this );

@@ -32,7 +32,7 @@ namespace plaYUVer
 class PlaYUVerMdiArea: public QMdiArea
 {
 public:
-  PlaYUVerMdiArea( QWidget *parent = 0 ) :
+  PlaYUVerMdiArea( QWidget *parent ) :
           QMdiArea( parent ),
           m_pixmapLogo( ":/images/playuver-backgroud-logo.png" )
   {
@@ -138,7 +138,7 @@ Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowHandle *window, Qt::WindowF
   }
   if( m_uiWindowMode == MdiWSubWindows )
   {
-    PlaYUVerMdiSubWindow* mdiSubWindow = new PlaYUVerMdiSubWindow( this );
+    PlaYUVerMdiSubWindow* mdiSubWindow = new PlaYUVerMdiSubWindow;
     mdiSubWindow->setWidget( window );
     m_pcMdiArea->addSubWindow( mdiSubWindow );
     m_apcMdiSubWindowList.append( mdiSubWindow );

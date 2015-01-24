@@ -209,8 +209,8 @@ Bool PlaYUVerStream::open( QString filename, UInt width, UInt height, Int input_
     return m_bInit;
   }
 
-  m_cStreamInformationString = "[" + m_cFormatName + " / " + m_cCodedName + " / " + PlaYUVerFrame::supportedPixelFormatListNames().at( m_iPixelFormat ) + "] "
-      + QFileInfo( m_cFilename ).fileName();
+  QString pelFmtName( PlaYUVerFrame::supportedPixelFormatListNames()[m_iPixelFormat].data() );
+  m_cStreamInformationString = "[" + m_cFormatName + " / " + m_cCodedName + " / " + pelFmtName + "] " + QFileInfo( m_cFilename ).fileName();
 
   m_iCurrFrameNum = -1;
 
@@ -304,10 +304,10 @@ Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
   {
     bGuessed = false;
     // Guess pixel format
-    QStringList formats_list = PlaYUVerFrame::supportedPixelFormatListNames();
+    QVector<std::string> formats_list = QVector<std::string>::fromStdVector( PlaYUVerFrame::supportedPixelFormatListNames() );
     for( Int i = 0; i < formats_list.size(); i++ )
     {
-      if( FilenameShort.contains( formats_list.at( i ), Qt::CaseInsensitive ) )
+      if( FilenameShort.contains( formats_list.at( i ).data(), Qt::CaseInsensitive ) )
       {
         rInputFormat = i;
         break;

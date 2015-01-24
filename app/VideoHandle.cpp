@@ -218,7 +218,8 @@ Void VideoHandle::update()
     QString resolution;
     if( pcFrame )
     {
-      m_pcColorSpace->setText( PlaYUVerFrame::supportedPixelFormatListNames().at( pcFrame->getPelFormat() ) );
+      QString pelFmt( PlaYUVerFrame::supportedPixelFormatListNames()[pcFrame->getPelFormat()].data() );
+      m_pcColorSpace->setText( pelFmt );
       resolution.append( QString( "%1x%2" ).arg( pcFrame->getWidth() ).arg( pcFrame->getHeight() ) );
     }
 

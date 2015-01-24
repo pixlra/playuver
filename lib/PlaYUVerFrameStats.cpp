@@ -80,10 +80,9 @@ Void PlaYUVerFrameStats::calcHistogram()
 
   if( !m_pdHistogram )
   {
-    qWarning( ) << "PlaYUVerFrameStats::calcHistogramValuess: "
-                "Unable to allocate memory!"
-                << endl;
-
+//    qWarning( ) << "PlaYUVerFrameStats::calcHistogramValuess: "
+//                "Unable to allocate memory!"
+//                << endl;
     return;
   }
 

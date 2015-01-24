@@ -25,6 +25,8 @@
 
 #include <cmath>
 
+#include <QCoreApplication>
+#include <QWidget>
 #include <QPainter>
 #include <QPainterPath>
 #include <QMouseEvent>

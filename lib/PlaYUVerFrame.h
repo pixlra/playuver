@@ -28,7 +28,7 @@
 #include <iostream>
 #include <cstdio>
 #include <cassert>
-#include <QtCore>
+#include <vector>
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerFrameStats.h"
 
@@ -91,7 +91,7 @@ public:
     NUMBER_FORMATS
   };
 
-  static QStringList supportedPixelFormatListNames();
+  static std::vector<std::string> supportedPixelFormatListNames();
 
   PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );
   PlaYUVerFrame( PlaYUVerFrame * );
@@ -185,14 +185,12 @@ public:
     NUMBER_METRICS,
   };
 
-  static QStringList supportedQualityMetricsList()
+  static std::vector<std::string>  supportedQualityMetricsList()
   {
-    QStringList metrics;
-    metrics << "PSNR"
-            << "MSE"
-            << "SSIM"  // SSIM
-            ;
-    assert( metrics.size() == NUMBER_METRICS );
+    std::vector<std::string> metrics;
+    metrics.push_back( "PSNR" );
+    metrics.push_back( "MSE" );
+    metrics.push_back( "SSIM" );
     return metrics;
   }
 
@@ -215,7 +213,6 @@ private:
   Pel*** m_pppcInputPel;
   UChar* m_pcRGB32;
 
-  Void adjustSelectedAreaDims( QRect &area, Int pel_format );
   Void init( UInt width, UInt height, Int pel_format );
   Void openPixfc();
   Void closePixfc();

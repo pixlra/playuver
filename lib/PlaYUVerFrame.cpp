@@ -40,15 +40,15 @@
 namespace plaYUVer
 {
 
-QStringList PlaYUVerFrame::supportedPixelFormatListNames()
+std::vector<std::string> PlaYUVerFrame::supportedPixelFormatListNames()
 {
-  QStringList formats;
+  std::vector<std::string> formatsList;
   Int numberFormats = PLAYUVER_NUMBER_FORMATS;
   for( Int i = 0; i < numberFormats; i++ )
   {
-    formats << g_PlaYUVerFramePelFormatsList[i].name;
+    formatsList.push_back( g_PlaYUVerFramePelFormatsList[i].name );
   }
-  return formats;
+  return formatsList;
 }
 
 PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )

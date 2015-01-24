@@ -51,11 +51,10 @@ Void QualityHandle::createActions()
 
   m_mapperQualityMetric = new QSignalMapper( this );
 
-  QStringList qualityMetrics = PlaYUVerFrame::supportedQualityMetricsList();
   QAction* currAction;
-  for( Int i = 0; i < qualityMetrics.size(); i++ )
+  for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
   {
-    currAction = new QAction( qualityMetrics.at( i ), this );
+    currAction = new QAction( PlaYUVerFrame::supportedQualityMetricsList()[i].data(), this );
     currAction->setCheckable( true );
     m_actionGroupQualityMetric->addAction( currAction );
     connect( currAction, SIGNAL( triggered() ), m_mapperQualityMetric, SLOT( map() ) );

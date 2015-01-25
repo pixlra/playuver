@@ -34,6 +34,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
   setFocusPolicy( Qt::StrongFocus );
   setAttribute( Qt::WA_DeleteOnClose );
   setBackgroundRole( QPalette::Light );
+  setWindowIcon( QIcon( ":/images/playuver.png" ) );
 
   // Create a new scroll area inside the sub-window
   connect( horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );

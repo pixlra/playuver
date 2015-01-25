@@ -486,11 +486,6 @@ QSize VideoSubWindow::sizeHint( const QSize & maxSize ) const
   return isize;
 }
 
-Void VideoSubWindow::resizeEvent( QResizeEvent * event )
-{
-  m_cViewArea->setMinimumSize( size() );
-}
-
 Void VideoSubWindow::closeEvent( QCloseEvent *event )
 {
   Bool bAccept = m_bIsPlaying ? false : true;

@@ -109,12 +109,41 @@ Void ViewArea::setZoomFactor( Double f )
   update();
 }
 
-Double ViewArea::scaleZoomFactor( Double scale, QPoint center )
+Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize )
 {
-  Double zoomFactor;
   Double maxZoom = 100.0;
   Double minZoom = 0.01;  //( 1.0 / m_pixmap.width() );
   Double new_scale = 1.0;
+  Double zoomFactor = m_zoomFactor * scale;
+
+  if(!minimumSize.isNull())
+  {
+    Double cw = m_pixmap.width()*m_zoomFactor;
+    Double ch = m_pixmap.height()*m_zoomFactor;
+    Double fw = m_pixmap.width()*zoomFactor;
+    Double fh = m_pixmap.height()*zoomFactor;
+    Double mw = minimumSize.width();
+    Double mh = minimumSize.height();
+
+    if( (cw < mw) && (ch < mh) && (scale < 1) )
+    {
+      return new_scale;
+    }
+
+    if( (fw < mw) && (fh < mh) && (scale < 1) )
+    {
+      Double wfactor = mw/fw;
+      Double hfactor = mh/fh;
+
+      if( wfactor < hfactor )
+        scale = wfactor;
+      else
+        scale = hfactor;
+
+      zoomFactor = zoomFactor * scale;
+      scale = zoomFactor/m_zoomFactor;
+    }
+  }
 
   if( ( m_zoomFactor == minZoom ) && ( scale < 1 ) )
     return new_scale;
@@ -122,7 +151,7 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center )
   if( ( m_zoomFactor == maxZoom ) && ( scale > 1 ) )
     return new_scale;
 
-  zoomFactor = m_zoomFactor * scale;
+
   new_scale = scale;
 
   if( zoomFactor < minZoom )
@@ -289,7 +318,7 @@ void ViewArea::resizeEvent( QResizeEvent *event )
   if( size().isEmpty() || m_pixmap.isNull() )
     return;
 
-  updateOffset();
+  updateSize();
   update();
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -567,7 +596,9 @@ void ViewArea::wheelEvent( QWheelEvent *event )
     else
       scale=0.8;
 
-    usedScale = scaleZoomFactor( scale , event->pos() );
+    QWidget *p = parentWidget();
+    QSize minimumSize = QSize( p->size().width() - 5, p->size().height() - 5 );
+    usedScale = scaleZoomFactor( scale , event->pos(), minimumSize );
     if( usedScale != 1.0 )
     {
       emit zoomFactorChanged_byWheel( usedScale, event->pos() );

@@ -348,7 +348,7 @@ Void VideoSubWindow::normalSize()
   if( factor != curFactor )
   {
     Double usedScale;
-    usedScale = m_cViewArea->scaleZoomFactor( factor / curFactor, QPoint() );
+    usedScale = m_cViewArea->scaleZoomFactor( factor / curFactor, QPoint(), QSize() );
     adjustScrollBarByScale( usedScale, QPoint() );
   }
 }
@@ -366,7 +366,7 @@ Void VideoSubWindow::zoomToFactor( Double factor, QPoint center )
   if( factor != curFactor )
   {
     Double usedScale;
-    usedScale = m_cViewArea->scaleZoomFactor( factor / curFactor, center );
+    usedScale = m_cViewArea->scaleZoomFactor( factor / curFactor, center, QSize() );
     adjustScrollBarByScale( usedScale, center );
   }
 }
@@ -377,7 +377,7 @@ Void VideoSubWindow::scaleView( Double scale, QPoint center )
   if( scale != 1.0 )
   {
     Double usedScale;
-    usedScale = m_cViewArea->scaleZoomFactor( scale, center );
+    usedScale = m_cViewArea->scaleZoomFactor( scale, center, getScrollSize() );
     adjustScrollBarByScale( usedScale, center );
   }
 }
@@ -409,7 +409,7 @@ Void VideoSubWindow::scaleView( const QSize & size, QPoint center )
   if( factor != curFactor )
   {
     Double usedScale;
-    usedScale = m_cViewArea->scaleZoomFactor( factor / curFactor, center );
+    usedScale = m_cViewArea->scaleZoomFactor( factor / curFactor, center, getScrollSize() );
     adjustScrollBarByScale( usedScale, center );
   }
 }

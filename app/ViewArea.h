@@ -116,7 +116,7 @@ public:
   PlaYUVerStream* getInputStream();
 
   // Scale function. Return used scale value (it may change when it touches the min or max zoom value)
-  Double scaleZoomFactor(Double scale, QPoint center);
+  Double scaleZoomFactor(Double scale, QPoint center, QSize minimumSize);
 
   void setTool( eTool tool );
 

@@ -31,7 +31,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
         QScrollArea( parent )
 {
   setParent( parent );
-  setFocusPolicy( Qt::StrongFocus );
+  setFocusPolicy( Qt::WheelFocus );
   setAttribute( Qt::WA_DeleteOnClose );
   setBackgroundRole( QPalette::Light );
   setWindowIcon( QIcon( ":/images/playuver.png" ) );

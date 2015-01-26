@@ -88,7 +88,7 @@ private Q_SLOTS:
   void normalSize();
   void zoomToFit();
   void zoomToFitAll();
-  void zoomToFactorAll( const double factor, const QPoint center = QPoint() );
+
 
   void setTool( int idxTool );
 
@@ -98,8 +98,6 @@ private Q_SLOTS:
   void update();
   void updateZoomFactorSBox();
   void updateStatusBar( const QString& );
-
-  void moveAllScrollBars( const QPoint offset );
 
 private:
 

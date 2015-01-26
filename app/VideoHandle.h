@@ -73,6 +73,7 @@ private:
     VIDEO_FORWARD_ACT,
     VIDEO_BACKWARD_ACT,
     VIDEO_LOOP_ACT,
+    VIDEO_ZOOM_LOCK_ACT,
     VIDEO_LOCK_ACT,
     VIDEO_LOCK_SELECTION_ACT,
     TOTAL_ACT,
@@ -109,6 +110,8 @@ Q_SIGNALS:
 private Q_SLOTS:
   void update();
   void updateSelectionArea( QRect area );
+  void zoomToFactorAll( const double factor, const QPoint center = QPoint() );
+  void moveAllScrollBars( const QPoint offset );
   void play();
   void stop();
   void playEvent();

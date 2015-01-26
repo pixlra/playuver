@@ -82,8 +82,11 @@ Void VideoHandle::createActions()
   m_arrayActions[VIDEO_LOOP_ACT]->setCheckable( true );
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( false );
 
+  m_arrayActions[VIDEO_ZOOM_LOCK_ACT] = new QAction( "Video Zoom Lock", this );
+  m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setCheckable( true );
+  m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setChecked( false );
+
   m_arrayActions[VIDEO_LOCK_SELECTION_ACT] = new QAction( "Video Lock Window Selection", this );
-  m_arrayActions[VIDEO_FORWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
   connect( m_arrayActions[VIDEO_LOCK_SELECTION_ACT], SIGNAL( triggered() ), this, SLOT( videoSelectionButtonEvent() ) );
 
   m_pcFrameSlider = new QSlider;
@@ -103,6 +106,7 @@ QMenu* VideoHandle::createMenu()
   m_pcMenuVideo->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
   m_pcMenuVideo->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
   m_pcMenuVideo->addAction( m_arrayActions[VIDEO_LOOP_ACT] );
+  m_pcMenuVideo->addAction( m_arrayActions[VIDEO_ZOOM_LOCK_ACT] );
   m_pcMenuVideo->addAction( m_arrayActions[VIDEO_LOCK_SELECTION_ACT] );
   return m_pcMenuVideo;
 }
@@ -181,6 +185,7 @@ Void VideoHandle::updateMenus()
   m_arrayActions[VIDEO_BACKWARD_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_FORWARD_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_LOOP_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_LOCK_SELECTION_ACT]->setEnabled( hasSubWindow );
   m_pcFrameSlider->setEnabled( hasSubWindow );
   if( !hasSubWindow )
@@ -235,9 +240,9 @@ Void VideoHandle::update()
     else
     {
       m_pcFrameNumInfo->setCurrFrameNum( 0 );
-      m_pcFormatCodeLabel->setText( QString( ""));
+      m_pcFormatCodeLabel->setText( QString( "" ) );
       if( m_pcCurrentVideoSubWindow->getIsModule() )
-        m_pcFormatCodeLabel->setText( QString( "Module"));
+        m_pcFormatCodeLabel->setText( QString( "Module" ) );
     }
 
     if( pcFrame )
@@ -287,6 +292,45 @@ Void VideoHandle::closeSubWindow( VideoSubWindow* currSubWindow )
     if( m_acPlayingSubWindows.size() < 2 )
     {
       m_arrayActions[VIDEO_LOCK_ACT]->setVisible( false );
+    }
+  }
+}
+
+Void VideoHandle::zoomToFactorAll( const Double scale, const QPoint center )
+{
+  Double factor;
+
+  if( m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() )
+  {
+
+    factor = m_pcCurrentVideoSubWindow->getScaleFactor();
+
+    SubWindowHandle *subWindow;
+    QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+    for( Int i = 0; i < subWindowList.size(); i++ )
+    {
+      subWindow = subWindowList.at( i );
+      if( m_pcCurrentVideoSubWindow == subWindow )
+        continue;
+      else
+      {
+        subWindow->zoomToFactor( factor, center );
+      }
+    }
+  }
+}
+
+Void VideoHandle::moveAllScrollBars( const QPoint offset )
+{
+  if( m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() )
+  {
+    QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+    for( Int i = 0; i < subWindowList.size(); i++ )
+    {
+      if( m_pcCurrentVideoSubWindow == subWindowList.at( i ) )
+        continue;
+      else
+        subWindowList.at( i )->adjustScrollBarByOffset( offset );
     }
   }
 }

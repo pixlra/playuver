@@ -320,7 +320,7 @@ void ViewArea::resizeEvent( QResizeEvent *event )
   if( size().isEmpty() || m_pixmap.isNull() )
     return;
 
-  updateSize();
+  updateOffset();
   update();
 }
 ////////////////////////////////////////////////////////////////////////////////

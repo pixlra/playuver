@@ -71,13 +71,13 @@ Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename )
   return -1;
 }
 
-VideoSubWindow::VideoSubWindow( QWidget * parent, Bool isModule ) :
-        SubWindowHandle( parent, SubWindowHandle::VIDEO_SUBWINDOW ),
+VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget * parent ) :
+        SubWindowHandle( parent, SubWindowHandle::VIDEO_SUBWINDOW | category ),
         m_pCurrStream( NULL ),
         m_pcCurrFrame( NULL ),
         m_pcReferenceSubWindow( NULL ),
         m_bIsPlaying( false ),
-        m_bIsModule( isModule )
+        m_bIsModule( category == MODULE_SUBWINDOW )
 {
   setVisible( false );
 

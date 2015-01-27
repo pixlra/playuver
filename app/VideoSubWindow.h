@@ -91,7 +91,12 @@ private:
   Void scaleView( const QSize & size , QPoint center = QPoint() );
 
 public:
-  VideoSubWindow( QWidget * parent = 0, Bool isModule = false );
+  enum VideoSubWindowCategories
+  {
+    VIDEO_STREAM_SUBWINDOW = 2,
+    MODULE_SUBWINDOW = 4,
+  };
+  VideoSubWindow( enum VideoSubWindowCategories category, QWidget * parent = 0 );
   ~VideoSubWindow();
 
   Bool loadFile( QString cFilename, Bool bForceDialog = false );

@@ -223,7 +223,7 @@ QList<SubWindowHandle*> PlaYUVerSubWindowHandle::findSubWindow( const UInt uiCat
   QList<SubWindowHandle*> subWindowList = findSubWindow();
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
-    if( subWindowList.at( i )->getCategory() == uiCategory )
+    if( subWindowList.at( i )->getCategory() & uiCategory )
       apcSubWindowList.append( subWindowList.at( i ) );
   }
   return apcSubWindowList;

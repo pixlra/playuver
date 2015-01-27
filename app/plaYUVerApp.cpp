@@ -50,7 +50,7 @@ plaYUVerApp::plaYUVerApp()
 
   m_appModuleVideo = new VideoHandle( this, m_pcWindowHandle );
   m_appModuleQuality = new QualityHandle( this, m_pcWindowHandle );
-  m_appModuleExtensions = new ModulesHandle( this, m_pcWindowHandle );
+  m_appModuleExtensions = new ModulesHandle( this, m_pcWindowHandle, m_appModuleVideo );
 
   createActions();
   createToolBars();
@@ -155,7 +155,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     m_pcWindowHandle->setActiveSubWindow( videoSubWindow );
     return;
   }
-  videoSubWindow = new VideoSubWindow;  //createSubWindow();
+  videoSubWindow = new VideoSubWindow( VideoSubWindow::VIDEO_STREAM_SUBWINDOW );  //createSubWindow();
   SubWindowHandle *subWindow = videoSubWindow;
   if( !pStreamInfo )
   {

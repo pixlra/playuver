@@ -42,6 +42,7 @@
 namespace plaYUVer
 {
 
+class VideoHandle;
 class PlaYUVerSubWindowHandle;
 class PlaYUVerAppModuleIf;
 class SubWindowHandle;
@@ -50,7 +51,7 @@ class ModulesHandle: public QWidget
 {
 Q_OBJECT
 public:
-  ModulesHandle( QWidget*, PlaYUVerSubWindowHandle* );
+  ModulesHandle( QWidget*, PlaYUVerSubWindowHandle*, VideoHandle* );
   ~ModulesHandle();
 
   Void createActions();
@@ -70,6 +71,7 @@ public:
 private:
   QWidget* m_pcParent;
   PlaYUVerSubWindowHandle* m_pcMainWindowManager;
+  VideoHandle* m_appModuleVideo;
 
   enum
   {

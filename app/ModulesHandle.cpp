@@ -23,21 +23,21 @@
  */
 
 #include <cstdio>
-
-#include "PlaYUVerSubWindowHandle.h"
 #include "ModulesHandle.h"
+#include "PlaYUVerSubWindowHandle.h"
+#include "VideoHandle.h"
 #include "PlaYUVerModuleFactory.h"
 #include "DialogSubWindowSelector.h"
-#include "SubWindowHandle.h"
-#include "VideoSubWindow.h"
+
 
 namespace plaYUVer
 {
 
-ModulesHandle::ModulesHandle( QWidget* parent, PlaYUVerSubWindowHandle *windowManager ) :
+ModulesHandle::ModulesHandle( QWidget* parent, PlaYUVerSubWindowHandle *windowManager, VideoHandle *moduleVideo ) :
         QWidget( parent ),
         m_pcParent( parent ),
-        m_pcMainWindowManager( windowManager )
+        m_pcMainWindowManager( windowManager ),
+        m_appModuleVideo( moduleVideo )
 {
   setParent( m_pcParent );
 }
@@ -304,12 +304,16 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   {
     if( ( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
-      pcModuleSubWindow = new VideoSubWindow( this, true );
+      pcModuleSubWindow = new VideoSubWindow( VideoSubWindow::MODULE_SUBWINDOW, this );
       pcModuleSubWindow->setWindowShortName( windowName );
       pcModuleSubWindow->setWindowName( windowName );
 
-      connect( pcModuleSubWindow, SIGNAL( updateStatusBar( const QString& ) ), m_pcParent, SLOT( updateStatusBar( const QString& ) ) );
-      connect( pcModuleSubWindow, SIGNAL( zoomChanged() ), m_pcParent, SLOT( updateZoomFactorSBox() ) );
+      connect( pcModuleSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
+      connect( pcModuleSubWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo, SLOT( zoomToFactorAll( double, QPoint ) ) );
+      connect( pcModuleSubWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo, SLOT( moveAllScrollBars( const QPoint ) ) );
+
+      connect( pcModuleSubWindow, SIGNAL( updateStatusBar( const QString& ) ), this, SLOT( updateStatusBar( const QString& ) ) );
+      connect( pcModuleSubWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), this, SLOT( updateZoomFactorSBox() ) );
 
       pcCurrModuleIf->m_pcDisplaySubWindow = pcModuleSubWindow;
       pcCurrModuleIf->m_pcDisplaySubWindow->enableModule( pcCurrModuleIf, true );

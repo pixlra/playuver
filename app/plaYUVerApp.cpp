@@ -488,11 +488,9 @@ Void plaYUVerApp::update()
     {
       m_pcCurrentSubWindow = activeSubWindow;
 
-      switch( m_pcCurrentSubWindow->getCategory() )
+      if( m_pcCurrentSubWindow->getCategory() & SubWindowHandle::VIDEO_SUBWINDOW )
       {
-      case SubWindowHandle::VIDEO_SUBWINDOW:
         m_pcCurrentVideoSubWindow = qobject_cast<VideoSubWindow*>( m_pcCurrentSubWindow );
-        break;
       }
 
       setWindowTitle( QApplication::applicationName() + " - " + m_pcCurrentSubWindow->getWindowName() );

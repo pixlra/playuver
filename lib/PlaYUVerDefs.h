@@ -25,9 +25,6 @@
 #ifndef __TYPEDEF_H__
 #define __TYPEDEF_H__
 
-#ifdef PLAYUVER
-#include "config.h"
-#endif
 #include <string>
 
 namespace plaYUVer
@@ -98,14 +95,6 @@ typedef UChar Pel;        ///< 8-bit pixel type
 #define xMemSet( type, len, ptr )   memset ( ptr, 0, (len)*sizeof(type) )
 #define xMalloc( type, len )        malloc   ( sizeof(type)*(len) )
 #define xFree( ptr )                free     ( ptr )
-#endif
-
-// ====================================================================================================================
-// Qt functions
-// ====================================================================================================================
-
-#if( QT_VERSION_PLAYUVER == 4 )
-#define QStringLiteral QString::fromUtf8
 #endif
 
 // ====================================================================================================================

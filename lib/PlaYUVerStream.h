@@ -36,6 +36,13 @@ namespace plaYUVer
 
 class LibAvContextHandle;
 
+typedef struct
+{
+  std::string shortName;
+  UInt uiWidth;
+  UInt uiHeight;
+} PlaYUVerStdResolution;
+
 class PlaYUVerStream
 {
 private:
@@ -57,9 +64,10 @@ private:
   UInt m_uiStreamHandler;
   LibAvContextHandle* m_cLibAvContext;
 
-  QString m_cFilename;
-  QString m_cFormatName;
-  QString m_cCodedName;
+  std::string m_cFilename;
+  std::string m_cFormatName;
+  std::string m_cCodedName;
+  std::string m_cPelFmtName;
   QString m_cStreamInformationString;
 
   FILE* m_pFile; /**< The input file pointer >*/
@@ -81,137 +89,18 @@ private:
   Int64 m_iCurrFrameNum;
 
 public:
+
+  static QStringList supportedReadFormatsExt();
+  static QStringList supportedReadFormatsName();
+  static QStringList supportedWriteFormatsExt();
+  static QStringList supportedWriteFormatsName();
+  static QStringList supportedSaveFormatsExt();
+  static QStringList supportedSaveFormatsName();
+
+  static std::vector<PlaYUVerStdResolution> stdResolutionSizes();
+
   PlaYUVerStream();
   ~PlaYUVerStream();
-
-  enum PlaYUVerStreamInputFormats
-  {
-    INVALID_INPUT = -1,
-    YUVINPUT = 0,
-#ifdef USE_FFMPEG
-    AVIINPUT,
-    MP4INPUT,
-    WMVINPUT,
-    PGMINPUT,
-    PNGINPUT,
-    BMPINPUT,
-    JPEGINPUT,
-#endif
-    TOTAL_INPUT_FORMATS
-  };
-
-  static QStringList supportedReadFormatsExt()
-  {
-    QStringList formatsExt;
-    formatsExt << "yuv"  // Raw video
-#ifdef USE_FFMPEG
-               << "avi"   // Audio video interleaved
-               << "mp4"// MP4
-               << "wmv"// Windows media video
-               << "pgm"
-               << "png"
-               << "bmp"
-               << "jpg"
-#endif
-               ;
-    assert( formatsExt.size() == TOTAL_INPUT_FORMATS );
-    return formatsExt;
-  }
-
-  static QStringList supportedReadFormatsName()
-  {
-    QStringList formatsName;
-    formatsName << "Raw video"
-#ifdef USE_FFMPEG
-                << "Audio video interleaved"
-                << "MPEG4"
-                << "Windows media video"
-                << "Portable Grayscale Map"
-                << "Portable Network Graphics"
-                << "Windows Bitmap"
-                << "Joint Photographic Experts Group"
-#endif
-                ;
-    assert( formatsName.size() == TOTAL_INPUT_FORMATS );
-    return formatsName;
-  }
-
-  enum PlaYUVerStreamOutputFormats
-  {
-    INVALID_OUTPUT = -1,
-    YUVOUTPUT = 0,
-    TOTAL_OUTPUT_FORMATS
-  };
-
-  static QStringList supportedWriteFormatsExt()
-  {
-    QStringList formatsExt;
-    formatsExt << "yuv"   // raw video
-    ;
-    assert( formatsExt.size() == TOTAL_OUTPUT_FORMATS );
-    return formatsExt;
-  }
-
-  static QStringList supportedWriteFormatsName()
-  {
-    QStringList formatsName;
-    formatsName << "Raw video";
-    assert( formatsName.size() == TOTAL_OUTPUT_FORMATS );
-    return formatsName;
-  }
-
-  static QStringList supportedSaveFormatsExt()
-  {
-    QStringList formatsExt;
-    formatsExt << supportedWriteFormatsExt()
-               << "bmp"
-               << "jpeg"
-               << "png"  // portable network graphics
-               ;
-    formatsExt.removeDuplicates();
-    return formatsExt;
-  }
-
-  static QStringList supportedSaveFormatsName()
-  {
-    QStringList formatsName;
-    formatsName << supportedWriteFormatsName()
-                << "Windows Bitmap"
-                << "Joint Photographic Experts Group"
-                << "Portable Network Graphics";
-    formatsName.removeDuplicates();
-    return formatsName;
-  }
-
-#define REGIST_STANDARD_RESOLUTION( name, width, height) \
-    stdRes.stringListName.append( QString( name ) ); \
-    stdRes.stringListFullName.append( QString( "%1 (%2x%3)" ).arg( name ).arg( width ).arg( height ) ); \
-    stdRes.sizeResolution.append( QSize( width, height ) )
-
-  struct StandardResolution
-  {
-    QStringList stringListName;
-    QStringList stringListFullName;
-    QVector<QSize> sizeResolution;
-  };
-
-  static struct StandardResolution standardResolutionSizes()
-  {
-    struct StandardResolution stdRes;
-    REGIST_STANDARD_RESOLUTION( "CIF", 352, 288 );
-    REGIST_STANDARD_RESOLUTION( "VGA", 640, 480 );
-    REGIST_STANDARD_RESOLUTION( "WVGA", 832, 480 );
-    REGIST_STANDARD_RESOLUTION( "XVGA", 1024, 768 );
-    REGIST_STANDARD_RESOLUTION( "HD", 1280, 720 );
-    REGIST_STANDARD_RESOLUTION( "SXGA-", 1280, 900 );
-    REGIST_STANDARD_RESOLUTION( "SXGA", 1280, 1024 );
-    REGIST_STANDARD_RESOLUTION( "WSXGA", 1440, 900 );
-    REGIST_STANDARD_RESOLUTION( "FullHD", 1920, 1080 );
-    REGIST_STANDARD_RESOLUTION( "WQXGA", 2560, 1600 );
-    REGIST_STANDARD_RESOLUTION( "UltraHD", 3840, 2160 );
-    REGIST_STANDARD_RESOLUTION( "8K", 8192, 4608 );
-    return stdRes;
-  }
 
   enum PlaYUVerStreamErrors
   {
@@ -222,13 +111,13 @@ public:
     END_OF_SEQ,
   };
 
-  Bool open( QString filename, UInt width, UInt height, Int input_format, UInt frame_rate, Bool bInput = true );
+  Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt frame_rate, Bool bInput = true );
   Void close();
 
   Bool openFile();
   Void closeFile();
 
-  static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
+  static Bool guessFormat( std::string filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
 
   Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
 
@@ -238,8 +127,8 @@ public:
   Void writeFrame();
   Void writeFrame( PlaYUVerFrame *pcFrame );
 
-  Bool saveFrame( const QString& filename );
-  static Bool saveFrame( const QString& filename, PlaYUVerFrame *saveFrame );
+  Bool saveFrame( const std::string& filename );
+  static Bool saveFrame( const std::string& filename, PlaYUVerFrame *saveFrame );
 
   Void setNextFrame();
   PlaYUVerFrame* getCurrFrame();
@@ -253,22 +142,28 @@ public:
   {
     return m_bInit;
   }
-  QString getFileName()
-  {
-    return m_cFilename;
-  }
+
   QString getStreamInformationString()
   {
     return m_cStreamInformationString;
   }
-  QString getFormatName()
+  std::string getFileName()
+  {
+    return m_cFilename;
+  }
+  std::string getFormatName()
   {
     return m_cFormatName;
   }
-  QString getCodecName()
+  std::string getCodecName()
   {
     return m_cCodedName;
   }
+  std::string getPelFmtName()
+  {
+    return m_cPelFmtName;
+  }
+
   UInt getFrameNum()
   {
     return m_uiTotalFrameNum;

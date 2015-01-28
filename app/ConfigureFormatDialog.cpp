@@ -41,11 +41,18 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   menusFont.setBold( true );
   menusFont.setWeight( 75 );
 
-  // Config dialog
 
-  struct PlaYUVerStream::StandardResolution stdRes = PlaYUVerStream::standardResolutionSizes();
-  standardResolutionNames = stdRes.stringListFullName;
-  standardResolutionSizes = stdRes.sizeResolution;
+  QString Name;
+  UInt uiWidth, uiHeight;
+  std::vector<PlaYUVerStdResolution> listPlaYUVerStdResolution = PlaYUVerStream::stdResolutionSizes();
+  for( UInt i = 0; i < listPlaYUVerStdResolution.size(); i++ )
+  {
+    Name = QString::fromStdString( listPlaYUVerStdResolution[i].shortName );
+    uiWidth = listPlaYUVerStdResolution[i].uiWidth;
+    uiHeight = listPlaYUVerStdResolution[i].uiHeight;
+    standardResolutionNames.append( QString( "%1 (%2x%3)" ).arg( Name ).arg( uiWidth ).arg( uiHeight ) );
+    standardResolutionSizes.append( QSize( uiWidth, uiHeight) );
+  }
 
   setObjectName( QStringLiteral( "ConfigureFormat" ) );
   resize( 400, 370 );
@@ -150,7 +157,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   m_comboBoxPixelFormat->setSizePolicy( sizePolicyPixelFormat );
   m_comboBoxPixelFormat->setAcceptDrops( true );
   m_comboBoxPixelFormat->clear();
-  for( UInt i=0; i<PlaYUVerFrame::supportedPixelFormatListNames().size();i++ )
+  for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
   {
     m_comboBoxPixelFormat->insertItem( i, PlaYUVerFrame::supportedPixelFormatListNames()[i].data() );
   }

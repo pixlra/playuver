@@ -83,7 +83,7 @@ Void LibAvContextHandle::closeAvFormat()
   m_bHasStream = false;
 }
 
-Bool LibAvContextHandle::initAvFormat( char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate, UInt64& num_frames )
+Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate, UInt64& num_frames )
 {
   fmt_ctx = NULL;
   video_dec_ctx = NULL;

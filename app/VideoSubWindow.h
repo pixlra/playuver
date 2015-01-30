@@ -64,13 +64,14 @@ private:
 
   ViewArea* m_cViewArea;
 
+  QString m_cFilename;
+  QString m_cStreamInformationString;
   PlaYUVerStreamInfo m_sStreamInfo;
-
   PlaYUVerStream* m_pCurrStream;
+
   PlaYUVerFrame* m_pcCurrFrame;
   QRect m_cSelectedArea;
 
-  QString m_cFilename;
   //PlaYUVerAppModuleIf* m_pcCurrentModule;
   QList<PlaYUVerAppModuleIf*> m_apcCurrentModule;
 
@@ -82,7 +83,7 @@ private:
   Bool m_bIsPlaying;
   Bool m_bIsModule;
 
-
+  static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
 
   /**
    * Private zoom function to handle

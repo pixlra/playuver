@@ -123,7 +123,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   if( m_pCurrStream )
     m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
 
-  if( m_pCurrStream->guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
+  if( guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
   {
     ConfigureFormatDialog formatDialog( this );
     if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, FrameRate ) == QDialog::Rejected )
@@ -144,7 +144,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
     m_pCurrStream = new PlaYUVerStream;
   }
 
-  m_pCurrStream->open( cFilename, Width, Height, InputFormat, FrameRate );
+  m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, FrameRate );
 
   m_sStreamInfo.m_cFilename = cFilename;
   m_sStreamInfo.m_uiWidth = Width;
@@ -160,7 +160,12 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
 
   m_cFilename = cFilename;
   m_cWindowShortName = QFileInfo( cFilename ).fileName();
-  //setWindowName( m_pCurrStream->getStreamInformationString() );
+  QString m_cFormatName = QString::fromStdString( m_pCurrStream->getFormatName() );
+  QString m_cCodedName = QString::fromStdString( m_pCurrStream->getCodecName() );
+  QString m_cPelFmtName = QString::fromStdString( m_pCurrStream->getPelFmtName() );
+  m_cStreamInformationString = "[" + m_cFormatName + " / " + m_cCodedName + " / " +  m_cPelFmtName + "] ";
+  m_cStreamInformationString += QFileInfo(  m_cFilename ).fileName();
+
   setWindowName( m_cWindowShortName );
   return true;
 }
@@ -172,7 +177,7 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
     m_pCurrStream = new PlaYUVerStream;
   }
 
-  if( !m_pCurrStream->open( streamInfo->m_cFilename, streamInfo->m_uiWidth, streamInfo->m_uiHeight, streamInfo->m_iPelFormat, streamInfo->m_uiFrameRate ) )
+  if( !m_pCurrStream->open( streamInfo->m_cFilename.toStdString(), streamInfo->m_uiWidth, streamInfo->m_uiHeight, streamInfo->m_iPelFormat, streamInfo->m_uiFrameRate ) )
   {
     return false;
   }
@@ -187,10 +192,112 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
 
   m_cFilename = streamInfo->m_cFilename;
   m_cWindowShortName = QFileInfo( streamInfo->m_cFilename ).fileName();
-  //setWindowName( m_pCurrStream->getStreamInformationString() );
+  QString m_cFormatName = QString::fromStdString( m_pCurrStream->getFormatName() );
+  QString m_cCodedName = QString::fromStdString( m_pCurrStream->getCodecName() );
+  QString m_cPelFmtName = QString::fromStdString( m_pCurrStream->getPelFmtName() );
+  m_cStreamInformationString = "[" + m_cFormatName + " / " + m_cCodedName + " / " +  m_cPelFmtName + "] ";
+  m_cStreamInformationString += QFileInfo(  m_cFilename ).fileName();
+
   setWindowName( m_cWindowShortName );
   return true;
 }
+
+Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
+{
+  std::vector<PlaYUVerStdResolution> stdResList = PlaYUVerStream::stdResolutionSizes();
+  Bool bGuessed = true;
+  Bool bGuessedByFilesize = false;
+  QString FilenameShort = QFileInfo( filename ).fileName();
+  QString fileExtension = QFileInfo( filename ).suffix();
+  if( !fileExtension.compare( "yuv" ) )
+  {
+    bGuessed = false;
+    // Guess pixel format
+    QVector<std::string> formats_list = QVector<std::string>::fromStdVector( PlaYUVerFrame::supportedPixelFormatListNames() );
+    for( Int i = 0; i < formats_list.size(); i++ )
+    {
+      if( FilenameShort.contains( formats_list.at( i ).data(), Qt::CaseInsensitive ) )
+      {
+        rInputFormat = i;
+        break;
+      }
+    }
+
+    if( rWidth == 0 || rHeight == 0 )
+    {
+      // Guess resolution - match  resolution name
+      Int iMatch = -1;
+      for( UInt i = 0; i < stdResList.size(); i++ )
+      {
+        if( FilenameShort.contains( QString::fromStdString( stdResList[i].shortName ) ) )
+        {
+          iMatch = i;
+        }
+      }
+      if( iMatch >= 0 )
+      {
+        rWidth = stdResList[iMatch].uiWidth;
+        rHeight = stdResList[iMatch].uiHeight;
+      }
+      // Guess resolution - match %dx%d
+#if( QT_VERSION_PLAYUVER == 5 )
+      QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*" ).match( FilenameShort );
+      if( resolutionMatch.hasMatch() )
+      {
+        QString resolutionString = resolutionMatch.captured( 0 );
+        if( resolutionString.startsWith( "_" ) || resolutionString.endsWith( "_" ) )
+        {
+          resolutionString.remove( "_" );
+          QStringList resolutionArgs = resolutionString.split( "x" );
+          if( resolutionArgs.size() == 2 )
+          {
+            rWidth = resolutionArgs.at( 0 ).toUInt();
+            rHeight = resolutionArgs.at( 1 ).toUInt();
+          }
+        }
+      }
+#endif
+    }
+
+    // Guess resolution by file size
+    if( rWidth == 0 && rHeight == 0 )
+    {
+      Char *filename_char = new char[filename.length() + 1];
+      memcpy( filename_char, filename.toUtf8().constData(), filename.length() + 1 * sizeof(char) );
+      FILE* pF = fopen( filename_char, "rb" );
+      if( pF )
+      {
+        fseek( pF, 0, SEEK_END );
+        UInt64 uiFileSize = ftell( pF );
+        fclose( pF );
+        delete[] filename_char;
+
+        Int count = 0, module, frame_bytes, match;
+        for( UInt i = 0; i < stdResList.size(); i++ )
+        {
+          frame_bytes = PlaYUVerFrame::getBytesPerFrame( stdResList[i].uiWidth, stdResList[i].uiHeight, rInputFormat );
+          module = uiFileSize % frame_bytes;
+          if( module == 0 )
+          {
+            match = i;
+            count++;
+          }
+        }
+        if( count == 1 )
+        {
+          rWidth = stdResList[match].uiWidth;
+          rHeight = stdResList[match].uiHeight;
+          bGuessedByFilesize = true;
+        }
+      }
+    }
+
+    if( rWidth > 0 && rHeight > 0 && rInputFormat >= 0 )
+      bGuessed = true && !bGuessedByFilesize;
+  }
+  return !bGuessed;
+}
+
 
 Void VideoSubWindow::updateSelectedArea( QRect area )
 {
@@ -273,7 +380,7 @@ Bool VideoSubWindow::save( QString filename )
   {
     return false;
   }
-  iRet = PlaYUVerStream::saveFrame( filename, saveFrame );
+  iRet = PlaYUVerStream::saveFrame( filename.toStdString(), saveFrame );
   QApplication::restoreOverrideCursor();
   return iRet;
 }

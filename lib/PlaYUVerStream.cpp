@@ -28,6 +28,8 @@
 #include "LibMemory.h"
 #include "PlaYUVerStream.h"
 #include <QImage>
+#include <QString>
+#include <QFileInfo>
 #ifdef USE_FFMPEG
 #include "LibAvContextHandle.h"
 #endif
@@ -181,7 +183,6 @@ PlaYUVerStream::PlaYUVerStream()
   m_iFileFormat = -1;
   m_pStreamBuffer = NULL;
   m_cFilename = "";
-  m_cStreamInformationString = "";
   m_pcCurrFrame = NULL;
   m_pcNextFrame = NULL;
   m_ppcFrameBuffer = NULL;
@@ -204,6 +205,8 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
     close();
   }
 
+  QString qtFilename = QString::fromStdString( filename );
+
   m_bInit = false;
   m_bIsInput = bInput;
   m_cFilename = filename;
@@ -217,7 +220,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
     m_iFileFormat = INVALID_HANDLER;
 
     QStringList formatsExt = PlaYUVerStream::supportedReadFormatsExt();
-    QString currExt = QFileInfo( QString::fromStdString( m_cFilename ) ).suffix();
+    QString currExt = QFileInfo( qtFilename ).suffix();
     if( formatsExt.contains( currExt ) )
     {
       m_iFileFormat = formatsExt.indexOf( currExt );
@@ -339,8 +342,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   }
 
   m_cPelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[m_iPixelFormat].data();
-  m_cStreamInformationString = "[" + m_cFormatName + " / " + m_cCodedName + " / " + m_cPelFmtName + "] ";
-  m_cStreamInformationString += QFileInfo( QString::fromStdString( m_cFilename ) ).fileName().toStdString();
+
   m_iCurrFrameNum = -1;
 
   m_bInit = true;
@@ -418,102 +420,6 @@ Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, 
     rInputFormat = PlaYUVerFrame::YUV420p;
     rFrameRate = 30;
   }
-}
-
-Bool PlaYUVerStream::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
-{
-  std::vector<PlaYUVerStdResolution> stdResList = stdResolutionSizes();
-  Bool bGuessed = true;
-  Bool bGuessedByFilesize = false;
-  QString FilenameShort = QFileInfo( filename ).fileName();
-  QString fileExtension = QFileInfo( filename ).suffix();
-  if( !fileExtension.compare( "yuv" ) )
-  {
-    bGuessed = false;
-    // Guess pixel format
-    QVector<std::string> formats_list = QVector<std::string>::fromStdVector( PlaYUVerFrame::supportedPixelFormatListNames() );
-    for( Int i = 0; i < formats_list.size(); i++ )
-    {
-      if( FilenameShort.contains( formats_list.at( i ).data(), Qt::CaseInsensitive ) )
-      {
-        rInputFormat = i;
-        break;
-      }
-    }
-
-    if( rWidth == 0 || rHeight == 0 )
-    {
-      // Guess resolution - match  resolution name
-      Int iMatch = -1;
-      for( UInt i = 0; i < stdResList.size(); i++ )
-      {
-        if( FilenameShort.contains( QString::fromStdString( stdResList[i].shortName ) ) )
-        {
-          iMatch = i;
-        }
-      }
-      if( iMatch >= 0 )
-      {
-        rWidth = stdResList[iMatch].uiWidth;
-        rHeight = stdResList[iMatch].uiHeight;
-      }
-      // Guess resolution - match %dx%d
-#if( QT_VERSION_PLAYUVER == 5 )
-      QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*" ).match( FilenameShort );
-      if( resolutionMatch.hasMatch() )
-      {
-        QString resolutionString = resolutionMatch.captured( 0 );
-        if( resolutionString.startsWith( "_" ) || resolutionString.endsWith( "_" ) )
-        {
-          resolutionString.remove( "_" );
-          QStringList resolutionArgs = resolutionString.split( "x" );
-          if( resolutionArgs.size() == 2 )
-          {
-            rWidth = resolutionArgs.at( 0 ).toUInt();
-            rHeight = resolutionArgs.at( 1 ).toUInt();
-          }
-        }
-      }
-#endif
-    }
-
-    // Guess resolution by file size
-    if( rWidth == 0 && rHeight == 0 )
-    {
-      Char *filename_char = new char[filename.length() + 1];
-      memcpy( filename_char, filename.toUtf8().constData(), filename.length() + 1 * sizeof(char) );
-      FILE* pF = fopen( filename_char, "rb" );
-      if( pF )
-      {
-        fseek( pF, 0, SEEK_END );
-        UInt64 uiFileSize = ftell( pF );
-        fclose( pF );
-        delete[] filename_char;
-
-        Int count = 0, module, frame_bytes, match;
-        for( UInt i = 0; i < stdResList.size(); i++ )
-        {
-          frame_bytes = PlaYUVerFrame::getBytesPerFrame( stdResList[i].uiWidth, stdResList[i].uiHeight, rInputFormat );
-          module = uiFileSize % frame_bytes;
-          if( module == 0 )
-          {
-            match = i;
-            count++;
-          }
-        }
-        if( count == 1 )
-        {
-          rWidth = stdResList[match].uiWidth;
-          rHeight = stdResList[match].uiHeight;
-          bGuessedByFilesize = true;
-        }
-      }
-    }
-
-    if( rWidth > 0 && rHeight > 0 && rInputFormat >= 0 )
-      bGuessed = true && !bGuessedByFilesize;
-  }
-  return !bGuessed;
 }
 
 Void PlaYUVerStream::loadAll()
@@ -652,17 +558,18 @@ Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
   return;
 }
 
-Bool PlaYUVerStream::saveFrame( const QString& filename )
+Bool PlaYUVerStream::saveFrame( const std::string& filename )
 {
   return saveFrame( filename, m_pcCurrFrame );
 }
 
-Bool PlaYUVerStream::saveFrame( const QString& filename, PlaYUVerFrame *saveFrame )
+Bool PlaYUVerStream::saveFrame( const std::string& filename, PlaYUVerFrame *saveFrame )
 {
+  QString qtString = QString::fromStdString( filename );
   Int iFileFormat = INVALID_OUTPUT;
 
   QStringList formatsExt = PlaYUVerStream::supportedSaveFormatsExt();
-  QString currExt = QFileInfo( filename ).suffix();
+  QString currExt = QFileInfo( qtString ).suffix();
   if( formatsExt.contains( currExt ) )
   {
     iFileFormat = formatsExt.indexOf( currExt );
@@ -683,7 +590,7 @@ Bool PlaYUVerStream::saveFrame( const QString& filename, PlaYUVerFrame *saveFram
   {
     saveFrame->fillRGBBuffer();
     QImage qimg = QImage( saveFrame->getRGBBuffer(), saveFrame->getWidth(), saveFrame->getHeight(), QImage::Format_RGB32 );
-    return qimg.save( filename );
+    return qimg.save( qtString );
   }
   return false;
 }

@@ -28,7 +28,7 @@
 #include "PlaYUVerDefs.h"
 #include <iostream>
 #include <cstdio>
-#include <QtCore>
+#include <QStringList>
 #include "PlaYUVerFrame.h"
 
 namespace plaYUVer
@@ -68,7 +68,7 @@ private:
   std::string m_cFormatName;
   std::string m_cCodedName;
   std::string m_cPelFmtName;
-  QString m_cStreamInformationString;
+
 
   FILE* m_pFile; /**< The input file pointer >*/
   Int m_iFileFormat;
@@ -117,8 +117,6 @@ public:
   Bool openFile();
   Void closeFile();
 
-  static Bool guessFormat( std::string filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
-
   Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
 
   Void loadAll();
@@ -143,10 +141,6 @@ public:
     return m_bInit;
   }
 
-  QString getStreamInformationString()
-  {
-    return m_cStreamInformationString;
-  }
   std::string getFileName()
   {
     return m_cFilename;

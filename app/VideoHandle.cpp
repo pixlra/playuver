@@ -235,7 +235,9 @@ Void VideoHandle::update()
       total_frame_num = getMaxFrameNumber();
 
       resolution.append( QString( "@%1" ).arg( pcStream->getFrameRate() ) );
-      m_pcFormatCodeLabel->setText( QString( "%1 | %2" ).arg( pcStream->getFormatName() ).arg( pcStream->getCodecName() ) );
+      m_pcFormatCodeLabel->setText( QString( "%1 | %2" )
+          .arg( QString::fromStdString( pcStream->getFormatName() ) )
+          .arg( QString::fromStdString( pcStream->getCodecName() ) ) );
     }
     else
     {

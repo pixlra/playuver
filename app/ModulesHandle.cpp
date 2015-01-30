@@ -470,7 +470,7 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
       FrameRate = pcCurrModuleIf->m_pcSubWindow[0]->getInputStream()->getFrameRate();
 
       pcCurrModuleIf->m_pcModuleStream = new PlaYUVerStream;
-      if( !pcCurrModuleIf->m_pcModuleStream->open( fileName, Width, Height, InputFormat, FrameRate, false ) )
+      if( !pcCurrModuleIf->m_pcModuleStream->open( fileName.toStdString(), Width, Height, InputFormat, FrameRate, false ) )
       {
         delete pcCurrModuleIf->m_pcModuleStream;
         pcCurrModuleIf->m_pcModuleStream = NULL;

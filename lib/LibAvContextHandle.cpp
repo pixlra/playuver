@@ -96,7 +96,6 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
   frame = NULL;
   m_bHasStream = false;
 
-  char *src_filename = filename;
   AVDictionary *format_opts = NULL;
 
   /* register all formats and codecs */
@@ -117,7 +116,7 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
   }
 
   /* open input file, and allocate format context */
-  if( avformat_open_input( &fmt_ctx, src_filename, NULL, &format_opts ) < 0 )
+  if( avformat_open_input( &fmt_ctx, filename, NULL, &format_opts ) < 0 )
   {
     //qDebug( ) << " Could not open source file %s !!!" << filename << endl;
     return false;
@@ -198,7 +197,7 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
   }
 
   /* dump input information to stderr */
-  av_dump_format( fmt_ctx, 0, src_filename, 0 );
+  av_dump_format( fmt_ctx, 0, filename, 0 );
   if( !video_stream )
   {
     //qDebug( ) << " Could not find audio or video stream in the input, aborting !!!" << endl;

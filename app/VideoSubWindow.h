@@ -65,7 +65,7 @@ private:
   ViewArea* m_cViewArea;
 
   QString m_cFilename;
-  QString m_cStreamInformationString;
+  QString m_cStreamInformation;
   PlaYUVerStreamInfo m_sStreamInfo;
   PlaYUVerStream* m_pCurrStream;
 
@@ -89,7 +89,7 @@ private:
    * Private zoom function to handle
    * zoom to fit
    */
-  Void scaleView( const QSize & size , QPoint center = QPoint() );
+  Void scaleView( const QSize & size, QPoint center = QPoint() );
 
 public:
   enum VideoSubWindowCategories
@@ -124,6 +124,10 @@ public:
   PlaYUVerStreamInfo getStreamInfo()
   {
     return m_sStreamInfo;
+  }
+  QString getStreamInformation()
+  {
+    return m_cStreamInformation;
   }
 
   PlaYUVerStream* getInputStream()
@@ -170,8 +174,8 @@ public:
    */
   Void normalSize();
   Void zoomToFit();
-  Void scaleView( Double scale , QPoint center = QPoint() );
-  Void zoomToFactor( Double factor , QPoint center = QPoint() );
+  Void scaleView( Double scale, QPoint center = QPoint() );
+  Void zoomToFactor( Double factor, QPoint center = QPoint() );
 
   Double getScaleFactor()
   {
@@ -181,11 +185,10 @@ public:
   /**
    * Size related functions
    */
-  QSize sizeHint() const ;
-  QSize sizeHint( const QSize & ) const ;
+  QSize sizeHint() const;
+  QSize sizeHint( const QSize & ) const;
 
-
-  Void setWindowShortName( const QString& name)
+  Void setWindowShortName( const QString& name )
   {
     m_cWindowShortName = name;
   }

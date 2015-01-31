@@ -163,8 +163,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   QString m_cFormatName = QString::fromStdString( m_pCurrStream->getFormatName() );
   QString m_cCodedName = QString::fromStdString( m_pCurrStream->getCodecName() );
   QString m_cPelFmtName = QString::fromStdString( m_pCurrStream->getPelFmtName() );
-  m_cStreamInformationString = "[" + m_cFormatName + " / " + m_cCodedName + " / " +  m_cPelFmtName + "] ";
-  m_cStreamInformationString += QFileInfo(  m_cFilename ).fileName();
+  m_cStreamInformation =  m_cFormatName + " | " + m_cCodedName + " | " +  m_cPelFmtName;
 
   setWindowName( m_cWindowShortName );
   return true;
@@ -195,8 +194,7 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
   QString m_cFormatName = QString::fromStdString( m_pCurrStream->getFormatName() );
   QString m_cCodedName = QString::fromStdString( m_pCurrStream->getCodecName() );
   QString m_cPelFmtName = QString::fromStdString( m_pCurrStream->getPelFmtName() );
-  m_cStreamInformationString = "[" + m_cFormatName + " / " + m_cCodedName + " / " +  m_cPelFmtName + "] ";
-  m_cStreamInformationString += QFileInfo(  m_cFilename ).fileName();
+  m_cStreamInformation =  m_cFormatName + " | " + m_cCodedName + " | " +  m_cPelFmtName;
 
   setWindowName( m_cWindowShortName );
   return true;

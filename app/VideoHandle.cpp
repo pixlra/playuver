@@ -148,11 +148,11 @@ QWidget* VideoHandle::createStatusBarMessage()
   QWidget* pcStatusBarWidget = new QWidget;
   QHBoxLayout* mainlayout = new QHBoxLayout;
 
-  m_pcFormatCodeLabel = new QLabel;
-  m_pcFormatCodeLabel->setText( " " );
-  m_pcFormatCodeLabel->setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) );
-  m_pcFormatCodeLabel->setMinimumWidth( 100 );
-  m_pcFormatCodeLabel->setAlignment( Qt::AlignCenter );
+  m_pcVideoFormatLabel = new QLabel;
+  m_pcVideoFormatLabel->setText( " " );
+  m_pcVideoFormatLabel->setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) );
+  m_pcVideoFormatLabel->setMinimumWidth( 150 );
+  m_pcVideoFormatLabel->setAlignment( Qt::AlignCenter );
 
   m_pcResolutionLabel = new QLabel;
   m_pcResolutionLabel->setText( " " );
@@ -160,15 +160,8 @@ QWidget* VideoHandle::createStatusBarMessage()
   m_pcResolutionLabel->setMinimumWidth( 90 );
   m_pcResolutionLabel->setAlignment( Qt::AlignCenter );
 
-  m_pcColorSpace = new QLabel;
-  m_pcColorSpace->setText( " " );
-  m_pcColorSpace->setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) );
-  m_pcColorSpace->setMinimumWidth( 60 );
-  m_pcColorSpace->setAlignment( Qt::AlignCenter );
-
-  mainlayout->addWidget( m_pcFormatCodeLabel );
+  mainlayout->addWidget( m_pcVideoFormatLabel );
   mainlayout->addWidget( m_pcResolutionLabel );
-  mainlayout->addWidget( m_pcColorSpace );
   pcStatusBarWidget->setLayout( mainlayout );
 
   return pcStatusBarWidget;
@@ -220,11 +213,11 @@ Void VideoHandle::update()
     Int frame_num = 0;
     UInt64 total_frame_num = 1;
 
+    m_pcVideoFormatLabel->setText( m_pcCurrentVideoSubWindow->getStreamInformation() );
+
     QString resolution;
     if( pcFrame )
     {
-      QString pelFmt( PlaYUVerFrame::supportedPixelFormatListNames()[pcFrame->getPelFormat()].data() );
-      m_pcColorSpace->setText( pelFmt );
       resolution.append( QString( "%1x%2" ).arg( pcFrame->getWidth() ).arg( pcFrame->getHeight() ) );
     }
 
@@ -233,18 +226,13 @@ Void VideoHandle::update()
       frame_num = pcStream->getCurrFrameNum();
       m_pcFrameNumInfo->setCurrFrameNum( frame_num );
       total_frame_num = getMaxFrameNumber();
-
       resolution.append( QString( "@%1" ).arg( pcStream->getFrameRate() ) );
-      m_pcFormatCodeLabel->setText( QString( "%1 | %2" )
-          .arg( QString::fromStdString( pcStream->getFormatName() ) )
-          .arg( QString::fromStdString( pcStream->getCodecName() ) ) );
     }
     else
     {
       m_pcFrameNumInfo->setCurrFrameNum( 0 );
-      m_pcFormatCodeLabel->setText( QString( "" ) );
       if( m_pcCurrentVideoSubWindow->getIsModule() )
-        m_pcFormatCodeLabel->setText( QString( "Module" ) );
+        m_pcVideoFormatLabel->setText( QString( "Module" ) );
     }
 
     if( pcFrame )

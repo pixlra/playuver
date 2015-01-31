@@ -90,9 +90,8 @@ private:
   QDockWidget* m_pcFramePropertiesDock;
   FramePropertiesSideBar* m_pcFramePropertiesSideBar;
 
-  QLabel* m_pcFormatCodeLabel;
+  QLabel* m_pcVideoFormatLabel;
   QLabel* m_pcResolutionLabel;
-  QLabel* m_pcColorSpace;
 
   VideoSubWindow* m_pcCurrentVideoSubWindow;
   QVector<VideoSubWindow*> m_acPlayingSubWindows;

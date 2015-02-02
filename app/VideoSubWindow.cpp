@@ -75,6 +75,7 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
         SubWindowHandle( parent, SubWindowHandle::VIDEO_SUBWINDOW | category ),
         m_pCurrStream( NULL ),
         m_pcCurrFrame( NULL ),
+        m_pcCurrentDisplayModule( NULL ),
         m_pcReferenceSubWindow( NULL ),
         m_bIsPlaying( false ),
         m_bIsModule( category == MODULE_SUBWINDOW )
@@ -160,10 +161,8 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
 
   m_cFilename = cFilename;
   m_cWindowShortName = QFileInfo( cFilename ).fileName();
-  QString m_cFormatName = QString::fromStdString( m_pCurrStream->getFormatName() );
-  QString m_cCodedName = QString::fromStdString( m_pCurrStream->getCodecName() );
-  QString m_cPelFmtName = QString::fromStdString( m_pCurrStream->getPelFmtName() );
-  m_cStreamInformation =  m_cFormatName + " | " + m_cCodedName + " | " +  m_cPelFmtName;
+
+  updateVideoWindowInfo();
 
   setWindowName( m_cWindowShortName );
   return true;
@@ -176,7 +175,8 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
     m_pCurrStream = new PlaYUVerStream;
   }
 
-  if( !m_pCurrStream->open( streamInfo->m_cFilename.toStdString(), streamInfo->m_uiWidth, streamInfo->m_uiHeight, streamInfo->m_iPelFormat, streamInfo->m_uiFrameRate ) )
+  if( !m_pCurrStream->open( streamInfo->m_cFilename.toStdString(), streamInfo->m_uiWidth, streamInfo->m_uiHeight, streamInfo->m_iPelFormat,
+      streamInfo->m_uiFrameRate ) )
   {
     return false;
   }
@@ -191,13 +191,28 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
 
   m_cFilename = streamInfo->m_cFilename;
   m_cWindowShortName = QFileInfo( streamInfo->m_cFilename ).fileName();
-  QString m_cFormatName = QString::fromStdString( m_pCurrStream->getFormatName() );
-  QString m_cCodedName = QString::fromStdString( m_pCurrStream->getCodecName() );
-  QString m_cPelFmtName = QString::fromStdString( m_pCurrStream->getPelFmtName() );
-  m_cStreamInformation =  m_cFormatName + " | " + m_cCodedName + " | " +  m_cPelFmtName;
+
+  updateVideoWindowInfo();
 
   setWindowName( m_cWindowShortName );
   return true;
+}
+
+Void VideoSubWindow::updateVideoWindowInfo()
+{
+  if( !m_bIsModule && !m_pcCurrentDisplayModule)
+  {
+    QString m_cFormatName = QString::fromStdString( m_pCurrStream->getFormatName() );
+    QString m_cCodedName = QString::fromStdString( m_pCurrStream->getCodecName() );
+    QString m_cPelFmtName = QString::fromStdString( m_pCurrStream->getPelFmtName() );
+    m_cStreamInformation = m_cFormatName + " | " + m_cCodedName + " | " + m_cPelFmtName;
+  }
+  else
+  {
+    QString m_cPelFmtName = QString::fromStdString( PlaYUVerFrame::supportedPixelFormatListNames()[m_pcCurrFrame->getPelFormat()].data() );
+    m_cStreamInformation = "Module | " + m_cPelFmtName;
+  }
+
 }
 
 Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
@@ -296,7 +311,6 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
   return !bGuessed;
 }
 
-
 Void VideoSubWindow::updateSelectedArea( QRect area )
 {
   m_cSelectedArea = area;
@@ -308,12 +322,12 @@ Void VideoSubWindow::updateSelectedArea( QRect area )
  */
 Void VideoSubWindow::enableModule( PlaYUVerAppModuleIf* pcModule, Bool bThisWindow )
 {
-  if( bThisWindow )
+  if( bThisWindow && m_pcCurrentDisplayModule)
   {
-    m_apcCurrentModule.clear();
-    disableModule();
+    disableModule( m_pcCurrentDisplayModule );
+    m_pcCurrentDisplayModule = pcModule;
+    updateVideoWindowInfo();
   }
-  m_apcCurrentModule.append( pcModule );
 }
 
 Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
@@ -324,8 +338,8 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
     if( modIdx != -1 )
     {
       m_apcCurrentModule.removeAt( modIdx );
-      ModulesHandle::destroyModuleIf( pcModule );
     }
+    ModulesHandle::destroyModuleIf( pcModule );
   }
   else
   {
@@ -336,8 +350,20 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
       ModulesHandle::destroyModuleIf( apcCurrentModule.at( i ) );
     }
     assert( m_apcCurrentModule.size() == 0 );
+    if( m_pcCurrentDisplayModule )
+    {
+      pcModule = m_pcCurrentDisplayModule;
+      m_pcCurrentDisplayModule = 0;
+      ModulesHandle::destroyModuleIf( m_pcCurrentDisplayModule );
+    }
   }
+  updateVideoWindowInfo();
   refreshFrame();
+}
+
+Void VideoSubWindow::associateModule( PlaYUVerAppModuleIf* pcModule )
+{
+  m_apcCurrentModule.append( pcModule );
 }
 
 Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
@@ -352,11 +378,15 @@ Void VideoSubWindow::refreshFrame()
   if( m_pCurrStream )
   {
     m_pcCurrFrame = m_pCurrStream->getCurrFrame();
-    bSetFrame = true;
+    bSetFrame = m_pcCurrFrame ? true : false;
+  }
+  if( m_pcCurrentDisplayModule )
+  {
+    bSetFrame = ModulesHandle::applyModuleIf( m_pcCurrentDisplayModule, m_bIsPlaying );
   }
   for( Int i = 0; i < m_apcCurrentModule.size(); i++ )
   {
-    bSetFrame = ModulesHandle::applyModuleIf( m_apcCurrentModule.at( i ), m_bIsPlaying );
+    ModulesHandle::applyModuleIf( m_apcCurrentModule.at( i ), m_bIsPlaying );
   }
   if( bSetFrame )
   {

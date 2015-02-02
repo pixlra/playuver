@@ -72,7 +72,7 @@ private:
   PlaYUVerFrame* m_pcCurrFrame;
   QRect m_cSelectedArea;
 
-  //PlaYUVerAppModuleIf* m_pcCurrentModule;
+  PlaYUVerAppModuleIf* m_pcCurrentDisplayModule;
   QList<PlaYUVerAppModuleIf*> m_apcCurrentModule;
 
   VideoSubWindow* m_pcReferenceSubWindow;
@@ -90,6 +90,8 @@ private:
    * zoom to fit
    */
   Void scaleView( const QSize & size, QPoint center = QPoint() );
+
+  Void updateVideoWindowInfo();
 
 public:
   enum VideoSubWindowCategories
@@ -164,6 +166,8 @@ public:
    */
   Void enableModule( PlaYUVerAppModuleIf* pcModule, Bool bThisWindow = true );
   Void disableModule( PlaYUVerAppModuleIf* pcModule = NULL );
+  Void associateModule( PlaYUVerAppModuleIf* pcModule );
+
   QList<PlaYUVerAppModuleIf*> getModuleArray()
   {
     return m_apcCurrentModule;

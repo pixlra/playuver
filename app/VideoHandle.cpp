@@ -231,8 +231,6 @@ Void VideoHandle::update()
     else
     {
       m_pcFrameNumInfo->setCurrFrameNum( 0 );
-      if( m_pcCurrentVideoSubWindow->getIsModule() )
-        m_pcVideoFormatLabel->setText( QString( "Module" ) );
     }
 
     if( pcFrame )

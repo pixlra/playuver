@@ -29,7 +29,6 @@
 #include "PlaYUVerModuleFactory.h"
 #include "DialogSubWindowSelector.h"
 
-
 namespace plaYUVer
 {
 
@@ -309,14 +308,15 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
       pcModuleSubWindow->setWindowName( windowName );
 
       connect( pcModuleSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
-      connect( pcModuleSubWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo, SLOT( zoomToFactorAll( double, QPoint ) ) );
+      connect( pcModuleSubWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo,
+          SLOT( zoomToFactorAll( double, QPoint ) ) );
       connect( pcModuleSubWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo, SLOT( moveAllScrollBars( const QPoint ) ) );
 
       connect( pcModuleSubWindow, SIGNAL( updateStatusBar( const QString& ) ), this, SLOT( updateStatusBar( const QString& ) ) );
       connect( pcModuleSubWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), this, SLOT( updateZoomFactorSBox() ) );
 
       pcCurrModuleIf->m_pcDisplaySubWindow = pcModuleSubWindow;
-      pcCurrModuleIf->m_pcDisplaySubWindow->enableModule( pcCurrModuleIf, true );
+
       //m_pcMdiArea->addSubWindow( pcModuleSubWindow );
     }
   }
@@ -336,14 +336,21 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     }
   }
 
-  // Associate module with subwindows
-  for( UInt i = 0; i < numberOfFrames; i++ )
-  {
-    pcCurrModuleIf->m_pcSubWindow[i]->enableModule( pcCurrModuleIf );
-  }
-
   // Create Module
   pcCurrModuleIf->m_pcModule->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
+
+  // Associate module with subwindows
+  if( pcCurrModuleIf->m_pcDisplaySubWindow )
+  {
+    pcCurrModuleIf->m_pcDisplaySubWindow->enableModule( pcCurrModuleIf, true );
+  }
+  else
+  {
+    for( UInt i = 0; i < numberOfFrames; i++ )
+    {
+      pcCurrModuleIf->m_pcSubWindow[i]->associateModule( pcCurrModuleIf );
+    }
+  }
 
   applyModuleIf( pcCurrModuleIf, false );
   QCoreApplication::processEvents();

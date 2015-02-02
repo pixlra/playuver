@@ -22,6 +22,7 @@
  * \brief    Handle multiple sub-windows
  */
 
+#include "plaYUVerApp.h"
 #include "PlaYUVerSubWindowHandle.h"
 #include "PlaYUVerMdiSubWindow.h"
 #include "SubWindowHandle.h"
@@ -131,21 +132,26 @@ Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowHandle *window )
 
 Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowHandle *window, Qt::WindowFlags flags )
 {
-  if( m_uiWindowMode == NormalSubWindows )
+  if( window )
   {
-    connect( window, SIGNAL( aboutToActivate( SubWindowHandle* ) ), this, SLOT( updateActiveSubWindow( SubWindowHandle* ) ) );
-    connect( window, SIGNAL( aboutToClose( SubWindowHandle* ) ), this, SLOT( removeSubWindow( SubWindowHandle* ) ) );
+    connect( window, SIGNAL( updateStatusBar( const QString& ) ), qobject_cast<plaYUVerApp*>( parent() ), SLOT( updateStatusBar( const QString& ) ) );
+    connect( window, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), qobject_cast<plaYUVerApp*>( parent() ), SLOT( updateZoomFactorSBox() ) );
+    if( m_uiWindowMode == NormalSubWindows )
+    {
+      connect( window, SIGNAL( aboutToActivate( SubWindowHandle* ) ), this, SLOT( updateActiveSubWindow( SubWindowHandle* ) ) );
+      connect( window, SIGNAL( aboutToClose( SubWindowHandle* ) ), this, SLOT( removeSubWindow( SubWindowHandle* ) ) );
+    }
+    if( m_uiWindowMode == MdiWSubWindows )
+    {
+      PlaYUVerMdiSubWindow* mdiSubWindow = new PlaYUVerMdiSubWindow;
+      mdiSubWindow->setWidget( window );
+      m_pcMdiArea->addSubWindow( mdiSubWindow );
+      m_apcMdiSubWindowList.append( mdiSubWindow );
+      window->setSubWindow( mdiSubWindow );
+      connect( mdiSubWindow, SIGNAL( aboutToClose( PlaYUVerMdiSubWindow* ) ), this, SLOT( removeMdiSubWindow( PlaYUVerMdiSubWindow* ) ) );
+    }
+    m_apcSubWindowList.append( window );
   }
-  if( m_uiWindowMode == MdiWSubWindows )
-  {
-    PlaYUVerMdiSubWindow* mdiSubWindow = new PlaYUVerMdiSubWindow;
-    mdiSubWindow->setWidget( window );
-    m_pcMdiArea->addSubWindow( mdiSubWindow );
-    m_apcMdiSubWindowList.append( mdiSubWindow );
-    window->setSubWindow( mdiSubWindow );
-    connect( mdiSubWindow, SIGNAL( aboutToClose( PlaYUVerMdiSubWindow* ) ), this, SLOT( removeMdiSubWindow( PlaYUVerMdiSubWindow* ) ) );
-  }
-  m_apcSubWindowList.append( window );
 }
 
 Void PlaYUVerSubWindowHandle::removeSubWindow( Int windowIdx )

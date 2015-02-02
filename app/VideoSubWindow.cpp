@@ -349,6 +349,13 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
       ModulesHandle::destroyModuleIf( pcModule );
       bRefresh |= true;
     }
+    if( pcModule == m_pcCurrentDisplayModule )
+    {
+      pcModule = m_pcCurrentDisplayModule;
+      m_pcCurrentDisplayModule = 0;
+      ModulesHandle::destroyModuleIf( pcModule );
+      bRefresh |= true;
+    }
   }
   else
   {

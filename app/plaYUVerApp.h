@@ -36,9 +36,7 @@
 #include "PlaYUVerAppAdaptor.h"
 #endif
 #include <QMainWindow>
-#include "VideoHandle.h"
-#include "QualityHandle.h"
-#include "ModulesHandle.h"
+
 #include "SubWindowHandle.h"
 #include "AboutDialog.h"
 #include "VideoSubWindow.h"
@@ -48,6 +46,9 @@ namespace plaYUVer
 
 class PlaYUVerStream;
 class PlaYUVerSubWindowHandle;
+class VideoHandle;
+class QualityHandle;
+class ModulesHandle;
 class PlaYUVerAppAdaptor;
 
 class plaYUVerApp: public QMainWindow

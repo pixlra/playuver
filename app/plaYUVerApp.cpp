@@ -28,6 +28,10 @@
 #endif
 #include "plaYUVerApp.h"
 #include "PlaYUVerSubWindowHandle.h"
+#include "VideoHandle.h"
+#include "QualityHandle.h"
+#include "ModulesHandle.h"
+
 #include "DialogSubWindowSelector.h"
 
 #define SYNCHRONISED_ZOON 1
@@ -182,10 +186,6 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       connect( videoSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
       connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo, SLOT( zoomToFactorAll( double, QPoint ) ) );
       connect( subWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo, SLOT( moveAllScrollBars( const QPoint ) ) );
-
-      connect( subWindow, SIGNAL( updateStatusBar( const QString& ) ), this, SLOT( updateStatusBar( const QString& ) ) );
-      connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), this, SLOT( updateZoomFactorSBox() ) );
-
 
       videoSubWindow->zoomToFit();
       videoSubWindow->getViewArea()->setTool( ( ViewArea::eTool )m_uiViewTool );

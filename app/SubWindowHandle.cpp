@@ -23,12 +23,13 @@
  */
 
 #include "SubWindowHandle.h"
-
+#include "PlaYUVerMdiSubWindow.h"
 namespace plaYUVer
 {
 
 SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
-        QScrollArea( parent )
+        QScrollArea( parent ),
+        m_cSubWindow( NULL )
 {
   setParent( parent );
   setFocusPolicy( Qt::WheelFocus );
@@ -48,10 +49,18 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
   m_uiCategory = category;
   m_cLastScroll = QPoint();
   m_cWindowName = QString( " " );
+
+  connect(this, SIGNAL(destroyed()), this, SLOT(onDestroyed()));
+}
+
+void SubWindowHandle::onDestroyed()
+{
+  return;
 }
 
 SubWindowHandle::~SubWindowHandle()
 {
+  return;
 }
 
 QSize SubWindowHandle::getScrollSize()
@@ -147,6 +156,13 @@ Void SubWindowHandle::closeEvent( QCloseEvent *event )
 {
   emit aboutToClose( this );
   event->accept();
+}
+
+Void SubWindowHandle::closeSubWindow()
+{
+  close();
+  if( m_cSubWindow )
+    m_cSubWindow->close();
 }
 
 }  // NAMESPACE

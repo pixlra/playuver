@@ -164,7 +164,7 @@ public:
    * Functions to enable a module in the
    * current SubWindow
    */
-  Void enableModule( PlaYUVerAppModuleIf* pcModule, Bool bThisWindow = true );
+  Void enableModule( PlaYUVerAppModuleIf* pcModule );
   Void disableModule( PlaYUVerAppModuleIf* pcModule = NULL );
   Void associateModule( PlaYUVerAppModuleIf* pcModule );
 

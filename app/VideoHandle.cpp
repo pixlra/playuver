@@ -250,6 +250,8 @@ Void VideoHandle::update()
   }
   else
   {
+    m_pcVideoFormatLabel->setText( "" );
+    m_pcResolutionLabel->setText( "" );
     m_pcFramePropertiesSideBar->setData( NULL, false );
     m_pcFrameSlider->setValue( 0 );
     m_pcFrameNumInfo->clear();

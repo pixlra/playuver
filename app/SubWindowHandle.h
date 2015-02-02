@@ -36,6 +36,8 @@
 namespace plaYUVer
 {
 
+class PlaYUVerMdiSubWindow;
+
 class SubWindowHandle: public QScrollArea
 {
 Q_OBJECT
@@ -45,6 +47,8 @@ private:
 
   UInt m_uiCategory;
   QString m_cWindowName;
+
+  PlaYUVerMdiSubWindow* m_cSubWindow;
 
 public:
   enum SubWindowCategories
@@ -100,6 +104,13 @@ public:
     return m_uiCategory;
   }
 
+  Void setSubWindow(PlaYUVerMdiSubWindow* subWindow )
+  {
+    m_cSubWindow = subWindow;
+  }
+
+  Void closeSubWindow();
+
 protected:
   void focusInEvent( QFocusEvent * event );
   void closeEvent( QCloseEvent *event );
@@ -123,6 +134,7 @@ Q_SIGNALS:
   void aboutToClose( SubWindowHandle* );
 
 public Q_SLOTS:
+void onDestroyed();
   void adjustScrollBarByScale( double scale, QPoint center );
   void adjustScrollBarByOffset( QPoint Offset );
   void updateLastScrollValue();

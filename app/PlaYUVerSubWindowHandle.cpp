@@ -123,7 +123,7 @@ Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowHandle *window )
       if( windowIdx >= 0 )
       {
         m_pcActiveWindow = m_apcSubWindowList.at( windowIdx );
-        emit windowActivated();
+        emit changed();
       }
     }
   }
@@ -133,8 +133,8 @@ Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowHandle *window, Qt::WindowF
 {
   if( m_uiWindowMode == NormalSubWindows )
   {
-    connect( window, SIGNAL( aboutToActivate( SubWindowHandle* ) ), this, SLOT( aboutToActivate( SubWindowHandle* ) ) );
-    connect( window, SIGNAL( aboutToClose( SubWindowHandle* ) ), this, SLOT( removeMdiSubWindow( SubWindowHandle* ) ) );
+    connect( window, SIGNAL( aboutToActivate( SubWindowHandle* ) ), this, SLOT( updateActiveSubWindow( SubWindowHandle* ) ) );
+    connect( window, SIGNAL( aboutToClose( SubWindowHandle* ) ), this, SLOT( removeSubWindow( SubWindowHandle* ) ) );
   }
   if( m_uiWindowMode == MdiWSubWindows )
   {
@@ -142,6 +142,7 @@ Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowHandle *window, Qt::WindowF
     mdiSubWindow->setWidget( window );
     m_pcMdiArea->addSubWindow( mdiSubWindow );
     m_apcMdiSubWindowList.append( mdiSubWindow );
+    window->setSubWindow( mdiSubWindow );
     connect( mdiSubWindow, SIGNAL( aboutToClose( PlaYUVerMdiSubWindow* ) ), this, SLOT( removeMdiSubWindow( PlaYUVerMdiSubWindow* ) ) );
   }
   m_apcSubWindowList.append( window );
@@ -168,6 +169,10 @@ Void PlaYUVerSubWindowHandle::removeSubWindow( Int windowIdx )
 
     if( !m_apcSubWindowList.isEmpty() )
       m_apcSubWindowList.front()->setFocus();
+    else
+      m_pcActiveWindow = NULL;
+
+    emit changed();
   }
 }
 

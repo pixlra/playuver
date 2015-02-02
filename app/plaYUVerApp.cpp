@@ -68,6 +68,7 @@ plaYUVerApp::plaYUVerApp()
   setAcceptDrops( true );
 
   connect( m_pcWindowHandle, SIGNAL( windowActivated() ), this, SLOT( update() ) );
+  connect( m_pcWindowHandle, SIGNAL( changed() ), this, SLOT( update() ) );
   connect( m_appModuleVideo, SIGNAL( changed() ), this, SLOT( update() ) );
   connect( m_appModuleQuality, SIGNAL( changed() ), this, SLOT( update() ) );
   connect( m_appModuleExtensions, SIGNAL( changed() ), this, SLOT( update() ) );

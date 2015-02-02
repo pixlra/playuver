@@ -94,6 +94,7 @@ private:
     FORCE_PLAYING_REFRESH_ACT,
     APPLY_ALL_ACT,
     SWAP_FRAMES_ACT,
+    DISABLE_ACT,
     DISABLE_ALL_ACT,
     MODULES_TOTAL_ACT
   };
@@ -112,6 +113,7 @@ Q_SIGNALS:
 private Q_SLOTS:
   void activateModule();
   void processOpt( int index );
+  void destroyWindowModules();
   void destroyAllModulesIf();
 
 };

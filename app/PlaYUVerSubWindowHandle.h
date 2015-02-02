@@ -111,6 +111,7 @@ public Q_SLOTS:
   void updateMenu();
 
 Q_SIGNALS:
+  void changed();
   void windowActivated();
 
 };

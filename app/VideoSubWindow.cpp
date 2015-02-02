@@ -569,7 +569,7 @@ Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
       Int ColorSpace = m_pcCurrFrame->getColorSpace();
       if( ColorSpace == PlaYUVerFrame::COLOR_GRAY )
       {
-        sPixelValue = m_pcCurrFrame->getPixelValue( pos.x(), pos.y(), PlaYUVerFrame::COLOR_YUV );
+        sPixelValue = m_pcCurrFrame->getPixelValue( pos.x(), pos.y(), PlaYUVerFrame::COLOR_GRAY );
         strStatus.append( QString( "Y: %1" ).arg( sPixelValue.Y() ) );
       }
       if( ColorSpace == PlaYUVerFrame::COLOR_YUV )

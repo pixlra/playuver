@@ -118,12 +118,12 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   resolutionLabel->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
   QLabel* widthLabel = new QLabel( "Width" );
   m_spinBoxWidth = new QSpinBox();
-  m_spinBoxWidth->setRange( 0, 8192 );
+  m_spinBoxWidth->setRange( 0, 9999 );
   m_spinBoxWidth->setValue( 0 );
 
   QLabel* heightLabel = new QLabel( "Height" );
   m_spinBoxheight = new QSpinBox();
-  m_spinBoxheight->setRange( 0, 4608 );
+  m_spinBoxheight->setRange( 0, 9999 );
   m_spinBoxheight->setValue( 0 );
 
   QLabel* pixelsLabel = new QLabel();

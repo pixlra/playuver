@@ -178,13 +178,27 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
     num_frames = 0;
   }
 
+  Int pix_fmt = video_dec_ctx->pix_fmt;
+  switch( pix_fmt )
+  {
+  case AV_PIX_FMT_YUVJ420P:
+    pix_fmt = AV_PIX_FMT_YUV420P;
+    break;
+  case AV_PIX_FMT_YUVJ422P:
+    pix_fmt = AV_PIX_FMT_YUV422P;
+    break;
+  case AV_PIX_FMT_YUVJ444P:
+    pix_fmt = AV_PIX_FMT_YUV444P;
+    break;
+  }
+
   width = video_dec_ctx->width;
   height = video_dec_ctx->height;
 
   pixel_format = PlaYUVerFrame::NO_FMT;
   for( Int i = 0; i < PLAYUVER_NUMBER_FORMATS; i++ )
   {
-    if( g_PlaYUVerFramePelFormatsList[i].ffmpegPelFormat == video_dec_ctx->pix_fmt )
+    if( g_PlaYUVerFramePelFormatsList[i].ffmpegPelFormat == pix_fmt )
     {
       pixel_format = i;
       break;

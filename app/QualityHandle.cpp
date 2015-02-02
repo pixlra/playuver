@@ -76,7 +76,7 @@ QMenu* QualityHandle::createMenu()
   //m_pcMenuQuality->addActions( m_actionGroupQualityMetric->actions() );
   //m_pcMenuQuality->addSeparator();
   m_pcMenuQuality->addAction( m_arrayActions[SELECT_REF_ACT] );
-  m_pcMenuQuality->addAction( m_arrayActions[CREATE_PLOT] );
+  //m_pcMenuQuality->addAction( m_arrayActions[CREATE_PLOT] );
   return m_pcMenuQuality;
 }
 

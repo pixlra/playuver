@@ -332,6 +332,7 @@ Void VideoSubWindow::enableModule( PlaYUVerAppModuleIf* pcModule, Bool bThisWind
 
 Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
 {
+  Bool bRefresh = false;
   if( pcModule )
   {
     Int modIdx = m_apcCurrentModule.indexOf( pcModule );
@@ -340,6 +341,7 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
       m_apcCurrentModule.removeAt( modIdx );
     }
     ModulesHandle::destroyModuleIf( pcModule );
+    bRefresh |= true;
   }
   else
   {
@@ -348,6 +350,7 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
     {
       m_apcCurrentModule.removeOne( apcCurrentModule.at( i ) );
       ModulesHandle::destroyModuleIf( apcCurrentModule.at( i ) );
+      bRefresh |= true;
     }
     assert( m_apcCurrentModule.size() == 0 );
     if( m_pcCurrentDisplayModule )
@@ -355,10 +358,14 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
       pcModule = m_pcCurrentDisplayModule;
       m_pcCurrentDisplayModule = 0;
       ModulesHandle::destroyModuleIf( m_pcCurrentDisplayModule );
+      bRefresh |= true;
     }
   }
-  updateVideoWindowInfo();
-  refreshFrame();
+  if( bRefresh )
+  {
+    updateVideoWindowInfo();
+    refreshFrame();
+  }
 }
 
 Void VideoSubWindow::associateModule( PlaYUVerAppModuleIf* pcModule )

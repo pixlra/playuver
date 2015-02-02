@@ -424,7 +424,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
         }
         if( frFormat == PlaYUVerFrame::COLOR_GRAY )
         {
-          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_YUV );
+          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_GRAY );
 
           if( sPixelValue.Y() < 128 )
             painter.setPen( QColor( Qt::white ) );

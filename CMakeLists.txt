@@ -11,7 +11,10 @@ cmake_minimum_required( VERSION 2.8.9 )
 SET( PROJECT_NAME "playuver" )
 
 PROJECT( ${PROJECT_NAME} )
-
+SET( PLAYUVER_VERSION_MAJOR "0" )
+SET( PLAYUVER_VERSION_MINOR "5" )
+SET( PLAYUVER_VERSION_PATCH "0" )
+SET( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLAYUVER_VERSION_PATCH}")
 
 ######################################################################################
 # CMake Definitions
@@ -19,7 +22,6 @@ PROJECT( ${PROJECT_NAME} )
 
 SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake )
 INCLUDE(FeatureSummary)
-INCLUDE( cmake/PlaYUVerVersion.cmake )
 
 # must go before the project command
 SET(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
@@ -132,61 +134,7 @@ ADD_SUBDIRECTORY( modules )
 ADD_SUBDIRECTORY( app )
 
 
-######################################################################################
-# Create deb package
-######################################################################################
 
-SET(CPACK_PACKAGE_NAME ${PROJECT_NAME})
-SET(CPACK_PACKAGE_CONTACT "Joao Carreira (jfmcarreira@gmail.com), Luis Lucas (luisfrlucas@gmail.com)")
-SET(CPACK_PACKAGE_VERSION_MAJOR ${PLAYUVER_VERSION_MAJOR})
-SET(CPACK_PACKAGE_VERSION_MINOR ${PLAYUVER_VERSION_MINOR})
-SET(CPACK_PACKAGE_VERSION_PATCH ${PLAYUVER_VERSION_PATH})
-SET(CPACK_PACKAGE_VERSION ${PLAYUVER_VERSION})
-SET(CPACK_PACKAGE_ARCHITECTURE "amd64")
-
-IF( USE_QT4 )
-  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libqtcore4 (>= 4:4.8.5), libqtgui4 (>= 4:4.8.5), libqt4-dbus (>= 4:4.8.5)" )
-  SET( APPEND_VERSION "${APPEND_VERSION}_wQT4" )
-ELSE()
-  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libqt5core5a (>= 5.2.1~), libqt5gui5 (>= 5.2.1~), libqt5widgets5 (>= 5.2.1~), libqt5dbus5 (>= 5.2.1~)")
-  SET( APPEND_VERSION "${APPEND_VERSION}_wQT5" )
-ENDIF()
-
-IF( USE_OPENCV )
-  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS ",")
-  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libopencv-dev (>= 2.4.8)")
-  SET( APPEND_VERSION "${APPEND_VERSION}_wOpenCV" )
-ENDIF()
-
-IF( USE_FFMPEG )
-  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS ",")
-  LIST(APPEND CPACK_DEBIAN_PACKAGE_DEPENDS "libavformat54 (>= 7:1.2.5~), libavcodec54 (>= 7:1.2.5~), libavutil52 (>= 7:1.2.5~)")
-  SET( APPEND_VERSION "${APPEND_VERSION}_wFFmpeg" )
-ENDIF()
-
-IF( UNIX )
-  SET(CPACK_GENERATOR "DEB;ZIP")
-  SET(OS "Linux")
-  SET(CPACK_DEBIAN_PACKAGE_DESCRIPTION "plaYUVer is an open-source QT based raw video player")
-  SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Joao Carreira (jfmcarreira@gmail.com), Luis Lucas (luisfrlucas@gmail.com)")
-  SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE ${CPACK_PACKAGE_ARCHITECTURE} )
-  STRING(REPLACE ";" "" CPACK_DEBIAN_PACKAGE_DEPENDS ${CPACK_DEBIAN_PACKAGE_DEPENDS} )
-ENDIF()
-IF( WIN32 )
-  SET(CPACK_GENERATOR "ZIP")
-  SET(OS "Windows")
-  SET(GIT_BRANCH "master") # temp work around
-ENDIF()
-
-IF( PLAYUVER_LONGVERSIONNAME )
-  SET( CPACK_PACKAGE_FILE_NAME  "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}${APPEND_VERSION}-${OS}-${CPACK_PACKAGE_ARCHITECTURE}" )
-  SET( PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME} )
-ELSE()
-  SET( CPACK_PACKAGE_FILE_NAME  "${CPACK_PACKAGE_NAME}-${PACK_NAME}${APPEND_VERSION}-${OS}-${CPACK_PACKAGE_ARCHITECTURE}" )
-  SET( PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME} )
-ENDIF()
-
-INCLUDE(CPack)
 
 ######################################################################################
 # Final information dump
@@ -197,7 +145,6 @@ MESSAGE( STATUS "Version: "                 "${PLAYUVER_VERSION}"  )
 MESSAGE( STATUS "Configuration:"                                   )
 MESSAGE( STATUS "    Build type:"          "${CMAKE_BUILD_TYPE}"   )
 MESSAGE( STATUS "    Build flags:"         "${CMAKE_CXX_FLAGS}"    )
-MESSAGE( STATUS "    Package Name:"        "${PACKAGE_FILE_NAME}"  )
 
 
 FEATURE_SUMMARY(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)

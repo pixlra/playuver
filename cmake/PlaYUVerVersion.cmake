@@ -39,8 +39,8 @@ ELSE()
   ENDIF()
 ENDIF()
 
-unset(__version_name_deb) 
-unset(__version_list) 
+unset(__version_name_deb)
+unset(__version_list)
 unset(__version_list_size)
 unset(__version)
 

@@ -110,21 +110,20 @@ ENDIF()
 # Configuration
 ######################################################################################
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlaYUVerUpdate.xml.in ${CMAKE_BINARY_DIR}/PlaYUVerUpdate.xml @ONLY)
 
 ######################################################################################
 # Target App
 ######################################################################################
-IF (NOT CMAKE_BUILD_TYPE)
+IF (NOT CMAKE_BUILD_TYPE )
     MESSAGE(STATUS "No build type selected, default to Release")
     SET(CMAKE_BUILD_TYPE "Release")
 ENDIF()
 
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" )
-
-IF( PLAYUVER_WERROR )
-  SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
-ENDIF()
+# 
+# IF( PLAYUVER_WERROR )
+#   SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
+# ENDIF()
 
 SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g" )
 SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2" )

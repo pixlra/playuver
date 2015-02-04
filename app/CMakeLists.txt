@@ -3,7 +3,12 @@
 ###
 
 # This is hard way - please fix
-INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/external ${CMAKE_SOURCE_DIR}/modules ${CMAKE_BINARY_DIR}/modules )
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/../
+                     ${CMAKE_CURRENT_SOURCE_DIR}
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../
+                     ${CMAKE_CURRENT_SOURCE_DIR}/external
+                     ${CMAKE_CURRENT_SOURCE_DIR}/../modules
+                     ${CMAKE_CURRENT_BINARY_DIR}/../modules )
 
 set(plaYUver_App_SRCS
 # Main

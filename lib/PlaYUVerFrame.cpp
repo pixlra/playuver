@@ -24,6 +24,7 @@
 
 #include "config.h"
 #include <cstdio>
+#include <cmath>
 #include "LibMemory.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"

@@ -20,7 +20,7 @@ SET( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLA
 # CMake Definitions
 ######################################################################################
 
-SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake )
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
 INCLUDE(FeatureSummary)
 
 # must go before the project command
@@ -88,14 +88,14 @@ ENDIF()
 # Dependencies
 ######################################################################################
 
-OPTION( USE_OPENCV "Add OpenCV support" OFF )
+OPTION( USE_OPENCV "Add OpenCV support" ON )
 IF( USE_OPENCV )
   FIND_PACKAGE( OpenCV )
   SET(USE_OPENCV ${OpenCV_FOUND})
 ENDIF()
 SET_PACKAGE_PROPERTIES(OpenCV PROPERTIES URL "http://opencv.willowgarage.com" DESCRIPTION "OpenCV library support in PlaYUVerFrame" TYPE OPTIONAL)
 
-OPTION( USE_FFMPEG "Add FFMPEG support" OFF )
+OPTION( USE_FFMPEG "Add FFMPEG support" ON )
 IF( USE_FFMPEG )
   FIND_PACKAGE( FFmpeg )
   SET(USE_FFMPEG ${FFMPEG_FOUND})
@@ -120,7 +120,7 @@ IF (NOT CMAKE_BUILD_TYPE )
 ENDIF()
 
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" )
-# 
+#
 # IF( PLAYUVER_WERROR )
 #   SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
 # ENDIF()

@@ -37,6 +37,7 @@ public:
           QMdiArea( parent ),
           m_pixmapLogo( ":/images/playuver-backgroud-logo.png" )
   {
+    setBackgroundRole( QPalette::Background );
   }
 protected:
   void paintEvent( QPaintEvent *event )

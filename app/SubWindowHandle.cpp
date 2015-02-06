@@ -34,7 +34,12 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
   setParent( parent );
   setFocusPolicy( Qt::WheelFocus );
   setAttribute( Qt::WA_DeleteOnClose );
-  setBackgroundRole( QPalette::Light );
+  setBackgroundRole( QPalette::Background );
+  QPalette Pal(palette());
+  // set black background
+  //Pal.setColor(QPalette::Background, Qt::white);
+  //setPalette(Pal);
+  setAutoFillBackground( true );
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
 
   // Create a new scroll area inside the sub-window

@@ -70,6 +70,7 @@ plaYUVerApp::plaYUVerApp()
   setUnifiedTitleAndToolBarOnMac( true );
   setCentralWidget( m_pcWindowHandle );
   setAcceptDrops( true );
+  setBackgroundRole( QPalette::Background );
 
   connect( m_pcWindowHandle, SIGNAL( windowActivated() ), this, SLOT( update() ) );
   connect( m_pcWindowHandle, SIGNAL( changed() ), this, SLOT( update() ) );

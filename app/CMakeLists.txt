@@ -112,12 +112,12 @@ IF( WIN32 )
   IF( MSVC )
     add_custom_command(OUTPUT ${WINDOWS_RES_FILE}
       COMMAND rc.exe /fo ${WINDOWS_RES_FILE} playuver.rc
-      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/app/resources
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/resources
     )
   ELSE()
     add_custom_command(OUTPUT ${WINDOWS_RES_FILE}
       COMMAND windres.exe playuver.rc ${WINDOWS_RES_FILE}
-      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/app/resources
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/resources
     )
   ENDIF()
 ENDIF()

@@ -174,6 +174,7 @@ PlaYUVerStream::PlaYUVerStream()
   m_iErrorStatus = 0;
   m_uiStreamHandler = 0;
   m_pFile = NULL;
+  m_pchFilename = NULL;
   m_uiWidth = 0;
   m_uiHeight = 0;
   m_uiTotalFrameNum = 0;
@@ -214,6 +215,10 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   m_uiHeight = height;
   m_iPixelFormat = input_format;
   m_uiFrameRate = frame_rate;
+
+  m_pchFilename = new Char[m_cFilename.size() + 1];
+  std::copy( m_cFilename.begin(), m_cFilename.end(), m_pchFilename );
+  m_pchFilename[m_cFilename.size()] = '\0';  // don't forget the terminating 0
 
   if( m_bIsInput )
   {
@@ -267,7 +272,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
 #ifdef USE_FFMPEG
   if( m_uiStreamHandler == FFMPEG )
   {
-    if( !m_cLibAvContext->initAvFormat( m_cFilename.c_str(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum ) )
+    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum ) )
     {
       throw "Cannot open file using FFmpeg libs";
     }
@@ -355,8 +360,9 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
 
 Bool PlaYUVerStream::openFile()
 {
+  //m_fsIOStream.open( m_cFilename,  std::ios::in | std::ios::binary )
   m_pFile = NULL;
-  m_pFile = fopen( m_cFilename.c_str(), m_bIsInput ? "rb" : "wb" );
+  m_pFile = fopen( m_pchFilename, m_bIsInput ? "rb" : "wb" );
   if( m_pFile == NULL )
   {
     return false;
@@ -399,6 +405,9 @@ Void PlaYUVerStream::close()
 
   if( m_pStreamBuffer )
     freeMem1D<Pel>( m_pStreamBuffer );
+
+  if( m_pchFilename )
+    delete [] m_pchFilename;
 
   m_bLoadAll = false;
   m_bInit = false;

@@ -27,6 +27,7 @@
 
 #include "PlaYUVerDefs.h"
 #include <iostream>
+#include <fstream>
 #include <cstdio>
 #include <QStringList>
 #include "PlaYUVerFrame.h"
@@ -65,12 +66,16 @@ private:
   LibAvContextHandle* m_cLibAvContext;
 
   std::string m_cFilename;
+  Char* m_pchFilename;
+
   std::string m_cFormatName;
   std::string m_cCodedName;
   std::string m_cPelFmtName;
 
 
   FILE* m_pFile; /**< The input file pointer >*/
+  std::fstream m_fsIOStream; /**< The input file pointer >*/
+
   Int m_iFileFormat;
   Int m_iPixelFormat;
 

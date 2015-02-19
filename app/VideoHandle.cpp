@@ -192,6 +192,7 @@ Void VideoHandle::readSettings()
 {
   QSettings appSettings;
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( appSettings.value( "VideoHandle/Repeat", false ).toBool() );
+  m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setChecked( appSettings.value( "VideoHandle/VideoZoomLock", false ).toBool() );
   if( !appSettings.value( "VideoHandle/FrameProperties", true ).toBool() )
     m_pcFramePropertiesDock->close();
 }
@@ -200,6 +201,7 @@ Void VideoHandle::writeSettings()
 {
   QSettings appSettings;
   appSettings.setValue( "VideoHandle/Repeat", m_arrayActions[VIDEO_LOOP_ACT]->isChecked() );
+  appSettings.setValue( "VideoHandle/VideoZoomLock", m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() );
   appSettings.setValue( "VideoHandle/FrameProperties", m_pcFramePropertiesSideBar->isVisible() );
 }
 

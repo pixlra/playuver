@@ -213,7 +213,7 @@ Void VideoSubWindow::updateVideoWindowInfo()
     {
       m_cStreamInformation = "Module | ";
     }
-    QString m_cPelFmtName = QString::fromStdString( PlaYUVerFrame::supportedPixelFormatListNames()[m_pcCurrFrame->getPelFormat()].data() );
+    QString m_cPelFmtName = QString::fromStdString( PlaYUVerFrame::supportedPixelFormatListNames()[m_pcCurrFrame->getPelFormat()].c_str() );
     m_cStreamInformation += m_cPelFmtName;
   }
   else
@@ -236,7 +236,7 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
     QVector<std::string> formats_list = QVector<std::string>::fromStdVector( PlaYUVerFrame::supportedPixelFormatListNames() );
     for( Int i = 0; i < formats_list.size(); i++ )
     {
-      if( FilenameShort.contains( formats_list.at( i ).data(), Qt::CaseInsensitive ) )
+      if( FilenameShort.contains( formats_list.at( i ).c_str(), Qt::CaseInsensitive ) )
       {
         rInputFormat = i;
         break;

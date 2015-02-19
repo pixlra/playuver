@@ -267,7 +267,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
 #ifdef USE_FFMPEG
   if( m_uiStreamHandler == FFMPEG )
   {
-    if( !m_cLibAvContext->initAvFormat( m_cFilename.data(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum ) )
+    if( !m_cLibAvContext->initAvFormat( m_cFilename.c_str(), m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum ) )
     {
       throw "Cannot open file using FFmpeg libs";
     }
@@ -341,7 +341,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
     return m_bInit;
   }
 
-  m_cPelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[m_iPixelFormat].data();
+  m_cPelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[m_iPixelFormat].c_str();
 
   m_iCurrFrameNum = -1;
 
@@ -356,7 +356,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
 Bool PlaYUVerStream::openFile()
 {
   m_pFile = NULL;
-  m_pFile = fopen( m_cFilename.data(), m_bIsInput ? "rb" : "wb" );
+  m_pFile = fopen( m_cFilename.c_str(), m_bIsInput ? "rb" : "wb" );
   if( m_pFile == NULL )
   {
     return false;

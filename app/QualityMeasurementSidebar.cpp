@@ -51,7 +51,7 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerS
   m_comboBoxMetric = new QComboBox;
   for( UInt i=0; i<PlaYUVerFrame::supportedQualityMetricsList().size();i++ )
   {
-    m_comboBoxMetric->insertItem( i, PlaYUVerFrame::supportedQualityMetricsList()[i].data() );
+    m_comboBoxMetric->insertItem( i, PlaYUVerFrame::supportedQualityMetricsList()[i].c_str() );
   }
   m_comboBoxMetric->setSizeAdjustPolicy( QComboBox::AdjustToContents );
   m_comboBoxMetric->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
@@ -207,7 +207,7 @@ Void QualityMeasurementSidebar::updateSidebarData()
 Void QualityMeasurementSidebar::updateQualityMetric( Int idx )
 {
   m_comboBoxMetric->setCurrentIndex( idx );
-  QString labelQuality( PlaYUVerFrame::supportedQualityMetricsList()[idx].data() );
+  QString labelQuality( PlaYUVerFrame::supportedQualityMetricsList()[idx].c_str() );
   m_ppcLabelQualityLabel[LUMA]->setText( labelQuality + " Y" );
   m_ppcLabelQualityLabel[CHROMA_U]->setText( labelQuality + " U" );
   m_ppcLabelQualityLabel[CHROMA_V]->setText( labelQuality + " V" );

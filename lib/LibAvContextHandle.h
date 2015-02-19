@@ -26,6 +26,8 @@
 #define __LIBAVCONTEXTHANDLE_H__
 
 #include <inttypes.h>
+#include <vector>
+#include <string>
 
 #ifndef __PRI64_PREFIX
 #define __PRI64_PREFIX  "l"
@@ -52,6 +54,14 @@ namespace plaYUVer
 class LibAvContextHandle
 {
 public:
+
+  static std::vector<std::string> supportedReadFormatsExt();
+  static std::vector<std::string> supportedReadFormatsName();
+  static std::vector<std::string> supportedWriteFormatsExt();
+  static std::vector<std::string> supportedWriteFormatsName();
+  static std::vector<std::string> supportedSaveFormatsExt();
+  static std::vector<std::string> supportedSaveFormatsName();
+
   LibAvContextHandle() :
           m_bHasStream( false )
   {
@@ -70,7 +80,7 @@ public:
   {
     return m_acCodecName;
   }
-  UInt getStreamDuration( )
+  UInt getStreamDuration()
   {
     return m_uiSecs;
   }

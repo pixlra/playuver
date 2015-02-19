@@ -31,6 +31,56 @@
 namespace plaYUVer
 {
 
+std::vector<std::string> LibAvContextHandle::supportedReadFormatsExt()
+{
+  std::vector<std::string> formatsExt;
+  formatsExt.push_back( "avi" );
+  formatsExt.push_back( "mp4" );
+  formatsExt.push_back( "wmv" );
+  formatsExt.push_back( "pgm" );
+  formatsExt.push_back( "png" );
+  formatsExt.push_back( "bmp" );
+  formatsExt.push_back( "jpg" );
+  return formatsExt;
+}
+
+std::vector<std::string> LibAvContextHandle::supportedReadFormatsName()
+{
+  std::vector<std::string> formatsName;
+  formatsName.push_back( "Audio video interleaved" );
+  formatsName.push_back( "MPEG4" );
+  formatsName.push_back( "Windows media video" );
+  formatsName.push_back( "Portable Grayscale Map" );
+  formatsName.push_back( "Portable Network Graphics" );
+  formatsName.push_back( "Windows Bitmap" );
+  formatsName.push_back( "Joint Photographic Experts Group" );
+  return formatsName;
+}
+
+std::vector<std::string> LibAvContextHandle::supportedWriteFormatsExt()
+{
+  std::vector<std::string> formatsExt;
+  return formatsExt;
+}
+
+std::vector<std::string> LibAvContextHandle::supportedWriteFormatsName()
+{
+  std::vector<std::string> formatsName;
+  return formatsName;
+}
+
+std::vector<std::string> LibAvContextHandle::supportedSaveFormatsExt()
+{
+  std::vector<std::string> formatsExt;
+  return formatsExt;
+}
+
+std::vector<std::string> LibAvContextHandle::supportedSaveFormatsName()
+{
+  std::vector<std::string> formatsName;
+  return formatsName;
+}
+
 static int open_codec_context( int *stream_idx, AVFormatContext *fmt_ctx, enum AVMediaType type )
 {
   int ret;
@@ -108,7 +158,6 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
     av_dict_set( &format_opts, "video_size", aux_string, 0 );
   }
 
-
   Int ffmpeg_pel_format = g_PlaYUVerFramePelFormatsList[pixel_format].ffmpegPelFormat;
   if( ffmpeg_pel_format >= 0 )
   {
@@ -144,7 +193,7 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
 //    }
 //    video_dst_bufsize = ret;
 
-    m_uiFrameBufferSize = av_image_get_buffer_size( video_dec_ctx->pix_fmt, video_dec_ctx->width, video_dec_ctx->height, 1);
+    m_uiFrameBufferSize = av_image_get_buffer_size( video_dec_ctx->pix_fmt, video_dec_ctx->width, video_dec_ctx->height, 1 );
     getMem1D( &m_pchFrameBuffer, m_uiFrameBufferSize );
   }
 
@@ -204,7 +253,7 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
       break;
     }
   }
-  if( pixel_format ==  PlaYUVerFrame::NO_FMT )
+  if( pixel_format == PlaYUVerFrame::NO_FMT )
   {
     closeAvFormat();
     return false;
@@ -260,14 +309,13 @@ Bool LibAvContextHandle::decodeAvFormat()
 
       if( got_frame )
       {
-        av_image_copy_to_buffer( m_pchFrameBuffer, m_uiFrameBufferSize,
-            frame->data,frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
-            video_dec_ctx->height, 1);
+        av_image_copy_to_buffer( m_pchFrameBuffer, m_uiFrameBufferSize, frame->data, frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
+            video_dec_ctx->height, 1 );
 
         /* copy decoded frame to destination buffer:
          * this is required since rawvideo expects non aligned data */
-  //        av_image_copy( video_dst_data, video_dst_linesize, ( const uint8_t ** )( frame->data ), frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
-  //            video_dec_ctx->height );
+        //        av_image_copy( video_dst_data, video_dst_linesize, ( const uint8_t ** )( frame->data ), frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
+        //            video_dec_ctx->height );
       }
     }
     av_free_packet( &pkt );

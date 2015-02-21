@@ -29,7 +29,6 @@
 #include <iostream>
 #include <fstream>
 #include <cstdio>
-#include <QStringList>
 #include "PlaYUVerFrame.h"
 
 namespace plaYUVer
@@ -95,12 +94,12 @@ private:
 
 public:
 
-  static QStringList supportedReadFormatsExt();
-  static QStringList supportedReadFormatsName();
-  static QStringList supportedWriteFormatsExt();
-  static QStringList supportedWriteFormatsName();
-  static QStringList supportedSaveFormatsExt();
-  static QStringList supportedSaveFormatsName();
+  static std::vector<std::string> supportedReadFormatsExt();
+  static std::vector<std::string> supportedReadFormatsName();
+  static std::vector<std::string> supportedWriteFormatsExt();
+  static std::vector<std::string> supportedWriteFormatsName();
+  static std::vector<std::string> supportedSaveFormatsExt();
+  static std::vector<std::string> supportedSaveFormatsName();
 
   static std::vector<PlaYUVerStdResolution> stdResolutionSizes();
 

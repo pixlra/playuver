@@ -27,9 +27,8 @@
 #include <vector>
 #include "LibMemory.h"
 #include "PlaYUVerStream.h"
-#include <QImage>
 #include <QString>
-#include <QFileInfo>
+#include <QImage>
 #ifdef USE_FFMPEG
 #include "LibAvContextHandle.h"
 #endif
@@ -37,106 +36,63 @@
 namespace plaYUVer
 {
 
-enum PlaYUVerStreamInputFormats
+std::vector<std::string> PlaYUVerStream::supportedReadFormatsExt()
 {
-  INVALID_INPUT = -1,
-  YUVINPUT = 0,
-#ifdef USE_FFMPEG
-  AVIINPUT,
-  MP4INPUT,
-  WMVINPUT,
-  PGMINPUT,
-  PNGINPUT,
-  BMPINPUT,
-  JPEGINPUT,
-#endif
-  TOTAL_INPUT_FORMATS
-};
-
-QStringList PlaYUVerStream::supportedReadFormatsExt()
-{
-  QStringList formatsExt;
-  formatsExt << "yuv"
-             // Raw video
-#ifdef USE_FFMPEG
-             << "avi"
-             // Audio video interleaved
-             << "mp4"
-             // MP4
-             << "wmv"
-             // Windows media video
-             << "pgm"
-             << "png"
-             << "bmp"
-             << "jpg"
-#endif
-             ;
-  //assert( formatsExt.size() == TOTAL_INPUT_FORMATS );
+  std::vector<std::string> formatsExt;
+  formatsExt.push_back( "yuv" );
+  std::vector<std::string> libAvFmt = LibAvContextHandle::supportedReadFormatsExt();
+  formatsExt.insert( formatsExt.end(), libAvFmt.begin(), libAvFmt.end() );
   return formatsExt;
 }
 
-QStringList PlaYUVerStream::supportedReadFormatsName()
+std::vector<std::string> PlaYUVerStream::supportedReadFormatsName()
 {
-  QStringList formatsName;
-  formatsName << "Raw video"
-#ifdef USE_FFMPEG
-              << "Audio video interleaved"
-              << "MPEG4"
-              << "Windows media video"
-              << "Portable Grayscale Map"
-              << "Portable Network Graphics"
-              << "Windows Bitmap"
-              << "Joint Photographic Experts Group"
-#endif
-              ;
-  //assert( formatsName.size() == TOTAL_INPUT_FORMATS );
+  std::vector<std::string> formatsName;
+  formatsName.push_back( "Raw video" );
+  std::vector<std::string> libAvFmt = LibAvContextHandle::supportedReadFormatsName();
+  formatsName.insert( formatsName.end(), libAvFmt.begin(), libAvFmt.end() );
   return formatsName;
 }
 
-enum PlaYUVerStreamOutputFormats
+std::vector<std::string> PlaYUVerStream::supportedWriteFormatsExt()
 {
-  INVALID_OUTPUT = -1,
-  YUVOUTPUT = 0,
-  TOTAL_OUTPUT_FORMATS
-};
-
-QStringList PlaYUVerStream::supportedWriteFormatsExt()
-{
-  QStringList formatsExt;
-  formatsExt << "yuv"   // raw video
-  ;
-  assert( formatsExt.size() == TOTAL_OUTPUT_FORMATS );
+  std::vector<std::string> formatsExt;
+  formatsExt.push_back( "yuv" );
   return formatsExt;
 }
 
-QStringList PlaYUVerStream::supportedWriteFormatsName()
+std::vector<std::string> PlaYUVerStream::supportedWriteFormatsName()
 {
-  QStringList formatsName;
-  formatsName << "Raw video";
-  assert( formatsName.size() == TOTAL_OUTPUT_FORMATS );
+  std::vector<std::string> formatsName;
+  formatsName.push_back( "Raw video" );
   return formatsName;
 }
 
-QStringList PlaYUVerStream::supportedSaveFormatsExt()
+std::vector<std::string> PlaYUVerStream::supportedSaveFormatsExt()
 {
-  QStringList formatsExt;
-  formatsExt << supportedWriteFormatsExt()
-             << "bmp"
-             << "jpeg"
-             << "png"  // portable network graphics
-             ;
-  formatsExt.removeDuplicates();
+  std::vector<std::string> formatsExt;
+  std::vector<std::string> writeExt = supportedWriteFormatsExt();
+  formatsExt.insert( formatsExt.begin(), writeExt.begin(), writeExt.end() );
+  formatsExt.push_back( "bmp" );
+  formatsExt.push_back( "bmp" );
+  formatsExt.push_back( "jpeg" );
+  formatsExt.push_back( "png" );
+  sort( formatsExt.begin(), formatsExt.end() );
+  formatsExt.erase( unique( formatsExt.begin(), formatsExt.end() ), formatsExt.end() );
   return formatsExt;
 }
 
-QStringList PlaYUVerStream::supportedSaveFormatsName()
+std::vector<std::string> PlaYUVerStream::supportedSaveFormatsName()
 {
-  QStringList formatsName;
-  formatsName << supportedWriteFormatsName()
-              << "Windows Bitmap"
-              << "Joint Photographic Experts Group"
-              << "Portable Network Graphics";
-  formatsName.removeDuplicates();
+  std::vector<std::string> formatsName;
+  std::vector<std::string> writeName = supportedWriteFormatsName();
+  formatsName.insert( formatsName.begin(), writeName.begin(), writeName.end() );
+  formatsName.push_back( "Windows Bitmap" );
+  formatsName.push_back( "Windows Bitmap" );
+  formatsName.push_back( "Joint Photographic Experts Group" );
+  formatsName.push_back( "Portable Network Graphics" );
+  sort( formatsName.begin(), formatsName.end() );
+  formatsName.erase( unique( formatsName.begin(), formatsName.end() ), formatsName.end() );
   return formatsName;
 }
 
@@ -205,9 +161,6 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   {
     close();
   }
-
-  QString qtFilename = QString::fromStdString( filename );
-
   m_bInit = false;
   m_bIsInput = bInput;
   m_cFilename = filename;
@@ -224,11 +177,15 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   {
     m_iFileFormat = INVALID_HANDLER;
 
-    QStringList formatsExt = PlaYUVerStream::supportedReadFormatsExt();
-    QString currExt = QFileInfo( qtFilename ).suffix();
-    if( formatsExt.contains( currExt ) )
+    std::string currExt = filename.substr( filename.find_last_of( "." ) + 1 );
+    for( UInt i = 0; i < PlaYUVerStream::supportedReadFormatsExt().size(); i++ )
     {
-      m_iFileFormat = formatsExt.indexOf( currExt );
+      if( PlaYUVerStream::supportedReadFormatsExt()[i] == currExt )
+      {
+        m_iFileFormat = i;
+        m_cFormatName = PlaYUVerStream::supportedReadFormatsExt()[i];
+        break;
+      }
     }
     if( m_iFileFormat == INVALID_HANDLER )
     {
@@ -236,15 +193,13 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
       throw "Invalid file format";
       return m_bInit;
     }
-    m_cFormatName = PlaYUVerStream::supportedReadFormatsExt().at( m_iFileFormat ).toUpper().toStdString();
 
-    if( m_iFileFormat == YUVINPUT )
+    if( m_cFormatName == "yuv" )
     {
       m_uiStreamHandler = YUV_IO;
     }
-
 #ifdef USE_FFMPEG
-    if( m_iFileFormat != YUVINPUT )
+    else
     {
       m_uiStreamHandler = FFMPEG;
     }
@@ -264,7 +219,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   }
   else
   {
-    m_iFileFormat = YUVOUTPUT;
+    m_iFileFormat = 0;
     m_uiStreamHandler = YUV_IO;
     m_uiFrameBufferSize = 1;
   }
@@ -407,7 +362,7 @@ Void PlaYUVerStream::close()
     freeMem1D<Pel>( m_pStreamBuffer );
 
   if( m_pchFilename )
-    delete [] m_pchFilename;
+    delete[] m_pchFilename;
 
   m_bLoadAll = false;
   m_bInit = false;
@@ -575,31 +530,41 @@ Bool PlaYUVerStream::saveFrame( const std::string& filename )
 Bool PlaYUVerStream::saveFrame( const std::string& filename, PlaYUVerFrame *saveFrame )
 {
   QString qtString = QString::fromStdString( filename );
-  Int iFileFormat = INVALID_OUTPUT;
+  Int iFileFormat = INVALID_HANDLER;
+  std::string fmtExt;
 
-  QStringList formatsExt = PlaYUVerStream::supportedSaveFormatsExt();
-  QString currExt = QFileInfo( qtString ).suffix();
-  if( formatsExt.contains( currExt ) )
-  {
-    iFileFormat = formatsExt.indexOf( currExt );
-  }
+  //std::string currExt = QFileInfo( qtString ).suffix().toStdString();
+  std::string currExt = filename.substr( filename.find_last_of( "." ) + 1 );
 
-  if( iFileFormat < TOTAL_OUTPUT_FORMATS )
+  for( UInt i = 0; i < PlaYUVerStream::supportedSaveFormatsExt().size(); i++ )
   {
-    PlaYUVerStream auxFrameStream;
-    if( !auxFrameStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(), saveFrame->getPelFormat(), 1, false ) )
+    if( PlaYUVerStream::supportedSaveFormatsExt()[i] == currExt )
     {
-      return false;
+      iFileFormat = i;
+      fmtExt = PlaYUVerStream::supportedSaveFormatsExt()[i];
+      break;
     }
-    auxFrameStream.writeFrame( saveFrame );
-    auxFrameStream.close();
-    return true;
   }
-  else
+
+  if( iFileFormat != INVALID_HANDLER )
   {
-    saveFrame->fillRGBBuffer();
-    QImage qimg = QImage( saveFrame->getRGBBuffer(), saveFrame->getWidth(), saveFrame->getHeight(), QImage::Format_RGB32 );
-    return qimg.save( qtString );
+    if( fmtExt == "yuv" )
+    {
+      PlaYUVerStream auxFrameStream;
+      if( !auxFrameStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(), saveFrame->getPelFormat(), 1, false ) )
+      {
+        return false;
+      }
+      auxFrameStream.writeFrame( saveFrame );
+      auxFrameStream.close();
+      return true;
+    }
+    else
+    {
+      saveFrame->fillRGBBuffer();
+      QImage qimg = QImage( saveFrame->getRGBBuffer(), saveFrame->getWidth(), saveFrame->getHeight(), QImage::Format_RGB32 );
+      return qimg.save( qtString );
+    }
   }
   return false;
 }

@@ -85,6 +85,9 @@ ENDIF()
 # Dependencies
 ######################################################################################
 
+FIND_PACKAGE(Boost COMPONENTS program_options )
+SET_PACKAGE_PROPERTIES(Boost PROPERTIES URL "http://www.boost.org" DESCRIPTION "Boost library support" TYPE REQUIRED)
+
 OPTION( USE_OPENCV "Add OpenCV support" ON )
 IF( USE_OPENCV )
   FIND_PACKAGE( OpenCV )
@@ -130,6 +133,7 @@ SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2" )
 
 ADD_SUBDIRECTORY( lib )
 ADD_SUBDIRECTORY( modules )
+ADD_SUBDIRECTORY( tools )
 ADD_SUBDIRECTORY( app )
 
 

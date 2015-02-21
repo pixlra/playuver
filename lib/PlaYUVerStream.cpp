@@ -155,6 +155,32 @@ PlaYUVerStream::~PlaYUVerStream()
   close();
 }
 
+Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::string input_format_name, UInt frame_rate, Bool bInput )
+{
+  UInt width;
+  UInt height;
+  Int input_format = -1;
+
+  sscanf( resolution.c_str(), "%ux%u", &width, &height );
+  if( width <= 0 || height <= 0 )
+  {
+    return false;
+  }
+  for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
+  {
+    if( PlaYUVerFrame::supportedPixelFormatListNames()[i] == input_format_name )
+    {
+      input_format = i;
+      break;
+    }
+  }
+  if( width > 0 && height > 0 && input_format >= 0 )
+  {
+    return open( filename, width, height, input_format, frame_rate, bInput );
+  }
+  return false;
+}
+
 Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int input_format, UInt frame_rate, Bool bInput )
 {
   if( m_bInit )

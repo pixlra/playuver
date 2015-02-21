@@ -115,6 +115,7 @@ public:
     END_OF_SEQ,
   };
 
+  Bool open( std::string filename, std::string resolution, std::string input_format, UInt frame_rate, Bool bInput = true );
   Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt frame_rate, Bool bInput = true );
   Void close();
 

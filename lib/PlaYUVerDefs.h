@@ -26,6 +26,7 @@
 #define __TYPEDEF_H__
 
 #include <string>
+#include <algorithm>
 
 namespace plaYUVer
 {
@@ -115,6 +116,13 @@ enum RGBcomponent
   COLOR_B,
   COLOR_A,
 };
+
+inline std::string lowercase( const std::string& in )
+{
+  std::string out;
+  transform( in.begin(), in.end(), std::back_inserter( out ), tolower );
+  return out;
+}
 
 }  // NAMESPACE
 

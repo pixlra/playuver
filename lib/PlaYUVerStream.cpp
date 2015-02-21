@@ -27,10 +27,11 @@
 #include <vector>
 #include "LibMemory.h"
 #include "PlaYUVerStream.h"
-#include <QString>
-#include <QImage>
 #ifdef USE_FFMPEG
 #include "LibAvContextHandle.h"
+#endif
+#ifdef USE_OPENCV
+#include <opencv2/opencv.hpp>
 #endif
 
 namespace plaYUVer
@@ -555,7 +556,6 @@ Bool PlaYUVerStream::saveFrame( const std::string& filename )
 
 Bool PlaYUVerStream::saveFrame( const std::string& filename, PlaYUVerFrame *saveFrame )
 {
-  QString qtString = QString::fromStdString( filename );
   Int iFileFormat = INVALID_HANDLER;
   std::string fmtExt;
 
@@ -585,12 +585,23 @@ Bool PlaYUVerStream::saveFrame( const std::string& filename, PlaYUVerFrame *save
       auxFrameStream.close();
       return true;
     }
+#if 0
     else
     {
       saveFrame->fillRGBBuffer();
       QImage qimg = QImage( saveFrame->getRGBBuffer(), saveFrame->getWidth(), saveFrame->getHeight(), QImage::Format_RGB32 );
       return qimg.save( qtString );
     }
+#endif
+#ifdef USE_OPENCV
+    else
+    {
+      cv::Mat* image;
+      saveFrame->getCvMat( (Void**)&image );
+      return cv::imwrite( filename, *image );
+    }
+
+#endif
   }
   return false;
 }

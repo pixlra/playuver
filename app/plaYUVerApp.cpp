@@ -846,6 +846,20 @@ Void plaYUVerApp::updateRecentFileActions()
   m_arrayMenu[RECENT_MENU]->setEnabled( m_aRecentFileStreamInfo.size() > 0 ? true : false );
 }
 
+Void plaYUVerApp::checkRecentFileActions()
+{
+  Int i = 0;
+  while( i < m_aRecentFileStreamInfo.size() )
+  {
+    if( !QFileInfo::exists( m_aRecentFileStreamInfo.at( i ).m_cFilename ) )
+    {
+      m_aRecentFileStreamInfo.remove( i );
+      continue;
+    }
+    i++;
+  }
+}
+
 Void plaYUVerApp::readSettings()
 {
   QSettings appSettings;
@@ -862,6 +876,7 @@ Void plaYUVerApp::readSettings()
 
   QVariant value = appSettings.value( "MainWindow/RecentFileList" );
   m_aRecentFileStreamInfo = value.value<PlaYUVerStreamInfoVector>();
+  checkRecentFileActions();
   updateRecentFileActions();
 
   m_appModuleVideo->readSettings();

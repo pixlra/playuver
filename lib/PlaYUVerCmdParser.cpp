@@ -23,6 +23,8 @@
  */
 
 #include "config.h"
+#include <iostream>
+#include <exception>
 #include <string>
 #include <vector>
 #include "PlaYUVerCmdParser.h"
@@ -30,11 +32,25 @@
 namespace plaYUVer
 {
 
+PlaYUVerCmdParser::PlaYUVerCmdParser( Int argc, Char *argv[] )
+{
+  m_iArgc = argc;
+  m_apcArgv = argv;
+  m_ParserOptions.add( GetCommandOpts() );
+}
+
+PlaYUVerCmdParser::~PlaYUVerCmdParser()
+{
+
+}
+
 po::options_description PlaYUVerCmdParser::GetCommandOpts()
 {
   po::options_description inputOpts( "Input" );
   inputOpts.add_options()
-      ( "input,i", po::value<std::string>(), "input file" )
+      ( "input,i", po::value<std::vector<std::string> >(), "input file" )
+      ( "size,s", po::value<std::string>(), "size (WxH)" )
+      ( "pel_fmt", po::value<std::string>(), "pixel format name" )
       ( "width,w", po::value<Int>(), "width" )
       ( "height,h", po::value<Int>(), "height" );
 
@@ -45,9 +61,49 @@ po::options_description PlaYUVerCmdParser::GetCommandOpts()
 
   po::options_description commonOpts( "Common" );
   commonOpts.add_options()
-      ( "help", "produce help message" );
+      ( "help", "produce help message" )
+      ( "version", "show version and exit" );
   commonOpts.add( inputOpts ).add( operationOpts );
   return commonOpts;
 }
+
+Void PlaYUVerCmdParser::addOptions( po::options_description opts  )
+{
+  m_ParserOptions.add( opts );
+}
+
+Bool PlaYUVerCmdParser::parse()
+{
+  try
+  {
+    po::store( po::command_line_parser( m_iArgc, m_apcArgv ).options( m_ParserOptions ).allow_unregistered().run(), m_cOptionsMap );
+    po::notify( m_cOptionsMap );
+
+    if( m_cOptionsMap.count( "help" ) )
+    {
+      std::cout << m_ParserOptions
+                << "\n";
+      return false;
+    }
+    if( m_cOptionsMap.count( "version" ) )
+    {
+      std::cout << "PlaYUVer version "
+          << PLAYUVER_VERSION_STRING
+          << "\n";
+      return false;
+    }
+  }
+  catch( std::exception& e )
+  {
+    std::cerr << "error: " << e.what() << "\n";
+    return false;
+  }
+  catch( ... )
+  {
+    std::cerr << "Exception of unknown type!\n";
+  }
+  return true;
+}
+
 
 }  // NAMESPACE

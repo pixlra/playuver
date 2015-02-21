@@ -1,6 +1,7 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014  by Luis Lucas      (luisfrlucas@gmail.com)
- *                           Joao Carreira   (jfmcarreira@gmail.com)
+ *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *
+ *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -22,50 +23,20 @@
  * \brief    main file
  */
 
-#include <lib/PlaYUVerCmdParser.h>
-#include <lib/PlaYUVerFrame.h>
-#include <lib/PlaYUVerStream.h>
+#include "PlaYUVerTools.h"
 
 using namespace plaYUVer;
-using namespace std;
 
 int main( int argc, char *argv[] )
 {
+  PlaYUVerTools PlaYUVerToolsApp;
 
-  try
+  if( PlaYUVerToolsApp.Init( argc, argv ) > 1 )
   {
-
-    po::options_description toolsOpt;
-    toolsOpt.add( PlaYUVerCmdParser::GetCommandOpts() );
-    po::variables_map vm;
-    po::store( po::parse_command_line( argc, argv, toolsOpt ), vm );
-    po::notify( vm );
-
-    if( vm.count( "help" ) )
-    {
-      cout << toolsOpt << "\n";
-      return 0;
-    }
-
-    if( vm.count( "compression" ) )
-    {
-      cout << "Compression level was set to " << vm["compression"].as<double>() << ".\n";
-    }
-    else
-    {
-      cout << "Compression level was not set.\n";
-    }
-  }
-  catch( exception& e )
-  {
-    cerr << "error: " << e.what() << "\n";
+    printf( "Exiting\n" );
     return 1;
   }
-  catch( ... )
-  {
-    cerr << "Exception of unknown type!\n";
-  }
 
-  PlaYUVerFrame pcFrameBuffer = new PlaYUVerFrame( 1024, 768, PlaYUVerFrame::YUV420p );
-  return 0;
+  PlaYUVerToolsApp.Process();
+
 }

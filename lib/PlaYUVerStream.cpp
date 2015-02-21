@@ -167,9 +167,10 @@ Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::st
   {
     return false;
   }
+
   for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
   {
-    if( PlaYUVerFrame::supportedPixelFormatListNames()[i] == input_format_name )
+    if( lowercase( PlaYUVerFrame::supportedPixelFormatListNames()[i] ) == lowercase( input_format_name ) )
     {
       input_format = i;
       break;

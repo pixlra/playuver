@@ -131,7 +131,7 @@ Void QualityHandle::slotQualityMetricChanged( Int idx )
 
 Void QualityHandle::slotSelectReference()
 {
-  DialogSubWindowSelector dialogWindowSelection( this, m_pcMainWindowManager, 1, 1 );
+  DialogSubWindowSelector dialogWindowSelection( this, m_pcMainWindowManager, SubWindowHandle::VIDEO_SUBWINDOW, 1, 1 );
   if( dialogWindowSelection.exec() == QDialog::Accepted )
   {
     VideoSubWindow* pcVideoSubWindow;

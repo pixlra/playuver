@@ -41,9 +41,6 @@ OPTION( PLAYUVER_WERROR              "Warnings as errors"       OFF )
 OPTION( PLAYUVER_THREADED_MODULES    "Use threads for modules"  OFF )
 OPTION( USE_QT4                      "Build with QT4"           OFF )
 
-ADD_FEATURE_INFO(Fervor USE_FERVOR "Fervor lib includes check for updates feature.")
-ADD_FEATURE_INFO(WErrors PLAYUVER_WERROR "Warnings as errors"  )
-
 #####################################################################################
 # Qt library
 ######################################################################################
@@ -101,6 +98,9 @@ IF( USE_FFMPEG )
   SET(USE_FFMPEG ${FFMPEG_FOUND})
 ENDIF()
 SET_PACKAGE_PROPERTIES(FFmpeg PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "Libav library support in PlaYUVerStream" TYPE OPTIONAL)
+
+ADD_FEATURE_INFO(Fervor USE_FERVOR "Fervor lib includes check for updates feature.")
+ADD_FEATURE_INFO(WErrors PLAYUVER_WERROR "Warnings as errors"  )
 
 IF( WIN32 )
   INCLUDE( cmake/Win32.cmake )

@@ -124,6 +124,7 @@ private:
 
   Void addStreamInfoToRecentList( PlaYUVerStreamInfo streamInfo );
   Void updateRecentFileActions();
+  Void checkRecentFileActions();
 
   Void readSettings();
   Void writeSettings();

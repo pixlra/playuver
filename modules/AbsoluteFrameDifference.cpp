@@ -23,6 +23,7 @@
  */
 
 #include "AbsoluteFrameDifference.h"
+#include <cstdlib>
 
 namespace plaYUVer
 {

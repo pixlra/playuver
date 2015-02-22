@@ -26,6 +26,7 @@
 #define __PLAYUVERMODULESFACTORY_H__
 
 #include <functional>
+#include <map>
 #include "PlaYUVerModuleIf.h"
 
 namespace plaYUVer

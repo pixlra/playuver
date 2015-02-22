@@ -159,7 +159,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   m_comboBoxPixelFormat->clear();
   for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
   {
-    m_comboBoxPixelFormat->insertItem( i, PlaYUVerFrame::supportedPixelFormatListNames()[i].data() );
+    m_comboBoxPixelFormat->insertItem( i, PlaYUVerFrame::supportedPixelFormatListNames()[i].c_str() );
   }
   m_comboBoxPixelFormat->setCurrentIndex( 1 );
 

@@ -452,21 +452,22 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 
       QString supported = tr( "Supported Files (" );
       QStringList formatsList;
-      QStringList formatsExt = PlaYUVerStream::supportedWriteFormatsExt();
-      QStringList formatsName = PlaYUVerStream::supportedWriteFormatsName();
+      std::vector<std::string> formatsExt = PlaYUVerStream::supportedWriteFormatsExt();
+      std::vector<std::string> formatsName = PlaYUVerStream::supportedWriteFormatsName();
 
-      for( Int i = 0; i < formatsName.size(); i++ )
+      for( UInt i = 0; i < formatsName.size(); i++ )
       {
         QString currFmt;
         supported.append( " *." );
-        supported.append( formatsExt[i] );
-        currFmt.append( formatsName[i] );
+        supported.append( QString::fromStdString( formatsExt[i] ) );
+        currFmt.append( QString::fromStdString( formatsName[i] ) );
         currFmt.append( " (*." );
-        currFmt.append( formatsExt[i] );
+        currFmt.append( QString::fromStdString( formatsExt[i] ) );
         currFmt.append( ")" );
         formatsList << currFmt;
       }
       supported.append( " )" );
+
 
       QStringList filter;
       filter << supported

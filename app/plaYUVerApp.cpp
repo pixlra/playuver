@@ -91,8 +91,8 @@ Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
     {
       loadFile( argv[i] );
     }
-//    m_pcWindowHandle->tileSubWindows();
-//    zoomToFitAll();
+    m_pcWindowHandle->tileSubWindows();
+    zoomToFitAll();
   }
 }
 
@@ -218,17 +218,17 @@ Void plaYUVerApp::open()
 {
   QString supported = tr( "Supported Files (" );
   QStringList formatsList;
-  QStringList formatsExt = PlaYUVerStream::supportedReadFormatsExt();
-  QStringList formatsName = PlaYUVerStream::supportedReadFormatsName();
+  std::vector<std::string> formatsExt = PlaYUVerStream::supportedReadFormatsExt();
+  std::vector<std::string> formatsName = PlaYUVerStream::supportedReadFormatsName();
 
-  for( Int i = 0; i < formatsName.size(); i++ )
+  for( UInt i = 0; i < formatsName.size(); i++ )
   {
     QString currFmt;
     supported.append( " *." );
-    supported.append( formatsExt[i] );
-    currFmt.append( formatsName[i] );
+    supported.append( QString::fromStdString( formatsExt[i] ) );
+    currFmt.append( QString::fromStdString( formatsName[i] ) );
     currFmt.append( " (*." );
-    currFmt.append( formatsExt[i] );
+    currFmt.append( QString::fromStdString( formatsExt[i] ) );
     currFmt.append( ")" );
     formatsList << currFmt;
   }
@@ -265,17 +265,17 @@ Void plaYUVerApp::save()
     VideoSubWindow *saveWindow = m_pcCurrentVideoSubWindow;
     QString supported = tr( "Supported Files (" );
     QStringList formatsList;
-    QStringList formatsExt = PlaYUVerStream::supportedSaveFormatsExt();
-    QStringList formatsName = PlaYUVerStream::supportedSaveFormatsName();
+    std::vector<std::string> formatsExt = PlaYUVerStream::supportedSaveFormatsExt();
+    std::vector<std::string> formatsName = PlaYUVerStream::supportedSaveFormatsName();
 
-    for( Int i = 0; i < formatsName.size(); i++ )
+    for( UInt i = 0; i < formatsName.size(); i++ )
     {
       QString currFmt;
       supported.append( " *." );
-      supported.append( formatsExt[i] );
-      currFmt.append( formatsName[i] );
+      supported.append( QString::fromStdString( formatsExt[i] ) );
+      currFmt.append( QString::fromStdString( formatsName[i] ) );
       currFmt.append( " (*." );
-      currFmt.append( formatsExt[i] );
+      currFmt.append( QString::fromStdString( formatsExt[i] ) );
       currFmt.append( ")" );
       formatsList << currFmt;
     }
@@ -408,7 +408,6 @@ Void plaYUVerApp::zoomToFitAll()
   if( m_pcCurrentSubWindow )
     updateZoomFactorSBox();
 }
-
 
 Void plaYUVerApp::scaleFrame( int ratio )
 {
@@ -846,6 +845,20 @@ Void plaYUVerApp::updateRecentFileActions()
   m_arrayMenu[RECENT_MENU]->setEnabled( m_aRecentFileStreamInfo.size() > 0 ? true : false );
 }
 
+Void plaYUVerApp::checkRecentFileActions()
+{
+  Int i = 0;
+  while( i < m_aRecentFileStreamInfo.size() )
+  {
+    if( !QFileInfo::exists( m_aRecentFileStreamInfo.at( i ).m_cFilename ) )
+    {
+      m_aRecentFileStreamInfo.remove( i );
+      continue;
+    }
+    i++;
+  }
+}
+
 Void plaYUVerApp::readSettings()
 {
   QSettings appSettings;
@@ -862,6 +875,7 @@ Void plaYUVerApp::readSettings()
 
   QVariant value = appSettings.value( "MainWindow/RecentFileList" );
   m_aRecentFileStreamInfo = value.value<PlaYUVerStreamInfoVector>();
+  checkRecentFileActions();
   updateRecentFileActions();
 
   m_appModuleVideo->readSettings();

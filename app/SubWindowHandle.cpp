@@ -39,8 +39,8 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
 
   // Create a new scroll area inside the sub-window
-  connect( horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValue() ) );
-  connect( verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValue() ) );
+  connect( horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValues() ) );
+  connect( verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValues() ) );
 
   setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -75,13 +75,11 @@ Void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
   m_cCurrScroll.setX(int( cLastScroll.x() + Offset.x() ));
   m_cCurrScroll.setY(int( cLastScroll.y() + Offset.y() ));
 
-  if(!widget()->visibleRegion().isEmpty())
-  {
-    QScrollBar *scrollBar = horizontalScrollBar();
-    scrollBar->setValue( m_cCurrScroll.x() );
-    scrollBar = verticalScrollBar();
-    scrollBar->setValue( m_cCurrScroll.y() );
-  }
+  // Update window scroll
+  QScrollBar *scrollBar = horizontalScrollBar();
+  scrollBar->setValue( m_cCurrScroll.x() );
+  scrollBar = verticalScrollBar();
+  scrollBar->setValue( m_cCurrScroll.y() );
 }
 
 // This function was developed with help of the schematics presented in
@@ -121,18 +119,15 @@ Void SubWindowHandle::adjustScrollBarByScale( Double scale, QPoint center )
     m_cCurrScroll.setY(value);
   }
 
-  if(!widget()->visibleRegion().isEmpty())
-  {
-    scrollBar = horizontalScrollBar();
-    scrollBar->setValue( m_cCurrScroll.x() );
-    scrollBar = verticalScrollBar();
-    scrollBar->setValue( m_cCurrScroll.y() );
-  }
+  // Update window scroll
+  scrollBar = horizontalScrollBar();
+  scrollBar->setValue( m_cCurrScroll.x() );
+  scrollBar = verticalScrollBar();
+  scrollBar->setValue( m_cCurrScroll.y() );
 
-  update();
 }
 
-Void SubWindowHandle::updateCurScrollValue()
+Void SubWindowHandle::updateCurScrollValues()
 {
   QScrollBar *scrollBar = horizontalScrollBar();
   m_cCurrScroll.setX( scrollBar->value() );

@@ -138,7 +138,7 @@ public Q_SLOTS:
   void onDestroyed();
   void adjustScrollBarByScale( double scale, QPoint center );
   void adjustScrollBarByOffset( QPoint Offset );
-  void updateCurScrollValue();
+  void updateCurScrollValues();
   void setCurScrollValues();
 
 };

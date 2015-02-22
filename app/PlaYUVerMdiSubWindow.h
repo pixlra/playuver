@@ -49,7 +49,6 @@ Q_SIGNALS:
 protected:
   QSize sizeHint() const;
   void closeEvent( QCloseEvent *event );
-
 };
 
 }  // NAMESPACE

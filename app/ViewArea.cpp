@@ -49,8 +49,6 @@ static const QColor eraserColor = Qt::red;
 ViewArea::ViewArea( QWidget *parent ) :
         QWidget( parent )
 {
-  setAttribute( Qt::WA_StaticContents );
-//     setAttribute( Qt::WA_NoBackground );
   setMouseTracking( true );
 
   m_pcCurrFrame = NULL;

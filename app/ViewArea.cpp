@@ -114,7 +114,18 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
   Double maxZoom = 100.0;
   Double minZoom = 0.01;  //( 1.0 / m_pixmap.width() );
   Double new_scale = 1.0;
-  Double zoomFactor = m_zoomFactor * scale;
+
+  if( ( m_zoomFactor == minZoom ) && ( scale < 1 ) )
+    return new_scale;
+
+  if( ( m_zoomFactor == maxZoom ) && ( scale > 1 ) )
+    return new_scale;
+
+  Double zoomFactor = m_zoomFactor * scale * 100.0;
+  zoomFactor=round(zoomFactor);
+  zoomFactor=zoomFactor/100.0;
+  scale = zoomFactor/m_zoomFactor;
+
 
   if(!minimumSize.isNull())
   {
@@ -140,17 +151,12 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
       else
         scale = hfactor;
 
-      zoomFactor = zoomFactor * scale;
+      zoomFactor = zoomFactor * scale * 100.0;
+      zoomFactor=round(zoomFactor);
+      zoomFactor=zoomFactor/100.0;
       scale = zoomFactor/m_zoomFactor;
     }
   }
-
-  if( ( m_zoomFactor == minZoom ) && ( scale < 1 ) )
-    return new_scale;
-
-  if( ( m_zoomFactor == maxZoom ) && ( scale > 1 ) )
-    return new_scale;
-
 
   new_scale = scale;
 

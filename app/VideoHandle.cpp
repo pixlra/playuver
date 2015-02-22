@@ -314,13 +314,17 @@ Void VideoHandle::moveAllScrollBars( const QPoint offset )
 {
   if( m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() )
   {
+    SubWindowHandle *subWindow;
     QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
-      if( m_pcCurrentVideoSubWindow == subWindowList.at( i ) )
+      subWindow = subWindowList.at( i );
+      if( m_pcCurrentVideoSubWindow == subWindow )
         continue;
       else
-        subWindowList.at( i )->adjustScrollBarByOffset( offset );
+      {
+          subWindow->adjustScrollBarByOffset( offset );
+      }
     }
   }
 }

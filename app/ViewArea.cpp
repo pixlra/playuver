@@ -331,6 +331,9 @@ void ViewArea::paintEvent( QPaintEvent *event )
 {
   QRect winRect = event->rect();
 
+  if(visibleRegion().isEmpty())
+    return;
+
   if( size().isEmpty() || m_pixmap.isNull() )
     return;
 

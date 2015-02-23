@@ -102,7 +102,7 @@ public:
   static UInt64 getBytesPerFrame( UInt, UInt, Int );
 
   Int getColorSpace() const;
-  Int getNumberChannels() const;
+  UInt getNumberChannels() const;
   UInt getChromaWidth() const;
   UInt getChromaHeight() const;
   UInt getChromaLength() const;

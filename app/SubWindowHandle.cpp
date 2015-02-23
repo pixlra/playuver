@@ -39,8 +39,8 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
 
   // Create a new scroll area inside the sub-window
-  connect( horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
-  connect( verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateLastScrollValue() ) );
+  connect( horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValues() ) );
+  connect( verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValues() ) );
 
   setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -71,60 +71,91 @@ QSize SubWindowHandle::getScrollSize()
 
 Void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
 {
-  QScrollBar *scrollBar = horizontalScrollBar();
-  scrollBar->setValue( int( scrollBar->value() + Offset.x() ) );
-  m_cLastScroll.setX( scrollBar->value() );
-  scrollBar = verticalScrollBar();
-  scrollBar->setValue( int( scrollBar->value() + Offset.y() ) );
-  m_cLastScroll.setY( scrollBar->value() );
-  updateLastScrollValue();
+  QPoint cLastScroll = m_cCurrScroll;
+  QScrollBar *scrollBarH, *scrollBarV;
+  Int valueX, valueY;
+
+  valueX = int( cLastScroll.x() + Offset.x() );
+  valueY = int( cLastScroll.y() + Offset.y() );
+
+  scrollBarH = horizontalScrollBar();
+  if( valueX > scrollBarH->maximum() )
+    valueX = scrollBarH->maximum();
+  if( valueX < scrollBarH->minimum() )
+    valueX = scrollBarH->minimum();
+  m_cCurrScroll.setX(valueX);
+
+  scrollBarV = verticalScrollBar();
+  if( valueY > scrollBarV->maximum() )
+    valueY = scrollBarV->maximum();
+  if( valueY < scrollBarV->minimum() )
+    valueY = scrollBarV->minimum();
+  m_cCurrScroll.setY( valueY );
+
+  // Update window scroll
+  scrollBarH->setValue( m_cCurrScroll.x() );
+  scrollBarV->setValue( m_cCurrScroll.y() );
 }
 
 // This function was developed with help of the schematics presented in
 // http://stackoverflow.com/questions/13155382/jscrollpane-zoom-relative-to-mouse-position
 Void SubWindowHandle::adjustScrollBarByScale( Double scale, QPoint center )
 {
-  QScrollBar *scrollBar = horizontalScrollBar();
+  QPoint cLastScroll = m_cCurrScroll;
+  QScrollBar *scrollBarH, *scrollBarV;
+
+  scrollBarH = horizontalScrollBar();
   if( center.isNull() )
   {
-    scrollBar->setValue( int( scale * scrollBar->value() + ( ( scale - 1 ) * scrollBar->pageStep() / 2 ) ) );
+    m_cCurrScroll.setX(int( scale * cLastScroll.x() + ( ( scale - 1 ) * scrollBarH->pageStep() / 2 ) ));
   }
   else
   {
-    Int x = center.x() - m_cLastScroll.x();
-    Int value = int( scale * m_cLastScroll.x() + ( ( scale - 1 ) * x ) );
-    if( value > scrollBar->maximum() )
-      value = scrollBar->maximum();
-    if( value < scrollBar->minimum() )
-      value = scrollBar->minimum();
-    scrollBar->setValue( value );
+    Int x = center.x() - cLastScroll.x();
+    Int value = int( scale * cLastScroll.x() + ( ( scale - 1 ) * x ) );
+    if( value > scrollBarH->maximum() )
+      value = scrollBarH->maximum();
+    if( value < scrollBarH->minimum() )
+      value = scrollBarH->minimum();
+    m_cCurrScroll.setX(value);
   }
 
-  scrollBar = verticalScrollBar();
+  scrollBarV = verticalScrollBar();
   if( center.isNull() )
   {
-    scrollBar->setValue( int( scale * scrollBar->value() + ( ( scale - 1 ) * scrollBar->pageStep() / 2 ) ) );
+    m_cCurrScroll.setY(int( scale * cLastScroll.y() + ( ( scale - 1 ) * scrollBarV->pageStep() / 2 ) ));
   }
   else
   {
-    Int y = center.y() - m_cLastScroll.y();
-    Int value = int( scale * m_cLastScroll.y() + ( ( scale - 1 ) * y ) );
-    if( value > scrollBar->maximum() )
-      value = scrollBar->maximum();
-    if( value < scrollBar->minimum() )
-      value = scrollBar->minimum();
-    scrollBar->setValue( value );
+    Int y = center.y() - cLastScroll.y();
+    Int value = int( scale * cLastScroll.y() + ( ( scale - 1 ) * y ) );
+    if( value > scrollBarV->maximum() )
+      value = scrollBarV->maximum();
+    if( value < scrollBarV->minimum() )
+      value = scrollBarV->minimum();
+    m_cCurrScroll.setY(value);
   }
 
-  updateLastScrollValue();
+  // Update window scroll
+  scrollBarH->setValue( m_cCurrScroll.x() );
+  scrollBarV->setValue( m_cCurrScroll.y() );
+
 }
 
-Void SubWindowHandle::updateLastScrollValue()
+Void SubWindowHandle::updateCurScrollValues()
 {
   QScrollBar *scrollBar = horizontalScrollBar();
-  m_cLastScroll.setX( scrollBar->value() );
+  m_cCurrScroll.setX( scrollBar->value() );
   scrollBar = verticalScrollBar();
-  m_cLastScroll.setY( scrollBar->value() );
+  m_cCurrScroll.setY( scrollBar->value() );
+}
+
+Void SubWindowHandle::setCurScrollValues()
+{
+  QScrollBar *scrollBar = horizontalScrollBar();
+  scrollBar->setValue(m_cCurrScroll.x() );
+  scrollBar = verticalScrollBar();
+  scrollBar->setValue(m_cCurrScroll.y() );
 }
 
 Void SubWindowHandle::setWindowName( QString name )

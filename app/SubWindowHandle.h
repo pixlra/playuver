@@ -44,6 +44,7 @@ Q_OBJECT
 
 private:
   QPoint m_cLastScroll;
+  QPoint m_cCurrScroll;
 
   UInt m_uiCategory;
   QString m_cWindowName;
@@ -134,10 +135,11 @@ Q_SIGNALS:
   void aboutToClose( SubWindowHandle* );
 
 public Q_SLOTS:
-void onDestroyed();
+  void onDestroyed();
   void adjustScrollBarByScale( double scale, QPoint center );
   void adjustScrollBarByOffset( QPoint Offset );
-  void updateLastScrollValue();
+  void updateCurScrollValues();
+  void setCurScrollValues();
 
 };
 

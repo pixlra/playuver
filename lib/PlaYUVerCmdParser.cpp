@@ -49,10 +49,10 @@ po::options_description PlaYUVerCmdParser::GetCommandOpts()
   po::options_description inputOpts( "Input" );
   inputOpts.add_options()
       ( "input,i", po::value<std::vector<std::string> >(), "input file" )
+      ( "output,o", po::value<std::vector<std::string> >(), "output file" )
       ( "size,s", po::value<std::string>(), "size (WxH)" )
       ( "pel_fmt", po::value<std::string>(), "pixel format name" )
-      ( "width,w", po::value<Int>(), "width" )
-      ( "height,h", po::value<Int>(), "height" );
+      ( "frames,f", po::value<UInt>(), "number of frames" );
 
   po::options_description operationOpts( "Operation" );
   operationOpts.add_options()

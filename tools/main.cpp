@@ -31,12 +31,22 @@ int main( int argc, char *argv[] )
 {
   PlaYUVerTools PlaYUVerToolsApp;
 
-  if( PlaYUVerToolsApp.Init( argc, argv ) > 1 )
+  if( PlaYUVerToolsApp.Open( argc, argv ) > 1 )
   {
     printf( "Exiting\n" );
     return 1;
   }
 
-  PlaYUVerToolsApp.Process();
+  if( PlaYUVerToolsApp.Process() > 1 )
+  {
+    printf( "Exiting\n" );
+    return 1;
+  }
+
+  if( PlaYUVerToolsApp.Close() > 1 )
+  {
+    printf( "Exiting\n" );
+    return 1;
+  }
 
 }

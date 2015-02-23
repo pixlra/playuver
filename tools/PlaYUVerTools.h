@@ -40,8 +40,9 @@ public:
   PlaYUVerTools();
   ~PlaYUVerTools();
 
-  Int Init( Int argc, Char *argv[] );
-  Void Process();
+  Int Open( Int argc, Char *argv[] );
+  Int Process();
+  Int Close();
 
 private:
   UInt m_uiOperation;
@@ -54,6 +55,7 @@ private:
   };
 
   UInt m_uiNumberOfFrames;
+  UInt m_uiNumberOfComponents;
   std::vector<PlaYUVerStream*> m_apcInputStreams;
   std::vector<PlaYUVerStream*> m_apcOutputStreams;
 

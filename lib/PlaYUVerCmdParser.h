@@ -50,6 +50,8 @@ private:
   Char** m_apcArgv;
   po::options_description m_ParserOptions;
   po::variables_map m_cOptionsMap;
+
+  Bool checkListingOpts();
 };
 
 }  // NAMESPACE

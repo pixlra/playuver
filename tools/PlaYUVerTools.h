@@ -45,6 +45,8 @@ public:
   Int Close();
 
 private:
+  PlaYUVerCmdParser m_cCommandLineParser;
+
   UInt m_uiOperation;
   Int m_uiOperationIndex;
   enum TOOLS_OPERATIONS_LIST
@@ -59,7 +61,13 @@ private:
   std::vector<PlaYUVerStream*> m_apcInputStreams;
   std::vector<PlaYUVerStream*> m_apcOutputStreams;
 
-  Void qualityOperation();
+  Int openInputs();
+  Int openOutputs();
+
+  typedef Int (PlaYUVerTools::*FpProcess) ();
+  FpProcess m_fpProcess;
+
+  Int QualityOperation();
 };
 
 }  // NAMESPACE

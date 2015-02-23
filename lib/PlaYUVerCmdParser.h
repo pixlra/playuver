@@ -32,9 +32,10 @@ namespace plaYUVer
 class PlaYUVerCmdParser
 {
 public:
-  PlaYUVerCmdParser( Int argc, Char *argv[] );
+  PlaYUVerCmdParser();
   ~PlaYUVerCmdParser();
 
+  Void Config( Int argc, Char *argv[] );
   Void addOptions( po::options_description );
   Bool parse();
 

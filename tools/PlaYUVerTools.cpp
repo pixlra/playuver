@@ -45,33 +45,25 @@ PlaYUVerTools::~PlaYUVerTools()
   }
 }
 
-Int PlaYUVerTools::Open( Int argc, Char *argv[] )
+Int PlaYUVerTools::openInputs()
 {
-
-  PlaYUVerCmdParser cCommandLineParser( argc, argv );
-
-  if( !cCommandLineParser.parse() )
-  {
-    return 1;
-  }
-
   /**
    * Create input streams
    */
-  if( cCommandLineParser.getOptionsMap().count( "input" ) )
+  if( m_cCommandLineParser.getOptionsMap().count( "input" ) )
   {
     std::string resolutionString;
-    if( cCommandLineParser.getOptionsMap().count( "size" ) )
+    if( m_cCommandLineParser.getOptionsMap().count( "size" ) )
     {
-      resolutionString = cCommandLineParser.getOptionsMap()["size"].as<std::string>();
+      resolutionString = m_cCommandLineParser.getOptionsMap()["size"].as<std::string>();
     }
     std::string fmtString( "yuv420p" );
-    if( cCommandLineParser.getOptionsMap().count( "pel_fmt" ) )
+    if( m_cCommandLineParser.getOptionsMap().count( "pel_fmt" ) )
     {
-      fmtString = cCommandLineParser.getOptionsMap()["pel_fmt"].as<std::string>();
+      fmtString = m_cCommandLineParser.getOptionsMap()["pel_fmt"].as<std::string>();
     }
 
-    std::vector<std::string> inputFileNames = cCommandLineParser.getOptionsMap()["input"].as<std::vector<std::string> >();
+    std::vector<std::string> inputFileNames = m_cCommandLineParser.getOptionsMap()["input"].as<std::vector<std::string> >();
 
     PlaYUVerStream* pcStream;
     for( UInt i = 0; i < inputFileNames.size(); i++ )
@@ -85,9 +77,9 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
       m_apcInputStreams.push_back( pcStream );
     }
     m_uiNumberOfFrames = MAX_UINT;
-    if( cCommandLineParser.getOptionsMap().count( "frames" ) )
+    if( m_cCommandLineParser.getOptionsMap().count( "frames" ) )
     {
-      m_uiNumberOfFrames = cCommandLineParser.getOptionsMap()["frames"].as<UInt>();
+      m_uiNumberOfFrames = m_cCommandLineParser.getOptionsMap()["frames"].as<UInt>();
     }
 
     m_uiNumberOfComponents = MAX_UINT;
@@ -99,21 +91,38 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
         m_uiNumberOfComponents = m_apcInputStreams[i]->getCurrFrame()->getNumberChannels();
     }
   }
+  return 0;
+}
 
-  /**
-   * Create output streams
-   */
-  if( cCommandLineParser.getOptionsMap().count( "output" ) )
+Int PlaYUVerTools::openOutputs()
+{
+  if( m_cCommandLineParser.getOptionsMap().count( "output" ) )
   {
 
   }
+  return 0;
+}
+
+Int PlaYUVerTools::Open( Int argc, Char *argv[] )
+{
+  m_cCommandLineParser.Config( argc, argv );
+  if( !m_cCommandLineParser.parse() )
+  {
+    return 1;
+  }
+
+  if( openInputs() > 0 || openOutputs() > 0 )
+  {
+    return 2;
+  }
+
   /**
    * Check Quality operation
    */
-  if( cCommandLineParser.getOptionsMap().count( "quality" ) )
+  if( m_cCommandLineParser.getOptionsMap().count( "quality" ) )
   {
     m_uiOperationIndex = -1;
-    std::string qualityMetric = cCommandLineParser.getOptionsMap()["quality"].as<std::string>();
+    std::string qualityMetric = m_cCommandLineParser.getOptionsMap()["quality"].as<std::string>();
     if( m_apcInputStreams.size() != 2 )
     {
       printf( "Invalid number of inputs! " );
@@ -132,12 +141,13 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
       return 2;
     }
     m_uiOperation = QUALITY_OPERATION;
+    m_fpProcess = &PlaYUVerTools::QualityOperation;
   }
 
   /**
    * Check Module operation
    */
-  if( cCommandLineParser.getOptionsMap().count( "module" ) )
+  if( m_cCommandLineParser.getOptionsMap().count( "module" ) )
   {
 
   }
@@ -152,14 +162,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
 
 Int PlaYUVerTools::Process()
 {
-  switch( m_uiOperation )
-  {
-  case QUALITY_OPERATION:
-    printf( "  Measuring Quality using %s ... \n", PlaYUVerFrame::supportedQualityMetricsList()[m_uiOperationIndex].c_str() );
-    qualityOperation();
-    break;
-  }
-  return 0;
+  return (this->*m_fpProcess)();
 }
 
 Int PlaYUVerTools::Close()
@@ -168,12 +171,14 @@ Int PlaYUVerTools::Close()
   return 0;
 }
 
-Void PlaYUVerTools::qualityOperation()
+Int PlaYUVerTools::QualityOperation()
 {
   PlaYUVerFrame* apcCurrFrame[m_apcInputStreams.size()];
   Bool abEOF[m_apcInputStreams.size()];
   Double adAverageQuality[m_apcInputStreams.size() - 1][m_uiNumberOfComponents];
   Double dQuality;
+
+  printf( "  Measuring Quality using %s ... \n", PlaYUVerFrame::supportedQualityMetricsList()[m_uiOperationIndex].c_str() );
 
   for( UInt s = 0; s < m_apcInputStreams.size(); s++ )
   {
@@ -218,7 +223,8 @@ Void PlaYUVerTools::qualityOperation()
       printf( "  %5.3f", adAverageQuality[s][c] );
     }
   }
-  printf( "\n");
+  printf( "\n" );
+  return 0;
 }
 
 }  // NAMESPACE

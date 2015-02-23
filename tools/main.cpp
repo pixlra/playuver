@@ -29,9 +29,15 @@ using namespace plaYUVer;
 
 int main( int argc, char *argv[] )
 {
+  Int iRet = 0;
   PlaYUVerTools PlaYUVerToolsApp;
 
-  if( PlaYUVerToolsApp.Open( argc, argv ) > 1 )
+  iRet = PlaYUVerToolsApp.Open( argc, argv );
+  if( iRet == 1 )
+  {
+    return 0;
+  }
+  if( iRet > 1 )
   {
     printf( "Exiting\n" );
     return 1;

@@ -33,16 +33,22 @@
 namespace plaYUVer
 {
 
-PlaYUVerCmdParser::PlaYUVerCmdParser( Int argc, Char *argv[] )
+PlaYUVerCmdParser::PlaYUVerCmdParser()
 {
-  m_iArgc = argc;
-  m_apcArgv = argv;
+  m_iArgc = 0;
+  m_apcArgv = NULL;
   m_ParserOptions.add( GetCommandOpts() );
 }
 
 PlaYUVerCmdParser::~PlaYUVerCmdParser()
 {
 
+}
+
+Void PlaYUVerCmdParser::Config( Int argc, Char *argv[] )
+{
+  m_iArgc = argc;
+  m_apcArgv = argv;
 }
 
 po::options_description PlaYUVerCmdParser::GetCommandOpts()

@@ -120,7 +120,7 @@ Int PlaYUVerFrame::getColorSpace() const
   return m_pcPelFormat->colorSpace;
 }
 
-Int PlaYUVerFrame::getNumberChannels() const
+UInt PlaYUVerFrame::getNumberChannels() const
 {
   return m_pcPelFormat->numberChannels;
 }

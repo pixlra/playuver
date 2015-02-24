@@ -38,7 +38,8 @@ public:
   CommandLineHandle();
   ~CommandLineHandle();
 
-  Int ParseToolsArgs();
+  Int parseToolsArgs();
+  Void listModules();
 
 };
 

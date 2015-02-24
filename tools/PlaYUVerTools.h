@@ -34,6 +34,8 @@
 namespace plaYUVer
 {
 
+class PlaYUVerModuleIf;
+
 class PlaYUVerTools
 {
 public:
@@ -48,7 +50,6 @@ private:
   CommandLineHandle m_cCommandLineParser;
 
   UInt m_uiOperation;
-  Int m_uiOperationIndex;
   enum TOOLS_OPERATIONS_LIST
   {
     INVALID_OPERATION,
@@ -67,7 +68,12 @@ private:
   typedef Int (PlaYUVerTools::*FpProcess) ();
   FpProcess m_fpProcess;
 
+
+  Int m_uiQualityMetric;
   Int QualityOperation();
+
+  PlaYUVerModuleIf* m_pcCurrModuleIf;
+  Int ModuleOperation();
 };
 
 }  // NAMESPACE

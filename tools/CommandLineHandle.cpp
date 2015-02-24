@@ -22,8 +22,11 @@
  * \brief    Handle for command line
  */
 
+#include <cstring>
 #include "CommandLineHandle.h"
 #include "lib/PlaYUVerFrame.h"
+#include "modules/PlaYUVerModuleIf.h"
+#include "modules/PlaYUVerModuleFactory.h"
 
 namespace plaYUVer
 {
@@ -38,7 +41,7 @@ CommandLineHandle::~CommandLineHandle()
 
 }
 
-Int CommandLineHandle::ParseToolsArgs()
+Int CommandLineHandle::parseToolsArgs()
 {
   Int iRet = 0;
 
@@ -70,7 +73,58 @@ Int CommandLineHandle::ParseToolsArgs()
     iRet = 1;
   }
 
+  if( getOptionsMap().count( "module_list" ) )
+  {
+    listModules();
+    iRet = 1;
+  }
+
   return iRet;
+}
+
+Void CommandLineHandle::listModules()
+{
+  PlaYUVerModuleIf* pcCurrModuleIf;
+  PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
+  PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
+
+  printf( "PlaYUVer available modules: \n" );
+  //printf( "                                           " );
+  printf( "   [Name]                                  " );
+  printf( "   [Type]        " );
+  printf( "   [Description]" );
+  printf( " \n" );
+
+  Char ModuleNameString[40];
+
+  for( UInt i = 0; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ )
+  {
+    ModuleNameString[0] = '\0';
+
+    pcCurrModuleIf = it->second();
+
+    printf( "   " );
+    if( pcCurrModuleIf->m_pchModuleCategory )
+    {
+      strcat( ModuleNameString, pcCurrModuleIf->m_pchModuleCategory );
+      strcat( ModuleNameString, "/" );
+    }
+    strcat( ModuleNameString, pcCurrModuleIf->m_pchModuleName );
+    printf( "%-40s", ModuleNameString );
+    switch( pcCurrModuleIf->m_iModuleType )
+    {
+    case FRAME_PROCESSING_MODULE:
+      printf( "   Processing    " );
+      break;
+    case FRAME_MEASUREMENT_MODULE:
+      printf( "   Measurement   " );
+      break;
+    }
+    printf( "   %s", pcCurrModuleIf->m_pchModuleTooltip );
+    printf( "\n" );
+    pcCurrModuleIf->Delete();
+  }
+
 }
 
 }  // NAMESPACE

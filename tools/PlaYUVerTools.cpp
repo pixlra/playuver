@@ -113,10 +113,12 @@ Int PlaYUVerTools::openOutputs()
 
 Int PlaYUVerTools::Open( Int argc, Char *argv[] )
 {
+  Int iRet = 0;
+
   m_cCommandLineParser.Config( argc, argv );
-  if( !m_cCommandLineParser.parse() )
+  if( ( iRet = m_cCommandLineParser.ParseToolsArgs() ) > 0 )
   {
-    return 1;
+    return iRet;
   }
 
   if( openInputs() > 0 )
@@ -165,7 +167,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
     printf( "No operation was selected! " );
     return 2;
   }
-  return 0;
+  return iRet;
 }
 
 Int PlaYUVerTools::Process()

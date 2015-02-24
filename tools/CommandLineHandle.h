@@ -38,6 +38,7 @@ public:
   CommandLineHandle();
   ~CommandLineHandle();
 
+  Int ParseToolsArgs();
 
 };
 

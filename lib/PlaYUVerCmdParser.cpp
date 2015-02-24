@@ -62,21 +62,11 @@ po::options_description PlaYUVerCmdParser::GetCommandOpts()
   ( "pel_fmts", "list pixel formats" ) /**/
   ( "frames,f", po::value<UInt>(), "number of frames" );
 
-  po::options_description qualityOpts( "Quality" );
-  qualityOpts.add_options() /**/
-  ( "quality", po::value<std::string>(), "select a quality metric" ) /**/
-  ( "quality_metrics", "list supported quality metrics" );
-
-  po::options_description moduleOpts( "Module" );
-  moduleOpts.add_options() /**/
-    ( "module", po::value<std::string>(), "select a module" ) /**/
-    ( "module_list", "list supported modules" );
-
   po::options_description commonOpts( "Common" );
   commonOpts.add_options()/**/
   ( "help", "produce help message" )/**/
   ( "version", "show version and exit" );
-  commonOpts.add( inputOpts ).add( qualityOpts ).add( moduleOpts );
+  commonOpts.add( inputOpts );
   return commonOpts;
 }
 
@@ -133,16 +123,6 @@ Bool PlaYUVerCmdParser::checkListingOpts()
     for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
     {
       printf( "   %s\n", PlaYUVerFrame::supportedPixelFormatListNames()[i].c_str() );
-    }
-    bRet |= true;
-  }
-
-  if( m_cOptionsMap.count( "quality_metrics" ) )
-  {
-    printf( "PlaYUVer supported quality metrics: \n" );
-    for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
-    {
-      printf( "   %s\n", PlaYUVerFrame::supportedQualityMetricsList()[i].c_str() );
     }
     bRet |= true;
   }

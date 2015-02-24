@@ -23,6 +23,7 @@
  */
 
 #include "CommandLineHandle.h"
+#include "lib/PlaYUVerFrame.h"
 
 namespace plaYUVer
 {
@@ -37,5 +38,39 @@ CommandLineHandle::~CommandLineHandle()
 
 }
 
+Int CommandLineHandle::ParseToolsArgs()
+{
+  Int iRet = 0;
+
+  po::options_description qualityOpts( "Quality" );
+  qualityOpts.add_options() /**/
+  ( "quality", po::value<std::string>(), "select a quality metric" ) /**/
+  ( "quality_metrics", "list supported quality metrics" );
+
+  po::options_description moduleOpts( "Module" );
+  moduleOpts.add_options() /**/
+  ( "module", po::value<std::string>(), "select a module" ) /**/
+  ( "module_list", "list supported modules" );
+
+  addOptions( qualityOpts );
+  addOptions( moduleOpts );
+
+  if( !parse() )
+  {
+    iRet = 1;
+  }
+
+  if( getOptionsMap().count( "quality_metrics" ) )
+  {
+    printf( "PlaYUVer supported quality metrics: \n" );
+    for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
+    {
+      printf( "   %s\n", PlaYUVerFrame::supportedQualityMetricsList()[i].c_str() );
+    }
+    iRet = 1;
+  }
+
+  return iRet;
+}
 
 }  // NAMESPACE

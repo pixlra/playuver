@@ -9,9 +9,9 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/../ )
 
 set(plaYUver_Tools_SRCS
-  # Main
   main.cpp
   PlaYUVerTools.cpp
+  CommandLineHandle.cpp
 )
 
 ADD_EXECUTABLE( ${PROJECT_NAME}Tools ${plaYUver_Tools_SRCS} )

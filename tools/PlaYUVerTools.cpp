@@ -52,7 +52,7 @@ Int PlaYUVerTools::openInputs()
    */
   if( m_cCommandLineParser.getOptionsMap().count( "input" ) )
   {
-    std::string resolutionString;
+    std::string resolutionString("");
     if( m_cCommandLineParser.getOptionsMap().count( "size" ) )
     {
       resolutionString = m_cCommandLineParser.getOptionsMap()["size"].as<std::string>();
@@ -80,8 +80,8 @@ Int PlaYUVerTools::openInputs()
       }
       catch( const char *msg )
       {
-        printf( "Cannot open input stream %s with the following error: \n%s", inputFileNames[i].c_str(), msg );
-        return false;
+        printf( "Cannot open input stream %s with the following error: \n%s\n", inputFileNames[i].c_str(), msg );
+        return 2;
       }
     }
     m_uiNumberOfFrames = MAX_UINT;

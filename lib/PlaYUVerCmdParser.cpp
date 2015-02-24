@@ -62,17 +62,21 @@ po::options_description PlaYUVerCmdParser::GetCommandOpts()
   ( "pel_fmts", "list pixel formats" ) /**/
   ( "frames,f", po::value<UInt>(), "number of frames" );
 
-  po::options_description operationOpts( "Operation" );
-  operationOpts.add_options() /**/
-  ( "module", po::value<std::string>(), "select a module" ) /**/
+  po::options_description qualityOpts( "Quality" );
+  qualityOpts.add_options() /**/
   ( "quality", po::value<std::string>(), "select a quality metric" ) /**/
   ( "quality_metrics", "list supported quality metrics" );
+
+  po::options_description moduleOpts( "Module" );
+  moduleOpts.add_options() /**/
+    ( "module", po::value<std::string>(), "select a module" ) /**/
+    ( "module_list", "list supported modules" );
 
   po::options_description commonOpts( "Common" );
   commonOpts.add_options()/**/
   ( "help", "produce help message" )/**/
   ( "version", "show version and exit" );
-  commonOpts.add( inputOpts ).add( operationOpts );
+  commonOpts.add( inputOpts ).add( qualityOpts ).add( moduleOpts );
   return commonOpts;
 }
 

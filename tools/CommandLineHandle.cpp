@@ -18,58 +18,24 @@
  */
 
 /**
- * \file     PlaYUVerTools.h
- * \brief    Main definition of the PlaYUVerTools app
+ * \file     CommandLineHandle.cpp
+ * \brief    Handle for command line
  */
 
-#ifndef __PLAYUVERTOOLS_H__
-#define __PLAYUVERTOOLS_H__
-
-#include "config.h"
-#include "lib/PlaYUVerDefs.h"
-#include "lib/PlaYUVerFrame.h"
-#include "lib/PlaYUVerStream.h"
 #include "CommandLineHandle.h"
 
 namespace plaYUVer
 {
 
-class PlaYUVerTools
+CommandLineHandle::CommandLineHandle()
 {
-public:
-  PlaYUVerTools();
-  ~PlaYUVerTools();
 
-  Int Open( Int argc, Char *argv[] );
-  Int Process();
-  Int Close();
+}
 
-private:
-  CommandLineHandle m_cCommandLineParser;
+CommandLineHandle::~CommandLineHandle()
+{
 
-  UInt m_uiOperation;
-  Int m_uiOperationIndex;
-  enum TOOLS_OPERATIONS_LIST
-  {
-    INVALID_OPERATION,
-    QUALITY_OPERATION,
-    MODULE_OPERATION,
-  };
+}
 
-  UInt m_uiNumberOfFrames;
-  UInt m_uiNumberOfComponents;
-  std::vector<PlaYUVerStream*> m_apcInputStreams;
-  std::vector<PlaYUVerStream*> m_apcOutputStreams;
-
-  Int openInputs();
-  Int openOutputs();
-
-  typedef Int (PlaYUVerTools::*FpProcess) ();
-  FpProcess m_fpProcess;
-
-  Int QualityOperation();
-};
 
 }  // NAMESPACE
-
-#endif // __PLAYUVERTOOLS_H__

@@ -2,6 +2,8 @@
 ### CMakeLists for playuver modules component
 ###
 
+OPTION( MODULE_THREADED_MODULES "Use threads for modules"  OFF )
+
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../ ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
 
 set(plaYUver_Mod_SRCS

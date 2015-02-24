@@ -17,7 +17,7 @@ SET( PLAYUVER_VERSION_PATCH "0" )
 SET( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLAYUVER_VERSION_PATCH}")
 
 ######################################################################################
-# CMake Definitions
+# CMake Defin1itions
 ######################################################################################
 
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
@@ -30,56 +30,17 @@ IF(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")
 ENDIF()
 SET( CMAKE_CXX_FLAGS "" )
 
+cmake_policy(SET CMP0043 NEW)
 
 ######################################################################################
 # Variables
 ######################################################################################
 
+OPTION( PLAYUVER_BUILD_APP      "Build GUI Application"                ON )
+OPTION( PLAYUVER_BUILD_TOOLS    "Build Command Line Application"       ON )
+
 OPTION( USE_FERVOR                   "Add Fervor support"       OFF )
-OPTION( PLAYUVER_LONGVERSIONNAME     "Use long version name in deb" OFF )
-OPTION( PLAYUVER_WERROR              "Warnings as errors"       OFF )
-OPTION( PLAYUVER_THREADED_MODULES    "Use threads for modules"  OFF )
-OPTION( USE_QT4                      "Build with QT4"           OFF )
-
-#####################################################################################
-# Qt library
-######################################################################################
-
-IF( USE_QT4 )
-  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}QT4" )
-  FIND_PACKAGE( Qt4 REQUIRED COMPONENTS QtCore QtGui QtDBus QtNetwork QtWebKit )
-
-  SET( USE_QTDBUS TRUE )
-
-  IF( NOT QT4_FOUND )
-      SET(USE_QT4 FALSE)
-  ELSE()
-    INCLUDE( ${QT_USE_FILE} )
-    ADD_DEFINITIONS( ${QT_DEFINITIONS} )
-    SET( QT_LINKER_LIBS ${QT_LIBRARIES} )
-  ENDIF()
-ENDIF()
-
-IF( NOT USE_QT4 )
-
-  SET( DEPENDENCIES_STRING "${DEPENDENCIES_STRING}QT5" )
-
-  FIND_PACKAGE( Qt5 REQUIRED COMPONENTS Core Gui Widgets PrintSupport )
-  FIND_PACKAGE( Qt5DBus )
-
-
-  LIST(APPEND QT_LINKER_LIBS Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport )
-  LIST(APPEND QT_MODULES Core Gui Widgets )
-  IF( ${Qt5DBus_FOUND} )
-    SET( USE_QTDBUS ${Qt5DBus_FOUND} )
-    LIST(APPEND QT_LINKER_LIBS Qt5::DBus )
-    LIST(APPEND QT_MODULES DBus )
-  ENDIF()
-
-  INCLUDE_DIRECTORIES( ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
-  SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}" )
-
-ENDIF()
+OPTION( USE_WERROR                   "Warnings as errors"       OFF )
 
 ######################################################################################
 # Dependencies
@@ -133,9 +94,14 @@ SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2" )
 
 ADD_SUBDIRECTORY( lib )
 ADD_SUBDIRECTORY( modules )
-ADD_SUBDIRECTORY( tools )
-ADD_SUBDIRECTORY( app )
 
+IF( PLAYUVER_BUILD_TOOLS )
+  ADD_SUBDIRECTORY( tools )
+ENDIF()
+
+IF( PLAYUVER_BUILD_APP )
+  ADD_SUBDIRECTORY( app )
+ENDIF()
 
 
 
@@ -146,8 +112,8 @@ MESSAGE("")
 MESSAGE( STATUS "${PROJECT_NAME} INFORMATION"                      )
 MESSAGE( STATUS "Version: "                 "${PLAYUVER_VERSION}"  )
 MESSAGE( STATUS "Configuration:"                                   )
-MESSAGE( STATUS "    Build type:"          "${CMAKE_BUILD_TYPE}"   )
-MESSAGE( STATUS "    Build flags:"         "${CMAKE_CXX_FLAGS}"    )
+MESSAGE( STATUS "    Build type: "          "${CMAKE_BUILD_TYPE}"   )
+MESSAGE( STATUS "    Build flags:"          "${CMAKE_CXX_FLAGS}"    )
 
 
 FEATURE_SUMMARY(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)

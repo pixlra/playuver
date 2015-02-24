@@ -69,12 +69,20 @@ Int PlaYUVerTools::openInputs()
     for( UInt i = 0; i < inputFileNames.size(); i++ )
     {
       pcStream = new PlaYUVerStream;
-      if( !pcStream->open( inputFileNames[i], resolutionString, fmtString, 1 ) )
+      try
       {
-        printf( "Error opening file %s! ", inputFileNames[i].c_str() );
-        return 2;
+        if( !pcStream->open( inputFileNames[i], resolutionString, fmtString, 1 ) )
+        {
+          printf( "Cannot open input stream %s! ", inputFileNames[i].c_str() );
+          return 2;
+        }
+        m_apcInputStreams.push_back( pcStream );
       }
-      m_apcInputStreams.push_back( pcStream );
+      catch( const char *msg )
+      {
+        printf( "Cannot open input stream %s with the following error: \n%s", inputFileNames[i].c_str(), msg );
+        return false;
+      }
     }
     m_uiNumberOfFrames = MAX_UINT;
     if( m_cCommandLineParser.getOptionsMap().count( "frames" ) )
@@ -111,7 +119,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
     return 1;
   }
 
-  if( openInputs() > 0 || openOutputs() > 0 )
+  if( openInputs() > 0 )
   {
     return 2;
   }
@@ -162,7 +170,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
 
 Int PlaYUVerTools::Process()
 {
-  return (this->*m_fpProcess)();
+  return ( this->*m_fpProcess )();
 }
 
 Int PlaYUVerTools::Close()

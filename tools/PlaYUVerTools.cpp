@@ -319,6 +319,7 @@ Int PlaYUVerTools::ModuleOperation()
         abEOF[s] = m_apcInputStreams[s]->checkErrors( PlaYUVerStream::LAST_FRAME );
       }
     }
+
   }
 
   if( m_pcCurrModuleIf->m_iModuleType == FRAME_MEASUREMENT_MODULE )

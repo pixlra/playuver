@@ -52,8 +52,9 @@ Int CommandLineHandle::parseToolsArgs()
 
   po::options_description moduleOpts( "Module" );
   moduleOpts.add_options() /**/
-  ( "module", po::value<std::string>(), "select a module" ) /**/
-  ( "module_list", "list supported modules" );
+  ( "module", po::value<std::string>(), "select a module (use internal name)" ) /**/
+  ( "module_list", "list supported modules" ) /**/
+  ( "module_list_full", "detailed list supported modules" );
 
   addOptions( qualityOpts );
   addOptions( moduleOpts );
@@ -73,7 +74,7 @@ Int CommandLineHandle::parseToolsArgs()
     iRet = 1;
   }
 
-  if( getOptionsMap().count( "module_list" ) )
+  if( getOptionsMap().count( "module_list" ) || getOptionsMap().count( "module_list_full" ) )
   {
     listModules();
     iRet = 1;
@@ -84,45 +85,57 @@ Int CommandLineHandle::parseToolsArgs()
 
 Void CommandLineHandle::listModules()
 {
+  Bool bDetailed = false;
+
+  if( getOptionsMap().count( "module_list_full" ) )
+    bDetailed = true;
+
   PlaYUVerModuleIf* pcCurrModuleIf;
   PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
   PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
 
   printf( "PlaYUVer available modules: \n" );
   //printf( "                                           " );
-  printf( "   [Name]                                  " );
-  printf( "   [Type]        " );
-  printf( "   [Description]" );
+  printf( "   [Internal Name]               " );
+  if( bDetailed )
+  {
+    printf( "   [Full Name]                             " );
+    printf( "   [Type]        " );
+    printf( "   [Description]" );
+  }
   printf( " \n" );
 
   Char ModuleNameString[40];
 
   for( UInt i = 0; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ )
   {
-    ModuleNameString[0] = '\0';
-
-    pcCurrModuleIf = it->second();
-
     printf( "   " );
-    if( pcCurrModuleIf->m_pchModuleCategory )
+    printf( "%-30s", it->first );
+    if( bDetailed )
     {
-      strcat( ModuleNameString, pcCurrModuleIf->m_pchModuleCategory );
-      strcat( ModuleNameString, "/" );
+      ModuleNameString[0] = '\0';
+      pcCurrModuleIf = it->second();
+
+      if( pcCurrModuleIf->m_pchModuleCategory )
+      {
+        strcat( ModuleNameString, pcCurrModuleIf->m_pchModuleCategory );
+        strcat( ModuleNameString, "/" );
+      }
+      strcat( ModuleNameString, pcCurrModuleIf->m_pchModuleName );
+      printf( "   %-40s", ModuleNameString );
+      switch( pcCurrModuleIf->m_iModuleType )
+      {
+      case FRAME_PROCESSING_MODULE:
+        printf( "   Processing    " );
+        break;
+      case FRAME_MEASUREMENT_MODULE:
+        printf( "   Measurement   " );
+        break;
+      }
+      printf( "   %s", pcCurrModuleIf->m_pchModuleTooltip );
+      pcCurrModuleIf->Delete();
     }
-    strcat( ModuleNameString, pcCurrModuleIf->m_pchModuleName );
-    printf( "%-40s", ModuleNameString );
-    switch( pcCurrModuleIf->m_iModuleType )
-    {
-    case FRAME_PROCESSING_MODULE:
-      printf( "   Processing    " );
-      break;
-    case FRAME_MEASUREMENT_MODULE:
-      printf( "   Measurement   " );
-      break;
-    }
-    printf( "   %s", pcCurrModuleIf->m_pchModuleTooltip );
     printf( "\n" );
-    pcCurrModuleIf->Delete();
   }
 
 }

@@ -47,7 +47,7 @@ AboutDialog::AboutDialog(QWidget *parent)
 	    .arg(QApplication::applicationName())
 	    .arg(QApplication::applicationVersion())
 	    .arg(tr("Enhanced open-source QT based raw video player"))
-	    .arg(tr("Copyright 2014 Luis Lucas and Joao Carreira")));
+	    .arg(tr("Copyright 2014-2015 Luis Lucas and Joao Carreira")));
 	label->setWordWrap(true);
 
 	QWidget *topWidget = new QWidget;

@@ -33,7 +33,7 @@ namespace plaYUVer
 {
 
 template<typename T>
-Void yuvToRgb( T iY, T iU, T iV, T &iR, T &iG, T &iB )
+static inline  Void yuvToRgb( T iY, T iU, T iV, T &iR, T &iG, T &iB )
 {
   iR = iY + 1402 * iV / 1000;
   iG = iY - ( 101004 * iU + 209599 * iV ) / 293500;
@@ -55,7 +55,7 @@ Void yuvToRgb( T iY, T iU, T iV, T &iR, T &iG, T &iB )
 }
 
 template<typename T>
-Void rgbToYuv( T iR, T iG, T iB, T &iY, T &iU, T &iV )
+static inline Void rgbToYuv( T iR, T iG, T iB, T &iY, T &iU, T &iV )
 {
   iY = ( 299 * iR + 587 * iG + 114 * iB + 500 ) / 1000;
   iU = ( 1000 * ( iB - iY ) + 226816 ) / 1772;

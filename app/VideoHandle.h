@@ -36,6 +36,10 @@
 #include "WidgetFrameNumber.h"
 #include "FramePropertiesSidebar.h"
 
+#define _CONTROL_PLAYING_TIME_ 1
+
+class QElapsedTimer;
+
 namespace plaYUVer
 {
 
@@ -99,6 +103,11 @@ private:
   QTimer *m_pcPlayingTimer;
   Bool m_bIsPlaying;
 
+#if( _CONTROL_PLAYING_TIME_ == 1 )
+  UInt m_uiNumberPlayedFrames;
+  Double m_dAverageFps;
+  QElapsedTimer* m_pcPlayControlTimer;
+#endif
 
   UInt64 getMaxFrameNumber();
   Void setTimerStatus();

@@ -27,6 +27,9 @@
 #include "PlaYUVerSubWindowHandle.h"
 #include "VideoHandle.h"
 #include "DialogSubWindowSelector.h"
+#if( _CONTROL_PLAYING_TIME_ == 1 )
+#include <QElapsedTimer>
+#endif
 
 namespace plaYUVer
 {

@@ -391,10 +391,23 @@ Void VideoHandle::setTimerStatus()
     {
       m_pcPlayingTimer->start();
       m_bIsPlaying = true;
+#if( _CONTROL_PLAYING_TIME_ == 1 )
+      m_uiNumberPlayedFrames = 0;
+      m_pcPlayControlTimer = new QElapsedTimer;
+      m_pcPlayControlTimer->start();
+      m_dAverageFps = 0;
+#endif
     }
   }
   else
   {
+#if( _CONTROL_PLAYING_TIME_ == 1 )
+    delete m_pcPlayControlTimer;
+    qDebug( ) << "Desired Fps: "
+              << 1000 / m_pcPlayingTimer->interval()
+              << "Real Fps: "
+              << 1000 / m_dAverageFps;
+#endif
     m_pcPlayingTimer->stop();
     m_bIsPlaying = false;
   }
@@ -497,6 +510,12 @@ Void VideoHandle::playEvent()
     stop();
     m_pcCurrentVideoSubWindow->close();
   }
+#if( _CONTROL_PLAYING_TIME_ == 1 )
+      m_dAverageFps = Double( m_dAverageFps * m_uiNumberPlayedFrames + m_pcPlayControlTimer->elapsed() )
+          / Double( m_uiNumberPlayedFrames + 1 );
+      m_uiNumberPlayedFrames++;
+      m_pcPlayControlTimer->restart();
+#endif
   emit changed();
 }
 

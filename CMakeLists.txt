@@ -30,8 +30,6 @@ IF(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")
 ENDIF()
 SET( CMAKE_CXX_FLAGS "" )
 
-cmake_policy(SET CMP0043 NEW)
-
 ######################################################################################
 # Variables
 ######################################################################################

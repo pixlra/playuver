@@ -459,6 +459,7 @@ Bool VideoSubWindow::playEvent()
       return true;
     }
     m_pCurrStream->readFrame();
+    m_pCurrStream->getNextFrame()->fillRGBBuffer();
   }
   return false;
 }

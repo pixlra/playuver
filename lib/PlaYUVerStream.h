@@ -134,8 +134,10 @@ public:
   static Bool saveFrame( const std::string& filename, PlaYUVerFrame *saveFrame );
 
   Void setNextFrame();
-  PlaYUVerFrame* getCurrFrame();
+
   PlaYUVerFrame* getCurrFrame( PlaYUVerFrame * );
+  PlaYUVerFrame* getCurrFrame();
+  PlaYUVerFrame* getNextFrame();
 
   Bool seekInput( UInt64 new_frame_num );
 

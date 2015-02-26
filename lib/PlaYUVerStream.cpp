@@ -514,7 +514,7 @@ Void PlaYUVerStream::readFrame()
     }
     m_pcNextFrame->frameFromBuffer( m_pStreamBuffer, bytes_read );
   }
-  m_pcNextFrame->fillRGBBuffer();
+  //m_pcNextFrame->fillRGBBuffer();
   return;
 }
 
@@ -638,6 +638,12 @@ PlaYUVerFrame* PlaYUVerStream::getCurrFrame()
 {
   return m_pcCurrFrame;
 }
+
+PlaYUVerFrame* PlaYUVerStream::getNextFrame()
+{
+  return m_pcNextFrame;
+}
+
 
 Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 {

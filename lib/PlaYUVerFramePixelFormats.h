@@ -22,7 +22,6 @@
  * \brief    Handling the pixel formats definition
  */
 
-
 #ifndef __PLAYUVERFRAMEPIXELFORMATS_H__
 #define __PLAYUVERFRAMEPIXELFORMATS_H__
 
@@ -32,26 +31,13 @@
 namespace plaYUVer
 {
 
-static inline Void yuvToRgb( Int iY, Int iU, Int iV, Int &iR, Int &iG, Int &iB )
-{
-  iR = iY + 1402 * iV / 1000;
-  iG = iY - ( 101004 * iU + 209599 * iV ) / 293500;
-  iB = iY + 1772 * iU / 1000;
+#define CLAMP(X) X = X < 0 ? 0 : X > 255 ? 255 : X;
 
-  if( iR < 0 )
-    iR = 0;
-  if( iG < 0 )
-    iG = 0;
-  if( iB < 0 )
-    iB = 0;
-
-  if( iR > 255 )
-    iR = 255;
-  if( iG > 255 )
-    iG = 255;
-  if( iB > 255 )
-    iB = 255;
-}
+#define YUV2RGB(  iY, iU, iV, iR, iG, iB ) \
+    iR = iY + ( ( 1436 * iV ) >> 10 ); \
+    iG = iY - ( ( 352 * iU + 731 * iV ) >> 10 ); \
+    iB = iY + ( ( 1812 * iU ) >> 10 ); \
+    CLAMP(iR) CLAMP(iG) CLAMP(iB)
 
 static inline Void rgbToYuv( Int iR, Int iG, Int iB, Int &iY, Int &iU, Int &iV )
 {
@@ -80,10 +66,8 @@ inline Int pelAlpha( UInt rgb )           // get alpha part of RGBA
   return rgb >> 24;
 }
 
-inline UInt pelRgb( Int r, Int g, Int b )  // set RGB value
-{
-  return ( 0xffu << 24 ) | ( ( r & 0xff ) << 16 ) | ( ( g & 0xff ) << 8 ) | ( b & 0xff );
-}
+#define PEL_RGB( r, g, b ) \
+    ( 0xffu << 24 ) | ( ( r & 0xff ) << 16 ) | ( ( g & 0xff ) << 8 ) | ( b & 0xff )
 
 struct structPlaYUVerFramePelFormat
 {

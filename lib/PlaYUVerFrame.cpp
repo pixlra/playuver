@@ -249,14 +249,14 @@ PlaYUVerFrame::Pixel PlaYUVerFrame::ConvertPixel( PlaYUVerFrame::Pixel inputPixe
 
   if( eOutputSpace == COLOR_RGB )
   {
-    yuvToRgb<Int>( inputPixel.Y(), inputPixel.Cb(), inputPixel.Cr(), outA, outB, outC );
+    yuvToRgb( inputPixel.Y(), inputPixel.Cb(), inputPixel.Cr(), outA, outB, outC );
     outPixel.R() = outA;
     outPixel.G() = outB;
     outPixel.B() = outC;
   }
   if( eOutputSpace == COLOR_YUV )
   {
-    rgbToYuv<Int>( inputPixel.R(), inputPixel.G(), inputPixel.B(), outA, outB, outC );
+    rgbToYuv( inputPixel.R(), inputPixel.G(), inputPixel.B(), outA, outB, outC );
     outPixel.Y() = outA;
     outPixel.Cb() = outB;
     outPixel.Cr() = outC;

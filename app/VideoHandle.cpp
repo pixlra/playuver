@@ -327,16 +327,16 @@ Void VideoHandle::moveAllScrollBars( const QPoint offset )
     scrollBar = m_pcCurrentVideoSubWindow->horizontalScrollBar();
 
     // Do not move other images, if current image reached maximum or minimum scroll position
-    if(scrollBar->value()==scrollBar->maximum() && offset.x()>0)
-      newOffset.setX(0);
-    if(scrollBar->value()==scrollBar->minimum() && offset.x()<0)
-      newOffset.setX(0);
+    if( scrollBar->value() == scrollBar->maximum() && offset.x() > 0 )
+      newOffset.setX( 0 );
+    if( scrollBar->value() == scrollBar->minimum() && offset.x() < 0 )
+      newOffset.setX( 0 );
 
     scrollBar = m_pcCurrentVideoSubWindow->verticalScrollBar();
-    if(scrollBar->value()==scrollBar->maximum() && offset.y()>0)
-      newOffset.setY(0);
-    if(scrollBar->value()==scrollBar->minimum() && offset.y()<0)
-      newOffset.setY(0);
+    if( scrollBar->value() == scrollBar->maximum() && offset.y() > 0 )
+      newOffset.setY( 0 );
+    if( scrollBar->value() == scrollBar->minimum() && offset.y() < 0 )
+      newOffset.setY( 0 );
 
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
@@ -505,16 +505,14 @@ Void VideoHandle::playEvent()
     QString warningMsg = "Error while playing " + QFileInfo( m_pcCurrentVideoSubWindow->getCurrentFileName() ).fileName() + " with the following error: \n"
         + msg;
     QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
-    //statusBar()->showMessage( warningMsg, 2000 );
     qDebug( ) << warningMsg;
     stop();
     m_pcCurrentVideoSubWindow->close();
   }
 #if( _CONTROL_PLAYING_TIME_ == 1 )
-      m_dAverageFps = Double( m_dAverageFps * m_uiNumberPlayedFrames + m_pcPlayControlTimer->elapsed() )
-          / Double( m_uiNumberPlayedFrames + 1 );
-      m_uiNumberPlayedFrames++;
-      m_pcPlayControlTimer->restart();
+  m_dAverageFps = Double( m_dAverageFps * m_uiNumberPlayedFrames + m_pcPlayControlTimer->elapsed() ) / Double( m_uiNumberPlayedFrames + 1 );
+  m_uiNumberPlayedFrames++;
+  m_pcPlayControlTimer->restart();
 #endif
   emit changed();
 }

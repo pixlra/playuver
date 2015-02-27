@@ -67,23 +67,34 @@ Void bufferFromFrameYUVProgressive( Pel*** in, Pel *out, UInt width, UInt height
 
 Void fillRGBbufferYUV( Pel*** in, UChar* out, UInt width, UInt height, UInt ratioChromaHor, UInt ratioChromaVer )
 {
-  Pel** pY = in[LUMA];
-  Pel** pU = in[CHROMA_U];
-  Pel** pV = in[CHROMA_V];
+  Pel* pY = in[LUMA][0];
+  Pel* pU = in[CHROMA_U][0];
+  Pel* pV = in[CHROMA_V][0];
   Int iY, iU, iV, iR, iG, iB;
   UInt* buff = ( UInt* )out;
 
-  for( UInt y = 0; y < height; y++ )
+  pU -= width >> ratioChromaHor;
+  pV -= width >> ratioChromaHor;
+  for( UInt y = 0; y < height >> ratioChromaVer; y++ )
   {
-    for( UInt x = 0; x < width; x++ )
+    pU += width >> ratioChromaHor;
+    pV += width >> ratioChromaHor;
+    for( Int i = 0; i < 1 << ratioChromaVer; i++ )
     {
-      // Pixel (x, y).
-      iY = pY[y][x];
-      iU = pU[y >> ratioChromaVer][x >> ratioChromaHor] - 128;
-      iV = pV[y >> ratioChromaVer][x >> ratioChromaHor] - 128;
-      yuvToRgb<Int>( iY, iU, iV, iR, iG, iB );
-      *buff = pelRgb( iR, iG, iB );
-      buff++;
+      for( UInt x = 0; x < width >> ratioChromaHor; x++ )
+      {
+        iU = *pU++ - 128;
+        iV = *pV++ - 128;
+        for( Int j = 0; j < 1 << ratioChromaHor; j++ )
+        {
+          iY = *pY++;
+          YUV2RGB( iY, iU, iV, iR, iG, iB );
+          *buff = PEL_RGB( iR, iG, iB );
+          buff++;
+        }
+      }
+      pU -= width >> ratioChromaHor;
+      pV -= width >> ratioChromaHor;
     }
   }
 }
@@ -234,7 +245,7 @@ Void fillRGBbufferGray( Pel*** in, UChar* out, UInt width, UInt height )
   for( UInt i = 0; i < height * width; i++ )
   {
     iY = *inPel;
-    *buff++ = pelRgb( iY, iY, iY );
+    *buff++ = PEL_RGB( iY, iY, iY );
     inPel++;
   }
 }
@@ -259,9 +270,9 @@ Void frameFromBufferRGB( Pel *in, Pel*** out, UInt64 size, Pel* pFirst, Pel* pSe
 {
   for( UInt i = 0; i < size; i++ )
   {
-    *pFirst++  = *in++;
+    *pFirst++ = *in++;
     *pSecond++ = *in++;
-    *pthird++  = *in++;
+    *pthird++ = *in++;
   }
 }
 Void bufferFromFrameRGB( Pel ***in, Pel* out, UInt64 size, Pel* pFirst, Pel* pSecond, Pel* pthird )
@@ -285,7 +296,7 @@ Void fillRGBbufferRGB( Pel*** in, UChar* out, UInt width, UInt height )
     iR = *pR++;
     iG = *pG++;
     iB = *pB++;
-    *buff++ = pelRgb( iR, iG, iB );
+    *buff++ = PEL_RGB( iR, iG, iB );
   }
 }
 
@@ -342,6 +353,5 @@ PlaYUVerFramePelFormat g_PlaYUVerFramePelFormatsList[PLAYUVER_NUMBER_FORMATS] =
   gray,
   RGB24,
   BGR24, };
-
 
 }  // NAMESPACE

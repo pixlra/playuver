@@ -128,7 +128,6 @@ PlaYUVerStream::PlaYUVerStream()
   m_bIsInput = true;
   m_bIsOpened = false;
   m_bLoadAll = false;
-  m_iErrorStatus = 0;
   m_uiStreamHandler = 0;
   m_pFile = NULL;
   m_pchFilename = NULL;
@@ -479,15 +478,9 @@ Void PlaYUVerStream::readFrame()
   if( !m_bInit || !m_bIsInput )
     return;
 
-  if( m_iCurrFrameNum + ( m_uiFrameBufferSize - 1 )>= ( Int64 )m_uiTotalFrameNum )
+  if( ( m_iCurrFrameNum + ( m_uiFrameBufferSize - 1 ) >= ( Int64 )m_uiTotalFrameNum ) || m_bLoadAll )
   {
-    m_iErrorStatus = LAST_FRAME;
     m_pcNextFrame = NULL;
-    return;
-  }
-
-  if( m_bLoadAll )
-  {
     return;
   }
 
@@ -496,7 +489,7 @@ Void PlaYUVerStream::readFrame()
   {
     if( !m_cLibAvContext->decodeAvFormat() )
     {
-      m_iErrorStatus = READING;
+      throw "[PlaYUVerStream] Error reading frame from libav";
       return;
     }
     m_pcNextFrame->frameFromBuffer( m_cLibAvContext->m_pchFrameBuffer, m_cLibAvContext->m_uiFrameBufferSize );
@@ -508,7 +501,6 @@ Void PlaYUVerStream::readFrame()
     UInt64 bytes_read = fread( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
     if( bytes_read != frame_bytes_input )
     {
-      m_iErrorStatus = READING;
       throw "[PlaYUVerStream] Cannot read file";
       return;
     }
@@ -527,7 +519,7 @@ Void PlaYUVerStream::writeFrame()
     UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
     if( bytes_read != frame_bytes_input )
     {
-      m_iErrorStatus = WRITING;
+      throw "[PlaYUVerStream] Cannot write into the file";
     }
   }
   return;
@@ -542,7 +534,7 @@ Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
     UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
     if( bytes_read != frame_bytes_input )
     {
-      m_iErrorStatus = WRITING;
+      throw "[PlaYUVerStream] Cannot write into the file";
     }
   }
   return;
@@ -605,8 +597,9 @@ Bool PlaYUVerStream::saveFrame( const std::string& filename, PlaYUVerFrame *save
   return false;
 }
 
-Void PlaYUVerStream::setNextFrame()
+Bool PlaYUVerStream::setNextFrame()
 {
+  Bool bEndOfSeq = false;
   if( m_pcNextFrame )
   {
     m_pcCurrFrame = m_pcNextFrame;
@@ -620,9 +613,9 @@ Void PlaYUVerStream::setNextFrame()
   }
   else
   {
-    m_iErrorStatus = END_OF_SEQ;
-    seekInput( 0 );
+    bEndOfSeq = true;
   }
+  return bEndOfSeq;
 }
 
 PlaYUVerFrame* PlaYUVerStream::getCurrFrame( PlaYUVerFrame *pyuv_image )
@@ -673,21 +666,6 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
   if( m_uiTotalFrameNum > 1 )
     readFrame();
   return true;
-}
-
-Bool PlaYUVerStream::checkErrors( Int error_type )
-{
-  if( m_iErrorStatus == error_type )
-  {
-    m_iErrorStatus = NO_STREAM_ERROR;
-    return true;
-  }
-  if( m_iErrorStatus == error_type )
-  {
-    m_iErrorStatus = NO_STREAM_ERROR;
-    return true;
-  }
-  return false;
 }
 
 }  // NAMESPACE

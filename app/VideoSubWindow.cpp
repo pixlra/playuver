@@ -450,17 +450,17 @@ Bool VideoSubWindow::play()
 
 Bool VideoSubWindow::playEvent()
 {
+  Bool bEndOfSeq = false;
   if( m_pCurrStream && m_bIsPlaying )
   {
-    m_pCurrStream->setNextFrame();
-    refreshFrame();
-    if( m_pCurrStream->checkErrors( PlaYUVerStream::END_OF_SEQ ) )
+    bEndOfSeq = m_pCurrStream->setNextFrame();
+    if( !bEndOfSeq )
     {
-      return true;
+      refreshFrame();
+      m_pCurrStream->readFrame();
     }
-    m_pCurrStream->readFrame();
   }
-  return false;
+  return bEndOfSeq;
 }
 
 Void VideoSubWindow::pause()

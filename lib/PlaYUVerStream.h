@@ -52,7 +52,6 @@ private:
   Bool m_bIsOpened;
 
   Bool m_bLoadAll;
-  Int m_iErrorStatus;
 
   enum PlaYUVerStreamHandlers
   {
@@ -133,13 +132,11 @@ public:
   Bool saveFrame( const std::string& filename );
   static Bool saveFrame( const std::string& filename, PlaYUVerFrame *saveFrame );
 
-  Void setNextFrame();
+  Bool setNextFrame();
   PlaYUVerFrame* getCurrFrame();
   PlaYUVerFrame* getCurrFrame( PlaYUVerFrame * );
 
   Bool seekInput( UInt64 new_frame_num );
-
-  Bool checkErrors( Int error_type );
 
   Bool isInit()
   {

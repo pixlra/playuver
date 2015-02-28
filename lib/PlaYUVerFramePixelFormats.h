@@ -34,9 +34,9 @@ namespace plaYUVer
 #define CLAMP(X) X = X < 0 ? 0 : X > 255 ? 255 : X;
 
 #define YUV2RGB(  iY, iU, iV, iR, iG, iB ) \
-    iR = iY + ( ( 1436 * iV ) >> 10 ); \
-    iG = iY - ( ( 352 * iU + 731 * iV ) >> 10 ); \
-    iB = iY + ( ( 1812 * iU ) >> 10 ); \
+    iR = iY + ( ( 1436 * ( iV - 128) ) >> 10 ); \
+    iG = iY - ( ( 352 * ( iU - 128 ) + 731 * ( iV - 128 ) ) >> 10 ); \
+    iB = iY + ( ( 1812 * ( iU - 128 ) ) >> 10 ); \
     CLAMP(iR) CLAMP(iG) CLAMP(iB)
 
 static inline Void rgbToYuv( Int iR, Int iG, Int iB, Int &iY, Int &iU, Int &iV )

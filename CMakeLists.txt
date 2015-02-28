@@ -40,7 +40,7 @@ OPTION( PLAYUVER_LONGVERSIONNAME     "Use long version name in deb" OFF )
 OPTION( PLAYUVER_WERROR              "Warnings as errors"       OFF )
 OPTION( PLAYUVER_THREADED_MODULES    "Use threads for modules"  OFF )
 OPTION( USE_QT4                      "Build with QT4"           OFF )
-OPTION( USE_SSE                      "Build with SSE support"   ON )
+-OPTION( USE_SSE                      "Build with SSE support"  OFF )
 
 #####################################################################################
 # Qt library

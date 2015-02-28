@@ -402,11 +402,15 @@ Void VideoHandle::setTimerStatus()
   else
   {
 #if( _CONTROL_PLAYING_TIME_ == 1 )
-    delete m_pcPlayControlTimer;
     qDebug( ) << "Desired Fps: "
               << 1000 / m_pcPlayingTimer->interval()
               << "Real Fps: "
               << 1000 / m_dAverageFps;
+    if( m_pcPlayControlTimer )
+    {
+      delete m_pcPlayControlTimer;
+      m_pcPlayControlTimer = NULL;
+    }
 #endif
     m_pcPlayingTimer->stop();
     m_bIsPlaying = false;
@@ -490,15 +494,24 @@ Void VideoHandle::stop()
 Void VideoHandle::playEvent()
 {
   Bool bEndOfSequence = false;
+#if( _CONTROL_PLAYING_TIME_ == 1 )
+  m_dAverageFps = Double( m_dAverageFps * m_uiNumberPlayedFrames + m_pcPlayControlTimer->elapsed() ) / Double( m_uiNumberPlayedFrames + 1 );
+  m_uiNumberPlayedFrames++;
+  m_pcPlayControlTimer->restart();
+#endif
   try
   {
     for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
     {
       bEndOfSequence |= m_acPlayingSubWindows.at( i )->playEvent();
     }
-    if( bEndOfSequence && !m_arrayActions[VIDEO_LOOP_ACT]->isChecked() )
+    if( bEndOfSequence )
     {
-      stop();
+      if( !m_arrayActions[VIDEO_LOOP_ACT]->isChecked() )
+        stop();
+      else
+        for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+          m_acPlayingSubWindows.at( i )->seekAbsoluteEvent( 0 );
     }
   }
   catch( const char *msg )
@@ -510,11 +523,6 @@ Void VideoHandle::playEvent()
     stop();
     m_pcCurrentVideoSubWindow->close();
   }
-#if( _CONTROL_PLAYING_TIME_ == 1 )
-  m_dAverageFps = Double( m_dAverageFps * m_uiNumberPlayedFrames + m_pcPlayControlTimer->elapsed() ) / Double( m_uiNumberPlayedFrames + 1 );
-  m_uiNumberPlayedFrames++;
-  m_pcPlayControlTimer->restart();
-#endif
   emit changed();
   //update();
 }

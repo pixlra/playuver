@@ -16,12 +16,12 @@
  *   with this program; if not, write to the Free Software Foundation, Inc.,
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
- 
+
  /**
  * \file     config.h.in
  * \brief    definition of the building options
  */
- 
+
 
 #ifndef __CONFIG_PLAYUVER_H__
 #define __CONFIG_PLAYUVER_H__
@@ -34,6 +34,9 @@
 #define PLAYUVER_VERSION_STRING "@PLAYUVER_VERSION@"
 
 #define DEPENDENCIES_STRING "@DEPENDENCIES_STRING@"
+
+/* CPU features */
+#cmakedefine USE_SSE
 
 /* QT definition */
 #cmakedefine USE_QT4

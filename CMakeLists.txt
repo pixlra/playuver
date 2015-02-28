@@ -40,6 +40,7 @@ OPTION( PLAYUVER_LONGVERSIONNAME     "Use long version name in deb" OFF )
 OPTION( PLAYUVER_WERROR              "Warnings as errors"       OFF )
 OPTION( PLAYUVER_THREADED_MODULES    "Use threads for modules"  OFF )
 OPTION( USE_QT4                      "Build with QT4"           OFF )
+OPTION( USE_SSE                      "Build with SSE support"   ON )
 
 #####################################################################################
 # Qt library
@@ -99,6 +100,7 @@ IF( USE_FFMPEG )
 ENDIF()
 SET_PACKAGE_PROPERTIES(FFmpeg PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "Libav library support in PlaYUVerStream" TYPE OPTIONAL)
 
+ADD_FEATURE_INFO(SSE USE_SSE "SSE instructions support"  )
 ADD_FEATURE_INFO(Fervor USE_FERVOR "Fervor lib includes check for updates feature.")
 ADD_FEATURE_INFO(WErrors PLAYUVER_WERROR "Warnings as errors"  )
 

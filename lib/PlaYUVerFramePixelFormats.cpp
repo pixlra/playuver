@@ -25,6 +25,11 @@
 #include "config.h"
 #include <cstdio>
 #include "LibMemory.h"
+#ifdef USE_SSE
+#include <emmintrin.h>
+#include <smmintrin.h>
+#include <limits.h>
+#endif
 #ifdef USE_FFMPEG
 #include "LibAvContextHandle.h"
 #endif
@@ -68,23 +73,24 @@ Void bufferFromFrameYUVProgressive( Pel*** in, Pel *out, UInt width, UInt height
 Void fillRGBbufferYUV( Pel*** in, UChar* out, UInt width, UInt height, UInt ratioChromaHor, UInt ratioChromaVer )
 {
   Pel* pY = in[LUMA][0];
-  Pel* pU = in[CHROMA_U][0];
-  Pel* pV = in[CHROMA_V][0];
+  Pel* pLineU = in[CHROMA_U][0];
+  Pel* pLineV = in[CHROMA_V][0];
+  UInt uiChromaStride = width >> ratioChromaHor;
+  Pel* pU;
+  Pel* pV;
   Int iY, iU, iV, iR, iG, iB;
   UInt* buff = ( UInt* )out;
 
-  pU -= width >> ratioChromaHor;
-  pV -= width >> ratioChromaHor;
   for( UInt y = 0; y < height >> ratioChromaVer; y++ )
   {
-    pU += width >> ratioChromaHor;
-    pV += width >> ratioChromaHor;
     for( Int i = 0; i < 1 << ratioChromaVer; i++ )
     {
+      pU = pLineU;
+      pV = pLineV;
       for( UInt x = 0; x < width >> ratioChromaHor; x++ )
       {
-        iU = *pU++ - 128;
-        iV = *pV++ - 128;
+        iU = *pU++;
+        iV = *pV++;
         for( Int j = 0; j < 1 << ratioChromaHor; j++ )
         {
           iY = *pY++;
@@ -93,9 +99,9 @@ Void fillRGBbufferYUV( Pel*** in, UChar* out, UInt width, UInt height, UInt rati
           buff++;
         }
       }
-      pU -= width >> ratioChromaHor;
-      pV -= width >> ratioChromaHor;
     }
+    pLineU += uiChromaStride;
+    pLineV += uiChromaStride;
   }
 }
 
@@ -113,7 +119,144 @@ Void bufferFromFrameYUV420p( Pel ***in, Pel* out, UInt width, UInt height )
 }
 Void fillRGBbufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height )
 {
+#ifndef USE_SSE
   fillRGBbufferYUV( in, out, width, height, 1, 1 );
+#else
+  uint8_t *yp = in[LUMA][0];
+  uint8_t *up = in[CHROMA_U][0];
+  uint8_t *vp = in[CHROMA_V][0];
+  uint32_t suv = width >> 1;
+  uint32_t *rgb = ( uint32_t* )out;
+
+  __m128i y0r0, y0r1, u0, v0;
+  __m128i y00r0, y01r0, y00r1, y01r1;
+  __m128i u00, u01, v00, v01;
+  __m128i rv00, rv01, gu00, gu01, gv00, gv01, bu00, bu01;
+  __m128i r00, r01, g00, g01, b00, b01;
+  __m128i rgb0123, rgb4567, rgb89ab, rgbcdef;
+  __m128i gbgb;
+  __m128i ysub, uvsub;
+  __m128i zero, facy, facrv, facgu, facgv, facbu;
+  __m128i *srcy128r0, *srcy128r1;
+  __m128i *dstrgb128r0, *dstrgb128r1;
+  __m64 *srcu64, *srcv64;
+  UInt x, y;
+
+  ysub = _mm_set1_epi32( 0x00100010 );
+  uvsub = _mm_set1_epi32( 0x00800080 );
+
+  facy = _mm_set1_epi32( 0x004a004a );
+  facrv = _mm_set1_epi32( 0x00660066 );
+  facgu = _mm_set1_epi32( 0x00190019 );
+  facgv = _mm_set1_epi32( 0x00340034 );
+  facbu = _mm_set1_epi32( 0x00810081 );
+
+  zero = _mm_set1_epi32( 0x00000000 );
+
+  for( y = 0; y < height; y += 2 )
+  {
+
+    srcy128r0 = ( __m128i * )( yp + width * y );
+    srcy128r1 = ( __m128i * )( yp + width * y + width );
+    srcu64 = ( __m64 * )( up + suv * ( y / 2 ) );
+    srcv64 = ( __m64 * )( vp + suv * ( y / 2 ) );
+
+    dstrgb128r0 = ( __m128i * )( rgb + width * y );
+    dstrgb128r1 = ( __m128i * )( rgb + width * y + width );
+
+    for( x = 0; x < width; x += 16 )
+    {
+
+      u0 = _mm_loadl_epi64( ( __m128i * )srcu64 );
+      srcu64++;
+      v0 = _mm_loadl_epi64( ( __m128i * )srcv64 );
+      srcv64++;
+
+      y0r0 = _mm_load_si128( srcy128r0++ );
+      y0r1 = _mm_load_si128( srcy128r1++ );
+
+      // constant y factors
+      y00r0 = _mm_mullo_epi16( _mm_sub_epi16( _mm_unpacklo_epi8( y0r0, zero ), ysub ), facy );
+      y01r0 = _mm_mullo_epi16( _mm_sub_epi16( _mm_unpackhi_epi8( y0r0, zero ), ysub ), facy );
+      y00r1 = _mm_mullo_epi16( _mm_sub_epi16( _mm_unpacklo_epi8( y0r1, zero ), ysub ), facy );
+      y01r1 = _mm_mullo_epi16( _mm_sub_epi16( _mm_unpackhi_epi8( y0r1, zero ), ysub ), facy );
+
+      // expand u and v so they're aligned with y values
+      u0 = _mm_unpacklo_epi8( u0, zero );
+      u00 = _mm_sub_epi16( _mm_unpacklo_epi16( u0, u0 ), uvsub );
+      u01 = _mm_sub_epi16( _mm_unpackhi_epi16( u0, u0 ), uvsub );
+
+      v0 = _mm_unpacklo_epi8( v0, zero );
+      v00 = _mm_sub_epi16( _mm_unpacklo_epi16( v0, v0 ), uvsub );
+      v01 = _mm_sub_epi16( _mm_unpackhi_epi16( v0, v0 ), uvsub );
+
+      // common factors on both rows.
+      rv00 = _mm_mullo_epi16( facrv, v00 );
+      rv01 = _mm_mullo_epi16( facrv, v01 );
+      gu00 = _mm_mullo_epi16( facgu, u00 );
+      gu01 = _mm_mullo_epi16( facgu, u01 );
+      gv00 = _mm_mullo_epi16( facgv, v00 );
+      gv01 = _mm_mullo_epi16( facgv, v01 );
+      bu00 = _mm_mullo_epi16( facbu, u00 );
+      bu01 = _mm_mullo_epi16( facbu, u01 );
+
+      // row 0
+      r00 = _mm_srai_epi16( _mm_add_epi16( y00r0, rv00 ), 6 );
+      r01 = _mm_srai_epi16( _mm_add_epi16( y01r0, rv01 ), 6 );
+      g00 = _mm_srai_epi16( _mm_sub_epi16( _mm_sub_epi16( y00r0, gu00 ), gv00 ), 6 );
+      g01 = _mm_srai_epi16( _mm_sub_epi16( _mm_sub_epi16( y01r0, gu01 ), gv01 ), 6 );
+      b00 = _mm_srai_epi16( _mm_add_epi16( y00r0, bu00 ), 6 );
+      b01 = _mm_srai_epi16( _mm_add_epi16( y01r0, bu01 ), 6 );
+
+      r00 = _mm_packus_epi16( r00, r01 );// rrrr.. saturated
+      g00 = _mm_packus_epi16( g00, g01 );// gggg.. saturated
+      b00 = _mm_packus_epi16( b00, b01 );// bbbb.. saturated
+
+      r01 = _mm_unpacklo_epi8( r00, zero );// 0r0r..
+      gbgb = _mm_unpacklo_epi8( b00, g00 );// gbgb..
+      rgb0123 = _mm_unpacklo_epi16( gbgb, r01 );// 0rgb0rgb..
+      rgb4567 = _mm_unpackhi_epi16( gbgb, r01 );// 0rgb0rgb..
+
+      r01 = _mm_unpackhi_epi8( r00, zero );
+      gbgb = _mm_unpackhi_epi8( b00, g00 );
+      rgb89ab = _mm_unpacklo_epi16( gbgb, r01 );
+      rgbcdef = _mm_unpackhi_epi16( gbgb, r01 );
+
+      _mm_store_si128( dstrgb128r0++, rgb0123 );
+      _mm_store_si128( dstrgb128r0++, rgb4567 );
+      _mm_store_si128( dstrgb128r0++, rgb89ab );
+      _mm_store_si128( dstrgb128r0++, rgbcdef );
+
+      // row 1
+      r00 = _mm_srai_epi16( _mm_add_epi16( y00r1, rv00 ), 6 );
+      r01 = _mm_srai_epi16( _mm_add_epi16( y01r1, rv01 ), 6 );
+      g00 = _mm_srai_epi16( _mm_sub_epi16( _mm_sub_epi16( y00r1, gu00 ), gv00 ), 6 );
+      g01 = _mm_srai_epi16( _mm_sub_epi16( _mm_sub_epi16( y01r1, gu01 ), gv01 ), 6 );
+      b00 = _mm_srai_epi16( _mm_add_epi16( y00r1, bu00 ), 6 );
+      b01 = _mm_srai_epi16( _mm_add_epi16( y01r1, bu01 ), 6 );
+
+      r00 = _mm_packus_epi16( r00, r01 );// rrrr.. saturated
+      g00 = _mm_packus_epi16( g00, g01 );// gggg.. saturated
+      b00 = _mm_packus_epi16( b00, b01 );// bbbb.. saturated
+
+      r01 = _mm_unpacklo_epi8( r00, zero );// 0r0r..
+      gbgb = _mm_unpacklo_epi8( b00, g00 );// gbgb..
+      rgb0123 = _mm_unpacklo_epi16( gbgb, r01 );// 0rgb0rgb..
+      rgb4567 = _mm_unpackhi_epi16( gbgb, r01 );// 0rgb0rgb..
+
+      r01 = _mm_unpackhi_epi8( r00, zero );
+      gbgb = _mm_unpackhi_epi8( b00, g00 );
+      rgb89ab = _mm_unpacklo_epi16( gbgb, r01 );
+      rgbcdef = _mm_unpackhi_epi16( gbgb, r01 );
+
+      _mm_store_si128( dstrgb128r1++, rgb0123 );
+      _mm_store_si128( dstrgb128r1++, rgb4567 );
+      _mm_store_si128( dstrgb128r1++, rgb89ab );
+      _mm_store_si128( dstrgb128r1++, rgbcdef );
+
+    }
+  }
+#endif
 }
 PlaYUVerFramePelFormat yuv420p =
 {

@@ -441,14 +441,16 @@ Void PlaYUVerStream::loadAll()
   m_pcCurrFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
   m_iCurrFrameNum = -1;
   seekInput( 0 );
-  setNextFrame();
-  for( UInt i = m_uiFrameBufferIndex; i < m_uiFrameBufferSize; i++ )
+  for( UInt i = m_uiFrameBufferIndex + 1; i < m_uiFrameBufferSize; i++ )
   {
+    m_pcNextFrame = m_ppcFrameBuffer[i];
     readFrame();
-    setNextFrame();
   }
   m_bLoadAll = true;
-  seekInput( 0 );
+  m_uiFrameBufferIndex = 0;
+  m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
+  m_iCurrFrameNum = -1;
+  setNextFrame();
 }
 
 Void PlaYUVerStream::getDuration( Int* duration_array )
@@ -475,10 +477,10 @@ Void PlaYUVerStream::getDuration( Int* duration_array )
 
 Void PlaYUVerStream::readFrame()
 {
-  if( !m_bInit || !m_bIsInput )
+  if( !m_bInit || !m_bIsInput || m_bLoadAll )
     return;
 
-  if( ( m_iCurrFrameNum + ( m_uiFrameBufferSize - 1 ) >= ( Int64 )m_uiTotalFrameNum ) || m_bLoadAll )
+  if( ( m_iCurrFrameNum + ( m_uiFrameBufferSize - 1 ) >= ( Int64 )m_uiTotalFrameNum ) )
   {
     m_pcNextFrame = NULL;
     return;

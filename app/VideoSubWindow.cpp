@@ -109,6 +109,12 @@ VideoSubWindow::~VideoSubWindow()
     delete m_pCurrStream;
 }
 
+Void VideoSubWindow::loadAll()
+{
+  m_pCurrStream->loadAll();
+  refreshFrame();
+}
+
 Void VideoSubWindow::reloadFile()
 {
   Int currFrameNum = m_pCurrStream->getCurrFrameNum();

@@ -357,7 +357,7 @@ Void plaYUVerApp::loadAll()
   if( m_pcCurrentVideoSubWindow )
   {
     statusBar()->showMessage( tr( "Loading file into memory ..." ) );
-    m_pcCurrentVideoSubWindow->getInputStream()->loadAll();
+    m_pcCurrentVideoSubWindow->loadAll();
     statusBar()->showMessage( tr( "File loaded" ), 2000 );
   }
 }

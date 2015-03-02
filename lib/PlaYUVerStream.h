@@ -84,6 +84,7 @@ private:
   PlaYUVerFrame *m_pcCurrFrame;
   PlaYUVerFrame *m_pcNextFrame;
   UInt m_uiFrameBufferIndex;
+  UInt64 m_uiCurrFrameFileIdx;
 
   UInt m_uiWidth;
   UInt m_uiHeight;

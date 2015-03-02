@@ -145,6 +145,7 @@ PlaYUVerStream::PlaYUVerStream()
   m_ppcFrameBuffer = NULL;
   m_uiFrameBufferSize = 2;
   m_uiFrameBufferIndex = 0;
+  m_uiCurrFrameFileIdx = 0;
 #ifdef USE_FFMPEG
   m_cLibAvContext = new LibAvContextHandle;
 #endif
@@ -480,7 +481,7 @@ Void PlaYUVerStream::readFrame()
   if( !m_bInit || !m_bIsInput || m_bLoadAll )
     return;
 
-  if( ( m_iCurrFrameNum + ( m_uiFrameBufferSize - 1 ) >= ( Int64 )m_uiTotalFrameNum ) )
+  if( m_uiCurrFrameFileIdx >= Int64( m_uiTotalFrameNum ) )
   {
     m_pcNextFrame = NULL;
     return;
@@ -508,6 +509,7 @@ Void PlaYUVerStream::readFrame()
     }
     m_pcNextFrame->frameFromBuffer( m_pStreamBuffer, bytes_read );
   }
+  m_uiCurrFrameFileIdx++;
   m_pcNextFrame->fillRGBBuffer();
   return;
 }
@@ -662,6 +664,7 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
   }
   m_uiFrameBufferIndex = 0;
   m_pcCurrFrame = m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
+  m_uiCurrFrameFileIdx = 0;
 
   readFrame();
   setNextFrame();

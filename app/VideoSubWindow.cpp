@@ -454,16 +454,25 @@ Bool VideoSubWindow::play()
   return m_bIsPlaying;
 }
 
+#include "QtConcurrent/qtconcurrentrun.h"
+
 Bool VideoSubWindow::playEvent()
 {
   Bool bEndOfSeq = false;
   if( m_pCurrStream && m_bIsPlaying )
   {
+#ifndef QT_NO_CONCURRENT
+    m_cReadResult.waitForFinished();
+#endif
     bEndOfSeq = m_pCurrStream->setNextFrame();
     if( !bEndOfSeq )
     {
       refreshFrame();
+#ifndef QT_NO_CONCURRENT
+      m_cReadResult = QtConcurrent::run(m_pCurrStream, &PlaYUVerStream::readFrame);
+#else
       m_pCurrStream->readFrame();
+#endif
     }
   }
   return bEndOfSeq;

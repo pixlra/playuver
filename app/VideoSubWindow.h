@@ -32,6 +32,7 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
+#include "QFuture"
 #include "lib/PlaYUVerStream.h"
 #include "SubWindowHandle.h"
 #include "ViewArea.h"
@@ -82,6 +83,12 @@ private:
 
   Bool m_bIsPlaying;
   Bool m_bIsModule;
+
+  /**
+   * Threads variables
+   * QtConcurrent
+   */
+  QFuture<Void> m_cReadResult;
 
   static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
 

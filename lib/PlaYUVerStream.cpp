@@ -481,7 +481,7 @@ Void PlaYUVerStream::readFrame()
   if( !m_bInit || !m_bIsInput || m_bLoadAll )
     return;
 
-  if( m_uiCurrFrameFileIdx >= Int64( m_uiTotalFrameNum ) )
+  if( m_uiCurrFrameFileIdx >= m_uiTotalFrameNum )
   {
     m_pcNextFrame = NULL;
     return;
@@ -640,7 +640,6 @@ PlaYUVerFrame* PlaYUVerStream::getNextFrame()
 {
   return m_pcNextFrame;
 }
-
 
 Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 {

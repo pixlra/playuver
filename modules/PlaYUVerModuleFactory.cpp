@@ -22,6 +22,7 @@
  * \brief    PlaYUVer modules factory
  */
 
+#include "config.h"
 #include <functional>
 #include <cstring>
 #include "PlaYUVerModuleFactory.h"

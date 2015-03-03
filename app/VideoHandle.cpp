@@ -487,7 +487,6 @@ Void VideoHandle::stop()
     }
   }
   emit changed();
-  //update();
   m_arrayActions[VIDEO_LOCK_ACT]->setVisible( false );
 }
 
@@ -524,7 +523,6 @@ Void VideoHandle::playEvent()
     m_pcCurrentVideoSubWindow->close();
   }
   emit changed();
-  //update();
 }
 
 Void VideoHandle::seekEvent( Int direction )

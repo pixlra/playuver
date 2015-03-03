@@ -10,6 +10,41 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/../
                      ${CMAKE_CURRENT_SOURCE_DIR}/../modules
                      ${CMAKE_CURRENT_BINARY_DIR}/../modules )
 
+#####################################################################################
+# Qt library
+######################################################################################
+
+OPTION( USE_QT4  "Build with QT4"           OFF )
+
+IF( USE_QT4 )
+
+  FIND_PACKAGE( Qt4 REQUIRED COMPONENTS QtCore QtGui QtDBus QtNetwork QtWebKit )
+  SET( USE_QTDBUS TRUE )
+  IF( NOT QT4_FOUND )
+      SET(USE_QT4 FALSE)
+  ELSE()
+    INCLUDE( ${QT_USE_FILE} )
+    ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+    SET( QT_LINKER_LIBS ${QT_LIBRARIES} )
+  ENDIF()
+ENDIF()
+
+IF( NOT USE_QT4 )
+  FIND_PACKAGE( Qt5 REQUIRED COMPONENTS Core Gui Widgets PrintSupport )
+  FIND_PACKAGE( Qt5DBus )
+  LIST(APPEND QT_LINKER_LIBS Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport )
+  LIST(APPEND QT_MODULES Core Gui Widgets )
+  IF( ${Qt5DBus_FOUND} )
+    SET( USE_QTDBUS ${Qt5DBus_FOUND} )
+    LIST(APPEND QT_LINKER_LIBS Qt5::DBus )
+    LIST(APPEND QT_MODULES DBus )
+  ENDIF()
+
+  #INCLUDE_DIRECTORIES( ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
+  #SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}" )
+
+ENDIF()
+
 set(plaYUver_App_SRCS
 # Main
     main.cpp

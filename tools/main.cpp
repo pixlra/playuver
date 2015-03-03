@@ -1,5 +1,6 @@
 /*    This file is a part of plaYUVer project
  *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -18,48 +19,40 @@
  */
 
 /**
- * \file     LumaAverage.cpp
- * \brief    Luma frame average
+ * \file     main.cpp
+ * \brief    main file
  */
 
-#include "LumaAverage.h"
+#include "PlaYUVerTools.h"
 
-namespace plaYUVer
-{
+using namespace plaYUVer;
 
-LumaAverage::LumaAverage()
+int main( int argc, char *argv[] )
 {
-  /* Module Definition */
-  m_iModuleType = FRAME_MEASUREMENT_MODULE;
-  m_pchModuleCategory = "Measurements";
-  m_pchModuleName = "LumaAverage";
-  m_pchModuleTooltip = "Measure the average of luma component";
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
-  m_uiModuleRequirements = MODULE_REQUIRES_SIDEBAR;
-  m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;
-}
+  Int iRet = 0;
+  PlaYUVerTools PlaYUVerToolsApp;
 
-Void LumaAverage::create( PlaYUVerFrame* frame )
-{
-}
+  iRet = PlaYUVerToolsApp.Open( argc, argv );
+  if( iRet == 1 )
+  {
+    return 0;
+  }
+  if( iRet > 1 )
+  {
+    printf( "Exiting\n" );
+    return 1;
+  }
 
-Double LumaAverage::measure( PlaYUVerFrame* frame )
-{
-  Double average = 0;
-  Pel* pPel = frame->getPelBufferYUV()[0][0];
-  for( UInt y = 0; y < frame->getHeight(); y++ )
-    for( UInt x = 0; x < frame->getWidth(); x++ )
-    {
-      average += *pPel;
-      pPel++;
-    }
-  return average / Double( frame->getHeight() * frame->getWidth() );
-}
+  if( PlaYUVerToolsApp.Process() > 1 )
+  {
+    printf( "Exiting\n" );
+    return 1;
+  }
 
-Void LumaAverage::destroy()
-{
+  if( PlaYUVerToolsApp.Close() > 1 )
+  {
+    printf( "Exiting\n" );
+    return 1;
+  }
 
 }
-
-}  // NAMESPACE
-

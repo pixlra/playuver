@@ -18,48 +18,41 @@
  */
 
 /**
- * \file     LumaAverage.cpp
- * \brief    Luma frame average
+ * \file     PlaYUVerCmdParser.h
+ * \brief    Command parser
  */
 
-#include "LumaAverage.h"
+#include "PlaYUVerDefs.h"
+#include <boost/program_options.hpp>
+namespace po = boost::program_options;
 
 namespace plaYUVer
 {
 
-LumaAverage::LumaAverage()
+class PlaYUVerCmdParser
 {
-  /* Module Definition */
-  m_iModuleType = FRAME_MEASUREMENT_MODULE;
-  m_pchModuleCategory = "Measurements";
-  m_pchModuleName = "LumaAverage";
-  m_pchModuleTooltip = "Measure the average of luma component";
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
-  m_uiModuleRequirements = MODULE_REQUIRES_SIDEBAR;
-  m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;
-}
+public:
+  PlaYUVerCmdParser();
+  ~PlaYUVerCmdParser();
 
-Void LumaAverage::create( PlaYUVerFrame* frame )
-{
-}
+  Void Config( Int argc, Char *argv[] );
+  Void addOptions( po::options_description );
+  Bool parse();
 
-Double LumaAverage::measure( PlaYUVerFrame* frame )
-{
-  Double average = 0;
-  Pel* pPel = frame->getPelBufferYUV()[0][0];
-  for( UInt y = 0; y < frame->getHeight(); y++ )
-    for( UInt x = 0; x < frame->getWidth(); x++ )
-    {
-      average += *pPel;
-      pPel++;
-    }
-  return average / Double( frame->getHeight() * frame->getWidth() );
-}
+  po::variables_map getOptionsMap()
+  {
+    return m_cOptionsMap;
+  }
 
-Void LumaAverage::destroy()
-{
+  static po::options_description GetCommandOpts();
 
-}
+private:
+  Int m_iArgc;
+  Char** m_apcArgv;
+  po::options_description m_ParserOptions;
+  po::variables_map m_cOptionsMap;
+
+  Bool checkListingOpts();
+};
 
 }  // NAMESPACE
-

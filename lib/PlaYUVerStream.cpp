@@ -172,7 +172,7 @@ Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::st
   }
   for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
   {
-    if( PlaYUVerFrame::supportedPixelFormatListNames()[i] == input_format_name )
+    if( lowercase( PlaYUVerFrame::supportedPixelFormatListNames()[i] ) == lowercase( input_format_name ) )
     {
       input_format = i;
       break;
@@ -635,6 +635,12 @@ PlaYUVerFrame* PlaYUVerStream::getCurrFrame()
 {
   return m_pcCurrFrame;
 }
+
+PlaYUVerFrame* PlaYUVerStream::getNextFrame()
+{
+  return m_pcNextFrame;
+}
+
 
 Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 {

@@ -37,7 +37,7 @@ class PixFcSSE;
 namespace plaYUVer
 {
 
-class PlaYUVerFrame : public PlaYUVerFrameStats
+class PlaYUVerFrame: public PlaYUVerFrameStats
 {
 public:
   class Pixel
@@ -60,14 +60,38 @@ public:
       PixelComponents[1] = c1;
       PixelComponents[2] = c2;
     }
-    Int ColorSpace() { return m_iColorSpace; }
-    Pel* Components()  { return PixelComponents; }
-    Pel& Y()  { return PixelComponents[0]; }
-    Pel& Cb() { return PixelComponents[1]; }
-    Pel& Cr() { return PixelComponents[2]; }
-    Pel& R()  { return PixelComponents[0]; }
-    Pel& G()  { return PixelComponents[1]; }
-    Pel& B()  { return PixelComponents[2]; }
+    Int ColorSpace()
+    {
+      return m_iColorSpace;
+    }
+    Pel* Components()
+    {
+      return PixelComponents;
+    }
+    Pel& Y()
+    {
+      return PixelComponents[0];
+    }
+    Pel& Cb()
+    {
+      return PixelComponents[1];
+    }
+    Pel& Cr()
+    {
+      return PixelComponents[2];
+    }
+    Pel& R()
+    {
+      return PixelComponents[0];
+    }
+    Pel& G()
+    {
+      return PixelComponents[1];
+    }
+    Pel& B()
+    {
+      return PixelComponents[2];
+    }
   };
 
   enum ColorSpace
@@ -161,8 +185,16 @@ public:
     m_bHasRGBPel = false;
     return m_pppcInputPel;
   }
-  UChar* getRGBBuffer() const
+//  UChar* getRGBBuffer() const
+//  {
+//    return m_pcRGB32;
+//  }
+  UChar* getRGBBuffer()
   {
+    if( !m_bHasRGBPel )
+    {
+      fillRGBBuffer();
+    }
     return m_pcRGB32;
   }
 
@@ -185,7 +217,7 @@ public:
     NUMBER_METRICS,
   };
 
-  static std::vector<std::string>  supportedQualityMetricsList()
+  static std::vector<std::string> supportedQualityMetricsList()
   {
     std::vector<std::string> metrics;
     metrics.push_back( "PSNR" );

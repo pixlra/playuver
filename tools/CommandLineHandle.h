@@ -18,48 +18,31 @@
  */
 
 /**
- * \file     LumaAverage.cpp
- * \brief    Luma frame average
+ * \file     CommandLineHandle.h
+ * \brief    Handle for command line
  */
 
-#include "LumaAverage.h"
+#ifndef __COMMANDLINEHANDLE_H__
+#define __COMMANDLINEHANDLE_H__
+
+#include "config.h"
+#include "lib/PlaYUVerDefs.h"
+#include "lib/PlaYUVerCmdParser.h"
 
 namespace plaYUVer
 {
 
-LumaAverage::LumaAverage()
+class CommandLineHandle: public PlaYUVerCmdParser
 {
-  /* Module Definition */
-  m_iModuleType = FRAME_MEASUREMENT_MODULE;
-  m_pchModuleCategory = "Measurements";
-  m_pchModuleName = "LumaAverage";
-  m_pchModuleTooltip = "Measure the average of luma component";
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
-  m_uiModuleRequirements = MODULE_REQUIRES_SIDEBAR;
-  m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;
-}
+public:
+  CommandLineHandle();
+  ~CommandLineHandle();
 
-Void LumaAverage::create( PlaYUVerFrame* frame )
-{
-}
+  Int parseToolsArgs();
+  Void listModules();
 
-Double LumaAverage::measure( PlaYUVerFrame* frame )
-{
-  Double average = 0;
-  Pel* pPel = frame->getPelBufferYUV()[0][0];
-  for( UInt y = 0; y < frame->getHeight(); y++ )
-    for( UInt x = 0; x < frame->getWidth(); x++ )
-    {
-      average += *pPel;
-      pPel++;
-    }
-  return average / Double( frame->getHeight() * frame->getWidth() );
-}
-
-Void LumaAverage::destroy()
-{
-
-}
+};
 
 }  // NAMESPACE
 
+#endif // __COMMANDLINEHANDLE_H__

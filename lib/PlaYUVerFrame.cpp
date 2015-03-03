@@ -163,7 +163,7 @@ Void PlaYUVerFrame::frameFromBuffer( Pel *Buff, UInt64 uiBuffSize )
   m_pcPelFormat->frameFromBuffer( Buff, m_pppcInputPel, m_uiWidth, m_uiHeight );
   m_bHasRGBPel = false;
   m_bHasHistogram = false;
-  fillRGBBuffer();
+  //fillRGBBuffer();
 }
 
 Void PlaYUVerFrame::frameToBuffer( Pel *output_buffer )

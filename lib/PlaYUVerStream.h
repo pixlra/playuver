@@ -136,6 +136,7 @@ public:
   Bool setNextFrame();
   PlaYUVerFrame* getCurrFrame();
   PlaYUVerFrame* getCurrFrame( PlaYUVerFrame * );
+  PlaYUVerFrame* getNextFrame();
 
   Bool seekInput( UInt64 new_frame_num );
 

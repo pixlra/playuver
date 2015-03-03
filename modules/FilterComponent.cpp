@@ -60,7 +60,7 @@ FilterComponentLuma::FilterComponentLuma()
   /* Module Definition */
   m_iModuleType = FRAME_PROCESSING_MODULE;              // Apply module to the frames or to the whole sequence.
                                                         // Currently only support for frame
-  m_pchModuleCategory = "Filter Component";             // Category (sub-menu)
+  m_pchModuleCategory = "FilterComponent";             // Category (sub-menu)
   m_pchModuleName = "Luma";                             // Name
   m_pchModuleTooltip = "Filter Y matrix of YUV frame";  // Description
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;       // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
@@ -83,8 +83,8 @@ FilterComponentChromaU::FilterComponentChromaU()
 {
   /* Module Definition */
   m_iModuleType = FRAME_PROCESSING_MODULE;
-  m_pchModuleCategory = "Filter Component";
-  m_pchModuleName = "Chroma U";
+  m_pchModuleCategory = "FilterComponent";
+  m_pchModuleName = "ChromaU";
   m_pchModuleTooltip = "Filter U matrix of YUV frame";
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
   m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
@@ -105,8 +105,8 @@ FilterComponentChromaV::FilterComponentChromaV()
 {
   /* Module Definition */
   m_iModuleType = FRAME_PROCESSING_MODULE;
-  m_pchModuleCategory = "Filter Component";
-  m_pchModuleName = "Chroma V";
+  m_pchModuleCategory = "FilterComponent";
+  m_pchModuleName = "ChromaV";
   m_pchModuleTooltip = "Filter V matrix of YUV frame";
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
   m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;

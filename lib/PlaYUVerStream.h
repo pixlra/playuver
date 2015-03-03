@@ -127,6 +127,7 @@ public:
   Void loadAll();
 
   Void readFrame();
+  Void readFrameFillRGBBuffer();
   Void writeFrame();
   Void writeFrame( PlaYUVerFrame *pcFrame );
 

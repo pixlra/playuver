@@ -476,6 +476,13 @@ Void PlaYUVerStream::getDuration( Int* duration_array )
   *duration_array++ = secs;
 }
 
+Void PlaYUVerStream::readFrameFillRGBBuffer()
+{
+  readFrame();
+  m_pcNextFrame->fillRGBBuffer();
+  return;
+}
+
 Void PlaYUVerStream::readFrame()
 {
   if( !m_bInit || !m_bIsInput || m_bLoadAll )
@@ -510,7 +517,6 @@ Void PlaYUVerStream::readFrame()
     m_pcNextFrame->frameFromBuffer( m_pStreamBuffer, bytes_read );
   }
   m_uiCurrFrameFileIdx++;
-  m_pcNextFrame->fillRGBBuffer();
   return;
 }
 

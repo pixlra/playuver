@@ -88,7 +88,11 @@ private:
    * Threads variables
    * QtConcurrent
    */
+  QFuture<Void> m_cRefreshResult;
   QFuture<Void> m_cReadResult;
+
+  Void refreshFrame( Bool bThreaded = false );
+  Void refreshFrameOperation();
 
   static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
 
@@ -111,7 +115,7 @@ public:
 
   Bool loadFile( QString cFilename, Bool bForceDialog = false );
   Bool loadFile( PlaYUVerStreamInfo* streamInfo );
-  Void loadAll( );
+  Void loadAll();
   Void reloadFile();
   Bool save( QString filename );
 
@@ -128,7 +132,6 @@ public:
   Void seekAbsoluteEvent( UInt new_frame_num );
   Void seekRelativeEvent( Bool bIsFoward );
 
-  Void refreshFrame();
   Void setCurrFrame( PlaYUVerFrame* pcCurrFrame );
 
   PlaYUVerStreamInfo getStreamInfo()

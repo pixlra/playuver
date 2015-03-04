@@ -55,7 +55,7 @@ public:
     }
     Pixel( Int ColorSpace, Pel c0, Pel c1, Pel c2 )
     {
-      m_iColorSpace = ColorSpace == PlaYUVerFrame::GRAY ? PlaYUVerFrame::COLOR_YUV : ColorSpace;
+      m_iColorSpace = ColorSpace == PlaYUVerFrame::COLOR_GRAY ? PlaYUVerFrame::COLOR_YUV : ColorSpace;
       PixelComponents[0] = c0;
       PixelComponents[1] = c1;
       PixelComponents[2] = c2;

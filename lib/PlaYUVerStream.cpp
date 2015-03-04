@@ -31,7 +31,7 @@
 #include "LibAvContextHandle.h"
 #endif
 #ifdef USE_OPENCV
-#include <opencv2/opencv.hpp>
+#include "LibOpenCVHandler.h"
 #endif
 
 namespace plaYUVer
@@ -41,8 +41,14 @@ std::vector<std::string> PlaYUVerStream::supportedReadFormatsExt()
 {
   std::vector<std::string> formatsExt;
   formatsExt.push_back( "yuv" );
+#ifdef USE_FFMPEG
   std::vector<std::string> libAvFmt = LibAvContextHandle::supportedReadFormatsExt();
   formatsExt.insert( formatsExt.end(), libAvFmt.begin(), libAvFmt.end() );
+#endif
+#ifdef USE_OPENCV
+  std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedReadFormatsExt();
+  formatsExt.insert( formatsExt.end(), opencvFmt.begin(), opencvFmt.end() );
+#endif
   return formatsExt;
 }
 
@@ -50,8 +56,14 @@ std::vector<std::string> PlaYUVerStream::supportedReadFormatsName()
 {
   std::vector<std::string> formatsName;
   formatsName.push_back( "Raw video" );
+#ifdef USE_FFMPEG
   std::vector<std::string> libAvFmt = LibAvContextHandle::supportedReadFormatsName();
   formatsName.insert( formatsName.end(), libAvFmt.begin(), libAvFmt.end() );
+#endif
+#ifdef USE_OPENCV
+  std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedReadFormatsName();
+  formatsName.insert( formatsName.end(), opencvFmt.begin(), opencvFmt.end() );
+#endif
   return formatsName;
 }
 
@@ -74,10 +86,10 @@ std::vector<std::string> PlaYUVerStream::supportedSaveFormatsExt()
   std::vector<std::string> formatsExt;
   std::vector<std::string> writeExt = supportedWriteFormatsExt();
   formatsExt.insert( formatsExt.begin(), writeExt.begin(), writeExt.end() );
-  formatsExt.push_back( "bmp" );
-  formatsExt.push_back( "bmp" );
-  formatsExt.push_back( "jpeg" );
-  formatsExt.push_back( "png" );
+#ifdef USE_OPENCV
+  std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedSaveFormatsExt();
+  formatsExt.insert( formatsExt.end(), opencvFmt.begin(), opencvFmt.end() );
+#endif
   sort( formatsExt.begin(), formatsExt.end() );
   formatsExt.erase( unique( formatsExt.begin(), formatsExt.end() ), formatsExt.end() );
   return formatsExt;
@@ -88,10 +100,10 @@ std::vector<std::string> PlaYUVerStream::supportedSaveFormatsName()
   std::vector<std::string> formatsName;
   std::vector<std::string> writeName = supportedWriteFormatsName();
   formatsName.insert( formatsName.begin(), writeName.begin(), writeName.end() );
-  formatsName.push_back( "Windows Bitmap" );
-  formatsName.push_back( "Windows Bitmap" );
-  formatsName.push_back( "Joint Photographic Experts Group" );
-  formatsName.push_back( "Portable Network Graphics" );
+#ifdef USE_OPENCV
+  std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedSaveFormatsName();
+  formatsName.insert( formatsName.end(), opencvFmt.begin(), opencvFmt.end() );
+#endif
   sort( formatsName.begin(), formatsName.end() );
   formatsName.erase( unique( formatsName.begin(), formatsName.end() ), formatsName.end() );
   return formatsName;
@@ -224,6 +236,12 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
     {
       m_uiStreamHandler = YUV_IO;
     }
+//#ifdef USE_OPENCV
+//    else if ( m_cFormatName == "png" )
+//    {
+//      m_uiStreamHandler = OPENCV_HANDLER;
+//    }
+//#endif
 #ifdef USE_FFMPEG
     else
     {
@@ -481,7 +499,7 @@ Void PlaYUVerStream::readFrame()
   if( !m_bInit || !m_bIsInput || m_bLoadAll )
     return;
 
-  if( m_uiCurrFrameFileIdx >= Int64( m_uiTotalFrameNum ) )
+  if( m_uiCurrFrameFileIdx >= m_uiTotalFrameNum )
   {
     m_pcNextFrame = NULL;
     return;
@@ -591,11 +609,8 @@ Bool PlaYUVerStream::saveFrame( const std::string& filename, PlaYUVerFrame *save
 #ifdef USE_OPENCV
     else
     {
-      cv::Mat* image;
-      saveFrame->getCvMat( ( Void** )&image );
-      return cv::imwrite( filename, *image );
+      return LibOpenCVHandler::saveFrame( saveFrame, filename );
     }
-
 #endif
   }
   return false;

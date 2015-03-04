@@ -32,7 +32,7 @@
 #include "LibAvContextHandle.h"
 #endif
 #ifdef USE_OPENCV
-#include <opencv2/opencv.hpp>
+#include "LibOpenCVHandler.h"
 #endif
 #ifdef USE_PIXFC
 #include "pixfc-sse.h"
@@ -324,25 +324,19 @@ Void PlaYUVerFrame::getCvMat( Void** ppCvFrame )
 {
 #ifdef USE_OPENCV
   Int cvType = CV_8UC3;
-  switch( m_iPixelFormat )
+  switch( m_pcPelFormat->numberChannels )
   {
-  case YUV420p:
-  case YUV444p:
-  case YUV422p:
-  case YUYV422:
-    cvType = CV_8UC4;
-    break;
-  case GRAY:
-    cvType = CV_8UC1;
-    break;
-  case RGB8:
+  case 3:
     cvType = CV_8UC3;
+    break;
+  case 1:
+    cvType = CV_8UC1;
     break;
   default:
     break;
   }
   cv::Mat *pcCvFrame = new cv::Mat( m_uiHeight, m_uiWidth, cvType );
-  if( m_iPixelFormat != GRAY )
+  if( m_pcPelFormat->colorSpace != PlaYUVerFrame::COLOR_GRAY )
   {
     fillRGBBuffer();
     memcpy( pcCvFrame->data, m_pcRGB32, m_uiWidth * m_uiHeight * 4 * sizeof(UChar) );

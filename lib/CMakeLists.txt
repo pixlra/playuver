@@ -17,6 +17,11 @@ IF( USE_FFMPEG )
   LIST( APPEND plaYUver_Lib_SRCS LibAvContextHandle.cpp )
 ENDIF()
 
+IF( USE_OPENCV )
+  LIST( APPEND plaYUver_Lib_SRCS LibOpenCVHandler.cpp )
+ENDIF()
+
+
 set(plaYUver_Lib_HEADERS
     PlaYUVerFrame.h
     PlaYUVerStream.h

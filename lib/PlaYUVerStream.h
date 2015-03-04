@@ -35,6 +35,7 @@ namespace plaYUVer
 {
 
 class LibAvContextHandle;
+class LibOpenCVHandler;
 
 typedef struct
 {
@@ -57,6 +58,7 @@ private:
   {
     INVALID_HANDLER = -1,
     YUV_IO,
+    OPENCV_HANDLER,
     FFMPEG,
     TOTAL_HANDLERR
   };

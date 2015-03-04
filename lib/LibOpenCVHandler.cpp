@@ -112,7 +112,7 @@ Bool LibOpenCVHandler::loadFrame( PlaYUVerFrame* pcFrame, std::string filename )
   return true;
 }
 
-Bool LibOpenCVHandler::saveFrame( const PlaYUVerFrame* pcFrame, std::string filename )
+Bool LibOpenCVHandler::saveFrame( PlaYUVerFrame* pcFrame, std::string filename )
 {
 
   Int cvType = CV_8UC3;

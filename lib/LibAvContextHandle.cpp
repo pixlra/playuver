@@ -220,12 +220,12 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
     m_uiSecs = duration / AV_TIME_BASE;
     num_frames = m_uiSecs * frame_rate;
     m_uiMicroSec = duration % AV_TIME_BASE;
-    num_frames = num_frames == 0 ? 1 : num_frames;
   }
   else
   {
     num_frames = 0;
   }
+  num_frames = num_frames == 0 ? 1 : num_frames;
 
   Int pix_fmt = video_dec_ctx->pix_fmt;
   switch( pix_fmt )
@@ -255,6 +255,7 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
   }
   if( pixel_format == PlaYUVerFrame::NO_FMT )
   {
+    throw "Cannot open file using FFmpeg libs - unsupported pixel format";
     closeAvFormat();
     return false;
   }

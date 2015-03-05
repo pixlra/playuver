@@ -31,6 +31,11 @@
 namespace plaYUVer
 {
 
+#define CHROMA_RESAMPLING( X ) ( ( ( X + 1 ) >> 1 ) << 1 )
+
+#define CHROMARATIO( SIZE, RATIO ) ( RATIO > 1 ? ( ( SIZE + 1 ) / RATIO ) : SIZE )
+#define CHROMASHIFT( SIZE, SHIFT ) ( SHIFT > 0 ? ( ( SIZE + 1 ) >> SHIFT ) : SIZE )
+
 #define CLAMP(X) X = X < 0 ? 0 : X > 255 ? 255 : X;
 
 #define YUV2RGB(  iY, iU, iV, iR, iG, iB ) \
@@ -78,7 +83,7 @@ struct structPlaYUVerFramePelFormat
   Int ratioChromaHeight;
   Void (*frameFromBuffer)( Pel *in, Pel*** out, UInt width, UInt height );
   Void (*bufferFromFrame)( Pel ***in, Pel* out, UInt width, UInt height );
-  Void (*fillRGBbuffer)( Pel*** in, UChar* out, UInt width, UInt height );
+  Void (*fillARGB32buffer)( Pel*** in, UChar* out, UInt width, UInt height );
   Int ffmpegPelFormat;
 };
 

@@ -56,37 +56,43 @@ namespace plaYUVer
  * Progressive and interlaces
  */
 
-Void frameFromBufferYUVProgressive( Pel* in, Pel ***out, UInt width, UInt height, UInt ratioChroma )
+Void frameFromBufferYUVProgressive( Pel* in, Pel ***out, UInt width, UInt height, UInt ratioChromaWidth, UInt ratioChromaHeight )
 {
+  UInt64 chromaSize = CHROMASHIFT( width, ratioChromaWidth ) * CHROMASHIFT( height, ratioChromaHeight );
   memcpy( &out[LUMA][0][0], in, width * height * sizeof(Pel) );
-  memcpy( &out[CHROMA_U][0][0], in + width * height, width * height / ratioChroma * sizeof(Pel) );
-  memcpy( &out[CHROMA_V][0][0], in + width * height + width * height / ratioChroma, width * height / ratioChroma * sizeof(Pel) );
+  memcpy( &out[CHROMA_U][0][0], in + width * height, chromaSize * sizeof(Pel) );
+  memcpy( &out[CHROMA_V][0][0], in + width * height + chromaSize, chromaSize * sizeof(Pel) );
 }
 
-Void bufferFromFrameYUVProgressive( Pel*** in, Pel *out, UInt width, UInt height, UInt ratioChroma )
+Void bufferFromFrameYUVProgressive( Pel*** in, Pel *out, UInt width, UInt height, UInt ratioChromaWidth, UInt ratioChromaHeight )
 {
+  UInt64 chromaSize = CHROMASHIFT( width, ratioChromaWidth ) * CHROMASHIFT( height, ratioChromaHeight );
   memcpy( out, &in[LUMA][0][0], width * height * sizeof(Pel) );
-  memcpy( out + width * height, &in[CHROMA_U][0][0], width * height / ratioChroma * sizeof(Pel) );
-  memcpy( out + width * height + width * height / ratioChroma, &in[CHROMA_V][0][0], width * height / ratioChroma * sizeof(Pel) );
+  memcpy( out + width * height, &in[CHROMA_U][0][0], chromaSize * sizeof(Pel) );
+  memcpy( out + width * height + chromaSize, &in[CHROMA_V][0][0], chromaSize * sizeof(Pel) );
 }
 
-Void fillRGBbufferYUV( Pel*** in, UChar* out, UInt width, UInt height, UInt ratioChromaHor, UInt ratioChromaVer )
+Void fillARGB32bufferYUV( Pel*** in, UChar* out, UInt width, UInt height, UInt ratioChromaHor, UInt ratioChromaVer )
 {
-  Pel* pY = in[LUMA][0];
+  Pel* pLineY = in[LUMA][0];
   Pel* pLineU = in[CHROMA_U][0];
   Pel* pLineV = in[CHROMA_V][0];
-  UInt uiChromaStride = width >> ratioChromaHor;
+  UInt uiChromaStride = CHROMASHIFT( width, ratioChromaHor );
+  Pel* pY;
   Pel* pU;
   Pel* pV;
   Int iY, iU, iV, iR, iG, iB;
-  UInt* buff = ( UInt* )out;
+  UInt* pARGBLine = ( UInt* )out;
+  UInt* pARGB;
 
   for( UInt y = 0; y < height >> ratioChromaVer; y++ )
   {
     for( Int i = 0; i < 1 << ratioChromaVer; i++ )
     {
+      pY = pLineY;
       pU = pLineU;
       pV = pLineV;
+      pARGB = pARGBLine;
       for( UInt x = 0; x < width >> ratioChromaHor; x++ )
       {
         iU = *pU++;
@@ -95,10 +101,11 @@ Void fillRGBbufferYUV( Pel*** in, UChar* out, UInt width, UInt height, UInt rati
         {
           iY = *pY++;
           YUV2RGB( iY, iU, iV, iR, iG, iB );
-          *buff = PEL_RGB( iR, iG, iB );
-          buff++;
+          *pARGB++ = PEL_RGB( iR, iG, iB );
         }
       }
+      pLineY += width;
+      pARGBLine += width;
     }
     pLineU += uiChromaStride;
     pLineV += uiChromaStride;
@@ -111,13 +118,13 @@ Void fillRGBbufferYUV( Pel*** in, UChar* out, UInt width, UInt height, UInt rati
 
 Void frameFromBufferYUV420p( Pel *in, Pel*** out, UInt width, UInt height )
 {
-  frameFromBufferYUVProgressive( in, out, width, height, 4 );
+  frameFromBufferYUVProgressive( in, out, width, height, 1, 1 );
 }
 Void bufferFromFrameYUV420p( Pel ***in, Pel* out, UInt width, UInt height )
 {
-  bufferFromFrameYUVProgressive( in, out, width, height, 4 );
+  bufferFromFrameYUVProgressive( in, out, width, height, 1, 1 );
 }
-Void fillRGBbufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height )
+Void fillARGB32bufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height )
 {
 #ifdef USE_SSE
   if( ( width % 16 ) == 0 )
@@ -260,7 +267,7 @@ Void fillRGBbufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height )
   else
 #endif
   {
-    fillRGBbufferYUV( in, out, width, height, 1, 1 );
+    fillARGB32bufferYUV( in, out, width, height, 1, 1 );
   }
 }
 
@@ -273,7 +280,7 @@ PlaYUVerFramePelFormat yuv420p =
   2,
   frameFromBufferYUV420p,
   bufferFromFrameYUV420p,
-  fillRGBbufferYUV420p,
+  fillARGB32bufferYUV420p,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV420P ), };
 
 /**
@@ -282,15 +289,15 @@ PlaYUVerFramePelFormat yuv420p =
 
 Void frameFromBufferYUV444p( Pel *in, Pel*** out, UInt width, UInt height )
 {
-  frameFromBufferYUVProgressive( in, out, width, height, 1 );
+  frameFromBufferYUVProgressive( in, out, width, height, 0, 0 );
 }
 Void bufferFromFrameYUV444p( Pel ***in, Pel* out, UInt width, UInt height )
 {
-  bufferFromFrameYUVProgressive( in, out, width, height, 1 );
+  bufferFromFrameYUVProgressive( in, out, width, height, 0, 0 );
 }
-Void fillRGBbufferYUV444p( Pel*** in, UChar* out, UInt width, UInt height )
+Void fillARGB32bufferYUV444p( Pel*** in, UChar* out, UInt width, UInt height )
 {
-  fillRGBbufferYUV( in, out, width, height, 0, 0 );
+  fillARGB32bufferYUV( in, out, width, height, 0, 0 );
 }
 PlaYUVerFramePelFormat yuv444p =
 {
@@ -301,7 +308,7 @@ PlaYUVerFramePelFormat yuv444p =
   1,
   frameFromBufferYUV444p,
   bufferFromFrameYUV444p,
-  fillRGBbufferYUV444p,
+  fillARGB32bufferYUV444p,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV444P ), };
 
 /**
@@ -310,15 +317,15 @@ PlaYUVerFramePelFormat yuv444p =
 
 Void frameFromBufferYUV422p( Pel *in, Pel*** out, UInt width, UInt height )
 {
-  frameFromBufferYUVProgressive( in, out, width, height, 2 );
+  frameFromBufferYUVProgressive( in, out, width, height, 1, 0 );
 }
 Void bufferFromFrameYUV422p( Pel ***in, Pel* out, UInt width, UInt height )
 {
-  bufferFromFrameYUVProgressive( in, out, width, height, 2 );
+  bufferFromFrameYUVProgressive( in, out, width, height, 1, 0 );
 }
-Void fillRGBbufferYUV422( Pel*** in, UChar* out, UInt width, UInt height )
+Void fillARGB32bufferYUV422( Pel*** in, UChar* out, UInt width, UInt height )
 {
-  fillRGBbufferYUV( in, out, width, height, 1, 0 );
+  fillARGB32bufferYUV( in, out, width, height, 1, 0 );
 }
 PlaYUVerFramePelFormat yuv422p =
 {
@@ -329,7 +336,7 @@ PlaYUVerFramePelFormat yuv422p =
   1,
   frameFromBufferYUV422p,
   bufferFromFrameYUV422p,
-  fillRGBbufferYUV422,
+  fillARGB32bufferYUV422,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV422P ), };
 
 /**
@@ -371,7 +378,7 @@ PlaYUVerFramePelFormat yuyv422 =
   1,
   frameFromBufferYUYV422,
   bufferFromFrameYUYV422,
-  fillRGBbufferYUV422,
+  fillARGB32bufferYUV422,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUYV422 ), };
 
 /**
@@ -386,7 +393,7 @@ Void bufferFromFrameGray( Pel ***in, Pel* out, UInt width, UInt height )
 {
   memcpy( out, &in[LUMA][0][0], width * height * sizeof(Pel) );
 }
-Void fillRGBbufferGray( Pel*** in, UChar* out, UInt width, UInt height )
+Void fillARGB32bufferGray( Pel*** in, UChar* out, UInt width, UInt height )
 {
   Pel *inPel = in[0][0];
   Pel iY;
@@ -407,7 +414,7 @@ PlaYUVerFramePelFormat gray =
   0,
   frameFromBufferGray,
   bufferFromFrameGray,
-  fillRGBbufferGray,
+  fillARGB32bufferGray,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_GRAY8 ), };
 
 /**
@@ -433,7 +440,7 @@ Void bufferFromFrameRGB( Pel ***in, Pel* out, UInt64 size, Pel* pFirst, Pel* pSe
     *out++ = *pthird++;
   }
 }
-Void fillRGBbufferRGB( Pel*** in, UChar* out, UInt width, UInt height )
+Void fillARGB32bufferRGB( Pel*** in, UChar* out, UInt width, UInt height )
 {
   Pel* pR = in[COLOR_R][0];
   Pel* pG = in[COLOR_G][0];
@@ -468,7 +475,7 @@ PlaYUVerFramePelFormat RGB24 =
   1,
   frameFromBufferRGB24,
   bufferFromFrameRGB24,
-  fillRGBbufferRGB,
+  fillARGB32bufferRGB,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_RGB24 ), };
 
 /** BGR 8 bits per pixel / 3 channels */
@@ -490,7 +497,7 @@ PlaYUVerFramePelFormat BGR24 =
   1,
   frameFromBufferBGR24,
   bufferFromFrameBGR24,
-  fillRGBbufferRGB,
+  fillARGB32bufferRGB,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_BGR24 ), };
 
 PlaYUVerFramePelFormat g_PlaYUVerFramePelFormatsList[PLAYUVER_NUMBER_FORMATS] =

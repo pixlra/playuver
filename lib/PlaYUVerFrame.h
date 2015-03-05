@@ -195,7 +195,7 @@ public:
     {
       fillRGBBuffer();
     }
-    return m_pcRGB32;
+    return m_pcARGB32;
   }
 
   /**
@@ -243,7 +243,7 @@ private:
 
   Bool m_bHasRGBPel;
   Pel*** m_pppcInputPel;
-  UChar* m_pcRGB32;
+  UChar* m_pcARGB32;
 
   Void init( UInt width, UInt height, Int pel_format );
   Void openPixfc();

@@ -51,7 +51,7 @@ public:
   {
   }
 
-  static Bool loadFrame( PlaYUVerFrame* pcFrame, std::string filename );
+  static PlaYUVerFrame* loadFrame( std::string filename );
   static Bool saveFrame( PlaYUVerFrame* pcFrame, std::string filename );
 
 private:

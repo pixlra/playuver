@@ -720,9 +720,10 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
     UInt64 nbytes_seek = frame_bytes_input * new_frame_num;
     fseek( m_pFile, nbytes_seek, SEEK_SET );
   }
+  m_uiCurrFrameFileIdx = new_frame_num;
+
   m_uiFrameBufferIndex = 0;
   m_pcCurrFrame = m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
-  m_uiCurrFrameFileIdx = 0;
 
   readFrame();
   setNextFrame();

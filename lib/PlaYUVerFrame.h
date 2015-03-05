@@ -233,7 +233,7 @@ public:
 
 private:
 
-  struct structPlaYUVerFramePelFormat* m_pcPelFormat;
+  struct PlaYUVerPixFmtDescriptor* m_pcPelFormat;
 
   UInt m_uiWidth;
   UInt m_uiHeight;

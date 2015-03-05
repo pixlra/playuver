@@ -158,7 +158,7 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
     av_dict_set( &format_opts, "video_size", aux_string, 0 );
   }
 
-  Int ffmpeg_pel_format = g_PlaYUVerFramePelFormatsList[pixel_format].ffmpegPelFormat;
+  Int ffmpeg_pel_format = g_PlaYUVerPixFmtDescriptorsList[pixel_format].ffmpegPelFormat;
   if( ffmpeg_pel_format >= 0 )
   {
     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AVPixelFormat( ffmpeg_pel_format ) ), 0 );
@@ -247,7 +247,7 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
   pixel_format = PlaYUVerFrame::NO_FMT;
   for( Int i = 0; i < PLAYUVER_NUMBER_FORMATS; i++ )
   {
-    if( g_PlaYUVerFramePelFormatsList[i].ffmpegPelFormat == pix_fmt )
+    if( g_PlaYUVerPixFmtDescriptorsList[i].ffmpegPelFormat == pix_fmt )
     {
       pixel_format = i;
       break;

@@ -125,7 +125,7 @@ Bool LibOpenCVHandler::saveFrame( PlaYUVerFrame* pcFrame, std::string filename )
   switch( pcFrame->getNumberChannels() )
   {
   case 3:
-    cvType = CV_8UC4;
+    cvType = CV_8UC3;
     break;
   case 1:
     cvType = CV_8UC1;
@@ -134,10 +134,20 @@ Bool LibOpenCVHandler::saveFrame( PlaYUVerFrame* pcFrame, std::string filename )
     return false;
     break;
   }
+
   cv::Mat pcCvFrame( pcFrame->getHeight(), pcFrame->getWidth(), cvType );
+
   if( pcFrame->getColorSpace() != PlaYUVerFrame::COLOR_GRAY )
   {
-    memcpy( pcCvFrame.data, pcFrame->getRGBBuffer(), pcFrame->getHeight() * pcFrame->getWidth() * 4 * sizeof(UChar) );
+    UChar* pCvPel = pcCvFrame.data;
+    UChar* pARGB = pcFrame->getRGBBuffer();
+    for( UInt i = 0; i < pcFrame->getHeight() * pcFrame->getWidth(); i++ )
+    {
+      *pCvPel++ = *pARGB++;
+      *pCvPel++ = *pARGB++;
+      *pCvPel++ = *pARGB++;
+      pARGB++;
+    }
   }
   else
   {

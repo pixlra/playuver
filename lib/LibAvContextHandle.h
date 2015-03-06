@@ -66,7 +66,7 @@ public:
           m_bHasStream( false )
   {
   }
-  Bool initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate, UInt64& num_frames );
+  Bool initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, Double& frame_rate, UInt64& num_frames );
   Void closeAvFormat();
   Bool decodeAvFormat();
 
@@ -103,8 +103,10 @@ private:
   Bool m_bHasStream;
 
   Char m_acCodecName[20];
-  UInt m_uiSecs;
-  UInt m_uiMicroSec;
+  UInt64 m_uiSecs;
+  UInt64 m_uiMicroSec;
+
+  Bool decodeVideoPkt();
 };
 
 }  // NAMESPACE

@@ -148,7 +148,7 @@ PlaYUVerStream::PlaYUVerStream()
   m_uiTotalFrameNum = 0;
   m_iCurrFrameNum = -1;
   m_iPixelFormat = -1;
-  m_uiFrameRate = 30;
+  m_dFrameRate = 30;
   m_iFileFormat = -1;
   m_pStreamBuffer = NULL;
   m_cFilename = "";
@@ -205,7 +205,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   m_uiWidth = width;
   m_uiHeight = height;
   m_iPixelFormat = input_format;
-  m_uiFrameRate = frame_rate;
+  m_dFrameRate = frame_rate;
 
   m_pchFilename = new Char[m_cFilename.size() + 1];
   std::copy( m_cFilename.begin(), m_cFilename.end(), m_pchFilename );
@@ -271,7 +271,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
 #ifdef USE_FFMPEG
   if( m_uiStreamHandler == FFMPEG )
   {
-    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiFrameRate, m_uiTotalFrameNum ) )
+    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_dFrameRate, m_uiTotalFrameNum ) )
     {
       throw "Cannot open file using FFmpeg libs";
     }
@@ -442,7 +442,7 @@ Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, 
     rWidth = m_uiWidth;
     rHeight = m_uiHeight;
     rInputFormat = m_iPixelFormat;
-    rFrameRate = m_uiFrameRate;
+    rFrameRate = m_dFrameRate;
   }
   else
   {
@@ -506,7 +506,7 @@ Void PlaYUVerStream::getDuration( Int* duration_array )
   else
 #endif
   {
-    secs = m_uiTotalFrameNum / m_uiFrameRate;
+    secs = m_uiTotalFrameNum / m_dFrameRate;
   }
   mins = secs / 60;
   secs %= 60;
@@ -520,7 +520,8 @@ Void PlaYUVerStream::getDuration( Int* duration_array )
 Void PlaYUVerStream::readFrameFillRGBBuffer()
 {
   readFrame();
-  m_pcNextFrame->fillRGBBuffer();
+  if( m_pcNextFrame )
+    m_pcNextFrame->fillRGBBuffer();
   return;
 }
 

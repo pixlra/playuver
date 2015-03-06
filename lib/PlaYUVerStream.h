@@ -90,7 +90,7 @@ private:
 
   UInt m_uiWidth;
   UInt m_uiHeight;
-  UInt m_uiFrameRate;
+  Double m_dFrameRate;
   UInt64 m_uiTotalFrameNum;
   Int64 m_iCurrFrameNum;
 
@@ -181,9 +181,9 @@ public:
   {
     return m_iCurrFrameNum;
   }
-  UInt getFrameRate()
+  Double getFrameRate()
   {
-    return m_uiFrameRate;
+    return m_dFrameRate;
   }
   Void getDuration( Int* duration_array );
 

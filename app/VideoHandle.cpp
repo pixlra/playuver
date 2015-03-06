@@ -427,7 +427,7 @@ Void VideoHandle::play()
 
   if( !m_pcCurrentVideoSubWindow->isPlaying() )  // Not playing
   {
-    UInt frameRate;
+    Double frameRate;
     UInt timeInterval;
     if( m_acPlayingSubWindows.size() < 2 )
     {

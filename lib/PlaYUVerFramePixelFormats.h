@@ -143,8 +143,6 @@ typedef struct PlaYUVerPixFmtDescriptor
    */
   UInt8 log2ChromaHeight;
 
-  Void (*fillARGB32buffer)( Pel*** in, UChar* out, UInt width, UInt height );
-
   Int ffmpegPelFormat;
 
   /**
@@ -156,6 +154,8 @@ typedef struct PlaYUVerPixFmtDescriptor
    * otherwise 0 is luma, 1 is chroma-U and 2 is chroma-V.
    */
   PlaYUVerComponentDescriptor comp[4];
+
+  Void (*fillARGB32buffer)( Pel*** in, UChar* out, UInt width, UInt height );
 
 } PlaYUVerPixFmtDescriptor;
 

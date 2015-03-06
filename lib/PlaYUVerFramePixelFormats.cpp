@@ -239,22 +239,15 @@ Void fillARGB32bufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height )
   }
 }
 
-
-
 Void fillARGB32bufferYUV444p( Pel*** in, UChar* out, UInt width, UInt height )
 {
   fillARGB32bufferYUV( in, out, width, height, 0, 0 );
 }
 
-
-
 Void fillARGB32bufferYUV422( Pel*** in, UChar* out, UInt width, UInt height )
 {
   fillARGB32bufferYUV( in, out, width, height, 1, 0 );
 }
-
-
-
 
 Void fillARGB32bufferGray( Pel*** in, UChar* out, UInt width, UInt height )
 {
@@ -285,6 +278,7 @@ Void fillARGB32bufferRGB( Pel*** in, UChar* out, UInt width, UInt height )
   }
 }
 
+
 PlaYUVerPixFmtDescriptor yuv420p =
 {
   "YUV420p",
@@ -293,13 +287,13 @@ PlaYUVerPixFmtDescriptor yuv420p =
   3,
   1,
   1,
-  fillARGB32bufferYUV420p,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV420P ),
   {
     { 0, 0, 1, 0, 7 },        /* Y */
     { 1, 0, 1, 0, 7 },        /* U */
     { 2, 0, 1, 0, 7 },        /* V */
   },
+  fillARGB32bufferYUV420p,
 };
 
 PlaYUVerPixFmtDescriptor yuv422p =
@@ -310,13 +304,13 @@ PlaYUVerPixFmtDescriptor yuv422p =
   3,
   1,
   0,
-  fillARGB32bufferYUV422,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV422P ),
   {
     { 0, 0, 1, 0, 7 },        /* Y */
     { 1, 0, 1, 0, 7 },        /* U */
     { 2, 0, 1, 0, 7 },        /* V */
   },
+  fillARGB32bufferYUV422,
 };
 
 PlaYUVerPixFmtDescriptor yuv444p =
@@ -327,13 +321,13 @@ PlaYUVerPixFmtDescriptor yuv444p =
   3,
   0,
   0,
-  fillARGB32bufferYUV444p,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV444P ),
   {
     { 0, 0, 1, 0, 7 },        /* Y */
     { 1, 0, 1, 0, 7 },        /* U */
     { 2, 0, 1, 0, 7 },        /* V */
   },
+  fillARGB32bufferYUV444p,
 };
 
 PlaYUVerPixFmtDescriptor yuyv422 =
@@ -344,13 +338,13 @@ PlaYUVerPixFmtDescriptor yuyv422 =
   1,
   1,
   0,
-  fillARGB32bufferYUV422,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUYV422 ),
   {
     { 0, 1, 1, 0, 7 },        /* Y */
     { 0, 3, 2, 0, 7 },        /* U */
     { 0, 3, 4, 0, 7 },        /* V */
   },
+  fillARGB32bufferYUV422,
 };
 
 PlaYUVerPixFmtDescriptor gray =
@@ -361,9 +355,9 @@ PlaYUVerPixFmtDescriptor gray =
   1,
   0,
   0,
-  fillARGB32bufferGray,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_GRAY8 ),
   { { 0, 0, 1, 0, 7 } },        /* Y */
+  fillARGB32bufferGray,
 };
 
 PlaYUVerPixFmtDescriptor RGB24 =
@@ -374,13 +368,13 @@ PlaYUVerPixFmtDescriptor RGB24 =
   1,
   0,
   0,
-  fillARGB32bufferRGB,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_RGB24 ),
   {
     { 0, 2, 1, 0, 7 },        /* R */
     { 0, 2, 2, 0, 7 },        /* G */
     { 0, 2, 3, 0, 7 },        /* B */
   },
+  fillARGB32bufferRGB,
 };
 
 PlaYUVerPixFmtDescriptor BGR24 =
@@ -391,13 +385,13 @@ PlaYUVerPixFmtDescriptor BGR24 =
   1,
   0,
   0,
-  fillARGB32bufferRGB,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_BGR24 ),
   {
     { 0, 2, 3, 0, 7 },        /* R */
     { 0, 2, 2, 0, 7 },        /* G */
     { 0, 2, 1, 0, 7 },        /* B */
   },
+  fillARGB32bufferRGB,
 };
 
 PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PLAYUVER_NUMBER_FORMATS] =
@@ -408,6 +402,7 @@ PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PLAYUVER_NUMBER_FORMATS
   yuyv422,
   gray,
   RGB24,
-  BGR24, };
+  BGR24,
+};
 
 }  // NAMESPACE

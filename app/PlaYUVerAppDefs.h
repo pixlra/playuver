@@ -18,52 +18,30 @@
  */
 
 /**
- * \file     ModuleHandleDock.h
- * \brief    Module handle dock
+ * \file     PlaYUVerAppDefs.h
+ * \brief    Define types for PlaYUVerApp
  */
 
-#ifndef __MODULEHANDLEDOCK_H__
-#define __MODULEHANDLEDOCK_H__
+#ifndef __PLAYUVERAPPDEFS_H__
+#define __PLAYUVERAPPDEFS_H__
 
-#include "config.h"
-#include "PlaYUVerAppDefs.h"
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#include <QWidget>
-#endif
-
+#include "lib/PlaYUVerDefs.h"
 
 namespace plaYUVer
 {
 
-class PlaYUVerAppModuleIf;
+// ====================================================================================================================
+// Qt compatibility redefinition
+// ====================================================================================================================
+#ifndef QStringLiteral
+// no lambdas, not GCC, or GCC in C++98 mode with 4-byte wchar_t
+// fallback, return a temporary QString
+// source code is assumed to be encoded in UTF-8
 
-class ModuleHandleDock: public QWidget
-{
-Q_OBJECT
-public:
-  ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf );
-  ~ModuleHandleDock();
+# define QStringLiteral(str) QString::fromUtf8("" str "", sizeof(str) - 1)
+#endif
+  
 
-  Void setModulueReturnValue( Double value );
+}  // NAMESPACE
 
-  QSize sizeHint() const;
-
-private:
-
-  PlaYUVerAppModuleIf* m_pcCurrModuleIf;
-
-  Bool m_bIsVisible;
-  QLabel* labelModulueValueLabel;
-  QLabel* labelModulueReturnValue;
-
-public Q_SLOTS:
-  void visibilityChangedSlot( bool );
-
-};
-
-}   // NAMESPACE
-
-#endif // __MODULEHANDLEDOCK_H__
+#endif // __PLAYUVERAPPDEFS_H__

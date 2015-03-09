@@ -26,6 +26,7 @@
 #define __VIDEOHANDLE_H__
 
 #include "config.h"
+#include "PlaYUVerAppDefs.h"
 #include <QtCore>
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>

@@ -851,7 +851,7 @@ Void plaYUVerApp::checkRecentFileActions()
   Int i = 0;
   while( i < m_aRecentFileStreamInfo.size() )
   {
-    if( !QFileInfo::exists( m_aRecentFileStreamInfo.at( i ).m_cFilename ) )
+    if( !QFileInfo( m_aRecentFileStreamInfo.at( i ).m_cFilename ).exists() )
     {
       m_aRecentFileStreamInfo.remove( i );
       continue;

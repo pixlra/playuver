@@ -23,7 +23,7 @@
  */
 
 #include "config.h"
-#include "lib/PlaYUVerDefs.h"
+#include "PlaYUVerAppDefs.h"
 #include <QApplication>
 #include "plaYUVerApp.h"
 #include "SubWindowHandle.h"

@@ -27,7 +27,7 @@
 #define __VIEWAREA_H__
 
 #include "config.h"
-#include "lib/PlaYUVerDefs.h"
+#include "PlaYUVerAppDefs.h"
 #include <QWidget>
 #include <QPixmap>
 #include <QBitmap>

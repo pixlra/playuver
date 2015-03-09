@@ -36,7 +36,7 @@
 #include <QtGui>
 #endif
 #include "PlaYUVerAppModuleIf.h"
-#include "lib/PlaYUVerDefs.h"
+#include "PlaYUVerAppDefs.h"
 #include "lib/PlaYUVerFrame.h"
 
 namespace plaYUVer

@@ -22,7 +22,6 @@
  * \brief    Definition of the quality measurement sidebar
  */
 
-#include "lib/PlaYUVerDefs.h"
 #include <QtGui>
 #include "PlaYUVerSubWindowHandle.h"
 #include "QualityMeasurementSidebar.h"

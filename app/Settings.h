@@ -26,7 +26,7 @@
 #define __SETTINGS_H__
 
 #include "config.h"
-#include "lib/PlaYUVerDefs.h"
+#include "PlaYUVerAppDefs.h"
 #include <QtCore>
 #include "GridManager.h"
 #include "VideoSubWindow.h"

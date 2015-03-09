@@ -26,6 +26,7 @@
 #define __QUALITYMEASUREMENTSIDEBAR_H__
 
 #include "config.h"
+#include "PlaYUVerAppDefs.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )

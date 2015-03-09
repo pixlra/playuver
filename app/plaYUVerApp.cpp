@@ -779,7 +779,7 @@ Void plaYUVerApp::createToolBars()
   m_arrayToolBars[VIEW_TOOLBAR] = new QToolBar( tr( "View" ) );
   m_pcZoomFactorSBox = new QDoubleSpinBox;
   m_pcZoomFactorSBox->setRange( 1.0, 10000.0 );
-  m_pcZoomFactorSBox->setDecimals(0);
+  m_pcZoomFactorSBox->setDecimals( 0 );
   m_pcZoomFactorSBox->setSingleStep( 10.0 );
   m_pcZoomFactorSBox->setValue( 100.0 );
   m_pcZoomFactorSBox->setSuffix( "%" );
@@ -855,6 +855,15 @@ Void plaYUVerApp::checkRecentFileActions()
     {
       m_aRecentFileStreamInfo.remove( i );
       continue;
+    }
+    else
+    {
+      UInt64 fileSize = QFileInfo( m_aRecentFileStreamInfo.at( i ).m_cFilename ).size();
+      if( m_aRecentFileStreamInfo.at( i ).m_uiFileSize != fileSize )
+      {
+        m_aRecentFileStreamInfo.remove( i );
+        continue;
+      }
     }
     i++;
   }

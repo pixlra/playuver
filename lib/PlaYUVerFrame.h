@@ -70,6 +70,9 @@ public:
     Pel& B()  { return PixelComponents[2]; }
   };
 
+  /** ColorSpace Enum
+    * List of supported color spaces
+    */
   enum ColorSpace
   {
     COLOR_INVALID = -1,
@@ -79,6 +82,9 @@ public:
     COLOR_GRAY,
   };
 
+  /** ColorSpace Enum
+    * List of supported pixel formats (old)
+    */
   enum PixelFormats
   {
     NO_FMT = -1,
@@ -87,14 +93,52 @@ public:
     YUV422p,
     YUYV422,
     GRAY,
-    RGB8,
+    RGB24,
+    BRG24,
     NUMBER_FORMATS
   };
 
+  /**
+    * Function that handles the supported pixel formats
+    * of PlaYUVerFrame
+    * @@return vector of strings with pixel formats names
+    *
+    */
   static std::vector<std::string> supportedPixelFormatListNames();
 
+  /**
+    * Creates a new frame using the following configuration
+    *
+    * @param width width of the frame
+    * @param height height of the frame
+    * @param pel_format pixel format index (always use PixelFormats enum)
+    *
+    * @note this function might misbehave if the pixel format enum is not correct
+    *
+    */
   PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );
+  
+  /**
+    * Creates and new frame with the configuration of an
+    * existing one and copy its contents
+    *
+    * @param other existing frame to copy from
+    *
+    */
   PlaYUVerFrame( PlaYUVerFrame * );
+  
+  /**
+    * Creates and new frame with the configuration of an
+    * existing one and copy its contents. 
+    * This function only copies a specific region from the existing frame
+    *
+    * @param other existing frame to copy from
+    * @param posX position X to crop from
+    * @param posY position Y to crop from
+    * @param areaWidth crop width
+    * @param areaHeight crop height
+    *
+    */
   PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt areaWidth, UInt areaHeight );
   ~PlaYUVerFrame();
 
@@ -203,15 +247,16 @@ private:
 
   struct structPlaYUVerFramePelFormat* m_pcPelFormat;
 
-  UInt m_uiWidth;
-  UInt m_uiHeight;
-  Int m_iPixelFormat;
+  UInt m_uiWidth; //!< Width of the frame
+  UInt m_uiHeight; //!< Height of the frame
+  Int m_iPixelFormat; //!< Pixel format number (it follows the list of supported pixel formats)
   Int m_iNumberChannels;
   Int m_iBitsChannels;
 
-  Bool m_bHasRGBPel;
-  Pel*** m_pppcInputPel;
-  UChar* m_pcRGB32;
+  Pel*** m_pppcInputPel; 
+  
+  Bool m_bHasRGBPel; //!< Flag indicating that the ARGB buffer was computed
+  UChar* m_pcRGB32; //!< Buffer with the ARGB pixels used in Qt libs
 
   Void init( UInt width, UInt height, Int pel_format );
   Void openPixfc();

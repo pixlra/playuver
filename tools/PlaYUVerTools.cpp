@@ -186,6 +186,32 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
 
     m_pcCurrModuleIf->create( m_apcInputStreams[0]->getCurrFrame() );
 
+    if( m_pcCurrModuleIf->m_iModuleType == FRAME_PROCESSING_MODULE )
+    {
+      // Check outputs
+      std::vector<std::string> outputFileNames;
+      if( m_cCommandLineParser.getOptionsMap().count( "output" ) )
+        outputFileNames = m_cCommandLineParser.getOptionsMap()["output"].as<std::vector<std::string> >();
+
+      if( outputFileNames.size() == 1 )
+      {
+        PlaYUVerFrame* pcModFrame = applyFrameModule();
+        PlaYUVerStream* pcModStream = new PlaYUVerStream;
+        if( !pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(), pcModFrame->getPelFormat(), 1, false ) )
+        {
+          delete pcModStream;
+          pcModStream = NULL;
+          return 2;
+        }
+        m_apcOutputStreams.push_back( pcModStream );
+      }
+      else
+      {
+        printf( "One output is required! " );
+        return 2;
+      }
+    }
+
     m_uiOperation = MODULE_OPERATION;
     m_fpProcess = &PlaYUVerTools::ModuleOperation;
     printf( "PlaYUVer Module\n" );
@@ -265,6 +291,24 @@ Int PlaYUVerTools::QualityOperation()
   return 0;
 }
 
+PlaYUVerFrame* PlaYUVerTools::applyFrameModule()
+{
+  PlaYUVerFrame* pcProcessedFrame = NULL;
+  if( m_pcCurrModuleIf->m_iModuleType == FRAME_PROCESSING_MODULE )
+  {
+    switch( m_pcCurrModuleIf->m_uiNumberOfFrames )
+    {
+    case MODULE_REQUIRES_ONE_FRAME:
+      pcProcessedFrame = m_pcCurrModuleIf->process( m_apcInputStreams[0]->getCurrFrame() );
+      break;
+    case MODULE_REQUIRES_TWO_FRAMES:
+      pcProcessedFrame = m_pcCurrModuleIf->process( m_apcInputStreams[0]->getCurrFrame(), m_apcInputStreams[1]->getCurrFrame() );
+      break;
+    }
+  }
+  return pcProcessedFrame;
+}
+
 Int PlaYUVerTools::ModuleOperation()
 {
   printf( "  Applying Module %s/%s ... \n", m_pcCurrModuleIf->m_pchModuleCategory, m_pcCurrModuleIf->m_pchModuleName );
@@ -284,15 +328,8 @@ Int PlaYUVerTools::ModuleOperation()
 
     if( m_pcCurrModuleIf->m_iModuleType == FRAME_PROCESSING_MODULE )
     {
-      switch( m_pcCurrModuleIf->m_uiNumberOfFrames )
-      {
-      case MODULE_REQUIRES_ONE_FRAME:
-        pcProcessedFrame = m_pcCurrModuleIf->process( m_apcInputStreams[0]->getCurrFrame() );
-        break;
-      case MODULE_REQUIRES_TWO_FRAMES:
-        pcProcessedFrame = m_pcCurrModuleIf->process( m_apcInputStreams[0]->getCurrFrame(), m_apcInputStreams[1]->getCurrFrame() );
-        break;
-      }
+      pcProcessedFrame = applyFrameModule();
+      m_apcInputStreams[0]->writeFrame( pcProcessedFrame );
     }
     else if( m_pcCurrModuleIf->m_iModuleType == FRAME_MEASUREMENT_MODULE )
     {

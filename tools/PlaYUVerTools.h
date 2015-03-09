@@ -73,6 +73,7 @@ private:
   Int QualityOperation();
 
   PlaYUVerModuleIf* m_pcCurrModuleIf;
+  PlaYUVerFrame* applyFrameModule();
   Int ModuleOperation();
 };
 

@@ -26,6 +26,9 @@
 #include "ModulesHandle.h"
 #include "SubWindowHandle.h"
 #include "ConfigureFormatDialog.h"
+#if( QT_VERSION_PLAYUVER == 5 )
+#include "QtConcurrent/qtconcurrentrun.h"
+#endif
 
 namespace plaYUVer
 {
@@ -401,7 +404,7 @@ Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
   m_cViewArea->setImage( m_pcCurrFrame );
 }
 
-Void VideoSubWindow::refreshFrame()
+Void VideoSubWindow::refreshFrameOperation()
 {
   Bool bSetFrame = false;
   if( m_pCurrStream )
@@ -421,6 +424,21 @@ Void VideoSubWindow::refreshFrame()
   for( Int i = 0; i < m_apcCurrentModule.size(); i++ )
   {
     ModulesHandle::applyModuleIf( m_apcCurrentModule.at( i ), m_bIsPlaying );
+  }
+}
+
+Void VideoSubWindow::refreshFrame( Bool bThreaded )
+{
+#ifndef QT_NO_CONCURRENT
+  m_cRefreshResult.waitForFinished();
+  if( bThreaded )
+  {
+    m_cRefreshResult = QtConcurrent::run( this, &VideoSubWindow::refreshFrameOperation );
+  }
+  else
+#endif
+  {
+    refreshFrameOperation();
   }
 }
 
@@ -461,11 +479,19 @@ Bool VideoSubWindow::playEvent()
   Bool bEndOfSeq = false;
   if( m_pCurrStream && m_bIsPlaying )
   {
+#ifndef QT_NO_CONCURRENT
+    m_cRefreshResult.waitForFinished();
+    m_cReadResult.waitForFinished();
+#endif
     bEndOfSeq = m_pCurrStream->setNextFrame();
     if( !bEndOfSeq )
     {
       refreshFrame();
-      m_pCurrStream->readFrame();
+#ifndef QT_NO_CONCURRENT
+      m_cReadResult = QtConcurrent::run( m_pCurrStream, &PlaYUVerStream::readFrameFillRGBBuffer );
+#else
+      m_pCurrStream->readFrameFillRGBBuffer();
+#endif
     }
   }
   return bEndOfSeq;
@@ -520,7 +546,7 @@ Void VideoSubWindow::normalSize()
 
 Void VideoSubWindow::zoomToFit()
 {
-  // Scale to a smaller size that the real to a nicer look
+// Scale to a smaller size that the real to a nicer look
   scaleView( getScrollSize() );
 }
 
@@ -557,7 +583,7 @@ Void VideoSubWindow::scaleView( const QSize & size, QPoint center )
   QSize newSize = imgViewSize;
   newSize.scale( size, Qt::KeepAspectRatio );
 
-  // Calc the zoom factor
+// Calc the zoom factor
   Double wfactor = 1;
   Double hfactor = 1;
   Double factor;
@@ -642,8 +668,8 @@ QSize VideoSubWindow::sizeHint( const QSize & maxSize ) const
   else if( m_pCurrStream )
     isize = QSize( m_pCurrStream->getWidth() + 50, m_pCurrStream->getHeight() + 50 );
 
-  // If the VideoSubWindow needs more space that the avaiable, we'll give
-  // to the subwindow a reasonable size preserving the image aspect ratio.
+// If the VideoSubWindow needs more space that the avaiable, we'll give
+// to the subwindow a reasonable size preserving the image aspect ratio.
   if( !( isize.width() < maxSize.width() && isize.height() < maxSize.height() ) )
   {
     isize.scale( maxSize, Qt::KeepAspectRatio );

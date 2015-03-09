@@ -18,47 +18,31 @@
  */
 
 /**
- * \file     LibOpenCVHandler.h
- * \ingroup  PlaYUVerLib
- * \brief    Interface with opencv lib
+ * \file     CommandLineHandle.h
+ * \brief    Handle for command line
  */
 
-#ifndef __LIBOPENCVHANDLER_H__
-#define __LIBOPENCVHANDLER_H__
+#ifndef __COMMANDLINEHANDLE_H__
+#define __COMMANDLINEHANDLE_H__
 
-#include <inttypes.h>
-#include <vector>
-#include <string>
-#include <opencv2/opencv.hpp>
-#include "PlaYUVerDefs.h"
+#include "config.h"
+#include "lib/PlaYUVerDefs.h"
+#include "lib/PlaYUVerCmdParser.h"
 
 namespace plaYUVer
 {
 
-class PlaYUVerFrame;
-
-class LibOpenCVHandler
+class CommandLineHandle: public PlaYUVerCmdParser
 {
 public:
+  CommandLineHandle();
+  ~CommandLineHandle();
 
-  static std::vector<std::string> supportedReadFormatsExt();
-  static std::vector<std::string> supportedReadFormatsName();
-  static std::vector<std::string> supportedWriteFormatsExt();
-  static std::vector<std::string> supportedWriteFormatsName();
-  static std::vector<std::string> supportedSaveFormatsExt();
-  static std::vector<std::string> supportedSaveFormatsName();
+  Int parseToolsArgs();
+  Void listModules();
 
-  LibOpenCVHandler()
-  {
-  }
-
-  static PlaYUVerFrame* loadFrame( std::string filename );
-  static Bool saveFrame( PlaYUVerFrame* pcFrame, std::string filename );
-
-private:
-  std::string m_cFilename;
 };
 
 }  // NAMESPACE
 
-#endif // __LIBOPENCVHANDLER_H__
+#endif // __COMMANDLINEHANDLE_H__

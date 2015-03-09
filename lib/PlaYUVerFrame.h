@@ -38,7 +38,7 @@ class PixFcSSE;
 namespace plaYUVer
 {
 
-struct PlaYUVerFramePelFormat;
+struct PlaYUVerPixFmtDescriptor;
 
 /**
  * \class PlaYUVerFrame
@@ -243,9 +243,17 @@ public:
     m_bHasRGBPel = false;
     return m_pppcInputPel;
   }
-  UChar* getRGBBuffer() const
+//  UChar* getRGBBuffer() const
+//  {
+//    return m_pcRGB32;
+//  }
+  UChar* getRGBBuffer()
   {
-    return m_pcRGB32;
+    if( !m_bHasRGBPel )
+    {
+      fillRGBBuffer();
+    }
+    return m_pcARGB32;
   }
 
   /**
@@ -284,7 +292,7 @@ public:
 private:
 
   //! Strcut with the pixel format description.
-  PlaYUVerFramePelFormat* m_pcPelFormat;
+  PlaYUVerPixFmtDescriptor* m_pcPelFormat;
 
   UInt m_uiWidth;  //!< Width of the frame
   UInt m_uiHeight;  //!< Height of the frame
@@ -295,7 +303,7 @@ private:
   Pel*** m_pppcInputPel;
 
   Bool m_bHasRGBPel;  //!< Flag indicating that the ARGB buffer was computed
-  UChar* m_pcRGB32;  //!< Buffer with the ARGB pixels used in Qt libs
+  UChar* m_pcARGB32;  //!< Buffer with the ARGB pixels used in Qt libs
 
   Void init( UInt width, UInt height, Int pel_format );
 

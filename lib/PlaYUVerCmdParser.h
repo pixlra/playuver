@@ -18,47 +18,41 @@
  */
 
 /**
- * \file     LibOpenCVHandler.h
- * \ingroup  PlaYUVerLib
- * \brief    Interface with opencv lib
+ * \file     PlaYUVerCmdParser.h
+ * \brief    Command parser
  */
 
-#ifndef __LIBOPENCVHANDLER_H__
-#define __LIBOPENCVHANDLER_H__
-
-#include <inttypes.h>
-#include <vector>
-#include <string>
-#include <opencv2/opencv.hpp>
 #include "PlaYUVerDefs.h"
+#include <boost/program_options.hpp>
+namespace po = boost::program_options;
 
 namespace plaYUVer
 {
 
-class PlaYUVerFrame;
-
-class LibOpenCVHandler
+class PlaYUVerCmdParser
 {
 public:
+  PlaYUVerCmdParser();
+  ~PlaYUVerCmdParser();
 
-  static std::vector<std::string> supportedReadFormatsExt();
-  static std::vector<std::string> supportedReadFormatsName();
-  static std::vector<std::string> supportedWriteFormatsExt();
-  static std::vector<std::string> supportedWriteFormatsName();
-  static std::vector<std::string> supportedSaveFormatsExt();
-  static std::vector<std::string> supportedSaveFormatsName();
+  Void Config( Int argc, Char *argv[] );
+  Void addOptions( po::options_description );
+  Bool parse();
 
-  LibOpenCVHandler()
+  po::variables_map getOptionsMap()
   {
+    return m_cOptionsMap;
   }
 
-  static PlaYUVerFrame* loadFrame( std::string filename );
-  static Bool saveFrame( PlaYUVerFrame* pcFrame, std::string filename );
+  static po::options_description GetCommandOpts();
 
 private:
-  std::string m_cFilename;
+  Int m_iArgc;
+  Char** m_apcArgv;
+  po::options_description m_ParserOptions;
+  po::variables_map m_cOptionsMap;
+
+  Bool checkListingOpts();
 };
 
 }  // NAMESPACE
-
-#endif // __LIBOPENCVHANDLER_H__

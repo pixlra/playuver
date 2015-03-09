@@ -1,5 +1,6 @@
 /*    This file is a part of plaYUVer project
  *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -18,47 +19,40 @@
  */
 
 /**
- * \file     LibOpenCVHandler.h
- * \ingroup  PlaYUVerLib
- * \brief    Interface with opencv lib
+ * \file     main.cpp
+ * \brief    main file
  */
 
-#ifndef __LIBOPENCVHANDLER_H__
-#define __LIBOPENCVHANDLER_H__
+#include "PlaYUVerTools.h"
 
-#include <inttypes.h>
-#include <vector>
-#include <string>
-#include <opencv2/opencv.hpp>
-#include "PlaYUVerDefs.h"
+using namespace plaYUVer;
 
-namespace plaYUVer
+int main( int argc, char *argv[] )
 {
+  Int iRet = 0;
+  PlaYUVerTools PlaYUVerToolsApp;
 
-class PlaYUVerFrame;
-
-class LibOpenCVHandler
-{
-public:
-
-  static std::vector<std::string> supportedReadFormatsExt();
-  static std::vector<std::string> supportedReadFormatsName();
-  static std::vector<std::string> supportedWriteFormatsExt();
-  static std::vector<std::string> supportedWriteFormatsName();
-  static std::vector<std::string> supportedSaveFormatsExt();
-  static std::vector<std::string> supportedSaveFormatsName();
-
-  LibOpenCVHandler()
+  iRet = PlaYUVerToolsApp.Open( argc, argv );
+  if( iRet == 1 )
   {
+    return 0;
+  }
+  if( iRet > 1 )
+  {
+    printf( "Exiting\n" );
+    return 1;
   }
 
-  static PlaYUVerFrame* loadFrame( std::string filename );
-  static Bool saveFrame( PlaYUVerFrame* pcFrame, std::string filename );
+  if( PlaYUVerToolsApp.Process() > 1 )
+  {
+    printf( "Exiting\n" );
+    return 1;
+  }
 
-private:
-  std::string m_cFilename;
-};
+  if( PlaYUVerToolsApp.Close() > 1 )
+  {
+    printf( "Exiting\n" );
+    return 1;
+  }
 
-}  // NAMESPACE
-
-#endif // __LIBOPENCVHANDLER_H__
+}

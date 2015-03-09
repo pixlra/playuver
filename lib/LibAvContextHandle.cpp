@@ -134,7 +134,7 @@ Void LibAvContextHandle::closeAvFormat()
   m_bHasStream = false;
 }
 
-Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& frame_rate, UInt64& num_frames )
+Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, Double& frame_rate, UInt64& num_frames )
 {
   fmt_ctx = NULL;
   video_dec_ctx = NULL;
@@ -159,7 +159,7 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
     av_dict_set( &format_opts, "video_size", aux_string, 0 );
   }
 
-  Int ffmpeg_pel_format = g_PlaYUVerFramePelFormatsList[pixel_format].ffmpegPelFormat;
+  Int ffmpeg_pel_format = g_PlaYUVerPixFmtDescriptorsList[pixel_format].ffmpegPelFormat;
   if( ffmpeg_pel_format >= 0 )
   {
     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AVPixelFormat( ffmpeg_pel_format ) ), 0 );
@@ -213,9 +213,13 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
   else if( video_stream->codec->time_base.den && video_stream->codec->time_base.num )
     fr = 1 / av_q2d( video_stream->codec->time_base );
 
-  frame_rate = ( UInt )fr;
+  frame_rate = fr;
 
-  if( fmt_ctx->duration != AV_NOPTS_VALUE )
+  /*if( video_stream->nb_frames )
+  {
+    num_frames = video_stream->nb_frames;
+  }
+  else*/ if( fmt_ctx->duration != AV_NOPTS_VALUE )
   {
     Int64 duration = fmt_ctx->duration + 5000;
     m_uiSecs = duration / AV_TIME_BASE;
@@ -248,7 +252,7 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
   pixel_format = PlaYUVerFrame::NO_FMT;
   for( Int i = 0; i < PLAYUVER_NUMBER_FORMATS; i++ )
   {
-    if( g_PlaYUVerFramePelFormatsList[i].ffmpegPelFormat == pix_fmt )
+    if( g_PlaYUVerPixFmtDescriptorsList[i].ffmpegPelFormat == pix_fmt )
     {
       pixel_format = i;
       break;
@@ -293,48 +297,71 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
   return true;
 }
 
+Bool LibAvContextHandle::decodeVideoPkt()
+{
+  Int got_frame = 0;
+  Int decResult;
+  if( pkt.stream_index == video_stream_idx )
+  {
+    decResult = avcodec_decode_video2( video_dec_ctx, frame, &got_frame, &pkt );
+    if( decResult < 0 )
+    {
+      fprintf( stderr, "Error decoding video frame\n" );
+      return false;
+    }
+    pkt.data += decResult;
+    pkt.size -= decResult;
+  }
+  else
+  {
+    pkt.size = 0;
+  }
+  Bool bRet = got_frame > 0 ? true : false;
+  return bRet;
+}
+
 Bool LibAvContextHandle::decodeAvFormat()
 {
-  Int got_frame;
+  Bool bGotFrame = false;
+  AVPacket orig_pkt = pkt;
+
+  bGotFrame |= decodeVideoPkt();
+
   /* read frames from the file */
-  while( av_read_frame( fmt_ctx, &pkt ) >= 0 )
+  while( !bGotFrame && ( av_read_frame( fmt_ctx, &pkt ) >= 0 ) )
   {
-    if( pkt.stream_index == video_stream_idx )
+    orig_pkt = pkt;
+    do
     {
-      /* decode video frame */
-      Int ret = avcodec_decode_video2( video_dec_ctx, frame, &got_frame, &pkt );
-      if( ret < 0 )
-      {
-        fprintf( stderr, "Error decoding video frame\n" );
-        return false;
-      }
-
-      if( got_frame )
-      {
-        av_image_copy_to_buffer( m_pchFrameBuffer, m_uiFrameBufferSize, frame->data, frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
-            video_dec_ctx->height, 1 );
-
-        /* copy decoded frame to destination buffer:
-         * this is required since rawvideo expects non aligned data */
-        //        av_image_copy( video_dst_data, video_dst_linesize, ( const uint8_t ** )( frame->data ), frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
-        //            video_dec_ctx->height );
-      }
+      bGotFrame |= decodeVideoPkt();
+      if( bGotFrame )
+        break;
     }
-    av_free_packet( &pkt );
-    if( got_frame )
-      return true;
-  }
-  return false;
-//  /* flush cached frames */
-//  pkt.data = NULL;
-//  pkt.size = 0;
-//  do
-//  {
-//    decode_packet( &got_frame, 1 );
-//  }
-//  while( got_frame );
+    while( pkt.size > 0 );
 
-  return true;
+    if( bGotFrame )
+    {
+      break;
+    }
+  }
+
+  /*! Try flush existing packets */
+  if( !bGotFrame )
+  {
+    bGotFrame |= decodeVideoPkt();
+  }
+
+  if( bGotFrame )
+  {
+    av_image_copy_to_buffer( m_pchFrameBuffer, m_uiFrameBufferSize, frame->data, frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
+        video_dec_ctx->height, 1 );
+
+    av_free_packet( &orig_pkt );
+
+    return true;
+  }
+
+  return false;
 }
 
 Void LibAvContextHandle::seekAvFormat( UInt64 frame_num )

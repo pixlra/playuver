@@ -426,7 +426,7 @@ Void VideoHandle::play()
 
   if( !m_pcCurrentVideoSubWindow->isPlaying() )  // Not playing
   {
-    UInt frameRate;
+    Double frameRate;
     UInt timeInterval;
     if( m_acPlayingSubWindows.size() < 2 )
     {
@@ -486,7 +486,6 @@ Void VideoHandle::stop()
     }
   }
   emit changed();
-  //update();
   m_arrayActions[VIDEO_LOCK_ACT]->setVisible( false );
 }
 
@@ -523,7 +522,6 @@ Void VideoHandle::playEvent()
     m_pcCurrentVideoSubWindow->close();
   }
   emit changed();
-  //update();
 }
 
 Void VideoHandle::seekEvent( Int direction )

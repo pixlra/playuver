@@ -48,6 +48,9 @@ typedef unsigned int UInt;
 typedef double Double;
 typedef float Float;
 
+typedef unsigned char UInt8;
+typedef unsigned int UInt16;
+
 // ====================================================================================================================
 // 64-bit integer type
 // ====================================================================================================================

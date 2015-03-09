@@ -41,12 +41,19 @@ namespace plaYUVer
 struct PlaYUVerPixFmtDescriptor;
 
 /**
- * \class PlaYUVerFrame
- * \ingroup  PlaYUVerLib
+ * \class    PlaYUVerFrame
+ * \ingroup  PlaYUVerLib PlaYUVerLib_Frame
+ * \brief    Frame handling class
  */
 class PlaYUVerFrame: public PlaYUVerFrameStats
 {
 public:
+
+  /**
+   * \class    Pixel
+   * \ingroup  PlaYUVerLib PlaYUVerLib_Frame
+   * \brief    Pel handling class
+   */
   class Pixel
   {
   private:
@@ -106,15 +113,15 @@ public:
    */
   enum ColorSpace
   {
-    COLOR_INVALID = -1,
-    COLOR_YUV = 0,
-    COLOR_RGB,
-    COLOR_ARGB,
-    COLOR_GRAY,
+    COLOR_INVALID = -1,  //!< Invalid
+    COLOR_YUV = 0,  //!< YUV
+    COLOR_RGB,  //!< RGB
+    COLOR_ARGB,  //!< RGB + Alpha
+    COLOR_GRAY,  //!< Grayscale
   };
 
   /** ColorSpace Enum
-   * List of supported pixel formats (old)
+   * List of supported pixel formats (deprecated)
    */
   enum PixelFormats
   {
@@ -248,10 +255,15 @@ public:
     m_bHasRGBPel = false;
     return m_pppcInputPel;
   }
-//  UChar* getRGBBuffer() const
-//  {
-//    return m_pcRGB32;
-//  }
+
+  UChar* getRGBBuffer() const
+  {
+    if( m_bHasRGBPel )
+    {
+      return m_pcARGB32;
+    }
+    return NULL;
+  }
   UChar* getRGBBuffer()
   {
     if( !m_bHasRGBPel )
@@ -262,15 +274,22 @@ public:
   }
 
   /**
-   * Interface to other libs
+   * Interface with OpenCV lib
    */
   Void getCvMat( Void** );
   Void fromCvMat( Void* );
 
   /**
+   * @defgroup PlaYUVerLib_QualityMetrics Quality Metrics Interface
+   * @{
+   * \ingroup PlaYUVerLib
    * Quality metrics interface
+   *
+   * @}
    */
 
+  //! @ingroup PlaYUVerLib_QualityMetrics
+  //! @{
   enum QualityMetrics
   {
     NO_METRIC = -1,
@@ -293,6 +312,8 @@ public:
   Double getMSE( PlaYUVerFrame* Org, Int component );
   Double getPSNR( PlaYUVerFrame* Org, Int component );
   Double getSSIM( PlaYUVerFrame* Org, Int component );
+
+  //! @}
 
 private:
 

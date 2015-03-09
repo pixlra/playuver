@@ -47,7 +47,7 @@ typedef struct
 
 /**
  * \class PlaYUVerStream
- * \ingroup  PlaYUVerLib
+ * \ingroup  PlaYUVerLib PlaYUVerLib_Stream
  */
 class PlaYUVerStream
 {

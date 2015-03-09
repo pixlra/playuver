@@ -179,6 +179,11 @@ public:
   Void disableModule( PlaYUVerAppModuleIf* pcModule = NULL );
   Void associateModule( PlaYUVerAppModuleIf* pcModule );
 
+  PlaYUVerAppModuleIf* getDisplayModule()
+  {
+    return m_pcCurrentDisplayModule;
+  }
+
   QList<PlaYUVerAppModuleIf*> getModuleArray()
   {
     return m_apcCurrentModule;

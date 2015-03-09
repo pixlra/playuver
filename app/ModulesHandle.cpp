@@ -164,16 +164,18 @@ Void ModulesHandle::updateMenus()
   if( pcSubWindow )
   {
     QList<PlaYUVerAppModuleIf*> apcCurrentModule = pcSubWindow->getModuleArray();
+    if( pcSubWindow->getDisplayModule() )
+    {
+      m_arrayActions[APPLY_ALL_ACT]->setEnabled( true );
+      m_arrayActions[SWAP_FRAMES_ACT]->setEnabled( true );
+      apcCurrentModule.append( pcSubWindow->getDisplayModule() );
+    }
     for( Int i = 0; i < apcCurrentModule.size(); i++ )
     {
       currModuleAction = apcCurrentModule.at( i )->m_pcModuleAction;
       currModuleAction->setChecked( true );
     }
-    if( apcCurrentModule.size() )
-    {
-      m_arrayActions[APPLY_ALL_ACT]->setEnabled( true );
-      m_arrayActions[SWAP_FRAMES_ACT]->setEnabled( true );
-    }
+
   }
 }
 
@@ -194,10 +196,10 @@ Void ModulesHandle::processOpt( Int index )
   VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
   if( pcSubWindow )
   {
-    QList<PlaYUVerAppModuleIf*> apcCurrentModule = pcSubWindow->getModuleArray();
-    if( apcCurrentModule.size() > 1 )
+    PlaYUVerAppModuleIf* pcCurrentModule = pcSubWindow->getDisplayModule();
+    if( pcCurrentModule )
     {
-      PlaYUVerAppModuleIf* pcCurrModule = apcCurrentModule.at( 0 );
+      PlaYUVerAppModuleIf* pcCurrModule = pcCurrentModule;
       switch( index )
       {
       case INVALID_OPT:
@@ -304,10 +306,9 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
       pcModuleSubWindow->setWindowName( windowName );
 
       connect( pcModuleSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
-      connect( pcModuleSubWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo,  SLOT( zoomToFactorAll( double, QPoint ) ) );
+      connect( pcModuleSubWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo,
+          SLOT( zoomToFactorAll( double, QPoint ) ) );
       connect( pcModuleSubWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo, SLOT( moveAllScrollBars( const QPoint ) ) );
-
-
 
       pcCurrModuleIf->m_pcDisplaySubWindow = pcModuleSubWindow;
     }
@@ -467,7 +468,6 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
         formatsList << currFmt;
       }
       supported.append( " )" );
-
 
       QStringList filter;
       filter << supported

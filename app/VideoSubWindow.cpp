@@ -26,7 +26,9 @@
 #include "ModulesHandle.h"
 #include "SubWindowHandle.h"
 #include "ConfigureFormatDialog.h"
+#if( QT_VERSION_PLAYUVER == 5 )
 #include "QtConcurrent/qtconcurrentrun.h"
+#endif
 
 namespace plaYUVer
 {

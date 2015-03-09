@@ -34,11 +34,11 @@ SET( CMAKE_CXX_FLAGS "" )
 # Variables
 ######################################################################################
 
-OPTION( PLAYUVER_BUILD_APP      "Build GUI Application"                ON )
-OPTION( PLAYUVER_BUILD_TOOLS    "Build Command Line Application"       ON )
-OPTION( USE_SSE                      "Build with SSE support"   OFF )
-OPTION( USE_FERVOR                   "Add Fervor support"       OFF )
-OPTION( USE_WERROR                   "Warnings as errors"       OFF )
+OPTION( PLAYUVER_BUILD_APP      "Build GUI Application"                ON  )
+OPTION( PLAYUVER_BUILD_TOOLS    "Build Command Line Application"       ON  )
+OPTION( USE_SSE                 "Build with SSE support"               OFF )
+OPTION( USE_FERVOR              "Add Fervor support"                   OFF )
+OPTION( USE_WERROR              "Warnings as errors"                   OFF )
 
 ######################################################################################
 # Dependencies
@@ -115,8 +115,8 @@ MESSAGE("")
 MESSAGE( STATUS "${PROJECT_NAME} INFORMATION"                      )
 MESSAGE( STATUS "Version: "                 "${PLAYUVER_VERSION}"  )
 MESSAGE( STATUS "Configuration:"                                   )
-MESSAGE( STATUS "    Build type: "          "${CMAKE_BUILD_TYPE}"   )
-MESSAGE( STATUS "    Build flags:"          "${CMAKE_CXX_FLAGS}"    )
+MESSAGE( STATUS "    Build type: "          "${CMAKE_BUILD_TYPE}"  )
+MESSAGE( STATUS "    Build flags: "         "${CMAKE_CXX_FLAGS}"   )
 
 
 FEATURE_SUMMARY(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)

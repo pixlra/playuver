@@ -40,8 +40,8 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array
     out << d.m_cFilename << d.m_uiWidth
                          << d.m_uiHeight
                          << d.m_iPelFormat
-                         << d.m_uiFrameRate;
-
+                         << d.m_uiFrameRate
+                         << d.m_uiFileSize;
   }
   return out;
 }
@@ -58,6 +58,7 @@ QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& array )
     in >> d.m_uiHeight;
     in >> d.m_iPelFormat;
     in >> d.m_uiFrameRate;
+    in >> d.m_uiFileSize;
     array.append( d );
   }
   return in;
@@ -158,6 +159,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   m_sStreamInfo.m_uiHeight = Height;
   m_sStreamInfo.m_iPelFormat = InputFormat;
   m_sStreamInfo.m_uiFrameRate = FrameRate;
+  m_sStreamInfo.m_uiFileSize = QFileInfo( cFilename ).size();
 
   m_cViewArea->setInputStream( m_pCurrStream );
 

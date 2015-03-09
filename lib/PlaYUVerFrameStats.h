@@ -19,6 +19,7 @@
 
 /**
  * \file     PlaYUVerFrameStats.h
+ * \ingroup  PlaYUVerLib
  * \brief    Measure PlaYUVerFrame statistics
  *           Based on the work of Ricardo N. Rocha Sardo in SCode project
  */

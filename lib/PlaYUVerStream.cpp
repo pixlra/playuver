@@ -19,6 +19,7 @@
 
 /**
  * \file     PlaYUVerStream.cpp
+ * \ingroup  PlaYUVerLib
  * \brief    Input stream handling
  */
 

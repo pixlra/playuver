@@ -19,6 +19,7 @@
 
 /**
  * \file     PlaYUVerFrame.h
+ * \ingroup  PlaYUVerLib
  * \brief    Video Frame handling
  */
 
@@ -37,7 +38,13 @@ class PixFcSSE;
 namespace plaYUVer
 {
 
-class PlaYUVerFrame : public PlaYUVerFrameStats
+struct PlaYUVerFramePelFormat;
+
+/**
+ * \class PlaYUVerFrame
+ * \ingroup  PlaYUVerLib
+ */
+class PlaYUVerFrame: public PlaYUVerFrameStats
 {
 public:
   class Pixel
@@ -60,19 +67,43 @@ public:
       PixelComponents[1] = c1;
       PixelComponents[2] = c2;
     }
-    Int ColorSpace() { return m_iColorSpace; }
-    Pel* Components()  { return PixelComponents; }
-    Pel& Y()  { return PixelComponents[0]; }
-    Pel& Cb() { return PixelComponents[1]; }
-    Pel& Cr() { return PixelComponents[2]; }
-    Pel& R()  { return PixelComponents[0]; }
-    Pel& G()  { return PixelComponents[1]; }
-    Pel& B()  { return PixelComponents[2]; }
+    Int ColorSpace()
+    {
+      return m_iColorSpace;
+    }
+    Pel* Components()
+    {
+      return PixelComponents;
+    }
+    Pel& Y()
+    {
+      return PixelComponents[0];
+    }
+    Pel& Cb()
+    {
+      return PixelComponents[1];
+    }
+    Pel& Cr()
+    {
+      return PixelComponents[2];
+    }
+    Pel& R()
+    {
+      return PixelComponents[0];
+    }
+    Pel& G()
+    {
+      return PixelComponents[1];
+    }
+    Pel& B()
+    {
+      return PixelComponents[2];
+    }
   };
 
   /** ColorSpace Enum
-    * List of supported color spaces
-    */
+   * List of supported color spaces
+   */
   enum ColorSpace
   {
     COLOR_INVALID = -1,
@@ -83,8 +114,8 @@ public:
   };
 
   /** ColorSpace Enum
-    * List of supported pixel formats (old)
-    */
+   * List of supported pixel formats (old)
+   */
   enum PixelFormats
   {
     NO_FMT = -1,
@@ -99,51 +130,58 @@ public:
   };
 
   /**
-    * Function that handles the supported pixel formats
-    * of PlaYUVerFrame
-    * @@return vector of strings with pixel formats names
-    *
-    */
+   * Function that handles the supported pixel formats
+   * of PlaYUVerFrame
+   * @@return vector of strings with pixel formats names
+   */
   static std::vector<std::string> supportedPixelFormatListNames();
 
   /**
-    * Creates a new frame using the following configuration
-    *
-    * @param width width of the frame
-    * @param height height of the frame
-    * @param pel_format pixel format index (always use PixelFormats enum)
-    *
-    * @note this function might misbehave if the pixel format enum is not correct
-    *
-    */
+   * Creates a new frame using the following configuration
+   *
+   * @param width width of the frame
+   * @param height height of the frame
+   * @param pel_format pixel format index (always use PixelFormats enum)
+   *
+   * @note this function might misbehave if the pixel format enum is not correct
+   */
   PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );
-  
+
   /**
-    * Creates and new frame with the configuration of an
-    * existing one and copy its contents
-    *
-    * @param other existing frame to copy from
-    *
-    */
+   * Creates and new frame with the configuration of an
+   * existing one and copy its contents
+   *
+   * @param other existing frame to copy from
+   */
   PlaYUVerFrame( PlaYUVerFrame * );
-  
+
   /**
-    * Creates and new frame with the configuration of an
-    * existing one and copy its contents. 
-    * This function only copies a specific region from the existing frame
-    *
-    * @param other existing frame to copy from
-    * @param posX position X to crop from
-    * @param posY position Y to crop from
-    * @param areaWidth crop width
-    * @param areaHeight crop height
-    *
-    */
+   * Creates and new frame with the configuration of an
+   * existing one and copy its contents.
+   * This function only copies a specific region from the existing frame
+   *
+   * @param other existing frame to copy from
+   * @param posX position X to crop from
+   * @param posY position Y to crop from
+   * @param areaWidth crop width
+   * @param areaHeight crop height
+   */
   PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt areaWidth, UInt areaHeight );
+
   ~PlaYUVerFrame();
 
-  UInt64 getBytesPerFrame();
+  /**
+   * Get number of bytes per frame of a specific
+   * pixel format
+   * @@return number of bytes per frame
+   */
   static UInt64 getBytesPerFrame( UInt, UInt, Int );
+
+  /**
+   * Get number of bytes per frame of an existing frame
+   * @@return number of bytes per frame
+   */
+  UInt64 getBytesPerFrame();
 
   Int getColorSpace() const;
   UInt getNumberChannels() const;
@@ -229,7 +267,7 @@ public:
     NUMBER_METRICS,
   };
 
-  static std::vector<std::string>  supportedQualityMetricsList()
+  static std::vector<std::string> supportedQualityMetricsList()
   {
     std::vector<std::string> metrics;
     metrics.push_back( "PSNR" );
@@ -245,20 +283,22 @@ public:
 
 private:
 
-  struct structPlaYUVerFramePelFormat* m_pcPelFormat;
+  //! Strcut with the pixel format description.
+  PlaYUVerFramePelFormat* m_pcPelFormat;
 
-  UInt m_uiWidth; //!< Width of the frame
-  UInt m_uiHeight; //!< Height of the frame
-  Int m_iPixelFormat; //!< Pixel format number (it follows the list of supported pixel formats)
-  Int m_iNumberChannels;
-  Int m_iBitsChannels;
+  UInt m_uiWidth;  //!< Width of the frame
+  UInt m_uiHeight;  //!< Height of the frame
+  Int m_iPixelFormat;  //!< Pixel format number (it follows the list of supported pixel formats)
+  Int m_iNumberChannels;  //!< Number of channels
+  Int m_iBitsChannels;  //!< Bits per pixel/channel
 
-  Pel*** m_pppcInputPel; 
-  
-  Bool m_bHasRGBPel; //!< Flag indicating that the ARGB buffer was computed
-  UChar* m_pcRGB32; //!< Buffer with the ARGB pixels used in Qt libs
+  Pel*** m_pppcInputPel;
+
+  Bool m_bHasRGBPel;  //!< Flag indicating that the ARGB buffer was computed
+  UChar* m_pcRGB32;  //!< Buffer with the ARGB pixels used in Qt libs
 
   Void init( UInt width, UInt height, Int pel_format );
+
   Void openPixfc();
   Void closePixfc();
   PixFcSSE* m_pcPixfc;

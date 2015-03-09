@@ -19,7 +19,19 @@
 
 /**
  * \file     SubWindowHandle.h
+ * \ingroup  PlaYUVerApp PlaYUVerApp_Subwindow
  * \brief    Sub windows handling
+ *
+ * @defgroup PlaYUVerApp_Subwindow SubWindow definition
+ * @{
+ * \ingroup PlaYUVerApp
+ *
+ * Different SubWindow may be found in the PlaYUVerApp
+ * Each one provide different functionality and serve
+ * different purposes, ( e.g., displaying a video stream
+ * or displaying a quality plot)
+ *
+ * @}
  */
 
 #ifndef __SUBWINDOWHANDLE_H__
@@ -105,7 +117,7 @@ public:
     return m_uiCategory;
   }
 
-  Void setSubWindow(PlaYUVerMdiSubWindow* subWindow )
+  Void setSubWindow( PlaYUVerMdiSubWindow* subWindow )
   {
     m_cSubWindow = subWindow;
   }

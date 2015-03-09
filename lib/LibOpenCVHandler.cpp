@@ -19,6 +19,7 @@
 
 /**
  * \file     LibOpenCVHandler.cpp
+ * \ingroup  PlaYUVerLib
  * \brief    Interface with opencv lib
  */
 

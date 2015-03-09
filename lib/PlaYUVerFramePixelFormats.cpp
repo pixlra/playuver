@@ -19,6 +19,7 @@
 
 /**
  * \file     PlaYUVerFramePixelFormats.cpp
+ * \ingroup  PlaYUVerLib
  * \brief    Handling the pixel formats definition
  */
 

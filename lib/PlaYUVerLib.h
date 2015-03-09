@@ -18,47 +18,43 @@
  */
 
 /**
- * \file     LibOpenCVHandler.h
+ * \file     PlaYUVerLib.h
  * \ingroup  PlaYUVerLib
- * \brief    Interface with opencv lib
+ * \brief    Inlcude all modules of PlaYUVer Lib
  */
 
-#ifndef __LIBOPENCVHANDLER_H__
-#define __LIBOPENCVHANDLER_H__
+#ifndef __PLAYUVERLIB_H_
+#define __PLAYUVERLIB_H_
 
-#include <inttypes.h>
-#include <vector>
-#include <string>
-#include <opencv2/opencv.hpp>
-#include "PlaYUVerDefs.h"
+/**
+ * @defgroup PlaYUVerLib PlaYUVer Lib
+ * @{
+ *
+ * PlaYUVerLib is an independent module that provide the low level interface
+ * for dealing with streams and frames.
+ *
+ * Two main interfaces are defining PlaYUVerFrame and PlaYUVerStream.
+ * Moreover handler for external libs, as FFmpeg and OpenCv are provided
+ * which enables PlaYUVer to boost its functionality using external libs.
+ *
+ * This guaratees that the top-level applications does not need to worry
+ * about dealig with different stream formats as well as different pixel formats
+ *
+ * @defgroup PlaYUVerLib_Stream PlaYUVerStream
+ * @{
+ *  Describe PlaYUVerStream
+ * @}
+ *
+ * @defgroup PlaYUVerLib_Frame PlaYUVerFrame
+ * @{
+ *  Describe PlaYUVerFrame
+ * @}
+ *
+ * @}
+ *
+ */
 
-namespace plaYUVer
-{
+#include "PlaYUVerFrame.h"
+#include "PlaYUVerStream.h"
 
-class PlaYUVerFrame;
-
-class LibOpenCVHandler
-{
-public:
-
-  static std::vector<std::string> supportedReadFormatsExt();
-  static std::vector<std::string> supportedReadFormatsName();
-  static std::vector<std::string> supportedWriteFormatsExt();
-  static std::vector<std::string> supportedWriteFormatsName();
-  static std::vector<std::string> supportedSaveFormatsExt();
-  static std::vector<std::string> supportedSaveFormatsName();
-
-  LibOpenCVHandler()
-  {
-  }
-
-  static Bool loadFrame( PlaYUVerFrame* pcFrame, std::string filename );
-  static Bool saveFrame( PlaYUVerFrame* pcFrame, std::string filename );
-
-private:
-  std::string m_cFilename;
-};
-
-}  // NAMESPACE
-
-#endif // __LIBOPENCVHANDLER_H__
+#endif // __PLAYUVERLIB_H_

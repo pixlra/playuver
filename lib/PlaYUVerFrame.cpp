@@ -19,6 +19,7 @@
 
 /**
  * \file     PlaYUVerFrame.cpp
+ * \ingroup  PlaYUVerLib
  * \brief    Video Frame handling
  */
 
@@ -361,7 +362,7 @@ Void PlaYUVerFrame::fromCvMat( Void* voidFrame )
       m_iPixelFormat = GRAY;
       break;
     case 4:
-      m_iPixelFormat = RGB8;
+      m_iPixelFormat = RGB24;
       break;
     default:
       return;

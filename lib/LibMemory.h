@@ -19,6 +19,7 @@
 
 /**
  * \file     LibMemory.cpp
+ * \ingroup  PlaYUVerLib
  * \brief    Memory allocation functions
  */
 

@@ -19,6 +19,7 @@
 
 /**
  * \file     PlaYUVerFramePixelFormats.h
+ * \ingroup  PlaYUVerLib
  * \brief    Handling the pixel formats definition
  */
 
@@ -69,7 +70,7 @@ inline Int pelAlpha( UInt rgb )           // get alpha part of RGBA
 #define PEL_RGB( r, g, b ) \
     ( 0xffu << 24 ) | ( ( r & 0xff ) << 16 ) | ( ( g & 0xff ) << 8 ) | ( b & 0xff )
 
-struct structPlaYUVerFramePelFormat
+typedef struct PlaYUVerFramePelFormat
 {
   const Char* name;
   Int colorSpace;
@@ -80,9 +81,7 @@ struct structPlaYUVerFramePelFormat
   Void (*bufferFromFrame)( Pel ***in, Pel* out, UInt width, UInt height );
   Void (*fillRGBbuffer)( Pel*** in, UChar* out, UInt width, UInt height );
   Int ffmpegPelFormat;
-};
-
-typedef struct structPlaYUVerFramePelFormat PlaYUVerFramePelFormat;
+}PlaYUVerFramePelFormat;
 
 #define PLAYUVER_NUMBER_FORMATS 7
 extern PlaYUVerFramePelFormat g_PlaYUVerFramePelFormatsList[PLAYUVER_NUMBER_FORMATS];

@@ -19,6 +19,7 @@
 
 /**
  * \file     PlaYUVerStream.h
+ * \ingroup  PlaYUVerLib
  * \brief    Input stream handling
  */
 
@@ -44,6 +45,10 @@ typedef struct
   UInt uiHeight;
 } PlaYUVerStdResolution;
 
+/**
+ * \class PlaYUVerStream
+ * \ingroup  PlaYUVerLib
+ */
 class PlaYUVerStream
 {
 private:
@@ -185,20 +190,6 @@ public:
   }
   Void getDuration( Int* duration_array );
 
-  Void setWidth( UInt new_width )
-  {
-    if( new_width > 0 && new_width % 2 == 0 )
-    {
-      m_uiWidth = new_width;
-    }
-  }
-  Void setHeight( UInt new_height )
-  {
-    if( new_height > 0 && new_height % 2 == 0 )
-    {
-      m_uiHeight = new_height;
-    }
-  }
 };
 
 }  // NAMESPACE

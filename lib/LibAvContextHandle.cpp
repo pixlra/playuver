@@ -19,6 +19,7 @@
 
 /**
  * \file     LibAvContextHandle.cpp
+ * \ingroup  PlaYUVerLib
  * \brief    Interface with libav libs
  */
 

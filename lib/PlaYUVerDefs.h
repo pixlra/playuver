@@ -19,6 +19,7 @@
 
 /**
  * \file     TypeDef.h
+ * \ingroup  PlaYUVerLib
  * \brief    Define basic types, new types and enumerations
  */
 

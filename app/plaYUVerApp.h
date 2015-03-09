@@ -19,7 +19,18 @@
 
 /**
  * \file     plaYUVerApp.h
+ * \ingroup  PlaYUVerApp
  * \brief    Main definition of the plaYUVerApp app
+ *
+ * @defgroup PlaYUVerApp PlaYUVer App (GUI)
+ * @{
+ *
+ * PlaYUVerApp is an high level interface providing a GUI
+ * based on the Qt libs in order to display provide important
+ * information about video streams.
+ *
+ * @}
+ *
  */
 
 #ifndef __PLAYUVERAPP_H__
@@ -89,7 +100,6 @@ private Q_SLOTS:
   void normalSize();
   void zoomToFit();
   void zoomToFitAll();
-
 
   void setTool( int idxTool );
 

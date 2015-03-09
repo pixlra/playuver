@@ -26,7 +26,7 @@
 #define __QUALITYMEASUREMENT_H__
 
 #include "config.h"
-#include "lib/PlaYUVerDefs.h"
+#include "PlaYUVerAppDefs.h"
 #include <QtCore>
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>

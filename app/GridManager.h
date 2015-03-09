@@ -27,7 +27,7 @@
 #define __GRIDMANAGER_H__
 
 #include "config.h"
-#include "lib/PlaYUVerDefs.h"
+#include "PlaYUVerAppDefs.h"
 #include <QRect>
 #include <QColor>
 #include <QPen>
@@ -56,23 +56,23 @@ public:
   void drawGrid( QPixmap &image, const QRect& area, QPainter *painter );
 
   /**
-   * @returns a QRect defined by the grid that contains the point (x, y). 
+   * @returns a QRect defined by the grid that contains the point (x, y).
    */
   QRect rectContains( int x, int y ) const;
 
   /**
    * This is an overloaded member function, provided for convenience.
-   * @returns a QRect defined by the grid that contains the QPoint pos. 
+   * @returns a QRect defined by the grid that contains the QPoint pos.
    */
   QRect rectContains( const QPoint &pos ) const;
 
   /**
-   * @returns @c true if the point (x, y) is over a grid crossing, otherwise 
+   * @returns @c true if the point (x, y) is over a grid crossing, otherwise
    * returns @c false
    */
   bool contains( int x, int y );
   /**
-   * @returns @c true if the point (x, y) is near a grid crossing, otherwise 
+   * @returns @c true if the point (x, y) is near a grid crossing, otherwise
    * returns @c false.
    * @see @p nearPos()
    */
@@ -80,7 +80,7 @@ public:
 
   /**
    * This is an overloaded member function, provided for convenience.
-   * @returns @c true if the given point is near a grid crossing, otherwise 
+   * @returns @c true if the given point is near a grid crossing, otherwise
    * returns @c false.
    * @see @p nearPos()
    */

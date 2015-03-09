@@ -54,7 +54,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
     standardResolutionSizes.append( QSize( uiWidth, uiHeight) );
   }
 
-  setObjectName( QStringLiteral( "ConfigureFormat" ) );
+  setObjectName( "ConfigureFormat" );
   resize( 400, 370 );
 
   setWindowTitle( "Configure Resolution" );

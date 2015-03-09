@@ -22,7 +22,6 @@
  * \brief    Class to handle video playback
  */
 
-#include "lib/PlaYUVerDefs.h"
 #include <QtGui>
 #include "PlaYUVerSubWindowHandle.h"
 #include "VideoHandle.h"

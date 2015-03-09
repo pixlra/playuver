@@ -53,6 +53,31 @@ std::vector<std::string> PlaYUVerFrame::supportedPixelFormatListNames()
   return formatsList;
 }
 
+PlaYUVerFrame::Pixel PlaYUVerFrame::ConvertPixel( Pixel inputPixel, ColorSpace eOutputSpace )
+{
+  Int outA, outB, outC;
+  PlaYUVerFrame::Pixel outPixel( COLOR_INVALID, 0, 0, 0 );
+
+  if( inputPixel.ColorSpace() == eOutputSpace || eOutputSpace == COLOR_ARGB || eOutputSpace == COLOR_GRAY )
+    return inputPixel;
+
+  if( eOutputSpace == COLOR_RGB )
+  {
+    YUV2RGB( inputPixel.Y(), inputPixel.Cb(), inputPixel.Cr(), outA, outB, outC );
+    outPixel.R() = outA;
+    outPixel.G() = outB;
+    outPixel.B() = outC;
+  }
+  if( eOutputSpace == COLOR_YUV )
+  {
+    rgbToYuv( inputPixel.R(), inputPixel.G(), inputPixel.B(), outA, outB, outC );
+    outPixel.Y() = outA;
+    outPixel.Cb() = outB;
+    outPixel.Cr() = outC;
+  }
+  return outPixel;
+}
+
 PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
 {
   init( width, height, pel_format );
@@ -66,7 +91,25 @@ PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other )
 
 PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt areaWidth, UInt areaHeight )
 {
-  adjustSelectedAreaDims( posX, posY, areaWidth, areaHeight, other->getPelFormat() );
+
+  PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[other->getPelFormat()] );
+  if( pcPelFormat->log2ChromaWidth )
+  {
+    if( posX % ( 1 << pcPelFormat->log2ChromaWidth ) )
+      posX--;
+    if( ( posX + areaWidth ) % ( 1 << pcPelFormat->log2ChromaWidth ) )
+      areaWidth++;
+  }
+
+  if( pcPelFormat->log2ChromaHeight )
+  {
+    if( posY % ( 1 << pcPelFormat->log2ChromaHeight ) )
+      posY--;
+
+    if( ( posY + areaHeight ) % ( 1 << pcPelFormat->log2ChromaHeight ) )
+      areaHeight++;
+  }
+
   init( areaWidth, areaHeight, other->getPelFormat() );
   copyFrom( other, posX, posY );
 }
@@ -298,27 +341,6 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame )
   memcpy( *m_pppcInputPel[LUMA], input_frame->getPelBufferYUV()[LUMA][0], getBytesPerFrame() * sizeof(Pel) );
 }
 
-Void PlaYUVerFrame::adjustSelectedAreaDims( UInt& posX, UInt& posY, UInt& areaWidth, UInt& areaHeight, Int pelFormat )
-{
-  PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[pelFormat] );
-  if( pcPelFormat->log2ChromaWidth )
-  {
-    if( posX % ( 1 << pcPelFormat->log2ChromaWidth ) )
-      posX--;
-    if( ( posX + areaWidth ) % ( 1 << pcPelFormat->log2ChromaWidth ) )
-      areaWidth++;
-  }
-
-  if( pcPelFormat->log2ChromaHeight )
-  {
-    if( posY % ( 1 << pcPelFormat->log2ChromaHeight ) )
-      posY--;
-
-    if( ( posY + areaHeight ) % ( 1 << pcPelFormat->log2ChromaHeight ) )
-      areaHeight++;
-  }
-}
-
 Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
 {
   if( m_iPixelFormat != input_frame->getPelFormat() )
@@ -337,7 +359,7 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
   m_bHasHistogram = false;
 }
 
-PlaYUVerFrame::Pixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos, Int eColorSpace )
+PlaYUVerFrame::Pixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos, ColorSpace eColorSpace )
 {
   PlaYUVerFrame::Pixel PixelValue( m_pcPelFormat->colorSpace, 0, 0, 0 );
   for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
@@ -346,32 +368,11 @@ PlaYUVerFrame::Pixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos, Int eColo
     Int ratioW = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
     PixelValue.Components()[ch] = m_pppcInputPel[ch][( yPos >> ratioH )][( xPos >> ratioW )];
   }
-  return ConvertPixel( PixelValue, eColorSpace );
-}
-
-PlaYUVerFrame::Pixel PlaYUVerFrame::ConvertPixel( PlaYUVerFrame::Pixel inputPixel, Int eOutputSpace )
-{
-  Int outA, outB, outC;
-  PlaYUVerFrame::Pixel outPixel( COLOR_INVALID, 0, 0, 0 );
-
-  if( inputPixel.ColorSpace() == eOutputSpace || eOutputSpace == COLOR_ARGB || eOutputSpace == COLOR_GRAY )
-    return inputPixel;
-
-  if( eOutputSpace == COLOR_RGB )
+  if( eColorSpace != COLOR_INVALID )
   {
-    YUV2RGB( inputPixel.Y(), inputPixel.Cb(), inputPixel.Cr(), outA, outB, outC );
-    outPixel.R() = outA;
-    outPixel.G() = outB;
-    outPixel.B() = outC;
+    PixelValue = ConvertPixel( PixelValue, eColorSpace );
   }
-  if( eOutputSpace == COLOR_YUV )
-  {
-    rgbToYuv( inputPixel.R(), inputPixel.G(), inputPixel.B(), outA, outB, outC );
-    outPixel.Y() = outA;
-    outPixel.Cb() = outB;
-    outPixel.Cr() = outC;
-  }
-  return outPixel;
+  return PixelValue;
 }
 
 /*

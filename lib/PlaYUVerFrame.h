@@ -132,9 +132,24 @@ public:
   /**
    * Function that handles the supported pixel formats
    * of PlaYUVerFrame
-   * @@return vector of strings with pixel formats names
+   * @return vector of strings with pixel formats names
    */
   static std::vector<std::string> supportedPixelFormatListNames();
+
+  /**
+   * Get number of bytes per frame of a specific
+   * pixel format
+   * @return number of bytes per frame
+   */
+  static UInt64 getBytesPerFrame( UInt, UInt, Int );
+
+  /**
+   * Convert a Pixel to a new color space
+   * @param inputPixel input pixel (PlaYUVerFrame::Pixel)
+   * @param eOutputSpace output color space
+   * @return converted pixel
+   */
+  static PlaYUVerFrame::Pixel ConvertPixel( Pixel inputPixel, ColorSpace eOutputSpace );
 
   /**
    * Creates a new frame using the following configuration
@@ -145,7 +160,7 @@ public:
    *
    * @note this function might misbehave if the pixel format enum is not correct
    */
-  PlaYUVerFrame( UInt width = 0, UInt height = 0, Int pel_format = 0 );
+  PlaYUVerFrame( UInt width, UInt height, Int pel_format = 0 );
 
   /**
    * Creates and new frame with the configuration of an
@@ -171,15 +186,8 @@ public:
   ~PlaYUVerFrame();
 
   /**
-   * Get number of bytes per frame of a specific
-   * pixel format
-   * @@return number of bytes per frame
-   */
-  static UInt64 getBytesPerFrame( UInt, UInt, Int );
-
-  /**
    * Get number of bytes per frame of an existing frame
-   * @@return number of bytes per frame
+   * @return number of bytes per frame
    */
   UInt64 getBytesPerFrame();
 
@@ -195,12 +203,9 @@ public:
   Void fillRGBBuffer();
 
   Void copyFrom( PlaYUVerFrame* );
-
-  static Void adjustSelectedAreaDims( UInt& posX, UInt& posY, UInt& areaWidth, UInt& areaHeight, Int pelFormat );
   Void copyFrom( PlaYUVerFrame*, UInt, UInt );
 
-  PlaYUVerFrame::Pixel getPixelValue( Int, Int, Int );
-  static PlaYUVerFrame::Pixel ConvertPixel( Pixel, Int );
+  PlaYUVerFrame::Pixel getPixelValue( Int xPos, Int yPos, ColorSpace eColorSpace = COLOR_INVALID );
 
   UInt getWidth() const
   {
@@ -305,6 +310,14 @@ private:
   Bool m_bHasRGBPel;  //!< Flag indicating that the ARGB buffer was computed
   UChar* m_pcARGB32;  //!< Buffer with the ARGB pixels used in Qt libs
 
+  /**
+   * Common constructor function of a frame
+   *
+   * @param width width of the frame
+   * @param height height of the frame
+   * @param pel_format pixel format index (always use PixelFormats enum)
+   *
+   */
   Void init( UInt width, UInt height, Int pel_format );
 
   Void openPixfc();

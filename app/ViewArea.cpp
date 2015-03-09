@@ -418,7 +418,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
 
         if( frFormat == PlaYUVerFrame::COLOR_YUV )
         {
-          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_YUV );
+          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y() );
 
           if( sPixelValue.Y() < 128 )
             painter.setPen( QColor( Qt::white ) );
@@ -431,7 +431,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
         }
         if( frFormat == PlaYUVerFrame::COLOR_GRAY )
         {
-          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_GRAY );
+          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y() );
 
           if( sPixelValue.Y() < 128 )
             painter.setPen( QColor( Qt::white ) );
@@ -443,7 +443,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
 
         if( ( frFormat == PlaYUVerFrame::COLOR_RGB ) )
         {
-          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y(), PlaYUVerFrame::COLOR_RGB );
+          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y() );
 
           if( ( sPixelValue.R() + sPixelValue.G() + sPixelValue.B() ) < 128 * 3 )
             painter.setPen( QColor( Qt::white ) );

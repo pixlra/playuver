@@ -78,7 +78,7 @@ OPTION( USE_WERROR              "Warnings as errors"                   OFF )
 # Dependencies
 ######################################################################################
 
-FIND_PACKAGE(Boost COMPONENTS program_options )
+FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options )
 SET_PACKAGE_PROPERTIES(Boost PROPERTIES URL "http://www.boost.org" DESCRIPTION "Boost library support" TYPE REQUIRED)
 
 OPTION( USE_OPENCV "Add OpenCV support" ON )
@@ -145,11 +145,11 @@ ENDIF()
 # Final information dump
 ######################################################################################
 MESSAGE("")
-MESSAGE( STATUS "${PROJECT_NAME} INFORMATION"                      )
-MESSAGE( STATUS "Version: "                 "${PLAYUVER_VERSION}"  )
-MESSAGE( STATUS "Configuration:"                                   )
-MESSAGE( STATUS "    Build type: "          "${CMAKE_BUILD_TYPE}"  )
-MESSAGE( STATUS "    Build flags: "         "${CMAKE_CXX_FLAGS}"   )
+MESSAGE( STATUS "${PROJECT_NAME} INFORMATION"                     )
+MESSAGE( STATUS "Version: "          "${PLAYUVER_VERSION_STRING}" )
+MESSAGE( STATUS "Configuration:"                                  )
+MESSAGE( STATUS "    Build type: "          "${CMAKE_BUILD_TYPE}" )
+MESSAGE( STATUS "    Build flags: "         "${CMAKE_CXX_FLAGS}"  )
 
 
 FEATURE_SUMMARY(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)

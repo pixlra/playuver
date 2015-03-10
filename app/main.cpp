@@ -134,7 +134,7 @@ int main( int argc, char *argv[] )
   mainwindow.parseArgs( argc, argv );
 
 #ifdef USE_FERVOR
-  FvUpdater::sharedUpdater()->SetFeedURL("http://192.168.96.201/share/pixLRA/plaYUVer/PlaYUVerUpdate-" UPDATE_CHANNEL  ".xml");
+  FvUpdater::sharedUpdater()->SetFeedURL("http://192.168.96.201/share/PlaYUVerProject/PlaYUVerUpdate-" UPDATE_CHANNEL  ".xml");
   FvUpdater::sharedUpdater()->SetDependencies("ALL");
 #endif
 

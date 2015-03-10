@@ -47,6 +47,8 @@ if(NOT RELEASE_BUILD AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
 endif()
 
 SET(UPDATE_CHANNEL "stable" CACHE STRING "Update channel" )
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/PlaYUVerUpdate.xml.in ${CMAKE_CURRENT_BINARY_DIR}/PlaYUVerUpdate-${UPDATE_CHANNEL}.xml )
+
 
 ######################################################################################
 # CMake Defin1itions
@@ -104,7 +106,6 @@ ENDIF()
 # Configuration
 ######################################################################################
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/PlaYUVerUpdate.xml.in ${CMAKE_CURRENT_BINARY_DIR}/PlaYUVerUpdate-${UPDATE_CHANNEL}.xml )
 
 ######################################################################################
 # Target App

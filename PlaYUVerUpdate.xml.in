@@ -14,7 +14,7 @@
 		<atom:link href="http://pypt.github.com/fervor/Appcast.xml" rel="self" type="application/rss+xml" />
 
 		<item>
-			<title>Version @PLAYUVER_VERSION@</title>
+			<title>Version @PLAYUVER_VERSION_STRING@</title>
 			<pubDate>Mon, 09 Jan 2006 19:20:11 +0000</pubDate>
 			<guid isPermaLink="true">http://192.168.96.201/share/PlaYUVerProject/ReleaseNotes-@UPDATE_CHANNEL@.html</guid>
 
@@ -29,7 +29,7 @@
 			<!-- Windows version. -->
 			<enclosure
 				url="http://sourceforge.net/projects/playuver/files/playuver-@UPDATE_CHANNEL@-windows-amd64.zip/download  "
-				fervor:version="2"
+				fervor:version="@PLAYUVER_VERSION_STRING@"
 				fervor:platform="Q_OS_WIN32"
         fervor:dependencies="ALL"
 				type="application/octet-stream" />
@@ -37,7 +37,7 @@
 			<!-- Linux version. -->
       <enclosure
 				url="http://sourceforge.net/projects/playuver/files/playuver-@UPDATE_CHANNEL@-linux-amd64.zip/download"
-				fervor:version="2.0"
+				fervor:version="@PLAYUVER_VERSION_STRING@"
 				fervor:platform="Q_OS_LINUX"
         fervor:dependencies="ALL"
 				type="application/octet-stream" />

@@ -89,21 +89,30 @@ set(plaYUver_App_RCC
   resources/playuver.qrc
 )
 
+OPTION( USE_FERVOR "Add Fervor support" OFF )
+
 
 IF( USE_FERVOR )
+
+  SET( FERVOR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/fervor )
+
   IF(EXISTS ${FERVOR_DIR} )
+
     SET( FERVOR_APP_NAME ${PROJECT_NAME} )
     SET( FERVOR_APP_VERSION ${PLAYUVER_VERSION} )
+
     ADD_SUBDIRECTORY( ${FERVOR_DIR} )
+
     INCLUDE_DIRECTORIES( ${FERVOR_DIR} )
-    LIST(APPEND APP_LINKER_LIBS "Fervor" )
+
+    LIST(APPEND APP_LINKER_LIBS Fervor )
 
     FIND_PACKAGE( Qt5 REQUIRED Network WebKit WebKitWidgets )
 
-    LIST(APPEND QT_LINKER_LIBS Qt5::Network Qt5::Webkit Qt5::WebKitWidgets )
+    LIST(APPEND QT_LINKER_LIBS Qt5::Network Qt5::WebKit Qt5::WebKitWidgets )
     LIST(APPEND QT_MODULES Network WebKit WebKitWidgets )
 
-    LIST(APPEND LINKER_LIBS ${FERVOR_DEPENDENCIES} )
+#     LIST(APPEND APP_LINKER_LIBS ${FERVOR_DEPENDENCIES} )
     INCLUDE_DIRECTORIES( ${FERVOR_INCLUDE_DIRS} )
 
     SET(QT_USE_QTNETWORK true)
@@ -129,6 +138,9 @@ IF( USE_FERVOR )
     SET( USE_FERVOR False )
   ENDIF()
 ENDIF()
+
+SET_PACKAGE_PROPERTIES(Fervor PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "Fervor lib includes check for updates feature" TYPE OPTIONAL )
+ADD_FEATURE_INFO(Fervor USE_FERVOR "Fervor lib includes check for updates feature.")
 
 IF( USE_QT4 )
   QT4_WRAP_UI( plaYUver_App_UI_Wrap ${plaYUver_App_UI} )
@@ -160,7 +172,7 @@ ENDIF()
 
 ADD_EXECUTABLE( ${PROJECT_NAME} ${plaYUver_App_SRCS} ${HEADERS_MOC_FILES} ${plaYUver_App_UI_Wrap} ${plaYUver_App_RCC} ${WINDOWS_RES_FILE} )
 
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib PlaYUVerModules ${QT_LINKER_LIBS} ${APP_LINKER_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib PlaYUVerModules ${APP_LINKER_LIBS} ${QT_LINKER_LIBS} )
 
 IF( NOT USE_QT4 )
   QT5_USE_MODULES( ${PROJECT_NAME} ${QT_MODULES} )

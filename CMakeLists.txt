@@ -16,6 +16,38 @@ SET( PLAYUVER_VERSION_MINOR "5" )
 SET( PLAYUVER_VERSION_PATCH "1" )
 SET( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLAYUVER_VERSION_PATCH}")
 
+# To be switched on when releasing.
+OPTION(RELEASE_BUILD "Remove Git revision from program version (use for stable releases)" ON)
+
+# Get current version.
+set(PLAYUVER_VERSION_STRING "${PLAYUVER_VERSION}")
+if(NOT RELEASE_BUILD AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
+  # Probably a Git workspace; determine the revision.
+  find_package(Git QUIET)
+  if(GIT_FOUND)
+    exec_program(${GIT_EXECUTABLE}
+      ${CMAKE_SOURCE_DIR}
+      ARGS "describe --tags"
+      OUTPUT_VARIABLE PLAYUVER_GIT_REVISION
+      RETURN_VALUE TAG_RESULT
+    )
+    # git describe --tags failed; maybe the repository was checked with depth=1.
+    if(NOT ${TAG_RESULT} EQUAL 0)
+      exec_program(${GIT_EXECUTABLE}
+        ${CMAKE_SOURCE_DIR}
+        ARGS "describe --always"
+        OUTPUT_VARIABLE PLAYUVER_GIT_REVISION
+      )
+    endif()
+    message(STATUS "PlaYUVer Git revision: ${PLAYUVER_GIT_REVISION}")
+    set(PLAYUVER_VERSION_STRING "${PLAYUVER_VERSION} (rev. ${PLAYUVER_GIT_REVISION})")
+  else()
+    message(STATUS "PlaYUVer Git revision could not be determined")
+  endif()
+endif()
+
+SET(UPDATE_CHANNEL "stable" CACHE STRING "Update channel" )
+
 ######################################################################################
 # CMake Defin1itions
 ######################################################################################
@@ -62,8 +94,7 @@ ENDIF()
 SET_PACKAGE_PROPERTIES(FFmpeg PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "Libav library support in PlaYUVerStream" TYPE OPTIONAL)
 
 ADD_FEATURE_INFO(SSE USE_SSE "SSE instructions support"  )
-ADD_FEATURE_INFO(Fervor USE_FERVOR "Fervor lib includes check for updates feature.")
-ADD_FEATURE_INFO(WErrors PLAYUVER_WERROR "Warnings as errors"  )
+ADD_FEATURE_INFO(WErrors USE_WERROR "Warnings as errors"  )
 
 IF( WIN32 )
   INCLUDE( cmake/Win32.cmake )
@@ -73,6 +104,7 @@ ENDIF()
 # Configuration
 ######################################################################################
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/PlaYUVerUpdate.xml.in ${CMAKE_CURRENT_BINARY_DIR}/PlaYUVerUpdate-${UPDATE_CHANNEL}.xml )
 
 ######################################################################################
 # Target App
@@ -83,10 +115,10 @@ IF (NOT CMAKE_BUILD_TYPE )
 ENDIF()
 
 SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" )
-#
-# IF( PLAYUVER_WERROR )
-#   SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
-# ENDIF()
+
+IF( USE_WERROR )
+  SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
+ENDIF()
 
 SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g" )
 SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2" )

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss
+	version="2.0"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"
+	xmlns:fervor="https://github.com/pypt/fervor"
+	xmlns:dc="http://purl.org/dc/elements/1.1/">
+
+	<channel>
+		<title>Your Great App's Changelog</title>
+		<link>http://pypt.github.com/fervor/Appcast.xml</link>
+		<description>Most recent changes with links to updates.</description>
+		<language>en</language>
+		<atom:link href="http://pypt.github.com/fervor/Appcast.xml" rel="self" type="application/rss+xml" />
+
+		<item>
+			<title>Version @PLAYUVER_VERSION@</title>
+			<pubDate>Mon, 09 Jan 2006 19:20:11 +0000</pubDate>
+			<guid isPermaLink="true">http://192.168.96.201/share/PlaYUVerProject/ReleaseNotes-@UPDATE_CHANNEL@.html</guid>
+
+			<!-- One of those (<link> is preferred by Fervor, <sparkle:releaseNotesLink> is used by Sparkle) -->
+			<link>http://192.168.96.201/share/PlaYUVerProject/ReleaseNotes-@UPDATE_CHANNEL@.html</link> <!-- or -->
+			<sparkle:releaseNotesLink>http://192.168.96.201/share/PlaYUVerProject/ReleaseNotes-@UPDATE_CHANNEL@.html</sparkle:releaseNotesLink>
+
+			<!--
+				See QtGlobal's QT_OS_* constants for valid platform versions.
+			-->
+
+			<!-- Windows version. -->
+			<enclosure
+				url="http://sourceforge.net/projects/playuver/files/playuver-@UPDATE_CHANNEL@-windows-amd64.zip/download  "
+				fervor:version="2"
+				fervor:platform="Q_OS_WIN32"
+        fervor:dependencies="ALL"
+				type="application/octet-stream" />
+
+			<!-- Linux version. -->
+      <enclosure
+				url="http://sourceforge.net/projects/playuver/files/playuver-@UPDATE_CHANNEL@-linux-amd64.zip/download"
+				fervor:version="2.0"
+				fervor:platform="Q_OS_LINUX"
+        fervor:dependencies="ALL"
+				type="application/octet-stream" />
+
+
+		</item>
+
+	</channel>
+</rss>

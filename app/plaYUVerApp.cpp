@@ -23,10 +23,10 @@
  */
 
 #include <QtDebug>
+#include "plaYUVerApp.h"
 #ifdef USE_FERVOR
 #include "fvupdater.h"
 #endif
-#include "plaYUVerApp.h"
 #include "PlaYUVerSubWindowHandle.h"
 #include "VideoHandle.h"
 #include "QualityHandle.h"

@@ -21,12 +21,12 @@ OPTION(RELEASE_BUILD "Remove Git revision from program version (use for stable r
 
 # Get current version.
 set(PLAYUVER_VERSION_STRING "${PLAYUVER_VERSION}")
-if(NOT RELEASE_BUILD AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
+if(NOT RELEASE_BUILD AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
   # Probably a Git workspace; determine the revision.
   find_package(Git QUIET)
   if(GIT_FOUND)
     exec_program(${GIT_EXECUTABLE}
-      ${CMAKE_SOURCE_DIR}
+      ${CMAKE_CURRENT_SOURCE_DIR}
       ARGS "describe --tags"
       OUTPUT_VARIABLE PLAYUVER_GIT_REVISION
       RETURN_VALUE TAG_RESULT
@@ -34,7 +34,7 @@ if(NOT RELEASE_BUILD AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
     # git describe --tags failed; maybe the repository was checked with depth=1.
     if(NOT ${TAG_RESULT} EQUAL 0)
       exec_program(${GIT_EXECUTABLE}
-        ${CMAKE_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}
         ARGS "describe --always"
         OUTPUT_VARIABLE PLAYUVER_GIT_REVISION
       )

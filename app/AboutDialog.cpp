@@ -46,8 +46,8 @@ AboutDialog::AboutDialog(QWidget *parent)
 	QLabel *label = new QLabel(QString("<h1>%1 Version %2</h1><p>%3</p><p>%4</p>")
 	    .arg(QApplication::applicationName())
 	    .arg(QApplication::applicationVersion())
-	    .arg(tr("Enhanced open-source QT based raw video player"))
-	    .arg(tr("Copyright 2014-2015 Luis Lucas and Joao Carreira")));
+	    .arg(tr("Enhanced open-source Qt-based raw video player"))
+	    .arg(tr("Copyright © 2014–2015 Luis Lucas and Joao Carreira")));
 	label->setWordWrap(true);
 
 	QWidget *topWidget = new QWidget;

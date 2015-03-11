@@ -14,7 +14,7 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/../
 # Qt library
 ######################################################################################
 
-OPTION( USE_QT4  "Build with Qt4"           OFF )
+OPTION( USE_QT4     "Build with Qt4"            OFF )
 
 IF( USE_QT4 )
 
@@ -31,17 +31,15 @@ ENDIF()
 
 IF( NOT USE_QT4 )
   FIND_PACKAGE( Qt5 REQUIRED COMPONENTS Core Gui Widgets PrintSupport Concurrent )
-  FIND_PACKAGE( Qt5DBus )
   LIST(APPEND QT_LINKER_LIBS Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport Qt5::Concurrent )
   LIST(APPEND QT_MODULES Core Gui Widgets PrintSupport Concurrent )
+
+  FIND_PACKAGE( Qt5DBus )
   IF( ${Qt5DBus_FOUND} )
-    SET( USE_QTDBUS ${Qt5DBus_FOUND} )
+    SET( USE_QTDBUS TRUE PARENT_SCOPE)
     LIST(APPEND QT_LINKER_LIBS Qt5::DBus )
     LIST(APPEND QT_MODULES DBus )
   ENDIF()
-
-  #INCLUDE_DIRECTORIES( ${Qt5Core_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5DBus_INCLUDE_DIRS})
-  #SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}" )
 
 ENDIF()
 

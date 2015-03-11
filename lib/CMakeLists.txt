@@ -13,9 +13,12 @@ set(plaYUver_Lib_SRCS
     PlaYUVerFrameStats.cpp
     # Stream
     PlaYUVerStream.cpp
-    # Command Line Parser
-    PlaYUVerCmdParser.cpp
 )
+
+IF( USE_FFMPEG )
+  # Command Line Parser
+  LIST( APPEND plaYUver_Lib_SRCS PlaYUVerCmdParser.cpp )
+ENDIF()
 
 IF( USE_FFMPEG )
   LIST( APPEND plaYUver_Lib_SRCS LibAvContextHandle.cpp )

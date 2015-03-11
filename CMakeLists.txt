@@ -78,8 +78,9 @@ OPTION( USE_WERROR              "Warnings as errors"                   OFF )
 # Dependencies
 ######################################################################################
 
-FIND_PACKAGE(Boost REQUIRED COMPONENTS program_options )
-SET_PACKAGE_PROPERTIES(Boost PROPERTIES URL "http://www.boost.org" DESCRIPTION "Boost library support" TYPE REQUIRED)
+FIND_PACKAGE(Boost COMPONENTS program_options )
+SET_PACKAGE_PROPERTIES(Boost PROPERTIES URL "http://www.boost.org" DESCRIPTION "Boost library support" TYPE OPTIONAL)
+SET(USE_BOOST ${Boost_FOUND})
 
 OPTION( USE_OPENCV "Add OpenCV support" ON )
 IF( USE_OPENCV )
@@ -131,8 +132,10 @@ ADD_FEATURE_INFO(PlaYUVerTools   PLAYUVER_BUILD_APP      "Build Command line too
 ADD_SUBDIRECTORY( lib )
 ADD_SUBDIRECTORY( modules )
 
-IF( ${PLAYUVER_BUILD_TOOLS} )
-  ADD_SUBDIRECTORY( tools )
+IF( ${USE_BOOST} )
+  IF( ${PLAYUVER_BUILD_TOOLS} )
+    ADD_SUBDIRECTORY( tools )
+  ENDIF()
 ENDIF()
 
 IF( ${PLAYUVER_BUILD_APP} )

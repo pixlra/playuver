@@ -53,6 +53,9 @@
 
 #cmakedefine PLAYUVER_THREADED_MODULES
 
+/* Boost support */
+#cmakedefine USE_BOOST
+
 /* OpenCV */
 #cmakedefine USE_OPENCV
 

@@ -31,7 +31,7 @@ ENDIF()
 
 IF( NOT USE_QT4 )
   FIND_PACKAGE( Qt5 REQUIRED COMPONENTS Core Gui Widgets PrintSupport Concurrent )
-  FIND_PACKAGE( Qt5 COMPONENTS DBus )
+  FIND_PACKAGE( Qt5DBus )
   LIST(APPEND QT_LINKER_LIBS Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport Qt5::Concurrent )
   LIST(APPEND QT_MODULES Core Gui Widgets PrintSupport Concurrent )
   IF( ${Qt5DBus_FOUND} )

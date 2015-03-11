@@ -14,7 +14,7 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/../
 # Qt library
 ######################################################################################
 
-OPTION( USE_QT4  "Build with QT4"           OFF )
+OPTION( USE_QT4  "Build with Qt4"           OFF )
 
 IF( USE_QT4 )
 
@@ -180,7 +180,7 @@ ENDIF()
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION bin )
 INSTALL(FILES resources/playuver.desktop DESTINATION share/applications )
-INSTALL(FILES resources/playuver.png DESTINATION share/icons )
+INSTALL(FILES resources/playuver.png DESTINATION share/pixmaps )
 INSTALL(FILES resources/playuver.xml DESTINATION share/mime/packages )
 
 

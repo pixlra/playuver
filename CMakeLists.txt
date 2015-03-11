@@ -141,8 +141,6 @@ IF( ${PLAYUVER_BUILD_APP} )
   ADD_SUBDIRECTORY( app )
 ENDIF()
 
-message("qtdbus = ${USE_QTDBUS}")
-
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
 ######################################################################################

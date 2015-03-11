@@ -15,7 +15,7 @@ set(plaYUver_Lib_SRCS
     PlaYUVerStream.cpp
 )
 
-IF( USE_FFMPEG )
+IF( USE_BOOST )
   # Command Line Parser
   LIST( APPEND plaYUver_Lib_SRCS PlaYUVerCmdParser.cpp )
 ENDIF()

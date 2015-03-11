@@ -16,8 +16,22 @@ SET( PLAYUVER_VERSION_MINOR "5" )
 SET( PLAYUVER_VERSION_PATCH "1" )
 SET( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLAYUVER_VERSION_PATCH}")
 
+
+######################################################################################
+# Variables
+######################################################################################
+
+OPTION( PLAYUVER_BUILD_APP      "Build GUI Application"                 ON  )
+OPTION( PLAYUVER_BUILD_TOOLS    "Build Command Line Application"        ON  )
+OPTION( USE_SSE                 "Build with SSE support"                OFF )
+OPTION( USE_FERVOR              "Add Fervor support"                    OFF )
+OPTION( USE_WERROR              "Warnings as errors"                    OFF )
+OPTION( USE_QT4                 "Build with Qt4"                        OFF )
+OPTION( USE_QTDBUS              "Build with Qt4"                        OFF )
 # To be switched on when releasing.
 OPTION(RELEASE_BUILD "Remove Git revision from program version (use for stable releases)" ON)
+
+
 
 # Get current version.
 set(PLAYUVER_VERSION_STRING "${PLAYUVER_VERSION}")
@@ -63,16 +77,6 @@ IF(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")
   SET_PROPERTY( CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES} )
 ENDIF()
 SET( CMAKE_CXX_FLAGS "" )
-
-######################################################################################
-# Variables
-######################################################################################
-
-OPTION( PLAYUVER_BUILD_APP      "Build GUI Application"                ON  )
-OPTION( PLAYUVER_BUILD_TOOLS    "Build Command Line Application"       ON  )
-OPTION( USE_SSE                 "Build with SSE support"               OFF )
-OPTION( USE_FERVOR              "Add Fervor support"                   OFF )
-OPTION( USE_WERROR              "Warnings as errors"                   OFF )
 
 ######################################################################################
 # Dependencies
@@ -136,6 +140,8 @@ ENDIF()
 IF( ${PLAYUVER_BUILD_APP} )
   ADD_SUBDIRECTORY( app )
 ENDIF()
+
+message("qtdbus = ${USE_QTDBUS}")
 
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 

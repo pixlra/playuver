@@ -14,8 +14,6 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR}/../
 # Qt library
 ######################################################################################
 
-OPTION( USE_QT4     "Build with Qt4"            OFF )
-
 IF( USE_QT4 )
 
   FIND_PACKAGE( Qt4 REQUIRED COMPONENTS QtCore QtGui QtDBus QtNetwork QtWebKit )
@@ -36,14 +34,15 @@ IF( NOT USE_QT4 )
 
   FIND_PACKAGE( Qt5DBus )
   IF( ${Qt5DBus_FOUND} )
-    SET( USE_QTDBUS TRUE PARENT_SCOPE)
+    SET( USE_QTDBUS ${Qt5DBus_FOUND} ) # TODO: fix this stupid variable
+    SET( USE_QTDBUS ${Qt5DBus_FOUND} PARENT_SCOPE)
     LIST(APPEND QT_LINKER_LIBS Qt5::DBus )
     LIST(APPEND QT_MODULES DBus )
   ENDIF()
 
 ENDIF()
 
-set(plaYUver_App_SRCS
+set(plaYUVer_App_SRCS
 # Main
     main.cpp
     plaYUVerApp.cpp
@@ -77,7 +76,7 @@ set(plaYUver_App_SRCS
 )
 
 IF( USE_QTDBUS )
-  LIST( APPEND plaYUver_App_SRCS  PlaYUVerAppAdaptor.cpp )
+  LIST( APPEND plaYUVer_App_SRCS  PlaYUVerAppAdaptor.cpp )
 ENDIF()
 
 
@@ -168,7 +167,7 @@ IF( WIN32 )
 ENDIF()
 
 
-ADD_EXECUTABLE( ${PROJECT_NAME} ${plaYUver_App_SRCS} ${HEADERS_MOC_FILES} ${plaYUver_App_UI_Wrap} ${plaYUver_App_RCC} ${WINDOWS_RES_FILE} )
+ADD_EXECUTABLE( ${PROJECT_NAME} ${plaYUVer_App_SRCS} ${HEADERS_MOC_FILES} ${plaYUver_App_UI_Wrap} ${plaYUver_App_RCC} ${WINDOWS_RES_FILE} )
 
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib PlaYUVerModules ${APP_LINKER_LIBS} ${QT_LINKER_LIBS} )
 

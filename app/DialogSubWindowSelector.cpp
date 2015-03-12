@@ -107,11 +107,6 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWi
   connect( m_pushButtonRemoveAll, SIGNAL( clicked() ), this, SLOT( removeAllSubWindow() ) );
   QMetaObject::connectSlotsByName( this );
 
-//  SubWindowHandle* activeSubWindow = qobject_cast<SubWindowHandle *>( m_pcMainWindowMdiArea->activeSubWindow() );
-//  if( activeSubWindow->getCategory() == SubWindowHandle::VIDEO_SUBWINDOW )
-//  {
-//    m_pcSelectedWindowListNames.append( activeSubWindow->getWindowName() );
-//  }
   updateSubWindowList();
 }
 

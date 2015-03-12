@@ -64,7 +64,7 @@ private:
   enum
   {
     SELECT_REF_ACT,
-    CREATE_PLOT,
+    PLOT_QUALITY,
     TOTAL_ACT,
   };
   QVector<QAction*> m_arrayActions;
@@ -73,6 +73,7 @@ private:
   Int m_iQualityMetricIdx;
 
   QMenu* m_pcMenuQuality;
+  QMenu* m_pcSubMenuQualityMetrics;
 
   QDockWidget* m_pcQualityHandleDock;
   QualityMeasurementSidebar* m_pcQualityHandleSideBar;

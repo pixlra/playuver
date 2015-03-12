@@ -52,6 +52,8 @@ public:
 
   QSize sizeHint() const;
 
+  Void updateSideBar( Bool hasSubWindow );
+
   Void updateSubWindowList();
   Void updateCurrentWindow( VideoSubWindow * );
   Void updateSidebarData();

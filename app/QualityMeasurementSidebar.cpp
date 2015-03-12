@@ -48,7 +48,7 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerS
   RecLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
 
   m_comboBoxMetric = new QComboBox;
-  for( UInt i=0; i<PlaYUVerFrame::supportedQualityMetricsList().size();i++ )
+  for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
   {
     m_comboBoxMetric->insertItem( i, PlaYUVerFrame::supportedQualityMetricsList()[i].c_str() );
   }
@@ -118,6 +118,13 @@ QSize QualityMeasurementSidebar::sizeHint() const
     return bestSize;
   else
     return currSize;
+}
+
+Void QualityMeasurementSidebar::updateSideBar( Bool hasSubWindow )
+{
+  if( !hasSubWindow )
+    m_comboBoxRef->clear();
+  setEnabled( hasSubWindow );
 }
 
 Void QualityMeasurementSidebar::updateSubWindowList()

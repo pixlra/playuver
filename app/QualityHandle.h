@@ -78,6 +78,8 @@ private:
   QDockWidget* m_pcQualityHandleDock;
   QualityMeasurementSidebar* m_pcQualityHandleSideBar;
 
+  QVector<Double>* measureQuality( QVector<VideoSubWindow*> apcWindowList );
+
 Q_SIGNALS:
   void changed();
 

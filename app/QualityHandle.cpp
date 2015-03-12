@@ -28,6 +28,7 @@
 #include "VideoSubWindow.h"
 #include "PlotSubWindow.h"
 #include "DialogSubWindowSelector.h"
+#include "lib/LibMemory.h"
 
 namespace plaYUVer
 {
@@ -75,7 +76,7 @@ QMenu* QualityHandle::createMenu()
   m_pcSubMenuQualityMetrics->addActions( m_actionGroupQualityMetric->actions() );
   m_pcMenuQuality->addAction( m_arrayActions[SELECT_REF_ACT] );
   m_pcMenuQuality->addSeparator();
-  //m_pcMenuQuality->addAction( m_arrayActions[PLOT_QUALITY] );
+  m_pcMenuQuality->addAction( m_arrayActions[PLOT_QUALITY] );
   return m_pcMenuQuality;
 }
 
@@ -127,6 +128,62 @@ Void QualityHandle::update( VideoSubWindow* currSubWindow )
   m_pcQualityHandleSideBar->updateCurrentWindow( currSubWindow );
 }
 
+QVector<Double>* QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
+{
+  QVector<Double>* padQualityValues;
+  UInt numberOfWindows = apcWindowList.size();
+  UInt64 currFrames = 0;
+  UInt64 numberOfFrames = INT_MAX;
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  //! Check reference window
+  for( UInt i = 0; i < numberOfWindows; i++ )
+  {
+    if( !apcWindowList.at( i )->getRefSubWindow() )
+    {
+      return NULL;
+    }
+  }
+  VideoSubWindow* pcReferenceWindow = apcWindowList.at( 0 )->getRefSubWindow();
+
+  for( UInt i = 0; i < numberOfWindows; i++ )
+  {
+    currFrames = apcWindowList.at( i )->getInputStream()->getFrameNum();
+    if( currFrames < numberOfFrames )
+      numberOfFrames = currFrames;
+    apcWindowList.at( i )->stop();
+  }
+  pcReferenceWindow->stop();
+
+  padQualityValues = new QVector<Double> [numberOfWindows + 1];
+
+  PlaYUVerFrame* pcReferenceFrame;
+  PlaYUVerFrame* pcCurrFrame;
+  for( UInt f = 1; f < numberOfFrames; f++ )
+  {
+    padQualityValues[0].append( f );
+    pcReferenceFrame = pcReferenceWindow->getCurrFrame();
+    for( UInt i = 0; i < numberOfWindows; i++ )
+    {
+      pcCurrFrame = apcWindowList.at( 0 )->getCurrFrame();
+      padQualityValues[i + 1].append( pcCurrFrame->getQuality( 0, pcReferenceFrame, LUMA ) );
+      apcWindowList.at( 0 )->play();
+      apcWindowList.at( 0 )->playEvent();
+    }
+    pcReferenceWindow->play();
+    pcReferenceWindow->playEvent();
+  }
+  for( UInt i = 0; i < numberOfWindows; i++ )
+  {
+    apcWindowList.at( 0 )->stop();
+  }
+  pcReferenceWindow->stop();
+  QApplication::restoreOverrideCursor();
+
+  return padQualityValues;
+}
+
 Void QualityHandle::slotQualityMetricChanged( Int idx )
 {
   m_actionGroupQualityMetric->actions().at( idx )->setChecked( true );
@@ -165,9 +222,24 @@ Void QualityHandle::slotSelectReference()
 
 Void QualityHandle::slotCreatePlot()
 {
-  PlotSubWindow* pcPlotWindow = new PlotSubWindow( m_pcParet );
-  m_pcMainWindowManager->addSubWindow( pcPlotWindow );
-  pcPlotWindow->show();
+  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
+  if( pcSubWindow )
+  {
+    if( pcSubWindow->getRefSubWindow() )
+    {
+      QVector<VideoSubWindow*> apcWindowList;
+      apcWindowList.append( pcSubWindow );
+      QVector<Double>* qualityVector = measureQuality( apcWindowList );
+
+      PlotSubWindow* pcPlotWindow = new PlotSubWindow( m_pcParet );
+
+      pcPlotWindow->addPlot( qualityVector[0], qualityVector[1] );
+
+      m_pcMainWindowManager->addSubWindow( pcPlotWindow );
+      pcPlotWindow->show();
+
+    }
+  }
 
 }
 

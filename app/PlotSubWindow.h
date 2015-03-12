@@ -44,12 +44,16 @@ Q_OBJECT
 
 private:
   QCustomPlot* m_cPlotArea;
+  QVector<QColor> m_arrayColorList;
+  UInt m_uiNumberPlots;
 
   Void Example();
 
 public:
   PlotSubWindow( QWidget * parent = 0 );
   ~PlotSubWindow();
+
+  Void definePlotColors();
 
   Void setTool( UInt uiTool )
   {
@@ -71,8 +75,10 @@ public:
   /**
    * Size related functions
    */
-//  QSize sizeHint() const;
-//  QSize sizeHint( const QSize & ) const;
+  QSize sizeHint() const;
+  QSize sizeHint( const QSize & ) const;
+
+  Void addPlot(const QVector<Double> &key, const QVector<Double> &value);
 };
 
 }  // NAMESPACE

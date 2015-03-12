@@ -477,6 +477,33 @@ void ViewArea::paintEvent( QPaintEvent *event )
     }
   }
 
+  QRect zoomWinRect = QRect(0, 0, m_pixmap.width()/10, m_pixmap.height()/10 );
+  QPoint zWinPosition = QPoint(winRect.bottomRight()) -
+      QPoint(m_pixmap.width()/10,m_pixmap.height()/10) - QPoint(10,10);
+
+  zoomWinRect.moveTopLeft(zWinPosition);
+  painter.fillRect(zoomWinRect, QBrush(QColor(128, 128, 255, 128)));
+  painter.drawRect(zoomWinRect);
+
+
+
+  QRect vr = windowToView( winRect );
+  zoomWinRect.moveTopLeft(QPoint(0,0));
+  QRect zoomVisibleRect = QRect(0,0,vr.width()/10,vr.height()/10) & zoomWinRect;
+  zoomVisibleRect.moveTopLeft(vr.topLeft()/10);
+
+  qDebug() << winRect << vr << zoomVisibleRect << m_pixmap.size() << zoomWinRect;
+
+  if(zoomVisibleRect.left()<0)
+    zoomVisibleRect.moveLeft(0);
+  if(zoomVisibleRect.top()<0)
+    zoomVisibleRect.moveTop(0);
+
+    zoomVisibleRect.moveTopLeft(zoomVisibleRect.topLeft() + zWinPosition);
+
+    painter.fillRect(zoomVisibleRect, QBrush(QColor(128, 200, 255, 128)));
+    painter.drawRect(zoomVisibleRect);
+
   QRect sr = viewToWindow( m_selectedArea );
   QRect ir = sr & winRect;
 

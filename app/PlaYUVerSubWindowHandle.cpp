@@ -129,6 +129,12 @@ Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowHandle *window )
       }
     }
   }
+
+  if( m_pcActiveWindow )
+  {
+    parentWidget()->setWindowTitle( QApplication::applicationName() + " :: " + m_pcActiveWindow->getWindowName() );
+  }
+
 }
 
 Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowHandle *window, Qt::WindowFlags flags )
@@ -136,7 +142,8 @@ Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowHandle *window, Qt::WindowF
   if( window )
   {
     connect( window, SIGNAL( updateStatusBar( const QString& ) ), qobject_cast<plaYUVerApp*>( parent() ), SLOT( updateStatusBar( const QString& ) ) );
-    connect( window, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), qobject_cast<plaYUVerApp*>( parent() ), SLOT( updateZoomFactorSBox() ) );
+    connect( window, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), qobject_cast<plaYUVerApp*>( parent() ),
+        SLOT( updateZoomFactorSBox() ) );
     if( m_uiWindowMode == NormalSubWindows )
     {
       connect( window, SIGNAL( aboutToActivate( SubWindowHandle* ) ), this, SLOT( updateActiveSubWindow( SubWindowHandle* ) ) );
@@ -211,10 +218,10 @@ SubWindowHandle* PlaYUVerSubWindowHandle::activeSubWindow() const
   return m_pcActiveWindow;
 }
 
-QList<SubWindowHandle*> PlaYUVerSubWindowHandle::findSubWindow( const QString &windowName ) const
+QList<SubWindowHandle*> PlaYUVerSubWindowHandle::findSubWindow( const UInt uiCategory ) const
 {
   QList<SubWindowHandle*> apcSubWindowList;
-  if( windowName.isEmpty() )
+  if( uiCategory == 0 )
   {
     apcSubWindowList = m_apcSubWindowList;
   }
@@ -222,21 +229,24 @@ QList<SubWindowHandle*> PlaYUVerSubWindowHandle::findSubWindow( const QString &w
   {
     for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
     {
-      if( m_apcSubWindowList.at( i )->getWindowName() == windowName )
+      if( m_apcSubWindowList.at( i )->getCategory() & uiCategory )
         apcSubWindowList.append( m_apcSubWindowList.at( i ) );
     }
   }
   return apcSubWindowList;
 }
 
-QList<SubWindowHandle*> PlaYUVerSubWindowHandle::findSubWindow( const UInt uiCategory ) const
+QList<SubWindowHandle*> PlaYUVerSubWindowHandle::findSubWindow( const QString &windowName, const UInt uiCategory ) const
 {
+  QList<SubWindowHandle*> subWindowList = findSubWindow( uiCategory );
   QList<SubWindowHandle*> apcSubWindowList;
-  QList<SubWindowHandle*> subWindowList = findSubWindow();
-  for( Int i = 0; i < subWindowList.size(); i++ )
+  if( !windowName.isEmpty() )
   {
-    if( subWindowList.at( i )->getCategory() & uiCategory )
-      apcSubWindowList.append( subWindowList.at( i ) );
+    for( Int i = 0; i < subWindowList.size(); i++ )
+    {
+      if( subWindowList.at( i )->getWindowName() == windowName )
+        apcSubWindowList.append( subWindowList.at( i ) );
+    }
   }
   return apcSubWindowList;
 }

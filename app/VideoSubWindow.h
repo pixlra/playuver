@@ -190,6 +190,11 @@ public:
     return m_apcCurrentModule;
   }
 
+  Void setTool( UInt uiTool )
+  {
+    m_cViewArea->setTool( ( ViewArea::eTool )uiTool );
+  }
+
   /**
    * Virtual functions from SubWindowHandle
    */

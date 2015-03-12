@@ -51,8 +51,8 @@ public:
 
   SubWindowHandle *activeSubWindow() const;
 
-  QList<SubWindowHandle*> findSubWindow( const QString &aName = QString() ) const;
-  QList<SubWindowHandle*> findSubWindow( const UInt uiCategory ) const;
+  QList<SubWindowHandle*> findSubWindow( const UInt uiCategory = 0 ) const;
+  QList<SubWindowHandle*> findSubWindow( const QString &aName, const UInt uiCategory = 0 ) const;
   SubWindowHandle* findSubWindow( const SubWindowHandle* subWindow ) const;
 
   Void createActions();

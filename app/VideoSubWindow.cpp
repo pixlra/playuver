@@ -518,7 +518,7 @@ Void VideoSubWindow::seekRelativeEvent( Bool bIsFoward )
 {
   if( m_pCurrStream )
   {
-    if( m_pCurrStream->seekInput( m_pCurrStream->getCurrFrameNum() + ( bIsFoward ? 1 : -1 ) ) )
+    if( m_pCurrStream->seekInputRelative( bIsFoward ) )
     {
       refreshFrame();
     }

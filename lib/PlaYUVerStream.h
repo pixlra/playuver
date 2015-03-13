@@ -77,7 +77,6 @@ private:
   std::string m_cCodedName;
   std::string m_cPelFmtName;
 
-
   FILE* m_pFile; /**< The input file pointer >*/
   std::fstream m_fsIOStream; /**< The input file pointer >*/
 
@@ -146,6 +145,7 @@ public:
   PlaYUVerFrame* getCurrFrame( PlaYUVerFrame * );
   PlaYUVerFrame* getNextFrame();
 
+  Bool seekInputRelative( Bool bIsFoward );
   Bool seekInput( UInt64 new_frame_num );
 
   Bool isInit()

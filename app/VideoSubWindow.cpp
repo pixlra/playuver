@@ -97,6 +97,9 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
   connect( m_cViewArea, SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectedArea( QRect ) ) );
   connect( m_cViewArea, SIGNAL( positionChanged( const QPoint & ) ), this, SLOT( updatePixelValueStatusBar( const QPoint & ) ) );
 
+  setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+
   // Define the cViewArea as the widget inside the scroll area
   m_cViewArea->setMinimumSize( size() );
   setWidget( m_cViewArea );

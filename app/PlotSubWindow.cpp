@@ -40,11 +40,6 @@ Void PlotSubWindow::definePlotColors()
 PlotSubWindow::PlotSubWindow( QWidget * parent, const QString& windowTitle ) :
         SubWindowHandle( parent, SubWindowHandle::PLOT_SUBWINDOW )
 {
-  setParent( parent );
-
-  setAttribute( Qt::WA_DeleteOnClose );
-  setBackgroundRole( QPalette::Light );
-  setVisible( false );
 
   definePlotColors();
   m_uiNumberPlots = 0;
@@ -59,10 +54,27 @@ PlotSubWindow::PlotSubWindow( QWidget * parent, const QString& windowTitle ) :
   sizePolicy.setVerticalStretch( 0 );
   sizePolicy.setHeightForWidth( m_cPlotArea->sizePolicy().hasHeightForWidth() );
   m_cPlotArea->setSizePolicy( sizePolicy );
-  setWidget( m_cPlotArea );
+
+  m_cPlotArea->setBackgroundRole( backgroundRole() );
+
+  m_cPlotArea->setBackground( palette().brush( backgroundRole() ) );
+
+  m_cPlotArea->xAxis->setLabelColor( palette().text().color() );
+  m_cPlotArea->yAxis->setLabelColor( palette().text().color() );
+  m_cPlotArea->xAxis->setTickLabelColor( palette().text().color() );
+  m_cPlotArea->yAxis->setTickLabelColor( palette().text().color() );
+  m_cPlotArea->xAxis->setBasePen( QPen( palette().brush( foregroundRole() ), 1 ) );
+  m_cPlotArea->yAxis->setBasePen( QPen( palette().brush( foregroundRole() ), 1 ) );
+  m_cPlotArea->xAxis->setTickPen( QPen( palette().brush( foregroundRole() ), 1 ) );
+  m_cPlotArea->yAxis->setTickPen( QPen( palette().brush( foregroundRole() ), 1 ) );
+  m_cPlotArea->xAxis2->setBasePen( QPen( palette().brush( foregroundRole() ), 1 ) );
+  m_cPlotArea->yAxis2->setBasePen( QPen( palette().brush( foregroundRole() ), 1 ) );
+  m_cPlotArea->xAxis2->setTickPen( QPen( palette().brush( foregroundRole() ), 1 ) );
+  m_cPlotArea->yAxis2->setTickPen( QPen( palette().brush( foregroundRole() ), 1 ) );
 
   // configure right and top axis to show ticks but no labels:
   // (see QCPAxisRect::setupFullAxesBox for a quicker method to do this)
+  m_cPlotArea->axisRect( 0 )->setupFullAxesBox( true );
   m_cPlotArea->xAxis2->setVisible( true );
   m_cPlotArea->xAxis2->setTickLabels( false );
   m_cPlotArea->yAxis2->setVisible( true );
@@ -74,6 +86,9 @@ PlotSubWindow::PlotSubWindow( QWidget * parent, const QString& windowTitle ) :
   QFont legendFont = font();  // start out with MainWindow's font..
   legendFont.setPointSize( 9 );  // and make a bit smaller for legend
   m_cPlotArea->legend->setFont( legendFont );
+  m_cPlotArea->legend->setBrush( palette().brush( backgroundRole() ) );
+  m_cPlotArea->legend->setTextColor( palette().text().color() );
+  m_cPlotArea->legend->setBorderPen( QPen( palette().brush( QPalette::Active, QPalette::Shadow ), 1 ) );
   m_cPlotArea->legend->setVisible( false );
 
   m_cPlotArea->setInteractions( QCP::iRangeZoom | QCP::iRangeDrag );  //QCP::iSelectPlottables
@@ -82,6 +97,7 @@ PlotSubWindow::PlotSubWindow( QWidget * parent, const QString& windowTitle ) :
   m_cPlotPen.setColor( Qt::black );
   m_cPlotPen.setWidthF( 2 );
 
+  setWidget( m_cPlotArea );
 }
 
 PlotSubWindow::~PlotSubWindow()

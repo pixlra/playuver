@@ -84,7 +84,6 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
         m_bIsPlaying( false ),
         m_bIsModule( category == MODULE_SUBWINDOW )
 {
-  setVisible( false );
 
   // Create a new interface to show images
   m_cViewArea = new ViewArea( this );

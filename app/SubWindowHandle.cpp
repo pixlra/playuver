@@ -32,6 +32,7 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
         m_cSubWindow( NULL )
 {
   setParent( parent );
+  setVisible( false );
   setFocusPolicy( Qt::WheelFocus );
   setAttribute( Qt::WA_DeleteOnClose );
   setBackgroundRole( QPalette::Background );

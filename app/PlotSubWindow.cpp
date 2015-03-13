@@ -57,20 +57,27 @@ PlotSubWindow::PlotSubWindow( QWidget * parent, const QString& windowTitle ) :
 
   m_cPlotArea->setBackgroundRole( backgroundRole() );
 
-  m_cPlotArea->setBackground( palette().brush( backgroundRole() ) );
+  QBrush backgroundBrush = palette().brush( backgroundRole() );
+  QBrush foregroundBrush = palette().brush( foregroundRole() );
+
+  m_cPlotArea->setBackground( backgroundBrush );
 
   m_cPlotArea->xAxis->setLabelColor( palette().text().color() );
   m_cPlotArea->yAxis->setLabelColor( palette().text().color() );
   m_cPlotArea->xAxis->setTickLabelColor( palette().text().color() );
   m_cPlotArea->yAxis->setTickLabelColor( palette().text().color() );
-  m_cPlotArea->xAxis->setBasePen( QPen( palette().brush( foregroundRole() ), 1 ) );
-  m_cPlotArea->yAxis->setBasePen( QPen( palette().brush( foregroundRole() ), 1 ) );
-  m_cPlotArea->xAxis->setTickPen( QPen( palette().brush( foregroundRole() ), 1 ) );
-  m_cPlotArea->yAxis->setTickPen( QPen( palette().brush( foregroundRole() ), 1 ) );
-  m_cPlotArea->xAxis2->setBasePen( QPen( palette().brush( foregroundRole() ), 1 ) );
-  m_cPlotArea->yAxis2->setBasePen( QPen( palette().brush( foregroundRole() ), 1 ) );
-  m_cPlotArea->xAxis2->setTickPen( QPen( palette().brush( foregroundRole() ), 1 ) );
-  m_cPlotArea->yAxis2->setTickPen( QPen( palette().brush( foregroundRole() ), 1 ) );
+  m_cPlotArea->xAxis->setBasePen( QPen( foregroundBrush, 1 ) );
+  m_cPlotArea->yAxis->setBasePen( QPen( foregroundBrush, 1 ) );
+  m_cPlotArea->xAxis->setTickPen( QPen( foregroundBrush, 1 ) );
+  m_cPlotArea->yAxis->setTickPen( QPen( foregroundBrush, 1 ) );
+  m_cPlotArea->xAxis->setSubTickPen( QPen( foregroundBrush, 1 ) );
+  m_cPlotArea->yAxis->setSubTickPen( QPen( foregroundBrush, 1 ) );
+  m_cPlotArea->xAxis2->setSubTickPen( QPen( foregroundBrush, 1 ) );
+  m_cPlotArea->yAxis2->setSubTickPen( QPen( foregroundBrush, 1 ) );
+  m_cPlotArea->xAxis2->setBasePen( QPen( foregroundBrush, 1 ) );
+  m_cPlotArea->yAxis2->setBasePen( QPen( foregroundBrush, 1 ) );
+  m_cPlotArea->xAxis2->setTickPen( QPen( foregroundBrush, 1 ) );
+  m_cPlotArea->yAxis2->setTickPen( QPen( foregroundBrush, 1 ) );
 
   // configure right and top axis to show ticks but no labels:
   // (see QCPAxisRect::setupFullAxesBox for a quicker method to do this)
@@ -86,7 +93,7 @@ PlotSubWindow::PlotSubWindow( QWidget * parent, const QString& windowTitle ) :
   QFont legendFont = font();  // start out with MainWindow's font..
   legendFont.setPointSize( 9 );  // and make a bit smaller for legend
   m_cPlotArea->legend->setFont( legendFont );
-  m_cPlotArea->legend->setBrush( palette().brush( backgroundRole() ) );
+  m_cPlotArea->legend->setBrush( backgroundBrush );
   m_cPlotArea->legend->setTextColor( palette().text().color() );
   m_cPlotArea->legend->setBorderPen( QPen( palette().brush( QPalette::Active, QPalette::Shadow ), 1 ) );
   m_cPlotArea->legend->setVisible( false );

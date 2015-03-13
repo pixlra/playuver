@@ -186,10 +186,10 @@ Void QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
   }
   pcReferenceWindow->stop();
 
-  QString plotWindowTitle( QStringLiteral( "Quality - " ) );
+  QString plotWindowTitle( QStringLiteral( "Quality" ) );
   if( apcWindowList.size() == 1 )
   {
-    plotWindowTitle += apcWindowList.at( 0 )->getWindowName();
+    plotWindowTitle += " - " + apcWindowList.at( 0 )->getWindowName();
   }
   PlotSubWindow* pcPlotWindow = new PlotSubWindow( m_pcParet, plotWindowTitle );
   pcPlotWindow->setAxisName( "Frame Number", QString::fromStdString( PlaYUVerFrame::supportedQualityMetricsList()[m_iQualityMetricIdx] ) );

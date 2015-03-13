@@ -23,6 +23,7 @@
  */
 
 #include "PlotSubWindow.h"
+#include "qcustomplot.h"
 
 namespace plaYUVer
 {
@@ -36,7 +37,7 @@ Void PlotSubWindow::definePlotColors()
   m_arrayColorList.append( Qt::cyan );
 }
 
-PlotSubWindow::PlotSubWindow( QWidget * parent ) :
+PlotSubWindow::PlotSubWindow( QWidget * parent, const QString& windowTitle ) :
         SubWindowHandle( parent, SubWindowHandle::PLOT_SUBWINDOW )
 {
   setParent( parent );
@@ -45,7 +46,19 @@ PlotSubWindow::PlotSubWindow( QWidget * parent ) :
   setBackgroundRole( QPalette::Light );
   setVisible( false );
 
+  definePlotColors();
+  m_uiNumberPlots = 0;
+  m_dScaleFactor = 1;
+
+  setWindowName( windowTitle );
+
   m_cPlotArea = new QCustomPlot( this );
+
+  QSizePolicy sizePolicy( QSizePolicy::Preferred, QSizePolicy::MinimumExpanding );
+  sizePolicy.setHorizontalStretch( 0 );
+  sizePolicy.setVerticalStretch( 0 );
+  sizePolicy.setHeightForWidth( m_cPlotArea->sizePolicy().hasHeightForWidth() );
+  m_cPlotArea->setSizePolicy( sizePolicy );
   setWidget( m_cPlotArea );
 
   // configure right and top axis to show ticks but no labels:
@@ -58,26 +71,16 @@ PlotSubWindow::PlotSubWindow( QWidget * parent ) :
   connect( m_cPlotArea->xAxis, SIGNAL( rangeChanged(QCPRange) ), m_cPlotArea->xAxis2, SLOT( setRange(QCPRange) ) );
   connect( m_cPlotArea->yAxis, SIGNAL( rangeChanged(QCPRange) ), m_cPlotArea->yAxis2, SLOT( setRange(QCPRange) ) );
 
-  definePlotColors();
-  m_uiNumberPlots = 0;
+  QFont legendFont = font();  // start out with MainWindow's font..
+  legendFont.setPointSize( 9 );  // and make a bit smaller for legend
+  m_cPlotArea->legend->setFont( legendFont );
+  m_cPlotArea->legend->setVisible( false );
 
-  m_cPlotArea->setInteractions( QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables );
+  m_cPlotArea->setInteractions( QCP::iRangeZoom | QCP::iRangeDrag );  //QCP::iSelectPlottables
 
-}
-
-Void PlotSubWindow::Example()
-{
-  // generate some points of data (y0 for first, y1 for second graph):
-  QVector<double> x( 250 ), y0( 250 ), y1( 250 );
-  for( int i = 0; i < 250; ++i )
-  {
-    x[i] = i;
-    y0[i] = exp( -i / 150.0 ) * cos( i / 10.0 );  // exponentially decaying cosine
-    y1[i] = exp( -i / 150.0 );  // exponential envelope
-  }
-
-  addPlot( x, y0 );
-  addPlot( x, y1 );
+  m_cPlotPen.setStyle( Qt::SolidLine );
+  m_cPlotPen.setColor( Qt::black );
+  m_cPlotPen.setWidthF( 2 );
 
 }
 
@@ -88,12 +91,15 @@ PlotSubWindow::~PlotSubWindow()
 
 Void PlotSubWindow::normalSize()
 {
-
+  m_cPlotArea->xAxis->setRange( m_aAxisRange[HORIZONTAL][0], m_aAxisRange[HORIZONTAL][1] );
+  m_cPlotArea->yAxis->setRange( m_aAxisRange[VERTICAL][0], m_aAxisRange[VERTICAL][1] );
+  m_cPlotArea->replot();
+  m_dScaleFactor = 1;
 }
 
 Void PlotSubWindow::zoomToFit()
 {
-
+  normalSize();
 }
 
 Void PlotSubWindow::zoomToFactor( Double factor, QPoint center )
@@ -103,7 +109,23 @@ Void PlotSubWindow::zoomToFactor( Double factor, QPoint center )
 
 Void PlotSubWindow::scaleView( Double scale, QPoint center )
 {
+  scale -= 1;
+  scale /= 10;
+  scale += 1;
 
+  m_dScaleFactor *= scale;
+//
+//  UInt aNewAxisRange[2][2];
+//  for( UInt axis = 0; axis < 2; axis++ )
+//    for( UInt dim = 0; dim < 2; dim++ )
+//      aNewAxisRange[axis][dim] = m_aAxisRange[axis][dim] / m_dScaleFactor;
+//
+//  m_cPlotArea->xAxis->setRange( aNewAxisRange[HORIZONTAL][0], aNewAxisRange[HORIZONTAL][1] );
+//  m_cPlotArea->yAxis->setRange( aNewAxisRange[VERTICAL][0], aNewAxisRange[VERTICAL][1] );
+
+  m_cPlotArea->xAxis->scaleRange( scale, 0 );
+  m_cPlotArea->yAxis->scaleRange( scale, 0 );
+  m_cPlotArea->replot();
 }
 
 QSize PlotSubWindow::sizeHint() const
@@ -123,18 +145,60 @@ QSize PlotSubWindow::sizeHint() const
 
 QSize PlotSubWindow::sizeHint( const QSize & maxSize ) const
 {
-  return maxSize;
+  return maxSize * 2 / 3;
 }
 
-Void PlotSubWindow::addPlot( const QVector<Double> &key, const QVector<Double> &value )
+Void PlotSubWindow::setAxisName( const QString& nameAxisX, const QString& nameAxisY )
+{
+  m_cPlotArea->xAxis->setLabel( nameAxisX );
+  m_cPlotArea->yAxis->setLabel( nameAxisY );
+}
+
+Void PlotSubWindow::setAxisRange( const QLine& axisLimits )
+{
+  setAxisRange( HORIZONTAL, axisLimits.x1(), axisLimits.x2() );
+  setAxisRange( VERTICAL, axisLimits.y1(), axisLimits.y2() );
+}
+
+Void PlotSubWindow::setAxisRange( PlotSubWindow::Axis eAxis, const Int& axisStart, const Int& axisEnd )
+{
+  if( eAxis == HORIZONTAL )
+  {
+    m_cPlotArea->xAxis->setRange( axisStart, axisEnd );
+    horizontalScrollBar()->setRange( axisStart * 100, axisEnd * 100 );
+    m_aAxisRange[HORIZONTAL][0] = axisStart;
+    m_aAxisRange[HORIZONTAL][1] = axisEnd;
+  }
+  if( eAxis == VERTICAL )
+  {
+    m_cPlotArea->yAxis->setRange( axisStart, axisEnd );
+    verticalScrollBar()->setRange( axisStart * 100, axisEnd * 100 );
+    m_aAxisRange[VERTICAL][0] = axisStart;
+    m_aAxisRange[VERTICAL][1] = axisEnd;
+  }
+  m_cPlotArea->replot();
+}
+
+Void PlotSubWindow::addPlot( const QVector<Double> &arrayX, const QVector<Double> &arrayY, const QString& key )
 {
   QCPGraph *newPlot = m_cPlotArea->addGraph();
-  newPlot->setPen( QPen( m_arrayColorList.at( m_uiNumberPlots ) ) );  // line color blue for first graph
-  newPlot->setBrush( QBrush( QColor( 0, 0, 255, 20 ) ) );  // first graph will be filled with translucent blue
+  m_cPlotPen.setColor( m_arrayColorList.at( m_uiNumberPlots ) );
+  newPlot->setPen( m_cPlotPen );  // line style
   // pass data points to graphs:
-  newPlot->setData( key, value );
+  newPlot->setData( arrayX, arrayY );
   // let the ranges scale themselves so graph 0 fits perfectly in the visible area:
   newPlot->rescaleAxes( m_uiNumberPlots > 1 ? true : false );
+
+  if( !key.isEmpty() )
+  {
+    m_cPlotArea->legend->setVisible( true );
+    newPlot->setName( key );
+  }
+
+  m_aAxisRange[HORIZONTAL][0] = m_cPlotArea->xAxis->range().lower;
+  m_aAxisRange[HORIZONTAL][1] = m_cPlotArea->xAxis->range().upper;
+  m_aAxisRange[VERTICAL][0] = m_cPlotArea->yAxis->range().lower;
+  m_aAxisRange[VERTICAL][1] = m_cPlotArea->yAxis->range().upper;
 
   m_uiNumberPlots++;
 }

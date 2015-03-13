@@ -256,7 +256,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     {
       QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();
       VideoSubWindow *videoSubWindow;
-      QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow();
+      QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
       for( Int j = 0; j < selectedWindows.size(); j++ )
       {
         for( Int i = 0; i < subWindowList.size(); i++ )

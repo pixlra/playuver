@@ -117,8 +117,9 @@ public:
   Bool loadFile( QString cFilename, Bool bForceDialog = false );
   Bool loadFile( PlaYUVerStreamInfo* streamInfo );
   Void loadAll();
-  Void reloadFile();
   Bool save( QString filename );
+
+  Void refreshSubWindow();
 
   Bool play();
   Void pause();

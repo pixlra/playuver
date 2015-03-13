@@ -122,11 +122,22 @@ Void VideoSubWindow::loadAll()
   refreshFrame();
 }
 
-Void VideoSubWindow::reloadFile()
+Void VideoSubWindow::refreshSubWindow()
 {
-  Int currFrameNum = m_pCurrStream->getCurrFrameNum();
-  loadFile( m_cFilename, false );
-  seekAbsoluteEvent( currFrameNum );
+  if( getCategory() == SubWindowHandle::VIDEO_STREAM_SUBWINDOW )
+  {
+    Int currFrameNum = m_pCurrStream->getCurrFrameNum();
+    if( !loadFile( m_cFilename, false ) )
+    {
+      close();
+      return;
+    }
+    seekAbsoluteEvent( currFrameNum );
+  }
+  else
+  {
+    refreshFrame();
+  }
 }
 
 Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )

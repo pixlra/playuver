@@ -65,6 +65,11 @@ public:
 
   Void definePlotColors();
 
+  Void refreshSubWindow()
+  {
+
+  }
+
   Void setTool( UInt uiTool )
   {
   }

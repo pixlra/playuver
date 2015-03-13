@@ -42,9 +42,6 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
   connect( horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValues() ) );
   connect( verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValues() ) );
 
-  setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-  setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-
   setWidgetResizable( true );
 
   m_uiCategory = category;

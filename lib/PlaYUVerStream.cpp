@@ -700,8 +700,8 @@ Bool PlaYUVerStream::seekInputRelative( Bool bIsFoward )
   Bool bRet = false;
   if( bIsFoward )
   {
-    readFrame();
     bRet = !setNextFrame();
+    readFrame();
   }
   else
   {

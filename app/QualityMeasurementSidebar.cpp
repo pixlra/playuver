@@ -138,6 +138,10 @@ Void QualityMeasurementSidebar::updateSubWindowList()
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
+    if( m_pcCurrentVideoSubWindow == pcVideoSubWindow )
+    {
+      continue;
+    }
     if( m_pcCurrentVideoSubWindow )
     {
       if( !m_pcCurrentVideoSubWindow->getCurrFrame()->haveSameFmt( pcVideoSubWindow->getCurrFrame() ) )

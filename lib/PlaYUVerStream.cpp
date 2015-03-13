@@ -692,6 +692,25 @@ PlaYUVerFrame* PlaYUVerStream::getNextFrame()
   return m_pcNextFrame;
 }
 
+Bool PlaYUVerStream::seekInputRelative( Bool bIsFoward )
+{
+  if( !m_bInit || !m_bIsInput )
+    return false;
+
+  Bool bRet = false;
+  if( bIsFoward )
+  {
+    readFrame();
+    bRet = !setNextFrame();
+  }
+  else
+  {
+    UInt64 newFrameNum = m_iCurrFrameNum - 1;
+    bRet = seekInput( newFrameNum );
+  }
+  return bRet;
+}
+
 Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 {
   if( !m_bInit || new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum || ( Int64 )new_frame_num == m_iCurrFrameNum )

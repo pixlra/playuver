@@ -282,7 +282,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   }
   else
   {
-    windowName.append( pcVideoSubWindow->windowTitle() );
+    windowName.append( pcVideoSubWindow->getWindowName() );
     videoSubWindowList.append( pcVideoSubWindow );
   }
 

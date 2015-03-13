@@ -23,12 +23,13 @@
  */
 
 #include <QtGui>
+#include "lib/LibMemory.h"
 #include "PlaYUVerSubWindowHandle.h"
 #include "QualityHandle.h"
 #include "VideoSubWindow.h"
 #include "PlotSubWindow.h"
 #include "DialogSubWindowSelector.h"
-#include "lib/LibMemory.h"
+#include "ProgressBar.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include "QtConcurrent/qtconcurrentrun.h"
 #endif
@@ -169,6 +170,8 @@ Void QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
   }
   pcReferenceWindow->stop();
 
+  ProgressBar* pcProgressBar = new ProgressBar( m_pcParet, numberOfFrames );
+
   padQualityValues = new QVector<Double> [numberOfWindows + 1];
 
   PlaYUVerFrame* pcReferenceFrame;
@@ -184,6 +187,7 @@ Void QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
       apcWindowList.at( i )->seekRelativeEvent( true );
     }
     pcReferenceWindow->seekRelativeEvent( true );
+    pcProgressBar->incrementProgress( 1 );
   }
   for( UInt i = 0; i < numberOfWindows; i++ )
   {
@@ -215,6 +219,8 @@ Void QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
 
   m_pcMainWindowManager->addSubWindow( pcPlotWindow );
   pcPlotWindow->show();
+
+  pcProgressBar->close();
 
 }
 

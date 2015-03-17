@@ -68,7 +68,7 @@ Void QualityHandle::createActions()
 
   m_arrayActions.resize( TOTAL_ACT );
 
-  m_arrayActions[SELECT_CURR_REF_ACT] = new QAction( "Select Current as Reference", this );
+  m_arrayActions[SELECT_CURR_REF_ACT] = new QAction( "Mark as Reference", this );
   connect( m_arrayActions[SELECT_CURR_REF_ACT], SIGNAL( triggered() ), this, SLOT( slotSelectCurrentAsReference() ) );
   m_arrayActions[SELECT_REF_ACT] = new QAction( "Select Reference", this );
   connect( m_arrayActions[SELECT_REF_ACT], SIGNAL( triggered() ), this, SLOT( slotSelectReference() ) );
@@ -85,7 +85,7 @@ QMenu* QualityHandle::createMenu()
   m_pcSubMenuQualityMetrics = m_pcMenuQuality->addMenu( "Quality Metrics" );
   m_pcSubMenuQualityMetrics->addActions( m_actionGroupQualityMetric->actions() );
   m_pcMenuQuality->addAction( m_arrayActions[SELECT_CURR_REF_ACT] );
-  m_pcMenuQuality->addAction( m_arrayActions[SELECT_REF_ACT] );
+  //m_pcMenuQuality->addAction( m_arrayActions[SELECT_REF_ACT] );
   m_pcMenuQuality->addSeparator();
   m_pcMenuQuality->addAction( m_arrayActions[PLOT_QUALITY] );
   m_pcMenuQuality->addAction( m_arrayActions[PLOT_SEVERAL_QUALITY] );

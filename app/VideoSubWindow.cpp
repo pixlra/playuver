@@ -155,8 +155,6 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
       return false;
     }
   }
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-  QApplication::restoreOverrideCursor();
 
   if( !m_pCurrStream )
   {

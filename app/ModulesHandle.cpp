@@ -426,6 +426,7 @@ Void ModulesHandle::destroyAllModulesIf()
 Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isPlaying, Bool disableThreads )
 {
   Bool bRet = false;
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   if( !isPlaying || ( isPlaying && pcCurrModuleIf->m_pcModule->m_bApplyWhilePlaying ) )
   {
 #ifdef PLAYUVER_THREADED_MODULES
@@ -444,6 +445,7 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isP
   {
     bRet = true;
   }
+  QApplication::restoreOverrideCursor();
   return bRet;
 }
 

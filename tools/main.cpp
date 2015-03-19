@@ -39,19 +39,19 @@ int main( int argc, char *argv[] )
   }
   if( iRet > 1 )
   {
-    printf( "Exiting\n" );
+    printf( "Exiting with error \n" );
     return 1;
   }
 
   if( PlaYUVerToolsApp.Process() > 1 )
   {
-    printf( "Exiting\n" );
+    printf( "Exiting with error \n" );
     return 1;
   }
 
   if( PlaYUVerToolsApp.Close() > 1 )
   {
-    printf( "Exiting\n" );
+    printf( "Exiting with error \n" );
     return 1;
   }
 

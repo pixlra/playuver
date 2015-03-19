@@ -84,7 +84,7 @@ SET( CMAKE_CXX_FLAGS "" )
 
 FIND_PACKAGE(Boost COMPONENTS program_options )
 SET_PACKAGE_PROPERTIES(Boost PROPERTIES URL "http://www.boost.org" DESCRIPTION "Boost library support" TYPE OPTIONAL)
-SET(USE_BOOST ${Boost_FOUND})
+
 
 OPTION( USE_OPENCV "Add OpenCV support" ON )
 IF( USE_OPENCV )
@@ -102,6 +102,7 @@ SET_PACKAGE_PROPERTIES(FFmpeg PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "L
 
 ADD_FEATURE_INFO(SSE USE_SSE "SSE instructions support"  )
 ADD_FEATURE_INFO(WErrors USE_WERROR "Warnings as errors"  )
+
 
 IF( WIN32 )
   INCLUDE( cmake/Win32.cmake )
@@ -131,10 +132,8 @@ ADD_FEATURE_INFO(PlaYUVerTools   PLAYUVER_BUILD_APP      "Build Command line too
 ADD_SUBDIRECTORY( lib )
 ADD_SUBDIRECTORY( modules )
 
-IF( ${USE_BOOST} )
-  IF( ${PLAYUVER_BUILD_TOOLS} )
-    ADD_SUBDIRECTORY( tools )
-  ENDIF()
+IF( ${PLAYUVER_BUILD_TOOLS} )
+  ADD_SUBDIRECTORY( tools )
 ENDIF()
 
 IF( ${PLAYUVER_BUILD_APP} )

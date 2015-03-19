@@ -84,7 +84,7 @@ SET( CMAKE_CXX_FLAGS "" )
 
 FIND_PACKAGE(Boost COMPONENTS program_options )
 SET_PACKAGE_PROPERTIES(Boost PROPERTIES URL "http://www.boost.org" DESCRIPTION "Boost library support" TYPE REQUIRED)
-
+INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIRS} )
 
 OPTION( USE_OPENCV "Add OpenCV support" ON )
 IF( USE_OPENCV )

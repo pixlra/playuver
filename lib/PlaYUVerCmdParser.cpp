@@ -53,7 +53,7 @@ Void PlaYUVerCmdParser::Config( Int argc, Char *argv[] )
 
 po::options_description PlaYUVerCmdParser::GetCommandOpts()
 {
-  po::options_description inputOpts( "Input" );
+  po::options_description inputOpts( "InputOutput" );
   inputOpts.add_options()/**/
   ( "input,i", po::value<std::vector<std::string> >(), "input file" ) /**/
   ( "output,o", po::value<std::vector<std::string> >(), "output file" ) /**/
@@ -64,6 +64,7 @@ po::options_description PlaYUVerCmdParser::GetCommandOpts()
 
   po::options_description commonOpts( "Common" );
   commonOpts.add_options()/**/
+  ( "quiet,q", "disable verbose" )/**/
   ( "help", "produce help message" )/**/
   ( "version", "show version and exit" );
   commonOpts.add( inputOpts );

@@ -38,9 +38,37 @@ public:
   CommandLineHandle();
   ~CommandLineHandle();
 
+  enum LOG_LEVEL
+  {
+    INFO = 0,
+    WARNINGS = 1,
+    RESULT = 2,
+    ERROR = 3,
+  };
+  Void setLogLevel( enum LOG_LEVEL level )
+  {
+    m_uiLogLevel = level;
+  }
+
+  /**
+   * Send the specified message to the log if the level is higher than or equal
+   * to the current LogLevel. By default, all logging messages are sent to
+   * stdout.
+   *
+   * @param level The importance level of the message expressed using a @ref
+   *        lavu_log_constants "Logging Constant".
+   * @param fmt The format string (printf-compatible) that specifies how
+   *        subsequent arguments are converted to output.
+   *
+   * @note this function might not be safe in C++ (try to upgrade it)
+   */
+  Void log( UInt level, const char *fmt, ... );
+
   Int parseToolsArgs();
   Void listModules();
 
+private:
+  UInt m_uiLogLevel;
 };
 
 }  // NAMESPACE

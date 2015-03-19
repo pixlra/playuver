@@ -47,7 +47,8 @@ public:
   Int Close();
 
 private:
-  CommandLineHandle m_cCommandLineParser;
+  CommandLineHandle m_cCmdLineHandler;
+  Bool m_bVerbose;
 
   UInt m_uiOperation;
   enum TOOLS_OPERATIONS_LIST

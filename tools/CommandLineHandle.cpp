@@ -23,6 +23,7 @@
  */
 
 #include <cstring>
+#include <cstdarg>
 #include "CommandLineHandle.h"
 #include "lib/PlaYUVerFrame.h"
 #include "modules/PlaYUVerModuleIf.h"
@@ -33,12 +34,23 @@ namespace plaYUVer
 
 CommandLineHandle::CommandLineHandle()
 {
-
+  m_uiLogLevel = 0;
 }
 
 CommandLineHandle::~CommandLineHandle()
 {
 
+}
+
+Void CommandLineHandle::log( UInt level, const char *fmt, ... )
+{
+  if( level >= m_uiLogLevel )
+  {
+    std::va_list args;
+    va_start( args, fmt );
+    vfprintf( stdout, fmt, args );
+    va_end( args );
+  }
 }
 
 Int CommandLineHandle::parseToolsArgs()

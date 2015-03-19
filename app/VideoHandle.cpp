@@ -401,12 +401,13 @@ Void VideoHandle::setTimerStatus()
   else
   {
 #if( _CONTROL_PLAYING_TIME_ == 1 )
-    qDebug( ) << "Desired Fps: "
-              << 1000 / m_pcPlayingTimer->interval()
-              << "Real Fps: "
-              << 1000 / m_dAverageFps;
     if( m_pcPlayControlTimer )
     {
+      qDebug( ) << "Desired Fps: "
+                << 1000 / m_pcPlayingTimer->interval()
+                << "Real Fps: "
+                << 1000 / m_dAverageFps;
+
       delete m_pcPlayControlTimer;
       m_pcPlayControlTimer = NULL;
     }

@@ -311,7 +311,7 @@ PlaYUVerFrame* PlaYUVerTools::applyFrameModule()
 
 Int PlaYUVerTools::ModuleOperation()
 {
-  printf( "  Applying Module %s/%s ... \n", m_pcCurrModuleIf->m_pchModuleCategory, m_pcCurrModuleIf->m_pchModuleName );
+  printf( "  Applying Module %s/%s ...\n", m_pcCurrModuleIf->m_pchModuleCategory, m_pcCurrModuleIf->m_pchModuleName );
 
   PlaYUVerFrame* pcProcessedFrame = NULL;
   Double dMeasurementResult = 0.0;
@@ -329,7 +329,7 @@ Int PlaYUVerTools::ModuleOperation()
     if( m_pcCurrModuleIf->m_iModuleType == FRAME_PROCESSING_MODULE )
     {
       pcProcessedFrame = applyFrameModule();
-      m_apcInputStreams[0]->writeFrame( pcProcessedFrame );
+      m_apcOutputStreams[0]->writeFrame( pcProcessedFrame );
     }
     else if( m_pcCurrModuleIf->m_iModuleType == FRAME_MEASUREMENT_MODULE )
     {

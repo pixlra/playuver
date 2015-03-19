@@ -123,7 +123,7 @@ Void VideoSubWindow::loadAll()
 
 Void VideoSubWindow::refreshSubWindow()
 {
-  if( getCategory() == SubWindowHandle::VIDEO_STREAM_SUBWINDOW )
+  if( getCategory() & SubWindowHandle::VIDEO_STREAM_SUBWINDOW )
   {
     Int currFrameNum = m_pCurrStream->getCurrFrameNum();
     if( !loadFile( m_cFilename, false ) )

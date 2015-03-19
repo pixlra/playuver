@@ -83,7 +83,7 @@ SET( CMAKE_CXX_FLAGS "" )
 ######################################################################################
 
 FIND_PACKAGE(Boost COMPONENTS program_options )
-SET_PACKAGE_PROPERTIES(Boost PROPERTIES URL "http://www.boost.org" DESCRIPTION "Boost library support" TYPE OPTIONAL)
+SET_PACKAGE_PROPERTIES(Boost PROPERTIES URL "http://www.boost.org" DESCRIPTION "Boost library support" TYPE REQUIRED)
 
 
 OPTION( USE_OPENCV "Add OpenCV support" ON )

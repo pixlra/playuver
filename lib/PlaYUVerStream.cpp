@@ -390,7 +390,10 @@ Bool PlaYUVerStream::openFile()
   {
     return false;
   }
-  fseek( m_pFile, m_iCurrFrameNum >= 0 ? m_iCurrFrameNum : 0, SEEK_SET );
+  if ( m_bIsInput )
+  {
+    fseek( m_pFile, m_iCurrFrameNum >= 0 ? m_iCurrFrameNum : 0, SEEK_SET );
+  }
   return true;
 }
 

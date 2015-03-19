@@ -11,6 +11,7 @@ IF( NOT ${Boost_FOUND} )
   MESSAGE("Using internal boost program options lib")
   ADD_SUBDIRECTORY( ${CMAKE_CURRENT_SOURCE_DIR}/external/boost_program_options )
 ENDIF()
+INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIRS} )
 
 set(plaYUver_Lib_SRCS
     # Frame

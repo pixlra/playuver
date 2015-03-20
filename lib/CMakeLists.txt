@@ -11,8 +11,9 @@ set(plaYUver_Lib_SRCS
     PlaYUVerFrameStats.cpp
     # Stream
     PlaYUVerStream.cpp
-    # Command Line Parser
+    # Command Parser
     PlaYUVerCmdParser.cpp
+    ProgramOptions.cpp
 )
 
 IF( USE_FFMPEG )

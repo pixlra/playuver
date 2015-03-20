@@ -64,7 +64,6 @@ private:
   std::vector<PlaYUVerStream*> m_apcOutputStreams;
 
   Int openInputs();
-  Int openOutputs();
 
   typedef Int (PlaYUVerTools::*FpProcess) ();
   FpProcess m_fpProcess;

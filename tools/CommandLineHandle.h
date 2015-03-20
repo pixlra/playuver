@@ -28,12 +28,16 @@
 #include "config.h"
 #include "lib/PlaYUVerDefs.h"
 #include "lib/PlaYUVerCmdParser.h"
+#include "lib/ProgramOptions.h"
 
 namespace plaYUVer
 {
 
+class PlaYUVerStream;
+
 class CommandLineHandle: public PlaYUVerCmdParser
 {
+  friend class PlaYUVerTools;
 public:
   CommandLineHandle();
   ~CommandLineHandle();
@@ -64,11 +68,33 @@ public:
    */
   Void log( UInt level, const char *fmt, ... );
 
-  Int parseToolsArgs();
-  Void listModules();
+  Int parseToolsArgs( Int argc, Char *argv[] );
 
 private:
+  Options m_cParserOptions;
   UInt m_uiLogLevel;
+
+  /**
+   * Command line opts for PlaYUVerTools
+   */
+  Bool m_bShowHelp;
+  Bool m_bShowVersion;
+  Bool m_bQuiet;
+  std::vector<std::string> m_apcInputs;
+  std::string m_strInput;
+  std::string m_strOutput;
+  std::string m_strResolution;
+  std::string m_strPelFmt;
+  Bool m_bListPelFmts;
+  Int m_iFrames;
+
+  Bool m_bListQuality;
+  std::string m_strQualityMetric;
+  Bool m_bListModules;
+  std::string m_strModule;
+
+  Void listModules();
+
 };
 
 }  // NAMESPACE

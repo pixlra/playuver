@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 #include "PlaYUVerCmdParser.h"
+#include "ProgramOptions.h"
 #include "PlaYUVerFrame.h"
 
 namespace plaYUVer
@@ -35,9 +36,14 @@ namespace plaYUVer
 
 PlaYUVerCmdParser::PlaYUVerCmdParser()
 {
-  m_iArgc = 0;
-  m_apcArgv = NULL;
-  m_ParserOptions.add( GetCommandOpts() );
+  Opts().addOptions()/**/
+  ( "help", "produce help message" )/**/
+  ( "version", "show version and exit" )/**/
+  ( "pel_fmts", "list pixel formats" ) /**/
+  ( "quality_metrics", "list supported quality metrics" )/**/
+  ( "module_list", "list supported modules" ) /**/
+  ( "module_list_full", "detailed list supported modules" );
+
 }
 
 PlaYUVerCmdParser::~PlaYUVerCmdParser()
@@ -45,57 +51,23 @@ PlaYUVerCmdParser::~PlaYUVerCmdParser()
 
 }
 
-Void PlaYUVerCmdParser::Config( Int argc, Char *argv[] )
+Options& PlaYUVerCmdParser::Opts()
 {
-  m_iArgc = argc;
-  m_apcArgv = argv;
+  return m_cParserOptions;
 }
 
-po::options_description PlaYUVerCmdParser::GetCommandOpts()
-{
-  po::options_description inputOpts( "InputOutput" );
-  inputOpts.add_options()/**/
-  ( "input,i", po::value<std::vector<std::string> >(), "input file" ) /**/
-  ( "output,o", po::value<std::vector<std::string> >(), "output file" ) /**/
-  ( "size,s", po::value<std::string>(), "size (WxH)" ) /**/
-  ( "pel_fmt", po::value<std::string>(), "pixel format" ) /**/
-  ( "pel_fmts", "list pixel formats" ) /**/
-  ( "frames,f", po::value<UInt>(), "number of frames" );
-
-  po::options_description commonOpts( "Common" );
-  commonOpts.add_options()/**/
-  ( "quiet,q", "disable verbose" )/**/
-  ( "help", "produce help message" )/**/
-  ( "version", "show version and exit" );
-  commonOpts.add( inputOpts );
-  return commonOpts;
-}
-
-Void PlaYUVerCmdParser::addOptions( po::options_description opts )
-{
-  m_ParserOptions.add( opts );
-}
-
-Bool PlaYUVerCmdParser::parse()
+Bool PlaYUVerCmdParser::parse( Int argc, Char *argv[] )
 {
   try
   {
-    po::store( po::command_line_parser( m_iArgc, m_apcArgv ).options( m_ParserOptions ).allow_unregistered().run(), m_cOptionsMap );
-    po::notify( m_cOptionsMap );
+    // m_cParserOptions.setDefaults();
+    const std::list<const Char*>& argv_unhandled = scanArgv( m_cParserOptions, argc, ( const Char** )argv );
 
-    if( m_cOptionsMap.count( "help" ) )
+    for( std::list<const Char*>::const_iterator it = argv_unhandled.begin(); it != argv_unhandled.end(); it++ )
     {
-      std::cout << m_ParserOptions
-                << "\n";
-      return false;
+      fprintf( stderr, "Unhandled argument ignored: `%s'\n", *it );
     }
-    if( m_cOptionsMap.count( "version" ) )
-    {
-      std::cout << "PlaYUVer version "
-                << PLAYUVER_VERSION_STRING
-                << "\n";
-      return false;
-    }
+
     if( checkListingOpts() )
     {
       return false;
@@ -118,7 +90,21 @@ Bool PlaYUVerCmdParser::parse()
 Bool PlaYUVerCmdParser::checkListingOpts()
 {
   Bool bRet = false;
-  if( m_cOptionsMap.count( "pel_fmts" ) )
+
+  if( m_cParserOptions["help"]->count() )
+  {
+    doHelp( std::cout, m_cParserOptions );
+    bRet |= true;
+  }
+
+  if( m_cParserOptions["version"]->count() )
+  {
+    std::cout << "PlaYUVer version "
+              << PLAYUVER_VERSION_STRING
+              << "\n";
+    bRet |= true;
+  }
+  if( m_cParserOptions["pel_fmts"]->count() )
   {
     printf( "PlaYUVer supported pixel formats: \n" );
     for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )

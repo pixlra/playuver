@@ -22,6 +22,7 @@
  * \brief    Main definition of the PlaYUVerTools APp
  */
 
+#include <cstring>
 #include "PlaYUVerTools.h"
 #include "modules/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
@@ -54,28 +55,23 @@ PlaYUVerTools::~PlaYUVerTools()
 
 Int PlaYUVerTools::openInputs()
 {
-  if( m_cCmdLineHandler.getOptionsMap().count( "quiet" ) )
-  {
-    m_bVerbose = false;
-    m_cCmdLineHandler.setLogLevel( CommandLineHandle::RESULT );
-  }
   /**
    * Create input streams
    */
-  if( m_cCmdLineHandler.getOptionsMap().count( "input" ) )
+  if( m_cCmdLineHandler.Opts()["input"]->count() )
   {
     std::string resolutionString( "" );
-    if( m_cCmdLineHandler.getOptionsMap().count( "size" ) )
+    if( m_cCmdLineHandler.Opts()["size"]->count() )
     {
-      resolutionString = m_cCmdLineHandler.getOptionsMap()["size"].as<std::string>();
+      resolutionString = m_cCmdLineHandler.m_strResolution;
     }
     std::string fmtString( "yuv420p" );
-    if( m_cCmdLineHandler.getOptionsMap().count( "pel_fmt" ) )
+    if( m_cCmdLineHandler.Opts()["pel_fmt"]->count() )
     {
-      fmtString = m_cCmdLineHandler.getOptionsMap()["pel_fmt"].as<std::string>();
+      fmtString = m_cCmdLineHandler.m_strPelFmt;
     }
 
-    std::vector<std::string> inputFileNames = m_cCmdLineHandler.getOptionsMap()["input"].as<std::vector<std::string> >();
+    std::vector<std::string> inputFileNames = m_cCmdLineHandler.m_apcInputs;
 
     PlaYUVerStream* pcStream;
     for( UInt i = 0; i < inputFileNames.size(); i++ )
@@ -96,30 +92,23 @@ Int PlaYUVerTools::openInputs()
         return 2;
       }
     }
-    m_uiNumberOfFrames = MAX_UINT;
-    if( m_cCmdLineHandler.getOptionsMap().count( "frames" ) )
-    {
-      m_uiNumberOfFrames = m_cCmdLineHandler.getOptionsMap()["frames"].as<UInt>();
-    }
-
-    m_uiNumberOfComponents = MAX_UINT;
-    for( UInt i = 0; i < m_apcInputStreams.size(); i++ )
-    {
-      if( m_apcInputStreams[i]->getFrameNum() < m_uiNumberOfFrames )
-        m_uiNumberOfFrames = m_apcInputStreams[i]->getFrameNum();
-      if( m_apcInputStreams[i]->getCurrFrame()->getNumberChannels() < m_uiNumberOfComponents )
-        m_uiNumberOfComponents = m_apcInputStreams[i]->getCurrFrame()->getNumberChannels();
-    }
   }
-  return 0;
-}
 
-Int PlaYUVerTools::openOutputs()
-{
-  if( m_cCmdLineHandler.getOptionsMap().count( "output" ) )
+  m_uiNumberOfFrames = MAX_UINT;
+  if( m_cCmdLineHandler.Opts()["frames"]->count() )
   {
-
+    m_uiNumberOfFrames = m_cCmdLineHandler.m_iFrames;
   }
+
+  m_uiNumberOfComponents = MAX_UINT;
+  for( UInt i = 0; i < m_apcInputStreams.size(); i++ )
+  {
+    if( m_apcInputStreams[i]->getFrameNum() < m_uiNumberOfFrames )
+      m_uiNumberOfFrames = m_apcInputStreams[i]->getFrameNum();
+    if( m_apcInputStreams[i]->getCurrFrame()->getNumberChannels() < m_uiNumberOfComponents )
+      m_uiNumberOfComponents = m_apcInputStreams[i]->getCurrFrame()->getNumberChannels();
+  }
+
   return 0;
 }
 
@@ -127,8 +116,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
 {
   Int iRet = 0;
 
-  m_cCmdLineHandler.Config( argc, argv );
-  if( ( iRet = m_cCmdLineHandler.parseToolsArgs() ) > 0 )
+  if( ( iRet = m_cCmdLineHandler.parseToolsArgs( argc, argv ) ) > 0 )
   {
     return iRet;
   }
@@ -141,9 +129,9 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
   /**
    * Check Quality operation
    */
-  if( m_cCmdLineHandler.getOptionsMap().count( "quality" ) )
+  if( m_cCmdLineHandler.Opts()["quality"]->count() )
   {
-    std::string qualityMetric = m_cCmdLineHandler.getOptionsMap()["quality"].as<std::string>();
+    std::string qualityMetric = m_cCmdLineHandler.m_strQualityMetric;
     if( m_apcInputStreams.size() != 2 )
     {
       m_cCmdLineHandler.log( CommandLineHandle::ERROR, "Invalid number of inputs! " );
@@ -169,9 +157,9 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
   /**
    * Check Module operation
    */
-  if( m_cCmdLineHandler.getOptionsMap().count( "module" ) )
+  if( m_cCmdLineHandler.Opts()["module"]->count() )
   {
-    std::string moduleName = m_cCmdLineHandler.getOptionsMap()["module"].as<std::string>();
+    std::string moduleName = m_cCmdLineHandler.m_strModule;
 
     PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
     PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
@@ -196,8 +184,9 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
     {
       // Check outputs
       std::vector<std::string> outputFileNames;
-      if( m_cCmdLineHandler.getOptionsMap().count( "output" ) )
-        outputFileNames = m_cCmdLineHandler.getOptionsMap()["output"].as<std::vector<std::string> >();
+      if( m_cCmdLineHandler.Opts()["output"]->count() )
+        outputFileNames.push_back( m_cCmdLineHandler.m_strOutput );
+      ;
 
       if( outputFileNames.size() == 1 )
       {

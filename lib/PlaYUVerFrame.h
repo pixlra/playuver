@@ -40,6 +40,8 @@ namespace plaYUVer
 
 struct PlaYUVerPixFmtDescriptor;
 
+#define MAX_NUMBER_COMPONENTS 4
+
 /**
  * \class    PlaYUVerFrame
  * \ingroup  PlaYUVerLib PlaYUVerLib_Frame

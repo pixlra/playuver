@@ -74,7 +74,7 @@ Int PlaYUVerTools::openInputs()
     std::vector<std::string> inputFileNames = m_cCmdLineHandler.m_apcInputs;
 
     PlaYUVerStream* pcStream;
-    for( UInt i = 0; i < inputFileNames.size(); i++ )
+    for( UInt i = 0; i < inputFileNames.size() && i < MAX_NUMBER_INPUTS; i++ )
     {
       pcStream = new PlaYUVerStream;
       try
@@ -233,9 +233,9 @@ Int PlaYUVerTools::Close()
 
 Int PlaYUVerTools::QualityOperation()
 {
-  PlaYUVerFrame* apcCurrFrame[m_apcInputStreams.size()];
-  Bool abEOF[m_apcInputStreams.size()];
-  Double adAverageQuality[m_apcInputStreams.size() - 1][m_uiNumberOfComponents];
+  PlaYUVerFrame* apcCurrFrame[MAX_NUMBER_INPUTS];
+  Bool abEOF[MAX_NUMBER_INPUTS];
+  Double adAverageQuality[MAX_NUMBER_INPUTS - 1][MAX_NUMBER_COMPONENTS];
   Double dQuality;
 
   m_cCmdLineHandler.log( CommandLineHandle::INFO, "  Measuring Quality using %s ... \n",

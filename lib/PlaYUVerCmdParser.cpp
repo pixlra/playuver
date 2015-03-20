@@ -43,7 +43,6 @@ PlaYUVerCmdParser::PlaYUVerCmdParser()
   ( "quality_metrics", "list supported quality metrics" )/**/
   ( "module_list", "list supported modules" ) /**/
   ( "module_list_full", "detailed list supported modules" );
-
 }
 
 PlaYUVerCmdParser::~PlaYUVerCmdParser()

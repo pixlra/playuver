@@ -36,6 +36,8 @@ namespace plaYUVer
 
 class PlaYUVerModuleIf;
 
+#define MAX_NUMBER_INPUTS 10
+
 class PlaYUVerTools
 {
 public:

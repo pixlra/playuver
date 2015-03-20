@@ -4,14 +4,6 @@
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../ )
 
-#
-# Add boost support
-#
-IF( NOT ${Boost_FOUND} )
-  MESSAGE("Using internal boost program options lib")
-  ADD_SUBDIRECTORY( ${CMAKE_CURRENT_SOURCE_DIR}/external/boost_program_options )
-ENDIF()
-
 set(plaYUver_Lib_SRCS
     # Frame
     PlaYUVerFrame.cpp
@@ -19,8 +11,9 @@ set(plaYUver_Lib_SRCS
     PlaYUVerFrameStats.cpp
     # Stream
     PlaYUVerStream.cpp
-    # Command Line Parser
+    # Command Parser
     PlaYUVerCmdParser.cpp
+    ProgramOptions.cpp
 )
 
 IF( USE_FFMPEG )

@@ -26,6 +26,7 @@
 #include <cstdarg>
 #include "CommandLineHandle.h"
 #include "lib/PlaYUVerFrame.h"
+#include "lib/PlaYUVerStream.h"
 #include "modules/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
@@ -35,6 +36,9 @@ namespace plaYUVer
 CommandLineHandle::CommandLineHandle()
 {
   m_uiLogLevel = 0;
+  m_bQuiet = false;
+  m_strPelFmt = std::string( "YUV420p" );
+  m_iFrames = -1;
 }
 
 CommandLineHandle::~CommandLineHandle()
@@ -53,30 +57,36 @@ Void CommandLineHandle::log( UInt level, const char *fmt, ... )
   }
 }
 
-Int CommandLineHandle::parseToolsArgs()
+Int CommandLineHandle::parseToolsArgs( Int argc, Char *argv[] )
 {
   Int iRet = 0;
 
-  po::options_description qualityOpts( "Quality" );
-  qualityOpts.add_options() /**/
-  ( "quality", po::value<std::string>(), "select a quality metric" ) /**/
-  ( "quality_metrics", "list supported quality metrics" );
+  Opts().addOptions()/**/
+  ( "quiet,q", m_bQuiet, "disable verbose" );
 
-  po::options_description moduleOpts( "Module" );
-  moduleOpts.add_options() /**/
-  ( "module", po::value<std::string>(), "select a module (use internal name)" ) /**/
-  ( "module_list", "list supported modules" ) /**/
-  ( "module_list_full", "detailed list supported modules" );
+  Opts().addOptions()/**/
+  ( "input,i", m_apcInputs, "input file" ) /**/
+  //( "input,i", m_strInput, "input file" ) /**/
+  ( "output,o", m_strOutput, "output file" ) /**/
+  ( "size,s", m_strResolution, "size (WxH)" ) /**/
+  ( "pel_fmt", m_strPelFmt, "pixel format" ) /**/
+  ( "frames,f", m_iFrames, "number of frames to parse" );
 
-  addOptions( qualityOpts );
-  addOptions( moduleOpts );
+  Opts().addOptions()/**/
+  ( "quality", m_strQualityMetric, "select a quality metric" ) /**/
+  ( "module", m_strModule, "select a module (use internal name)" );
 
-  if( !parse() )
+  if( !parse( argc, argv ) )
   {
     iRet = 1;
   }
 
-  if( getOptionsMap().count( "quality_metrics" ) )
+  if( m_bQuiet )
+  {
+    m_uiLogLevel = RESULT;
+  }
+
+  if( Opts()["quality_metrics"]->count() )
   {
     printf( "PlaYUVer supported quality metrics: \n" );
     for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
@@ -86,7 +96,7 @@ Int CommandLineHandle::parseToolsArgs()
     iRet = 1;
   }
 
-  if( getOptionsMap().count( "module_list" ) || getOptionsMap().count( "module_list_full" ) )
+  if( Opts()["module_list"]->count() || Opts()["module_list_full"]->count() )
   {
     listModules();
     iRet = 1;
@@ -99,7 +109,7 @@ Void CommandLineHandle::listModules()
 {
   Bool bDetailed = false;
 
-  if( getOptionsMap().count( "module_list_full" ) )
+  if( Opts()["module_list_full"]->count() )
     bDetailed = true;
 
   PlaYUVerModuleIf* pcCurrModuleIf;

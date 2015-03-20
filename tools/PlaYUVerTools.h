@@ -36,6 +36,8 @@ namespace plaYUVer
 
 class PlaYUVerModuleIf;
 
+#define MAX_NUMBER_INPUTS 10
+
 class PlaYUVerTools
 {
 public:
@@ -64,7 +66,6 @@ private:
   std::vector<PlaYUVerStream*> m_apcOutputStreams;
 
   Int openInputs();
-  Int openOutputs();
 
   typedef Int (PlaYUVerTools::*FpProcess) ();
   FpProcess m_fpProcess;

@@ -312,7 +312,7 @@ Int PlaYUVerTools::ModuleOperation()
   PlaYUVerFrame* pcProcessedFrame = NULL;
   Double dMeasurementResult = 0.0;
   Double dAveragedMeasurementResult = 0;
-  Bool abEOF[m_apcInputStreams.size()];
+  Bool abEOF[MAX_NUMBER_INPUTS];
 
   for( UInt s = 0; s < m_apcInputStreams.size(); s++ )
   {

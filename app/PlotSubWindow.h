@@ -51,6 +51,10 @@ public:
   PlotSubWindow( QWidget * parent = 0 );
   ~PlotSubWindow();
 
+  Void setTool( UInt uiTool )
+  {
+  }
+
   /**
    * Virtual functions from SubWindowHandle
    */
@@ -69,7 +73,6 @@ public:
    */
 //  QSize sizeHint() const;
 //  QSize sizeHint( const QSize & ) const;
-
 };
 
 }  // NAMESPACE

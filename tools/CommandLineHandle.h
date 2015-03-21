@@ -28,17 +28,71 @@
 #include "config.h"
 #include "lib/PlaYUVerDefs.h"
 #include "lib/PlaYUVerCmdParser.h"
+#include "lib/ProgramOptions.h"
 
 namespace plaYUVer
 {
 
+class PlaYUVerStream;
+
 class CommandLineHandle: public PlaYUVerCmdParser
 {
+  friend class PlaYUVerTools;
 public:
   CommandLineHandle();
   ~CommandLineHandle();
 
-  Int parseToolsArgs();
+  enum LOG_LEVEL
+  {
+    INFO = 0,
+    WARNINGS = 1,
+    RESULT = 2,
+    ERROR = 3,
+  };
+  Void setLogLevel( enum LOG_LEVEL level )
+  {
+    m_uiLogLevel = level;
+  }
+
+  /**
+   * Send the specified message to the log if the level is higher than or equal
+   * to the current LogLevel. By default, all logging messages are sent to
+   * stdout.
+   *
+   * @param level The importance level of the message expressed using a @ref
+   *        lavu_log_constants "Logging Constant".
+   * @param fmt The format string (printf-compatible) that specifies how
+   *        subsequent arguments are converted to output.
+   *
+   * @note this function might not be safe in C++ (try to upgrade it)
+   */
+  Void log( UInt level, const char *fmt, ... );
+
+  Int parseToolsArgs( Int argc, Char *argv[] );
+
+private:
+  Options m_cParserOptions;
+  UInt m_uiLogLevel;
+
+  /**
+   * Command line opts for PlaYUVerTools
+   */
+  Bool m_bShowHelp;
+  Bool m_bShowVersion;
+  Bool m_bQuiet;
+  std::vector<std::string> m_apcInputs;
+  std::string m_strInput;
+  std::string m_strOutput;
+  std::string m_strResolution;
+  std::string m_strPelFmt;
+  Bool m_bListPelFmts;
+  Int m_iFrames;
+
+  Bool m_bListQuality;
+  std::string m_strQualityMetric;
+  Bool m_bListModules;
+  std::string m_strModule;
+
   Void listModules();
 
 };

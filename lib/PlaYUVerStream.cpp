@@ -390,7 +390,10 @@ Bool PlaYUVerStream::openFile()
   {
     return false;
   }
-  fseek( m_pFile, m_iCurrFrameNum >= 0 ? m_iCurrFrameNum : 0, SEEK_SET );
+  if ( m_bIsInput )
+  {
+    fseek( m_pFile, m_iCurrFrameNum >= 0 ? m_iCurrFrameNum : 0, SEEK_SET );
+  }
   return true;
 }
 
@@ -690,6 +693,25 @@ PlaYUVerFrame* PlaYUVerStream::getCurrFrame()
 PlaYUVerFrame* PlaYUVerStream::getNextFrame()
 {
   return m_pcNextFrame;
+}
+
+Bool PlaYUVerStream::seekInputRelative( Bool bIsFoward )
+{
+  if( !m_bInit || !m_bIsInput )
+    return false;
+
+  Bool bRet = false;
+  if( bIsFoward )
+  {
+    bRet = !setNextFrame();
+    readFrame();
+  }
+  else
+  {
+    UInt64 newFrameNum = m_iCurrFrameNum - 1;
+    bRet = seekInput( newFrameNum );
+  }
+  return bRet;
 }
 
 Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )

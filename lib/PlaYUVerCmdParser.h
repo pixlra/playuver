@@ -23,8 +23,8 @@
  */
 
 #include "PlaYUVerDefs.h"
-#include <boost/program_options.hpp>
-namespace po = boost::program_options;
+#include "ProgramOptions.h"
+
 
 namespace plaYUVer
 {
@@ -35,22 +35,10 @@ public:
   PlaYUVerCmdParser();
   ~PlaYUVerCmdParser();
 
-  Void Config( Int argc, Char *argv[] );
-  Void addOptions( po::options_description );
-  Bool parse();
-
-  po::variables_map getOptionsMap()
-  {
-    return m_cOptionsMap;
-  }
-
-  static po::options_description GetCommandOpts();
-
+  Bool parse( Int argc, Char *argv[] );
+  Options& Opts();
 private:
-  Int m_iArgc;
-  Char** m_apcArgv;
-  po::options_description m_ParserOptions;
-  po::variables_map m_cOptionsMap;
+  Options m_cParserOptions;
 
   Bool checkListingOpts();
 };

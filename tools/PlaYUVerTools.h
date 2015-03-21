@@ -36,6 +36,8 @@ namespace plaYUVer
 
 class PlaYUVerModuleIf;
 
+#define MAX_NUMBER_INPUTS 10
+
 class PlaYUVerTools
 {
 public:
@@ -47,7 +49,8 @@ public:
   Int Close();
 
 private:
-  CommandLineHandle m_cCommandLineParser;
+  CommandLineHandle m_cCmdLineHandler;
+  Bool m_bVerbose;
 
   UInt m_uiOperation;
   enum TOOLS_OPERATIONS_LIST
@@ -63,7 +66,6 @@ private:
   std::vector<PlaYUVerStream*> m_apcOutputStreams;
 
   Int openInputs();
-  Int openOutputs();
 
   typedef Int (PlaYUVerTools::*FpProcess) ();
   FpProcess m_fpProcess;

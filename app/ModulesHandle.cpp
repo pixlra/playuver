@@ -154,6 +154,11 @@ Void ModulesHandle::updateMenus()
     currModuleAction->setEnabled( hasSubWindow );
     currModuleAction->setChecked( false );
   }
+  for( Int i = 0; i < m_pcModulesSubMenuList.size(); i++ )
+  {
+    m_pcModulesSubMenuList.at( i )->setEnabled( hasSubWindow );
+  }
+
   for( Int i = 0; i < m_arrayActions.size(); i++ )
   {
     m_arrayActions.at( i )->setEnabled( false );
@@ -277,7 +282,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   }
   else
   {
-    windowName.append( pcVideoSubWindow->windowTitle() );
+    windowName.append( pcVideoSubWindow->getWindowName() );
     videoSubWindowList.append( pcVideoSubWindow );
   }
 

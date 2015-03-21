@@ -366,12 +366,10 @@ Void plaYUVerApp::setTool( Int idxTool )
 {
   m_uiViewTool = idxTool;
   actionGroupTools->actions().at( m_uiViewTool )->setChecked( true );
-  VideoSubWindow* videoSubWindow;
-  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow();
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
-    videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
-    videoSubWindow->getViewArea()->setTool( ( ViewArea::eTool )m_uiViewTool );
+    subWindowList.at( i )->setTool( m_uiViewTool );
   }
 }
 
@@ -494,8 +492,6 @@ Void plaYUVerApp::update()
         m_pcCurrentVideoSubWindow = qobject_cast<VideoSubWindow*>( m_pcCurrentSubWindow );
       }
 
-      setWindowTitle( QApplication::applicationName() + " - " + m_pcCurrentSubWindow->getWindowName() );
-
       if( m_pcCurrentVideoSubWindow )
       {
         if( !m_pcWindowHandle->findSubWindow( m_pcCurrentVideoSubWindow->getRefSubWindow() ) )
@@ -527,15 +523,21 @@ Void plaYUVerApp::updateMenus()
 {
   Bool hasSubWindow = ( m_pcWindowHandle->activeSubWindow() != 0 );
 
+  Bool hasVideoStreamSubWindow = false;
+  if( m_pcCurrentSubWindow )
+    if( m_pcCurrentSubWindow->getCategory() & SubWindowHandle::VIDEO_STREAM_SUBWINDOW )
+      hasVideoStreamSubWindow = true;
+
   m_arrayMenu[RECENT_MENU]->setEnabled( m_aRecentFileStreamInfo.size() > 0 ? true : false );
 
   m_arrayActions[SAVE_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[FORMAT_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSE_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[RELOAD_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[RELOAD_ALL_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[LOAD_ALL_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSEALL_ACT]->setEnabled( hasSubWindow );
+
+  m_arrayActions[FORMAT_ACT]->setEnabled( hasVideoStreamSubWindow );
+  m_arrayActions[RELOAD_ACT]->setEnabled( hasVideoStreamSubWindow );
+  m_arrayActions[RELOAD_ALL_ACT]->setEnabled( hasVideoStreamSubWindow );
+  m_arrayActions[LOAD_ALL_ACT]->setEnabled( hasVideoStreamSubWindow );
 
   m_arrayActions[ZOOM_IN_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[ZOOM_OUT_ACT]->setEnabled( hasSubWindow );

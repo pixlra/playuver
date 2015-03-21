@@ -438,7 +438,7 @@ Void PlaYUVerFrame::getCvMat( Void** ppCvFrame )
   switch( m_pcPelFormat->numberChannels )
   {
   case 3:
-    cvType = CV_8UC3;
+    cvType = CV_8UC4;
     break;
   case 1:
     cvType = CV_8UC1;

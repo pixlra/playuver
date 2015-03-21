@@ -64,19 +64,18 @@ Void QualityHandle::createActions()
   m_arrayActions.resize( TOTAL_ACT );
   m_arrayActions[SELECT_REF_ACT] = new QAction( "Select Reference", this );
   connect( m_arrayActions[SELECT_REF_ACT], SIGNAL( triggered() ), this, SLOT( slotSelectReference() ) );
-  m_arrayActions[CREATE_PLOT] = new QAction( "CREATE_PLOT", this );
-  connect( m_arrayActions[CREATE_PLOT], SIGNAL( triggered() ), this, SLOT( slotCreatePlot() ) );
+  m_arrayActions[PLOT_QUALITY] = new QAction( "CREATE_PLOT", this );
+  connect( m_arrayActions[PLOT_QUALITY], SIGNAL( triggered() ), this, SLOT( slotCreatePlot() ) );
 }
 
 QMenu* QualityHandle::createMenu()
 {
   m_pcMenuQuality = new QMenu( "Quality", this );
-  QMenu* metricsSubMenu = m_pcMenuQuality->addMenu( "Quality Metrics" );
-  metricsSubMenu->addActions( m_actionGroupQualityMetric->actions() );
-  //m_pcMenuQuality->addActions( m_actionGroupQualityMetric->actions() );
-  //m_pcMenuQuality->addSeparator();
+  m_pcSubMenuQualityMetrics = m_pcMenuQuality->addMenu( "Quality Metrics" );
+  m_pcSubMenuQualityMetrics->addActions( m_actionGroupQualityMetric->actions() );
   m_pcMenuQuality->addAction( m_arrayActions[SELECT_REF_ACT] );
-  //m_pcMenuQuality->addAction( m_arrayActions[CREATE_PLOT] );
+  m_pcMenuQuality->addSeparator();
+  //m_pcMenuQuality->addAction( m_arrayActions[PLOT_QUALITY] );
   return m_pcMenuQuality;
 }
 
@@ -97,7 +96,14 @@ QDockWidget* QualityHandle::createDock()
 
 Void QualityHandle::updateMenus()
 {
+  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
+  Bool hasSubWindow = pcSubWindow ? true : false;
 
+  m_pcSubMenuQualityMetrics->setEnabled( hasSubWindow );
+  m_arrayActions[SELECT_REF_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[PLOT_QUALITY]->setEnabled( hasSubWindow );
+
+  m_pcQualityHandleSideBar->updateSideBar( hasSubWindow );
 }
 
 Void QualityHandle::readSettings()

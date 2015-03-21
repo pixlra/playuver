@@ -4,8 +4,6 @@
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../ )
 
-INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIRS} )
-
 set(plaYUver_Lib_SRCS
     # Frame
     PlaYUVerFrame.cpp
@@ -13,12 +11,10 @@ set(plaYUver_Lib_SRCS
     PlaYUVerFrameStats.cpp
     # Stream
     PlaYUVerStream.cpp
+    # Command Parser
+    PlaYUVerCmdParser.cpp
+    ProgramOptions.cpp
 )
-
-IF( USE_BOOST )
-  # Command Line Parser
-  LIST( APPEND plaYUver_Lib_SRCS PlaYUVerCmdParser.cpp )
-ENDIF()
 
 IF( USE_FFMPEG )
   LIST( APPEND plaYUver_Lib_SRCS LibAvContextHandle.cpp )

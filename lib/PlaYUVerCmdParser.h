@@ -41,6 +41,7 @@ private:
   Options m_cParserOptions;
 
   Bool checkListingOpts();
+  Void listModules();
 };
 
 }  // NAMESPACE

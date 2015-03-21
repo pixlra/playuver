@@ -62,10 +62,10 @@ Bool PlaYUVerCmdParser::parse( Int argc, Char *argv[] )
     // m_cParserOptions.setDefaults();
     const std::list<const Char*>& argv_unhandled = scanArgv( m_cParserOptions, argc, ( const Char** )argv );
 
-    for( std::list<const Char*>::const_iterator it = argv_unhandled.begin(); it != argv_unhandled.end(); it++ )
-    {
-      fprintf( stderr, "Unhandled argument ignored: `%s'\n", *it );
-    }
+//    for( std::list<const Char*>::const_iterator it = argv_unhandled.begin(); it != argv_unhandled.end(); it++ )
+//    {
+//      fprintf( stderr, "Unhandled argument ignored: `%s'\n", *it );
+//    }
 
     if( checkListingOpts() )
     {
@@ -90,12 +90,6 @@ Bool PlaYUVerCmdParser::checkListingOpts()
 {
   Bool bRet = false;
 
-  if( m_cParserOptions["help"]->count() )
-  {
-    doHelp( std::cout, m_cParserOptions );
-    bRet |= true;
-  }
-
   if( m_cParserOptions["version"]->count() )
   {
     std::cout << "PlaYUVer version "
@@ -112,6 +106,17 @@ Bool PlaYUVerCmdParser::checkListingOpts()
     }
     bRet |= true;
   }
+
+  if( Opts()["quality_metrics"]->count() )
+  {
+    printf( "PlaYUVer supported quality metrics: \n" );
+    for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
+    {
+      printf( "   %s\n", PlaYUVerFrame::supportedQualityMetricsList()[i].c_str() );
+    }
+    bRet |= true;
+  }
+
   return bRet;
 }
 

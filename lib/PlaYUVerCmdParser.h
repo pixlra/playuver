@@ -25,7 +25,6 @@
 #include "PlaYUVerDefs.h"
 #include "ProgramOptions.h"
 
-
 namespace plaYUVer
 {
 
@@ -35,10 +34,19 @@ public:
   PlaYUVerCmdParser();
   ~PlaYUVerCmdParser();
 
-  Bool parse( Int argc, Char *argv[] );
+  Void config( Int argc, Char *argv[] )
+  {
+    m_iArgc = argc;
+    m_ppArgv = argv;
+  }
+  Bool parse();
+  std::list<const Char*>& getNoArgs();
   Options& Opts();
 private:
+  Int m_iArgc;
+  Char** m_ppArgv;
   Options m_cParserOptions;
+  std::list<const Char*> m_aUnhandledArgs;
 
   Bool checkListingOpts();
   Void listModules();

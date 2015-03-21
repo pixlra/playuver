@@ -76,7 +76,8 @@ Int CommandLineHandle::parseToolsArgs( Int argc, Char *argv[] )
   ( "quality", m_strQualityMetric, "select a quality metric" ) /**/
   ( "module", m_strModule, "select a module (use internal name)" );
 
-  if( !parse( argc, argv ) )
+  config( argc, argv );
+  if( !parse() )
   {
     iRet = 1;
   }

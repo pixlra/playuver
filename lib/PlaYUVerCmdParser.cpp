@@ -55,12 +55,17 @@ Options& PlaYUVerCmdParser::Opts()
   return m_cParserOptions;
 }
 
-Bool PlaYUVerCmdParser::parse( Int argc, Char *argv[] )
+std::list<const Char*>& PlaYUVerCmdParser::getNoArgs()
+{
+  return m_aUnhandledArgs;
+}
+
+Bool PlaYUVerCmdParser::parse()
 {
   try
   {
     // m_cParserOptions.setDefaults();
-    const std::list<const Char*>& argv_unhandled = scanArgv( m_cParserOptions, argc, ( const Char** )argv );
+    m_aUnhandledArgs = scanArgv( m_cParserOptions, m_iArgc, ( const Char** )m_ppArgv );
 
 //    for( std::list<const Char*>::const_iterator it = argv_unhandled.begin(); it != argv_unhandled.end(); it++ )
 //    {

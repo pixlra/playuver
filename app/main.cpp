@@ -25,7 +25,7 @@
 #include "config.h"
 #include "PlaYUVerAppDefs.h"
 #include <QApplication>
-#include "plaYUVerApp.h"
+#include "PlaYUVerApp.h"
 #include "SubWindowHandle.h"
 #ifdef USE_QTDBUS
 #include "PlaYUVerAppAdaptor.h"

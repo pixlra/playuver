@@ -22,7 +22,7 @@
  * \brief    Handle multiple sub-windows
  */
 
-#include "plaYUVerApp.h"
+#include "PlaYUVerApp.h"
 #include "PlaYUVerSubWindowHandle.h"
 #include "PlaYUVerMdiSubWindow.h"
 #include "SubWindowHandle.h"

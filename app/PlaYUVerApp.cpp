@@ -18,12 +18,12 @@
  */
 
 /**
- * \file     plaYUVerApp.cpp
+ * \file     PlaYUVerApp.cpp
  * \brief    Main definition of the plaYUVerApp app
  */
 
 #include <QtDebug>
-#include "plaYUVerApp.h"
+#include "PlaYUVerApp.h"
 #ifdef USE_FERVOR
 #include "fvupdater.h"
 #endif

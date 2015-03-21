@@ -24,7 +24,7 @@
 
 #include <QDBusAbstractAdaptor>
 #include "PlaYUVerAppAdaptor.h"
-#include "plaYUVerApp.h"
+#include "PlaYUVerApp.h"
 
 namespace plaYUVer
 {

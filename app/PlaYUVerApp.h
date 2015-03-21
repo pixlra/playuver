@@ -18,7 +18,7 @@
  */
 
 /**
- * \file     plaYUVerApp.h
+ * \file     PlaYUVerApp.h
  * \ingroup  PlaYUVerApp
  * \brief    Main definition of the plaYUVerApp app
  *

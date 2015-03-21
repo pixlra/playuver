@@ -18,7 +18,7 @@
  */
 
 /**
- * \file     plaYUVerApp.h
+ * \file     PlaYUVerApp.h
  * \ingroup  PlaYUVerApp
  * \brief    Main definition of the plaYUVerApp app
  *
@@ -55,6 +55,7 @@
 namespace plaYUVer
 {
 
+class PlaYUVerCmdParser;
 class PlaYUVerStream;
 class PlaYUVerSubWindowHandle;
 class VideoHandle;
@@ -68,7 +69,7 @@ Q_OBJECT
 
 public:
   plaYUVerApp();
-  Void parseArgs( Int argc, Char *argv[] );
+  Bool parseArgs( Int argc, Char *argv[] );
   Void loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo = NULL );
 
 protected:
@@ -113,7 +114,7 @@ private Q_SLOTS:
 private:
 
   PlaYUVerAppAdaptor* m_pDBusAdaptor;
-
+  PlaYUVerCmdParser* m_pcCmdParser;
   /**
    * Save the current subwindow for every category
    */

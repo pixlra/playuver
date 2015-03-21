@@ -227,6 +227,7 @@ private:
 class OptionSpecific;
 struct Options
 {
+  Options( const std::string& name = "" );
   ~Options();
 
   OptionSpecific addOptions();
@@ -261,6 +262,7 @@ struct Options
   NamesMap opt_long_map;
   NamesMap opt_short_map;
 
+  std::string opt_name;
 };
 
 /* Class with templated overloaded operator(), for use by Options::addOptions() */

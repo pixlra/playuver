@@ -51,6 +51,11 @@ using namespace std;
 namespace plaYUVer
 {
 
+Options::Options( const std::string& name )
+{
+  opt_name = name;
+}
+
 Options::~Options()
 {
   for( Options::NamesPtrList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )

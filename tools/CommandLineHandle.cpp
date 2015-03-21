@@ -76,7 +76,8 @@ Int CommandLineHandle::parseToolsArgs( Int argc, Char *argv[] )
   ( "quality", m_strQualityMetric, "select a quality metric" ) /**/
   ( "module", m_strModule, "select a module (use internal name)" );
 
-  if( !parse( argc, argv ) )
+  config( argc, argv );
+  if( !parse() )
   {
     iRet = 1;
   }
@@ -86,19 +87,10 @@ Int CommandLineHandle::parseToolsArgs( Int argc, Char *argv[] )
     m_uiLogLevel = RESULT;
   }
 
-  if( Opts()["quality_metrics"]->count() )
+  if( Opts()["help"]->count() )
   {
-    printf( "PlaYUVer supported quality metrics: \n" );
-    for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
-    {
-      printf( "   %s\n", PlaYUVerFrame::supportedQualityMetricsList()[i].c_str() );
-    }
-    iRet = 1;
-  }
-
-  if( Opts()["module_list"]->count() || Opts()["module_list_full"]->count() )
-  {
-    listModules();
+    printf( "Usage: %s modules/quality [options] -input=input_file [--output=output_file]\n", argv[0] );
+    doHelp( std::cout, Opts() );
     iRet = 1;
   }
 

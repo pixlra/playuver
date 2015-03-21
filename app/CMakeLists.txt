@@ -45,7 +45,7 @@ ENDIF()
 set(plaYUVer_App_SRCS
 # Main
     main.cpp
-    plaYUVerApp.cpp
+    PlaYUVerApp.cpp
     PlaYUVerSubWindowHandle.cpp
     PlaYUVerMdiSubWindow.cpp
     SubWindowHandle.cpp

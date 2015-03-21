@@ -18,20 +18,20 @@
  */
 
 /**
- * \file     plaYUVerApp.cpp
+ * \file     PlaYUVerApp.cpp
  * \brief    Main definition of the plaYUVerApp app
  */
 
 #include <QtDebug>
-#include "plaYUVerApp.h"
+#include "PlaYUVerApp.h"
 #ifdef USE_FERVOR
 #include "fvupdater.h"
 #endif
+#include "lib/PlaYUVerCmdParser.h"
 #include "PlaYUVerSubWindowHandle.h"
 #include "VideoHandle.h"
 #include "QualityHandle.h"
 #include "ModulesHandle.h"
-
 #include "DialogSubWindowSelector.h"
 
 #define SYNCHRONISED_ZOON 1
@@ -83,17 +83,47 @@ plaYUVerApp::plaYUVerApp()
   m_pcCurrentVideoSubWindow = NULL;
 }
 
-Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
+Bool plaYUVerApp::parseArgs( Int argc, Char *argv[] )
 {
-  if( argc >= 2 )
+  Bool bRet = false;
+  m_pcCmdParser = new PlaYUVerCmdParser();
+  m_pcCmdParser->config( argc, argv );
+
+  std::vector<std::string> m_apcInputs;
+  std::string strResolution( "" );
+  std::string strPelFmt( "" );
+
+  m_pcCmdParser->Opts().addOptions()/**/
+  ( "input,i", m_apcInputs, "input file" ) /**/
+  ( "size,s", strResolution, "size (WxH)" ) /**/
+  ( "pel_fmt", strPelFmt, "pixel format" );
+
+  if( !m_pcCmdParser->parse() )
   {
-    for( Int i = 1; i < argc; i++ )
-    {
-      loadFile( argv[i] );
-    }
-    m_pcWindowHandle->tileSubWindows();
-    zoomToFitAll();
+    bRet |= true;
   }
+
+  if( m_pcCmdParser->Opts()["help"]->count() )
+  {
+    printf( "Usage: %s [options] input_file[s]\n", argv[0] );
+    doHelp( std::cout, m_pcCmdParser->Opts() );
+    bRet |= true;
+  }
+  if( m_pcCmdParser->Opts()["input"]->count() )
+  {
+    for( UInt i = 1; i < m_apcInputs.size(); i++ )
+    {
+      loadFile( QString::fromStdString( m_apcInputs[i] ) );
+    }
+  }
+  std::list<const Char*>& argv_unhandled = m_pcCmdParser->getNoArgs();
+  for( std::list<const Char*>::const_iterator it = argv_unhandled.begin(); it != argv_unhandled.end(); it++ )
+  {
+    loadFile( QString::fromStdString( *it ) );
+  }
+  m_pcWindowHandle->tileSubWindows();
+  zoomToFitAll();
+  return bRet;
 }
 
 Void plaYUVerApp::about()

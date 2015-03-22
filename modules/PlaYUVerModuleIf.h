@@ -28,6 +28,7 @@
 #include "lib/PlaYUVerDefs.h"
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"
+#include "lib/ProgramOptions.h"
 
 namespace plaYUVer
 {
@@ -83,6 +84,8 @@ public:
   UInt m_uiNumberOfFrames;
   UInt m_uiModuleRequirements;
   Bool m_bApplyWhilePlaying;
+
+  Options m_cModuleOptions;
 
   PlaYUVerModuleIf() {}
   virtual ~PlaYUVerModuleIf() {}

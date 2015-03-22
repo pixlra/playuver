@@ -94,6 +94,7 @@ private:
   std::string m_strModule;
 
   Void listModules();
+  Void listModuleHelp();
 
 };
 

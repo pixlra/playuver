@@ -263,6 +263,8 @@ struct Options
   NamesMap opt_short_map;
 
   std::string opt_name;
+
+  Bool allow_unknow;
 };
 
 /* Class with templated overloaded operator(), for use by Options::addOptions() */

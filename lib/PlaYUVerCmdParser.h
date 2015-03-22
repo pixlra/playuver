@@ -40,6 +40,7 @@ public:
     m_ppArgv = argv;
   }
   Bool parse();
+  Bool parse( Options& opts, Int argc, Char *argv[] );
   std::list<const Char*>& getNoArgs();
   Options& Opts();
 private:

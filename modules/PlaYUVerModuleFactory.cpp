@@ -37,6 +37,7 @@ PlaYUVerModuleFactory::PlaYUVerModuleFactory()
   Register( "FilterComponentChromaU", &FilterComponentChromaU::Create );
   Register( "FilterComponentChromaV", &FilterComponentChromaV::Create );
   Register( "FrameDifference", &FrameDifference::Create );
+  Register( "FrameBinarization", &FrameBinarization::Create );
   Register( "AbsoluteFrameDifference", &AbsoluteFrameDifference::Create );
   Register( "LumaAverage", &LumaAverage::Create );
 #ifdef USE_OPENCV
@@ -59,7 +60,7 @@ PlaYUVerModuleIf *PlaYUVerModuleFactory::CreateModule( const char* moduleName )
 {
   PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
   PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
-  for( ; it != PlaYUVerModuleFactoryMap.end(); ++it)
+  for( ; it != PlaYUVerModuleFactoryMap.end(); ++it )
   {
     if( !strcmp( it->first, moduleName ) )
     {

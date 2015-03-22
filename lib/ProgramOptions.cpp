@@ -54,6 +54,7 @@ namespace plaYUVer
 Options::Options( const std::string& name )
 {
   opt_name = name;
+  allow_unknow = false;
 }
 
 Options::~Options()
@@ -309,6 +310,8 @@ bool storePair( Options& opts, bool allow_long, bool allow_short, const string& 
 
   if( !found )
   {
+    if( !opts.allow_unknow )
+    {
     /* not found */
     cerr << "Unknown option: `"
          << name
@@ -316,6 +319,7 @@ bool storePair( Options& opts, bool allow_long, bool allow_short, const string& 
          << value
          << "')"
          << endl;
+    }
     return false;
   }
 

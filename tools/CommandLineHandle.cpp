@@ -87,13 +87,23 @@ Int CommandLineHandle::parseToolsArgs( Int argc, Char *argv[] )
     m_uiLogLevel = RESULT;
   }
 
-  if( Opts()["help"]->count() )
+  if( Opts()["module"]->count() && Opts()["help"]->count() )
+  {
+    listModuleHelp();
+    iRet = 1;
+  }
+  else if( Opts()["help"]->count() )
   {
     printf( "Usage: %s modules/quality [options] -input=input_file [--output=output_file]\n", argv[0] );
     doHelp( std::cout, Opts() );
     iRet = 1;
   }
 
+  if( Opts()["module_list"]->count() || Opts()["module_list_full"]->count() )
+  {
+    listModules();
+    iRet = 1;
+  }
   return iRet;
 }
 
@@ -151,7 +161,28 @@ Void CommandLineHandle::listModules()
     }
     printf( "\n" );
   }
+}
 
+Void CommandLineHandle::listModuleHelp()
+{
+  std::string moduleName = m_strModule;
+  PlaYUVerModuleIf* pcCurrModuleIf = NULL;
+
+  PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
+  PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
+  for( UInt i = 0; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ )
+  {
+    if( strcmp( it->first, moduleName.c_str() ) == 0 )
+    {
+      pcCurrModuleIf = it->second();
+      break;
+    }
+  }
+  if( pcCurrModuleIf )
+  {
+    printf( "Usage: playuverTools --module=%s options:\n", it->first );
+    doHelp( std::cout, pcCurrModuleIf->m_cModuleOptions );
+  }
 }
 
 }  // NAMESPACE

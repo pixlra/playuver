@@ -28,6 +28,7 @@
 #include "VideoHandle.h"
 #include "PlaYUVerModuleFactory.h"
 #include "DialogSubWindowSelector.h"
+#include "ModulesHandleOptDialog.h"
 
 namespace plaYUVer
 {
@@ -301,6 +302,9 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   {
     pcCurrModuleIf->m_pcSubWindow[i] = videoSubWindowList.at( i );
   }
+
+  ModulesHandleOptDialog moduleOptDialog( m_pcParent, pcCurrModuleIf );
+  moduleOptDialog.runConfiguration();
 
   if( pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_PROCESSING_MODULE )
   {

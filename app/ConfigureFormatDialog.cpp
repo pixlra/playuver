@@ -243,4 +243,4 @@ void ConfigureFormatDialog::StandardResolutionSelection()
   m_spinBoxheight->setValue( currSize.height() );
 }
 
-}  // Namespace SCode
+}  // NAMESPACE

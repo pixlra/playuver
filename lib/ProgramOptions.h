@@ -106,7 +106,6 @@ struct OptionBase
   virtual void parse( const std::string& arg ) = 0;
   /* set the argument to the default value */
   //virtual void setDefault() = 0;
-
   int count()
   {
     return arg_count;
@@ -143,9 +142,9 @@ struct FlagOpt: public OptionBase
 
 /** Type specific option storage */
 template<typename T>
-struct Option: public OptionBase
+struct StandardOpt: public OptionBase
 {
-  Option( const std::string& name, T& storage, const std::string& desc ) :
+  StandardOpt( const std::string& name, T& storage, const std::string& desc ) :
           OptionBase( name, desc ),
           opt_storage( storage )
   {
@@ -163,7 +162,7 @@ struct Option: public OptionBase
 
 /* Generic parsing */
 template<typename T>
-inline void Option<T>::parse( const std::string& arg )
+inline void StandardOpt<T>::parse( const std::string& arg )
 {
   std::istringstream arg_ss( arg, std::istringstream::in );
   arg_ss.exceptions( std::ios::failbit );
@@ -181,7 +180,7 @@ inline void Option<T>::parse( const std::string& arg )
 /* string parsing is specialized -- copy the whole string, not just the
  * first word */
 template<>
-inline void Option<std::string>::parse( const std::string& arg )
+inline void StandardOpt<std::string>::parse( const std::string& arg )
 {
   opt_storage = arg;
   arg_count++;
@@ -190,7 +189,7 @@ inline void Option<std::string>::parse( const std::string& arg )
 /* string parsing is specialized -- copy the whole string, not just the
  * first word */
 template<>
-inline void Option<std::vector<std::string> >::parse( const std::string& arg )
+inline void StandardOpt<std::vector<std::string> >::parse( const std::string& arg )
 {
   opt_storage.push_back( arg );
   arg_count++;
@@ -225,22 +224,18 @@ private:
 };
 
 class OptionSpecific;
-struct Options
+class Options
 {
-  Options( const std::string& name = "" );
-  ~Options();
+public:
 
-  OptionSpecific addOptions();
-  Void setDefaults();
-
-  struct Names
+  struct Option
   {
-    Names() :
+    Option() :
             opt( 0 )
     {
     }
     ;
-    ~Names()
+    ~Option()
     {
       if( opt )
         delete opt;
@@ -249,18 +244,28 @@ struct Options
     std::list<std::string> opt_short;
     OptionBase* opt;
   };
+  typedef std::list<Option*> OptionsList;
+  OptionsList opt_list;
+
+  Options( const std::string& name = "" );
+  ~Options();
+
+  OptionSpecific addOptions();
+  Void setDefaults();
 
   OptionBase* operator[]( const std::string& optName );
   OptionBase* getOption( const std::string& optName );
 
+  OptionsList& getOptionList()
+  {
+    return opt_list;
+  }
+
   void addOption( OptionBase *opt );
 
-  typedef std::list<Names*> NamesPtrList;
-  NamesPtrList opt_list;
-
-  typedef std::map<std::string, NamesPtrList> NamesMap;
-  NamesMap opt_long_map;
-  NamesMap opt_short_map;
+  typedef std::map<std::string, OptionsList> OptionMap;
+  OptionMap opt_long_map;
+  OptionMap opt_short_map;
 
   std::string opt_name;
 
@@ -286,23 +291,9 @@ public:
   OptionSpecific&
   operator()( const std::string& name, T& storage, const std::string& desc )
   {
-    parent.addOption( new Option<T>( name, storage, desc ) );
+    parent.addOption( new StandardOpt<T>( name, storage, desc ) );
     return *this;
   }
-
-//  /**
-//   * Add option described by name to the parent Options list,
-//   *   with storage for the option's value
-//   *   with default_val as the default value
-//   *   with desc as an optional help description
-//   */
-//  template<typename T>
-//  OptionSpecific&
-//  operator()( const std::string& name, T& storage, const std::string& desc )
-//  {
-//    parent.addOption( new Option<T>( name, storage, desc ) );
-//    return *this;
-//  }
 
   /**
    * Add option described by name to the parent Options list,

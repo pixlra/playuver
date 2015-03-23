@@ -59,7 +59,7 @@ Options::Options( const std::string& name )
 
 Options::~Options()
 {
-  for( Options::NamesPtrList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
+  for( Options::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
   {
     delete *it;
   }
@@ -72,12 +72,12 @@ OptionBase* Options::operator[]( const std::string& optName )
 
 OptionBase* Options::getOption( const std::string& optName )
 {
-  Options::NamesMap::iterator opt_it;
+  Options::OptionMap::iterator opt_it;
   opt_it = opt_short_map.find( optName );
   if( opt_it != opt_short_map.end() )
   {
-    NamesPtrList opt_list = ( *opt_it ).second;
-    for( Options::NamesPtrList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
+    OptionsList opt_list = ( *opt_it ).second;
+    for( Options::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
     {
       return ( *it )->opt;
     }
@@ -85,8 +85,8 @@ OptionBase* Options::getOption( const std::string& optName )
   opt_it = opt_long_map.find( optName );
   if( opt_it != opt_long_map.end() )
   {
-    NamesPtrList opt_list = ( *opt_it ).second;
-    for( Options::NamesPtrList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
+    OptionsList opt_list = ( *opt_it ).second;
+    for( Options::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
     {
       return ( *it )->opt;
     }
@@ -96,7 +96,7 @@ OptionBase* Options::getOption( const std::string& optName )
 
 void Options::addOption( OptionBase *opt )
 {
-  Names* names = new Names();
+  Option* names = new Option();
   names->opt = opt;
   string& opt_string = opt->opt_string;
 
@@ -136,17 +136,17 @@ OptionSpecific Options::addOptions()
  * default value */
 Void Options::setDefaults()
 {
-//  for( Options::NamesPtrList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
+//  for( Options::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
 //  {
 //    ( *it )->opt->setDefault();
 //  }
 }
 
-static void setOptions( Options::NamesPtrList& opt_list, const string& value )
+static void setOptions( Options::OptionsList& opt_list, const string& value )
 {
   /* multiple options may be registered for the same name:
    *   allow each to parse value */
-  for( Options::NamesPtrList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
+  for( Options::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
   {
     ( *it )->opt->parse( value );
   }
@@ -158,7 +158,7 @@ static const char spaces[41] = "                                        ";
  * using the formatting: "-x, --long",
  * if a short/long option isn't specified, it is not printed
  */
-static void doHelpOpt( ostream& out, const Options::Names& entry, unsigned pad_short = 0 )
+static void doHelpOpt( ostream& out, const Options::Option& entry, unsigned pad_short = 0 )
 {
   pad_short = min( pad_short, 8u );
 
@@ -192,7 +192,7 @@ void doHelp( ostream& out, Options& opts, unsigned columns )
   const unsigned pad_short = 3;
   /* first pass: work out the longest option name */
   unsigned max_width = 0;
-  for( Options::NamesPtrList::iterator it = opts.opt_list.begin(); it != opts.opt_list.end(); it++ )
+  for( Options::OptionsList::iterator it = opts.opt_list.begin(); it != opts.opt_list.end(); it++ )
   {
     ostringstream line( ios_base::out );
     doHelpOpt( line, **it, pad_short );
@@ -207,7 +207,7 @@ void doHelp( ostream& out, Options& opts, unsigned columns )
    *  - if the option text is longer than opt_width, place the help
    *    text at opt_width on the next line.
    */
-  for( Options::NamesPtrList::iterator it = opts.opt_list.begin(); it != opts.opt_list.end(); it++ )
+  for( Options::OptionsList::iterator it = opts.opt_list.begin(); it != opts.opt_list.end(); it++ )
   {
     ostringstream line( ios_base::out );
     line << "  ";
@@ -288,7 +288,7 @@ void doHelp( ostream& out, Options& opts, unsigned columns )
 bool storePair( Options& opts, bool allow_long, bool allow_short, const string& name, const string& value )
 {
   bool found = false;
-  Options::NamesMap::iterator opt_it;
+  Options::OptionMap::iterator opt_it;
   if( allow_long )
   {
     opt_it = opts.opt_long_map.find( name );
@@ -310,16 +310,16 @@ bool storePair( Options& opts, bool allow_long, bool allow_short, const string& 
 
   if( !found )
   {
-    if( !opts.allow_unknow )
-    {
-    /* not found */
-    cerr << "Unknown option: `"
-         << name
-         << "' (value:`"
-         << value
-         << "')"
-         << endl;
-    }
+//    if( !opts.allow_unknow )
+//    {
+//    /* not found */
+//    cerr << "Unknown option: `"
+//         << name
+//         << "' (value:`"
+//         << value
+//         << "')"
+//         << endl;
+//    }
     return false;
   }
 
@@ -535,7 +535,7 @@ void scanFile( Options& opts, istream& in )
  * default value */
 void setDefaults( Options& opts )
 {
-//  for( Options::NamesPtrList::iterator it = opts.opt_list.begin(); it != opts.opt_list.end(); it++ )
+//  for( Options::OptionsList::iterator it = opts.opt_list.begin(); it != opts.opt_list.end(); it++ )
 //  {
 //    ( *it )->opt->setDefault();
 //  }

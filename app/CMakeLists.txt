@@ -62,6 +62,7 @@ set(plaYUVer_App_SRCS
     external/qcustomplot.cpp
 # Module Plugins
     ModulesHandle.cpp
+    ModulesHandleOptDialog.cpp
     ModuleHandleDock.cpp
     PlaYUVerAppModuleIf.cpp
     GridManager.cpp

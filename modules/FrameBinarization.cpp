@@ -35,8 +35,7 @@ FrameBinarization::FrameBinarization()
   m_pchModuleName = "FrameBinarization";
   m_pchModuleTooltip = "Binarize frame";
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
-  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
-  m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;
+  m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions()/**/
   ( "threshold", m_uiThreshold, "Threshold level for binarization (0-255) [128]" );

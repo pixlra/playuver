@@ -303,9 +303,11 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     pcCurrModuleIf->m_pcSubWindow[i] = videoSubWindowList.at( i );
   }
 
-  ModulesHandleOptDialog moduleOptDialog( m_pcParent, pcCurrModuleIf );
-  moduleOptDialog.runConfiguration();
-
+  if( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_OPTIONS )
+  {
+    ModulesHandleOptDialog moduleOptDialog( m_pcParent, pcCurrModuleIf );
+    moduleOptDialog.runConfiguration();
+  }
   if( pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_PROCESSING_MODULE )
   {
     if( ( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
@@ -326,18 +328,15 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   else if( pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
   {
     pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
-    if( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_SIDEBAR )
-    {
-      pcCurrModuleIf->m_pcModuleDock = new ModuleHandleDock( m_pcParent, pcCurrModuleIf );
-      QString titleDockWidget;
-      titleDockWidget.append( pcCurrModuleIf->m_pcModule->m_pchModuleName );
-      titleDockWidget.append( " Information" );
-      pcCurrModuleIf->m_pcDockWidget = new QDockWidget( titleDockWidget, m_pcParent );
-      pcCurrModuleIf->m_pcDockWidget->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
-      pcCurrModuleIf->m_pcDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-      pcCurrModuleIf->m_pcDockWidget->setWidget( pcCurrModuleIf->m_pcModuleDock );
-      qobject_cast<QMainWindow*>( m_pcParent )->addDockWidget( Qt::RightDockWidgetArea, pcCurrModuleIf->m_pcDockWidget );
-    }
+    pcCurrModuleIf->m_pcModuleDock = new ModuleHandleDock( m_pcParent, pcCurrModuleIf );
+    QString titleDockWidget;
+    titleDockWidget.append( pcCurrModuleIf->m_pcModule->m_pchModuleName );
+    titleDockWidget.append( " Information" );
+    pcCurrModuleIf->m_pcDockWidget = new QDockWidget( titleDockWidget, m_pcParent );
+    pcCurrModuleIf->m_pcDockWidget->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
+    pcCurrModuleIf->m_pcDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+    pcCurrModuleIf->m_pcDockWidget->setWidget( pcCurrModuleIf->m_pcModuleDock );
+    qobject_cast<QMainWindow*>( m_pcParent )->addDockWidget( Qt::RightDockWidgetArea, pcCurrModuleIf->m_pcDockWidget );
   }
 
   // Create Module
@@ -431,7 +430,7 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isP
 {
   Bool bRet = false;
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  if( !isPlaying || ( isPlaying && pcCurrModuleIf->m_pcModule->m_bApplyWhilePlaying ) )
+  if( !( isPlaying && ( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_SKIP_WHILE_PLAY ) ) )
   {
 #ifdef PLAYUVER_THREADED_MODULES
     if( !disableThreads )

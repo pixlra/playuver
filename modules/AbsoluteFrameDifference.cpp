@@ -37,8 +37,6 @@ AbsoluteFrameDifference::AbsoluteFrameDifference()
   m_pchModuleTooltip = "Measure the absolute difference between two images (Y plane), e. g., abs( Y1 - Y2 )";
   m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
-  m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;
-
   m_pcFrameDifference = NULL;
 }
 

@@ -66,7 +66,6 @@ FilterComponentLuma::FilterComponentLuma()
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;       // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
   m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;     // Module requirements (check PlaYUVerModulesIf.h).
                                                         // Several requirements should be "or" between each others.
-  m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;           // Apply module while playing
 }
 
 Void FilterComponentLuma::create( PlaYUVerFrame* InputFrame )
@@ -88,7 +87,6 @@ FilterComponentChromaU::FilterComponentChromaU()
   m_pchModuleTooltip = "Filter U matrix of YUV frame";
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
   m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
-  m_bApplyWhilePlaying = !APPLY_WHILE_PLAYING;
 }
 
 Void FilterComponentChromaU::create( PlaYUVerFrame* InputFrame )
@@ -110,7 +108,6 @@ FilterComponentChromaV::FilterComponentChromaV()
   m_pchModuleTooltip = "Filter V matrix of YUV frame";
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
   m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
-  m_bApplyWhilePlaying = !APPLY_WHILE_PLAYING;
 }
 
 Void FilterComponentChromaV::create( PlaYUVerFrame* InputFrame )

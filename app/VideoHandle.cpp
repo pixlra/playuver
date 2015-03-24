@@ -232,19 +232,19 @@ Void VideoHandle::update()
       total_frame_num = getMaxFrameNumber();
       resolution.append( QString( "@%1" ).arg( pcStream->getFrameRate() ) );
     }
-    else
-    {
-      m_pcFrameNumInfo->setCurrFrameNum( 0 );
-    }
 
     if( pcFrame )
+    {
       m_pcResolutionLabel->setText( resolution );
+    }
 
     m_pcFramePropertiesSideBar->setData( pcFrame, m_pcCurrentVideoSubWindow->isPlaying() );
 
-    m_pcFrameSlider->setValue( frame_num );
-    m_pcFrameSlider->setMaximum( total_frame_num - 1 );
     m_pcFrameNumInfo->setTotalFrameNum( total_frame_num );
+    m_pcFrameSlider->setMaximum( total_frame_num - 1 );
+
+    m_pcFrameNumInfo->setCurrFrameNum( frame_num );
+    m_pcFrameSlider->setValue( frame_num );
 
     if( m_pcCurrentVideoSubWindow->isPlaying() )
       m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPause ) );

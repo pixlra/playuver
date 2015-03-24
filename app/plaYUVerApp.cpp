@@ -39,7 +39,10 @@
 namespace plaYUVer
 {
 
-plaYUVerApp::plaYUVerApp()
+plaYUVerApp::plaYUVerApp() :
+        m_pcCurrentSubWindow( NULL ),
+        m_pcCurrentVideoSubWindow( NULL ),
+        m_pcAboutDialog( NULL )
 {
 
   setWindowModality( Qt::ApplicationModal );
@@ -78,9 +81,6 @@ plaYUVerApp::plaYUVerApp()
   connect( m_appModuleQuality, SIGNAL( changed() ), this, SLOT( update() ) );
   connect( m_appModuleExtensions, SIGNAL( changed() ), this, SLOT( update() ) );
 
-  m_pcAboutDialog = NULL;
-  m_pcCurrentSubWindow = NULL;
-  m_pcCurrentVideoSubWindow = NULL;
 }
 
 Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )

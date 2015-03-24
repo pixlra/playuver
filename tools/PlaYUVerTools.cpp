@@ -180,8 +180,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
 
     m_pcCurrModuleIf->create( m_apcInputStreams[0]->getCurrFrame() );
 
-    m_pcCurrModuleIf->m_cModuleOptions.allow_unknow = true;
-    scanArgv( m_pcCurrModuleIf->m_cModuleOptions, argc, ( const Char** )argv );
+    m_pcCurrModuleIf->m_cModuleOptions.scanArgv( argc, ( const Char** )argv );
 
     if( m_pcCurrModuleIf->m_iModuleType == FRAME_PROCESSING_MODULE )
     {

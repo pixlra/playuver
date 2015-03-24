@@ -74,17 +74,6 @@ struct ParseFailure: public std::exception
   }
 };
 
-void doHelp( std::ostream& out, Options& opts, unsigned columns = 80 );
-unsigned parseGNU( Options& opts, unsigned argc, const char* argv[] );
-unsigned parseSHORT( Options& opts, unsigned argc, const char* argv[] );
-std::list<const char*> scanArgv( Options& opts, unsigned argc, const char* argv[] );
-void scanLine( Options& opts, std::string& line );
-void scanFile( Options& opts, std::istream& in );
-void setDefaults( Options& opts );
-void setDefaults( Options* opts );
-void parseConfigFile( Options& opts, const std::string& filename );
-bool storePair( Options& opts, const std::string& name, const std::string& value );
-
 /** OptionBase: Virtual base class for storing information relating to a
  * specific option This base class describes common elements.  Type specific
  * information should be stored in a derived class. */
@@ -245,10 +234,13 @@ public:
     OptionBase* opt;
   };
   typedef std::list<Option*> OptionsList;
-  OptionsList opt_list;
 
   Options( const std::string& name = "" );
   ~Options();
+
+  std::list<const char*> scanArgv( unsigned argc, const char* argv[] );
+  Void scanArgs( std::vector<std::string> args_array);
+  Void doHelp( std::ostream& out, unsigned columns = 80 );
 
   OptionSpecific addOptions();
   Void setDefaults();
@@ -263,13 +255,22 @@ public:
 
   void addOption( OptionBase *opt );
 
+private:
+
   typedef std::map<std::string, OptionsList> OptionMap;
   OptionMap opt_long_map;
   OptionMap opt_short_map;
 
-  std::string opt_name;
+  OptionsList opt_list;
 
-  Bool allow_unknow;
+  std::string m_cOptionGroupName;
+  Bool m_bAllowUnkonw;
+
+  Bool storePair( Bool allow_long, Bool allow_short, const std::string& name, const std::string& value );
+  Bool storePair( const std::string& name, const std::string& value );
+  UInt parseLONG( unsigned argc, const char* argv[] );
+  UInt parseLONG( std::string arg );
+  unsigned parseSHORT( unsigned argc, const char* argv[] );
 };
 
 /* Class with templated overloaded operator(), for use by Options::addOptions() */

@@ -39,33 +39,35 @@ public:
   OpionConfiguration( QWidget *parent, OptionBase* option ) :
           QWidget( parent )
   {
-    m_cName = QString::fromStdString( option->opt_string );
+    m_cName = option->opt_string;
     m_pcDescription = new QLabel( this );
     m_pcDescription->setText( QString::fromStdString( option->opt_desc ) );
     m_pcValue = new QLineEdit( this );
+    m_pcValue->setMinimumWidth( 40 );
+    m_pcValue->setMaximumWidth( 65 );
     QHBoxLayout* layout = new QHBoxLayout( this );
-    layout->addWidget( m_pcDescription );
-    layout->addWidget( m_pcValue );
+    layout->addWidget( m_pcDescription, Qt::AlignLeft );
+    layout->addWidget( m_pcValue, Qt::AlignRight );
   }
-  QString getValue()
+  const QString getValue() const
   {
     return m_pcValue->text();
   }
-  QString& getName()
+  const std::string& getName()
   {
     return m_cName;
   }
 private:
   QLineEdit* m_pcValue;
   QLabel* m_pcDescription;
-  QString m_cName;
+  std::string m_cName;
 };
 
 ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget *parent, PlaYUVerAppModuleIf *pcCurrModuleIf ) :
         QDialog( parent ),
         m_pcCurrModuleIf( pcCurrModuleIf )
 {
-  resize( 300, 10 );
+  resize( 400, 10 );
   setWindowTitle( "Select module parameters" );
   setWindowIcon( QIcon( ":/images/configureformat.png" ) );
 
@@ -98,23 +100,26 @@ Int ModulesHandleOptDialog::runConfiguration()
   {
     return QDialog::Rejected;
   }
-  QString optionString( "" );
+
+  std::vector<std::string> argsArray;
+  std::string optionString;
   QString valueString( "" );
-  Int argsCount = 0;
+
   for( Int i = 0; i < m_apcOptionList.size(); i++ )
   {
     valueString = m_apcOptionList.at( i )->getValue();
     if( !valueString.isEmpty() )
     {
-      optionString.append( QString( "--%1=%2" ).arg( m_apcOptionList.at( i )->getName() ).arg( valueString ) );
-      argsCount++;
+      optionString.append( "--" );
+      optionString.append( m_apcOptionList.at( i )->getName() );
+      optionString.append( "=" );
+      optionString.append( valueString.toStdString() );
+      argsArray.push_back( optionString );
     }
   }
-  if( argsCount > 0 )
+  if( argsArray.size() > 0 )
   {
-    std::string optionStdString = optionString.toStdString();
-    scanLine( m_pcCurrModuleIf->m_pcModule->m_cModuleOptions, optionStdString );
-    qDebug( ) << optionString;
+    m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.scanArgs( argsArray );
   }
   return QDialog::Accepted;
 }

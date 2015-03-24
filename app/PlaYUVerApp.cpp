@@ -106,7 +106,7 @@ Bool plaYUVerApp::parseArgs( Int argc, Char *argv[] )
   if( m_pcCmdParser->Opts()["help"]->count() )
   {
     printf( "Usage: %s [options] input_file[s]\n", argv[0] );
-    doHelp( std::cout, m_pcCmdParser->Opts() );
+    m_pcCmdParser->Opts().doHelp( std::cout );
     bRet |= true;
   }
   if( m_pcCmdParser->Opts()["input"]->count() )

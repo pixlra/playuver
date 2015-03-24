@@ -95,7 +95,7 @@ Int CommandLineHandle::parseToolsArgs( Int argc, Char *argv[] )
   else if( Opts()["help"]->count() )
   {
     printf( "Usage: %s modules/quality [options] -input=input_file [--output=output_file]\n", argv[0] );
-    doHelp( std::cout, Opts() );
+    Opts().doHelp( std::cout );
     iRet = 1;
   }
 
@@ -181,7 +181,7 @@ Void CommandLineHandle::listModuleHelp()
   if( pcCurrModuleIf )
   {
     printf( "Usage: playuverTools --module=%s options:\n", it->first );
-    doHelp( std::cout, pcCurrModuleIf->m_cModuleOptions );
+    pcCurrModuleIf->m_cModuleOptions.doHelp( std::cout );
   }
 }
 

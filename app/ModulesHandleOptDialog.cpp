@@ -36,34 +36,28 @@ namespace plaYUVer
 class OpionConfiguration: public QWidget
 {
 public:
-  OpionConfiguration( QWidget *parent, const QString& optName ) :
-          QWidget( parent ),
-          m_cName( optName )
+  OpionConfiguration( QWidget *parent, OptionBase* option ) :
+          QWidget( parent )
   {
-    m_pcCheckBox = new QCheckBox( this );
-    m_pcCheckBox->setText( optName );
-    m_pcSpinBox = new QSpinBox( this );
+    m_cName = QString::fromStdString( option->opt_string );
+    m_pcDescription = new QLabel( this );
+    m_pcDescription->setText( QString::fromStdString( option->opt_desc ) );
+    m_pcValue = new QLineEdit( this );
     QHBoxLayout* layout = new QHBoxLayout( this );
-    layout->addWidget( m_pcCheckBox );
-    layout->addWidget( m_pcSpinBox );
-    m_pcSpinBox->setMaximum( 999 );
+    layout->addWidget( m_pcDescription );
+    layout->addWidget( m_pcValue );
   }
-
-  Bool getChecked()
+  QString getValue()
   {
-    return m_pcCheckBox->checkState() == Qt::Checked;
-  }
-  Int getValue()
-  {
-    return m_pcSpinBox->value();
+    return m_pcValue->text();
   }
   QString& getName()
   {
     return m_cName;
   }
 private:
-  QCheckBox* m_pcCheckBox;
-  QSpinBox* m_pcSpinBox;
+  QLineEdit* m_pcValue;
+  QLabel* m_pcDescription;
   QString m_cName;
 };
 
@@ -72,7 +66,7 @@ ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget *parent, PlaYUVerAppModu
         m_pcCurrModuleIf( pcCurrModuleIf )
 {
   resize( 300, 10 );
-  setWindowTitle( "Configure Resolution" );
+  setWindowTitle( "Select module parameters" );
   setWindowIcon( QIcon( ":/images/configureformat.png" ) );
 
   const Options::OptionsList& moduleOptions = m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.getOptionList();
@@ -82,7 +76,7 @@ ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget *parent, PlaYUVerAppModu
   OpionConfiguration* pcOption;
   for( Options::OptionsList::const_iterator it = moduleOptions.begin(); it != moduleOptions.end(); ++it )
   {
-    pcOption = new OpionConfiguration( this, QString::fromStdString( ( *it )->opt->opt_string ) );
+    pcOption = new OpionConfiguration( this, ( *it )->opt );
     m_apcOptionList.append( pcOption );
     mainLayout->addWidget( pcOption );
   }
@@ -105,12 +99,14 @@ Int ModulesHandleOptDialog::runConfiguration()
     return QDialog::Rejected;
   }
   QString optionString( "" );
+  QString valueString( "" );
   Int argsCount = 0;
   for( Int i = 0; i < m_apcOptionList.size(); i++ )
   {
-    if( m_apcOptionList.at( i )->getChecked() )
+    valueString = m_apcOptionList.at( i )->getValue();
+    if( !valueString.isEmpty() )
     {
-      optionString.append( QString( "--%1=%2" ).arg( m_apcOptionList.at( i )->getName() ).arg( m_apcOptionList.at( i )->getValue() ) );
+      optionString.append( QString( "--%1=%2" ).arg( m_apcOptionList.at( i )->getName() ).arg( valueString ) );
       argsCount++;
     }
   }

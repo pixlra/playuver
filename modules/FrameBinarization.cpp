@@ -39,7 +39,7 @@ FrameBinarization::FrameBinarization()
   m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;
 
   m_cModuleOptions.addOptions()/**/
-  ( "threshold", m_uiThreshold, "threshold value" );
+  ( "threshold", m_uiThreshold, "Threshold level for binarization (0-255) [128]" );
 
   m_pcBinFrame = NULL;
   m_uiThreshold = 128;

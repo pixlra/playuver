@@ -33,6 +33,7 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
+#include "QFuture"
 #include "QualityMeasurementSidebar.h"
 
 namespace plaYUVer
@@ -61,10 +62,13 @@ public:
 private:
   QWidget* m_pcParet;
   PlaYUVerSubWindowHandle* m_pcMainWindowManager;
+
   enum
   {
+    SELECT_CURR_REF_ACT,
     SELECT_REF_ACT,
     PLOT_QUALITY,
+    PLOT_SEVERAL_QUALITY,
     TOTAL_ACT,
   };
   QVector<QAction*> m_arrayActions;
@@ -78,13 +82,18 @@ private:
   QDockWidget* m_pcQualityHandleDock;
   QualityMeasurementSidebar* m_pcQualityHandleSideBar;
 
+  QFuture<Void> m_cMeasurementResult;
+  Void measureQuality( QVector<VideoSubWindow*> apcWindowList );
+
 Q_SIGNALS:
   void changed();
 
 private Q_SLOTS:
   void slotQualityMetricChanged( int );
+  void slotSelectCurrentAsReference();
   void slotSelectReference();
-  void slotCreatePlot();
+  void slotPlotQualitySingle();
+  void slotPlotQualitySeveral();
 };
 
 }   // NAMESPACE

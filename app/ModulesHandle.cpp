@@ -257,7 +257,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     {
       QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();
       VideoSubWindow *videoSubWindow;
-      QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow();
+      QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
       for( Int j = 0; j < selectedWindows.size(); j++ )
       {
         for( Int i = 0; i < subWindowList.size(); i++ )
@@ -430,6 +430,7 @@ Void ModulesHandle::destroyAllModulesIf()
 Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isPlaying, Bool disableThreads )
 {
   Bool bRet = false;
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   if( !isPlaying || ( isPlaying && pcCurrModuleIf->m_pcModule->m_bApplyWhilePlaying ) )
   {
 #ifdef PLAYUVER_THREADED_MODULES
@@ -448,6 +449,7 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isP
   {
     bRet = true;
   }
+  QApplication::restoreOverrideCursor();
   return bRet;
 }
 

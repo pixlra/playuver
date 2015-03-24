@@ -79,6 +79,11 @@ public:
   /**
    * Show the image at its original size
    */
+  virtual Void refreshSubWindow() = 0;
+
+  /**
+   * Show the image at its original size
+   */
   virtual Void setTool( UInt uiTool ) = 0;
 
   /**
@@ -117,9 +122,26 @@ public:
 
   virtual Bool mayClose();
 
+  /**
+   * Get category of the SubWindow
+   * @return category value based on enum SubWindowCategories
+   * @note This function should be used with enum SubWindowCategories
+   *        with an & operation and it may belong to several categories
+   */
   UInt getCategory()
   {
     return m_uiCategory;
+  }
+
+  /**
+   * Check category of the SubWindow
+   * @param checkCateory SubWindow category to check against;
+   *        it should be enum SubWindowCategories type
+   * @return true when SubWindow belong to checkCateory
+   */
+  Bool checkCategory( UInt checkCateory )
+  {
+    return m_uiCategory & checkCateory;
   }
 
   Void setSubWindow( PlaYUVerMdiSubWindow* subWindow )

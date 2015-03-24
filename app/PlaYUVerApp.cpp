@@ -358,9 +358,9 @@ Void plaYUVerApp::format()
 
 Void plaYUVerApp::reload()
 {
-  if( m_pcCurrentVideoSubWindow )
+  if( m_pcCurrentSubWindow )
   {
-    m_pcCurrentVideoSubWindow->reloadFile();
+    m_pcCurrentSubWindow->refreshSubWindow();
     m_pcCurrentSubWindow = NULL;
     update();
   }
@@ -368,14 +368,18 @@ Void plaYUVerApp::reload()
 
 Void plaYUVerApp::reloadAll()
 {
-  VideoSubWindow *videoSubWindow;
-  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
-  for( Int i = 0; i < subWindowList.size(); i++ )
+  UInt windowCategoryOrder[] =
   {
-    videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
-    if( !videoSubWindow->getIsModule() )
+    SubWindowHandle::VIDEO_STREAM_SUBWINDOW,
+    SubWindowHandle::MODULE_SUBWINDOW,
+    SubWindowHandle::MODULE_SUBWINDOW };
+
+  for( UInt c = 0; c < 3; c++ )
+  {
+    QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow( windowCategoryOrder[c] );
+    for( Int i = 0; i < subWindowList.size(); i++ )
     {
-      videoSubWindow->reloadFile();
+      subWindowList.at( i )->refreshSubWindow();
     }
   }
   m_pcCurrentSubWindow = NULL;
@@ -563,10 +567,10 @@ Void plaYUVerApp::updateMenus()
   m_arrayActions[SAVE_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSE_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSEALL_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[RELOAD_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[RELOAD_ALL_ACT]->setEnabled( hasSubWindow );
 
   m_arrayActions[FORMAT_ACT]->setEnabled( hasVideoStreamSubWindow );
-  m_arrayActions[RELOAD_ACT]->setEnabled( hasVideoStreamSubWindow );
-  m_arrayActions[RELOAD_ALL_ACT]->setEnabled( hasVideoStreamSubWindow );
   m_arrayActions[LOAD_ALL_ACT]->setEnabled( hasVideoStreamSubWindow );
 
   m_arrayActions[ZOOM_IN_ACT]->setEnabled( hasSubWindow );

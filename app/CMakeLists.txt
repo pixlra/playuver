@@ -70,6 +70,7 @@ set(plaYUVer_App_SRCS
     AboutDialog.cpp
     ConfigureFormatDialog.cpp
     DialogSubWindowSelector.cpp
+    ProgressBar.cpp
 # Widgets
     HistogramWidget.cpp
     WidgetFrameNumber.cpp

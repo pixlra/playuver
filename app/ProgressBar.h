@@ -18,58 +18,36 @@
  */
 
 /**
- * \file     ConfigureFormatDialog.h
- * \brief    Dialog box to set the sequence resolution
+ * \file     ProgressBar.h
+ * \brief    Progress bar code
  */
 
-#ifndef __CONFIGUREFORMATDIALOG_H__
-#define __CONFIGUREFORMATDIALOG_H__
+#ifndef __PROGRESSBAR_H__
+#define __PROGRESSBAR_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
-#include <QtCore>
+#include <QWidget>
 
-
-
-class QPixmap;
-class QColor;
+class QProgressBar;
 
 namespace plaYUVer
 {
 
-/**
- *
- */
-class ConfigureFormatDialog: public QDialog
+class ProgressBar: public QWidget
 {
 Q_OBJECT
 
 public:
+  ProgressBar( QWidget *parent, UInt maxValue );
 
-  ConfigureFormatDialog( QWidget *parent = 0 );
-  Int runConfigureFormatDialog ( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
-
-private Q_SLOTS:
-  void StandardResolutionSelection();
+  Void incrementProgress( UInt );
 
 private:
-  QStringList standardResolutionNames;
-  QVector<QSize> standardResolutionSizes;
-
-  QLabel* m_labelFilename;
-  QComboBox *m_comboBoxStandardResolution;
-  QSpinBox *m_spinBoxWidth;
-  QSpinBox *m_spinBoxheight;
-  QComboBox *m_comboBoxPixelFormat;
-  QSpinBox *m_spinBoxFrameRate;
-
+  UInt m_uiTotalProgress;
+  UInt m_uiProgress;
+  QProgressBar* m_pcProgressBar;
 };
 
 }  // NAMESPACE
 
-#endif // __CONFIGUREFORMATDIALOG_H__
+#endif // __PROGRESSBAR_H__

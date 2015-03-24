@@ -84,7 +84,6 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
         m_bIsPlaying( false ),
         m_bIsModule( category == MODULE_SUBWINDOW )
 {
-  setVisible( false );
 
   // Create a new interface to show images
   m_cViewArea = new ViewArea( this );
@@ -122,11 +121,22 @@ Void VideoSubWindow::loadAll()
   refreshFrame();
 }
 
-Void VideoSubWindow::reloadFile()
+Void VideoSubWindow::refreshSubWindow()
 {
-  Int currFrameNum = m_pCurrStream->getCurrFrameNum();
-  loadFile( m_cFilename, false );
-  seekAbsoluteEvent( currFrameNum );
+  if( getCategory() & SubWindowHandle::VIDEO_STREAM_SUBWINDOW )
+  {
+    Int currFrameNum = m_pCurrStream->getCurrFrameNum();
+    if( !loadFile( m_cFilename, false ) )
+    {
+      close();
+      return;
+    }
+    seekAbsoluteEvent( currFrameNum );
+  }
+  else
+  {
+    refreshFrame();
+  }
 }
 
 Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
@@ -145,8 +155,6 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
       return false;
     }
   }
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-  QApplication::restoreOverrideCursor();
 
   if( !m_pCurrStream )
   {

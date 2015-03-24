@@ -61,6 +61,7 @@ PlaYUVerSubWindowHandle::PlaYUVerSubWindowHandle( QWidget *parent ) :
 {
   m_uiWindowMode = 0;
 
+  //setWindowMode( NormalSubWindows );
   setWindowMode( MdiWSubWindows );
 
   m_pcActiveWindow = NULL;
@@ -111,7 +112,10 @@ Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowHandle *window )
   if( m_uiWindowMode == NormalSubWindows )
   {
     if( window )
+    {
       m_pcActiveWindow = window;
+      emit changed();
+    }
   }
 
   if( m_uiWindowMode == MdiWSubWindows )
@@ -268,7 +272,15 @@ Void PlaYUVerSubWindowHandle::setActiveSubWindow( QWidget *window )
     return;
 
   m_pcActiveWindow = qobject_cast<SubWindowHandle *>( window );
-  m_pcActiveWindow->window()->activateWindow();
+
+  if( m_uiWindowMode == NormalSubWindows )
+  {
+    m_pcActiveWindow->window()->activateWindow();
+  }
+  if( m_uiWindowMode == MdiWSubWindows )
+  {
+    m_pcActiveWindow->setFocus();
+  }
 }
 
 Void PlaYUVerSubWindowHandle::tileSubWindows()
@@ -306,7 +318,7 @@ Void PlaYUVerSubWindowHandle::createActions()
   m_arrayActions[TILE_WINDOWS_ACT] = new QAction( tr( "Tile" ), this );
   m_arrayActions[TILE_WINDOWS_ACT]->setIcon( QIcon( ":images/windowstile.png" ) );
   m_arrayActions[TILE_WINDOWS_ACT]->setStatusTip( tr( "Tile the windows" ) );
-  //connect( m_arrayActions[TILE_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea, SLOT( tileSubWindows() ) );
+//connect( m_arrayActions[TILE_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea, SLOT( tileSubWindows() ) );
   connect( m_arrayActions[TILE_WINDOWS_ACT], SIGNAL( triggered() ), this, SLOT( tileSubWindows() ) );
 
   m_arrayActions[CASCADE_WINDOWS_ACT] = new QAction( tr( "Cascade" ), this );
@@ -318,13 +330,13 @@ Void PlaYUVerSubWindowHandle::createActions()
   m_arrayActions[NEXT_WINDOWS_ACT]->setShortcuts( QKeySequence::NextChild );
   m_arrayActions[NEXT_WINDOWS_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_ArrowRight ) ) );
   m_arrayActions[NEXT_WINDOWS_ACT]->setStatusTip( tr( "Move the focus to the next window" ) );
-  //  connect( m_arrayActions[NEXT_WINDOWS_ACT], SIGNAL( triggered() ), this, SLOT( activateNextSubWindow() ) );
+//  connect( m_arrayActions[NEXT_WINDOWS_ACT], SIGNAL( triggered() ), this, SLOT( activateNextSubWindow() ) );
 
   m_arrayActions[PREVIOUS_WINDOWS_ACT] = new QAction( tr( "Pre&vious" ), this );
   m_arrayActions[PREVIOUS_WINDOWS_ACT]->setShortcuts( QKeySequence::PreviousChild );
   m_arrayActions[PREVIOUS_WINDOWS_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_ArrowLeft ) ) );
   m_arrayActions[PREVIOUS_WINDOWS_ACT]->setStatusTip( tr( "Move the focus to the previous window" ) );
-  //  connect( m_arrayActions[PREVIOUS_WINDOWS_ACT], SIGNAL( triggered() ), this, SLOT( activatePreviousSubWindow() ) );
+//  connect( m_arrayActions[PREVIOUS_WINDOWS_ACT], SIGNAL( triggered() ), this, SLOT( activatePreviousSubWindow() ) );
 
   m_arrayActions[SEPARATOR_ACT] = new QAction( this );
   m_arrayActions[SEPARATOR_ACT]->setSeparator( true );

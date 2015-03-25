@@ -63,6 +63,7 @@ PlaYUVerFrame* FrameDifference::process( PlaYUVerFrame* Input1, PlaYUVerFrame* I
       diff = aux_pel_1 - aux_pel_2;
       diff = std::min( diff, 127 );
       diff = std::max( diff, -128 );
+      diff += 128;
       *pOutputPelYUV++ = diff;
     }
   return m_pcFrameDifference;

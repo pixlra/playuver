@@ -580,10 +580,10 @@ Void VideoHandle::videoSelectionButtonEvent()
   {
     m_acPlayingSubWindows.clear();
     VideoSubWindow *videoSubWindow;
-    QList<SubWindowHandle*> subWindowList = dialogWindowsSelection.getSelectedWindows();
-    for( Int i = 0; i < subWindowList.size(); i++ )
+    QList<SubWindowHandle*> selectedSubWindowList = dialogWindowsSelection.getSelectedWindows();
+    for( Int i = 0; i < selectedSubWindowList.size(); i++ )
     {
-      videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
+      videoSubWindow = qobject_cast<VideoSubWindow*>( selectedSubWindowList.at( i ) );
       m_acPlayingSubWindows.append( videoSubWindow );
     }
     if( m_acPlayingSubWindows.size() > 0 )

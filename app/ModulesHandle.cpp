@@ -253,6 +253,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )  // Show dialog to select sub windows
   {
     DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMainWindowManager, SubWindowHandle::VIDEO_SUBWINDOW, numberOfFrames, numberOfFrames );
+    dialogWindowsSelection.selectSubWindow( pcVideoSubWindow );
     if( dialogWindowsSelection.exec() == QDialog::Accepted )
     {
       VideoSubWindow *videoSubWindow;

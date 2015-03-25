@@ -88,6 +88,7 @@ private:
   QListWidget* m_listSelectedWindows;
 
   Void updateSubWindowList();
+  Void update();
 
 private Q_SLOTS:
   void toggleSubWindow( int );

@@ -48,7 +48,7 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWi
 
   minWindowsSelected = minWindowsSelected == 0 ? 1 : minWindowsSelected;
 
-  m_pcGroupCheckBox = new QGroupBox( tr( "Exclusive Radio Buttons" ) );
+  m_pcGroupCheckBox = new QGroupBox();
   m_pcGroupCheckBox->setLayout( new QVBoxLayout() );
 
   mainLayout->addWidget( m_pcGroupCheckBox );
@@ -85,6 +85,7 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWi
   connect( m_mapperWindowsList, SIGNAL( mapped(int) ), this, SLOT( toggleSubWindow(int) ) );
 
   updateSubWindowList();
+  update();
 }
 
 Void DialogSubWindowSelector::updateSubWindowList()
@@ -106,7 +107,6 @@ Void DialogSubWindowSelector::updateSubWindowList()
     m_pcGroupCheckBox->layout()->addWidget( windowCheckBox );
     m_apcWindowsListCheckBox.append( windowCheckBox );
   }
-
 }
 
 Void DialogSubWindowSelector::selectSubWindow( SubWindowHandle* subWindow )
@@ -119,19 +119,15 @@ Void DialogSubWindowSelector::selectSubWindow( SubWindowHandle* subWindow )
   }
 }
 
-// -----------------------  Slot Functions  -----------------------
-
-Void DialogSubWindowSelector::toggleSubWindow( Int idx )
+Void DialogSubWindowSelector::update()
 {
-  Bool isChecked = m_apcWindowsListCheckBox.at( idx )->isChecked();
-
-  if( isChecked )
+  if( m_apcWindowsListCheckBox.size() > m_iMaxSlectedWindows )
   {
-    m_apcSelectedSubWindowList.append( m_apcSubWindowList.at( idx ) );
+    m_pushButtonAddAll->setEnabled( false );
   }
   else
   {
-    m_apcSelectedSubWindowList.removeOne( m_apcSubWindowList.at( idx ) );
+    m_pushButtonAddAll->setEnabled( true );
   }
 
   if( m_apcSelectedSubWindowList.size() > 0 )
@@ -156,22 +152,55 @@ Void DialogSubWindowSelector::toggleSubWindow( Int idx )
   {
     if( m_apcSelectedSubWindowList.size() >= m_iMaxSlectedWindows )
     {
-      m_pcGroupCheckBox->setEnabled( false );
+      for( Int i = 0; i < m_apcWindowsListCheckBox.size(); i++ )
+      {
+        if( m_apcSelectedSubWindowList.contains( m_apcSubWindowList.at( i ) ) )
+        {
+          m_apcWindowsListCheckBox.at( i )->setEnabled( true );
+        }
+        else
+        {
+          m_apcWindowsListCheckBox.at( i )->setEnabled( false );
+        }
+      }
     }
     else
     {
-      m_pcGroupCheckBox->setEnabled( true );
+      for( Int i = 0; i < m_apcWindowsListCheckBox.size(); i++ )
+      {
+        m_apcWindowsListCheckBox.at( i )->setEnabled( true );
+      }
     }
   }
 }
 
+// -----------------------  Slot Functions  -----------------------
+
+Void DialogSubWindowSelector::toggleSubWindow( Int idx )
+{
+  Bool isChecked = m_apcWindowsListCheckBox.at( idx )->isChecked();
+
+  if( isChecked )
+  {
+    m_apcSelectedSubWindowList.append( m_apcSubWindowList.at( idx ) );
+  }
+  else
+  {
+    Bool bRemoved = m_apcSelectedSubWindowList.removeOne( m_apcSubWindowList.at( idx ) );
+    assert( bRemoved );
+  }
+  update();
+}
+
 Void DialogSubWindowSelector::addAllSubWindow()
 {
+  m_apcSelectedSubWindowList.clear();
   for( Int i = 0; i < m_apcWindowsListCheckBox.size(); i++ )
   {
     m_apcWindowsListCheckBox.at( i )->setChecked( true );
     m_apcSelectedSubWindowList.append( m_apcSubWindowList.at( i ) );
   }
+  update();
 }
 
 Void DialogSubWindowSelector::removeAllSubWindow()
@@ -181,6 +210,7 @@ Void DialogSubWindowSelector::removeAllSubWindow()
     m_apcWindowsListCheckBox.at( i )->setChecked( false );
   }
   m_apcSelectedSubWindowList.clear();
+  update();
 }
 
 }  // Namespace SCode

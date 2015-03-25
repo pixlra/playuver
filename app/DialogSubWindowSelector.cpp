@@ -214,11 +214,9 @@ Void DialogSubWindowSelector::toggleSubWindow( Int idx )
   if( isChecked )
   {
     m_apcSelectedSubWindowList.append( m_apcSubWindowList.at( idx ) );
-    //m_apcWindowsListCheckBox.at( idx )->setChecked( true );
   }
   else
   {
-    //m_apcWindowsListCheckBox.at( idx )->setChecked( false );
     Bool bRemoved = m_apcSelectedSubWindowList.removeOne( m_apcSubWindowList.at( idx ) );
     assert( bRemoved );
   }

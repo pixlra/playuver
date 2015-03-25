@@ -84,19 +84,10 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWi
   m_mapperWindowsList = new QSignalMapper( this );
   connect( m_mapperWindowsList, SIGNAL( mapped(int) ), this, SLOT( toggleSubWindow(int) ) );
 
-  updateSubWindowList();
-  update();
-}
-
-Void DialogSubWindowSelector::updateSubWindowList()
-{
   SubWindowHandle *subWindow;
   QString currSubWindowName;
-  m_pcWindowListNames.clear();
-  m_apcSubWindowList = m_pcMainWindowManager->findSubWindow( m_uiCategory );
-
   QCheckBox* windowCheckBox;
-
+  m_apcSubWindowList = m_pcMainWindowManager->findSubWindow( m_uiCategory );
   for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
   {
     subWindow = m_apcSubWindowList.at( i );
@@ -104,12 +95,52 @@ Void DialogSubWindowSelector::updateSubWindowList()
     windowCheckBox = new QCheckBox( currSubWindowName, this );
     connect( windowCheckBox, SIGNAL( stateChanged(int) ), m_mapperWindowsList, SLOT( map() ) );
     m_mapperWindowsList->setMapping( windowCheckBox, i );
-    m_pcGroupCheckBox->layout()->addWidget( windowCheckBox );
     m_apcWindowsListCheckBox.append( windowCheckBox );
   }
+
+  update();
 }
 
-Void DialogSubWindowSelector::selectSubWindow( SubWindowHandle* subWindow )
+Void DialogSubWindowSelector::updateSubWindowList()
+{
+  QLayout* pcLayout = m_pcGroupCheckBox->layout();
+  QLayoutItem* pcLayoutItem;
+  QCheckBox* windowCheckBox;
+  Int iIdx;
+
+  /**
+   * Remove all check boxes
+   */
+  for( Int i = 0; i < pcLayout->count(); i++ )
+  {
+    pcLayoutItem = pcLayout->itemAt( i );
+    if( pcLayoutItem )
+    {
+      pcLayout->removeWidget( pcLayoutItem->widget() );
+      pcLayout->removeItem( pcLayoutItem );
+    }
+  }
+
+  for( Int i = 0; i < m_apcSelectedSubWindowList.size(); i++ )
+  {
+    iIdx = m_apcSubWindowList.indexOf( m_apcSelectedSubWindowList.at( i ) );
+    if( iIdx >= 0 )
+    {
+      windowCheckBox = m_apcWindowsListCheckBox.at( iIdx );
+      m_pcGroupCheckBox->layout()->addWidget( windowCheckBox );
+    }
+  }
+  for( Int i = 0; i < m_apcWindowsListCheckBox.size(); i++ )
+  {
+    if( !m_apcSelectedSubWindowList.contains( m_apcSubWindowList.at( i ) ) )
+      m_pcGroupCheckBox->layout()->addWidget( m_apcWindowsListCheckBox.at( i ) );
+  }
+
+  qDebug( ) << "Selected windows: "
+            << m_apcSelectedSubWindowList.size();
+}
+
+Void DialogSubWindowSelector::selectSubWindow( SubWindowHandle * subWindow )
 {
   Int iIdx = m_apcSubWindowList.indexOf( subWindow );
   if( iIdx >= 0 )
@@ -121,15 +152,6 @@ Void DialogSubWindowSelector::selectSubWindow( SubWindowHandle* subWindow )
 
 Void DialogSubWindowSelector::update()
 {
-  if( m_apcWindowsListCheckBox.size() > m_iMaxSlectedWindows )
-  {
-    m_pushButtonAddAll->setEnabled( false );
-  }
-  else
-  {
-    m_pushButtonAddAll->setEnabled( true );
-  }
-
   if( m_apcSelectedSubWindowList.size() > 0 )
   {
     m_pushButtonRemoveAll->setEnabled( true );
@@ -150,6 +172,14 @@ Void DialogSubWindowSelector::update()
 
   if( m_iMaxSlectedWindows > 0 )
   {
+    if( m_apcWindowsListCheckBox.size() > m_iMaxSlectedWindows )
+    {
+      m_pushButtonAddAll->setEnabled( false );
+    }
+    else
+    {
+      m_pushButtonAddAll->setEnabled( true );
+    }
     if( m_apcSelectedSubWindowList.size() >= m_iMaxSlectedWindows )
     {
       for( Int i = 0; i < m_apcWindowsListCheckBox.size(); i++ )
@@ -172,6 +202,7 @@ Void DialogSubWindowSelector::update()
       }
     }
   }
+  updateSubWindowList();
 }
 
 // -----------------------  Slot Functions  -----------------------
@@ -183,9 +214,11 @@ Void DialogSubWindowSelector::toggleSubWindow( Int idx )
   if( isChecked )
   {
     m_apcSelectedSubWindowList.append( m_apcSubWindowList.at( idx ) );
+    //m_apcWindowsListCheckBox.at( idx )->setChecked( true );
   }
   else
   {
+    //m_apcWindowsListCheckBox.at( idx )->setChecked( false );
     Bool bRemoved = m_apcSelectedSubWindowList.removeOne( m_apcSubWindowList.at( idx ) );
     assert( bRemoved );
   }
@@ -198,7 +231,6 @@ Void DialogSubWindowSelector::addAllSubWindow()
   for( Int i = 0; i < m_apcWindowsListCheckBox.size(); i++ )
   {
     m_apcWindowsListCheckBox.at( i )->setChecked( true );
-    m_apcSelectedSubWindowList.append( m_apcSubWindowList.at( i ) );
   }
   update();
 }

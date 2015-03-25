@@ -76,16 +76,10 @@ private:
   QGroupBox* m_pcGroupCheckBox;
   QVector<QCheckBox*> m_apcWindowsListCheckBox;
 
-  QStringList m_pcWindowListNames;
-  QStringList m_pcSelectedWindowListNames;
-
   QComboBox* m_comboBoxWindowList;
   QDialogButtonBox* m_pushButtonOkCancel;
-  QPushButton* m_pushButtonAdd;
   QPushButton* m_pushButtonAddAll;
-  QPushButton* m_pushButtonRemove;
   QPushButton* m_pushButtonRemoveAll;
-  QListWidget* m_listSelectedWindows;
 
   Void updateSubWindowList();
   Void update();

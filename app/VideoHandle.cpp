@@ -574,25 +574,17 @@ Void VideoHandle::videoSelectionButtonEvent()
   QStringList cWindowListNames;
   for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
   {
-    cWindowListNames.append( m_acPlayingSubWindows.at( i )->getWindowName() );
-    dialogWindowsSelection.setSubWindowList( cWindowListNames );
+    dialogWindowsSelection.selectSubWindow( m_acPlayingSubWindows.at( i ) );
   }
   if( dialogWindowsSelection.exec() == QDialog::Accepted )
   {
-    QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();
     m_acPlayingSubWindows.clear();
     VideoSubWindow *videoSubWindow;
-    QString windowName;
-    QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_STREAM_SUBWINDOW );
+    QList<SubWindowHandle*> subWindowList = dialogWindowsSelection.getSelectedWindows();
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
       videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
-      windowName = videoSubWindow->getWindowName();
-      if( selectedWindows.contains( windowName ) )
-      {
-        m_acPlayingSubWindows.append( videoSubWindow );
-        videoSubWindow->seekAbsoluteEvent( m_acPlayingSubWindows.at( 0 )->getInputStream()->getCurrFrameNum() );
-      }
+      m_acPlayingSubWindows.append( videoSubWindow );
     }
     if( m_acPlayingSubWindows.size() > 0 )
     {

@@ -70,8 +70,6 @@ Void QualityHandle::createActions()
 
   m_arrayActions[SELECT_CURR_REF_ACT] = new QAction( "Mark as Reference", this );
   connect( m_arrayActions[SELECT_CURR_REF_ACT], SIGNAL( triggered() ), this, SLOT( slotSelectCurrentAsReference() ) );
-  m_arrayActions[SELECT_REF_ACT] = new QAction( "Select Reference", this );
-  connect( m_arrayActions[SELECT_REF_ACT], SIGNAL( triggered() ), this, SLOT( slotSelectReference() ) );
 
   m_arrayActions[PLOT_QUALITY] = new QAction( "Plot Window's Quality", this );
   connect( m_arrayActions[PLOT_QUALITY], SIGNAL( triggered() ), this, SLOT( slotPlotQualitySingle() ) );
@@ -85,7 +83,6 @@ QMenu* QualityHandle::createMenu()
   m_pcSubMenuQualityMetrics = m_pcMenuQuality->addMenu( "Quality Metrics" );
   m_pcSubMenuQualityMetrics->addActions( m_actionGroupQualityMetric->actions() );
   m_pcMenuQuality->addAction( m_arrayActions[SELECT_CURR_REF_ACT] );
-  //m_pcMenuQuality->addAction( m_arrayActions[SELECT_REF_ACT] );
   m_pcMenuQuality->addSeparator();
   m_pcMenuQuality->addAction( m_arrayActions[PLOT_QUALITY] );
   m_pcMenuQuality->addAction( m_arrayActions[PLOT_SEVERAL_QUALITY] );
@@ -114,7 +111,6 @@ Void QualityHandle::updateMenus()
 
   m_pcSubMenuQualityMetrics->setEnabled( hasSubWindow );
   m_arrayActions[SELECT_CURR_REF_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[SELECT_REF_ACT]->setEnabled( hasSubWindow );
 
   m_arrayActions[PLOT_QUALITY]->setEnabled( hasSubWindow );
   m_arrayActions[PLOT_SEVERAL_QUALITY]->setEnabled( hasSubWindow );
@@ -239,35 +235,6 @@ Void QualityHandle::slotSelectCurrentAsReference()
   {
     VideoSubWindow* pcVideoSubWindow;
     QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
-    for( Int i = 0; i < subWindowList.size(); i++ )
-    {
-      pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
-      if( pcVideoSubWindow != pcRefSubWindow )
-        pcVideoSubWindow->setRefSubWindow( pcRefSubWindow );
-    }
-    m_pcQualityHandleSideBar->updateSidebarData();
-    m_pcQualityHandleDock->show();
-  }
-}
-
-Void QualityHandle::slotSelectReference()
-{
-  DialogSubWindowSelector dialogWindowSelection( this, m_pcMainWindowManager, SubWindowHandle::VIDEO_SUBWINDOW, 1, 1 );
-  if( dialogWindowSelection.exec() == QDialog::Accepted )
-  {
-    VideoSubWindow* pcVideoSubWindow;
-    VideoSubWindow* pcRefSubWindow = NULL;
-    QStringList selectedWindows = dialogWindowSelection.getSelectedWindows();
-    QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
-    for( Int i = 0; i < subWindowList.size(); i++ )
-    {
-      pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
-      if( pcVideoSubWindow->getWindowName() == selectedWindows.at( 0 ) )
-      {
-        pcRefSubWindow = pcVideoSubWindow;
-        break;
-      }
-    }
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
       pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );

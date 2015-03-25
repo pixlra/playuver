@@ -255,21 +255,14 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMainWindowManager, SubWindowHandle::VIDEO_SUBWINDOW, numberOfFrames, numberOfFrames );
     if( dialogWindowsSelection.exec() == QDialog::Accepted )
     {
-      QStringList selectedWindows = dialogWindowsSelection.getSelectedWindows();
       VideoSubWindow *videoSubWindow;
-      QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
-      for( Int j = 0; j < selectedWindows.size(); j++ )
+      QList<SubWindowHandle*> subWindowList = dialogWindowsSelection.getSelectedWindows();
+      for( Int i = 0; i < subWindowList.size(); i++ )
       {
-        for( Int i = 0; i < subWindowList.size(); i++ )
-        {
-          videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
-          if( videoSubWindow->getWindowName() == selectedWindows.at( j ) )
-          {
-            videoSubWindowList.append( videoSubWindow );
-            pcCurrModuleIf->m_pcSubWindow[j] = videoSubWindow;
-          }
-        }
+        videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
+        videoSubWindowList.append( videoSubWindow );
       }
+
     }
     // Check for same fmt in more than one frame modules
     for( Int i = 1; i < videoSubWindowList.size(); i++ )

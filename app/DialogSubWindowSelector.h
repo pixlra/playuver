@@ -34,13 +34,19 @@
 #endif
 #include <QtCore>
 
+#include <QVector>
+
 class QPixmap;
 class QColor;
+class QCheckBox;
+class QGroupBox;
 
 namespace plaYUVer
 {
 
 class PlaYUVerSubWindowHandle;
+class SubWindowHandle;
+
 /**
  * Class to define the dialog box to select sub windows
  * This class enable the selection of several group of windows
@@ -50,18 +56,26 @@ class DialogSubWindowSelector: public QDialog
 Q_OBJECT
 
 public:
-  DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWindowHandle *windowManager, UInt uiCategory, Int minWindowsSelected = 0, Int maxWindowsSelected = -1 );
+  DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWindowHandle *windowManager, UInt uiCategory, Int minWindowsSelected = 1, Int maxWindowsSelected = -1 );
 
-  Void setSubWindowList( QStringList cWindowListNames );
-  QStringList getSelectedWindows()
+  Void selectSubWindow( SubWindowHandle* subWindow );
+  QList<SubWindowHandle*> getSelectedWindows()
   {
-    return m_pcSelectedWindowListNames;
+    return m_apcSelectedSubWindowList;
   }
 private:
   UInt m_uiCategory;
   Int m_iMinSelectedWindows;
   Int m_iMaxSlectedWindows;
   PlaYUVerSubWindowHandle* m_pcMainWindowManager;
+
+  QList<SubWindowHandle*> m_apcSubWindowList;
+  QList<SubWindowHandle*> m_apcSelectedSubWindowList;
+
+  QSignalMapper* m_mapperWindowsList;
+  QGroupBox* m_pcGroupCheckBox;
+  QVector<QCheckBox*> m_apcWindowsListCheckBox;
+
   QStringList m_pcWindowListNames;
   QStringList m_pcSelectedWindowListNames;
 
@@ -76,9 +90,8 @@ private:
   Void updateSubWindowList();
 
 private Q_SLOTS:
-  void addSubWindow();
+  void toggleSubWindow( int );
   void addAllSubWindow();
-  void removeSubWindow();
   void removeAllSubWindow();
 
 };

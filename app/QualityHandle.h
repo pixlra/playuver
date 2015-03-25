@@ -66,7 +66,6 @@ private:
   enum
   {
     SELECT_CURR_REF_ACT,
-    SELECT_REF_ACT,
     PLOT_QUALITY,
     PLOT_SEVERAL_QUALITY,
     TOTAL_ACT,
@@ -91,7 +90,6 @@ Q_SIGNALS:
 private Q_SLOTS:
   void slotQualityMetricChanged( int );
   void slotSelectCurrentAsReference();
-  void slotSelectReference();
   void slotPlotQualitySingle();
   void slotPlotQualitySeveral();
 };

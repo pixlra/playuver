@@ -301,6 +301,10 @@ PlaYUVerFrame* PlaYUVerTools::applyFrameModule()
     case MODULE_REQUIRES_TWO_FRAMES:
       pcProcessedFrame = m_pcCurrModuleIf->process( m_apcInputStreams[0]->getCurrFrame(), m_apcInputStreams[1]->getCurrFrame() );
       break;
+    case MODULE_REQUIRES_THREE_FRAMES:
+      pcProcessedFrame = m_pcCurrModuleIf->process( m_apcInputStreams[0]->getCurrFrame(), m_apcInputStreams[1]->getCurrFrame(),
+          m_apcInputStreams[2]->getCurrFrame() );
+      break;
     }
   }
   return pcProcessedFrame;
@@ -337,6 +341,10 @@ Int PlaYUVerTools::ModuleOperation()
         break;
       case MODULE_REQUIRES_TWO_FRAMES:
         dMeasurementResult = m_pcCurrModuleIf->measure( m_apcInputStreams[0]->getCurrFrame(), m_apcInputStreams[1]->getCurrFrame() );
+        break;
+      case MODULE_REQUIRES_THREE_FRAMES:
+        dMeasurementResult = m_pcCurrModuleIf->measure( m_apcInputStreams[0]->getCurrFrame(), m_apcInputStreams[1]->getCurrFrame(),
+            m_apcInputStreams[2]->getCurrFrame() );
         break;
       }
       m_cCmdLineHandler.log( CommandLineHandle::INFO, "   %3d", frame );

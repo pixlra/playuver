@@ -66,22 +66,12 @@ std::vector<std::string> LibOpenCVHandler::supportedWriteFormatsName()
 
 std::vector<std::string> LibOpenCVHandler::supportedSaveFormatsExt()
 {
-  std::vector<std::string> formatsExt;
-  formatsExt.push_back( "bmp" );
-  formatsExt.push_back( "bmp" );
-  formatsExt.push_back( "jpg" );
-  formatsExt.push_back( "png" );
-  return formatsExt;
+  return supportedReadFormatsExt();
 }
 
 std::vector<std::string> LibOpenCVHandler::supportedSaveFormatsName()
 {
-  std::vector<std::string> formatsName;
-  formatsName.push_back( "Windows Bitmap" );
-  formatsName.push_back( "Windows Bitmap" );
-  formatsName.push_back( "Joint Photographic Experts Group" );
-  formatsName.push_back( "Portable Network Graphics" );
-  return formatsName;
+  return supportedReadFormatsName();
 }
 
 PlaYUVerFrame* LibOpenCVHandler::loadFrame( std::string filename )

@@ -42,6 +42,15 @@
 namespace plaYUVer
 {
 
+std::vector<std::string> PlaYUVerFrame::supportedColorSpacesListNames()
+{
+  std::vector<std::string> colorSpaceList;
+  colorSpaceList.push_back( "YUV" );
+  colorSpaceList.push_back( "RGB" );
+  colorSpaceList.push_back( "GRAY" );
+  return colorSpaceList;
+}
+
 std::vector<std::string> PlaYUVerFrame::supportedPixelFormatListNames()
 {
   std::vector<std::string> formatsList;

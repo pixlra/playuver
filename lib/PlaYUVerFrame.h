@@ -117,9 +117,9 @@ public:
   {
     COLOR_INVALID = -1,  //!< Invalid
     COLOR_YUV = 0,  //!< YUV
-    COLOR_RGB,  //!< RGB
-    COLOR_ARGB,  //!< RGB + Alpha
-    COLOR_GRAY,  //!< Grayscale
+    COLOR_RGB = 1,  //!< RGB
+    COLOR_ARGB = 3,  //!< RGB + Alpha
+    COLOR_GRAY = 2,  //!< Grayscale
   };
 
   /** ColorSpace Enum
@@ -137,6 +137,13 @@ public:
     BRG24,
     NUMBER_FORMATS
   };
+
+  /**
+   * Function that handles the supported color space
+   * of PlaYUVerFrame
+   * @return vector of strings with pixel formats names
+   */
+  static std::vector<std::string> supportedColorSpacesListNames();
 
   /**
    * Function that handles the supported pixel formats

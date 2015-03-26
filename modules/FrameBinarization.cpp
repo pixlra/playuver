@@ -31,7 +31,7 @@ FrameBinarization::FrameBinarization()
 {
   /* Module Definition */
   m_iModuleType = FRAME_PROCESSING_MODULE;
-  m_pchModuleCategory = "Measurements";
+  m_pchModuleCategory = "Utilities";
   m_pchModuleName = "FrameBinarization";
   m_pchModuleTooltip = "Binarize frame";
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;

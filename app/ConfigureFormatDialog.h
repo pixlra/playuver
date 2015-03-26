@@ -56,6 +56,7 @@ public:
 
 private Q_SLOTS:
   void StandardResolutionSelection();
+  void slotColorSpaceChange( int );
 
 private:
   QStringList standardResolutionNames;
@@ -65,6 +66,7 @@ private:
   QComboBox *m_comboBoxStandardResolution;
   QSpinBox *m_spinBoxWidth;
   QSpinBox *m_spinBoxheight;
+  QComboBox *m_comboBoxColorSpace;
   QComboBox *m_comboBoxPixelFormat;
   QSpinBox *m_spinBoxFrameRate;
 

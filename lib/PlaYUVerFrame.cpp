@@ -91,7 +91,6 @@ PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other )
 
 PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt areaWidth, UInt areaHeight )
 {
-
   PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[other->getPelFormat()] );
   if( pcPelFormat->log2ChromaWidth )
   {

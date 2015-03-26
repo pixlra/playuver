@@ -48,6 +48,7 @@ public:
     QHBoxLayout* layout = new QHBoxLayout( this );
     layout->addWidget( m_pcDescription, Qt::AlignLeft );
     layout->addWidget( m_pcValue, Qt::AlignRight );
+    layout->setContentsMargins( 1, 1, 1, 1 );
   }
   const QString getValue() const
   {
@@ -90,6 +91,8 @@ ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget *parent, PlaYUVerAppModu
 
   mainLayout->addWidget( dialogButtonOkCancel );
 
+  setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) );
+
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
 }
@@ -116,6 +119,7 @@ Int ModulesHandleOptDialog::runConfiguration()
       optionString.append( valueString.toStdString() );
       argsArray.push_back( optionString );
     }
+    optionString.clear();
   }
   if( argsArray.size() > 0 )
   {

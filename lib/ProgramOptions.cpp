@@ -348,7 +348,7 @@ Void Options::scanArgs( std::vector<std::string> args_array)
 {
   for( unsigned i = 0; i < args_array.size(); i++ )
   {
-    i += parseLONG( args_array[0] );
+    i += parseLONG( args_array[i] );
   }
   return;
 }

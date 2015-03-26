@@ -62,6 +62,18 @@ std::vector<std::string> PlaYUVerFrame::supportedPixelFormatListNames()
   return formatsList;
 }
 
+std::vector<std::string> PlaYUVerFrame::supportedPixelFormatListNames( Int colorSpace )
+{
+  std::vector<std::string> formatsList;
+  Int numberFormats = PLAYUVER_NUMBER_FORMATS;
+  for( Int i = 0; i < numberFormats; i++ )
+  {
+    if( g_PlaYUVerPixFmtDescriptorsList[i].colorSpace == colorSpace )
+      formatsList.push_back( g_PlaYUVerPixFmtDescriptorsList[i].name );
+  }
+  return formatsList;
+}
+
 PlaYUVerFrame::Pixel PlaYUVerFrame::ConvertPixel( Pixel inputPixel, ColorSpace eOutputSpace )
 {
   Int outA, outB, outC;

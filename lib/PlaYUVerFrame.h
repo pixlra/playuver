@@ -151,6 +151,7 @@ public:
    * @return vector of strings with pixel formats names
    */
   static std::vector<std::string> supportedPixelFormatListNames();
+  static std::vector<std::string> supportedPixelFormatListNames( Int colorSpace );
 
   /**
    * Get number of bytes per frame of a specific

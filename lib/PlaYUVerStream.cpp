@@ -84,28 +84,22 @@ std::vector<std::string> PlaYUVerStream::supportedWriteFormatsName()
 
 std::vector<std::string> PlaYUVerStream::supportedSaveFormatsExt()
 {
-  std::vector<std::string> formatsExt;
-  std::vector<std::string> writeExt = supportedWriteFormatsExt();
-  formatsExt.insert( formatsExt.begin(), writeExt.begin(), writeExt.end() );
+  std::vector<std::string> formatsExt = supportedWriteFormatsExt();
 #ifdef USE_OPENCV
   std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedSaveFormatsExt();
   formatsExt.insert( formatsExt.end(), opencvFmt.begin(), opencvFmt.end() );
 #endif
-  sort( formatsExt.begin(), formatsExt.end() );
   formatsExt.erase( unique( formatsExt.begin(), formatsExt.end() ), formatsExt.end() );
   return formatsExt;
 }
 
 std::vector<std::string> PlaYUVerStream::supportedSaveFormatsName()
 {
-  std::vector<std::string> formatsName;
-  std::vector<std::string> writeName = supportedWriteFormatsName();
-  formatsName.insert( formatsName.begin(), writeName.begin(), writeName.end() );
+  std::vector<std::string> formatsName = supportedWriteFormatsName();
 #ifdef USE_OPENCV
   std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedSaveFormatsName();
   formatsName.insert( formatsName.end(), opencvFmt.begin(), opencvFmt.end() );
 #endif
-  sort( formatsName.begin(), formatsName.end() );
   formatsName.erase( unique( formatsName.begin(), formatsName.end() ), formatsName.end() );
   return formatsName;
 }

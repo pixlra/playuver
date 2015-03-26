@@ -217,8 +217,7 @@ Void DialogSubWindowSelector::toggleSubWindow( Int idx )
   }
   else
   {
-    Bool bRemoved = m_apcSelectedSubWindowList.removeOne( m_apcSubWindowList.at( idx ) );
-    assert( bRemoved );
+    m_apcSelectedSubWindowList.removeOne( m_apcSubWindowList.at( idx ) );
   }
   update();
 }

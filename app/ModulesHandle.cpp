@@ -249,7 +249,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   QString windowName;
 
   QList<VideoSubWindow*> videoSubWindowList;
-  UInt numberOfFrames = pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames;
+  Int numberOfFrames = pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames;
   if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )  // Show dialog to select sub windows
   {
     DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMainWindowManager, SubWindowHandle::VIDEO_SUBWINDOW, numberOfFrames, numberOfFrames );
@@ -358,7 +358,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   {
     if( pcCurrModuleIf->m_pcDisplaySubWindow )
       pcCurrModuleIf->m_pcDisplaySubWindow->enableModule( pcCurrModuleIf );
-    for( UInt i = 0; i < numberOfFrames; i++ )
+    for( Int i = 0; i < numberOfFrames; i++ )
     {
       pcCurrModuleIf->m_pcSubWindow[i]->associateModule( pcCurrModuleIf );
     }

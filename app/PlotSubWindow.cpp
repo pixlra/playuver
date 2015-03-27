@@ -35,6 +35,10 @@ Void PlotSubWindow::definePlotColors()
   m_arrayColorList.append( Qt::green );
   m_arrayColorList.append( Qt::black );
   m_arrayColorList.append( Qt::cyan );
+  m_arrayColorList.append( Qt::magenta );
+  m_arrayColorList.append( Qt::yellow );
+  m_arrayColorList.append( Qt::gray );
+  m_arrayColorList.append( Qt::darkRed );
 }
 
 PlotSubWindow::PlotSubWindow( QWidget * parent, const QString& windowTitle ) :
@@ -205,7 +209,12 @@ Void PlotSubWindow::setAxisRange( PlotSubWindow::Axis eAxis, const Int& axisStar
 Void PlotSubWindow::addPlot( const QVector<Double> &arrayX, const QVector<Double> &arrayY, const QString& key )
 {
   QCPGraph *newPlot = m_cPlotArea->addGraph();
-  m_cPlotPen.setColor( m_arrayColorList.at( m_uiNumberPlots ) );
+  QColor plotColor = m_arrayColorList.at( 0 );
+  if( m_uiNumberPlots < m_arrayColorList.size() )
+  {
+    plotColor = m_arrayColorList.at( m_uiNumberPlots );
+  }
+  m_cPlotPen.setColor( plotColor );
   newPlot->setPen( m_cPlotPen );  // line style
   // pass data points to graphs:
   newPlot->setData( arrayX, arrayY );

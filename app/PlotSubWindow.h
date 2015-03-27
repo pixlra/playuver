@@ -56,7 +56,7 @@ private:
   };
   Double m_aAxisRange[2][2];
   Double m_dScaleFactor;
-  UInt m_uiNumberPlots;
+  Int m_iNumberPlots;
 
 public:
 

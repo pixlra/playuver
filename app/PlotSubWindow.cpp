@@ -46,7 +46,7 @@ PlotSubWindow::PlotSubWindow( QWidget * parent, const QString& windowTitle ) :
 {
 
   definePlotColors();
-  m_uiNumberPlots = 0;
+  m_iNumberPlots = 0;
   m_dScaleFactor = 1;
 
   setWindowName( windowTitle );
@@ -210,16 +210,16 @@ Void PlotSubWindow::addPlot( const QVector<Double> &arrayX, const QVector<Double
 {
   QCPGraph *newPlot = m_cPlotArea->addGraph();
   QColor plotColor = m_arrayColorList.at( 0 );
-  if( m_uiNumberPlots < m_arrayColorList.size() )
+  if( m_iNumberPlots < m_arrayColorList.size() )
   {
-    plotColor = m_arrayColorList.at( m_uiNumberPlots );
+    plotColor = m_arrayColorList.at( m_iNumberPlots );
   }
   m_cPlotPen.setColor( plotColor );
   newPlot->setPen( m_cPlotPen );  // line style
   // pass data points to graphs:
   newPlot->setData( arrayX, arrayY );
   // let the ranges scale themselves so graph 0 fits perfectly in the visible area:
-  newPlot->rescaleAxes( m_uiNumberPlots > 1 ? true : false );
+  newPlot->rescaleAxes( m_iNumberPlots > 1 ? true : false );
 
   if( !key.isEmpty() )
   {
@@ -232,7 +232,7 @@ Void PlotSubWindow::addPlot( const QVector<Double> &arrayX, const QVector<Double
   m_aAxisRange[VERTICAL][0] = m_cPlotArea->yAxis->range().lower;
   m_aAxisRange[VERTICAL][1] = m_cPlotArea->yAxis->range().upper;
 
-  m_uiNumberPlots++;
+  m_iNumberPlots++;
 }
 
 }  // NAMESPACE

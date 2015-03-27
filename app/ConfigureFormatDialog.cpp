@@ -53,7 +53,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   QFont titleFont, menusFont, normalFont;
 
-  titleFont.setPointSize( 14 );
+  titleFont.setPointSize( 12 );
   titleFont.setBold( true );
   titleFont.setWeight( 75 );
 
@@ -82,7 +82,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   filenameLabel->setText( "Name" );
   filenameLabel->setFont( menusFont );
   m_labelFilename = new QLabel();
-  m_labelFilename->setFont( menusFont );
+  m_labelFilename->setFont( titleFont );
   filenameLayout->addWidget( filenameLabel );
   filenameLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
   filenameLayout->addWidget( m_labelFilename );

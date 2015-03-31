@@ -66,8 +66,6 @@ public:
 
   Void update( VideoSubWindow* currSubWindow );
 
-  Void closeSubWindow( VideoSubWindow* currSubWindow );
-
 private:
   QWidget* m_pcParet;
   PlaYUVerSubWindowHandle* m_pcMainWindowManager;
@@ -119,6 +117,7 @@ Q_SIGNALS:
 private Q_SLOTS:
   void update();
   void updateSelectionArea( QRect area );
+  void closeSubWindow( SubWindowHandle* subWindow );
   void zoomToFactorAll( const double factor, const QPoint center = QPoint() );
   void moveAllScrollBars( const QPoint offset );
   void play();

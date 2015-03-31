@@ -146,7 +146,7 @@ Void DialogSubWindowSelector::selectSubWindow( SubWindowHandle * subWindow )
   if( iIdx >= 0 )
   {
     m_apcWindowsListCheckBox.at( iIdx )->setChecked( true );
-    m_apcSelectedSubWindowList.append( m_apcSubWindowList.at( iIdx ) );
+    //m_apcSelectedSubWindowList.append( m_apcSubWindowList.at( iIdx ) );
   }
 }
 

@@ -215,6 +215,8 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       videoSubWindow->show();
 
       connect( videoSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
+
+      connect( subWindow, SIGNAL( aboutToClose( SubWindowHandle* ) ), m_appModuleVideo, SLOT( closeSubWindow( SubWindowHandle* ) ) );
       connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo, SLOT( zoomToFactorAll( double, QPoint ) ) );
       connect( subWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo, SLOT( moveAllScrollBars( const QPoint ) ) );
 
@@ -643,7 +645,7 @@ Void plaYUVerApp::createActions()
 
   m_arrayActions[CLOSEALL_ACT] = new QAction( tr( "Close &All" ), this );
   m_arrayActions[CLOSEALL_ACT]->setStatusTip( tr( "Close all the windows" ) );
-  connect( m_arrayActions[CLOSEALL_ACT], SIGNAL( triggered() ), this, SLOT( closeAll() ) );
+  connect( m_arrayActions[CLOSEALL_ACT], SIGNAL( triggered() ), m_pcWindowHandle, SLOT( removeAllSubWindow() ) );
 
   m_arrayActions[EXIT_ACT] = new QAction( tr( "E&xit" ), this );
   m_arrayActions[EXIT_ACT]->setShortcuts( QKeySequence::Quit );

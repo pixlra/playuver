@@ -276,11 +276,13 @@ Void VideoHandle::updateSelectionArea( QRect area )
   }
 }
 
-Void VideoHandle::closeSubWindow( VideoSubWindow* currSubWindow )
+Void VideoHandle::closeSubWindow( SubWindowHandle* subWindow )
 {
-  if( m_acPlayingSubWindows.contains( currSubWindow ) )
+  VideoSubWindow* videoSubWindow = qobject_cast<VideoSubWindow *>( subWindow );
+
+  if( m_acPlayingSubWindows.contains( videoSubWindow ) )
   {
-    Int pos = m_acPlayingSubWindows.indexOf( currSubWindow );
+    Int pos = m_acPlayingSubWindows.indexOf( videoSubWindow );
     m_acPlayingSubWindows.at( pos )->stop();
     m_acPlayingSubWindows.remove( pos );
     if( m_acPlayingSubWindows.size() < 2 )
@@ -401,7 +403,7 @@ Void VideoHandle::setTimerStatus()
   else
   {
 #if( _CONTROL_PLAYING_TIME_ == 1 )
-    if( m_pcPlayControlTimer )
+    if( m_pcPlayControlTimer && m_pcPlayingTimer->interval() > 0 )
     {
       qDebug( ) << "Desired Fps: "
                 << 1000 / m_pcPlayingTimer->interval()

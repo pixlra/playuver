@@ -136,8 +136,8 @@ Void DialogSubWindowSelector::updateSubWindowList()
       m_pcGroupCheckBox->layout()->addWidget( m_apcWindowsListCheckBox.at( i ) );
   }
 
-  qDebug( ) << "Selected windows: "
-            << m_apcSelectedSubWindowList.size();
+//  qDebug( ) << "Selected windows: "
+//            << m_apcSelectedSubWindowList.size();
 }
 
 Void DialogSubWindowSelector::selectSubWindow( SubWindowHandle * subWindow )

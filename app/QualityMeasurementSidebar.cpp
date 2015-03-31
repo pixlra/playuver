@@ -56,15 +56,17 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerS
   m_comboBoxMetric->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 
   m_comboBoxRef = new QComboBox;
-  m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLength );
+  QSpacerItem* spaceQuality = new QSpacerItem( 1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed );
+  //m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLength );
   m_comboBoxRef->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
   updateSubWindowList();
 
   QGridLayout *mainLayout = new QGridLayout;
   mainLayout->addWidget( MetricLabel, 0, 0, Qt::AlignLeft );
   mainLayout->addWidget( m_comboBoxMetric, 0, 1, Qt::AlignLeft );
+  mainLayout->addItem( spaceQuality, 0, 2, Qt::AlignRight );
   mainLayout->addWidget( RefLabel, 1, 0, Qt::AlignLeft );
-  mainLayout->addWidget( m_comboBoxRef, 1, 1, Qt::AlignLeft );
+  mainLayout->addWidget( m_comboBoxRef, 1, 1, 1, 2, Qt::AlignLeft );
 
   m_ppcLabelQualityLabel[LUMA] = new QLabel( "PSNR Y:" );
   m_ppcLabelQualityLabel[LUMA]->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );

@@ -34,8 +34,6 @@
 #endif
 #include <QtCore>
 
-
-
 class QPixmap;
 class QColor;
 
@@ -52,7 +50,7 @@ Q_OBJECT
 public:
 
   ConfigureFormatDialog( QWidget *parent = 0 );
-  Int runConfigureFormatDialog ( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
+  Int runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, UInt& rFrameRate );
 
 private Q_SLOTS:
   void StandardResolutionSelection();
@@ -68,6 +66,7 @@ private:
   QSpinBox *m_spinBoxheight;
   QComboBox *m_comboBoxColorSpace;
   QComboBox *m_comboBoxPixelFormat;
+  QSpinBox *m_spinBoxBits;
   QSpinBox *m_spinBoxFrameRate;
 
 };

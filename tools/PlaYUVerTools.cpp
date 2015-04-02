@@ -79,7 +79,7 @@ Int PlaYUVerTools::openInputs()
       pcStream = new PlaYUVerStream;
       try
       {
-        if( !pcStream->open( inputFileNames[i], resolutionString, fmtString, 1 ) )
+        if( !pcStream->open( inputFileNames[i], resolutionString, fmtString, 8, 1 ) )
         {
           m_cCmdLineHandler.log( CommandLineHandle::ERROR, "Cannot open input stream %s! ", inputFileNames[i].c_str() );
           return 2;
@@ -132,11 +132,11 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
   if( m_cCmdLineHandler.Opts()["quality"]->count() )
   {
     std::string qualityMetric = m_cCmdLineHandler.m_strQualityMetric;
-    if( m_apcInputStreams.size() != 2 )
-    {
-      m_cCmdLineHandler.log( CommandLineHandle::ERROR, "Invalid number of inputs! " );
-      return 2;
-    }
+//    if( m_apcInputStreams.size() != 2 )
+//    {
+//      m_cCmdLineHandler.log( CommandLineHandle::ERROR, "Invalid number of inputs! " );
+//      return 2;
+//    }
     for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
     {
       if( lowercase( PlaYUVerFrame::supportedQualityMetricsList()[i] ) == lowercase( qualityMetric ) )
@@ -193,7 +193,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
       {
         PlaYUVerFrame* pcModFrame = applyFrameModule();
         PlaYUVerStream* pcModStream = new PlaYUVerStream;
-        if( !pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(), pcModFrame->getPelFormat(), 1, false ) )
+        if( !pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(), pcModFrame->getPelFormat(), 8, 1, false ) )
         {
           delete pcModStream;
           pcModStream = NULL;

@@ -44,6 +44,7 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array
                          << d.m_uiHeight
                          << d.m_iPelFormat
                          << d.m_uiFrameRate
+                         << d.m_uiBitsPelPixel
                          << d.m_uiFileSize;
   }
   return out;
@@ -60,6 +61,7 @@ QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& array )
     in >> d.m_uiWidth;
     in >> d.m_uiHeight;
     in >> d.m_iPelFormat;
+    in >> d.m_uiBitsPelPixel;
     in >> d.m_uiFrameRate;
     in >> d.m_uiFileSize;
     array.append( d );
@@ -141,16 +143,16 @@ Void VideoSubWindow::refreshSubWindow()
 
 Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
 {
-  UInt Width = 0, Height = 0, FrameRate = 30;
+  UInt Width = 0, Height = 0, BitsPel = 8, FrameRate = 30;
   Int InputFormat = PlaYUVerFrame::YUV420p;
 
   if( m_pCurrStream )
-    m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
+    m_pCurrStream->getFormat( Width, Height, InputFormat, BitsPel, FrameRate );
 
   if( guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
   {
     ConfigureFormatDialog formatDialog( this );
-    if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, FrameRate ) == QDialog::Rejected )
+    if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, FrameRate ) == QDialog::Rejected )
     {
       return false;
     }
@@ -166,12 +168,13 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
     m_pCurrStream = new PlaYUVerStream;
   }
 
-  m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, FrameRate );
+  m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, FrameRate );
 
   m_sStreamInfo.m_cFilename = cFilename;
   m_sStreamInfo.m_uiWidth = Width;
   m_sStreamInfo.m_uiHeight = Height;
   m_sStreamInfo.m_iPelFormat = InputFormat;
+  m_sStreamInfo.m_uiBitsPelPixel = BitsPel;
   m_sStreamInfo.m_uiFrameRate = FrameRate;
   m_sStreamInfo.m_uiFileSize = QFileInfo( cFilename ).size();
 
@@ -198,7 +201,7 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
   }
 
   if( !m_pCurrStream->open( streamInfo->m_cFilename.toStdString(), streamInfo->m_uiWidth, streamInfo->m_uiHeight, streamInfo->m_iPelFormat,
-      streamInfo->m_uiFrameRate ) )
+      streamInfo->m_uiBitsPelPixel, streamInfo->m_uiFrameRate ) )
   {
     return false;
   }
@@ -317,7 +320,7 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
         Int count = 0, module, frame_bytes, match;
         for( UInt i = 0; i < stdResList.size(); i++ )
         {
-          frame_bytes = PlaYUVerFrame::getBytesPerFrame( stdResList[i].uiWidth, stdResList[i].uiHeight, rInputFormat );
+          frame_bytes = PlaYUVerFrame::getBytesPerFrame( stdResList[i].uiWidth, stdResList[i].uiHeight, rInputFormat, 8 );
           module = uiFileSize % frame_bytes;
           if( module == 0 )
           {

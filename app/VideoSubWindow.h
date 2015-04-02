@@ -49,6 +49,7 @@ typedef struct
   UInt m_uiWidth;
   UInt m_uiHeight;
   Int m_iPelFormat;
+  UInt m_uiBitsPelPixel;
   UInt m_uiFrameRate;
   UInt64 m_uiFileSize;
 } PlaYUVerStreamInfo;

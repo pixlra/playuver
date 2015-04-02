@@ -158,7 +158,7 @@ public:
    * pixel format
    * @return number of bytes per frame
    */
-  static UInt64 getBytesPerFrame( UInt, UInt, Int );
+  static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, Int bitsPixel );
 
   /**
    * Convert a Pixel to a new color space
@@ -177,7 +177,7 @@ public:
    *
    * @note this function might misbehave if the pixel format enum is not correct
    */
-  PlaYUVerFrame( UInt width, UInt height, Int pel_format = 0 );
+  PlaYUVerFrame( UInt width, UInt height, Int pelFormat = 0, Int bitsPixel = 8 );
 
   /**
    * Creates and new frame with the configuration of an
@@ -236,9 +236,9 @@ public:
   {
     return m_iPixelFormat;
   }
-  Int getBitsChannel() const
+  Int getBitsPel() const
   {
-    return m_iBitsChannels;
+    return m_iBitsPel;
   }
   Bool isValid() const
   {
@@ -334,7 +334,7 @@ private:
   UInt m_uiHeight;  //!< Height of the frame
   Int m_iPixelFormat;  //!< Pixel format number (it follows the list of supported pixel formats)
   Int m_iNumberChannels;  //!< Number of channels
-  Int m_iBitsChannels;  //!< Bits per pixel/channel
+  Int m_iBitsPel;  //!< Bits per pixel/channel
 
   Pel*** m_pppcInputPel;
 
@@ -349,7 +349,7 @@ private:
    * @param pel_format pixel format index (always use PixelFormats enum)
    *
    */
-  Void init( UInt width, UInt height, Int pel_format );
+  Void init( UInt width, UInt height, Int pel_format, Int bitsPixel );
 
   Void openPixfc();
   Void closePixfc();

@@ -56,7 +56,7 @@ Void PlaYUVerFrameStats::xSetupStatistics( const PlaYUVerFrame *pcFrame, UInt op
   m_uiImageHeight = pcFrame->getHeight();
   m_uiChannels = pcFrame->getNumberChannels();
 
-  m_uiHistoSegments = ( pcFrame->getBitsChannel() == 16 ) ? 65536 : 256;
+  m_uiHistoSegments = 1 << pcFrame->getBitsPel();
   imageColorSpace = pcFrame->getColorSpace();
   imageChromaSize = pcFrame->getChromaLength();
 

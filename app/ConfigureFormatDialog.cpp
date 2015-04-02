@@ -177,6 +177,21 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   /*
    *  Frame rate format
    */
+  QHBoxLayout* bitsPerPelLayout = new QHBoxLayout();
+  QLabel* bitsPerPelLabel = new QLabel();
+  bitsPerPelLabel->setFont( menusFont );
+  bitsPerPelLabel->setText( "Frame Rate" );
+  m_spinBoxBits = new QSpinBox();
+  m_spinBoxBits->setMinimumWidth( 30 );
+  m_spinBoxBits->setRange( 0, 16 );
+  m_spinBoxBits->setValue( 8 );
+  bitsPerPelLayout->addWidget( bitsPerPelLabel );
+  bitsPerPelLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  bitsPerPelLayout->addWidget( m_spinBoxBits );
+
+  /*
+   *  Frame rate format
+   */
   QHBoxLayout* framerateFormatLayout = new QHBoxLayout();
   QLabel* framerateFormatLabel = new QLabel();
   framerateFormatLabel->setFont( menusFont );
@@ -204,6 +219,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   MainLayout->addWidget( resolutionGroup );
   MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Minimum ) );
   MainLayout->addWidget( pixelGroup );
+  MainLayout->addLayout( bitsPerPelLayout );
   MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Minimum ) );
   MainLayout->addLayout( framerateFormatLayout );
   MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
@@ -218,7 +234,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
 }
 
-Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
+Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, UInt& rFrameRate )
 {
   // Set default values
   //setWindowTitle( "Configure resolution for " + Filename );
@@ -246,6 +262,7 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWi
   }
   m_comboBoxColorSpace->setCurrentIndex( colorSpace );
   m_comboBoxPixelFormat->setCurrentIndex( sampling );
+  m_spinBoxBits->setValue( rBits );
   m_spinBoxFrameRate->setValue( rFrameRate );
   for( Int i = 0; i < standardResolutionSizes.size(); i++ )
   {
@@ -270,6 +287,7 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWi
       rInputFormat = i;
     }
   }
+  rBits = m_spinBoxBits->value();
   rFrameRate = m_spinBoxFrameRate->value();
   return QDialog::Accepted;
 }

@@ -82,6 +82,7 @@ private:
 
   Int m_iFileFormat;
   Int m_iPixelFormat;
+  UInt m_uiBitsPerPixel;
 
   Pel* m_pStreamBuffer;
 
@@ -121,14 +122,14 @@ public:
     END_OF_SEQ,
   };
 
-  Bool open( std::string filename, std::string resolution, std::string input_format, UInt frame_rate, Bool bInput = true );
-  Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt frame_rate, Bool bInput = true );
+  Bool open( std::string filename, std::string resolution, std::string input_format, UInt bitsPel, UInt frame_rate, Bool bInput = true );
+  Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, UInt frame_rate, Bool bInput = true );
   Void close();
 
   Bool openFile();
   Void closeFile();
 
-  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
+  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, UInt& rFrameRate );
 
   Void loadAll();
 

@@ -99,14 +99,14 @@ PlaYUVerFrame::Pixel PlaYUVerFrame::ConvertPixel( Pixel inputPixel, ColorSpace e
   return outPixel;
 }
 
-PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pel_format )
+PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel )
 {
-  init( width, height, pel_format );
+  init( width, height, pelFormat, bitsPixel );
 }
 
 PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other )
 {
-  init( other->getWidth(), other->getHeight(), other->getPelFormat() );
+  init( other->getWidth(), other->getHeight(), other->getPelFormat(), other->getBitsPel() );
   copyFrom( other );
 }
 
@@ -130,7 +130,7 @@ PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt a
       areaHeight++;
   }
 
-  init( areaWidth, areaHeight, other->getPelFormat() );
+  init( areaWidth, areaHeight, other->getPelFormat(), other->getBitsPel() );
   copyFrom( other, posX, posY );
 }
 
@@ -145,16 +145,16 @@ PlaYUVerFrame::~PlaYUVerFrame()
   closePixfc();
 }
 
-static Int getMem3ImageComponents( Pel**** array3D, Int dim1, Int dim2, Int log2ChromaHeight, Int log2ChromaWidth )
+static Int getMem3ImageComponents( SBytePel**** array3D, Int dim1, Int dim2, Int log2ChromaHeight, Int log2ChromaWidth )
 {
   Int dim0 = 3;
   Int i;
   UInt64 total_mem_size = 0;
   UInt64 mem_size = ( dim1 * dim2 + CHROMASHIFT( dim1, log2ChromaHeight ) * CHROMASHIFT( dim2, log2ChromaWidth ) * 2 );
 
-  total_mem_size += getMem2D<Pel*>( array3D, dim0, dim1 );
+  total_mem_size += getMem2D<SBytePel*>( array3D, dim0, dim1 );
 
-  if( ( ( *array3D )[0][0] = ( Pel* )xCallocMem( mem_size, sizeof(Pel) ) ) == NULL )
+  if( ( ( *array3D )[0][0] = ( SBytePel* )xCallocMem( mem_size, sizeof(Pel) ) ) == NULL )
     printf( "getMem3DImageComponents: array1D" );
 
   total_mem_size += mem_size * sizeof(Pel);
@@ -179,7 +179,7 @@ static Int getMem3ImageComponents( Pel**** array3D, Int dim1, Int dim2, Int log2
   return total_mem_size;
 }
 
-Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format )
+Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel )
 {
   m_pppcInputPel = NULL;
   m_pcARGB32 = NULL;
@@ -187,13 +187,11 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format )
   m_uiHeight = height;
   m_iPixelFormat = pel_format;
   m_iNumberChannels = 3;
-  m_iBitsChannels = 8;
+  m_iBitsPel = bitsPixel;
 
-  Int max_bits_per_pel = sizeof(Pel) * 8;
-
-  if( m_uiWidth == 0 || m_uiHeight == 0 || m_iPixelFormat == -1 || m_iBitsChannels > max_bits_per_pel )
+  if( m_uiWidth == 0 || m_uiHeight == 0 || m_iPixelFormat == -1 || bitsPixel > 16 )
   {
-    return;
+    throw "Cannot create a PlYUVerFrame of this type";
   }
 
   m_pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[pel_format] );
@@ -225,19 +223,20 @@ UInt PlaYUVerFrame::getNumberChannels() const
 
 UInt64 PlaYUVerFrame::getBytesPerFrame()
 {
-  return getBytesPerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
+  return getBytesPerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat, m_iBitsPel );
 }
 
-UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat )
+UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, Int bitsPixel )
 {
   PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[iPixelFormat] );
+  UInt bytesPerPixel = bitsPixel / 8;
   UInt64 numberBytes = uiWidth * uiHeight;
   if( pcPelFormat->numberChannels > 1 )
   {
     UInt64 numberBytesChroma = CHROMASHIFT( uiWidth, pcPelFormat->log2ChromaWidth ) * CHROMASHIFT( uiHeight, pcPelFormat->log2ChromaHeight );
     numberBytes += ( pcPelFormat->numberChannels - 1 ) * numberBytesChroma;
   }
-  return numberBytes;
+  return numberBytes * bytesPerPixel;
 }
 
 UInt PlaYUVerFrame::getChromaWidth() const
@@ -501,7 +500,7 @@ Void PlaYUVerFrame::fromCvMat( Void* voidFrame )
 
   if( !isValid() )
   {
-    init( opencvFrame->cols, opencvFrame->rows, m_iPixelFormat );
+    init( opencvFrame->cols, opencvFrame->rows, m_iPixelFormat, 8 );
   }
 
   m_bHasRGBPel = false;

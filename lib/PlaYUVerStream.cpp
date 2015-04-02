@@ -163,7 +163,7 @@ PlaYUVerStream::~PlaYUVerStream()
   close();
 }
 
-Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::string input_format_name, UInt frame_rate, Bool bInput )
+Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::string input_format_name, UInt bitsPel, UInt frame_rate, Bool bInput )
 {
   UInt width;
   UInt height;
@@ -185,10 +185,10 @@ Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::st
       break;
     }
   }
-  return open( filename, width, height, input_format, frame_rate, bInput );
+  return open( filename, width, height, input_format, bitsPel, frame_rate, bInput );
 }
 
-Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int input_format, UInt frame_rate, Bool bInput )
+Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, UInt frame_rate, Bool bInput )
 {
   if( m_bInit )
   {
@@ -200,6 +200,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   m_uiWidth = width;
   m_uiHeight = height;
   m_iPixelFormat = input_format;
+  m_uiBitsPerPixel = bitsPel;
   m_dFrameRate = frame_rate;
 
   m_pchFilename = new Char[m_cFilename.size() + 1];
@@ -254,6 +255,10 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
       }
     }
 #endif
+    if( m_uiBitsPerPixel != 8 )
+    {
+      m_uiStreamHandler = YUV_IO;
+    }
     m_uiFrameBufferSize = 2;
   }
   else
@@ -311,8 +316,11 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
     getMem1D<PlaYUVerFrame*>( &m_ppcFrameBuffer, m_uiFrameBufferSize );
     for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
     {
-      m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
-      if( !m_ppcFrameBuffer[i] )
+      try
+      {
+        m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPerPixel );
+      }
+      catch( const char *msg )
       {
         close();
         throw "[PlaYUVerStream] Cannot allocated frame buffer";
@@ -384,7 +392,7 @@ Bool PlaYUVerStream::openFile()
   {
     return false;
   }
-  if ( m_bIsInput )
+  if( m_bIsInput )
   {
     fseek( m_pFile, m_iCurrFrameNum >= 0 ? m_iCurrFrameNum : 0, SEEK_SET );
   }
@@ -433,13 +441,14 @@ Void PlaYUVerStream::close()
   m_bInit = false;
 }
 
-Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
+Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, UInt& rFrameRate )
 {
   if( m_bInit )
   {
     rWidth = m_uiWidth;
     rHeight = m_uiHeight;
     rInputFormat = m_iPixelFormat;
+    rBitsPerPel = m_uiBitsPerPixel;
     rFrameRate = m_dFrameRate;
   }
   else
@@ -447,6 +456,7 @@ Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, 
     rWidth = 0;
     rHeight = 0;
     rInputFormat = PlaYUVerFrame::YUV420p;
+    rBitsPerPel = 8;
     rFrameRate = 30;
   }
 }
@@ -471,7 +481,7 @@ Void PlaYUVerStream::loadAll()
   getMem1D<PlaYUVerFrame*>( &m_ppcFrameBuffer, m_uiFrameBufferSize );
   for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
   {
-    m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat );
+    m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPerPixel );
     if( !m_ppcFrameBuffer[i] )
     {
       close();

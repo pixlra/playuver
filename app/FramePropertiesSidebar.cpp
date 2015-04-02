@@ -284,7 +284,7 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame, Bool isPlaying )
     if( m_iLastFrameType != colorSpace )
     {
       m_iLastFrameType = colorSpace;
-      if ( colorSpace == PlaYUVerFrame::COLOR_RGB || colorSpace == PlaYUVerFrame::COLOR_ARGB )
+      if( colorSpace == PlaYUVerFrame::COLOR_RGB || colorSpace == PlaYUVerFrame::COLOR_ARGB )
       {
         channelCB->clear();
         channelCB->clear();
@@ -339,8 +339,11 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame, Bool isPlaying )
         colorsLabel->hide();
       }
     }
+    UInt rangePel = ( 1 << pcFrame->getBitsPel() ) - 1;
+    minInterv->setRange( 0, rangePel );
+    maxInterv->setRange( 0, rangePel );
     setEnabled( true );
-    if( m_pcFrame || !(*pbMainPlaySwitch) )
+    if( m_pcFrame || !( *pbMainPlaySwitch ) )
     {
       m_pcFrame = pcFrame;
       updateDataHistogram();
@@ -360,9 +363,8 @@ Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
     if( selectionArea.isValid() )
     {
       histogramWidget->stopHistogramComputation();
-      histogramWidget->updateSelectionData( new PlaYUVerFrame(m_pcFrame,
-          selectionArea.x(), selectionArea.y(),
-          selectionArea.width(), selectionArea.height() ) );
+      histogramWidget->updateSelectionData(
+          new PlaYUVerFrame( m_pcFrame, selectionArea.x(), selectionArea.y(), selectionArea.width(), selectionArea.height() ) );
       fullImageButton->show();
       selectionImageButton->show();
       selectionImageButton->click();

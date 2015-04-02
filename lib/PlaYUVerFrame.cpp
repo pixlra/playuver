@@ -197,13 +197,14 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
   m_pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[pel_format] );
 
   m_bHasRGBPel = false;
+  UInt m_uiWidthBytes = m_uiWidth * ( ( m_iBitsPel - 1 ) / 8 + 1 );
   if( m_pcPelFormat->colorSpace == COLOR_GRAY )
   {
-    getMem3ImageComponents( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 1 );
+    getMem3ImageComponents( &m_pppcInputPel, m_uiHeight, m_uiWidthBytes, 1, 1 );
   }
   else
   {
-    getMem3ImageComponents( &m_pppcInputPel, m_uiHeight, m_uiWidth, m_pcPelFormat->log2ChromaHeight, m_pcPelFormat->log2ChromaWidth );
+    getMem3ImageComponents( &m_pppcInputPel, m_uiHeight, m_uiWidthBytes, m_pcPelFormat->log2ChromaHeight, m_pcPelFormat->log2ChromaWidth );
   }
   getMem1D( &m_pcARGB32, m_uiHeight * m_uiWidth * 4 );
 
@@ -229,7 +230,7 @@ UInt64 PlaYUVerFrame::getBytesPerFrame()
 UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, Int bitsPixel )
 {
   PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[iPixelFormat] );
-  UInt bytesPerPixel = bitsPixel / 8;
+  UInt bytesPerPixel = ( bitsPixel - 1 ) / 8 + 1;
   UInt64 numberBytes = uiWidth * uiHeight;
   if( pcPelFormat->numberChannels > 1 )
   {
@@ -261,6 +262,7 @@ Void PlaYUVerFrame::frameFromBuffer( Pel *Buff, UInt64 uiBuffSize )
 
   Pel* ppBuff[MAX_NUMBER_PLANES];
   Pel* pTmpPel, *pTmpBuff;
+  UInt bytesPixel = ( m_iBitsPel - 1 ) / 8 + 1;
   Int ratioH, ratioW, step;
   UInt i, ch;
 
@@ -281,7 +283,7 @@ Void PlaYUVerFrame::frameFromBuffer( Pel *Buff, UInt64 uiBuffSize )
     pTmpPel = m_pppcInputPel[ch][0];
     pTmpBuff = ppBuff[m_pcPelFormat->comp[ch].plane] + ( m_pcPelFormat->comp[ch].offset_plus1 - 1 );
 
-    for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ); i++ )
+    for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ) * bytesPixel; i++ )
     {
       *pTmpPel++ = *pTmpBuff;
       pTmpBuff += step;
@@ -294,6 +296,7 @@ Void PlaYUVerFrame::frameFromBuffer( Pel *Buff, UInt64 uiBuffSize )
 
 Void PlaYUVerFrame::frameToBuffer( Pel *output_buffer )
 {
+  UInt bytesPixel = ( m_iBitsPel - 1 ) / 8 + 1;
   Pel* ppBuff[MAX_NUMBER_PLANES];
   Pel* pTmpPel, *pTmpBuff;
   Int ratioH, ratioW, step;
@@ -316,7 +319,7 @@ Void PlaYUVerFrame::frameToBuffer( Pel *output_buffer )
     pTmpPel = m_pppcInputPel[ch][0];
     pTmpBuff = ppBuff[m_pcPelFormat->comp[ch].plane];
 
-    for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ); i++ )
+    for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ) * bytesPixel; i++ )
     {
       *pTmpBuff = *pTmpPel++;
       pTmpBuff += step;
@@ -329,13 +332,26 @@ Void PlaYUVerFrame::fillRGBBuffer()
 {
   if( m_bHasRGBPel )
     return;
-  if( m_pcPelFormat->colorSpace == COLOR_RGB )
+  UInt bytesPixel = ( m_iBitsPel - 1 ) / 8 + 1;
+  Int iR, iG, iB;
+  UInt* pARGB = ( UInt* )m_pcARGB32;
+  if( m_pcPelFormat->colorSpace == COLOR_GRAY )
+  {
+    Pel* pY = m_pppcInputPel[LUMA][0];
+    for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )
+    {
+      iR = *pY++;
+      iG = *pY++;
+      iB = *pY++;
+      *pARGB++ = PEL_RGB( iR, iG, iB );
+    }
+  }
+  else if( m_pcPelFormat->colorSpace == COLOR_RGB )
   {
     Pel* pR = m_pppcInputPel[COLOR_R][0];
     Pel* pG = m_pppcInputPel[COLOR_G][0];
     Pel* pB = m_pppcInputPel[COLOR_B][0];
-    Int iR, iG, iB;
-    UInt* pARGB = ( UInt* )m_pcARGB32;
+
     for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )
     {
       iR = *pR++;
@@ -346,7 +362,7 @@ Void PlaYUVerFrame::fillRGBBuffer()
   }
   else
   {
-    m_pcPelFormat->fillARGB32buffer( m_pppcInputPel, m_pcARGB32, m_uiWidth, m_uiHeight );
+    m_pcPelFormat->fillARGB32buffer( m_pppcInputPel, m_pcARGB32, m_uiWidth, m_uiHeight, bytesPixel );
   }
   m_bHasRGBPel = true;
 }

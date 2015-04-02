@@ -156,7 +156,7 @@ typedef struct PlaYUVerPixFmtDescriptor
    */
   PlaYUVerComponentDescriptor comp[4];
 
-  Void (*fillARGB32buffer)( Pel*** in, UChar* out, UInt width, UInt height );
+  Void (*fillARGB32buffer)( Pel*** in, UChar* out, UInt width, UInt height, UInt depth );
 
 } PlaYUVerPixFmtDescriptor;
 

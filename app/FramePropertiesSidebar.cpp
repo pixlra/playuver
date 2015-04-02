@@ -235,7 +235,7 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent, Bool* pbMainPla
   connect( renderingButtonGroup, SIGNAL( buttonClicked(int) ), this, SLOT( slotRenderingChanged(int) ) );
   connect( histogramWidget, SIGNAL( signalIntervalChanged( int, int ) ), this, SLOT( slotUpdateInterval(int, int) ) );
   connect( histogramWidget, SIGNAL( signalMaximumValueChanged(int) ), this, SLOT( slotUpdateIntervRange(int) ) );
-  connect( histogramWidget, SIGNAL( signalHistogramComputationDone(bool) ), this, SLOT( slotRefreshOptions(bool) ) );
+  connect( histogramWidget, SIGNAL( signalHistogramComputationDone(int) ), this, SLOT( slotRefreshOptions(int) ) );
   connect( histogramWidget, SIGNAL( signalHistogramComputationFailed(void) ), this, SLOT( slotHistogramComputationFailed(void) ) );
   connect( minInterv, SIGNAL( valueChanged (int) ), this, SLOT( slotMinValueChanged(int) ) );
   connect( maxInterv, SIGNAL( valueChanged (int) ), this, SLOT( slotMaxValueChanged(int) ) );
@@ -339,9 +339,6 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame, Bool isPlaying )
         colorsLabel->hide();
       }
     }
-    UInt rangePel = ( 1 << pcFrame->getBitsPel() ) - 1;
-    minInterv->setRange( 0, rangePel );
-    maxInterv->setRange( 0, rangePel );
     setEnabled( true );
     if( m_pcFrame || !( *pbMainPlaySwitch ) )
     {
@@ -456,7 +453,7 @@ Void FramePropertiesSideBar::stopHistogram()
 //                                  SLOTS
 ////////////////////////////////////////////////////////////////////////////////
 
-Void FramePropertiesSideBar::slotRefreshOptions( bool /*depth*/)
+Void FramePropertiesSideBar::slotRefreshOptions( int range )
 {
   if( !isVisible() )
     return;

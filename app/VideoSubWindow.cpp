@@ -43,8 +43,8 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array
     out << d.m_cFilename << d.m_uiWidth
                          << d.m_uiHeight
                          << d.m_iPelFormat
-                         << d.m_uiFrameRate
                          << d.m_uiBitsPelPixel
+                         << d.m_uiFrameRate
                          << d.m_uiFileSize;
   }
   return out;

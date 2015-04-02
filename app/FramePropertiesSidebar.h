@@ -116,7 +116,7 @@ private:
   Void updateDataHistogram();
 
 private Q_SLOTS:
-  void slotRefreshOptions( bool sixteenBit );
+  void slotRefreshOptions( int range );
   void slotHistogramComputationFailed( void );
   void slotChannelChanged( int channel );
   void slotScaleChanged( int scale );

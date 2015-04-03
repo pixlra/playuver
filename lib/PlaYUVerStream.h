@@ -84,7 +84,7 @@ private:
   Int m_iPixelFormat;
   UInt m_uiBitsPerPixel;
 
-  Pel* m_pStreamBuffer;
+  Byte* m_pStreamBuffer;
 
   UInt m_uiFrameBufferSize;
   PlaYUVerFrame **m_ppcFrameBuffer;

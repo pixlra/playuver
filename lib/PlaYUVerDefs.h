@@ -18,13 +18,13 @@
  */
 
 /**
- * \file     TypeDef.h
+ * \file     PlaYUVerDefs.h
  * \ingroup  PlaYUVerLib
  * \brief    Define basic types, new types and enumerations
  */
 
-#ifndef __TYPEDEF_H__
-#define __TYPEDEF_H__
+#ifndef __PLAYUVERDEFS_H__
+#define __PLAYUVERDEFS_H__
 
 #include <string>
 #include <algorithm>
@@ -75,9 +75,9 @@ typedef unsigned long long UInt64;
 // Type definition
 // ====================================================================================================================
 
-typedef UChar Pel;        ///< 8-bit pixel type
-typedef UChar SBytePel;        ///< 8-bit pixel type
-//typedef       Short           Pel;        ///< 16-bit pixel type
+//typedef UChar Pel;        ///< 8-bit pixel type
+typedef Short Pel;        ///< 16-bit pixel type
+typedef UChar Byte;
 
 // ====================================================================================================================
 // Limits definition
@@ -131,4 +131,4 @@ inline std::string lowercase( const std::string& in )
 
 }  // NAMESPACE
 
-#endif // __TYPEDEF_H__
+#endif // __PLAYUVERDEFS_H__

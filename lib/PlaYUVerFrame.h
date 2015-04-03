@@ -214,8 +214,8 @@ public:
   UInt getChromaHeight() const;
   UInt getChromaLength() const;
 
-  Void frameFromBuffer( Pel*, UInt64 );
-  Void frameToBuffer( Pel* );
+  Void frameFromBuffer( Byte*, UInt64 );
+  Void frameToBuffer( Byte* );
 
   Void fillRGBBuffer();
 

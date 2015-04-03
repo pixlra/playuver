@@ -364,7 +364,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
     return m_bInit;
   }
 
-  if( !getMem1D<Pel>( &m_pStreamBuffer, m_pcCurrFrame->getBytesPerFrame() ) )
+  if( !getMem1D<Byte>( &m_pStreamBuffer, m_pcCurrFrame->getBytesPerFrame() ) )
   {
     close();
     throw "[PlaYUVerStream] Cannot allocated memory";
@@ -432,7 +432,7 @@ Void PlaYUVerStream::close()
   }
 
   if( m_pStreamBuffer )
-    freeMem1D<Pel>( m_pStreamBuffer );
+    freeMem1D<Byte>( m_pStreamBuffer );
 
   if( m_pchFilename )
     delete[] m_pchFilename;
@@ -563,7 +563,7 @@ Void PlaYUVerStream::readFrame()
   if( m_uiStreamHandler == YUV_IO )
   {
     UInt64 frame_bytes_input = m_pcNextFrame->getBytesPerFrame();
-    UInt64 bytes_read = fread( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
+    UInt64 bytes_read = fread( m_pStreamBuffer, sizeof(Byte), frame_bytes_input, m_pFile );
     if( bytes_read != frame_bytes_input )
     {
       throw "[PlaYUVerStream] Cannot read file";
@@ -577,17 +577,7 @@ Void PlaYUVerStream::readFrame()
 
 Void PlaYUVerStream::writeFrame()
 {
-  if( m_uiStreamHandler == YUV_IO )
-  {
-    UInt64 frame_bytes_input = m_pcCurrFrame->getBytesPerFrame();
-    m_pcCurrFrame->frameToBuffer( m_pStreamBuffer );
-    UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
-    if( bytes_read != frame_bytes_input )
-    {
-      throw "[PlaYUVerStream] Cannot write into the file";
-    }
-  }
-  return;
+  writeFrame( m_pcCurrFrame );
 }
 
 Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
@@ -596,7 +586,7 @@ Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
   {
     UInt64 frame_bytes_input = pcFrame->getBytesPerFrame();
     pcFrame->frameToBuffer( m_pStreamBuffer );
-    UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Pel), frame_bytes_input, m_pFile );
+    UInt64 bytes_read = fwrite( m_pStreamBuffer, sizeof(Byte), frame_bytes_input, m_pFile );
     if( bytes_read != frame_bytes_input )
     {
       throw "[PlaYUVerStream] Cannot write into the file";

@@ -145,16 +145,16 @@ PlaYUVerFrame::~PlaYUVerFrame()
   closePixfc();
 }
 
-static Int getMem3ImageComponents( SBytePel**** array3D, Int dim1, Int dim2, Int log2ChromaHeight, Int log2ChromaWidth )
+static Int getMem3ImageComponents( Pel**** array3D, Int dim1, Int dim2, Int log2ChromaHeight, Int log2ChromaWidth )
 {
   Int dim0 = 3;
   Int i;
   UInt64 total_mem_size = 0;
   UInt64 mem_size = ( dim1 * dim2 + CHROMASHIFT( dim1, log2ChromaHeight ) * CHROMASHIFT( dim2, log2ChromaWidth ) * 2 );
 
-  total_mem_size += getMem2D<SBytePel*>( array3D, dim0, dim1 );
+  total_mem_size += getMem2D<Pel*>( array3D, dim0, dim1 );
 
-  if( ( ( *array3D )[0][0] = ( SBytePel* )xCallocMem( mem_size, sizeof(Pel) ) ) == NULL )
+  if( ( ( *array3D )[0][0] = ( Pel* )xCallocMem( mem_size, sizeof(Pel) ) ) == NULL )
     printf( "getMem3DImageComponents: array1D" );
 
   total_mem_size += mem_size * sizeof(Pel);
@@ -197,7 +197,7 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
   m_pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[pel_format] );
 
   m_bHasRGBPel = false;
-  UInt m_uiWidthBytes = m_uiWidth * ( ( m_iBitsPel - 1 ) / 8 + 1 );
+  UInt m_uiWidthBytes = m_uiWidth;  //* ( ( m_iBitsPel - 1 ) / 8 + 1 );
   if( m_pcPelFormat->colorSpace == COLOR_GRAY )
   {
     getMem3ImageComponents( &m_pppcInputPel, m_uiHeight, m_uiWidthBytes, 1, 1 );
@@ -255,13 +255,14 @@ UInt PlaYUVerFrame::getChromaLength() const
   return getChromaWidth() * getChromaHeight();
 }
 
-Void PlaYUVerFrame::frameFromBuffer( Pel *Buff, UInt64 uiBuffSize )
+Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, UInt64 uiBuffSize )
 {
   if( uiBuffSize != getBytesPerFrame() )
     return;
 
-  Pel* ppBuff[MAX_NUMBER_PLANES];
-  Pel* pTmpPel, *pTmpBuff;
+  Byte* ppBuff[MAX_NUMBER_PLANES];
+  Byte* pTmpBuff;
+  Pel* pTmpPel;
   UInt bytesPixel = ( m_iBitsPel - 1 ) / 8 + 1;
   Int ratioH, ratioW, step;
   UInt i, ch;
@@ -283,7 +284,7 @@ Void PlaYUVerFrame::frameFromBuffer( Pel *Buff, UInt64 uiBuffSize )
     pTmpPel = m_pppcInputPel[ch][0];
     pTmpBuff = ppBuff[m_pcPelFormat->comp[ch].plane] + ( m_pcPelFormat->comp[ch].offset_plus1 - 1 );
 
-    for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ) * bytesPixel; i++ )
+    for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ); i++ )
     {
       *pTmpPel++ = *pTmpBuff;
       pTmpBuff += step;
@@ -294,11 +295,12 @@ Void PlaYUVerFrame::frameFromBuffer( Pel *Buff, UInt64 uiBuffSize )
   m_bHasHistogram = false;
 }
 
-Void PlaYUVerFrame::frameToBuffer( Pel *output_buffer )
+Void PlaYUVerFrame::frameToBuffer( Byte *output_buffer )
 {
   UInt bytesPixel = ( m_iBitsPel - 1 ) / 8 + 1;
-  Pel* ppBuff[MAX_NUMBER_PLANES];
-  Pel* pTmpPel, *pTmpBuff;
+  Byte* ppBuff[MAX_NUMBER_PLANES];
+  Byte* pTmpBuff;
+  Pel* pTmpPel;
   Int ratioH, ratioW, step;
   UInt i, ch;
 
@@ -319,7 +321,7 @@ Void PlaYUVerFrame::frameToBuffer( Pel *output_buffer )
     pTmpPel = m_pppcInputPel[ch][0];
     pTmpBuff = ppBuff[m_pcPelFormat->comp[ch].plane];
 
-    for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ) * bytesPixel; i++ )
+    for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ); i++ )
     {
       *pTmpBuff = *pTmpPel++;
       pTmpBuff += step;
@@ -527,7 +529,7 @@ Void PlaYUVerFrame::fromCvMat( Void* voidFrame )
     Pel* pInputPelY = m_pppcInputPel[LUMA][0];
     Pel* pInputPelU = m_pppcInputPel[CHROMA_U][0];
     Pel* pInputPelV = m_pppcInputPel[CHROMA_V][0];
-    Pel* pcRGBPelInterlaced = m_pcARGB32;
+    UChar* pcRGBPelInterlaced = m_pcARGB32;
     memcpy( pcRGBPelInterlaced, opencvFrame->data, m_uiWidth * m_uiHeight * 4 * sizeof(Pel) );
     UInt* buff = ( UInt* )pcRGBPelInterlaced;
     for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )

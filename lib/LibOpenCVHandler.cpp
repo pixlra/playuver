@@ -127,10 +127,9 @@ Bool LibOpenCVHandler::saveFrame( PlaYUVerFrame* pcFrame, std::string filename )
   }
 
   cv::Mat pcCvFrame( pcFrame->getHeight(), pcFrame->getWidth(), cvType );
-
+  UChar* pCvPel = pcCvFrame.data;
   if( pcFrame->getColorSpace() != PlaYUVerFrame::COLOR_GRAY )
   {
-    UChar* pCvPel = pcCvFrame.data;
     UChar* pARGB = pcFrame->getRGBBuffer();
     for( UInt i = 0; i < pcFrame->getHeight() * pcFrame->getWidth(); i++ )
     {
@@ -140,9 +139,14 @@ Bool LibOpenCVHandler::saveFrame( PlaYUVerFrame* pcFrame, std::string filename )
       pARGB++;
     }
   }
-  else
+  if( pcFrame->getColorSpace() == PlaYUVerFrame::COLOR_GRAY )
   {
-    memcpy( pcCvFrame.data, pcFrame->getPelBufferYUV()[LUMA][0], pcFrame->getHeight() * pcFrame->getWidth() * sizeof(Pel) );
+
+    Pel* pPel = pcFrame->getPelBufferYUV()[LUMA][0];
+    for( UInt i = 0; i < pcFrame->getHeight() * pcFrame->getWidth(); i++ )
+    {
+      *pCvPel++ = *pPel++;
+    }
   }
   return cv::imwrite( filename, pcCvFrame );
 }

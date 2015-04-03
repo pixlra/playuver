@@ -156,8 +156,6 @@ typedef struct PlaYUVerPixFmtDescriptor
    */
   PlaYUVerComponentDescriptor comp[4];
 
-  Void (*fillARGB32buffer)( Pel*** in, UChar* out, UInt width, UInt height, UInt depth );
-
 } PlaYUVerPixFmtDescriptor;
 
 #define MAX_NUMBER_PLANES 3

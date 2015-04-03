@@ -52,46 +52,7 @@ namespace plaYUVer
 #define ADD_FFMPEG_PEL_FMT( fmt ) 0
 #endif
 
-Void fillARGB32bufferYUV( Pel*** in, UChar* out, UInt width, UInt height, UInt depth, UInt ratioChromaHor, UInt ratioChromaVer )
-{
-  Pel* pLineY = in[LUMA][0];
-  Pel* pLineU = in[CHROMA_U][0];
-  Pel* pLineV = in[CHROMA_V][0];
-  UInt uiChromaStride = CHROMASHIFT( width, ratioChromaHor );
-  Pel* pY;
-  Pel* pU;
-  Pel* pV;
-  Int iY, iU, iV, iR, iG, iB;
-  UInt* pARGBLine = ( UInt* )out;
-  UInt* pARGB;
-
-  for( UInt y = 0; y < height >> ratioChromaVer; y++ )
-  {
-    for( Int i = 0; i < 1 << ratioChromaVer; i++ )
-    {
-      pY = pLineY;
-      pU = pLineU;
-      pV = pLineV;
-      pARGB = pARGBLine;
-      for( UInt x = 0; x < width >> ratioChromaHor; x++ )
-      {
-        iU = *pU++;
-        iV = *pV++;
-        for( Int j = 0; j < ( 1 << ratioChromaHor ) * depth; j++ )
-        {
-          iY = *pY++;
-          YUV2RGB( iY, iU, iV, iR, iG, iB );
-          *pARGB++ = PEL_RGB( iR, iG, iB );
-        }
-      }
-      pLineY += width;
-      pARGBLine += width;
-    }
-    pLineU += uiChromaStride;
-    pLineV += uiChromaStride;
-  }
-}
-
+#if 0
 Void fillARGB32bufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height, UInt depth )
 {
 #ifdef USE_SSE
@@ -238,16 +199,7 @@ Void fillARGB32bufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height, UI
     fillARGB32bufferYUV( in, out, width, height, depth, 1, 1 );
   }
 }
-
-Void fillARGB32bufferYUV444p( Pel*** in, UChar* out, UInt width, UInt height, UInt depth )
-{
-  fillARGB32bufferYUV( in, out, width, height, depth, 0, 0 );
-}
-
-Void fillARGB32bufferYUV422( Pel*** in, UChar* out, UInt width, UInt height, UInt depth )
-{
-  fillARGB32bufferYUV( in, out, width, height, depth, 1, 0 );
-}
+#endif
 
 PlaYUVerPixFmtDescriptor yuv420p =
 {
@@ -259,26 +211,11 @@ PlaYUVerPixFmtDescriptor yuv420p =
   1,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV420P ),
   {
-    {
-      0,
-      0,
-      1,
-      0,
-      7 }, /* Y */
-    {
-      1,
-      0,
-      1,
-      0,
-      7 }, /* U */
-    {
-      2,
-      0,
-      1,
-      0,
-      7 }, /* V */
+    { 0, 0, 1, 0, 7 },        /* Y */
+    { 1, 0, 1, 0, 7 },        /* U */
+    { 2, 0, 1, 0, 7 },        /* V */
   },
-  fillARGB32bufferYUV420p, };
+};
 
 PlaYUVerPixFmtDescriptor yuv422p =
 {
@@ -290,26 +227,11 @@ PlaYUVerPixFmtDescriptor yuv422p =
   0,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV422P ),
   {
-    {
-      0,
-      0,
-      1,
-      0,
-      7 }, /* Y */
-    {
-      1,
-      0,
-      1,
-      0,
-      7 }, /* U */
-    {
-      2,
-      0,
-      1,
-      0,
-      7 }, /* V */
+    { 0, 0, 1, 0, 7 },        /* Y */
+    { 1, 0, 1, 0, 7 },        /* U */
+    { 2, 0, 1, 0, 7 },        /* V */
   },
-  fillARGB32bufferYUV422, };
+};
 
 PlaYUVerPixFmtDescriptor yuv444p =
 {
@@ -321,26 +243,11 @@ PlaYUVerPixFmtDescriptor yuv444p =
   0,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV444P ),
   {
-    {
-      0,
-      0,
-      1,
-      0,
-      7 }, /* Y */
-    {
-      1,
-      0,
-      1,
-      0,
-      7 }, /* U */
-    {
-      2,
-      0,
-      1,
-      0,
-      7 }, /* V */
+    { 0, 0, 1, 0, 7 },        /* Y */
+    { 1, 0, 1, 0, 7 },        /* U */
+    { 2, 0, 1, 0, 7 },        /* V */
   },
-  fillARGB32bufferYUV444p, };
+};
 
 PlaYUVerPixFmtDescriptor yuyv422 =
 {
@@ -352,26 +259,11 @@ PlaYUVerPixFmtDescriptor yuyv422 =
   0,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUYV422 ),
   {
-    {
-      0,
-      1,
-      1,
-      0,
-      7 }, /* Y */
-    {
-      0,
-      3,
-      2,
-      0,
-      7 }, /* U */
-    {
-      0,
-      3,
-      4,
-      0,
-      7 }, /* V */
+    { 0, 1, 1, 0, 7 },        /* Y */
+    { 0, 3, 2, 0, 7 },        /* U */
+    { 0, 3, 4, 0, 7 },        /* V */
   },
-  fillARGB32bufferYUV422, };
+};
 
 PlaYUVerPixFmtDescriptor gray =
 {
@@ -382,14 +274,8 @@ PlaYUVerPixFmtDescriptor gray =
   0,
   0,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_GRAY8 ),
-  {
-    {
-      0,
-      0,
-      1,
-      0,
-      7 } }, /* Y */
-  NULL, };
+  { { 0, 0, 1, 0, 7 } },        /* Y */
+};
 
 PlaYUVerPixFmtDescriptor RGB24 =
 {
@@ -401,26 +287,11 @@ PlaYUVerPixFmtDescriptor RGB24 =
   0,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_RGB24 ),
   {
-    {
-      0,
-      2,
-      1,
-      0,
-      7 }, /* R */
-    {
-      0,
-      2,
-      2,
-      0,
-      7 }, /* G */
-    {
-      0,
-      2,
-      3,
-      0,
-      7 }, /* B */
+    { 0, 2, 1, 0, 7 },        /* R */
+    { 0, 2, 2, 0, 7 },        /* G */
+    { 0, 2, 3, 0, 7 },        /* B */
   },
-  NULL, };
+};
 
 PlaYUVerPixFmtDescriptor BGR24 =
 {
@@ -432,26 +303,11 @@ PlaYUVerPixFmtDescriptor BGR24 =
   0,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_BGR24 ),
   {
-    {
-      0,
-      2,
-      3,
-      0,
-      7 }, /* R */
-    {
-      0,
-      2,
-      2,
-      0,
-      7 }, /* G */
-    {
-      0,
-      2,
-      1,
-      0,
-      7 }, /* B */
+    { 0, 2, 3, 0, 7 },        /* R */
+    { 0, 2, 2, 0, 7 },        /* G */
+    { 0, 2, 1, 0, 7 },        /* B */
   },
-  NULL, };
+};
 
 PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PLAYUVER_NUMBER_FORMATS] =
 {
@@ -461,6 +317,6 @@ PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PLAYUVER_NUMBER_FORMATS
   yuyv422,
   gray,
   RGB24,
-  BGR24, };
-
+  BGR24,
+};
 }  // NAMESPACE

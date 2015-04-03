@@ -56,7 +56,7 @@ Void PlaYUVerFrameStats::xSetupStatistics( const PlaYUVerFrame *pcFrame, UInt op
   m_uiImageHeight = pcFrame->getHeight();
   m_uiChannels = pcFrame->getNumberChannels();
 
-  m_uiHistoSegments = ( 1 << pcFrame->getBitsPel() ) - 1;
+  m_uiHistoSegments = 1 << pcFrame->getBitsPel();
   imageColorSpace = pcFrame->getColorSpace();
   imageChromaSize = pcFrame->getChromaLength();
 
@@ -95,7 +95,7 @@ Void PlaYUVerFrameStats::calcHistogram()
     data[LUMA] = m_pppImageData[LUMA][0];
     data[CHROMA_U] = m_pppImageData[CHROMA_U][0];
     data[CHROMA_V] = m_pppImageData[CHROMA_V][0];
-    for( i = 0; i < m_uiImageHeight * m_uiImageWidth; i++ )
+    for( i = 0; i < m_uiImageHeight * m_uiImageWidth && m_bRunningFlag; i++ )
     {
       m_puiHistogram[*( data[LUMA] ) + LUMA * m_uiHistoSegments]++;
       data[LUMA] += 1;

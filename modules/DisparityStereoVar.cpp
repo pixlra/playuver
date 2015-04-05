@@ -32,6 +32,7 @@ namespace plaYUVer
 DisparityStereoVar::DisparityStereoVar()
 {
   /* Module Definition */
+  m_iModuleAPI = MODULE_API_2;
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Disparity";
   m_pchModuleName = "StereoVar";
@@ -54,24 +55,27 @@ DisparityStereoVar::DisparityStereoVar()
   m_cStereoVar.flags = m_cStereoVar.USE_SMART_ID | m_cStereoVar.USE_AUTO_PARAMS | m_cStereoVar.USE_INITIAL_DISPARITY | m_cStereoVar.USE_MEDIAN_FILTERING;
 }
 
-Void DisparityStereoVar::create( PlaYUVerFrame* InputFrame )
+Bool DisparityStereoVar::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  m_pcDisparityFrame = new PlaYUVerFrame( InputFrame->getWidth(), InputFrame->getHeight(), PlaYUVerFrame::GRAY );
-  m_cStereoVar.minDisp = -( ( ( InputFrame->getWidth() / 8 ) + 15 ) & -16 );
+  m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+  m_cStereoVar.minDisp = -( ( ( apcFrameList[0]->getWidth() / 8 ) + 15 ) & -16 );
+  return true;
 }
-
-PlaYUVerFrame* DisparityStereoVar::process( PlaYUVerFrame* InputLeft, PlaYUVerFrame* InputRight )
+PlaYUVerFrame* DisparityStereoVar::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
+  PlaYUVerFrame* InputLeft = apcFrameList[0];
+  PlaYUVerFrame* InputRight = apcFrameList[1];
+
   cv::Mat* leftImage;
-  InputLeft->getCvMat( (Void**)&leftImage );
+  InputLeft->getCvMat( ( Void** )&leftImage );
   cv::Mat* rightImage;
-  InputRight->getCvMat( (Void**)&rightImage );
+  InputRight->getCvMat( ( Void** )&rightImage );
   cv::Mat disparityImage, disparityImage8;
 
-  m_cStereoVar(*leftImage,*rightImage,disparityImage);
-  disparityImage.convertTo(disparityImage8,CV_8U);
+  m_cStereoVar( *leftImage, *rightImage, disparityImage );
+  disparityImage.convertTo( disparityImage8, CV_8U );
 
-  m_pcDisparityFrame->fromCvMat( (Void*)&disparityImage8);
+  m_pcDisparityFrame->fromCvMat( ( Void* )&disparityImage8 );
   return m_pcDisparityFrame;
 }
 

@@ -47,8 +47,8 @@ public:
   {
   }
 
-  Void create( PlaYUVerFrame* InputFrame );
-  PlaYUVerFrame* process( PlaYUVerFrame* InputLeft, PlaYUVerFrame* InputRight );
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Void destroy();
 };
 

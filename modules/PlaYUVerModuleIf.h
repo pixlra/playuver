@@ -29,6 +29,7 @@
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"
 #include "lib/ProgramOptions.h"
+#include <vector>
 
 namespace plaYUVer
 {
@@ -37,6 +38,12 @@ namespace plaYUVer
 public: \
   static PlaYUVerModuleIf* Create() { return new X(); } \
   void Delete() { delete this; }
+
+enum  // Module API
+{
+  MODULE_API_1,
+  MODULE_API_2,
+};
 
 enum  // Module type
 {
@@ -66,6 +73,7 @@ class PlaYUVerModuleIf
 {
 public:
 
+  Int m_iModuleAPI;
   Int m_iModuleType;
   const Char* m_pchModuleCategory;
   const Char* m_pchModuleName;
@@ -77,6 +85,7 @@ public:
 
   PlaYUVerModuleIf()
   {
+    m_iModuleAPI = MODULE_API_1;
   }
   virtual ~PlaYUVerModuleIf()
   {
@@ -90,7 +99,9 @@ public:
   virtual Void create( PlaYUVerFrame* )
   {
   }
-
+  virtual Bool create( std::vector<PlaYUVerFrame*> apcFrameList )
+  {
+  }
   virtual PlaYUVerFrame* process( PlaYUVerFrame* )
   {
     return NULL;
@@ -99,7 +110,7 @@ public:
   {
     return NULL;
   }
-  virtual PlaYUVerFrame* process( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* )
+  virtual PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> )
   {
     return NULL;
   }
@@ -112,7 +123,7 @@ public:
   {
     return 0;
   }
-  virtual Double measure( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* )
+  virtual Double measure( std::vector<PlaYUVerFrame*> )
   {
     return 0;
   }

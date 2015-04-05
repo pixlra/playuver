@@ -189,7 +189,11 @@ public:
 
   QList<PlaYUVerAppModuleIf*> getModuleArray()
   {
-    return m_apcCurrentModule;
+    QList<PlaYUVerAppModuleIf*> apcModulesArray;
+    if( m_pcCurrentDisplayModule )
+      apcModulesArray.append( m_pcCurrentDisplayModule );
+    apcModulesArray.append( m_apcCurrentModule );
+    return apcModulesArray;
   }
 
   Void setTool( UInt uiTool )

@@ -47,37 +47,52 @@ PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaY
 
 void PlaYUVerAppModuleIf::run()
 {
+
   m_pcProcessedFrame = NULL;
   m_dMeasurementResult = 0;
 
+  std::vector<PlaYUVerFrame*> apcFrameList;
+  for( UInt i = 0; i < m_pcModule->m_uiNumberOfFrames; i++ )
+  {
+    apcFrameList.push_back( m_pcSubWindow[i]->getCurrFrame() );
+  }
+
   if( m_pcModule->m_iModuleType == FRAME_PROCESSING_MODULE )
   {
-    switch( m_pcModule->m_uiNumberOfFrames )
+    if( m_pcModule->m_iModuleAPI == MODULE_API_2 )
     {
-    case MODULE_REQUIRES_ONE_FRAME:
-      m_pcProcessedFrame = m_pcModule->process( m_pcSubWindow[0]->getCurrFrame() );
-      break;
-    case MODULE_REQUIRES_TWO_FRAMES:
-      m_pcProcessedFrame = m_pcModule->process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
-      break;
-    case MODULE_REQUIRES_THREE_FRAMES:
-      m_pcProcessedFrame = m_pcModule->process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame(), m_pcSubWindow[2]->getCurrFrame() );
-      break;
+      m_pcProcessedFrame = m_pcModule->process( apcFrameList );
+    }
+    else
+    {
+      switch( m_pcModule->m_uiNumberOfFrames )
+      {
+      case MODULE_REQUIRES_ONE_FRAME:
+        m_pcProcessedFrame = m_pcModule->process( m_pcSubWindow[0]->getCurrFrame() );
+        break;
+      case MODULE_REQUIRES_TWO_FRAMES:
+        m_pcProcessedFrame = m_pcModule->process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
+        break;
+      }
     }
   }
   else if( m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
   {
-    switch( m_pcModule->m_uiNumberOfFrames )
+    if( m_pcModule->m_iModuleAPI == MODULE_API_2 )
     {
-    case MODULE_REQUIRES_ONE_FRAME:
-      m_dMeasurementResult = m_pcModule->measure( m_pcSubWindow[0]->getCurrFrame() );
-      break;
-    case MODULE_REQUIRES_TWO_FRAMES:
-      m_dMeasurementResult = m_pcModule->measure( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
-      break;
-    case MODULE_REQUIRES_THREE_FRAMES:
-      m_dMeasurementResult = m_pcModule->measure( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame(), m_pcSubWindow[2]->getCurrFrame() );
-      break;
+      m_dMeasurementResult = m_pcModule->measure( apcFrameList );
+    }
+    else
+    {
+      switch( m_pcModule->m_uiNumberOfFrames )
+      {
+      case MODULE_REQUIRES_ONE_FRAME:
+        m_dMeasurementResult = m_pcModule->measure( m_pcSubWindow[0]->getCurrFrame() );
+        break;
+      case MODULE_REQUIRES_TWO_FRAMES:
+        m_dMeasurementResult = m_pcModule->measure( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
+        break;
+      }
     }
   }
   else

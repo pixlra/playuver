@@ -57,6 +57,7 @@ DisparityStereoVar::DisparityStereoVar()
 
 Bool DisparityStereoVar::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
+  _BASIC_MODULE_API_2_CHECK_
   m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
   m_cStereoVar.minDisp = -( ( ( apcFrameList[0]->getWidth() / 8 ) + 15 ) & -16 );
   return true;

@@ -44,6 +44,7 @@ FrameDifference::FrameDifference()
 
 Bool FrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
+  _BASIC_MODULE_API_2_CHECK_
   UInt bitsPixel = ( apcFrameList[0]->getBitsPel() + 1 ) & 0x0F;
   m_iMaxDiffValue = ( 1 << ( bitsPixel - 1 ) );
   m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY, bitsPixel );

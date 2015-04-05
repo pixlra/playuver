@@ -43,6 +43,7 @@ AbsoluteFrameDifference::AbsoluteFrameDifference()
 
 Bool AbsoluteFrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
+  _BASIC_MODULE_API_2_CHECK_
   m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
   return true;
 }

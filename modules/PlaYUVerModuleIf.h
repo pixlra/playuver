@@ -39,6 +39,13 @@ public: \
   static PlaYUVerModuleIf* Create() { return new X(); } \
   void Delete() { delete this; }
 
+#define _BASIC_MODULE_API_2_CHECK_ \
+if( apcFrameList.size() != m_uiNumberOfFrames ) \
+  return false; \
+for( UInt i = 0; i < apcFrameList.size(); i++ ) \
+  if( !apcFrameList[i] ) \
+  return false;
+
 enum  // Module API
 {
   MODULE_API_1,
@@ -57,8 +64,11 @@ enum  // Module type
 enum Module_NumberOfFrames
 {
   MODULE_REQUIRES_ONE_FRAME = 1,
-  MODULE_REQUIRES_TWO_FRAMES = 2,
-  MODULE_REQUIRES_THREE_FRAMES = 3,
+  MODULE_REQUIRES_TWO_FRAMES,
+  MODULE_REQUIRES_THREE_FRAMES,
+  MODULE_REQUIRES_FOUR_FRAMES,
+  MODULE_REQUIRES_FIVE_FRAMES,
+  MODULE_REQUIRES_SIX_FRAMES,
 };
 
 enum Module_Requirements
@@ -86,6 +96,7 @@ public:
   PlaYUVerModuleIf()
   {
     m_iModuleAPI = MODULE_API_1;
+    m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
   }
   virtual ~PlaYUVerModuleIf()
   {

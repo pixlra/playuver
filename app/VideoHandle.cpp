@@ -235,6 +235,7 @@ Void VideoHandle::update()
 
     if( pcFrame )
     {
+      resolution.append( QString( " %1 bpp" ).arg( pcFrame->getBitsPel() ) );
       m_pcResolutionLabel->setText( resolution );
     }
 

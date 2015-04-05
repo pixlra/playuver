@@ -345,15 +345,19 @@ Void PlaYUVerFrame::fillRGBBuffer()
   if( m_bHasRGBPel )
     return;
   Int iR, iG, iB;
+  Int shiftBits = m_iBitsPel - 8;
   UInt* pARGB = ( UInt* )m_pcARGB32;
   if( m_pcPelFormat->colorSpace == COLOR_GRAY )
   {
     Pel* pY = m_pppcInputPel[LUMA][0];
+    Int iY;
     for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )
     {
-      iR = *pY;
-      iG = *pY;
-      iB = *pY++;
+      iY = *pY++;
+      iY >>= shiftBits;
+      iR = iY;
+      iG = iY;
+      iB = iY;
       *pARGB++ = PEL_RGB( iR, iG, iB );
     }
   }
@@ -373,7 +377,6 @@ Void PlaYUVerFrame::fillRGBBuffer()
   }
   else if( m_pcPelFormat->colorSpace == COLOR_YUV )
   {
-    Int shiftBits = m_iBitsPel - 8;
     Pel* pLineY = m_pppcInputPel[LUMA][0];
     Pel* pLineU = m_pppcInputPel[CHROMA_U][0];
     Pel* pLineV = m_pppcInputPel[CHROMA_V][0];

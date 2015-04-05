@@ -65,15 +65,7 @@ void PlaYUVerAppModuleIf::run()
     }
     else
     {
-      switch( m_pcModule->m_uiNumberOfFrames )
-      {
-      case MODULE_REQUIRES_ONE_FRAME:
-        m_pcProcessedFrame = m_pcModule->process( m_pcSubWindow[0]->getCurrFrame() );
-        break;
-      case MODULE_REQUIRES_TWO_FRAMES:
-        m_pcProcessedFrame = m_pcModule->process( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
-        break;
-      }
+      m_pcProcessedFrame = m_pcModule->process( m_pcSubWindow[0]->getCurrFrame() );
     }
   }
   else if( m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
@@ -84,15 +76,7 @@ void PlaYUVerAppModuleIf::run()
     }
     else
     {
-      switch( m_pcModule->m_uiNumberOfFrames )
-      {
-      case MODULE_REQUIRES_ONE_FRAME:
-        m_dMeasurementResult = m_pcModule->measure( m_pcSubWindow[0]->getCurrFrame() );
-        break;
-      case MODULE_REQUIRES_TWO_FRAMES:
-        m_dMeasurementResult = m_pcModule->measure( m_pcSubWindow[0]->getCurrFrame(), m_pcSubWindow[1]->getCurrFrame() );
-        break;
-      }
+      m_dMeasurementResult = m_pcModule->measure( m_pcSubWindow[0]->getCurrFrame() );
     }
   }
   else

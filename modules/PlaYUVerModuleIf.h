@@ -101,12 +101,9 @@ public:
   }
   virtual Bool create( std::vector<PlaYUVerFrame*> apcFrameList )
   {
+    return false;
   }
   virtual PlaYUVerFrame* process( PlaYUVerFrame* )
-  {
-    return NULL;
-  }
-  virtual PlaYUVerFrame* process( PlaYUVerFrame*, PlaYUVerFrame* )
   {
     return NULL;
   }
@@ -114,12 +111,7 @@ public:
   {
     return NULL;
   }
-
   virtual Double measure( PlaYUVerFrame* )
-  {
-    return 0;
-  }
-  virtual Double measure( PlaYUVerFrame*, PlaYUVerFrame* )
   {
     return 0;
   }

@@ -31,6 +31,7 @@ namespace plaYUVer
 FrameDifference::FrameDifference()
 {
   /* Module Definition */
+  m_iModuleAPI = MODULE_API_2;
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Measurements";
   m_pchModuleName = "FrameDifference";
@@ -41,15 +42,18 @@ FrameDifference::FrameDifference()
   m_pcFrameDifference = NULL;
 }
 
-Void FrameDifference::create( PlaYUVerFrame* Input )
+Bool FrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  m_pcFrameDifference = new PlaYUVerFrame( Input->getWidth(), Input->getHeight(), PlaYUVerFrame::GRAY, Input->getBitsPel() );
+  UInt bitsPixel = ( apcFrameList[0]->getBitsPel() + 1 ) & 0x0F;
+  m_iMaxDiffValue = ( 1 << ( bitsPixel - 1 ) );
+  m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY, bitsPixel );
+  return true;
 }
 
-PlaYUVerFrame* FrameDifference::process( PlaYUVerFrame* Input1, PlaYUVerFrame* Input2 )
+PlaYUVerFrame* FrameDifference::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  Pel* pInput1PelYUV = Input1->getPelBufferYUV()[0][0];
-  Pel* pInput2PelYUV = Input2->getPelBufferYUV()[0][0];
+  Pel* pInput1PelYUV =  apcFrameList[0]->getPelBufferYUV()[0][0];
+  Pel* pInput2PelYUV = apcFrameList[1]->getPelBufferYUV()[0][0];
   Pel* pOutputPelYUV = m_pcFrameDifference->getPelBufferYUV()[0][0];
   Int aux_pel_1, aux_pel_2;
   Int diff = 0;
@@ -60,9 +64,9 @@ PlaYUVerFrame* FrameDifference::process( PlaYUVerFrame* Input1, PlaYUVerFrame* I
       aux_pel_1 = *pInput1PelYUV++;
       aux_pel_2 = *pInput2PelYUV++;
       diff = aux_pel_1 - aux_pel_2;
-      diff = std::min( diff, 127 );
-      diff = std::max( diff, -128 );
-      diff += 128;
+      diff = std::min( diff, m_iMaxDiffValue );
+      diff = std::max( diff, -m_iMaxDiffValue );
+      diff += m_iMaxDiffValue + 1;
       *pOutputPelYUV++ = diff;
     }
   return m_pcFrameDifference;

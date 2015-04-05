@@ -316,15 +316,7 @@ PlaYUVerFrame* PlaYUVerTools::applyFrameModule()
   PlaYUVerFrame* pcProcessedFrame = NULL;
   if( m_pcCurrModuleIf->m_iModuleType == FRAME_PROCESSING_MODULE )
   {
-    switch( m_pcCurrModuleIf->m_uiNumberOfFrames )
-    {
-    case MODULE_REQUIRES_ONE_FRAME:
-      pcProcessedFrame = m_pcCurrModuleIf->process( m_apcInputStreams[0]->getCurrFrame() );
-      break;
-    case MODULE_REQUIRES_TWO_FRAMES:
-      pcProcessedFrame = m_pcCurrModuleIf->process( m_apcInputStreams[0]->getCurrFrame(), m_apcInputStreams[1]->getCurrFrame() );
-      break;
-    }
+    pcProcessedFrame = m_pcCurrModuleIf->process( m_apcInputStreams[0]->getCurrFrame() );
   }
   return pcProcessedFrame;
 }
@@ -371,15 +363,7 @@ Int PlaYUVerTools::ModuleOperation()
       }
       else
       {
-        switch( m_pcCurrModuleIf->m_uiNumberOfFrames )
-        {
-        case MODULE_REQUIRES_ONE_FRAME:
-          dMeasurementResult = m_pcCurrModuleIf->measure( m_apcInputStreams[0]->getCurrFrame() );
-          break;
-        case MODULE_REQUIRES_TWO_FRAMES:
-          dMeasurementResult = m_pcCurrModuleIf->measure( m_apcInputStreams[0]->getCurrFrame(), m_apcInputStreams[1]->getCurrFrame() );
-          break;
-        }
+        dMeasurementResult = m_pcCurrModuleIf->measure( m_apcInputStreams[0]->getCurrFrame() );
       }
       m_cCmdLineHandler.log( CommandLineHandle::INFO, "   %3d", frame );
       m_cCmdLineHandler.log( CommandLineHandle::RESULT, "  %8.3f \n", dMeasurementResult );

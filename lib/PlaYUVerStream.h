@@ -77,13 +77,17 @@ private:
   std::string m_cCodedName;
   std::string m_cPelFmtName;
 
-  FILE* m_pFile; /**< The input file pointer >*/
-  std::fstream m_fsIOStream; /**< The input file pointer >*/
-
   Int m_iFileFormat;
+  UInt m_uiWidth;
+  UInt m_uiHeight;
   Int m_iPixelFormat;
   UInt m_uiBitsPerPixel;
+  Double m_dFrameRate;
+  UInt64 m_uiTotalFrameNum;
+  Int64 m_iCurrFrameNum;
 
+  FILE* m_pFile; /**< The input file pointer >*/
+  std::fstream m_fsIOStream; /**< The input file pointer >*/
   Byte* m_pStreamBuffer;
 
   UInt m_uiFrameBufferSize;
@@ -92,12 +96,6 @@ private:
   PlaYUVerFrame *m_pcNextFrame;
   UInt m_uiFrameBufferIndex;
   UInt64 m_uiCurrFrameFileIdx;
-
-  UInt m_uiWidth;
-  UInt m_uiHeight;
-  Double m_dFrameRate;
-  UInt64 m_uiTotalFrameNum;
-  Int64 m_iCurrFrameNum;
 
 public:
 

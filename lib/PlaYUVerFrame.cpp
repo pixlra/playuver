@@ -187,7 +187,7 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
   m_uiHeight = height;
   m_iPixelFormat = pel_format;
   m_iNumberChannels = 3;
-  m_iBitsPel = bitsPixel;
+  m_iBitsPel = bitsPixel > 8 ? bitsPixel : 8;
 
   if( m_uiWidth == 0 || m_uiHeight == 0 || m_iPixelFormat == -1 || bitsPixel > 16 )
   {

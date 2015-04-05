@@ -371,6 +371,14 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
     return m_bInit;
   }
 
+  if( m_pcCurrFrame )
+  {
+    m_uiWidth = m_pcCurrFrame->getWidth();
+    m_uiHeight = m_pcCurrFrame->getHeight();
+    m_iPixelFormat = m_pcCurrFrame->getPelFormat();
+    m_uiBitsPerPixel = m_pcCurrFrame->getBitsPel();
+  }
+
   m_cPelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[m_iPixelFormat].c_str();
 
   m_iCurrFrameNum = -1;

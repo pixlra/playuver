@@ -58,7 +58,7 @@ public:
     if( m_histogram && m_parent )
     {
       EventData *eventData = new EventData();
-//      eventData->starting = true;
+//      eventDm_imageHistogramata->starting = true;
 //      eventData->success = false;
 //      eventData->histogram = m_histogram;
 //      QCoreApplication::postEvent( m_parent, eventData );

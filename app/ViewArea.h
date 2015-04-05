@@ -163,6 +163,7 @@ private:
   QRect viewToWindow( const QRect& rc ) const;
 
   PlaYUVerFrame *m_pcCurrFrame;
+  UInt m_uiPixelHalfScale;
   QPixmap m_pixmap;
   QBitmap m_mask;
   QRect m_selectedArea;

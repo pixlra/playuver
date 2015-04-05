@@ -75,8 +75,7 @@ typedef unsigned long long UInt64;
 // Type definition
 // ====================================================================================================================
 
-//typedef UChar Pel;        ///< 8-bit pixel type
-typedef Short Pel;        ///< 16-bit pixel type
+typedef UShort Pel;        ///< 16-bit pixel type
 typedef UChar Byte;
 
 // ====================================================================================================================

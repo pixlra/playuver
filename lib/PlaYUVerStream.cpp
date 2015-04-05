@@ -623,7 +623,7 @@ Bool PlaYUVerStream::saveFrame( const std::string& filename, PlaYUVerFrame *save
     if( fmtExt == "yuv" )
     {
       PlaYUVerStream auxFrameStream;
-      if( !auxFrameStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(), saveFrame->getPelFormat(), 1, false ) )
+      if( !auxFrameStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(), saveFrame->getPelFormat(), saveFrame->getBitsPel(), 1, false ) )
       {
         return false;
       }

@@ -285,18 +285,16 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, UInt64 uiBuffSize )
 
     for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ); i++ )
     {
-      *pTmpPel = 0;
-      for( b = 0; b < bytesPixel; b++ )
+      *pTmpPel = *pTmpBuff;
+      for( b = 1; b < bytesPixel; b++ )
       {
-        *pTmpPel = ( *pTmpPel << ( m_iBitsPel - 8 * b ) );
-        *pTmpPel += *pTmpBuff++;
+        pTmpBuff++;
+        *pTmpPel |= ( *pTmpBuff << ( 8 * b ) );
       }
-      pTmpBuff--;
       pTmpPel++;
       pTmpBuff += step;
     }
   }
-
   m_bHasRGBPel = false;
   m_bHasHistogram = false;
 }
@@ -308,14 +306,14 @@ Void PlaYUVerFrame::frameToBuffer( Byte *output_buffer )
   Byte* pTmpBuff;
   Pel* pTmpPel;
   Int ratioH, ratioW, step;
-  UInt i, ch;
+  UInt i, ch, b;
 
   ppBuff[0] = output_buffer;
   for( Int i = 1; i < MAX_NUMBER_PLANES; i++ )
   {
     ratioW = i > 1 ? m_pcPelFormat->log2ChromaWidth : 0;
     ratioH = i > 1 ? m_pcPelFormat->log2ChromaHeight : 0;
-    ppBuff[i] = ppBuff[i - 1] + CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW );
+    ppBuff[i] = ppBuff[i - 1] + CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ) * bytesPixel;
   }
 
   for( ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
@@ -329,7 +327,13 @@ Void PlaYUVerFrame::frameToBuffer( Byte *output_buffer )
 
     for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ); i++ )
     {
-      *pTmpBuff = *pTmpPel++;
+      *pTmpBuff = ( *pTmpPel & 0x00FF );
+      for( b = 1; b < bytesPixel; b++ )
+      {
+        pTmpBuff++;
+        *pTmpBuff = ( *pTmpPel >> ( 8 * b ) ) & 0x00FF;
+      }
+      pTmpPel++;
       pTmpBuff += step;
     }
   }
@@ -340,7 +344,6 @@ Void PlaYUVerFrame::fillRGBBuffer()
 {
   if( m_bHasRGBPel )
     return;
-  UInt bytesPixel = ( m_iBitsPel - 1 ) / 8 + 1;
   Int iR, iG, iB;
   UInt* pARGB = ( UInt* )m_pcARGB32;
   if( m_pcPelFormat->colorSpace == COLOR_GRAY )
@@ -348,8 +351,8 @@ Void PlaYUVerFrame::fillRGBBuffer()
     Pel* pY = m_pppcInputPel[LUMA][0];
     for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )
     {
-      iR = *pY++;
-      iG = *pY++;
+      iR = *pY;
+      iG = *pY;
       iB = *pY++;
       *pARGB++ = PEL_RGB( iR, iG, iB );
     }
@@ -394,11 +397,14 @@ Void PlaYUVerFrame::fillRGBBuffer()
         pARGB = pARGBLine;
         for( x = 0; x < m_uiWidth >> m_pcPelFormat->log2ChromaWidth; x++ )
         {
-          iU = ( *pU++ ) >> shiftBits;
-          iV = ( *pV++ ) >> shiftBits;
+          iU = *pU++;
+          iU >>= shiftBits;
+          iV = *pV++;
+          iV >>= shiftBits;
           for( j = 0; j < ( 1 << m_pcPelFormat->log2ChromaWidth ); j++ )
           {
-            iY = *pY++ >> shiftBits;
+            iY = *pY++;
+            iY >>= shiftBits;
             YUV2RGB( iY, iU, iV, iR, iG, iB );
             *pARGB++ = PEL_RGB( iR, iG, iB );
           }

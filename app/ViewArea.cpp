@@ -71,6 +71,7 @@ ViewArea::ViewArea( QWidget *parent ) :
 void ViewArea::setImage( PlaYUVerFrame* pcFrame )
 {
   m_pcCurrFrame = pcFrame;
+  m_uiPixelHalfScale = 1 << ( m_pcCurrFrame->getBitsPel() - 1 );
   m_pcCurrFrame->fillRGBBuffer();
   QImage qimg = QImage( m_pcCurrFrame->getRGBBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), QImage::Format_RGB32 );
   setImage( QPixmap::fromImage( qimg ) );
@@ -122,29 +123,28 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
     return new_scale;
 
   Double zoomFactor = m_zoomFactor * scale * 100.0;
-  zoomFactor=round(zoomFactor);
-  zoomFactor=zoomFactor/100.0;
-  scale = zoomFactor/m_zoomFactor;
+  zoomFactor = round( zoomFactor );
+  zoomFactor = zoomFactor / 100.0;
+  scale = zoomFactor / m_zoomFactor;
 
-
-  if(!minimumSize.isNull())
+  if( !minimumSize.isNull() )
   {
-    Double cw = m_pixmap.width()*m_zoomFactor;
-    Double ch = m_pixmap.height()*m_zoomFactor;
-    Double fw = m_pixmap.width()*zoomFactor;
-    Double fh = m_pixmap.height()*zoomFactor;
+    Double cw = m_pixmap.width() * m_zoomFactor;
+    Double ch = m_pixmap.height() * m_zoomFactor;
+    Double fw = m_pixmap.width() * zoomFactor;
+    Double fh = m_pixmap.height() * zoomFactor;
     Double mw = minimumSize.width();
     Double mh = minimumSize.height();
 
-    if( (cw < mw) && (ch < mh) && (scale < 1) )
+    if( ( cw < mw ) && ( ch < mh ) && ( scale < 1 ) )
     {
       return new_scale;
     }
 
-    if( (fw < mw) && (fh < mh) && (scale < 1) )
+    if( ( fw < mw ) && ( fh < mh ) && ( scale < 1 ) )
     {
-      Double wfactor = mw/fw;
-      Double hfactor = mh/fh;
+      Double wfactor = mw / fw;
+      Double hfactor = mh / fh;
 
       if( wfactor < hfactor )
         scale = wfactor;
@@ -152,9 +152,9 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
         scale = hfactor;
 
       zoomFactor = zoomFactor * scale * 100.0;
-      zoomFactor=round(zoomFactor);
-      zoomFactor=zoomFactor/100.0;
-      scale = zoomFactor/m_zoomFactor;
+      zoomFactor = round( zoomFactor );
+      zoomFactor = zoomFactor / 100.0;
+      scale = zoomFactor / m_zoomFactor;
     }
   }
 
@@ -163,14 +163,14 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
   if( zoomFactor < minZoom )
   {
     zoomFactor = minZoom;
-    new_scale = zoomFactor/m_zoomFactor;
+    new_scale = zoomFactor / m_zoomFactor;
   }
   else
   {
     if( zoomFactor > maxZoom )
     {
       zoomFactor = maxZoom;
-      new_scale = zoomFactor/m_zoomFactor;
+      new_scale = zoomFactor / m_zoomFactor;
     }
   }
 
@@ -335,7 +335,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
 {
   QRect winRect = event->rect();
 
-  if(visibleRegion().isEmpty())
+  if( visibleRegion().isEmpty() )
     return;
 
   if( size().isEmpty() || m_pixmap.isNull() )
@@ -384,13 +384,12 @@ void ViewArea::paintEvent( QPaintEvent *event )
 
   painter.restore();
 
-
   // Draw a border around the image.
-/*  if( m_xOffset || m_yOffset )
-  {
-    painter.setPen( Qt::black );
-    painter.drawRect( m_xOffset - 1, m_yOffset - 1, m_pixmap.width() * m_zoomFactor + 1, m_pixmap.height() * m_zoomFactor + 1 );
-  }*/
+  /*  if( m_xOffset || m_yOffset )
+   {
+   painter.setPen( Qt::black );
+   painter.drawRect( m_xOffset - 1, m_yOffset - 1, m_pixmap.width() * m_zoomFactor + 1, m_pixmap.height() * m_zoomFactor + 1 );
+   }*/
 
   // Draw pixel values in grid
   if( m_zoomFactor >= 50.0 )
@@ -420,7 +419,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
         {
           sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y() );
 
-          if( sPixelValue.Y() < 128 )
+          if( sPixelValue.Y() < m_uiPixelHalfScale )
             painter.setPen( QColor( Qt::white ) );
           else
             painter.setPen( QColor( Qt::black ) );
@@ -433,7 +432,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
         {
           sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y() );
 
-          if( sPixelValue.Y() < 128 )
+          if( sPixelValue.Y() < m_uiPixelHalfScale )
             painter.setPen( QColor( Qt::white ) );
           else
             painter.setPen( QColor( Qt::black ) );
@@ -445,7 +444,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
         {
           sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y() );
 
-          if( ( sPixelValue.R() + sPixelValue.G() + sPixelValue.B() ) < 128 * 3 )
+          if( ( sPixelValue.R() + sPixelValue.G() + sPixelValue.B() ) < ( m_uiPixelHalfScale * 3 ) )
             painter.setPen( QColor( Qt::white ) );
           else
             painter.setPen( QColor( Qt::black ) );
@@ -456,7 +455,6 @@ void ViewArea::paintEvent( QPaintEvent *event )
         }
       }
     }
-
 
     QColor color( Qt::white );
     QPen mainPen = QPen( color, 1, Qt::SolidLine );
@@ -513,7 +511,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
       QRect imgr = viewToWindow( QRect( 0, 0, m_pixmap.width(), m_pixmap.height() ) );
 
       myPath.addRect( imgr );
-      myPath.addRect( sr); //m_selectedArea
+      myPath.addRect( sr );  //m_selectedArea
       painter.drawPath( myPath );
 
       // 2) Draw the selection rectangle   
@@ -600,14 +598,14 @@ void ViewArea::wheelEvent( QWheelEvent *event )
   if( event->modifiers() & Qt::ControlModifier )
   {
     scale = 0.001 * event->delta();
-    if(scale>0)
-      scale=1.25;
+    if( scale > 0 )
+      scale = 1.25;
     else
-      scale=0.8;
+      scale = 0.8;
 
     QWidget *p = parentWidget();
     QSize minimumSize = QSize( p->size().width() - 5, p->size().height() - 5 );
-    usedScale = scaleZoomFactor( scale , event->pos(), minimumSize );
+    usedScale = scaleZoomFactor( scale, event->pos(), minimumSize );
     if( usedScale != 1.0 )
     {
       emit zoomFactorChanged_byWheel( usedScale, event->pos() );
@@ -736,7 +734,7 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
         // From left to right
         if( m_lastPos.x() < actualPos.x() )
         {
-          QPoint bottomR = actualPos;// - QPoint( 1, 1 );
+          QPoint bottomR = actualPos;      // - QPoint( 1, 1 );
           m_selectedArea = QRect( m_lastPos, bottomR );
         }
         // From right to left
@@ -761,7 +759,7 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
         // From right to left
         else
         {
-          QPoint bottomR = m_lastPos;// - QPoint( 1, 1 );
+          QPoint bottomR = m_lastPos;      // - QPoint( 1, 1 );
           m_selectedArea = QRect( actualPos, bottomR );
         }
       }
@@ -868,57 +866,56 @@ void ViewArea::mouseReleaseEvent( QMouseEvent *event )
   }
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 
 bool ViewArea::isPosValid( const QPoint &pos ) const
 {
 
-if( pos.x() < 0 || pos.y() < 0 || pos.x() >= m_pixmap.width() || pos.y() >= m_pixmap.height() )
-  return false;
-else
-  return true;
+  if( pos.x() < 0 || pos.y() < 0 || pos.x() >= m_pixmap.width() || pos.y() >= m_pixmap.height() )
+    return false;
+  else
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 QPoint ViewArea::windowToView( const QPoint& pt ) const
 {
-QPoint p;
-p.setX( static_cast<int>( ( pt.x() - m_xOffset ) / m_zoomFactor ) );
-p.setY( static_cast<int>( ( pt.y() - m_yOffset ) / m_zoomFactor ) );
+  QPoint p;
+  p.setX( static_cast<int>( ( pt.x() - m_xOffset ) / m_zoomFactor ) );
+  p.setY( static_cast<int>( ( pt.y() - m_yOffset ) / m_zoomFactor ) );
 
-return p;
+  return p;
 }
 
 QRect ViewArea::windowToView( const QRect& rc ) const
 {
-QRect r;
+  QRect r;
 
-r.setTopLeft( windowToView( rc.topLeft() ) );
+  r.setTopLeft( windowToView( rc.topLeft() ) );
 //     r.setRight ( (int)( ceil(( rc.right()  - m_xOffset)/m_zoomFactor  )));
 //     r.setBottom( (int)( ceil(( rc.bottom()- m_yOffset)/m_zoomFactor  )));
 //     r.setRight ( static_cast<int>(( rc.right() - m_xOffset ) / m_zoomFactor +1));
 //     r.setBottom( static_cast<int>(( rc.bottom() - m_xOffset ) / m_zoomFactor+1));
-r.setBottomRight( windowToView( rc.bottomRight() ) );
-return r;
+  r.setBottomRight( windowToView( rc.bottomRight() ) );
+  return r;
 }
 
 QPoint ViewArea::viewToWindow( const QPoint& pt ) const
 {
-QPoint p;
+  QPoint p;
 
-p.setX( static_cast<int>( pt.x() * m_zoomFactor + m_xOffset ) );
-p.setY( static_cast<int>( pt.y() * m_zoomFactor + m_yOffset ) );
+  p.setX( static_cast<int>( pt.x() * m_zoomFactor + m_xOffset ) );
+  p.setY( static_cast<int>( pt.y() * m_zoomFactor + m_yOffset ) );
 
-return p;
+  return p;
 }
 
 QRect ViewArea::viewToWindow( const QRect& rc ) const
 {
-QRect r;
+  QRect r;
 
-r.setTopLeft( viewToWindow( rc.topLeft() ) );
+  r.setTopLeft( viewToWindow( rc.topLeft() ) );
 //     r.setRight ( (int)( ceil(( rc.right() +1+m_xOffset )*m_zoomFactor ) - 1 ));
 //     r.setBottom( (int)( ceil(( rc.bottom()+1+m_yOffset )*m_zoomFactor ) - 1 ));
 //     r.setRight ( (int)( ceil(( rc.right()+0.5)*m_zoomFactor  )+ m_xOffset )-1);
@@ -926,9 +923,9 @@ r.setTopLeft( viewToWindow( rc.topLeft() ) );
 // qDebug()<<"Right = "<< r.right();
 //     r.setRight ( static_cast<int>(( rc.right()+1) * m_zoomFactor + m_xOffset -1) );
 //     r.setBottom( static_cast<int>(( rc.bottom()+1) * m_zoomFactor + m_yOffset -1));
-r.setBottomRight( viewToWindow( rc.bottomRight() ) );
+  r.setBottomRight( viewToWindow( rc.bottomRight() ) );
 
-return r;
+  return r;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -936,41 +933,41 @@ return r;
 ////////////////////////////////////////////////////////////////////////////////
 void ViewArea::updateMask( const QRect &rect )
 {
-switch( tool() )
-{
-case MaskTool:
-{
-  // Add rect to the mask
-  QPainter painter( &m_mask );
-  painter.setBrush( Qt::color1 );
-  painter.setPen( Qt::NoPen );
-  painter.drawRect( rect );
-  painter.end();
-  break;
-}
-case EraserTool:
-{
-  // Clears rect area in the mask
-  QPainter painter( &m_mask );
-  painter.setBrush( Qt::color0 );
-  painter.setPen( Qt::NoPen );
-  painter.drawRect( rect );
-  painter.end();
-  break;
-}
-default: /* Do Nothing */
-  ;
-}
+  switch( tool() )
+  {
+  case MaskTool:
+  {
+    // Add rect to the mask
+    QPainter painter( &m_mask );
+    painter.setBrush( Qt::color1 );
+    painter.setPen( Qt::NoPen );
+    painter.drawRect( rect );
+    painter.end();
+    break;
+  }
+  case EraserTool:
+  {
+    // Clears rect area in the mask
+    QPainter painter( &m_mask );
+    painter.setBrush( Qt::color0 );
+    painter.setPen( Qt::NoPen );
+    painter.drawRect( rect );
+    painter.end();
+    break;
+  }
+  default: /* Do Nothing */
+    ;
+  }
 }
 
 void ViewArea::setInputStream( PlaYUVerStream *stream )
 {
-m_pStream = stream;
+  m_pStream = stream;
 }
 
 PlaYUVerStream* ViewArea::getInputStream()
 {
-return m_pStream;
+  return m_pStream;
 }
 
 }  // NameSpace plaYUVer

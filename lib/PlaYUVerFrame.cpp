@@ -372,7 +372,7 @@ Void PlaYUVerFrame::fillRGBBuffer()
       iR = *pR++;
       iG = *pG++;
       iB = *pB++;
-      *pARGB++ = PEL_RGB( iR, iG, iB );
+      *pARGB++ = PEL_RGB( ( iR >> shiftBits ), ( iG >> shiftBits ), ( iB >> shiftBits ) );
     }
   }
   else if( m_pcPelFormat->colorSpace == COLOR_YUV )

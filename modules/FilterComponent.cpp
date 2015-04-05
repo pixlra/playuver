@@ -34,10 +34,10 @@ FilterComponentModule::FilterComponentModule()
   m_pcFilteredFrame = NULL;
 }
 
-Void FilterComponentModule::createFilter( UInt uiWidth, UInt uiHeight )
+Void FilterComponentModule::createFilter( UInt uiWidth, UInt uiHeight, UInt bitsPixel )
 {
   m_pcFilteredFrame = NULL;
-  m_pcFilteredFrame = new PlaYUVerFrame( uiWidth, uiHeight, PlaYUVerFrame::GRAY );
+  m_pcFilteredFrame = new PlaYUVerFrame( uiWidth, uiHeight, PlaYUVerFrame::GRAY, bitsPixel );
 }
 
 PlaYUVerFrame* FilterComponentModule::filterComponent( PlaYUVerFrame* InputFrame, Int Component )
@@ -60,7 +60,7 @@ FilterComponentLuma::FilterComponentLuma()
   /* Module Definition */
   m_iModuleType = FRAME_PROCESSING_MODULE;              // Apply module to the frames or to the whole sequence.
                                                         // Currently only support for frame
-  m_pchModuleCategory = "FilterComponent";             // Category (sub-menu)
+  m_pchModuleCategory = "FilterComponent";              // Category (sub-menu)
   m_pchModuleName = "Luma";                             // Name
   m_pchModuleTooltip = "Filter Y matrix of YUV frame";  // Description
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;       // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
@@ -70,7 +70,7 @@ FilterComponentLuma::FilterComponentLuma()
 
 Void FilterComponentLuma::create( PlaYUVerFrame* InputFrame )
 {
-  createFilter( InputFrame->getWidth(), InputFrame->getHeight() );
+  createFilter( InputFrame->getWidth(), InputFrame->getHeight(), InputFrame->getBitsPel() );
 }
 
 PlaYUVerFrame* FilterComponentLuma::process( PlaYUVerFrame* InputFrame )
@@ -91,7 +91,7 @@ FilterComponentChromaU::FilterComponentChromaU()
 
 Void FilterComponentChromaU::create( PlaYUVerFrame* InputFrame )
 {
-  createFilter( InputFrame->getChromaWidth(), InputFrame->getChromaHeight() );
+  createFilter( InputFrame->getChromaWidth(), InputFrame->getChromaHeight(), InputFrame->getBitsPel() );
 }
 
 PlaYUVerFrame* FilterComponentChromaU::process( PlaYUVerFrame* InputFrame )
@@ -112,7 +112,7 @@ FilterComponentChromaV::FilterComponentChromaV()
 
 Void FilterComponentChromaV::create( PlaYUVerFrame* InputFrame )
 {
-  createFilter( InputFrame->getChromaWidth(), InputFrame->getChromaHeight() );
+  createFilter( InputFrame->getChromaWidth(), InputFrame->getChromaHeight(), InputFrame->getBitsPel() );
 }
 
 PlaYUVerFrame* FilterComponentChromaV::process( PlaYUVerFrame* InputFrame )

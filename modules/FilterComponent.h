@@ -43,7 +43,7 @@ public:
   PlaYUVerFrame* process( PlaYUVerFrame* ) = 0;
   Void destroy();
 
-  Void createFilter( UInt uiWidth, UInt uiHeight );
+  Void createFilter( UInt uiWidth, UInt uiHeight, UInt bitsPixel );
   PlaYUVerFrame* filterComponent( PlaYUVerFrame* InputFrame,  Int Component );
 };
 

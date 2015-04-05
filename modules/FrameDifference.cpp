@@ -43,7 +43,7 @@ FrameDifference::FrameDifference()
 
 Void FrameDifference::create( PlaYUVerFrame* Input )
 {
-  m_pcFrameDifference = new PlaYUVerFrame( Input->getWidth(), Input->getHeight(), PlaYUVerFrame::GRAY );
+  m_pcFrameDifference = new PlaYUVerFrame( Input->getWidth(), Input->getHeight(), PlaYUVerFrame::GRAY, Input->getBitsPel() );
 }
 
 PlaYUVerFrame* FrameDifference::process( PlaYUVerFrame* Input1, PlaYUVerFrame* Input2 )

@@ -61,7 +61,7 @@ Void FrameCrop::create( PlaYUVerFrame* frame )
   {
     m_iYSize = frame->getHeight() - m_uiYPosition;
   }
-  m_pcCropedFrame = new PlaYUVerFrame( m_iXSize, m_iYSize, frame->getPelFormat() );
+  m_pcCropedFrame = new PlaYUVerFrame( m_iXSize, m_iYSize, frame->getPelFormat(), frame->getBitsPel() );
 }
 
 PlaYUVerFrame* FrameCrop::process( PlaYUVerFrame* frame )

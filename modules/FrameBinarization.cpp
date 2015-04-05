@@ -47,7 +47,7 @@ FrameBinarization::FrameBinarization()
 Void FrameBinarization::create( PlaYUVerFrame* frame )
 {
   m_pcBinFrame = NULL;
-  m_pcBinFrame = new PlaYUVerFrame( frame->getWidth(), frame->getHeight(), PlaYUVerFrame::GRAY );
+  m_pcBinFrame = new PlaYUVerFrame( frame->getWidth(), frame->getHeight(), PlaYUVerFrame::GRAY, 8 );
 }
 
 PlaYUVerFrame* FrameBinarization::process( PlaYUVerFrame* frame )

@@ -232,6 +232,8 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   m_comboBoxColorSpace->setCurrentIndex( 0 );
 
+  setFixedSize( MainLayout->sizeHint() );
+
 }
 
 Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, UInt& rFrameRate )

@@ -36,19 +36,19 @@ namespace plaYUVer
 class OpionConfiguration: public QWidget
 {
 public:
-  OpionConfiguration( QWidget *parent, OptionBase* option ) :
-          QWidget( parent )
+  OpionConfiguration( OptionBase* option )
   {
     m_cName = option->opt_string;
-    m_pcDescription = new QLabel( this );
+    m_pcDescription = new QLabel;
     m_pcDescription->setText( QString::fromStdString( option->opt_desc ) );
-    m_pcValue = new QLineEdit( this );
+    m_pcValue = new QLineEdit;
     m_pcValue->setMinimumWidth( 40 );
     m_pcValue->setMaximumWidth( 65 );
-    QHBoxLayout* layout = new QHBoxLayout( this );
+    QHBoxLayout* layout = new QHBoxLayout;
     layout->addWidget( m_pcDescription, Qt::AlignLeft );
     layout->addWidget( m_pcValue, Qt::AlignRight );
     layout->setContentsMargins( 1, 1, 1, 1 );
+    setLayout( layout );
   }
   const QString getValue() const
   {
@@ -74,14 +74,13 @@ ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget *parent, PlaYUVerAppModu
 
   const Options::OptionsList& moduleOptions = m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.getOptionList();
 
-  QVBoxLayout* mainLayout = new QVBoxLayout( this );
-
+  QVBoxLayout* optionsLayout = new QVBoxLayout;
   OpionConfiguration* pcOption;
   for( Options::OptionsList::const_iterator it = moduleOptions.begin(); it != moduleOptions.end(); ++it )
   {
-    pcOption = new OpionConfiguration( this, ( *it )->opt );
+    pcOption = new OpionConfiguration( ( *it )->opt );
     m_apcOptionList.append( pcOption );
-    mainLayout->addWidget( pcOption );
+    optionsLayout->addWidget( pcOption );
   }
 
   QDialogButtonBox* dialogButtonOkCancel = new QDialogButtonBox();
@@ -89,9 +88,12 @@ ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget *parent, PlaYUVerAppModu
   dialogButtonOkCancel->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
   dialogButtonOkCancel->setCenterButtons( false );
 
+  QVBoxLayout* mainLayout = new QVBoxLayout;
+  mainLayout->addItem( optionsLayout );
   mainLayout->addWidget( dialogButtonOkCancel );
+  setLayout( mainLayout );
 
-  setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) );
+  setFixedSize( mainLayout->sizeHint() );
 
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );

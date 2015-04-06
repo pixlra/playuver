@@ -99,6 +99,9 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWi
   }
 
   update();
+
+  setFixedSize( mainLayout->sizeHint() );
+
 }
 
 Void DialogSubWindowSelector::updateSubWindowList()

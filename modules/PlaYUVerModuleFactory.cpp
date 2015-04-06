@@ -40,6 +40,7 @@ PlaYUVerModuleFactory::PlaYUVerModuleFactory()
   Register( "AbsoluteFrameDifference", &AbsoluteFrameDifference::Create );
   Register( "FrameCrop", &FrameCrop::Create );
   Register( "FrameBinarization", &FrameBinarization::Create );
+  Register( "EightBitsSampling", &EightBitsSampling::Create );
   Register( "LumaAverage", &LumaAverage::Create );
 #ifdef USE_OPENCV
   Register( "DisparityStereoVar", &DisparityStereoVar::Create );

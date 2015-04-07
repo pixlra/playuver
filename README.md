@@ -46,17 +46,16 @@ Build
 ----------------------------------------------------------------
 Download update build for windows and linux from our <a href="https://sourceforge.net/projects/playuver/">SourceForge project page</a>
 
-To build yourself
+Building yourself
 
-1. Dependencies:
+1. Dependencies
   - an ordinary C++ development environment (g++, make, C++ libraries and headers, ...)
   - cmake
   - a Qt development environment (libraries, headers, qmake, ...): only QtCore, QtGui and QtWidgets are required, at least in version 4
   - QtDBus (optional)
   - OpenCv (optional)
   - FFmpeg (optional)
-
-3. Example configuration command:
+2. Example configuration command
 ```
 mkdir build
 cd build

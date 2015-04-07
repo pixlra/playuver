@@ -46,10 +46,10 @@ std::vector<std::string> PlaYUVerStream::supportedReadFormatsExt()
   std::vector<std::string> libAvFmt = LibAvContextHandle::supportedReadFormatsExt();
   formatsExt.insert( formatsExt.end(), libAvFmt.begin(), libAvFmt.end() );
 #endif
-#ifdef USE_OPENCV
-  std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedReadFormatsExt();
-  formatsExt.insert( formatsExt.end(), opencvFmt.begin(), opencvFmt.end() );
-#endif
+//#ifdef USE_OPENCV
+//  std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedReadFormatsExt();
+//  formatsExt.insert( formatsExt.end(), opencvFmt.begin(), opencvFmt.end() );
+//#endif
   return formatsExt;
 }
 
@@ -61,10 +61,10 @@ std::vector<std::string> PlaYUVerStream::supportedReadFormatsName()
   std::vector<std::string> libAvFmt = LibAvContextHandle::supportedReadFormatsName();
   formatsName.insert( formatsName.end(), libAvFmt.begin(), libAvFmt.end() );
 #endif
-#ifdef USE_OPENCV
-  std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedReadFormatsName();
-  formatsName.insert( formatsName.end(), opencvFmt.begin(), opencvFmt.end() );
-#endif
+//#ifdef USE_OPENCV
+//  std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedReadFormatsName();
+//  formatsName.insert( formatsName.end(), opencvFmt.begin(), opencvFmt.end() );
+//#endif
   return formatsName;
 }
 
@@ -143,6 +143,7 @@ PlaYUVerStream::PlaYUVerStream()
   m_uiTotalFrameNum = 0;
   m_iCurrFrameNum = -1;
   m_iPixelFormat = -1;
+  m_uiBitsPerPixel = 8;
   m_dFrameRate = 30;
   m_iFileFormat = -1;
   m_pStreamBuffer = NULL;

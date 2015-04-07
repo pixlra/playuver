@@ -67,16 +67,14 @@ PlaYUVerFrame* DisparityStereoVar::process( std::vector<PlaYUVerFrame*> apcFrame
   PlaYUVerFrame* InputLeft = apcFrameList[0];
   PlaYUVerFrame* InputRight = apcFrameList[1];
 
-  cv::Mat* leftImage;
-  InputLeft->getCvMat( ( Void** )&leftImage );
-  cv::Mat* rightImage;
-  InputRight->getCvMat( ( Void** )&rightImage );
+  cv::Mat* leftImage = InputLeft->getCvMat();
+  cv::Mat* rightImage = InputRight->getCvMat();
   cv::Mat disparityImage, disparityImage8;
 
   m_cStereoVar( *leftImage, *rightImage, disparityImage );
   disparityImage.convertTo( disparityImage8, CV_8U );
 
-  m_pcDisparityFrame->fromCvMat( ( Void* )&disparityImage8 );
+  m_pcDisparityFrame->fromCvMat( &disparityImage8 );
   return m_pcDisparityFrame;
 }
 

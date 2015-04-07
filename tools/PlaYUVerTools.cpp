@@ -196,6 +196,11 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
       m_pcCurrModuleIf->create( m_apcInputStreams[0]->getCurrFrame() );
       moduleCreated = true;
     }
+    if( !moduleCreated )
+    {
+      m_cCmdLineHandler.log( CommandLineHandle::ERROR, "Module is not supported with the selected inputs! " );
+      return 2;
+    }
 
     if( m_pcCurrModuleIf->m_iModuleType == FRAME_PROCESSING_MODULE )
     {

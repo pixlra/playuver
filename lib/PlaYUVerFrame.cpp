@@ -521,47 +521,59 @@ Void PlaYUVerFrame::FrametoRGB8Pixfc()
 #endif
 }
 
-Void PlaYUVerFrame::getCvMat( Void** ppCvFrame )
+cv::Mat* PlaYUVerFrame::getCvMat( Bool convertToGray )
 {
 #ifdef USE_OPENCV
-  Int cvType = CV_8UC3;
-  switch( m_pcPelFormat->numberChannels )
+  if( convertToGray && !( m_pcPelFormat->colorSpace == PlaYUVerFrame::COLOR_YUV || m_pcPelFormat->colorSpace == PlaYUVerFrame::COLOR_GRAY ) )
   {
-  case 3:
-    cvType = CV_8UC4;
-    break;
-  case 1:
-    cvType = CV_8UC1;
-    break;
-  default:
-    break;
+    return NULL;
   }
+  Int cvType = CV_MAKETYPE( CV_8U, convertToGray ? 1 : m_pcPelFormat->numberChannels );
   cv::Mat *pcCvFrame = new cv::Mat( m_uiHeight, m_uiWidth, cvType );
-  if( m_pcPelFormat->colorSpace != PlaYUVerFrame::COLOR_GRAY )
+  UChar* pCvPel = pcCvFrame->data;
+  if( !convertToGray && ( m_pcPelFormat->colorSpace == PlaYUVerFrame::COLOR_YUV || m_pcPelFormat->colorSpace == PlaYUVerFrame::COLOR_RGB ) )
   {
     fillRGBBuffer();
-    memcpy( pcCvFrame->data, m_pcARGB32, m_uiWidth * m_uiHeight * 4 * sizeof(UChar) );
+    UChar* pARGB = m_pcARGB32;
+    for( UInt i = 0; i < m_uiWidth * m_uiHeight; i++ )
+    {
+      *pCvPel++ = *pARGB++;
+      *pCvPel++ = *pARGB++;
+      *pCvPel++ = *pARGB++;
+      pARGB++;
+    }
+  }
+  else if( convertToGray || m_pcPelFormat->colorSpace == PlaYUVerFrame::COLOR_GRAY )
+  {
+    Pel* pPel = m_pppcInputPel[LUMA][0];
+    for( UInt i = 0; i < m_uiWidth * m_uiHeight; i++ )
+    {
+      *pCvPel++ = *pPel++;
+    }
   }
   else
   {
-    memcpy( pcCvFrame->data, &( m_pppcInputPel[LUMA][0][0] ), m_uiWidth * m_uiHeight * sizeof(Pel) );
+    if( pcCvFrame )
+      delete pcCvFrame;
+    pcCvFrame = NULL;
   }
-  *ppCvFrame = pcCvFrame;
+  return pcCvFrame;
+#else
+  return NULL;
 #endif
 }
 
-Void PlaYUVerFrame::fromCvMat( Void* voidFrame )
+Void PlaYUVerFrame::fromCvMat( cv::Mat* pcCvFrame )
 {
 #ifdef USE_OPENCV
-  cv::Mat* opencvFrame = ( cv::Mat* )voidFrame;
   if( m_iPixelFormat == NO_FMT )
   {
-    switch( opencvFrame->channels() )
+    switch( pcCvFrame->channels() )
     {
     case 1:
       m_iPixelFormat = GRAY;
       break;
-    case 4:
+    case 3:
       m_iPixelFormat = RGB24;
       break;
     default:
@@ -571,31 +583,32 @@ Void PlaYUVerFrame::fromCvMat( Void* voidFrame )
 
   if( !isValid() )
   {
-    init( opencvFrame->cols, opencvFrame->rows, m_iPixelFormat, 8 );
+    init( pcCvFrame->cols, pcCvFrame->rows, m_iPixelFormat, 8 );
   }
 
   m_bHasRGBPel = false;
   m_bHasHistogram = false;
 
+  UChar* pCvPel = pcCvFrame->data;
   if( m_iPixelFormat != GRAY )
   {
-    Pel* pInputPelY = m_pppcInputPel[LUMA][0];
-    Pel* pInputPelU = m_pppcInputPel[CHROMA_U][0];
-    Pel* pInputPelV = m_pppcInputPel[CHROMA_V][0];
-    UChar* pcRGBPelInterlaced = m_pcARGB32;
-    memcpy( pcRGBPelInterlaced, opencvFrame->data, m_uiWidth * m_uiHeight * 4 * sizeof(Pel) );
-    UInt* buff = ( UInt* )pcRGBPelInterlaced;
+    Pel* pInputPelR = m_pppcInputPel[COLOR_R][0];
+    Pel* pInputPelG = m_pppcInputPel[COLOR_G][0];
+    Pel* pInputPelB = m_pppcInputPel[COLOR_B][0];
     for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )
     {
-      *pInputPelY++ = pelRed( *buff );
-      *pInputPelU++ = pelGreen( *buff );
-      *pInputPelV++ = pelBlue( *buff++ );
+      *pInputPelR++ = pelRed( *pCvPel++ );
+      *pInputPelG++ = pelGreen( *pCvPel++ );
+      *pInputPelB++ = pelBlue( *pCvPel++ );
     }
-    m_bHasRGBPel = true;
   }
   else
   {
-    memcpy( m_pppcInputPel[LUMA][0], opencvFrame->data, m_uiWidth * m_uiHeight * sizeof(Pel) );
+    Pel* pPel = m_pppcInputPel[LUMA][0];
+    for( UInt i = 0; i < m_uiWidth * m_uiHeight; i++ )
+    {
+      *pPel++ = *pCvPel++;
+    }
   }
 #endif
 }

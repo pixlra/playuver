@@ -55,8 +55,6 @@ public:
   static PlaYUVerFrame* loadFrame( std::string filename );
   static Bool saveFrame( PlaYUVerFrame* pcFrame, std::string filename );
 
-private:
-  std::string m_cFilename;
 };
 
 }  // NAMESPACE

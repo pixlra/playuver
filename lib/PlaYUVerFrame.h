@@ -34,6 +34,10 @@
 #include "PlaYUVerFrameStats.h"
 
 class PixFcSSE;
+namespace cv
+{
+class Mat;
+}
 
 namespace plaYUVer
 {
@@ -286,8 +290,8 @@ public:
   /**
    * Interface with OpenCV lib
    */
-  Void getCvMat( Void** );
-  Void fromCvMat( Void* );
+  cv::Mat* getCvMat( Bool convertToGray = false );
+  Void fromCvMat( cv::Mat* );
 
   /**
    * @defgroup PlaYUVerLib_QualityMetrics Quality Metrics Interface

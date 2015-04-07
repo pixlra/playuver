@@ -15,6 +15,25 @@ plaYUVer is an open-source video player with the following features:
 - Frame level quality measurement API based on the PlaYUVerFrame class
 - Command-line tool for quality and frame processing algorithms (uses the referred APIs)
 
+Supported Quality Metrics
+----------------------------------------------------------------
+- PSNR
+- SSIM
+- MSE
+
+Frame Processing Modules
+----------------------------------------------------------------
+- FilterComponentLuma
+- FilterComponentChromaU
+- FilterComponentChromaV
+- FrameDifference
+- AbsoluteFrameDifference
+- FrameCrop
+- FrameBinarization
+- EightBitsSampling
+- LumaAverage
+- DisparityStereoVar
+- DisparityStereoBM
 
 Developers
 ----------------------------------------------------------------

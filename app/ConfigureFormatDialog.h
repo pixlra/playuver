@@ -53,7 +53,8 @@ public:
   Int runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, UInt& rFrameRate );
 
 private Q_SLOTS:
-  void StandardResolutionSelection();
+  void slotStandardResolutionSelected( int );
+  void slotResolutionChange();
   void slotColorSpaceChange( int );
 
 private:

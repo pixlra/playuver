@@ -114,14 +114,14 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   QLabel* widthLabel = new QLabel( "Width" );
   widthLabel->setFont( normalFont );
   m_spinBoxWidth = new QSpinBox();
-  m_spinBoxWidth->setRange( 0, 9999 );
+  m_spinBoxWidth->setRange( 0, 99999 );
   m_spinBoxWidth->setValue( 0 );
   m_spinBoxWidth->setFont( normalFont );
 
   QLabel* heightLabel = new QLabel( "Height" );
   heightLabel->setFont( normalFont );
   m_spinBoxheight = new QSpinBox();
-  m_spinBoxheight->setRange( 0, 9999 );
+  m_spinBoxheight->setRange( 0, 99999 );
   m_spinBoxheight->setValue( 0 );
   m_spinBoxheight->setFont( normalFont );
 
@@ -225,7 +225,10 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
   MainLayout->addWidget( dialogButtonOkCancel );
 
-  connect( m_comboBoxStandardResolution, SIGNAL( currentIndexChanged(int) ), this, SLOT( StandardResolutionSelection() ) );
+  connect( m_comboBoxStandardResolution, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotStandardResolutionSelected(int) ) );
+  connect( m_spinBoxWidth, SIGNAL( valueChanged(int) ), this, SLOT( slotResolutionChange() ) );
+  connect( m_spinBoxheight, SIGNAL( valueChanged(int) ), this, SLOT( slotResolutionChange() ) );
+
   connect( m_comboBoxColorSpace, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotColorSpaceChange(int) ) );
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
@@ -271,6 +274,7 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWi
     if( standardResolutionSizes.at( i ) == QSize( rWidth, rHeight ) )
     {
       m_comboBoxStandardResolution->setCurrentIndex( i );
+      break;
     }
   }
   if( exec() == QDialog::Rejected )
@@ -287,6 +291,7 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWi
     if( pelFmtName == PlaYUVerFrame::supportedPixelFormatListNames()[i] )
     {
       rInputFormat = i;
+      break;
     }
   }
   rBits = m_spinBoxBits->value();
@@ -294,15 +299,34 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWi
   return QDialog::Accepted;
 }
 
-void ConfigureFormatDialog::StandardResolutionSelection()
+void ConfigureFormatDialog::slotStandardResolutionSelected( Int idx )
 {
-  Int currIdx = m_comboBoxStandardResolution->currentIndex();
-  if( currIdx == -1 )
-    return;
+  if( idx >= 0 )
+  {
+    QSize currSize = standardResolutionSizes.at( idx );
+    m_spinBoxWidth->blockSignals( true );
+    m_spinBoxWidth->setValue( currSize.width() );
+    m_spinBoxWidth->blockSignals( false );
+    m_spinBoxheight->blockSignals( true );
+    m_spinBoxheight->setValue( currSize.height() );
+    m_spinBoxheight->blockSignals( false );
+  }
+}
 
-  QSize currSize = standardResolutionSizes.at( currIdx );
-  m_spinBoxWidth->setValue( currSize.width() );
-  m_spinBoxheight->setValue( currSize.height() );
+void ConfigureFormatDialog::slotResolutionChange()
+{
+  m_comboBoxStandardResolution->blockSignals( true );
+  Int newIdx = -1;
+  for( Int i = 0; i < standardResolutionSizes.size(); i++ )
+  {
+    if( standardResolutionSizes.at( i ) == QSize( m_spinBoxWidth->value(), m_spinBoxheight->value() ) )
+    {
+      newIdx = i;
+      break;
+    }
+  }
+  m_comboBoxStandardResolution->setCurrentIndex( newIdx );
+  m_comboBoxStandardResolution->blockSignals( false );
 }
 
 Void ConfigureFormatDialog::slotColorSpaceChange( Int idx )

@@ -665,12 +665,19 @@ Bool PlaYUVerStream::setNextFrame()
   {
     m_pcCurrFrame = m_pcNextFrame;
     m_iCurrFrameNum++;
-    m_uiFrameBufferIndex++;
-    if( m_uiFrameBufferIndex == m_uiFrameBufferSize )
+    if( m_iCurrFrameNum + 1 < Int( m_uiTotalFrameNum ) )
     {
-      m_uiFrameBufferIndex = 0;
+      m_uiFrameBufferIndex++;
+      if( m_uiFrameBufferIndex == m_uiFrameBufferSize )
+      {
+        m_uiFrameBufferIndex = 0;
+      }
+      m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
     }
-    m_pcNextFrame = m_ppcFrameBuffer[m_uiFrameBufferIndex];
+    else
+    {
+      m_pcNextFrame = NULL;
+    }
   }
   else
   {

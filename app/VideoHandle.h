@@ -37,7 +37,7 @@
 #include "WidgetFrameNumber.h"
 #include "FramePropertiesSidebar.h"
 
-#define _CONTROL_PLAYING_TIME_ 1
+#define _CONTROL_PLAYING_TIME_ 0
 
 class QElapsedTimer;
 

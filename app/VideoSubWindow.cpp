@@ -119,8 +119,10 @@ VideoSubWindow::~VideoSubWindow()
 
 Void VideoSubWindow::loadAll()
 {
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   m_pCurrStream->loadAll();
   refreshFrame();
+  QApplication::restoreOverrideCursor();
 }
 
 Void VideoSubWindow::refreshSubWindow()

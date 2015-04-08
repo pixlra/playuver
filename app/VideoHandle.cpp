@@ -121,6 +121,7 @@ QToolBar* VideoHandle::createToolBar()
   m_toolbarVideo->addAction( m_arrayActions[STOP_ACT] );
 
   QLabel* pcLockLabel = new QLabel( "PlayingLock", this );
+  pcLockLabel->setAlignment( Qt::AlignCenter );
   m_arrayActions[VIDEO_LOCK_ACT] = m_toolbarVideo->addWidget( pcLockLabel );
   m_arrayActions[VIDEO_LOCK_ACT]->setVisible( false );
 

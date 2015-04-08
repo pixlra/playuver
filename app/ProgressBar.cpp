@@ -45,10 +45,13 @@ ProgressBar::ProgressBar( QWidget *parent, UInt maxValue ) :
   setLayout( mainLayout );
   setWindowTitle( QStringLiteral( "Progress" ) );
 
-  QSize screenSize = QApplication::desktop()->availableGeometry().size();
-  QPoint screenCenter = QApplication::desktop()->availableGeometry().center();
-  resize( screenSize.width() / 4, screenSize.height() / 10 );
-  move( screenCenter.x() - screenSize.width() / 8, screenCenter.y() - screenSize.height() / 10 );
+//  QSize appSize = QApplication::desktop()->availableGeometry().size();
+//  QPoint appCenter = QApplication::desktop()->availableGeometry().center();
+  QSize appSize = parent->size();
+  QPoint appPos = parent->pos();
+  QPoint appCenter = QPoint( appPos.x() + appSize.width() / 2, appPos.y() + appSize.height() / 2 );
+  resize( appSize.width() / 4, appSize.height() / 10 );
+  move( appCenter.x() - appSize.width() / 8, appCenter.y() - appSize.height() / 20 );
   show();
 }
 
@@ -56,5 +59,6 @@ Void ProgressBar::incrementProgress( UInt increment )
 {
   m_uiProgress += increment;
   m_pcProgressBar->setValue( m_uiProgress );
+  update();
 }
 }  // NAMESPACE

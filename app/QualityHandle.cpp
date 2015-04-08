@@ -106,14 +106,35 @@ QDockWidget* QualityHandle::createDock()
 
 Void QualityHandle::updateMenus()
 {
-  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
-  Bool hasSubWindow = pcSubWindow ? true : false;
+  VideoSubWindow* pcCurrentVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
+  Bool hasSubWindow = pcCurrentVideoSubWindow ? true : false;
+  Bool hasReference = false;
+  Bool isReference = false;
+
+  if( hasSubWindow )
+  {
+    hasReference = pcCurrentVideoSubWindow->getRefSubWindow() != NULL ? true : false;
+    if( hasSubWindow && !hasReference )
+    {
+      VideoSubWindow* pcVideoSubWindow;
+      QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_STREAM_SUBWINDOW );
+      for( Int i = 0; i < subWindowList.size(); i++ )
+      {
+        pcVideoSubWindow = qobject_cast<VideoSubWindow *>( subWindowList.at( i ) );
+        if( pcVideoSubWindow->getRefSubWindow() == pcCurrentVideoSubWindow )
+        {
+          isReference = true;
+          break;
+        }
+      }
+    }
+  }
 
   m_pcSubMenuQualityMetrics->setEnabled( hasSubWindow );
   m_arrayActions[SELECT_CURR_REF_ACT]->setEnabled( hasSubWindow );
 
-  m_arrayActions[PLOT_QUALITY]->setEnabled( hasSubWindow );
-  m_arrayActions[PLOT_SEVERAL_QUALITY]->setEnabled( hasSubWindow );
+  m_arrayActions[PLOT_QUALITY]->setEnabled( hasReference );
+  m_arrayActions[PLOT_SEVERAL_QUALITY]->setEnabled( hasReference | isReference );
 
   m_pcQualityHandleSideBar->updateSideBar( hasSubWindow );
 }
@@ -243,6 +264,7 @@ Void QualityHandle::slotSelectCurrentAsReference()
     }
     m_pcQualityHandleSideBar->updateSidebarData();
     m_pcQualityHandleDock->show();
+    emit changed();
   }
 }
 
@@ -264,7 +286,7 @@ Void QualityHandle::slotPlotQualitySingle()
       measureQuality( apcWindowList );
       QApplication::restoreOverrideCursor();
 //#endif
-
+      emit changed();
     }
   }
 }
@@ -303,7 +325,7 @@ Void QualityHandle::slotPlotQualitySeveral()
       measureQuality( apcWindowList );
       QApplication::restoreOverrideCursor();
 //#endif
-
+      emit changed();
     }
   }
 }

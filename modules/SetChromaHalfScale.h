@@ -18,28 +18,27 @@
  */
 
 /**
- * \file     FrameBinarization.h
+ * \file     SetChromaHalfScale.h
  * \brief    Binarize frame module
  */
 
-#ifndef __FRAMEBINARIZATION_H__
-#define __FRAMEBINARIZATION_H__
+#ifndef __CHROMA128_H__
+#define __CHROMA128_H__
 
 #include "PlaYUVerModuleIf.h"
 
 namespace plaYUVer
 {
 
-class FrameBinarization: public PlaYUVerModuleIf
+class SetChromaHalfScale: public PlaYUVerModuleIf
 {
-REGISTER_CLASS_FACTORY( FrameBinarization )
+REGISTER_CLASS_FACTORY( SetChromaHalfScale )
 
 private:
-  PlaYUVerFrame* m_pcBinFrame;
-  UInt m_uiThreshold;
+  PlaYUVerFrame* m_pcProcessedFrame;
 public:
-  FrameBinarization();
-  virtual ~FrameBinarization()
+  SetChromaHalfScale();
+  virtual ~SetChromaHalfScale()
   {
   }
   Void create( PlaYUVerFrame* );
@@ -50,5 +49,5 @@ public:
 
 }  // NAMESPACE
 
-#endif // __FRAMEBINARIZATION_H__
+#endif // __CHROMA128_H__
 

@@ -38,6 +38,7 @@ PlaYUVerModuleFactory::PlaYUVerModuleFactory()
   Register( "FilterComponentChromaV", &FilterComponentChromaV::Create );
   Register( "FrameDifference", &FrameDifference::Create );
   Register( "AbsoluteFrameDifference", &AbsoluteFrameDifference::Create );
+  Register( "SetChromaHalfScale", &SetChromaHalfScale::Create );
   Register( "FrameCrop", &FrameCrop::Create );
   Register( "FrameBinarization", &FrameBinarization::Create );
   Register( "EightBitsSampling", &EightBitsSampling::Create );

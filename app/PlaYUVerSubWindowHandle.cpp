@@ -113,15 +113,18 @@ Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
       m_apcSubWindowList.at( i )->sizeHint();
       m_apcSubWindowList.at( i )->show();
     }
-
+    setVisible( false );
+    parentWidget()->update();
+    parentWidget()->showNormal();
+    qApp->processEvents();
     QSize screenSize = QApplication::desktop()->availableGeometry().size();
     parentWidget()->move( 0, 0 );
     parentWidget()->resize( screenSize.width(), 5 );
-    setVisible( false );
   }
 
   if( iWindowMode == MdiWSubWindows )
   {
+    setVisible( true );
     m_pcMdiArea = new PlaYUVerMdiArea( this );
     m_pcMdiArea->setActivationOrder( QMdiArea::ActivationHistoryOrder );
     connect( m_pcMdiArea, SIGNAL( subWindowActivated(QMdiSubWindow*) ), this, SLOT( updateActiveSubWindow() ) );
@@ -134,7 +137,6 @@ Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
     }
     parentWidget()->move( m_cMdiModeWindowPosition );
     parentWidget()->resize( m_cMdiModeWindowSize );
-    setVisible( true );
   }
   m_iWindowMode = iWindowMode;
   tileSubWindows();

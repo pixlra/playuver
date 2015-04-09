@@ -39,6 +39,12 @@ Void PlotSubWindow::definePlotColors()
   m_arrayColorList.append( Qt::yellow );
   m_arrayColorList.append( Qt::gray );
   m_arrayColorList.append( Qt::darkRed );
+  m_arrayColorList.append( Qt::darkGreen );
+  m_arrayColorList.append( Qt::darkRed );
+  m_arrayColorList.append( Qt::darkBlue );
+  m_arrayColorList.append( Qt::darkMagenta );
+  m_arrayColorList.append( Qt::darkCyan );
+  m_arrayColorList.append( Qt::darkYellow );
 }
 
 PlotSubWindow::PlotSubWindow( const QString& windowTitle, QWidget * parent ) :

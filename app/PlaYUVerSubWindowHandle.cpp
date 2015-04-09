@@ -59,9 +59,9 @@ private:
 PlaYUVerSubWindowHandle::PlaYUVerSubWindowHandle( QWidget *parent ) :
         QWidget( parent )
 {
-  m_uiWindowMode = 0;
+  m_iWindowMode = 0;
 
-  //setWindowMode( NormalSubWindows );
+  setWindowMode( NormalSubWindows );
   setWindowMode( MdiWSubWindows );
 
   m_pcActiveWindow = NULL;
@@ -71,9 +71,25 @@ PlaYUVerSubWindowHandle::PlaYUVerSubWindowHandle( QWidget *parent ) :
 
 Void PlaYUVerSubWindowHandle::resetWindowMode()
 {
-  if( m_uiWindowMode == MdiWSubWindows )
+  QList<SubWindowHandle*> apcSubWindowList = m_apcSubWindowList;
+
+  for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
   {
-    removeAllSubWindow();
+    m_apcSubWindowList.at( i )->setParent( NULL );
+    m_apcSubWindowList.at( i )->sizeHint();
+    m_apcSubWindowList.at( i )->show();
+  }
+
+  if( m_iWindowMode == NormalSubWindows )
+  {
+
+  }
+  if( m_iWindowMode == MdiWSubWindows )
+  {
+    for( Int i = 0; i < m_apcMdiSubWindowList.size(); i++ )
+    {
+      m_apcMdiSubWindowList.at( i )->close();
+    }
     m_apcMdiSubWindowList.clear();
     if( m_pcMdiArea )
       delete m_pcMdiArea;
@@ -82,19 +98,19 @@ Void PlaYUVerSubWindowHandle::resetWindowMode()
   }
 }
 
-Void PlaYUVerSubWindowHandle::setWindowMode( UInt uiWindowMode )
+Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
 {
-  if( m_uiWindowMode == uiWindowMode )
+  if( m_iWindowMode == iWindowMode )
     return;
 
   resetWindowMode();
 
-  if( uiWindowMode == NormalSubWindows )
+  if( iWindowMode == NormalSubWindows )
   {
 
   }
 
-  if( uiWindowMode == MdiWSubWindows )
+  if( iWindowMode == MdiWSubWindows )
   {
     m_pcMdiArea = new PlaYUVerMdiArea( this );
     m_pcMdiArea->setActivationOrder( QMdiArea::ActivationHistoryOrder );
@@ -104,12 +120,12 @@ Void PlaYUVerSubWindowHandle::setWindowMode( UInt uiWindowMode )
     setLayout( m_pcWindowManagerLayout );
   }
 
-  m_uiWindowMode = uiWindowMode;
+  m_iWindowMode = iWindowMode;
 }
 
 Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowHandle *window )
 {
-  if( m_uiWindowMode == NormalSubWindows )
+  if( m_iWindowMode == NormalSubWindows )
   {
     if( window )
     {
@@ -118,7 +134,7 @@ Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowHandle *window )
     }
   }
 
-  if( m_uiWindowMode == MdiWSubWindows )
+  if( m_iWindowMode == MdiWSubWindows )
   {
     m_pcActiveWindow = NULL;
     QMdiSubWindow* mdiSubWindow = m_pcMdiArea->activeSubWindow();
@@ -148,12 +164,12 @@ Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowHandle *window, Qt::WindowF
     connect( window, SIGNAL( updateStatusBar( const QString& ) ), qobject_cast<plaYUVerApp*>( parent() ), SLOT( updateStatusBar( const QString& ) ) );
     connect( window, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), qobject_cast<plaYUVerApp*>( parent() ),
         SLOT( updateZoomFactorSBox() ) );
-    if( m_uiWindowMode == NormalSubWindows )
+    if( m_iWindowMode == NormalSubWindows )
     {
       connect( window, SIGNAL( aboutToActivate( SubWindowHandle* ) ), this, SLOT( updateActiveSubWindow( SubWindowHandle* ) ) );
       connect( window, SIGNAL( aboutToClose( SubWindowHandle* ) ), this, SLOT( removeSubWindow( SubWindowHandle* ) ) );
     }
-    if( m_uiWindowMode == MdiWSubWindows )
+    if( m_iWindowMode == MdiWSubWindows )
     {
       PlaYUVerMdiSubWindow* mdiSubWindow = new PlaYUVerMdiSubWindow;
       mdiSubWindow->setWidget( window );
@@ -170,13 +186,13 @@ Void PlaYUVerSubWindowHandle::removeSubWindow( Int windowIdx )
 {
   if( windowIdx >= 0 )
   {
-    if( m_uiWindowMode == NormalSubWindows )
+    if( m_iWindowMode == NormalSubWindows )
     {
       SubWindowHandle* subWindow = m_apcSubWindowList.at( windowIdx );
       m_apcSubWindowList.removeAt( windowIdx );
       subWindow->close();
     }
-    if( m_uiWindowMode == MdiWSubWindows )
+    if( m_iWindowMode == MdiWSubWindows )
     {
       PlaYUVerMdiSubWindow* mdiSubWindow = m_apcMdiSubWindowList.at( windowIdx );
       m_apcMdiSubWindowList.removeAt( windowIdx );
@@ -273,11 +289,11 @@ Void PlaYUVerSubWindowHandle::setActiveSubWindow( QWidget *window )
 
   m_pcActiveWindow = qobject_cast<SubWindowHandle *>( window );
 
-  if( m_uiWindowMode == NormalSubWindows )
+  if( m_iWindowMode == NormalSubWindows )
   {
     m_pcActiveWindow->window()->activateWindow();
   }
-  if( m_uiWindowMode == MdiWSubWindows )
+  if( m_iWindowMode == MdiWSubWindows )
   {
     m_pcActiveWindow->setFocus();
   }
@@ -285,7 +301,7 @@ Void PlaYUVerSubWindowHandle::setActiveSubWindow( QWidget *window )
 
 Void PlaYUVerSubWindowHandle::tileSubWindows()
 {
-  if( m_uiWindowMode == MdiWSubWindows )
+  if( m_iWindowMode == MdiWSubWindows )
   {
     m_pcMdiArea->tileSubWindows();
   }
@@ -293,7 +309,7 @@ Void PlaYUVerSubWindowHandle::tileSubWindows()
 
 Void PlaYUVerSubWindowHandle::cascadeSubWindows()
 {
-  if( m_uiWindowMode == MdiWSubWindows )
+  if( m_iWindowMode == MdiWSubWindows )
   {
     m_pcMdiArea->cascadeSubWindows();
   }
@@ -305,6 +321,32 @@ Void PlaYUVerSubWindowHandle::createActions()
   connect( m_mapperWindow, SIGNAL( mapped(QWidget*) ), this, SLOT( setActiveSubWindow(QWidget*) ) );
 
   m_arrayActions.resize( TOTAL_ACT );
+
+  // ------------ Tools ------------
+  QActionGroup* actionGroupWindowMode = new QActionGroup( this );
+  actionGroupWindowMode->setExclusive( true );
+
+  m_mapperWindowMode = new QSignalMapper( this );
+  connect( m_mapperWindowMode, SIGNAL( mapped(int) ), this, SLOT( setWindowMode(int) ) );
+
+  m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT] = new QAction( tr( "&Detached SubWindows" ), this );
+  m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT]->setCheckable( true );
+  actionGroupWindowMode->addAction( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT] );
+  connect( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT], SIGNAL( triggered() ), m_mapperWindowMode, SLOT( map() ) );
+  m_mapperWindowMode->setMapping( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT], ViewArea::NavigationTool );
+
+  m_arrayActions[MDI_SUBWINDOW_MODE_ACT] = new QAction( "&MDI SubWindows", this );
+  m_arrayActions[MDI_SUBWINDOW_MODE_ACT]->setCheckable( true );
+  actionGroupWindowMode->addAction( m_arrayActions[MDI_SUBWINDOW_MODE_ACT] );
+  connect( m_arrayActions[MDI_SUBWINDOW_MODE_ACT], SIGNAL( triggered() ), m_mapperWindowMode, SLOT( map() ) );
+  m_mapperWindowMode->setMapping( m_arrayActions[MDI_SUBWINDOW_MODE_ACT], ViewArea::NormalSelectionTool );
+
+  actionGroupWindowMode->actions().at( m_iWindowMode )->setChecked( true );
+
+  m_arrayActions[CLOSE_ACT] = new QAction( tr( "&Close" ), this );
+  m_arrayActions[CLOSE_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogCloseButton ) );
+  m_arrayActions[CLOSE_ACT]->setStatusTip( tr( "Close the active window" ) );
+  connect( m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), this, SLOT( removeActiveSubWindow() ) );
 
   m_arrayActions[CLOSE_ACT] = new QAction( tr( "&Close" ), this );
   m_arrayActions[CLOSE_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogCloseButton ) );
@@ -354,6 +396,9 @@ QMenu* PlaYUVerSubWindowHandle::createMenu()
 Void PlaYUVerSubWindowHandle::updateMenu()
 {
   m_pcMenuWindow->clear();
+  m_pcMenuWindow->addAction( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT] );
+  m_pcMenuWindow->addAction( m_arrayActions[MDI_SUBWINDOW_MODE_ACT] );
+  m_pcMenuWindow->addSeparator();
   m_pcMenuWindow->addAction( m_arrayActions[CLOSE_ACT] );
   m_pcMenuWindow->addAction( m_arrayActions[CLOSE_ALL_ACT] );
   m_pcMenuWindow->addSeparator();

@@ -172,6 +172,11 @@ Bool SubWindowHandle::mayClose()
   return true;
 }
 
+QSize SubWindowHandle::sizeHint( ) const
+{
+  return QSize();
+}
+
 QSize SubWindowHandle::sizeHint( const QSize & ) const
 {
   return QSize();

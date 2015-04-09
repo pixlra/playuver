@@ -68,7 +68,7 @@ public:
   };
 
 private:
-  UInt m_uiWindowMode;
+  Int m_iWindowMode;
   QList<SubWindowHandle*> m_apcSubWindowList;
 
   QHBoxLayout* m_pcWindowManagerLayout;
@@ -79,6 +79,8 @@ private:
 
   enum
   {
+    NORMAL_SUBWINDOW_MODE_ACT,
+    MDI_SUBWINDOW_MODE_ACT,
     CLOSE_ACT,
     CLOSE_ALL_ACT,
     TILE_WINDOWS_ACT,
@@ -89,6 +91,7 @@ private:
     TOTAL_ACT,
   };
   QVector<QAction*> m_arrayActions;
+  QSignalMapper* m_mapperWindowMode;
   QSignalMapper* m_mapperWindow;
   QMenu* m_pcMenuWindow;
 
@@ -96,10 +99,11 @@ private:
    * Internal functions
    */
   Void resetWindowMode();
-  Void setWindowMode( UInt uiWindowMode );
+
   Void removeSubWindow( Int windowIdx );
 
 public Q_SLOTS:
+  void setWindowMode( int iWindowMode );
   void updateActiveSubWindow( SubWindowHandle *window = 0 );
   void setActiveSubWindow( QWidget *window );
   void removeSubWindow( SubWindowHandle *window );

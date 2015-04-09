@@ -228,6 +228,10 @@ public:
 
   PlaYUVerFrame::Pixel getPixelValue( Int xPos, Int yPos, ColorSpace eColorSpace = COLOR_INVALID );
 
+  std::string getPelFmtName()
+  {
+    return m_cPelFmtName;
+  }
   UInt getWidth() const
   {
     return m_uiWidth;
@@ -333,6 +337,7 @@ private:
 
   //! Strcut with the pixel format description.
   PlaYUVerPixFmtDescriptor* m_pcPelFormat;
+  std::string m_cPelFmtName;
 
   UInt m_uiWidth;  //!< Width of the frame
   UInt m_uiHeight;  //!< Height of the frame

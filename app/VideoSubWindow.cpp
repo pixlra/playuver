@@ -111,6 +111,7 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
 
 VideoSubWindow::~VideoSubWindow()
 {
+  m_pcCurrFrame = NULL;
   disableModule();
   delete m_cViewArea;
   if( m_pCurrStream )
@@ -227,23 +228,23 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
 
 Void VideoSubWindow::updateVideoWindowInfo()
 {
-  if( m_pCurrStream )
+  m_cStreamInformation = "";
+  if( m_bIsModule )
+  {
+    m_cStreamInformation = "Module";
+  }
+  else if( m_pCurrStream )
   {
     QString m_cFormatName = QString::fromStdString( m_pCurrStream->getFormatName() );
     QString m_cCodedName = QString::fromStdString( m_pCurrStream->getCodecName() );
-    QString m_cPelFmtName = QString::fromStdString( m_pCurrStream->getPelFmtName() );
-    m_cStreamInformation = m_cFormatName + " | " + m_cCodedName + " | " + m_cPelFmtName;
+    m_cStreamInformation = m_cFormatName + " | " + m_cCodedName;
   }
-  else if( m_pcCurrFrame )
+  if( m_pcCurrFrame )
   {
-    if( m_bIsModule || m_pcCurrentDisplayModule )
-    {
-      m_cStreamInformation = "Module | ";
-    }
-    QString m_cPelFmtName = QString::fromStdString( PlaYUVerFrame::supportedPixelFormatListNames()[m_pcCurrFrame->getPelFormat()].c_str() );
-    m_cStreamInformation += m_cPelFmtName;
+    QString m_cPelFmtName = QString::fromStdString( m_pcCurrFrame->getPelFmtName() );
+    m_cStreamInformation += " | " + m_cPelFmtName;
   }
-  else
+  if( m_cStreamInformation.isEmpty() )
   {
     m_cStreamInformation = "          ";
   }
@@ -404,8 +405,8 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
   }
   if( bRefresh )
   {
-    updateVideoWindowInfo();
     refreshFrame();
+    updateVideoWindowInfo();
   }
 }
 
@@ -416,8 +417,12 @@ Void VideoSubWindow::associateModule( PlaYUVerAppModuleIf* pcModule )
 
 Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
-  m_pcCurrFrame = pcCurrFrame;
-  m_cViewArea->setImage( m_pcCurrFrame );
+  // if( m_pcCurrFrame )
+  {
+    m_pcCurrFrame = pcCurrFrame;
+    m_cViewArea->setImage( m_pcCurrFrame );
+    updateVideoWindowInfo();
+  }
 }
 
 Void VideoSubWindow::refreshFrameOperation()

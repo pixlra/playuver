@@ -67,7 +67,7 @@ private:
     FFMPEG,
     TOTAL_HANDLERR
   };
-  UInt m_uiStreamHandler;
+  Int m_iStreamHandler;
   LibAvContextHandle* m_cLibAvContext;
 
   std::string m_cFilename;
@@ -75,9 +75,7 @@ private:
 
   std::string m_cFormatName;
   std::string m_cCodedName;
-  std::string m_cPelFmtName;
 
-  Int m_iFileFormat;
   UInt m_uiWidth;
   UInt m_uiHeight;
   Int m_iPixelFormat;
@@ -96,6 +94,8 @@ private:
   PlaYUVerFrame *m_pcNextFrame;
   UInt m_uiFrameBufferIndex;
   UInt64 m_uiCurrFrameFileIdx;
+
+  Void findHandler();
 
 public:
 
@@ -163,10 +163,6 @@ public:
   std::string getCodecName()
   {
     return m_cCodedName;
-  }
-  std::string getPelFmtName()
-  {
-    return m_cPelFmtName;
   }
 
   UInt getFrameNum()

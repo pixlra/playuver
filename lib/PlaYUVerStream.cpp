@@ -135,7 +135,7 @@ PlaYUVerStream::PlaYUVerStream()
   m_bIsInput = true;
   m_bIsOpened = false;
   m_bLoadAll = false;
-  m_uiStreamHandler = 0;
+  m_iStreamHandler = INVALID_HANDLER;
   m_pFile = NULL;
   m_pchFilename = NULL;
   m_uiWidth = 0;
@@ -145,7 +145,6 @@ PlaYUVerStream::PlaYUVerStream()
   m_iPixelFormat = -1;
   m_uiBitsPerPixel = 8;
   m_dFrameRate = 30;
-  m_iFileFormat = -1;
   m_pStreamBuffer = NULL;
   m_cFilename = "";
   m_pcCurrFrame = NULL;
@@ -162,6 +161,53 @@ PlaYUVerStream::PlaYUVerStream()
 PlaYUVerStream::~PlaYUVerStream()
 {
   close();
+}
+
+Void PlaYUVerStream::findHandler()
+{
+  m_iStreamHandler = INVALID_HANDLER;
+
+  if( m_uiBitsPerPixel != 8 )
+  {
+    m_iStreamHandler = YUV_IO;
+    return;
+  }
+
+  std::string currExt = m_cFilename.substr( m_cFilename.find_last_of( "." ) + 1 );
+  if( m_bIsInput )
+  {
+#ifdef USE_FFMPEG
+    for( UInt i = 0; i < LibAvContextHandle::supportedReadFormatsExt().size(); i++ )
+    {
+      if( LibAvContextHandle::supportedReadFormatsExt()[i] == currExt )
+      {
+        m_cFormatName = LibAvContextHandle::supportedReadFormatsExt()[i];
+        m_iStreamHandler = FFMPEG;
+        return;
+      }
+    }
+#endif
+    if( m_iStreamHandler == INVALID_HANDLER )
+      m_iStreamHandler = YUV_IO;
+  }
+  else
+  {
+#ifdef USE_FFMPEG
+    for( UInt i = 0; i < LibAvContextHandle::supportedWriteFormatsExt().size(); i++ )
+    {
+      if( LibAvContextHandle::supportedWriteFormatsExt()[i] == currExt )
+      {
+        m_cFormatName = LibAvContextHandle::supportedWriteFormatsExt()[i];
+        m_iStreamHandler = FFMPEG;
+        return;
+      }
+    }
+#endif
+    if( currExt == "yuv" )
+    {
+      m_iStreamHandler = YUV_IO;
+    }
+  }
 }
 
 Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::string input_format_name, UInt bitsPel, UInt frame_rate, Bool bInput )
@@ -208,69 +254,18 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   std::copy( m_cFilename.begin(), m_cFilename.end(), m_pchFilename );
   m_pchFilename[m_cFilename.size()] = '\0';  // don't forget the terminating 0
 
-  if( m_bIsInput )
+  findHandler();
+  if( m_iStreamHandler == INVALID_HANDLER )
   {
-    m_iFileFormat = INVALID_HANDLER;
-
-    std::string currExt = filename.substr( filename.find_last_of( "." ) + 1 );
-    for( UInt i = 0; i < PlaYUVerStream::supportedReadFormatsExt().size(); i++ )
-    {
-      if( PlaYUVerStream::supportedReadFormatsExt()[i] == currExt )
-      {
-        m_iFileFormat = i;
-        m_cFormatName = PlaYUVerStream::supportedReadFormatsExt()[i];
-        break;
-      }
-    }
-    if( m_iFileFormat == INVALID_HANDLER )
-    {
-      close();
-      throw "Invalid file format";
-      return m_bInit;
-    }
-
-    if( m_cFormatName == "yuv" )
-    {
-      m_uiStreamHandler = YUV_IO;
-    }
-//#ifdef USE_OPENCV
-//    else if( m_cFormatName == "png" || m_cFormatName == "jpg" )
-//    {
-//      m_uiStreamHandler = OPENCV_HANDLER;
-//    }
-//#endif
-#ifdef USE_FFMPEG
-    else
-    {
-      m_uiStreamHandler = FFMPEG;
-    }
-#endif
-#if 0
-    if( !avStatus )
-    {
-      switch( m_iFileFormat )
-      {
-        case PGMINPUT:
-
-        break;
-      }
-    }
-#endif
-    if( m_uiBitsPerPixel != 8 )
-    {
-      m_uiStreamHandler = YUV_IO;
-    }
-    m_uiFrameBufferSize = 2;
-  }
-  else
-  {
-    m_iFileFormat = 0;
-    m_uiStreamHandler = YUV_IO;
-    m_uiFrameBufferSize = 1;
+    close();
+    throw "Invalid file format";
+    return m_bInit;
   }
 
+  m_uiFrameBufferSize = m_bIsInput ? 2 : 1;
+
 #ifdef USE_FFMPEG
-  if( m_uiStreamHandler == FFMPEG )
+  if( m_iStreamHandler == FFMPEG )
   {
     if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_dFrameRate, m_uiTotalFrameNum ) )
     {
@@ -281,7 +276,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
 #endif
 
 #ifdef USE_OPENCV
-  if( m_uiStreamHandler == OPENCV_HANDLER )
+  if( m_iStreamHandler == OPENCV_HANDLER )
   {
     m_pcCurrFrame = LibOpenCVHandler::loadFrame( m_cFilename );
     if( m_pcCurrFrame )
@@ -300,9 +295,9 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
     return m_bInit;
   }
 
-  if( m_uiStreamHandler != OPENCV_HANDLER )
+  if( m_iStreamHandler != OPENCV_HANDLER )
   {
-    if( m_uiStreamHandler == YUV_IO )
+    if( m_iStreamHandler == YUV_IO )
     {
       if( !openFile() )
       {
@@ -333,7 +328,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
 
     UInt64 frame_bytes_input = m_pcCurrFrame->getBytesPerFrame();
 
-    if( m_uiStreamHandler == YUV_IO && m_bIsInput )
+    if( m_iStreamHandler == YUV_IO && m_bIsInput )
     {
       fseek( m_pFile, 0, SEEK_END );
       UInt64 fileSize = ftell( m_pFile );
@@ -380,10 +375,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
     m_uiBitsPerPixel = m_pcCurrFrame->getBitsPel();
   }
 
-  m_cPelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[m_iPixelFormat].c_str();
-
   m_iCurrFrameNum = -1;
-
   m_bInit = true;
 
   seekInput( 0 );
@@ -394,7 +386,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
 
 Bool PlaYUVerStream::openFile()
 {
-  //m_fsIOStream.open( m_cFilename,  std::ios::in | std::ios::binary )
+//m_fsIOStream.open( m_cFilename,  std::ios::in | std::ios::binary )
   m_pFile = NULL;
   m_pFile = fopen( m_pchFilename, m_bIsInput ? "rb" : "wb" );
   if( m_pFile == NULL )
@@ -419,11 +411,11 @@ Void PlaYUVerStream::close()
   if( !m_bInit )
     return;
 
-  if( m_uiStreamHandler == YUV_IO )
+  if( m_iStreamHandler == YUV_IO )
     closeFile();
 
 #ifdef USE_FFMPEG
-  if( m_uiStreamHandler == FFMPEG )
+  if( m_iStreamHandler == FFMPEG )
     m_cLibAvContext->closeAvFormat();
   delete m_cLibAvContext;
 #endif
@@ -516,12 +508,14 @@ Void PlaYUVerStream::getDuration( Int* duration_array )
 {
   Int hours, mins, secs;
 #ifdef USE_FFMPEG
-  if( m_cLibAvContext->getStatus() )
+  if( m_iStreamHandler == FFMPEG )
   {
     secs = m_cLibAvContext->getStreamDuration();
   }
   else
 #endif
+  if( m_iStreamHandler == YUV_IO )
+
   {
     secs = m_uiTotalFrameNum / m_dFrameRate;
   }
@@ -553,13 +547,13 @@ Void PlaYUVerStream::readFrame()
     return;
   }
 
-  if( m_uiStreamHandler == OPENCV_HANDLER )
+  if( m_iStreamHandler == OPENCV_HANDLER )
   {
     return;
   }
 
 #ifdef USE_FFMPEG
-  if( m_uiStreamHandler == FFMPEG )
+  if( m_iStreamHandler == FFMPEG )
   {
     if( !m_cLibAvContext->decodeAvFormat() )
     {
@@ -569,7 +563,7 @@ Void PlaYUVerStream::readFrame()
     m_pcNextFrame->frameFromBuffer( m_cLibAvContext->m_pchFrameBuffer, m_cLibAvContext->m_uiFrameBufferSize );
   }
 #endif
-  if( m_uiStreamHandler == YUV_IO )
+  if( m_iStreamHandler == YUV_IO )
   {
     UInt64 frame_bytes_input = m_pcNextFrame->getBytesPerFrame();
     UInt64 bytes_read = fread( m_pStreamBuffer, sizeof(Byte), frame_bytes_input, m_pFile );
@@ -591,7 +585,7 @@ Void PlaYUVerStream::writeFrame()
 
 Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
 {
-  if( m_uiStreamHandler == YUV_IO )
+  if( m_iStreamHandler == YUV_IO )
   {
     UInt64 frame_bytes_input = pcFrame->getBytesPerFrame();
     pcFrame->frameToBuffer( m_pStreamBuffer );
@@ -614,7 +608,7 @@ Bool PlaYUVerStream::saveFrame( const std::string& filename, PlaYUVerFrame *save
   Int iFileFormat = INVALID_HANDLER;
   std::string fmtExt;
 
-  //std::string currExt = QFileInfo( qtString ).suffix().toStdString();
+//std::string currExt = QFileInfo( qtString ).suffix().toStdString();
   std::string currExt = filename.substr( filename.find_last_of( "." ) + 1 );
 
   for( UInt i = 0; i < PlaYUVerStream::supportedSaveFormatsExt().size(); i++ )
@@ -738,17 +732,17 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
     setNextFrame();
     return true;
   }
-  if( m_uiStreamHandler == OPENCV_HANDLER )
+  if( m_iStreamHandler == OPENCV_HANDLER )
   {
     return true;
   }
 #ifdef USE_FFMPEG
-  if( m_uiStreamHandler == FFMPEG )
+  if( m_iStreamHandler == FFMPEG )
   {
     m_cLibAvContext->seekAvFormat( new_frame_num );
   }
 #endif
-  if( m_uiStreamHandler == YUV_IO )
+  if( m_iStreamHandler == YUV_IO )
   {
     UInt64 frame_bytes_input = m_ppcFrameBuffer[0]->getBytesPerFrame();
     UInt64 nbytes_seek = frame_bytes_input * new_frame_num;

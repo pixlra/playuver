@@ -208,7 +208,7 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
   getMem1D( &m_pcARGB32, m_uiHeight * m_uiWidth * 4 );
 
   xSetupStatistics( this );
-  openPixfc();
+  m_cPelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[m_iPixelFormat].c_str();
 }
 
 Int PlaYUVerFrame::getColorSpace() const

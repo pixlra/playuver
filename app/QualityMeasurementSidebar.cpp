@@ -187,7 +187,7 @@ Void QualityMeasurementSidebar::updateCurrentWindow( VideoSubWindow *subWindow )
 
 Void QualityMeasurementSidebar::updateSidebarData()
 {
-  QString value( "0.0000" );
+  QString zeroValue( "0.0000" );
   if( m_pcCurrentVideoSubWindow )
   {
     VideoSubWindow* refSubWindow = m_pcCurrentVideoSubWindow->getRefSubWindow();
@@ -196,11 +196,17 @@ Void QualityMeasurementSidebar::updateSidebarData()
       PlaYUVerFrame* currFrame = m_pcCurrentVideoSubWindow->getCurrFrame();
       PlaYUVerFrame* refFrame = refSubWindow->getCurrFrame();
       Double quality;
-
-      for( Int component = 0; component < 3; component++ )
+      QString value;
+      UInt component = 0;
+      for( ; component < currFrame->getNumberChannels(); component++ )
       {
         quality = currFrame->getQuality( m_comboBoxMetric->currentIndex(), refFrame, component );
         m_ppcLabelQualityValue[component]->setText( value.setNum( quality, 'f', 4 ) );
+      }
+      for( ; component < 3; component++ )
+      {
+        quality = currFrame->getQuality( m_comboBoxMetric->currentIndex(), refFrame, component );
+        m_ppcLabelQualityValue[component]->setText( zeroValue );
       }
       return;
     }
@@ -211,7 +217,7 @@ Void QualityMeasurementSidebar::updateSidebarData()
   }
   for( Int component = 0; component < 3; component++ )
   {
-    m_ppcLabelQualityValue[component]->setText( value );
+    m_ppcLabelQualityValue[component]->setText( zeroValue );
   }
 
 }

@@ -929,6 +929,7 @@ Void plaYUVerApp::readSettings()
   m_appModuleVideo->readSettings();
   m_appModuleQuality->readSettings();
   m_appModuleExtensions->readSettings();
+  m_pcWindowHandle->readSettings();
 }
 
 Void plaYUVerApp::writeSettings()
@@ -947,6 +948,7 @@ Void plaYUVerApp::writeSettings()
   m_appModuleVideo->writeSettings();
   m_appModuleQuality->writeSettings();
   m_appModuleExtensions->writeSettings();
+  m_pcWindowHandle->writeSettings();
 }
 
 }  // NAMESPACE

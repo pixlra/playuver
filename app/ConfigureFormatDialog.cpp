@@ -174,20 +174,18 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   pixelGridLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ), 1, 1 );
   pixelGridLayout->addWidget( m_comboBoxPixelFormat, 1, 2 );
 
-  /*
-   *  Frame rate format
-   */
   QHBoxLayout* bitsPerPelLayout = new QHBoxLayout();
   QLabel* bitsPerPelLabel = new QLabel();
-  bitsPerPelLabel->setFont( menusFont );
-  bitsPerPelLabel->setText( "Frame Rate" );
+  bitsPerPelLabel->setFont( normalFont );
+  bitsPerPelLabel->setText( "Pixel bit depth" );
   m_spinBoxBits = new QSpinBox();
+  m_spinBoxBits->setFont( normalFont );
   m_spinBoxBits->setMinimumWidth( 30 );
   m_spinBoxBits->setRange( 0, 16 );
   m_spinBoxBits->setValue( 8 );
-  bitsPerPelLayout->addWidget( bitsPerPelLabel );
-  bitsPerPelLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-  bitsPerPelLayout->addWidget( m_spinBoxBits );
+  pixelGridLayout->addWidget( bitsPerPelLabel, 2, 0 );
+  pixelGridLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ), 2, 1 );
+  pixelGridLayout->addWidget( m_spinBoxBits, 2, 2 );
 
   /*
    *  Frame rate format

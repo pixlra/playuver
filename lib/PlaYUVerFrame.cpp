@@ -241,11 +241,15 @@ UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelF
 
 UInt PlaYUVerFrame::getChromaWidth() const
 {
+  if( m_pcPelFormat->colorSpace == GRAY )
+    return 0;
   return CHROMASHIFT( m_uiWidth, m_pcPelFormat->log2ChromaWidth );
 }
 
 UInt PlaYUVerFrame::getChromaHeight() const
 {
+  if( m_pcPelFormat->colorSpace == GRAY )
+    return 0;
   return CHROMASHIFT( m_uiHeight, m_pcPelFormat->log2ChromaHeight );
 }
 

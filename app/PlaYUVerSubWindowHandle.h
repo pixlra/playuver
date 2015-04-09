@@ -95,6 +95,7 @@ private:
   };
   QVector<QAction*> m_arrayActions;
   QSignalMapper* m_mapperWindowMode;
+  QActionGroup* m_actionGroupWindowMode;
   QSignalMapper* m_mapperWindow;
   QMenu* m_pcMenuWindow;
 

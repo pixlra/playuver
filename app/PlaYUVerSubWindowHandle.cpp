@@ -59,14 +59,15 @@ private:
 PlaYUVerSubWindowHandle::PlaYUVerSubWindowHandle( QWidget *parent ) :
         QWidget( parent )
 {
-  m_iWindowMode = 0;
-
-  //setWindowMode( NormalSubWindows );
-  setWindowMode( MdiWSubWindows );
-
+  m_iWindowMode = -1;
+  m_pcWindowManagerLayout = NULL;
+  m_pcMdiArea = NULL;
   m_pcActiveWindow = NULL;
   m_apcSubWindowList.clear();
   m_apcMdiSubWindowList.clear();
+
+  //setWindowMode( NormalSubWindows );
+  setWindowMode( MdiWSubWindows );
 }
 
 Void PlaYUVerSubWindowHandle::resetWindowMode()
@@ -95,6 +96,7 @@ Void PlaYUVerSubWindowHandle::resetWindowMode()
       delete m_pcMdiArea;
     if( m_pcWindowManagerLayout )
       delete m_pcWindowManagerLayout;
+
   }
 }
 
@@ -349,25 +351,25 @@ Void PlaYUVerSubWindowHandle::createActions()
   m_arrayActions.resize( TOTAL_ACT );
 
   // ------------ Tools ------------
-  QActionGroup* actionGroupWindowMode = new QActionGroup( this );
-  actionGroupWindowMode->setExclusive( true );
+  m_actionGroupWindowMode = new QActionGroup( this );
+  m_actionGroupWindowMode->setExclusive( true );
 
   m_mapperWindowMode = new QSignalMapper( this );
   connect( m_mapperWindowMode, SIGNAL( mapped(int) ), this, SLOT( setWindowMode(int) ) );
 
   m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT] = new QAction( tr( "&Detached SubWindows" ), this );
   m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT]->setCheckable( true );
-  actionGroupWindowMode->addAction( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT] );
+  m_actionGroupWindowMode->addAction( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT] );
   connect( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT], SIGNAL( triggered() ), m_mapperWindowMode, SLOT( map() ) );
-  m_mapperWindowMode->setMapping( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT], ViewArea::NavigationTool );
+  m_mapperWindowMode->setMapping( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT], NormalSubWindows );
 
   m_arrayActions[MDI_SUBWINDOW_MODE_ACT] = new QAction( "&MDI SubWindows", this );
   m_arrayActions[MDI_SUBWINDOW_MODE_ACT]->setCheckable( true );
-  actionGroupWindowMode->addAction( m_arrayActions[MDI_SUBWINDOW_MODE_ACT] );
+  m_actionGroupWindowMode->addAction( m_arrayActions[MDI_SUBWINDOW_MODE_ACT] );
   connect( m_arrayActions[MDI_SUBWINDOW_MODE_ACT], SIGNAL( triggered() ), m_mapperWindowMode, SLOT( map() ) );
-  m_mapperWindowMode->setMapping( m_arrayActions[MDI_SUBWINDOW_MODE_ACT], ViewArea::NormalSelectionTool );
+  m_mapperWindowMode->setMapping( m_arrayActions[MDI_SUBWINDOW_MODE_ACT], MdiWSubWindows );
 
-  actionGroupWindowMode->actions().at( m_iWindowMode )->setChecked( true );
+  m_actionGroupWindowMode->actions().at( m_iWindowMode )->setChecked( true );
 
   m_arrayActions[CLOSE_ACT] = new QAction( tr( "&Close" ), this );
   m_arrayActions[CLOSE_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogCloseButton ) );
@@ -472,12 +474,20 @@ Void PlaYUVerSubWindowHandle::updateMenu()
 
 Void PlaYUVerSubWindowHandle::readSettings()
 {
-
+  QSettings appSettings;
+  m_cMdiModeWindowPosition = appSettings.value( "SubWindowManager/LastMdiPosition", QPoint( 200, 200 ) ).toPoint();
+  m_cMdiModeWindowSize = appSettings.value( "SubWindowManager/LastMdiSize", QSize( 500, 400 ) ).toSize();
+  Int iWindowMode = appSettings.value( "SubWindowManager/SubWindowMode", MdiWSubWindows ).toInt();
+  setWindowMode( iWindowMode );
+  m_actionGroupWindowMode->actions().at( iWindowMode )->setChecked( true );
 }
 
 Void PlaYUVerSubWindowHandle::writeSettings()
 {
-
+  QSettings appSettings;
+  appSettings.setValue( "SubWindowManager/LastMdiPosition", m_cMdiModeWindowPosition );
+  appSettings.setValue( "SubWindowManager/LastMdiSize", m_cMdiModeWindowSize );
+  appSettings.setValue( "SubWindowManager/SubWindowMode", m_iWindowMode );
 }
 
 }  // NAMESPACE

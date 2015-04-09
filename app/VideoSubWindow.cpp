@@ -698,17 +698,17 @@ QSize VideoSubWindow::sizeHint( const QSize & maxSize ) const
   return isize;
 }
 
-Void VideoSubWindow::closeEvent( QCloseEvent *event )
-{
-  Bool bAccept = m_bIsPlaying ? false : true;
-  if( bAccept )
-  {
-    event->accept();
-  }
-  else
-  {
-    event->ignore();
-  }
-}
+//Void VideoSubWindow::closeEvent( QCloseEvent *event )
+//{
+//  Bool bAccept = m_bIsPlaying ? false : true;
+//  if( bAccept )
+//  {
+//    event->accept();
+//  }
+//  else
+//  {
+//    event->ignore();
+//  }
+//}
 
 }  // NAMESPACE

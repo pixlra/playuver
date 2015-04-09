@@ -238,8 +238,8 @@ public:
     return m_bIsModule;
   }
 
-protected:
-  void closeEvent( QCloseEvent *event );
+//protected:
+  //void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:
   void updateSelectedArea( QRect area );

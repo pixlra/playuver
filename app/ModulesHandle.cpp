@@ -343,7 +343,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   {
     if( ( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
-      pcModuleSubWindow = new VideoSubWindow( VideoSubWindow::MODULE_SUBWINDOW, this );
+      pcModuleSubWindow = new VideoSubWindow( VideoSubWindow::MODULE_SUBWINDOW );
       pcModuleSubWindow->setWindowShortName( windowName );
       pcModuleSubWindow->setWindowName( windowName );
 

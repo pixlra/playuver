@@ -77,6 +77,9 @@ private:
 
   SubWindowHandle* m_pcActiveWindow;
 
+  QPoint m_cMdiModeWindowPosition;
+  QSize m_cMdiModeWindowSize;
+
   enum
   {
     NORMAL_SUBWINDOW_MODE_ACT,
@@ -98,8 +101,8 @@ private:
   /**
    * Internal functions
    */
+  Void addMdiSubWindow( SubWindowHandle *window );
   Void resetWindowMode();
-
   Void removeSubWindow( Int windowIdx );
 
 public Q_SLOTS:

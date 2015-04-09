@@ -217,7 +217,7 @@ Void QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
   {
     plotWindowTitle += " - " + apcWindowList.at( 0 )->getWindowName();
   }
-  PlotSubWindow* pcPlotWindow = new PlotSubWindow( m_pcParet, plotWindowTitle );
+  PlotSubWindow* pcPlotWindow = new PlotSubWindow( plotWindowTitle );
   pcPlotWindow->setAxisName( "Frame Number", QString::fromStdString( PlaYUVerFrame::supportedQualityMetricsList()[m_iQualityMetricIdx] ) );
 
   if( apcWindowList.size() > 1 )

@@ -61,7 +61,7 @@ PlaYUVerSubWindowHandle::PlaYUVerSubWindowHandle( QWidget *parent ) :
 {
   m_iWindowMode = 0;
 
-  setWindowMode( NormalSubWindows );
+  //setWindowMode( NormalSubWindows );
   setWindowMode( MdiWSubWindows );
 
   m_pcActiveWindow = NULL;
@@ -73,21 +73,21 @@ Void PlaYUVerSubWindowHandle::resetWindowMode()
 {
   QList<SubWindowHandle*> apcSubWindowList = m_apcSubWindowList;
 
-  for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
-  {
-    m_apcSubWindowList.at( i )->setParent( NULL );
-    m_apcSubWindowList.at( i )->sizeHint();
-    m_apcSubWindowList.at( i )->show();
-  }
-
   if( m_iWindowMode == NormalSubWindows )
   {
 
   }
   if( m_iWindowMode == MdiWSubWindows )
   {
+    m_cMdiModeWindowPosition = parentWidget()->pos();
+    m_cMdiModeWindowSize = parentWidget()->size();
+    for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
+    {
+      m_apcSubWindowList.at( i )->setParent( NULL );
+    }
     for( Int i = 0; i < m_apcMdiSubWindowList.size(); i++ )
     {
+      disconnect( m_apcMdiSubWindowList.at( i ), SIGNAL( aboutToClose( PlaYUVerMdiSubWindow* ) ), this, SLOT( removeMdiSubWindow( PlaYUVerMdiSubWindow* ) ) );
       m_apcMdiSubWindowList.at( i )->close();
     }
     m_apcMdiSubWindowList.clear();
@@ -95,6 +95,7 @@ Void PlaYUVerSubWindowHandle::resetWindowMode()
       delete m_pcMdiArea;
     if( m_pcWindowManagerLayout )
       delete m_pcWindowManagerLayout;
+    //hide();
   }
 }
 
@@ -107,6 +108,16 @@ Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
 
   if( iWindowMode == NormalSubWindows )
   {
+    for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
+    {
+      m_apcSubWindowList.at( i )->setParent( NULL );
+      m_apcSubWindowList.at( i )->sizeHint();
+      m_apcSubWindowList.at( i )->show();
+    }
+
+    QSize screenSize = QApplication::desktop()->availableGeometry().size();
+    parentWidget()->move( 0, 0 );
+    parentWidget()->resize( screenSize.width(), 5 );
 
   }
 
@@ -118,9 +129,18 @@ Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
     m_pcWindowManagerLayout = new QHBoxLayout( this );
     m_pcWindowManagerLayout->addWidget( m_pcMdiArea );
     setLayout( m_pcWindowManagerLayout );
+    show();
+    for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
+    {
+      addMdiSubWindow( m_apcSubWindowList.at( i ) );
+    }
+    parentWidget()->move( m_cMdiModeWindowPosition );
+    parentWidget()->resize( m_cMdiModeWindowSize );
   }
-
   m_iWindowMode = iWindowMode;
+  tileSubWindows();
+  parentWidget()->update();
+  qApp->processEvents();
 }
 
 Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowHandle *window )
@@ -157,6 +177,16 @@ Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowHandle *window )
 
 }
 
+Void PlaYUVerSubWindowHandle::addMdiSubWindow( SubWindowHandle *window )
+{
+  PlaYUVerMdiSubWindow* mdiSubWindow = new PlaYUVerMdiSubWindow;
+  mdiSubWindow->setWidget( window );
+  m_pcMdiArea->addSubWindow( mdiSubWindow );
+  m_apcMdiSubWindowList.append( mdiSubWindow );
+  window->setSubWindow( mdiSubWindow );
+  connect( mdiSubWindow, SIGNAL( aboutToClose( PlaYUVerMdiSubWindow* ) ), this, SLOT( removeMdiSubWindow( PlaYUVerMdiSubWindow* ) ) );
+}
+
 Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowHandle *window, Qt::WindowFlags flags )
 {
   if( window )
@@ -171,12 +201,7 @@ Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowHandle *window, Qt::WindowF
     }
     if( m_iWindowMode == MdiWSubWindows )
     {
-      PlaYUVerMdiSubWindow* mdiSubWindow = new PlaYUVerMdiSubWindow;
-      mdiSubWindow->setWidget( window );
-      m_pcMdiArea->addSubWindow( mdiSubWindow );
-      m_apcMdiSubWindowList.append( mdiSubWindow );
-      window->setSubWindow( mdiSubWindow );
-      connect( mdiSubWindow, SIGNAL( aboutToClose( PlaYUVerMdiSubWindow* ) ), this, SLOT( removeMdiSubWindow( PlaYUVerMdiSubWindow* ) ) );
+      addMdiSubWindow( window );
     }
     m_apcSubWindowList.append( window );
   }

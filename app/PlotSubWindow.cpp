@@ -41,7 +41,7 @@ Void PlotSubWindow::definePlotColors()
   m_arrayColorList.append( Qt::darkRed );
 }
 
-PlotSubWindow::PlotSubWindow( QWidget * parent, const QString& windowTitle ) :
+PlotSubWindow::PlotSubWindow( const QString& windowTitle, QWidget * parent ) :
         SubWindowHandle( parent, SubWindowHandle::PLOT_SUBWINDOW )
 {
 

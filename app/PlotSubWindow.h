@@ -60,7 +60,7 @@ private:
 
 public:
 
-  PlotSubWindow( QWidget * parent, const QString& windowTitle );
+  PlotSubWindow( const QString& windowTitle, QWidget * parent = NULL );
   ~PlotSubWindow();
 
   Void definePlotColors();

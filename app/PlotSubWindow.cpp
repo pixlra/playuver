@@ -48,7 +48,7 @@ Void PlotSubWindow::definePlotColors()
 }
 
 PlotSubWindow::PlotSubWindow( const QString& windowTitle, QWidget * parent ) :
-        SubWindowHandle( parent, SubWindowHandle::PLOT_SUBWINDOW )
+        SubWindowAbstract( parent, SubWindowAbstract::PLOT_SUBWINDOW )
 {
 
   definePlotColors();

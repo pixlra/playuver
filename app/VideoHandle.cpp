@@ -22,10 +22,19 @@
  * \brief    Class to handle video playback
  */
 
-#include <QtGui>
-#include "PlaYUVerSubWindowHandle.h"
 #include "VideoHandle.h"
+#include "VideoSubWindow.h"
+#include "PlaYUVerSubWindowHandle.h"
 #include "DialogSubWindowSelector.h"
+#include "FramePropertiesDock.h"
+#include "WidgetFrameNumber.h"
+#include <QtGui>
+#include <QToolBar>
+#include <QDockWidget>
+#include <QSignalMapper>
+#include <QSlider>
+#include <QLabel>
+#include <QElapsedTimer>
 #if( _CONTROL_PLAYING_TIME_ == 1 )
 #include <QElapsedTimer>
 #endif
@@ -137,7 +146,7 @@ QToolBar* VideoHandle::createToolBar()
 
 QDockWidget* VideoHandle::createDock()
 {
-  m_pcFramePropertiesSideBar = new FramePropertiesSideBar( this, &m_bIsPlaying );
+  m_pcFramePropertiesSideBar = new FramePropertiesDock( this, &m_bIsPlaying );
   m_pcFramePropertiesDock = new QDockWidget( tr( "Frame Information" ), this );
   m_pcFramePropertiesDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   m_pcFramePropertiesDock->setWidget( m_pcFramePropertiesSideBar );
@@ -278,7 +287,7 @@ Void VideoHandle::updateSelectionArea( QRect area )
   }
 }
 
-Void VideoHandle::closeSubWindow( SubWindowHandle* subWindow )
+Void VideoHandle::closeSubWindow( SubWindowAbstract* subWindow )
 {
   VideoSubWindow* videoSubWindow = qobject_cast<VideoSubWindow *>( subWindow );
 
@@ -303,8 +312,8 @@ Void VideoHandle::zoomToFactorAll( const Double scale, const QPoint center )
 
     factor = m_pcCurrentVideoSubWindow->getScaleFactor();
 
-    SubWindowHandle *subWindow;
-    QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+    SubWindowAbstract *subWindow;
+    QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
       subWindow = subWindowList.at( i );
@@ -323,8 +332,8 @@ Void VideoHandle::moveAllScrollBars( const QPoint offset )
   QPoint newOffset = offset;
   if( m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() )
   {
-    SubWindowHandle *subWindow;
-    QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+    SubWindowAbstract *subWindow;
+    QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
 
     QScrollBar *scrollBar;
     scrollBar = m_pcCurrentVideoSubWindow->horizontalScrollBar();
@@ -408,9 +417,9 @@ Void VideoHandle::setTimerStatus()
     if( m_pcPlayControlTimer && m_pcPlayingTimer->interval() > 0 )
     {
       qDebug( ) << "Desired Fps: "
-                << 1000 / m_pcPlayingTimer->interval()
-                << "Real Fps: "
-                << 1000 / m_dAverageFps;
+      << 1000 / m_pcPlayingTimer->interval()
+      << "Real Fps: "
+      << 1000 / m_dAverageFps;
 
       delete m_pcPlayControlTimer;
       m_pcPlayControlTimer = NULL;
@@ -574,7 +583,7 @@ Void VideoHandle::seekSliderEvent( Int new_frame_num )
 
 Void VideoHandle::videoSelectionButtonEvent()
 {
-  DialogSubWindowSelector dialogWindowsSelection( this, m_pcMainWindowManager, SubWindowHandle::VIDEO_STREAM_SUBWINDOW );
+  DialogSubWindowSelector dialogWindowsSelection( this, m_pcMainWindowManager, SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
   QStringList cWindowListNames;
   for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
   {
@@ -584,7 +593,7 @@ Void VideoHandle::videoSelectionButtonEvent()
   {
     m_acPlayingSubWindows.clear();
     VideoSubWindow *videoSubWindow;
-    QList<SubWindowHandle*> selectedSubWindowList = dialogWindowsSelection.getSelectedWindows();
+    QList<SubWindowAbstract*> selectedSubWindowList = dialogWindowsSelection.getSelectedWindows();
     for( Int i = 0; i < selectedSubWindowList.size(); i++ )
     {
       videoSubWindow = qobject_cast<VideoSubWindow*>( selectedSubWindowList.at( i ) );

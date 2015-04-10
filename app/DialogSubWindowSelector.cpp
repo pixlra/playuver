@@ -84,7 +84,7 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWi
   m_mapperWindowsList = new QSignalMapper( this );
   connect( m_mapperWindowsList, SIGNAL( mapped(int) ), this, SLOT( toggleSubWindow(int) ) );
 
-  SubWindowHandle *subWindow;
+  SubWindowAbstract *subWindow;
   QString currSubWindowName;
   QCheckBox* windowCheckBox;
   m_apcSubWindowList = m_pcMainWindowManager->findSubWindow( m_uiCategory );
@@ -143,7 +143,7 @@ Void DialogSubWindowSelector::updateSubWindowList()
 //            << m_apcSelectedSubWindowList.size();
 }
 
-Void DialogSubWindowSelector::selectSubWindow( SubWindowHandle * subWindow )
+Void DialogSubWindowSelector::selectSubWindow( SubWindowAbstract * subWindow )
 {
   Int iIdx = m_apcSubWindowList.indexOf( subWindow );
   if( iIdx >= 0 )

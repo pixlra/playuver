@@ -29,7 +29,7 @@
 namespace plaYUVer
 {
 
-PlaYUVerAppAdaptor::PlaYUVerAppAdaptor( plaYUVerApp *app ) :
+PlaYUVerAppAdaptor::PlaYUVerAppAdaptor( PlaYUVerApp *app ) :
         QDBusAbstractAdaptor( app ),
         m_app( app )
 {

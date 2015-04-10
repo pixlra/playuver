@@ -216,10 +216,10 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
   frame_rate = fr;
 
   /*if( video_stream->nb_frames )
-  {
-    num_frames = video_stream->nb_frames;
-  }
-  else*/ if( fmt_ctx->duration != AV_NOPTS_VALUE )
+   {
+   num_frames = video_stream->nb_frames;
+   }
+   else*/if( fmt_ctx->duration != AV_NOPTS_VALUE )
   {
     Int64 duration = fmt_ctx->duration + 5000;
     m_uiSecs = duration / AV_TIME_BASE;
@@ -316,8 +316,7 @@ Bool LibAvContextHandle::decodeVideoPkt()
   {
     pkt.size = 0;
   }
-  Bool bRet = got_frame > 0 ? true : false;
-  return bRet;
+  return got_frame > 0 ? true : false;
 }
 
 Bool LibAvContextHandle::decodeAvFormat()
@@ -356,7 +355,8 @@ Bool LibAvContextHandle::decodeAvFormat()
     av_image_copy_to_buffer( m_pchFrameBuffer, m_uiFrameBufferSize, frame->data, frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
         video_dec_ctx->height, 1 );
 
-    av_free_packet( &orig_pkt );
+    if( orig_pkt.size )
+      av_free_packet( &orig_pkt );
 
     return true;
   }

@@ -117,7 +117,7 @@ Void QualityHandle::updateMenus()
     if( hasSubWindow && !hasReference )
     {
       VideoSubWindow* pcVideoSubWindow;
-      QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_STREAM_SUBWINDOW );
+      QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
       for( Int i = 0; i < subWindowList.size(); i++ )
       {
         pcVideoSubWindow = qobject_cast<VideoSubWindow *>( subWindowList.at( i ) );
@@ -255,7 +255,7 @@ Void QualityHandle::slotSelectCurrentAsReference()
   if( pcRefSubWindow )
   {
     VideoSubWindow* pcVideoSubWindow;
-    QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+    QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
       pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
@@ -305,7 +305,7 @@ Void QualityHandle::slotPlotQualitySeveral()
     }
 
     VideoSubWindow* pcVideoSubWindow;
-    QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_STREAM_SUBWINDOW );
+    QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
       pcVideoSubWindow = qobject_cast<VideoSubWindow *>( subWindowList.at( i ) );

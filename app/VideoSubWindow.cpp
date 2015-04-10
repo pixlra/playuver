@@ -24,8 +24,8 @@
 
 #include "VideoSubWindow.h"
 #include "ModulesHandle.h"
-#include "SubWindowHandle.h"
 #include "ConfigureFormatDialog.h"
+#include "SubWindowAbstract.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include "QtConcurrent/qtconcurrentrun.h"
 #endif
@@ -78,7 +78,7 @@ Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename )
 }
 
 VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget * parent ) :
-        SubWindowHandle( parent, SubWindowHandle::VIDEO_SUBWINDOW | category ),
+        SubWindowAbstract( parent, SubWindowAbstract::VIDEO_SUBWINDOW | category ),
         m_pCurrStream( NULL ),
         m_pcCurrFrame( NULL ),
         m_pcCurrentDisplayModule( NULL ),
@@ -128,7 +128,7 @@ Void VideoSubWindow::loadAll()
 
 Void VideoSubWindow::refreshSubWindow()
 {
-  if( getCategory() & SubWindowHandle::VIDEO_STREAM_SUBWINDOW )
+  if( getCategory() & SubWindowAbstract::VIDEO_STREAM_SUBWINDOW )
   {
     Int currFrameNum = m_pCurrStream->getCurrFrameNum();
     if( !loadFile( m_cFilename, false ) )

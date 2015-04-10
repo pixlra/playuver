@@ -18,16 +18,21 @@
  */
 
 /**
- * \file     SubWindowHandle.cpp
- * \brief    Sub windows handling
+ * \file     SubWindowAbstract.cpp
+ * \brief    Abstract class to handle subwindows
  */
 
-#include "SubWindowHandle.h"
+#include <QFocusEvent>
+#include <QCloseEvent>
+#include <QScrollBar>
+#include <QIcon>
+#include "SubWindowAbstract.h"
 #include "PlaYUVerMdiSubWindow.h"
+
 namespace plaYUVer
 {
 
-SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
+SubWindowAbstract::SubWindowAbstract( QWidget * parent, UInt category ) :
         QScrollArea( parent ),
         m_cSubWindow( NULL )
 {
@@ -52,22 +57,22 @@ SubWindowHandle::SubWindowHandle( QWidget * parent, UInt category ) :
   connect(this, SIGNAL(destroyed()), this, SLOT(onDestroyed()));
 }
 
-void SubWindowHandle::onDestroyed()
+void SubWindowAbstract::onDestroyed()
 {
   return;
 }
 
-SubWindowHandle::~SubWindowHandle()
+SubWindowAbstract::~SubWindowAbstract()
 {
   return;
 }
 
-QSize SubWindowHandle::getScrollSize()
+QSize SubWindowAbstract::getScrollSize()
 {
   return QSize( viewport()->size().width() - 5, viewport()->size().height() - 5 );
 }
 
-Void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
+Void SubWindowAbstract::adjustScrollBarByOffset( QPoint Offset )
 {
   QPoint cLastScroll = m_cCurrScroll;
   QScrollBar *scrollBarH, *scrollBarV;
@@ -97,7 +102,7 @@ Void SubWindowHandle::adjustScrollBarByOffset( QPoint Offset )
 
 // This function was developed with help of the schematics presented in
 // http://stackoverflow.com/questions/13155382/jscrollpane-zoom-relative-to-mouse-position
-Void SubWindowHandle::adjustScrollBarByScale( Double scale, QPoint center )
+Void SubWindowAbstract::adjustScrollBarByScale( Double scale, QPoint center )
 {
   QPoint cLastScroll = m_cCurrScroll;
   QScrollBar *scrollBarH, *scrollBarV;
@@ -140,7 +145,7 @@ Void SubWindowHandle::adjustScrollBarByScale( Double scale, QPoint center )
 
 }
 
-Void SubWindowHandle::updateCurScrollValues()
+Void SubWindowAbstract::updateCurScrollValues()
 {
   QScrollBar *scrollBar = horizontalScrollBar();
   m_cCurrScroll.setX( scrollBar->value() );
@@ -148,7 +153,7 @@ Void SubWindowHandle::updateCurScrollValues()
   m_cCurrScroll.setY( scrollBar->value() );
 }
 
-Void SubWindowHandle::setCurScrollValues()
+Void SubWindowAbstract::setCurScrollValues()
 {
   QScrollBar *scrollBar = horizontalScrollBar();
   scrollBar->setValue(m_cCurrScroll.x() );
@@ -156,44 +161,44 @@ Void SubWindowHandle::setCurScrollValues()
   scrollBar->setValue(m_cCurrScroll.y() );
 }
 
-Void SubWindowHandle::setWindowName( QString name )
+Void SubWindowAbstract::setWindowName( QString name )
 {
   m_cWindowName = name;
   setWindowTitle( m_cWindowName );
 }
 
-QString SubWindowHandle::getWindowName()
+QString SubWindowAbstract::getWindowName()
 {
   return m_cWindowName;
 }
 
-Bool SubWindowHandle::mayClose()
+Bool SubWindowAbstract::mayClose()
 {
   return true;
 }
 
-QSize SubWindowHandle::sizeHint( ) const
+QSize SubWindowAbstract::sizeHint( ) const
 {
   return QSize();
 }
 
-QSize SubWindowHandle::sizeHint( const QSize & ) const
+QSize SubWindowAbstract::sizeHint( const QSize & ) const
 {
   return QSize();
 }
 
-Void SubWindowHandle::focusInEvent( QFocusEvent * event )
+Void SubWindowAbstract::focusInEvent( QFocusEvent * event )
 {
   emit aboutToActivate( this );
 }
 
-Void SubWindowHandle::closeEvent( QCloseEvent *event )
+Void SubWindowAbstract::closeEvent( QCloseEvent *event )
 {
   emit aboutToClose( this );
   event->accept();
 }
 
-Void SubWindowHandle::closeSubWindow()
+Void SubWindowAbstract::closeSubWindow()
 {
   close();
   if( m_cSubWindow )

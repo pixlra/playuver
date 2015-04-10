@@ -25,6 +25,7 @@
 #include <cstdio>
 #include "ModulesHandle.h"
 #include "PlaYUVerSubWindowHandle.h"
+#include "VideoSubWindow.h"
 #include "VideoHandle.h"
 #include "PlaYUVerModuleFactory.h"
 #include "DialogSubWindowSelector.h"
@@ -251,8 +252,8 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   Int numberOfFrames = pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames;
   if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )  // Show dialog to select sub windows
   {
-    DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMainWindowManager, SubWindowHandle::VIDEO_SUBWINDOW, numberOfFrames, numberOfFrames );
-    QList<SubWindowHandle*> windowsList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+    DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMainWindowManager, SubWindowAbstract::VIDEO_SUBWINDOW, numberOfFrames, numberOfFrames );
+    QList<SubWindowAbstract*> windowsList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
 
     if( windowsList.size() <= numberOfFrames )
     {
@@ -269,7 +270,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     if( dialogWindowsSelection.exec() == QDialog::Accepted )
     {
       VideoSubWindow *videoSubWindow;
-      QList<SubWindowHandle*> subWindowList = dialogWindowsSelection.getSelectedWindows();
+      QList<SubWindowAbstract*> subWindowList = dialogWindowsSelection.getSelectedWindows();
       for( Int i = 0; i < subWindowList.size(); i++ )
       {
         videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );

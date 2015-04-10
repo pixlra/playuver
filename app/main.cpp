@@ -23,10 +23,10 @@
  */
 
 #include "config.h"
-#include "PlaYUVerAppDefs.h"
 #include <QApplication>
+#include "PlaYUVerAppDefs.h"
 #include "PlaYUVerApp.h"
-#include "SubWindowHandle.h"
+#include "VideoSubWindow.h"
 #ifdef USE_QTDBUS
 #include "PlaYUVerAppAdaptor.h"
 #endif
@@ -128,7 +128,7 @@ int main( int argc, char *argv[] )
    */
   QDBusConnection::sessionBus().registerService( PLAYUVER_DBUS_SESSION_NAME );
 #endif
-  plaYUVerApp mainwindow;
+  PlaYUVerApp mainwindow;
   mainwindow.show();
   if( mainwindow.parseArgs( argc, argv ) )
   {
@@ -136,8 +136,8 @@ int main( int argc, char *argv[] )
   }
 
 #ifdef USE_FERVOR
-  FvUpdater::sharedUpdater()->SetFeedURL("http://192.168.96.201/share/PlaYUVerProject/PlaYUVerUpdate-" UPDATE_CHANNEL ".xml");
-  FvUpdater::sharedUpdater()->SetDependencies("ALL");
+  FvUpdater::sharedUpdater()->SetFeedURL( "http://192.168.96.201/share/PlaYUVerProject/PlaYUVerUpdate-" UPDATE_CHANNEL ".xml" );
+  FvUpdater::sharedUpdater()->SetDependencies( "ALL" );
 #endif
 
   return application.exec();

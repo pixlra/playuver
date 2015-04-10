@@ -26,15 +26,14 @@
 #define __VIDEOSUBWINDOW_H__
 
 #include "config.h"
+#include <QFuture>
+#include <QDataStream>
+#include <QVector>
+#include <QString>
+#include <QRect>
 #include "PlaYUVerAppDefs.h"
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
-#include "QFuture"
 #include "lib/PlaYUVerStream.h"
-#include "SubWindowHandle.h"
+#include "SubWindowAbstract.h"
 #include "ViewArea.h"
 
 namespace plaYUVer
@@ -59,7 +58,7 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& d );
 QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& d );
 Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename );
 
-class VideoSubWindow: public SubWindowHandle
+class VideoSubWindow: public SubWindowAbstract
 {
 Q_OBJECT
 
@@ -202,7 +201,7 @@ public:
   }
 
   /**
-   * Virtual functions from SubWindowHandle
+   * Virtual functions from SubWindowAbstract
    */
   Void normalSize();
   Void zoomToFit();

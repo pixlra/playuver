@@ -45,7 +45,7 @@ namespace plaYUVer
 {
 
 class PlaYUVerSubWindowHandle;
-class SubWindowHandle;
+class SubWindowAbstract;
 
 /**
  * Class to define the dialog box to select sub windows
@@ -58,8 +58,8 @@ Q_OBJECT
 public:
   DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWindowHandle *windowManager, UInt uiCategory, Int minWindowsSelected = 1, Int maxWindowsSelected = -1 );
 
-  Void selectSubWindow( SubWindowHandle* subWindow );
-  QList<SubWindowHandle*> getSelectedWindows()
+  Void selectSubWindow( SubWindowAbstract* subWindow );
+  QList<SubWindowAbstract*> getSelectedWindows()
   {
     return m_apcSelectedSubWindowList;
   }
@@ -69,8 +69,8 @@ private:
   Int m_iMaxSlectedWindows;
   PlaYUVerSubWindowHandle* m_pcMainWindowManager;
 
-  QList<SubWindowHandle*> m_apcSubWindowList;
-  QList<SubWindowHandle*> m_apcSelectedSubWindowList;
+  QList<SubWindowAbstract*> m_apcSubWindowList;
+  QList<SubWindowAbstract*> m_apcSelectedSubWindowList;
 
   QSignalMapper* m_mapperWindowsList;
   QGroupBox* m_pcGroupCheckBox;

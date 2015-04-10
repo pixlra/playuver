@@ -27,25 +27,29 @@
 
 #include "config.h"
 #include "PlaYUVerAppDefs.h"
-#include <QtCore>
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
-#include "VideoSubWindow.h"
-#include "WidgetFrameNumber.h"
-#include "FramePropertiesSidebar.h"
+
+#include <QWidget>
+#include <QMenu>
+#include <QVector>
+#include <QPoint>
 
 #define _CONTROL_PLAYING_TIME_ 0
 
+class QToolBar;
+class QDockWidget;
+class QSignalMapper;
+class QLabel;
+class QSlider;
 class QElapsedTimer;
 
 namespace plaYUVer
 {
 
 class PlaYUVerSubWindowHandle;
+class SubWindowAbstract;
 class VideoSubWindow;
+class FramePropertiesDock;
+class WidgetFrameNumber;
 
 class VideoHandle: public QWidget
 {
@@ -91,7 +95,7 @@ private:
   QToolBar* m_toolbarVideo;
 
   QDockWidget* m_pcFramePropertiesDock;
-  FramePropertiesSideBar* m_pcFramePropertiesSideBar;
+  FramePropertiesDock* m_pcFramePropertiesSideBar;
 
   QLabel* m_pcVideoFormatLabel;
   QLabel* m_pcResolutionLabel;
@@ -117,7 +121,7 @@ Q_SIGNALS:
 private Q_SLOTS:
   void update();
   void updateSelectionArea( QRect area );
-  void closeSubWindow( SubWindowHandle* subWindow );
+  void closeSubWindow( SubWindowAbstract* subWindow );
   void zoomToFactorAll( const double factor, const QPoint center = QPoint() );
   void moveAllScrollBars( const QPoint offset );
   void play();

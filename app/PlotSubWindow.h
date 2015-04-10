@@ -32,14 +32,14 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
-#include "SubWindowHandle.h"
+#include "SubWindowAbstract.h"
 
 class QCustomPlot;
 
 namespace plaYUVer
 {
 
-class PlotSubWindow: public SubWindowHandle
+class PlotSubWindow: public SubWindowAbstract
 {
 Q_OBJECT
 
@@ -75,7 +75,7 @@ public:
   }
 
   /**
-   * Virtual functions from SubWindowHandle
+   * Virtual functions from SubWindowAbstract
    */
   Void normalSize();
   Void zoomToFit();

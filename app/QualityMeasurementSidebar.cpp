@@ -136,7 +136,7 @@ Void QualityMeasurementSidebar::updateSubWindowList()
   m_pcVideoWindowList.clear();
 
   VideoSubWindow* pcVideoSubWindow;
-  QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+  QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );

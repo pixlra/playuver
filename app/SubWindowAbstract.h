@@ -18,9 +18,9 @@
  */
 
 /**
- * \file     SubWindowHandle.h
+ * \file     SubWindowAbstract.h
  * \ingroup  PlaYUVerApp PlaYUVerApp_Subwindow
- * \brief    Sub windows handling
+ * \brief    Abstract class to handle subwindows
  *
  * @defgroup PlaYUVerApp_Subwindow SubWindow definition
  * @{
@@ -34,23 +34,25 @@
  * @}
  */
 
-#ifndef __SUBWINDOWHANDLE_H__
-#define __SUBWINDOWHANDLE_H__
+#ifndef __SUBWINDOWABSTRACT_H__
+#define __SUBWINDOWABSTRACT_H__
 
 #include "config.h"
 #include "PlaYUVerAppDefs.h"
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
+#include <QScrollArea>
+#include <QString>
+#include <QPoint>
+#include <QSize>
+
+class QFocusEvent;
+class QCloseEvent;
 
 namespace plaYUVer
 {
 
 class PlaYUVerMdiSubWindow;
 
-class SubWindowHandle: public QScrollArea
+class SubWindowAbstract: public QScrollArea
 {
 Q_OBJECT
 
@@ -73,8 +75,8 @@ public:
     PLOT_SUBWINDOW = 8,
   };
 
-  SubWindowHandle( QWidget *, UInt );
-  ~SubWindowHandle();
+  SubWindowAbstract( QWidget *, UInt );
+  ~SubWindowAbstract();
 
   /**
    * Show the image at its original size
@@ -152,8 +154,8 @@ public:
   Void closeSubWindow();
 
 protected:
-  void focusInEvent( QFocusEvent * event );
-  void closeEvent( QCloseEvent *event );
+  void focusInEvent( QFocusEvent* event );
+  void closeEvent( QCloseEvent* event );
   QSize getScrollSize();
 
 Q_SIGNALS:
@@ -170,8 +172,8 @@ Q_SIGNALS:
    */
   void updateStatusBar( const QString& );
 
-  void aboutToActivate( SubWindowHandle* );
-  void aboutToClose( SubWindowHandle* );
+  void aboutToActivate( SubWindowAbstract* );
+  void aboutToClose( SubWindowAbstract* );
 
 public Q_SLOTS:
   void onDestroyed();
@@ -184,5 +186,5 @@ public Q_SLOTS:
 
 }  // NAMESPACE
 
-#endif // __SUBWINDOWHANDLE_H__
+#endif // __SUBWINDOWABSTRACT_H__
 

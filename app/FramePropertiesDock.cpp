@@ -18,19 +18,19 @@
  */
 
 /**
- * \file     FramePropertiesSideBar.cpp
+ * \file     FramePropertiesDock.cpp
  * \brief    Main side bar definition
  */
 
 #include <cmath>
 #include <QtGui>
 #include <QtDebug>
-#include "FramePropertiesSidebar.h"
+#include "FramePropertiesDock.h"
 
 namespace plaYUVer
 {
 
-FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent, Bool* pbMainPlaySwitch ) :
+FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitch ) :
         QWidget( parent ),
         pbMainPlaySwitch( pbMainPlaySwitch )
 {
@@ -242,7 +242,7 @@ FramePropertiesSideBar::FramePropertiesSideBar( QWidget* parent, Bool* pbMainPla
 
 }
 
-FramePropertiesSideBar::~FramePropertiesSideBar()
+FramePropertiesDock::~FramePropertiesDock()
 {
   // If there is a currently histogram computation when dialog is closed,
   // stop it before the image data are deleted automatically!
@@ -251,7 +251,7 @@ FramePropertiesSideBar::~FramePropertiesSideBar()
     delete histogramWidget;
 }
 
-QSize FramePropertiesSideBar::sizeHint() const
+QSize FramePropertiesDock::sizeHint() const
 {
   QSize currSize = size();
   QSize bestSize( 180, currSize.height() );
@@ -260,7 +260,7 @@ QSize FramePropertiesSideBar::sizeHint() const
   return currSize;
 }
 
-Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame, Bool isPlaying )
+Void FramePropertiesDock::setData( PlaYUVerFrame* pcFrame, Bool isPlaying )
 {
   m_pbIsPlaying = isPlaying;
   if( !pcFrame )
@@ -348,7 +348,7 @@ Void FramePropertiesSideBar::setData( PlaYUVerFrame* pcFrame, Bool isPlaying )
   }
 }
 
-Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
+Void FramePropertiesDock::setSelection( const QRect &selectionArea )
 {
   // This is necessary to stop computation because image.bits() is
   // currently used by threaded histogram algorithm.
@@ -376,7 +376,7 @@ Void FramePropertiesSideBar::setSelection( const QRect &selectionArea )
   }
 }
 
-Void FramePropertiesSideBar::updateDataHistogram()
+Void FramePropertiesDock::updateDataHistogram()
 {
   if( m_pcFrame->isValid() && isVisible() )
   {
@@ -403,7 +403,7 @@ Void FramePropertiesSideBar::updateDataHistogram()
   }
 }
 
-Void FramePropertiesSideBar::updateStatistiques()
+Void FramePropertiesDock::updateStatistiques()
 {
   QString value;
 
@@ -444,7 +444,7 @@ Void FramePropertiesSideBar::updateStatistiques()
   }
 }
 
-Void FramePropertiesSideBar::stopHistogram()
+Void FramePropertiesDock::stopHistogram()
 {
   histogramWidget->stopHistogramComputation();
 }
@@ -453,7 +453,7 @@ Void FramePropertiesSideBar::stopHistogram()
 //                                  SLOTS
 ////////////////////////////////////////////////////////////////////////////////
 
-Void FramePropertiesSideBar::slotRefreshOptions( int range )
+Void FramePropertiesDock::slotRefreshOptions( int range )
 {
   if( !isVisible() )
     return;
@@ -476,12 +476,12 @@ Void FramePropertiesSideBar::slotRefreshOptions( int range )
   }
 }
 
-Void FramePropertiesSideBar::slotHistogramComputationFailed()
+Void FramePropertiesDock::slotHistogramComputationFailed()
 {
   m_pcFrame = NULL;
 }
 
-Void FramePropertiesSideBar::slotChannelChanged( Int channel )
+Void FramePropertiesDock::slotChannelChanged( Int channel )
 {
   if( m_pcFrame->getColorSpace() == PlaYUVerFrame::COLOR_YUV )
     channel += 1;
@@ -519,13 +519,13 @@ Void FramePropertiesSideBar::slotChannelChanged( Int channel )
   updateStatistiques();
 }
 
-Void FramePropertiesSideBar::slotScaleChanged( Int scale )
+Void FramePropertiesDock::slotScaleChanged( Int scale )
 {
   histogramWidget->m_scaleType = scale;
   histogramWidget->update();
 }
 
-Void FramePropertiesSideBar::slotColorsChanged( Int color )
+Void FramePropertiesDock::slotColorsChanged( Int color )
 {
   switch( color )
   {
@@ -544,14 +544,14 @@ Void FramePropertiesSideBar::slotColorsChanged( Int color )
   updateStatistiques();
 }
 
-Void FramePropertiesSideBar::slotRenderingChanged( Int rendering )
+Void FramePropertiesDock::slotRenderingChanged( Int rendering )
 {
   histogramWidget->m_renderingType = rendering;
   histogramWidget->update();
   updateStatistiques();
 }
 
-Void FramePropertiesSideBar::slotMinValueChanged( Int min )
+Void FramePropertiesDock::slotMinValueChanged( Int min )
 {
   // Called when user changes values of spin box.
   // Communicate the change to histogram widget.
@@ -565,7 +565,7 @@ Void FramePropertiesSideBar::slotMinValueChanged( Int min )
   updateStatistiques();
 }
 
-Void FramePropertiesSideBar::slotMaxValueChanged( Int max )
+Void FramePropertiesDock::slotMaxValueChanged( Int max )
 {
   if( max == minInterv->value() - 1 )
     minInterv->setValue( max );
@@ -575,7 +575,7 @@ Void FramePropertiesSideBar::slotMaxValueChanged( Int max )
   updateStatistiques();
 }
 
-Void FramePropertiesSideBar::slotUpdateInterval( Int min, Int max )
+Void FramePropertiesDock::slotUpdateInterval( Int min, Int max )
 {
   // Called when value is set from within histogram widget.
   // Block signals to prevent slotMinValueChanged and
@@ -593,7 +593,7 @@ Void FramePropertiesSideBar::slotUpdateInterval( Int min, Int max )
   updateStatistiques();
 }
 
-Void FramePropertiesSideBar::slotUpdateIntervRange( Int range )
+Void FramePropertiesDock::slotUpdateIntervRange( Int range )
 {
   maxInterv->blockSignals( true );
   maxInterv->setMaximum( range );

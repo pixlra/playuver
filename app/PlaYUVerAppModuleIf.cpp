@@ -24,6 +24,7 @@
 
 #include "PlaYUVerAppModuleIf.h"
 #include "VideoSubWindow.h"
+#include "VideoSubWindow.h"
 
 namespace plaYUVer
 {

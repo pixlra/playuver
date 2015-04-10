@@ -36,7 +36,7 @@
 namespace plaYUVer
 {
 
-class SubWindowHandle;
+class SubWindowAbstract;
 class PlaYUVerMdiArea;
 class PlaYUVerMdiSubWindow;
 
@@ -47,13 +47,13 @@ Q_OBJECT
 public:
   PlaYUVerSubWindowHandle( QWidget *parent );
 
-  Void addSubWindow( SubWindowHandle *widget, Qt::WindowFlags flags = 0 );
+  Void addSubWindow( SubWindowAbstract *widget, Qt::WindowFlags flags = 0 );
 
-  SubWindowHandle *activeSubWindow() const;
+  SubWindowAbstract *activeSubWindow() const;
 
-  QList<SubWindowHandle*> findSubWindow( const UInt uiCategory = 0 ) const;
-  QList<SubWindowHandle*> findSubWindow( const QString &aName, const UInt uiCategory = 0 ) const;
-  SubWindowHandle* findSubWindow( const SubWindowHandle* subWindow ) const;
+  QList<SubWindowAbstract*> findSubWindow( const UInt uiCategory = 0 ) const;
+  QList<SubWindowAbstract*> findSubWindow( const QString &aName, const UInt uiCategory = 0 ) const;
+  SubWindowAbstract* findSubWindow( const SubWindowAbstract* subWindow ) const;
 
   Void createActions();
   QMenu* createMenu();
@@ -69,13 +69,13 @@ public:
 
 private:
   Int m_iWindowMode;
-  QList<SubWindowHandle*> m_apcSubWindowList;
+  QList<SubWindowAbstract*> m_apcSubWindowList;
 
   QHBoxLayout* m_pcWindowManagerLayout;
   PlaYUVerMdiArea* m_pcMdiArea;
   QList<PlaYUVerMdiSubWindow*> m_apcMdiSubWindowList;
 
-  SubWindowHandle* m_pcActiveWindow;
+  SubWindowAbstract* m_pcActiveWindow;
 
   QPoint m_cMdiModeWindowPosition;
   QSize m_cMdiModeWindowSize;
@@ -102,15 +102,15 @@ private:
   /**
    * Internal functions
    */
-  Void addMdiSubWindow( SubWindowHandle *window );
+  Void addMdiSubWindow( SubWindowAbstract *window );
   Void resetWindowMode();
   Void removeSubWindow( Int windowIdx );
 
 public Q_SLOTS:
   void setWindowMode( int iWindowMode );
-  void updateActiveSubWindow( SubWindowHandle *window = 0 );
+  void updateActiveSubWindow( SubWindowAbstract *window = 0 );
   void setActiveSubWindow( QWidget *window );
-  void removeSubWindow( SubWindowHandle *window );
+  void removeSubWindow( SubWindowAbstract *window );
   void removeMdiSubWindow( PlaYUVerMdiSubWindow* window );
   void removeActiveSubWindow();
   void removeAllSubWindow();

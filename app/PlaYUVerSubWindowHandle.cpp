@@ -25,7 +25,7 @@
 #include "PlaYUVerApp.h"
 #include "PlaYUVerSubWindowHandle.h"
 #include "PlaYUVerMdiSubWindow.h"
-#include "SubWindowHandle.h"
+#include "SubWindowAbstract.h"
 
 namespace plaYUVer
 {
@@ -72,7 +72,7 @@ PlaYUVerSubWindowHandle::PlaYUVerSubWindowHandle( QWidget *parent ) :
 
 Void PlaYUVerSubWindowHandle::resetWindowMode()
 {
-  QList<SubWindowHandle*> apcSubWindowList = m_apcSubWindowList;
+  QList<SubWindowAbstract*> apcSubWindowList = m_apcSubWindowList;
 
   if( m_iWindowMode == NormalSubWindows )
   {
@@ -146,7 +146,7 @@ Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
   qApp->processEvents();
 }
 
-Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowHandle *window )
+Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowAbstract *window )
 {
   if( m_iWindowMode == NormalSubWindows )
   {
@@ -164,7 +164,7 @@ Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowHandle *window )
     if( mdiSubWindow )
     {
       QWidget* activeWidget = m_pcMdiArea->activeSubWindow()->widget();
-      Int windowIdx = m_apcSubWindowList.indexOf( qobject_cast<SubWindowHandle *>( activeWidget ) );
+      Int windowIdx = m_apcSubWindowList.indexOf( qobject_cast<SubWindowAbstract*>( activeWidget ) );
       if( windowIdx >= 0 )
       {
         m_pcActiveWindow = m_apcSubWindowList.at( windowIdx );
@@ -180,7 +180,7 @@ Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowHandle *window )
 
 }
 
-Void PlaYUVerSubWindowHandle::addMdiSubWindow( SubWindowHandle *window )
+Void PlaYUVerSubWindowHandle::addMdiSubWindow( SubWindowAbstract *window )
 {
   PlaYUVerMdiSubWindow* mdiSubWindow = new PlaYUVerMdiSubWindow;
   mdiSubWindow->setWidget( window );
@@ -190,17 +190,17 @@ Void PlaYUVerSubWindowHandle::addMdiSubWindow( SubWindowHandle *window )
   connect( mdiSubWindow, SIGNAL( aboutToClose( PlaYUVerMdiSubWindow* ) ), this, SLOT( removeMdiSubWindow( PlaYUVerMdiSubWindow* ) ) );
 }
 
-Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowHandle *window, Qt::WindowFlags flags )
+Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowAbstract *window, Qt::WindowFlags flags )
 {
   if( window )
   {
-    connect( window, SIGNAL( updateStatusBar( const QString& ) ), qobject_cast<plaYUVerApp*>( parent() ), SLOT( updateStatusBar( const QString& ) ) );
-    connect( window, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), qobject_cast<plaYUVerApp*>( parent() ),
+    connect( window, SIGNAL( updateStatusBar( const QString& ) ), qobject_cast<PlaYUVerApp*>( parent() ), SLOT( updateStatusBar( const QString& ) ) );
+    connect( window, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), qobject_cast<PlaYUVerApp*>( parent() ),
         SLOT( updateZoomFactorSBox() ) );
     if( m_iWindowMode == NormalSubWindows )
     {
-      connect( window, SIGNAL( aboutToActivate( SubWindowHandle* ) ), this, SLOT( updateActiveSubWindow( SubWindowHandle* ) ) );
-      connect( window, SIGNAL( aboutToClose( SubWindowHandle* ) ), this, SLOT( removeSubWindow( SubWindowHandle* ) ) );
+      connect( window, SIGNAL( aboutToActivate( SubWindowAbstract* ) ), this, SLOT( updateActiveSubWindow( SubWindowAbstract* ) ) );
+      connect( window, SIGNAL( aboutToClose( SubWindowAbstract* ) ), this, SLOT( removeSubWindow( SubWindowAbstract* ) ) );
     }
     if( m_iWindowMode == MdiWSubWindows )
     {
@@ -216,7 +216,7 @@ Void PlaYUVerSubWindowHandle::removeSubWindow( Int windowIdx )
   {
     if( m_iWindowMode == NormalSubWindows )
     {
-      SubWindowHandle* subWindow = m_apcSubWindowList.at( windowIdx );
+      SubWindowAbstract* subWindow = m_apcSubWindowList.at( windowIdx );
       m_apcSubWindowList.removeAt( windowIdx );
       subWindow->close();
     }
@@ -238,7 +238,7 @@ Void PlaYUVerSubWindowHandle::removeSubWindow( Int windowIdx )
   }
 }
 
-Void PlaYUVerSubWindowHandle::removeSubWindow( SubWindowHandle* window )
+Void PlaYUVerSubWindowHandle::removeSubWindow( SubWindowAbstract* window )
 {
   removeSubWindow( m_apcSubWindowList.indexOf( window ) );
 }
@@ -261,14 +261,14 @@ Void PlaYUVerSubWindowHandle::removeActiveSubWindow()
   removeSubWindow( m_pcActiveWindow );
 }
 
-SubWindowHandle* PlaYUVerSubWindowHandle::activeSubWindow() const
+SubWindowAbstract* PlaYUVerSubWindowHandle::activeSubWindow() const
 {
   return m_pcActiveWindow;
 }
 
-QList<SubWindowHandle*> PlaYUVerSubWindowHandle::findSubWindow( const UInt uiCategory ) const
+QList<SubWindowAbstract*> PlaYUVerSubWindowHandle::findSubWindow( const UInt uiCategory ) const
 {
-  QList<SubWindowHandle*> apcSubWindowList;
+  QList<SubWindowAbstract*> apcSubWindowList;
   if( uiCategory == 0 )
   {
     apcSubWindowList = m_apcSubWindowList;
@@ -284,10 +284,10 @@ QList<SubWindowHandle*> PlaYUVerSubWindowHandle::findSubWindow( const UInt uiCat
   return apcSubWindowList;
 }
 
-QList<SubWindowHandle*> PlaYUVerSubWindowHandle::findSubWindow( const QString &windowName, const UInt uiCategory ) const
+QList<SubWindowAbstract*> PlaYUVerSubWindowHandle::findSubWindow( const QString &windowName, const UInt uiCategory ) const
 {
-  QList<SubWindowHandle*> subWindowList = findSubWindow( uiCategory );
-  QList<SubWindowHandle*> apcSubWindowList;
+  QList<SubWindowAbstract*> subWindowList = findSubWindow( uiCategory );
+  QList<SubWindowAbstract*> apcSubWindowList;
   if( !windowName.isEmpty() )
   {
     for( Int i = 0; i < subWindowList.size(); i++ )
@@ -299,9 +299,9 @@ QList<SubWindowHandle*> PlaYUVerSubWindowHandle::findSubWindow( const QString &w
   return apcSubWindowList;
 }
 
-SubWindowHandle* PlaYUVerSubWindowHandle::findSubWindow( const SubWindowHandle* subWindow ) const
+SubWindowAbstract* PlaYUVerSubWindowHandle::findSubWindow( const SubWindowAbstract* subWindow ) const
 {
-  QList<SubWindowHandle*> subWindowList = findSubWindow();
+  QList<SubWindowAbstract*> subWindowList = findSubWindow();
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     if( subWindow == subWindowList.at( i ) )
@@ -315,7 +315,7 @@ Void PlaYUVerSubWindowHandle::setActiveSubWindow( QWidget *window )
   if( !window )
     return;
 
-  m_pcActiveWindow = qobject_cast<SubWindowHandle *>( window );
+  m_pcActiveWindow = qobject_cast<SubWindowAbstract *>( window );
 
   if( m_iWindowMode == NormalSubWindows )
   {
@@ -453,7 +453,7 @@ Void PlaYUVerSubWindowHandle::updateMenu()
 
   for( Int i = 0; i < number_windows; ++i )
   {
-    SubWindowHandle *subWindow = m_apcSubWindowList.at( i );
+    SubWindowAbstract *subWindow = m_apcSubWindowList.at( i );
 
     QString text;
     if( i < 9 )

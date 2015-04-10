@@ -48,13 +48,13 @@ set(plaYUVer_App_SRCS
     PlaYUVerApp.cpp
     PlaYUVerSubWindowHandle.cpp
     PlaYUVerMdiSubWindow.cpp
-    SubWindowHandle.cpp
+    SubWindowAbstract.cpp
     Settings.cpp
 # Module Video
     VideoSubWindow.cpp
     ViewArea.cpp
     VideoHandle.cpp
-    FramePropertiesSidebar.cpp
+    FramePropertiesDock.cpp
 # Module Quality
     QualityHandle.cpp
     QualityMeasurementSidebar.cpp

@@ -36,6 +36,7 @@
 namespace plaYUVer
 {
 
+class PlaYUVerApp;
 class SubWindowAbstract;
 class PlaYUVerMdiArea;
 class PlaYUVerMdiSubWindow;
@@ -68,6 +69,7 @@ public:
   };
 
 private:
+  PlaYUVerApp* m_pcApp;
   Int m_iWindowMode;
   QList<SubWindowAbstract*> m_apcSubWindowList;
 

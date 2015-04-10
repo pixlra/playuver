@@ -66,6 +66,7 @@ PlaYUVerSubWindowHandle::PlaYUVerSubWindowHandle( QWidget *parent ) :
   m_apcSubWindowList.clear();
   m_apcMdiSubWindowList.clear();
 
+  m_pcApp = qobject_cast<PlaYUVerApp*>( parentWidget() );
   //setWindowMode( NormalSubWindows );
   setWindowMode( MdiWSubWindows );
 }
@@ -112,7 +113,7 @@ Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
     for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
     {
       m_apcSubWindowList.at( i )->setParent( NULL );
-      m_apcSubWindowList.at( i )->sizeHint();
+      m_apcSubWindowList.at( i )->resize( m_apcSubWindowList.at( i )->sizeHint() );
       m_apcSubWindowList.at( i )->show();
     }
     setVisible( false );
@@ -122,6 +123,7 @@ Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
     QSize screenSize = QApplication::desktop()->availableGeometry().size();
     parentWidget()->move( 0, 0 );
     parentWidget()->resize( screenSize.width(), 5 );
+    parentWidget()->setWindowTitle( QApplication::applicationName() );
   }
 
   if( iWindowMode == MdiWSubWindows )
@@ -136,12 +138,17 @@ Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
     for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
     {
       addMdiSubWindow( m_apcSubWindowList.at( i ) );
+      m_apcSubWindowList.at( i )->resize( m_apcSubWindowList.at( i )->sizeHint() );
     }
     parentWidget()->move( m_cMdiModeWindowPosition );
     parentWidget()->resize( m_cMdiModeWindowSize );
+    if( m_pcActiveWindow )
+    {
+      parentWidget()->setWindowTitle( QApplication::applicationName() + " :: " + m_pcActiveWindow->getWindowName() );
+    }
   }
   m_iWindowMode = iWindowMode;
-  tileSubWindows();
+  //tileSubWindows();
   parentWidget()->update();
   qApp->processEvents();
 }
@@ -171,13 +178,11 @@ Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowAbstract *window )
         emit changed();
       }
     }
+    if( m_pcActiveWindow )
+    {
+      parentWidget()->setWindowTitle( QApplication::applicationName() + " :: " + m_pcActiveWindow->getWindowName() );
+    }
   }
-
-  if( m_pcActiveWindow )
-  {
-    parentWidget()->setWindowTitle( QApplication::applicationName() + " :: " + m_pcActiveWindow->getWindowName() );
-  }
-
 }
 
 Void PlaYUVerSubWindowHandle::addMdiSubWindow( SubWindowAbstract *window )
@@ -194,9 +199,8 @@ Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowAbstract *window, Qt::Windo
 {
   if( window )
   {
-    connect( window, SIGNAL( updateStatusBar( const QString& ) ), qobject_cast<PlaYUVerApp*>( parent() ), SLOT( updateStatusBar( const QString& ) ) );
-    connect( window, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), qobject_cast<PlaYUVerApp*>( parent() ),
-        SLOT( updateZoomFactorSBox() ) );
+    connect( window, SIGNAL( updateStatusBar( const QString& ) ), m_pcApp, SLOT( updateStatusBar( const QString& ) ) );
+    connect( window, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_pcApp, SLOT( updateZoomFactorSBox() ) );
     if( m_iWindowMode == NormalSubWindows )
     {
       connect( window, SIGNAL( aboutToActivate( SubWindowAbstract* ) ), this, SLOT( updateActiveSubWindow( SubWindowAbstract* ) ) );
@@ -329,10 +333,70 @@ Void PlaYUVerSubWindowHandle::setActiveSubWindow( QWidget *window )
 
 Void PlaYUVerSubWindowHandle::tileSubWindows()
 {
+  UInt numberOfWindows = m_apcSubWindowList.size();
+  if( numberOfWindows == 0 )
+    return;
+
+  if( m_iWindowMode == NormalSubWindows )
+  {
+    QSize screenSize = QApplication::desktop()->availableGeometry().size();
+    UInt minWindowsInRow = 1;
+    while( ( screenSize.width() / minWindowsInRow ) > 500 )
+    {
+      minWindowsInRow++;
+    }
+    parentWidget()->showNormal();
+    qApp->processEvents();
+    parentWidget()->move( 0, 0 );
+    parentWidget()->resize( screenSize.width(), 5 );
+    QSize appSize = m_pcApp->size();
+    QPoint topLeftCornerWindow( 0, appSize.height() );
+    //Select the arrangement based on the number of windows
+
+    if( numberOfWindows % 2 != 0 && numberOfWindows > minWindowsInRow )
+    {
+      numberOfWindows++;
+    }
+    UInt numberTillingRows = 1;
+    UInt numberTillingColumns;
+    if( numberOfWindows > minWindowsInRow )
+    {
+      numberTillingColumns = minWindowsInRow;
+      for( Int i = numberOfWindows; i > 0; )
+      {
+        numberTillingRows = ( numberOfWindows + numberTillingColumns - 1 ) / numberTillingColumns;
+        if( numberTillingColumns > numberTillingRows )
+        {
+          break;
+        }
+        numberTillingColumns++;
+      }
+    }
+    else
+    {
+      numberTillingColumns = numberOfWindows;
+    }
+    if( numberOfWindows / numberTillingRows == 1 )
+    {
+      numberTillingColumns = numberTillingRows;
+    }
+
+    QSize totalWindowsSize( screenSize.width(), screenSize.height() - topLeftCornerWindow.y() );
+    QSize windowsSize( totalWindowsSize.width() / numberTillingColumns, totalWindowsSize.height() / numberTillingRows );
+    QPoint windowRelativePos;
+    for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
+    {
+      windowRelativePos.setY( ( i / numberTillingColumns ) * windowsSize.height() );
+      windowRelativePos.setX( ( i % numberTillingColumns ) * windowsSize.width() );
+      m_apcSubWindowList.at( i )->resize( windowsSize );
+      m_apcSubWindowList.at( i )->move( topLeftCornerWindow + windowRelativePos );
+    }
+  }
   if( m_iWindowMode == MdiWSubWindows )
   {
     m_pcMdiArea->tileSubWindows();
   }
+
 }
 
 Void PlaYUVerSubWindowHandle::cascadeSubWindows()

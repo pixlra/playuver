@@ -32,6 +32,8 @@ namespace plaYUVer
 PlaYUVerMdiSubWindow::PlaYUVerMdiSubWindow( QWidget *parent ) :
         QMdiSubWindow( parent )
 {
+  setAttribute( Qt::WA_DeleteOnClose );
+  setBackgroundRole( QPalette::Background );
 }
 
 QSize PlaYUVerMdiSubWindow::sizeHint() const

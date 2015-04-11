@@ -64,8 +64,8 @@ public:
 
   enum WindowMode
   {
-    NormalSubWindows = 0,
-    MdiWSubWindows = 1,
+    DETACHEDSUBWINDOWMODE = 0,
+    MDISUBWINDOWMODE = 1,
   };
 
 private:

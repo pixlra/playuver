@@ -198,14 +198,14 @@ Void PlotSubWindow::setAxisRange( PlotSubWindow::Axis eAxis, const Int& axisStar
   if( eAxis == HORIZONTAL )
   {
     m_cPlotArea->xAxis->setRange( axisStart, axisEnd );
-    horizontalScrollBar()->setRange( axisStart * 100, axisEnd * 100 );
+    //horizontalScrollBar()->setRange( axisStart * 100, axisEnd * 100 );
     m_aAxisRange[HORIZONTAL][0] = axisStart;
     m_aAxisRange[HORIZONTAL][1] = axisEnd;
   }
   if( eAxis == VERTICAL )
   {
     m_cPlotArea->yAxis->setRange( axisStart, axisEnd );
-    verticalScrollBar()->setRange( axisStart * 100, axisEnd * 100 );
+    //verticalScrollBar()->setRange( axisStart * 100, axisEnd * 100 );
     m_aAxisRange[VERTICAL][0] = axisStart;
     m_aAxisRange[VERTICAL][1] = axisEnd;
   }

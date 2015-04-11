@@ -332,11 +332,11 @@ Void VideoHandle::moveAllScrollBars( const QPoint offset )
   QPoint newOffset = offset;
   if( m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() )
   {
-    SubWindowAbstract *subWindow;
+    VideoSubWindow *videoSubWindow;
     QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
 
     QScrollBar *scrollBar;
-    scrollBar = m_pcCurrentVideoSubWindow->horizontalScrollBar();
+    scrollBar = m_pcCurrentVideoSubWindow->getScroll()->horizontalScrollBar();
 
     // Do not move other images, if current image reached maximum or minimum scroll position
     if( scrollBar->value() == scrollBar->maximum() && offset.x() > 0 )
@@ -344,7 +344,7 @@ Void VideoHandle::moveAllScrollBars( const QPoint offset )
     if( scrollBar->value() == scrollBar->minimum() && offset.x() < 0 )
       newOffset.setX( 0 );
 
-    scrollBar = m_pcCurrentVideoSubWindow->verticalScrollBar();
+    scrollBar = m_pcCurrentVideoSubWindow->getScroll()->verticalScrollBar();
     if( scrollBar->value() == scrollBar->maximum() && offset.y() > 0 )
       newOffset.setY( 0 );
     if( scrollBar->value() == scrollBar->minimum() && offset.y() < 0 )
@@ -352,12 +352,12 @@ Void VideoHandle::moveAllScrollBars( const QPoint offset )
 
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
-      subWindow = subWindowList.at( i );
-      if( m_pcCurrentVideoSubWindow == subWindow )
+      videoSubWindow = qobject_cast<VideoSubWindow *>( subWindowList.at( i ) );
+      if( m_pcCurrentVideoSubWindow == videoSubWindow )
         continue;
       else
       {
-        subWindow->adjustScrollBarByOffset( newOffset );
+        videoSubWindow->adjustScrollBarByOffset( newOffset );
       }
     }
   }

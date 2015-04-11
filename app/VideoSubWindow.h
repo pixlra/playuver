@@ -36,6 +36,8 @@
 #include "SubWindowAbstract.h"
 #include "ViewArea.h"
 
+class QScrollArea;
+
 namespace plaYUVer
 {
 
@@ -63,6 +65,10 @@ class VideoSubWindow: public SubWindowAbstract
 Q_OBJECT
 
 private:
+
+  QScrollArea* m_pcScrollArea;
+  QPoint m_cLastScroll;
+  QPoint m_cCurrScroll;
 
   ViewArea* m_cViewArea;
 
@@ -102,8 +108,12 @@ private:
    * zoom to fit
    */
   Void scaleView( const QSize & size, QPoint center = QPoint() );
-
   Void updateVideoWindowInfo();
+
+  QSize getScrollSize();
+
+protected:
+  Void paintEvent( QPaintEvent *event );
 
 public:
   enum VideoSubWindowCategories
@@ -136,6 +146,10 @@ public:
 
   Void setCurrFrame( PlaYUVerFrame* pcCurrFrame );
 
+  QScrollArea* getScroll()
+  {
+    return m_pcScrollArea;
+  }
   PlaYUVerStreamInfo getStreamInfo()
   {
     return m_sStreamInfo;
@@ -241,6 +255,10 @@ public:
   //void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:
+  void adjustScrollBarByScale( double scale, QPoint center );
+  void adjustScrollBarByOffset( QPoint Offset );
+  void updateCurScrollValues();
+  void setCurScrollValues();
   void updateSelectedArea( QRect area );
   void updatePixelValueStatusBar( const QPoint& pos );
 };

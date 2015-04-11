@@ -26,6 +26,7 @@
 #include "ModulesHandle.h"
 #include "ConfigureFormatDialog.h"
 #include "SubWindowAbstract.h"
+#include <QScrollArea>
 #if( QT_VERSION_PLAYUVER == 5 )
 #include "QtConcurrent/qtconcurrentrun.h"
 #endif
@@ -87,6 +88,13 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
         m_bIsModule( category == MODULE_SUBWINDOW )
 {
 
+  // Create a new scroll area inside the sub-window
+  m_pcScrollArea = new QScrollArea;
+  connect( m_pcScrollArea->horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValues() ) );
+  connect( m_pcScrollArea->verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValues() ) );
+
+  m_cLastScroll = QPoint();
+
   // Create a new interface to show images
   m_cViewArea = new ViewArea( this );
   connect( m_cViewArea, SIGNAL( zoomFactorChanged_byWheel( double , QPoint) ), this, SLOT( adjustScrollBarByScale( double, QPoint ) ) );
@@ -98,12 +106,15 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
   connect( m_cViewArea, SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectedArea( QRect ) ) );
   connect( m_cViewArea, SIGNAL( positionChanged( const QPoint & ) ), this, SLOT( updatePixelValueStatusBar( const QPoint & ) ) );
 
-  setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-  setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  m_pcScrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  m_pcScrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
   // Define the cViewArea as the widget inside the scroll area
   m_cViewArea->setMinimumSize( size() );
-  setWidget( m_cViewArea );
+
+  m_pcScrollArea->setWidget( m_cViewArea );
+
+  setWidget( m_pcScrollArea );
 
   m_apcCurrentModule.clear();
 
@@ -229,7 +240,7 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
 Void VideoSubWindow::updateVideoWindowInfo()
 {
   m_cStreamInformation = "";
-  if( m_bIsModule )
+  if( m_pcCurrentDisplayModule )
   {
     m_cStreamInformation = "Module";
   }
@@ -425,7 +436,8 @@ Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
   }
 }
 
-Void VideoSubWindow::refreshFrameOperation()
+Void VideoSubWindow::paintEvent( QPaintEvent *event )
+//Void VideoSubWindow::refreshFrameOperation()
 {
   Bool bSetFrame = false;
   if( m_pCurrStream )
@@ -446,20 +458,26 @@ Void VideoSubWindow::refreshFrameOperation()
   {
     ModulesHandle::applyModuleIf( m_apcCurrentModule.at( i ), m_bIsPlaying );
   }
+  //m_cViewArea->update();
+  m_pcScrollArea->update();
+//  QPainter p( this );
+//  p.setPen( QColor( "red" ) );
+//  p.drawLine( 0, 0, width(), height() );
 }
 
 Void VideoSubWindow::refreshFrame( Bool bThreaded )
 {
-#ifndef QT_NO_CONCURRENT
-  m_cRefreshResult.waitForFinished();
-  if( bThreaded )
+//#ifndef QT_NO_CONCURRENT
+//  m_cRefreshResult.waitForFinished();
+//  if( bThreaded )
+//  {
+//    m_cRefreshResult = QtConcurrent::run( this, &VideoSubWindow::refreshFrameOperation );
+//  }
+//  else
+//#endif
   {
-    m_cRefreshResult = QtConcurrent::run( this, &VideoSubWindow::refreshFrameOperation );
-  }
-  else
-#endif
-  {
-    refreshFrameOperation();
+    //refreshFrameOperation();
+    update();
   }
 }
 
@@ -551,6 +569,100 @@ Void VideoSubWindow::stop()
   m_bIsPlaying = false;
   seekAbsoluteEvent( 0 );
   return;
+}
+
+QSize VideoSubWindow::getScrollSize()
+{
+  return QSize( m_pcScrollArea->viewport()->size().width() - 5, m_pcScrollArea->viewport()->size().height() - 5 );
+}
+
+Void VideoSubWindow::adjustScrollBarByOffset( QPoint Offset )
+{
+  QPoint cLastScroll = m_cCurrScroll;
+  QScrollBar *scrollBarH, *scrollBarV;
+  Int valueX, valueY;
+
+  valueX = int( cLastScroll.x() + Offset.x() );
+  valueY = int( cLastScroll.y() + Offset.y() );
+
+  scrollBarH = m_pcScrollArea->horizontalScrollBar();
+  if( valueX > scrollBarH->maximum() )
+    valueX = scrollBarH->maximum();
+  if( valueX < scrollBarH->minimum() )
+    valueX = scrollBarH->minimum();
+  m_cCurrScroll.setX( valueX );
+
+  scrollBarV = m_pcScrollArea->verticalScrollBar();
+  if( valueY > scrollBarV->maximum() )
+    valueY = scrollBarV->maximum();
+  if( valueY < scrollBarV->minimum() )
+    valueY = scrollBarV->minimum();
+  m_cCurrScroll.setY( valueY );
+
+  // Update window scroll
+  scrollBarH->setValue( m_cCurrScroll.x() );
+  scrollBarV->setValue( m_cCurrScroll.y() );
+}
+
+// This function was developed with help of the schematics presented in
+// http://stackoverflow.com/questions/13155382/jscrollpane-zoom-relative-to-mouse-position
+Void VideoSubWindow::adjustScrollBarByScale( Double scale, QPoint center )
+{
+  QPoint cLastScroll = m_cCurrScroll;
+  QScrollBar *scrollBarH, *scrollBarV;
+
+  scrollBarH = m_pcScrollArea->horizontalScrollBar();
+  if( center.isNull() )
+  {
+    m_cCurrScroll.setX( int( scale * cLastScroll.x() + ( ( scale - 1 ) * scrollBarH->pageStep() / 2 ) ) );
+  }
+  else
+  {
+    Int x = center.x() - cLastScroll.x();
+    Int value = int( scale * cLastScroll.x() + ( ( scale - 1 ) * x ) );
+    if( value > scrollBarH->maximum() )
+      value = scrollBarH->maximum();
+    if( value < scrollBarH->minimum() )
+      value = scrollBarH->minimum();
+    m_cCurrScroll.setX( value );
+  }
+
+  scrollBarV = m_pcScrollArea->verticalScrollBar();
+  if( center.isNull() )
+  {
+    m_cCurrScroll.setY( int( scale * cLastScroll.y() + ( ( scale - 1 ) * scrollBarV->pageStep() / 2 ) ) );
+  }
+  else
+  {
+    Int y = center.y() - cLastScroll.y();
+    Int value = int( scale * cLastScroll.y() + ( ( scale - 1 ) * y ) );
+    if( value > scrollBarV->maximum() )
+      value = scrollBarV->maximum();
+    if( value < scrollBarV->minimum() )
+      value = scrollBarV->minimum();
+    m_cCurrScroll.setY( value );
+  }
+
+  // Update window scroll
+  scrollBarH->setValue( m_cCurrScroll.x() );
+  scrollBarV->setValue( m_cCurrScroll.y() );
+
+}
+
+Void VideoSubWindow::updateCurScrollValues()
+{
+  QScrollBar *scrollBar = m_pcScrollArea->horizontalScrollBar();
+  m_cCurrScroll.setX( scrollBar->value() );
+  scrollBar = m_pcScrollArea->verticalScrollBar();
+  m_cCurrScroll.setY( scrollBar->value() );
+}
+
+Void VideoSubWindow::setCurScrollValues()
+{
+  QScrollBar *scrollBar = m_pcScrollArea->horizontalScrollBar();
+  scrollBar->setValue( m_cCurrScroll.x() );
+  scrollBar = m_pcScrollArea->verticalScrollBar();
+  scrollBar->setValue( m_cCurrScroll.y() );
 }
 
 Void VideoSubWindow::normalSize()
@@ -711,4 +823,4 @@ QSize VideoSubWindow::sizeHint( const QSize & maxSize ) const
 //  }
 //}
 
-}  // NAMESPACE
+}// NAMESPACE

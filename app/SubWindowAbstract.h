@@ -39,11 +39,12 @@
 
 #include "config.h"
 #include "PlaYUVerAppDefs.h"
-#include <QScrollArea>
+#include <QWidget>
 #include <QString>
 #include <QPoint>
 #include <QSize>
 
+class QHBoxLayout;
 class QFocusEvent;
 class QCloseEvent;
 
@@ -52,14 +53,12 @@ namespace plaYUVer
 
 class PlaYUVerMdiSubWindow;
 
-class SubWindowAbstract: public QScrollArea
+class SubWindowAbstract: public QWidget
 {
 Q_OBJECT
 
 private:
-  QPoint m_cLastScroll;
-  QPoint m_cCurrScroll;
-
+  QHBoxLayout* m_pcLayout;
   UInt m_uiCategory;
   QString m_cWindowName;
 
@@ -156,7 +155,8 @@ public:
 protected:
   void focusInEvent( QFocusEvent* event );
   void closeEvent( QCloseEvent* event );
-  QSize getScrollSize();
+
+  Void setWidget( QWidget* widget );
 
 Q_SIGNALS:
   /**
@@ -177,10 +177,6 @@ Q_SIGNALS:
 
 public Q_SLOTS:
   void onDestroyed();
-  void adjustScrollBarByScale( double scale, QPoint center );
-  void adjustScrollBarByOffset( QPoint Offset );
-  void updateCurScrollValues();
-  void setCurScrollValues();
 
 };
 

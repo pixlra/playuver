@@ -112,9 +112,6 @@ private:
 
   QSize getScrollSize();
 
-protected:
-  Void paintEvent( QPaintEvent *event );
-
 public:
   enum VideoSubWindowCategories
   {

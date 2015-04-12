@@ -60,12 +60,9 @@ SubWindowAbstract::~SubWindowAbstract()
 
 Void SubWindowAbstract::setWidget( QWidget* widget )
 {
-  if( !m_pcLayout )
-  {
-    m_pcLayout = new QHBoxLayout( this );
-    m_pcLayout->setContentsMargins( 0, 0, 0, 0 );
-  }
-  m_pcLayout->addWidget( widget );
+  QGridLayout *layout = new QGridLayout( this );
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  layout->addWidget( widget, 0, 0 );
 }
 
 void SubWindowAbstract::onDestroyed()

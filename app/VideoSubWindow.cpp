@@ -93,10 +93,8 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
   connect( m_pcScrollArea->horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValues() ) );
   connect( m_pcScrollArea->verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValues() ) );
 
-  m_cLastScroll = QPoint();
-
   // Create a new interface to show images
-  m_cViewArea = new ViewArea( this );
+  m_cViewArea = new ViewArea;
   connect( m_cViewArea, SIGNAL( zoomFactorChanged_byWheel( double , QPoint) ), this, SLOT( adjustScrollBarByScale( double, QPoint ) ) );
   connect( m_cViewArea, SIGNAL( zoomFactorChanged_byWheel( double , QPoint) ), this, SIGNAL( zoomFactorChanged_SWindow( double, QPoint ) ) );
 
@@ -106,15 +104,18 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
   connect( m_cViewArea, SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectedArea( QRect ) ) );
   connect( m_cViewArea, SIGNAL( positionChanged( const QPoint & ) ), this, SLOT( updatePixelValueStatusBar( const QPoint & ) ) );
 
-  //m_pcScrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-  //m_pcScrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  m_pcScrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  m_pcScrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
   // Define the cViewArea as the widget inside the scroll area
   // m_cViewArea->setMinimumSize( size() );
 
   m_pcScrollArea->setWidget( m_cViewArea );
+  m_pcScrollArea->setWidgetResizable( true );
 
   setWidget( m_pcScrollArea );
+
+  m_cLastScroll = QPoint();
 
   m_apcCurrentModule.clear();
 
@@ -436,35 +437,6 @@ Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
   }
 }
 
-Void VideoSubWindow::paintEvent( QPaintEvent *event )
-//Void VideoSubWindow::refreshFrameOperation()
-{
-  Bool bSetFrame = false;
-  if( m_pCurrStream )
-  {
-    m_pcCurrFrame = m_pCurrStream->getCurrFrame();
-    bSetFrame = m_pcCurrFrame ? true : false;
-  }
-  if( m_pcCurrentDisplayModule )
-  {
-    ModulesHandle::applyModuleIf( m_pcCurrentDisplayModule, m_bIsPlaying );
-    bSetFrame = false;
-  }
-  if( bSetFrame )
-  {
-    m_cViewArea->setImage( m_pcCurrFrame );
-  }
-  for( Int i = 0; i < m_apcCurrentModule.size(); i++ )
-  {
-    ModulesHandle::applyModuleIf( m_apcCurrentModule.at( i ), m_bIsPlaying );
-  }
-  //m_cViewArea->update();
-  m_pcScrollArea->update();
-//  QPainter p( this );
-//  p.setPen( QColor( "red" ) );
-//  p.drawLine( 0, 0, width(), height() );
-}
-
 Void VideoSubWindow::refreshFrameOperation()
 {
   Bool bSetFrame = false;
@@ -490,17 +462,16 @@ Void VideoSubWindow::refreshFrameOperation()
 
 Void VideoSubWindow::refreshFrame( Bool bThreaded )
 {
-//#ifndef QT_NO_CONCURRENT
-//  m_cRefreshResult.waitForFinished();
-//  if( bThreaded )
-//  {
-//    m_cRefreshResult = QtConcurrent::run( this, &VideoSubWindow::refreshFrameOperation );
-//  }
-//  else
-//#endif
+#ifndef QT_NO_CONCURRENT
+  m_cRefreshResult.waitForFinished();
+  if( bThreaded )
+  {
+    m_cRefreshResult = QtConcurrent::run( this, &VideoSubWindow::refreshFrameOperation );
+  }
+  else
+#endif
   {
     refreshFrameOperation();
-    //update();
   }
 }
 

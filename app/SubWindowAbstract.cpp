@@ -61,8 +61,10 @@ SubWindowAbstract::~SubWindowAbstract()
 Void SubWindowAbstract::setWidget( QWidget* widget )
 {
   if( !m_pcLayout )
+  {
     m_pcLayout = new QHBoxLayout( this );
-
+    m_pcLayout->setContentsMargins( 0, 0, 0, 0 );
+  }
   m_pcLayout->addWidget( widget );
 }
 

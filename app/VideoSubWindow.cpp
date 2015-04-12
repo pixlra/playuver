@@ -106,11 +106,11 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
   connect( m_cViewArea, SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectedArea( QRect ) ) );
   connect( m_cViewArea, SIGNAL( positionChanged( const QPoint & ) ), this, SLOT( updatePixelValueStatusBar( const QPoint & ) ) );
 
-  m_pcScrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-  m_pcScrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  //m_pcScrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  //m_pcScrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
   // Define the cViewArea as the widget inside the scroll area
-  m_cViewArea->setMinimumSize( size() );
+  // m_cViewArea->setMinimumSize( size() );
 
   m_pcScrollArea->setWidget( m_cViewArea );
 
@@ -465,6 +465,29 @@ Void VideoSubWindow::paintEvent( QPaintEvent *event )
 //  p.drawLine( 0, 0, width(), height() );
 }
 
+Void VideoSubWindow::refreshFrameOperation()
+{
+  Bool bSetFrame = false;
+  if( m_pCurrStream )
+  {
+    m_pcCurrFrame = m_pCurrStream->getCurrFrame();
+    bSetFrame = m_pcCurrFrame ? true : false;
+  }
+  if( m_pcCurrentDisplayModule )
+  {
+    ModulesHandle::applyModuleIf( m_pcCurrentDisplayModule, m_bIsPlaying );
+    bSetFrame = false;
+  }
+  if( bSetFrame )
+  {
+    m_cViewArea->setImage( m_pcCurrFrame );
+  }
+  for( Int i = 0; i < m_apcCurrentModule.size(); i++ )
+  {
+    ModulesHandle::applyModuleIf( m_apcCurrentModule.at( i ), m_bIsPlaying );
+  }
+}
+
 Void VideoSubWindow::refreshFrame( Bool bThreaded )
 {
 //#ifndef QT_NO_CONCURRENT
@@ -476,8 +499,8 @@ Void VideoSubWindow::refreshFrame( Bool bThreaded )
 //  else
 //#endif
   {
-    //refreshFrameOperation();
-    update();
+    refreshFrameOperation();
+    //update();
   }
 }
 

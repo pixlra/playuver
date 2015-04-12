@@ -48,8 +48,7 @@ int main( int argc, char *argv[] )
   QApplication application( argc, argv );
   QApplication::setApplicationName( "PlaYUVer" );
   QApplication::setApplicationVersion( PLAYUVER_VERSION_STRING );
-  QApplication::setOrganizationName( "pixlra" );
-  QApplication::setOrganizationDomain( "playuver.pixlra" );
+  QApplication::setOrganizationName( "PixLRA" );
 
 #ifdef USE_QTDBUS
   /**

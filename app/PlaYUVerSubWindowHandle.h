@@ -48,6 +48,8 @@ Q_OBJECT
 public:
   PlaYUVerSubWindowHandle( QWidget *parent );
 
+  Void processLogMsg( const QString& msg );
+
   Void addSubWindow( SubWindowAbstract *widget, Qt::WindowFlags flags = 0 );
 
   SubWindowAbstract *activeSubWindow() const;

@@ -77,6 +77,10 @@ public:
   Bool parseArgs( Int argc, Char *argv[] );
   Void loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo = NULL );
 
+public Q_SLOTS:
+  void printMessage( const QString& msg );
+  void printMessage( const QString& msg, UInt logLevel );
+
 protected:
   Void closeEvent( QCloseEvent *event );
 
@@ -114,7 +118,6 @@ private Q_SLOTS:
 
   void update();
   void updateZoomFactorSBox();
-  void updateStatusBar( const QString& );
 
 private:
 

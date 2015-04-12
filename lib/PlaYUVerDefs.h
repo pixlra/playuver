@@ -106,6 +106,14 @@ typedef UChar Byte;
 // PlaYUVer definitions
 // ====================================================================================================================
 
+enum LOG_LEVEL
+{
+  LOG_INFO = 1,
+  LOG_WARNINGS = 2,
+  LOG_RESULT = 3,
+  LOG_ERROR = 4,
+};
+
 enum YUVcomponent
 {
   LUMA = 0,

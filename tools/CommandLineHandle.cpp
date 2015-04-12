@@ -84,7 +84,7 @@ Int CommandLineHandle::parseToolsArgs( Int argc, Char *argv[] )
 
   if( m_bQuiet )
   {
-    m_uiLogLevel = RESULT;
+    m_uiLogLevel = LOG_RESULT;
   }
 
   if( Opts()["module"]->count() && Opts()["help"]->count() )

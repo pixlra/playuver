@@ -42,13 +42,6 @@ public:
   CommandLineHandle();
   ~CommandLineHandle();
 
-  enum LOG_LEVEL
-  {
-    INFO = 0,
-    WARNINGS = 1,
-    RESULT = 2,
-    ERROR = 3,
-  };
   Void setLogLevel( enum LOG_LEVEL level )
   {
     m_uiLogLevel = level;

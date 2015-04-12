@@ -22,6 +22,7 @@
  * \brief    Class to handle video playback
  */
 
+#include "PlaYUVerApp.h"
 #include "VideoHandle.h"
 #include "VideoSubWindow.h"
 #include "PlaYUVerSubWindowHandle.h"

@@ -23,6 +23,7 @@
  */
 
 #include <cstdio>
+#include "PlaYUVerApp.h"
 #include "ModulesHandle.h"
 #include "PlaYUVerSubWindowHandle.h"
 #include "VideoSubWindow.h"
@@ -296,7 +297,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 
   if( videoSubWindowList.size() == 0 )
   {
-    qobject_cast<QMainWindow*>( m_pcParent )->statusBar()->showMessage( "Error! Module cannot be applied", 2000 );
+    qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Error! Module cannot be applied", LOG_ERROR );
     destroyModuleIf( pcCurrModuleIf );
     return;
   }
@@ -335,7 +336,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 
   if( !moduleCreated )
   {
-    qobject_cast<QMainWindow*>( m_pcParent )->statusBar()->showMessage( "Error! Module cannot be applied", 2000 );
+    qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Error! Module cannot be applied", LOG_ERROR );
     destroyModuleIf( pcCurrModuleIf );
     return;
   }

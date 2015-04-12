@@ -192,7 +192,7 @@ Void PlaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 {
   if( !QFileInfo( fileName ).exists() )
   {
-    statusBar()->showMessage( "File " + fileName + " do not exist!", 2000 );
+    printMessage( "File " + fileName + " do not exist!", LOG_ERROR );
     return;
   }
   VideoSubWindow *videoSubWindow = PlaYUVerApp::findVideoStreamSubWindow( m_pcWindowHandle, fileName );
@@ -220,7 +220,7 @@ Void PlaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 
     if( opened )
     {
-      statusBar()->showMessage( tr( "Loading file..." ) );
+      printMessage( "Loading file...", LOG_INFO );
       m_pcWindowHandle->addSubWindow( videoSubWindow );
       videoSubWindow->show();
 
@@ -236,7 +236,7 @@ Void PlaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 
       addStreamInfoToRecentList( videoSubWindow->getStreamInfo() );
 
-      statusBar()->showMessage( tr( "File loaded" ), 2000 );
+      printMessage( "File loaded", LOG_INFO );
       m_cLastOpenPath = QFileInfo( fileName ).path();
     }
     else
@@ -249,8 +249,7 @@ Void PlaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     videoSubWindow->close();
     QString warningMsg = "Cannot open file " + QFileInfo( fileName ).fileName() + " with the following error: \n" + msg;
     QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
-    statusBar()->showMessage( warningMsg, 2000 );
-    qDebug( ) << warningMsg;
+    printMessage( warningMsg, LOG_ERROR );
   }
 }
 
@@ -359,7 +358,7 @@ Void PlaYUVerApp::format()
     {
       QString warningMsg = "Cannot change format of " + QFileInfo( pcVideoSubWindow->getCurrentFileName() ).fileName() + " with the following error: \n" + msg;
       QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
-      statusBar()->showMessage( warningMsg, 2000 );
+      printMessage( warningMsg, LOG_ERROR );
       qDebug( ) << warningMsg;
       m_pcCurrentSubWindow->close();
     }
@@ -402,9 +401,9 @@ Void PlaYUVerApp::loadAll()
 {
   if( m_pcCurrentVideoSubWindow )
   {
-    statusBar()->showMessage( tr( "Loading file into memory ..." ) );
+    printMessage( "Loading file into memory...", LOG_INFO );
     m_pcCurrentVideoSubWindow->loadAll();
-    statusBar()->showMessage( tr( "File loaded" ), 2000 );
+    printMessage( "File loaded", LOG_INFO );
   }
 }
 
@@ -553,16 +552,25 @@ Void PlaYUVerApp::update()
   updateMenus();
 }
 
-Void PlaYUVerApp::updateStatusBar( const QString& statusBarString )
+Void PlaYUVerApp::printMessage( const QString& msg )
 {
-  if( !statusBarString.isEmpty() )
+  printMessage( msg, 0 );
+}
+
+Void PlaYUVerApp::printMessage( const QString& msg, UInt logLevel )
+{
+  if( !msg.isEmpty() )
   {
-    statusBar()->showMessage( statusBarString, 5000 );
+    statusBar()->showMessage( msg, 5000 );
+    if( logLevel >= LOG_INFO )
+    {
+      m_pcWindowHandle->processLogMsg( msg );
+    }
   }
-  else
-  {
-    statusBar()->showMessage( " " );
-  }
+//  else
+//  {
+//    statusBar()->showMessage( " " );
+//  }
 }
 
 Void PlaYUVerApp::updateMenus()
@@ -855,9 +863,9 @@ Void PlaYUVerApp::createDockWidgets()
 
 Void PlaYUVerApp::createStatusBar()
 {
-//! Warning: the following widget cannot change size too much
+  //! Warning: the following widget cannot change size too much
   statusBar()->addPermanentWidget( m_appModuleVideo->createStatusBarMessage() );
-  statusBar()->showMessage( tr( "Ready" ) );
+  printMessage( "Ready!", LOG_INFO );
 }
 
 Void PlaYUVerApp::addStreamInfoToRecentList( PlaYUVerStreamInfo streamInfo )

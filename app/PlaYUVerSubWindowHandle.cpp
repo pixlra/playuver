@@ -22,8 +22,8 @@
  * \brief    Handle multiple sub-windows
  */
 
-#include "PlaYUVerApp.h"
 #include "PlaYUVerSubWindowHandle.h"
+#include "PlaYUVerApp.h"
 #include "PlaYUVerMdiSubWindow.h"
 #include "SubWindowAbstract.h"
 
@@ -39,6 +39,14 @@ public:
   {
     setBackgroundRole( QPalette::Background );
   }
+
+  Void appendLogMessage( const QString& msg )
+  {
+    m_acLogMessages.push_front( msg );
+    if( m_acLogMessages.size() > 5 )
+      m_acLogMessages.removeLast();
+    update();
+  }
 protected:
   void paintEvent( QPaintEvent *event )
   {
@@ -49,9 +57,15 @@ protected:
     int x = width() / 2 - pixFinalLogo.width() / 2;
     int y = height() / 2 - pixFinalLogo.height() / 2;
     painter.drawPixmap( x, y, pixFinalLogo );
+
+//    for( Int i = 0; i < m_acLogMessages.size(); i++ )
+//    {
+//      painter.drawText( 5, height() - 5 - i * 15, m_acLogMessages.at( i ) );
+//    }
 //    QPoint bottomLeftCorner( 0, viewport()->height() );
   }
 private:
+  QVector<QString> m_acLogMessages;
   QPixmap m_pixmapLogo;
 };
 
@@ -68,6 +82,14 @@ PlaYUVerSubWindowHandle::PlaYUVerSubWindowHandle( QWidget *parent ) :
   m_pcApp = qobject_cast<PlaYUVerApp*>( parentWidget() );
   //setWindowMode( DETACHEDSUBWINDOWMODE );
   setWindowMode( MDISUBWINDOWMODE );
+}
+
+Void PlaYUVerSubWindowHandle::processLogMsg( const QString& msg )
+{
+  if( m_pcMdiArea )
+  {
+    m_pcMdiArea->appendLogMessage( msg );
+  }
 }
 
 Void PlaYUVerSubWindowHandle::resetWindowMode()
@@ -198,7 +220,7 @@ Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowAbstract *window, Qt::Windo
 {
   if( window )
   {
-    connect( window, SIGNAL( updateStatusBar( const QString& ) ), m_pcApp, SLOT( updateStatusBar( const QString& ) ) );
+    connect( window, SIGNAL( updateStatusBar( const QString& ) ), m_pcApp, SLOT( printMessage( const QString& ) ) );
     connect( window, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_pcApp, SLOT( updateZoomFactorSBox() ) );
     if( m_iWindowMode == DETACHEDSUBWINDOWMODE )
     {

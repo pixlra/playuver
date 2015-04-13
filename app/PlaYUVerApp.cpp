@@ -567,10 +567,6 @@ Void PlaYUVerApp::printMessage( const QString& msg, UInt logLevel )
       m_pcWindowHandle->processLogMsg( msg );
     }
   }
-//  else
-//  {
-//    statusBar()->showMessage( " " );
-//  }
 }
 
 Void PlaYUVerApp::updateMenus()

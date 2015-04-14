@@ -22,6 +22,7 @@
  * \brief    Video Sub windows handling
  */
 
+#include <QStaticText>
 #include "VideoSubWindow.h"
 #include "ModulesHandle.h"
 #include "ConfigureFormatDialog.h"
@@ -33,6 +34,10 @@
 
 namespace plaYUVer
 {
+
+/**
+ * \brief Functions to control data stream from stream information
+ */
 
 QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array )
 {
@@ -78,14 +83,52 @@ Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename )
   return -1;
 }
 
+/**
+ * \class VideoInformation
+ * \brief Shows information about video sub window
+ */
+
+class VideoInformation: public QWidget
+{
+private:
+  QStringList m_cTopLeftTextLines;
+  QStaticText m_cTopLeftText;
+public:
+  VideoInformation( QWidget *parent ) :
+          QWidget( parent )
+  {
+    setPalette( Qt::transparent );
+    setAttribute( Qt::WA_TransparentForMouseEvents );
+  }
+  Void setInformationTopLeft( const QStringList& textLines )
+  {
+    //m_cTopLeftText.setText( text );
+    m_cTopLeftTextLines = textLines;
+  }
+protected:
+  void paintEvent( QPaintEvent *event )
+  {
+    QPainter painter( this );
+    painter.setPen( QPen( Qt::white ) );
+    if( !m_cTopLeftTextLines.isEmpty() && size().width() > 300 )
+    {
+      QPoint topLeftCorner( 10, 20 );
+      for( Int i = 0; i < m_cTopLeftTextLines.size(); i++ )
+      {
+        painter.drawText( topLeftCorner, m_cTopLeftTextLines.at( i ) );
+        topLeftCorner += QPoint( 0, 15 );
+      }
+    }
+  }
+};
+
 VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget * parent ) :
         SubWindowAbstract( parent, SubWindowAbstract::VIDEO_SUBWINDOW | category ),
         m_pCurrStream( NULL ),
         m_pcCurrFrame( NULL ),
         m_pcCurrentDisplayModule( NULL ),
         m_pcReferenceSubWindow( NULL ),
-        m_bIsPlaying( false ),
-        m_bIsModule( category == MODULE_SUBWINDOW )
+        m_bIsPlaying( false )
 {
 
   // Create a new scroll area inside the sub-window
@@ -108,8 +151,6 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
   m_pcScrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
   // Define the cViewArea as the widget inside the scroll area
-  // m_cViewArea->setMinimumSize( size() );
-
   m_pcScrollArea->setWidget( m_cViewArea );
   m_pcScrollArea->setWidgetResizable( true );
 
@@ -119,6 +160,8 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
 
   m_apcCurrentModule.clear();
 
+  //! Add video information
+  m_pcVideoInfo = new VideoInformation( this );
 }
 
 VideoSubWindow::~VideoSubWindow()
@@ -244,6 +287,23 @@ Void VideoSubWindow::updateVideoWindowInfo()
   if( m_pcCurrentDisplayModule )
   {
     m_cStreamInformation = "Module";
+    QList<VideoSubWindow*> arraySubWindows = m_pcCurrentDisplayModule->getSubWindowList();
+    QStringList sourceWindowList;
+    if( arraySubWindows.size() > 0 )
+    {
+      for( Int i = 0; i < arraySubWindows.size(); i++ )
+      {
+        if( arraySubWindows.at( i )->getWindowName() != getWindowName() )
+        {
+          sourceWindowList.append( QString( "Input %1 - " + arraySubWindows.at( i )->getWindowName() ).arg( i + 1 ) );
+        }
+      }
+    }
+    qDebug( ) << sourceWindowList;
+    if( sourceWindowList.size() > 0 )
+    {
+      m_pcVideoInfo->setInformationTopLeft( sourceWindowList );
+    }
   }
   else if( m_pCurrStream )
   {
@@ -429,11 +489,11 @@ Void VideoSubWindow::associateModule( PlaYUVerAppModuleIf* pcModule )
 
 Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
-  // if( m_pcCurrFrame )
+// if( m_pcCurrFrame )
   {
     m_pcCurrFrame = pcCurrFrame;
     m_cViewArea->setImage( m_pcCurrFrame );
-    updateVideoWindowInfo();
+    //updateVideoWindowInfo();
   }
 }
 
@@ -593,7 +653,7 @@ Void VideoSubWindow::adjustScrollBarByOffset( QPoint Offset )
     valueY = scrollBarV->minimum();
   m_cCurrScroll.setY( valueY );
 
-  // Update window scroll
+// Update window scroll
   scrollBarH->setValue( m_cCurrScroll.x() );
   scrollBarV->setValue( m_cCurrScroll.y() );
 }
@@ -637,7 +697,7 @@ Void VideoSubWindow::adjustScrollBarByScale( Double scale, QPoint center )
     m_cCurrScroll.setY( value );
   }
 
-  // Update window scroll
+// Update window scroll
   scrollBarH->setValue( m_cCurrScroll.x() );
   scrollBarV->setValue( m_cCurrScroll.y() );
 
@@ -802,6 +862,11 @@ QSize VideoSubWindow::sizeHint( const QSize & maxSize ) const
     isize.scale( maxSize, Qt::KeepAspectRatio );
   }
   return isize;
+}
+
+Void VideoSubWindow::resizeEvent( QResizeEvent* event )
+{
+  m_pcVideoInfo->resize( event->size() );
 }
 
 //Void VideoSubWindow::closeEvent( QCloseEvent *event )

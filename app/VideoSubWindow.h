@@ -41,6 +41,7 @@ class QScrollArea;
 namespace plaYUVer
 {
 
+class VideoInformation;
 class VideoSubWindow;
 class PlaYUVerAppModuleIf;
 
@@ -72,6 +73,8 @@ private:
 
   ViewArea* m_cViewArea;
 
+  VideoInformation* m_pcVideoInfo;
+
   QString m_cFilename;
   QString m_cStreamInformation;
   PlaYUVerStreamInfo m_sStreamInfo;
@@ -89,7 +92,6 @@ private:
   QString m_cCurrFileName;
 
   Bool m_bIsPlaying;
-  Bool m_bIsModule;
 
   /**
    * Threads variables
@@ -115,8 +117,8 @@ private:
 public:
   enum VideoSubWindowCategories
   {
-    VIDEO_STREAM_SUBWINDOW = 2,
-    MODULE_SUBWINDOW = 4,
+    VIDEO_STREAM_SUBWINDOW = SubWindowAbstract::VIDEO_STREAM_SUBWINDOW,
+    MODULE_SUBWINDOW = SubWindowAbstract::MODULE_SUBWINDOW,
   };
   VideoSubWindow( enum VideoSubWindowCategories category, QWidget * parent = 0 );
   ~VideoSubWindow();
@@ -245,10 +247,11 @@ public:
 
   Bool getIsModule()
   {
-    return m_bIsModule;
+    return getCategory() | SubWindowAbstract::MODULE_SUBWINDOW;
   }
 
-//protected:
+protected:
+  Void resizeEvent( QResizeEvent* event );
   //void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:

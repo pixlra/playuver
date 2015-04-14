@@ -291,7 +291,6 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   }
   else
   {
-    windowName.append( pcVideoSubWindow->getWindowName() );
     videoSubWindowList.append( pcVideoSubWindow );
   }
 
@@ -302,9 +301,8 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     return;
   }
 
-  windowName.append( " <" );
+  windowName.append( QStringLiteral( "Module " ) );
   windowName.append( pcCurrModuleIf->m_pcModule->m_pchModuleName );
-  windowName.append( ">" );
 
   for( Int i = 0; i < videoSubWindowList.size(); i++ )
   {

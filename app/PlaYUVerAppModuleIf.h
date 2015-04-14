@@ -29,6 +29,7 @@
 #include "PlaYUVerAppDefs.h"
 #include <iostream>
 #include <cstdio>
+#include <QVector>
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"
 #include "ModuleHandleDock.h"
@@ -86,6 +87,15 @@ public:
   PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module );
   virtual ~PlaYUVerAppModuleIf()
   {
+  }
+
+  QList<VideoSubWindow*> getSubWindowList()
+  {
+    QList<VideoSubWindow*> arraySubWindows;
+    for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
+      if( m_pcSubWindow[i] )
+        arraySubWindows.append( m_pcSubWindow[i] );
+    return arraySubWindows;
   }
 
 protected:

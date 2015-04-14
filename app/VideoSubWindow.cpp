@@ -93,12 +93,14 @@ class VideoInformation: public QWidget
 private:
   QStringList m_cTopLeftTextLines;
   QStaticText m_cTopLeftText;
+  QFont m_cTopLeftTextFont;
 public:
   VideoInformation( QWidget *parent ) :
           QWidget( parent )
   {
     setPalette( Qt::transparent );
     setAttribute( Qt::WA_TransparentForMouseEvents );
+    m_cTopLeftTextFont.setPointSize( 8 );
   }
   Void setInformationTopLeft( const QStringList& textLines )
   {
@@ -109,7 +111,8 @@ protected:
   void paintEvent( QPaintEvent *event )
   {
     QPainter painter( this );
-    painter.setPen( QPen( Qt::white ) );
+    painter.setFont( m_cTopLeftTextFont );
+    //painter.setPen( QPen( Qt::white ) );
     if( !m_cTopLeftTextLines.isEmpty() && size().width() > 300 )
     {
       QPoint topLeftCorner( 10, 20 );

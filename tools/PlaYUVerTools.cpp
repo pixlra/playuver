@@ -70,6 +70,11 @@ Int PlaYUVerTools::openInputs()
     {
       fmtString = m_cCmdLineHandler.m_strPelFmt;
     }
+    UInt uiBitPerPixel = 8;
+    if( m_cCmdLineHandler.Opts()["bits_pel"]->count() )
+    {
+      uiBitPerPixel = m_cCmdLineHandler.m_uiBitsPerPixel;
+    }
 
     std::vector<std::string> inputFileNames = m_cCmdLineHandler.m_apcInputs;
 
@@ -79,7 +84,7 @@ Int PlaYUVerTools::openInputs()
       pcStream = new PlaYUVerStream;
       try
       {
-        if( !pcStream->open( inputFileNames[i], resolutionString, fmtString, 8, 1 ) )
+        if( !pcStream->open( inputFileNames[i], resolutionString, fmtString, uiBitPerPixel, 1 ) )
         {
           m_cCmdLineHandler.log( LOG_ERROR, "Cannot open input stream %s! ", inputFileNames[i].c_str() );
           return 2;

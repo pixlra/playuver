@@ -78,6 +78,7 @@ private:
   std::string m_strOutput;
   std::string m_strResolution;
   std::string m_strPelFmt;
+  UInt m_uiBitsPerPixel;
   Bool m_bListPelFmts;
   Int m_iFrames;
 

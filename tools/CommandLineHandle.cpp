@@ -70,6 +70,7 @@ Int CommandLineHandle::parseToolsArgs( Int argc, Char *argv[] )
   ( "output,o", m_strOutput, "output file" ) /**/
   ( "size,s", m_strResolution, "size (WxH)" ) /**/
   ( "pel_fmt", m_strPelFmt, "pixel format" ) /**/
+  ( "bits_pel", m_uiBitsPerPixel, "bits per pixel" ) /**/
   ( "frames,f", m_iFrames, "number of frames to parse" );
 
   Opts().addOptions()/**/

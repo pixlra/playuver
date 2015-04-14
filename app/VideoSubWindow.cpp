@@ -91,8 +91,7 @@ Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename )
 class VideoInformation: public QWidget
 {
 private:
-  QStringList m_cTopLeftTextLines;
-  QStaticText m_cTopLeftText;
+  QList<QStaticText> m_cTopLeftTextList;
   QFont m_cTopLeftTextFont;
 public:
   VideoInformation( QWidget *parent ) :
@@ -104,21 +103,23 @@ public:
   }
   Void setInformationTopLeft( const QStringList& textLines )
   {
-    //m_cTopLeftText.setText( text );
-    m_cTopLeftTextLines = textLines;
+    m_cTopLeftTextList.clear();
+    for( Int i = 0; i < textLines.size(); i++ )
+    {
+      m_cTopLeftTextList.append( textLines.at( i ) );
+    }
   }
 protected:
   void paintEvent( QPaintEvent *event )
   {
     QPainter painter( this );
     painter.setFont( m_cTopLeftTextFont );
-    //painter.setPen( QPen( Qt::white ) );
-    if( !m_cTopLeftTextLines.isEmpty() && size().width() > 300 )
+    if( !m_cTopLeftTextList.isEmpty() && size().width() > 300 )
     {
-      QPoint topLeftCorner( 10, 20 );
-      for( Int i = 0; i < m_cTopLeftTextLines.size(); i++ )
+      QPoint topLeftCorner( 10, 10 );
+      for( Int i = 0; i < m_cTopLeftTextList.size(); i++ )
       {
-        painter.drawText( topLeftCorner, m_cTopLeftTextLines.at( i ) );
+        painter.drawStaticText( topLeftCorner, m_cTopLeftTextList.at( i ) );
         topLeftCorner += QPoint( 0, 15 );
       }
     }

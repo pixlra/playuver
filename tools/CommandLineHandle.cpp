@@ -70,29 +70,33 @@ Int CommandLineHandle::parseToolsArgs( Int argc, Char *argv[] )
   ( "output,o", m_strOutput, "output file" ) /**/
   ( "size,s", m_strResolution, "size (WxH)" ) /**/
   ( "pel_fmt", m_strPelFmt, "pixel format" ) /**/
+  ( "bits_pel", m_uiBitsPerPixel, "bits per pixel" ) /**/
   ( "frames,f", m_iFrames, "number of frames to parse" );
 
   Opts().addOptions()/**/
   ( "quality", m_strQualityMetric, "select a quality metric" ) /**/
   ( "module", m_strModule, "select a module (use internal name)" );
 
-  if( !parse( argc, argv ) )
+  config( argc, argv );
+  if( !parse() )
   {
     iRet = 1;
   }
 
   if( m_bQuiet )
   {
-    m_uiLogLevel = RESULT;
+    m_uiLogLevel = LOG_RESULT;
   }
 
-  if( Opts()["quality_metrics"]->count() )
+  if( Opts()["module"]->count() && Opts()["help"]->count() )
   {
-    printf( "PlaYUVer supported quality metrics: \n" );
-    for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
-    {
-      printf( "   %s\n", PlaYUVerFrame::supportedQualityMetricsList()[i].c_str() );
-    }
+    listModuleHelp();
+    iRet = 1;
+  }
+  else if( Opts()["help"]->count() )
+  {
+    printf( "Usage: %s modules/quality [options] -input=input_file [--output=output_file]\n", argv[0] );
+    Opts().doHelp( std::cout );
     iRet = 1;
   }
 
@@ -101,7 +105,6 @@ Int CommandLineHandle::parseToolsArgs( Int argc, Char *argv[] )
     listModules();
     iRet = 1;
   }
-
   return iRet;
 }
 
@@ -159,7 +162,28 @@ Void CommandLineHandle::listModules()
     }
     printf( "\n" );
   }
+}
 
+Void CommandLineHandle::listModuleHelp()
+{
+  std::string moduleName = m_strModule;
+  PlaYUVerModuleIf* pcCurrModuleIf = NULL;
+
+  PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
+  PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
+  for( UInt i = 0; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ )
+  {
+    if( strcmp( it->first, moduleName.c_str() ) == 0 )
+    {
+      pcCurrModuleIf = it->second();
+      break;
+    }
+  }
+  if( pcCurrModuleIf )
+  {
+    printf( "Usage: playuverTools --module=%s options:\n", it->first );
+    pcCurrModuleIf->m_cModuleOptions.doHelp( std::cout );
+  }
 }
 
 }  // NAMESPACE

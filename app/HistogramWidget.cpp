@@ -58,7 +58,7 @@ public:
     if( m_histogram && m_parent )
     {
       EventData *eventData = new EventData();
-//      eventData->starting = true;
+//      eventDm_imageHistogramata->starting = true;
 //      eventData->success = false;
 //      eventData->histogram = m_histogram;
 //      QCoreApplication::postEvent( m_parent, eventData );
@@ -125,7 +125,7 @@ public:
   HistogramWidgetPrivate()
   {
     blinkTimer = 0;
-    sixteenBits = false;
+    imageBits = 8;
     inSelected = false;
     blinkFlag = false;
     clearFlag = HistogramNone;
@@ -146,7 +146,7 @@ public:
   // Image informations
   Int imageChannels;
   Int imageColorSpace;
-  bool sixteenBits;
+  Int imageBits;
 
   bool guideVisible;       // Display color guide.
   bool statisticsVisible;  // Display tooltip histogram statistics.
@@ -313,7 +313,7 @@ Void HistogramWidget::customEvent( QEvent *event )
       setUpdatesEnabled( false );
 
       notifyValuesChanged();
-      emit signalHistogramComputationDone( d->sixteenBits );
+      emit signalHistogramComputationDone( d->range );
 
       setUpdatesEnabled( true );
       update();
@@ -397,7 +397,7 @@ Void HistogramWidget::stopHistogramComputation()
 
 Void HistogramWidget::updateData( const PlaYUVerFrame *pcFrame, const PlaYUVerFrame *pcFrameSelection )
 {
-  d->sixteenBits = false;
+  d->imageBits = pcFrame->getBitsPel();
   //d->imageColorSpace = image.getPelFormat();
   d->imageColorSpace = pcFrame->getColorSpace();
   d->imageChannels = pcFrame->getNumberChannels();
@@ -409,7 +409,7 @@ Void HistogramWidget::updateData( const PlaYUVerFrame *pcFrame, const PlaYUVerFr
   // Do not using PlaYUVerFrameStatistics::getHistogramSegment()
   // method here because histogram hasn't yet been computed.
 
-  d->range = d->sixteenBits ? 65535 : 255;
+  d->range = ( 1 << d->imageBits ) - 1;
   emit signalMaximumValueChanged( d->range );
 
   m_imageHistogram = ( PlaYUVerFrameStats* )pcFrame;

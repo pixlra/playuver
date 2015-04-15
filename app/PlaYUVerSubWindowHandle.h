@@ -36,7 +36,8 @@
 namespace plaYUVer
 {
 
-class SubWindowHandle;
+class PlaYUVerApp;
+class SubWindowAbstract;
 class PlaYUVerMdiArea;
 class PlaYUVerMdiSubWindow;
 
@@ -47,13 +48,15 @@ Q_OBJECT
 public:
   PlaYUVerSubWindowHandle( QWidget *parent );
 
-  Void addSubWindow( SubWindowHandle *widget, Qt::WindowFlags flags = 0 );
+  Void processLogMsg( const QString& msg );
 
-  SubWindowHandle *activeSubWindow() const;
+  Void addSubWindow( SubWindowAbstract *widget, Qt::WindowFlags flags = 0 );
 
-  QList<SubWindowHandle*> findSubWindow( const UInt uiCategory = 0 ) const;
-  QList<SubWindowHandle*> findSubWindow( const QString &aName, const UInt uiCategory = 0 ) const;
-  SubWindowHandle* findSubWindow( const SubWindowHandle* subWindow ) const;
+  SubWindowAbstract *activeSubWindow() const;
+
+  QList<SubWindowAbstract*> findSubWindow( const UInt uiCategory = 0 ) const;
+  QList<SubWindowAbstract*> findSubWindow( const QString &aName, const UInt uiCategory = 0 ) const;
+  SubWindowAbstract* findSubWindow( const SubWindowAbstract* subWindow ) const;
 
   Void createActions();
   QMenu* createMenu();
@@ -63,22 +66,28 @@ public:
 
   enum WindowMode
   {
-    NormalSubWindows = 0,
-    MdiWSubWindows = 1,
+    DETACHEDSUBWINDOWMODE = 0,
+    MDISUBWINDOWMODE = 1,
   };
 
 private:
-  UInt m_uiWindowMode;
-  QList<SubWindowHandle*> m_apcSubWindowList;
+  PlaYUVerApp* m_pcApp;
+  Int m_iWindowMode;
+  QList<SubWindowAbstract*> m_apcSubWindowList;
 
   QHBoxLayout* m_pcWindowManagerLayout;
   PlaYUVerMdiArea* m_pcMdiArea;
   QList<PlaYUVerMdiSubWindow*> m_apcMdiSubWindowList;
 
-  SubWindowHandle* m_pcActiveWindow;
+  SubWindowAbstract* m_pcActiveWindow;
+
+  QPoint m_cMdiModeWindowPosition;
+  QSize m_cMdiModeWindowSize;
 
   enum
   {
+    NORMAL_SUBWINDOW_MODE_ACT,
+    MDI_SUBWINDOW_MODE_ACT,
     CLOSE_ACT,
     CLOSE_ALL_ACT,
     TILE_WINDOWS_ACT,
@@ -89,20 +98,23 @@ private:
     TOTAL_ACT,
   };
   QVector<QAction*> m_arrayActions;
+  QSignalMapper* m_mapperWindowMode;
+  QActionGroup* m_actionGroupWindowMode;
   QSignalMapper* m_mapperWindow;
   QMenu* m_pcMenuWindow;
 
   /**
    * Internal functions
    */
+  Void addMdiSubWindow( SubWindowAbstract *window );
   Void resetWindowMode();
-  Void setWindowMode( UInt uiWindowMode );
   Void removeSubWindow( Int windowIdx );
 
 public Q_SLOTS:
-  void updateActiveSubWindow( SubWindowHandle *window = 0 );
+  void setWindowMode( int iWindowMode );
+  void updateActiveSubWindow( SubWindowAbstract *window = 0 );
   void setActiveSubWindow( QWidget *window );
-  void removeSubWindow( SubWindowHandle *window );
+  void removeSubWindow( SubWindowAbstract *window );
   void removeMdiSubWindow( PlaYUVerMdiSubWindow* window );
   void removeActiveSubWindow();
   void removeAllSubWindow();

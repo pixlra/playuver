@@ -152,7 +152,7 @@ public:
   Q_SIGNALS:
   void signalIntervalChanged( int min, int max );
   void signalMaximumValueChanged( int );
-  void signalHistogramComputationDone( bool );
+  void signalHistogramComputationDone( int );
   void signalHistogramComputationFailed( void );
 
 public Q_SLOTS:

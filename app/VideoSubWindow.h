@@ -26,16 +26,17 @@
 #define __VIDEOSUBWINDOW_H__
 
 #include "config.h"
+#include <QFuture>
+#include <QDataStream>
+#include <QVector>
+#include <QString>
+#include <QRect>
 #include "PlaYUVerAppDefs.h"
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
-#include "QFuture"
 #include "lib/PlaYUVerStream.h"
-#include "SubWindowHandle.h"
+#include "SubWindowAbstract.h"
 #include "ViewArea.h"
+
+class QScrollArea;
 
 namespace plaYUVer
 {
@@ -49,6 +50,7 @@ typedef struct
   UInt m_uiWidth;
   UInt m_uiHeight;
   Int m_iPelFormat;
+  UInt m_uiBitsPelPixel;
   UInt m_uiFrameRate;
   UInt64 m_uiFileSize;
 } PlaYUVerStreamInfo;
@@ -58,11 +60,15 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& d );
 QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& d );
 Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename );
 
-class VideoSubWindow: public SubWindowHandle
+class VideoSubWindow: public SubWindowAbstract
 {
 Q_OBJECT
 
 private:
+
+  QScrollArea* m_pcScrollArea;
+  QPoint m_cLastScroll;
+  QPoint m_cCurrScroll;
 
   ViewArea* m_cViewArea;
 
@@ -102,8 +108,9 @@ private:
    * zoom to fit
    */
   Void scaleView( const QSize & size, QPoint center = QPoint() );
-
   Void updateVideoWindowInfo();
+
+  QSize getScrollSize();
 
 public:
   enum VideoSubWindowCategories
@@ -117,8 +124,9 @@ public:
   Bool loadFile( QString cFilename, Bool bForceDialog = false );
   Bool loadFile( PlaYUVerStreamInfo* streamInfo );
   Void loadAll();
-  Void reloadFile();
   Bool save( QString filename );
+
+  Void refreshSubWindow();
 
   Bool play();
   Void pause();
@@ -135,6 +143,10 @@ public:
 
   Void setCurrFrame( PlaYUVerFrame* pcCurrFrame );
 
+  QScrollArea* getScroll()
+  {
+    return m_pcScrollArea;
+  }
   PlaYUVerStreamInfo getStreamInfo()
   {
     return m_sStreamInfo;
@@ -187,7 +199,11 @@ public:
 
   QList<PlaYUVerAppModuleIf*> getModuleArray()
   {
-    return m_apcCurrentModule;
+    QList<PlaYUVerAppModuleIf*> apcModulesArray;
+    if( m_pcCurrentDisplayModule )
+      apcModulesArray.append( m_pcCurrentDisplayModule );
+    apcModulesArray.append( m_apcCurrentModule );
+    return apcModulesArray;
   }
 
   Void setTool( UInt uiTool )
@@ -196,7 +212,7 @@ public:
   }
 
   /**
-   * Virtual functions from SubWindowHandle
+   * Virtual functions from SubWindowAbstract
    */
   Void normalSize();
   Void zoomToFit();
@@ -232,10 +248,14 @@ public:
     return m_bIsModule;
   }
 
-protected:
-  void closeEvent( QCloseEvent *event );
+//protected:
+  //void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:
+  void adjustScrollBarByScale( double scale, QPoint center );
+  void adjustScrollBarByOffset( QPoint Offset );
+  void updateCurScrollValues();
+  void setCurScrollValues();
   void updateSelectedArea( QRect area );
   void updatePixelValueStatusBar( const QPoint& pos );
 };

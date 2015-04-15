@@ -34,9 +34,10 @@ namespace plaYUVer
 
 class FrameDifference: public PlaYUVerModuleIf
 {
-  REGISTER_CLASS_FACTORY( FrameDifference )
+REGISTER_CLASS_FACTORY( FrameDifference )
 
 private:
+  Int m_iMaxDiffValue;
   PlaYUVerFrame* m_pcFrameDifference;
 
 public:
@@ -44,8 +45,8 @@ public:
   virtual ~FrameDifference()
   {
   }
-  Void create( PlaYUVerFrame* Input );
-  PlaYUVerFrame* process( PlaYUVerFrame* Input1, PlaYUVerFrame* Input2 );
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Void destroy();
 
 };

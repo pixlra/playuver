@@ -18,12 +18,12 @@
  */
 
 /**
- * \file     FramePropertiesSidebar.h
+ * \file     FramePropertiesDock.h
  * \brief    Main side bar definition
  */
 
-#ifndef __FRAMEPROPERTIESSIDEBAR_H__
-#define __FRAMEPROPERTIESSIDEBAR_H__
+#ifndef __FRAMEPROPERTIESDOCK_H__
+#define __FRAMEPROPERTIESDOCK_H__
 
 #include "config.h"
 #include "PlaYUVerAppDefs.h"
@@ -40,12 +40,12 @@
 namespace plaYUVer
 {
 
-class FramePropertiesSideBar: public QWidget
+class FramePropertiesDock: public QWidget
 {
 Q_OBJECT
 public:
-  FramePropertiesSideBar( QWidget* parent, Bool* pbMainPlaySwitch );
-  ~FramePropertiesSideBar();
+  FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitch );
+  ~FramePropertiesDock();
 
   QSize sizeHint() const;
 
@@ -116,7 +116,7 @@ private:
   Void updateDataHistogram();
 
 private Q_SLOTS:
-  void slotRefreshOptions( bool sixteenBit );
+  void slotRefreshOptions( int range );
   void slotHistogramComputationFailed( void );
   void slotChannelChanged( int channel );
   void slotScaleChanged( int scale );
@@ -132,4 +132,4 @@ private Q_SLOTS:
 
 }   // NAMESPACE
 
-#endif // __FRAMEPROPERTIESSIDEBAR_H__
+#endif // __FRAMEPROPERTIESDOCK_H__

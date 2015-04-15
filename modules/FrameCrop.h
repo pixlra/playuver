@@ -18,45 +18,40 @@
  */
 
 /**
- * \file     LibOpenCVHandler.h
- * \ingroup  PlaYUVerLib
- * \brief    Interface with opencv lib
+ * \file     FrameCrop.h
+ * \brief    Crop a region of an image
  */
 
-#ifndef __LIBOPENCVHANDLER_H__
-#define __LIBOPENCVHANDLER_H__
+#ifndef __FRAMECROP_H__
+#define __FRAMECROP_H__
 
-#include <inttypes.h>
-#include <vector>
-#include <string>
-#include <opencv2/opencv.hpp>
-#include "PlaYUVerDefs.h"
+#include "PlaYUVerModuleIf.h"
 
 namespace plaYUVer
 {
 
-class PlaYUVerFrame;
-
-class LibOpenCVHandler
+class FrameCrop: public PlaYUVerModuleIf
 {
+REGISTER_CLASS_FACTORY( FrameCrop )
+
+private:
+  PlaYUVerFrame* m_pcCropedFrame;
+  UInt m_uiXPosition;
+  UInt m_uiYPosition;
+  Int m_iXSize;
+  Int m_iYSize;
 public:
-
-  static std::vector<std::string> supportedReadFormatsExt();
-  static std::vector<std::string> supportedReadFormatsName();
-  static std::vector<std::string> supportedWriteFormatsExt();
-  static std::vector<std::string> supportedWriteFormatsName();
-  static std::vector<std::string> supportedSaveFormatsExt();
-  static std::vector<std::string> supportedSaveFormatsName();
-
-  LibOpenCVHandler()
+  FrameCrop();
+  virtual ~FrameCrop()
   {
   }
-
-  static PlaYUVerFrame* loadFrame( std::string filename );
-  static Bool saveFrame( PlaYUVerFrame* pcFrame, std::string filename );
+  Void create( PlaYUVerFrame* );
+  PlaYUVerFrame* process( PlaYUVerFrame* );
+  Void destroy();
 
 };
 
 }  // NAMESPACE
 
-#endif // __LIBOPENCVHANDLER_H__
+#endif // __FRAMECROP_H__
+

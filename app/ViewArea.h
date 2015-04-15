@@ -51,7 +51,8 @@ public:
 
   enum ViewMode
   {
-    NormalMode, MaskMode,
+    NormalMode,
+    MaskMode,
   };
   typedef enum
   {
@@ -60,7 +61,7 @@ public:
     BlockSelectionTool,
     MaskTool,
     EraserTool
-  }eTool;
+  } eTool;
 
   ViewArea( QWidget *parent = 0 );
 
@@ -116,7 +117,7 @@ public:
   PlaYUVerStream* getInputStream();
 
   // Scale function. Return used scale value (it may change when it touches the min or max zoom value)
-  Double scaleZoomFactor(Double scale, QPoint center, QSize minimumSize);
+  Double scaleZoomFactor( Double scale, QPoint center, QSize minimumSize );
 
   void setTool( eTool tool );
 
@@ -126,7 +127,7 @@ Q_SIGNALS:
   void selectionChanged( const QRect &rect );
   void positionChanged( const QPoint &pos );
   void scrollBarMoved( QPoint offset );
-  void zoomFactorChanged_byWheel( const double factor , const QPoint center);
+  void zoomFactorChanged_byWheel( const double factor, const QPoint center );
 
 public Q_SLOTS:
   void setNormalMode();
@@ -163,6 +164,7 @@ private:
   QRect viewToWindow( const QRect& rc ) const;
 
   PlaYUVerFrame *m_pcCurrFrame;
+  Pel m_uiPixelHalfScale;
   QPixmap m_pixmap;
   QBitmap m_mask;
   QRect m_selectedArea;
@@ -185,6 +187,6 @@ private:
 
 };
 
-} // NameSpace plaYUVer
+}  // NameSpace plaYUVer
 
 #endif // __VIEWAREA_H__

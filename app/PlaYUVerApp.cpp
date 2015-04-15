@@ -18,20 +18,30 @@
  */
 
 /**
- * \file     plaYUVerApp.cpp
- * \brief    Main definition of the plaYUVerApp app
+ * \file     PlaYUVerApp.cpp
+ * \brief    Main definition of the PlaYUVerApp app
  */
 
 #include <QtDebug>
-#include "plaYUVerApp.h"
+#include <QCloseEvent>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QDoubleSpinBox>
+#include <QActionGroup>
+#include <QAction>
+#include <QSignalMapper>
+#include "PlaYUVerApp.h"
 #ifdef USE_FERVOR
 #include "fvupdater.h"
 #endif
+#include "lib/PlaYUVerCmdParser.h"
 #include "PlaYUVerSubWindowHandle.h"
+#include "AboutDialog.h"
+#include "SubWindowAbstract.h"
+#include "VideoSubWindow.h"
 #include "VideoHandle.h"
 #include "QualityHandle.h"
 #include "ModulesHandle.h"
-
 #include "DialogSubWindowSelector.h"
 
 #define SYNCHRONISED_ZOON 1
@@ -39,7 +49,10 @@
 namespace plaYUVer
 {
 
-plaYUVerApp::plaYUVerApp()
+PlaYUVerApp::PlaYUVerApp() :
+        m_pcCurrentSubWindow( NULL ),
+        m_pcCurrentVideoSubWindow( NULL ),
+        m_pcAboutDialog( NULL )
 {
 
   setWindowModality( Qt::ApplicationModal );
@@ -78,37 +91,64 @@ plaYUVerApp::plaYUVerApp()
   connect( m_appModuleQuality, SIGNAL( changed() ), this, SLOT( update() ) );
   connect( m_appModuleExtensions, SIGNAL( changed() ), this, SLOT( update() ) );
 
-  m_pcAboutDialog = NULL;
-  m_pcCurrentSubWindow = NULL;
-  m_pcCurrentVideoSubWindow = NULL;
 }
 
-Void plaYUVerApp::parseArgs( Int argc, Char *argv[] )
+Bool PlaYUVerApp::parseArgs( Int argc, Char *argv[] )
 {
-  if( argc >= 2 )
+  Bool bRet = false;
+  m_pcCmdParser = new PlaYUVerCmdParser();
+  m_pcCmdParser->config( argc, argv );
+
+  std::vector<std::string> m_apcInputs;
+  std::string strResolution( "" );
+  std::string strPelFmt( "" );
+
+  m_pcCmdParser->Opts().addOptions()/**/
+  ( "input,i", m_apcInputs, "input file" ) /**/
+  ( "size,s", strResolution, "size (WxH)" ) /**/
+  ( "pel_fmt", strPelFmt, "pixel format" );
+
+  if( !m_pcCmdParser->parse() )
   {
-    for( Int i = 1; i < argc; i++ )
-    {
-      loadFile( argv[i] );
-    }
-    m_pcWindowHandle->tileSubWindows();
-    zoomToFitAll();
+    bRet |= true;
   }
+
+  if( m_pcCmdParser->Opts()["help"]->count() )
+  {
+    printf( "Usage: %s [options] input_file[s]\n", argv[0] );
+    m_pcCmdParser->Opts().doHelp( std::cout );
+    bRet |= true;
+  }
+  if( m_pcCmdParser->Opts()["input"]->count() )
+  {
+    for( UInt i = 1; i < m_apcInputs.size(); i++ )
+    {
+      loadFile( QString::fromStdString( m_apcInputs[i] ) );
+    }
+  }
+  std::list<const Char*>& argv_unhandled = m_pcCmdParser->getNoArgs();
+  for( std::list<const Char*>::const_iterator it = argv_unhandled.begin(); it != argv_unhandled.end(); it++ )
+  {
+    loadFile( QString::fromStdString( *it ) );
+  }
+  m_pcWindowHandle->tileSubWindows();
+  zoomToFitAll();
+  return bRet;
 }
 
-Void plaYUVerApp::about()
+Void PlaYUVerApp::about()
 {
   if( !m_pcAboutDialog )
     m_pcAboutDialog = new AboutDialog( this );
   m_pcAboutDialog->exec();
 }
 
-Void plaYUVerApp::closeEvent( QCloseEvent *event )
+Void PlaYUVerApp::closeEvent( QCloseEvent *event )
 {
   Int mayCloseAll = true;
   Int msgBoxCloseRet = QMessageBox::Yes;
 
-  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow();
+  QList<SubWindowAbstract*> subWindowList = m_pcWindowHandle->findSubWindow();
   if( subWindowList.size() >= 1 )
   {
     QMessageBox msgBoxClose( QMessageBox::Question, "PlaYUVer", "There are open files!", QMessageBox::Yes | QMessageBox::No, this );
@@ -143,26 +183,26 @@ Void plaYUVerApp::closeEvent( QCloseEvent *event )
   }
 }
 
-Void plaYUVerApp::closeAll()
+Void PlaYUVerApp::closeAll()
 {
   m_pcWindowHandle->removeAllSubWindow();
 }
 
-Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
+Void PlaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 {
   if( !QFileInfo( fileName ).exists() )
   {
-    statusBar()->showMessage( "File " + fileName + " do not exist!", 2000 );
+    printMessage( "File " + fileName + " do not exist!", LOG_ERROR );
     return;
   }
-  VideoSubWindow *videoSubWindow = plaYUVerApp::findVideoStreamSubWindow( m_pcWindowHandle, fileName );
+  VideoSubWindow *videoSubWindow = PlaYUVerApp::findVideoStreamSubWindow( m_pcWindowHandle, fileName );
   if( videoSubWindow )
   {
     m_pcWindowHandle->setActiveSubWindow( videoSubWindow );
     return;
   }
   videoSubWindow = new VideoSubWindow( VideoSubWindow::VIDEO_STREAM_SUBWINDOW );  //createSubWindow();
-  SubWindowHandle *subWindow = videoSubWindow;
+  SubWindowAbstract *subWindow = videoSubWindow;
   if( !pStreamInfo )
   {
     Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
@@ -180,11 +220,13 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 
     if( opened )
     {
-      statusBar()->showMessage( tr( "Loading file..." ) );
+      printMessage( "Loading file...", LOG_INFO );
       m_pcWindowHandle->addSubWindow( videoSubWindow );
       videoSubWindow->show();
 
       connect( videoSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
+
+      connect( subWindow, SIGNAL( aboutToClose( SubWindowAbstract* ) ), m_appModuleVideo, SLOT( closeSubWindow( SubWindowAbstract* ) ) );
       connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo, SLOT( zoomToFactorAll( double, QPoint ) ) );
       connect( subWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo, SLOT( moveAllScrollBars( const QPoint ) ) );
 
@@ -194,7 +236,7 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
 
       addStreamInfoToRecentList( videoSubWindow->getStreamInfo() );
 
-      statusBar()->showMessage( tr( "File loaded" ), 2000 );
+      printMessage( "File loaded", LOG_INFO );
       m_cLastOpenPath = QFileInfo( fileName ).path();
     }
     else
@@ -207,14 +249,13 @@ Void plaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     videoSubWindow->close();
     QString warningMsg = "Cannot open file " + QFileInfo( fileName ).fileName() + " with the following error: \n" + msg;
     QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
-    statusBar()->showMessage( warningMsg, 2000 );
-    qDebug( ) << warningMsg;
+    printMessage( warningMsg, LOG_ERROR );
   }
 }
 
 // -----------------------  File Functions  -----------------------
 
-Void plaYUVerApp::open()
+Void PlaYUVerApp::open()
 {
   QString supported = tr( "Supported Files (" );
   QStringList formatsList;
@@ -250,7 +291,7 @@ Void plaYUVerApp::open()
   }
 }
 
-Void plaYUVerApp::openRecent()
+Void PlaYUVerApp::openRecent()
 {
   QAction *action = qobject_cast<QAction *>( sender() );
   PlaYUVerStreamInfo recentFile = action->data().value<PlaYUVerStreamInfo>();
@@ -258,7 +299,7 @@ Void plaYUVerApp::openRecent()
     loadFile( recentFile.m_cFilename, &recentFile );
 }
 
-Void plaYUVerApp::save()
+Void PlaYUVerApp::save()
 {
   if( m_pcCurrentVideoSubWindow )
   {
@@ -301,7 +342,7 @@ Void plaYUVerApp::save()
   }
 }
 
-Void plaYUVerApp::format()
+Void PlaYUVerApp::format()
 {
   if( m_pcCurrentVideoSubWindow )
   {
@@ -317,7 +358,7 @@ Void plaYUVerApp::format()
     {
       QString warningMsg = "Cannot change format of " + QFileInfo( pcVideoSubWindow->getCurrentFileName() ).fileName() + " with the following error: \n" + msg;
       QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
-      statusBar()->showMessage( warningMsg, 2000 );
+      printMessage( warningMsg, LOG_ERROR );
       qDebug( ) << warningMsg;
       m_pcCurrentSubWindow->close();
     }
@@ -326,47 +367,51 @@ Void plaYUVerApp::format()
   }
 }
 
-Void plaYUVerApp::reload()
+Void PlaYUVerApp::reload()
 {
-  if( m_pcCurrentVideoSubWindow )
+  if( m_pcCurrentSubWindow )
   {
-    m_pcCurrentVideoSubWindow->reloadFile();
+    m_pcCurrentSubWindow->refreshSubWindow();
     m_pcCurrentSubWindow = NULL;
     update();
   }
 }
 
-Void plaYUVerApp::reloadAll()
+Void PlaYUVerApp::reloadAll()
 {
-  VideoSubWindow *videoSubWindow;
-  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
-  for( Int i = 0; i < subWindowList.size(); i++ )
+  UInt windowCategoryOrder[] =
   {
-    videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
-    if( !videoSubWindow->getIsModule() )
+    SubWindowAbstract::VIDEO_STREAM_SUBWINDOW,
+    SubWindowAbstract::MODULE_SUBWINDOW,
+    SubWindowAbstract::MODULE_SUBWINDOW };
+
+  for( UInt c = 0; c < 3; c++ )
+  {
+    QList<SubWindowAbstract*> subWindowList = m_pcWindowHandle->findSubWindow( windowCategoryOrder[c] );
+    for( Int i = 0; i < subWindowList.size(); i++ )
     {
-      videoSubWindow->reloadFile();
+      subWindowList.at( i )->refreshSubWindow();
     }
   }
   m_pcCurrentSubWindow = NULL;
   update();
 }
 
-Void plaYUVerApp::loadAll()
+Void PlaYUVerApp::loadAll()
 {
   if( m_pcCurrentVideoSubWindow )
   {
-    statusBar()->showMessage( tr( "Loading file into memory ..." ) );
+    printMessage( "Loading file into memory...", LOG_INFO );
     m_pcCurrentVideoSubWindow->loadAll();
-    statusBar()->showMessage( tr( "File loaded" ), 2000 );
+    printMessage( "File loaded", LOG_INFO );
   }
 }
 
-Void plaYUVerApp::setTool( Int idxTool )
+Void PlaYUVerApp::setTool( Int idxTool )
 {
   m_uiViewTool = idxTool;
   actionGroupTools->actions().at( m_uiViewTool )->setChecked( true );
-  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow();
+  QList<SubWindowAbstract*> subWindowList = m_pcWindowHandle->findSubWindow();
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     subWindowList.at( i )->setTool( m_uiViewTool );
@@ -375,7 +420,7 @@ Void plaYUVerApp::setTool( Int idxTool )
 
 // -----------------------  Zoom Functions  -----------------------
 
-Void plaYUVerApp::normalSize()
+Void PlaYUVerApp::normalSize()
 {
   if( m_pcCurrentSubWindow )
   {
@@ -384,7 +429,7 @@ Void plaYUVerApp::normalSize()
   }
 }
 
-Void plaYUVerApp::zoomToFit()
+Void PlaYUVerApp::zoomToFit()
 {
   if( m_pcCurrentSubWindow )
   {
@@ -393,10 +438,10 @@ Void plaYUVerApp::zoomToFit()
   }
 }
 
-Void plaYUVerApp::zoomToFitAll()
+Void PlaYUVerApp::zoomToFitAll()
 {
   VideoSubWindow *videoSubWindow;
-  QList<SubWindowHandle*> subWindowList = m_pcWindowHandle->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+  QList<SubWindowAbstract*> subWindowList = m_pcWindowHandle->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
@@ -407,7 +452,7 @@ Void plaYUVerApp::zoomToFitAll()
     updateZoomFactorSBox();
 }
 
-Void plaYUVerApp::scaleFrame( int ratio )
+Void PlaYUVerApp::scaleFrame( int ratio )
 {
   if( m_pcCurrentSubWindow )
   {
@@ -416,9 +461,9 @@ Void plaYUVerApp::scaleFrame( int ratio )
   }
 }
 
-Void plaYUVerApp::zoomFromSBox( double zoom )
+Void PlaYUVerApp::zoomFromSBox( double zoom )
 {
-  SubWindowHandle *activeSubWindow = m_pcWindowHandle->activeSubWindow();
+  SubWindowAbstract *activeSubWindow = m_pcWindowHandle->activeSubWindow();
   Double factor = zoom / 100;
   if( activeSubWindow )
   {
@@ -426,7 +471,7 @@ Void plaYUVerApp::zoomFromSBox( double zoom )
   }
 }
 
-Void plaYUVerApp::updateZoomFactorSBox()
+Void PlaYUVerApp::updateZoomFactorSBox()
 {
   Double factor;
   if( m_pcCurrentSubWindow )
@@ -438,14 +483,14 @@ Void plaYUVerApp::updateZoomFactorSBox()
 
 // -----------------------  Drag and drop functions  ----------------------
 
-Void plaYUVerApp::dragEnterEvent( QDragEnterEvent *event )
+Void PlaYUVerApp::dragEnterEvent( QDragEnterEvent *event )
 {
   //setText(tr("<drop content>"));
   //mdiArea->setBackgroundRole( QPalette::Highlight );
   event->acceptProposedAction();
 }
 
-Void plaYUVerApp::dropEvent( QDropEvent *event )
+Void PlaYUVerApp::dropEvent( QDropEvent *event )
 {
   const QMimeData *mimeData = event->mimeData();
   QList<QUrl> urlList = mimeData->urls();
@@ -459,11 +504,11 @@ Void plaYUVerApp::dropEvent( QDropEvent *event )
 
 // -----------------------  Sub Window Functions  -----------------------
 
-VideoSubWindow* plaYUVerApp::findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager, const QString& fileName )
+VideoSubWindow* PlaYUVerApp::findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager, const QString& fileName )
 {
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
   VideoSubWindow* pcSubWindow;
-  QList<SubWindowHandle*> subWindowList = windowManager->findSubWindow( SubWindowHandle::VIDEO_STREAM_SUBWINDOW );
+  QList<SubWindowAbstract*> subWindowList = windowManager->findSubWindow( SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     pcSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
@@ -475,9 +520,9 @@ VideoSubWindow* plaYUVerApp::findVideoStreamSubWindow( const PlaYUVerSubWindowHa
 
 // -----------------------  Update Functions  -----------------------
 
-Void plaYUVerApp::update()
+Void PlaYUVerApp::update()
 {
-  SubWindowHandle *activeSubWindow = m_pcWindowHandle->activeSubWindow();
+  SubWindowAbstract *activeSubWindow = m_pcWindowHandle->activeSubWindow();
   QCoreApplication::processEvents();
 //if( activeSubWindow() != m_pcCurrentSubWindow )
   {
@@ -487,7 +532,7 @@ Void plaYUVerApp::update()
     {
       m_pcCurrentSubWindow = activeSubWindow;
 
-      if( m_pcCurrentSubWindow->getCategory() & SubWindowHandle::VIDEO_SUBWINDOW )
+      if( m_pcCurrentSubWindow->getCategory() & SubWindowAbstract::VIDEO_SUBWINDOW )
       {
         m_pcCurrentVideoSubWindow = qobject_cast<VideoSubWindow*>( m_pcCurrentSubWindow );
       }
@@ -507,25 +552,30 @@ Void plaYUVerApp::update()
   updateMenus();
 }
 
-Void plaYUVerApp::updateStatusBar( const QString& statusBarString )
+Void PlaYUVerApp::printMessage( const QString& msg )
 {
-  if( !statusBarString.isEmpty() )
+  printMessage( msg, 0 );
+}
+
+Void PlaYUVerApp::printMessage( const QString& msg, UInt logLevel )
+{
+  if( !msg.isEmpty() )
   {
-    statusBar()->showMessage( statusBarString, 5000 );
-  }
-  else
-  {
-    statusBar()->showMessage( " " );
+    statusBar()->showMessage( msg, 5000 );
+    if( logLevel >= LOG_INFO )
+    {
+      m_pcWindowHandle->processLogMsg( msg );
+    }
   }
 }
 
-Void plaYUVerApp::updateMenus()
+Void PlaYUVerApp::updateMenus()
 {
   Bool hasSubWindow = ( m_pcWindowHandle->activeSubWindow() != 0 );
 
   Bool hasVideoStreamSubWindow = false;
   if( m_pcCurrentSubWindow )
-    if( m_pcCurrentSubWindow->getCategory() & SubWindowHandle::VIDEO_STREAM_SUBWINDOW )
+    if( m_pcCurrentSubWindow->getCategory() & SubWindowAbstract::VIDEO_STREAM_SUBWINDOW )
       hasVideoStreamSubWindow = true;
 
   m_arrayMenu[RECENT_MENU]->setEnabled( m_aRecentFileStreamInfo.size() > 0 ? true : false );
@@ -533,10 +583,10 @@ Void plaYUVerApp::updateMenus()
   m_arrayActions[SAVE_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSE_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[CLOSEALL_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[RELOAD_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[RELOAD_ALL_ACT]->setEnabled( hasSubWindow );
 
   m_arrayActions[FORMAT_ACT]->setEnabled( hasVideoStreamSubWindow );
-  m_arrayActions[RELOAD_ACT]->setEnabled( hasVideoStreamSubWindow );
-  m_arrayActions[RELOAD_ALL_ACT]->setEnabled( hasVideoStreamSubWindow );
   m_arrayActions[LOAD_ALL_ACT]->setEnabled( hasVideoStreamSubWindow );
 
   m_arrayActions[ZOOM_IN_ACT]->setEnabled( hasSubWindow );
@@ -556,7 +606,7 @@ Void plaYUVerApp::updateMenus()
 
 // -----------------------  Create Functions  -----------------------
 
-Void plaYUVerApp::createActions()
+Void PlaYUVerApp::createActions()
 {
   m_arrayActions.resize( TOTAL_ACT );
 
@@ -609,7 +659,7 @@ Void plaYUVerApp::createActions()
 
   m_arrayActions[CLOSEALL_ACT] = new QAction( tr( "Close &All" ), this );
   m_arrayActions[CLOSEALL_ACT]->setStatusTip( tr( "Close all the windows" ) );
-  connect( m_arrayActions[CLOSEALL_ACT], SIGNAL( triggered() ), this, SLOT( closeAll() ) );
+  connect( m_arrayActions[CLOSEALL_ACT], SIGNAL( triggered() ), m_pcWindowHandle, SLOT( removeAllSubWindow() ) );
 
   m_arrayActions[EXIT_ACT] = new QAction( tr( "E&xit" ), this );
   m_arrayActions[EXIT_ACT]->setShortcuts( QKeySequence::Quit );
@@ -696,7 +746,7 @@ Void plaYUVerApp::createActions()
   connect( m_arrayActions[ABOUTQT_ACT], SIGNAL( triggered() ), qApp, SLOT( aboutQt() ) );
 }
 
-Void plaYUVerApp::createMenus()
+Void PlaYUVerApp::createMenus()
 {
   m_arrayMenu.resize( TOTAL_MENUS );
 
@@ -764,7 +814,7 @@ Void plaYUVerApp::createMenus()
 
 }
 
-Void plaYUVerApp::createToolBars()
+Void PlaYUVerApp::createToolBars()
 {
   m_arrayToolBars.resize( TOTAL_TOOLBAR );
 
@@ -799,7 +849,7 @@ Void plaYUVerApp::createToolBars()
 
 }
 
-Void plaYUVerApp::createDockWidgets()
+Void PlaYUVerApp::createDockWidgets()
 {
 // Properties Dock Window
   m_arraySideBars.resize( TOTAL_DOCK );
@@ -807,14 +857,14 @@ Void plaYUVerApp::createDockWidgets()
   addDockWidget( Qt::RightDockWidgetArea, m_appModuleQuality->createDock() );
 }
 
-Void plaYUVerApp::createStatusBar()
+Void PlaYUVerApp::createStatusBar()
 {
-//! Warning: the following widget cannot change size too much
+  //! Warning: the following widget cannot change size too much
   statusBar()->addPermanentWidget( m_appModuleVideo->createStatusBarMessage() );
-  statusBar()->showMessage( tr( "Ready" ) );
+  printMessage( "Ready!", LOG_INFO );
 }
 
-Void plaYUVerApp::addStreamInfoToRecentList( PlaYUVerStreamInfo streamInfo )
+Void PlaYUVerApp::addStreamInfoToRecentList( PlaYUVerStreamInfo streamInfo )
 {
   Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, streamInfo.m_cFilename );
   if( idx >= 0 )
@@ -825,7 +875,7 @@ Void plaYUVerApp::addStreamInfoToRecentList( PlaYUVerStreamInfo streamInfo )
   updateRecentFileActions();
 }
 
-Void plaYUVerApp::updateRecentFileActions()
+Void PlaYUVerApp::updateRecentFileActions()
 {
   Int numRecentFiles = m_aRecentFileStreamInfo.size();
   numRecentFiles = qMin( numRecentFiles, MAX_RECENT_FILES );
@@ -848,7 +898,7 @@ Void plaYUVerApp::updateRecentFileActions()
   m_arrayMenu[RECENT_MENU]->setEnabled( m_aRecentFileStreamInfo.size() > 0 ? true : false );
 }
 
-Void plaYUVerApp::checkRecentFileActions()
+Void PlaYUVerApp::checkRecentFileActions()
 {
   Int i = 0;
   while( i < m_aRecentFileStreamInfo.size() )
@@ -871,7 +921,7 @@ Void plaYUVerApp::checkRecentFileActions()
   }
 }
 
-Void plaYUVerApp::readSettings()
+Void PlaYUVerApp::readSettings()
 {
   QSettings appSettings;
 
@@ -893,9 +943,10 @@ Void plaYUVerApp::readSettings()
   m_appModuleVideo->readSettings();
   m_appModuleQuality->readSettings();
   m_appModuleExtensions->readSettings();
+  m_pcWindowHandle->readSettings();
 }
 
-Void plaYUVerApp::writeSettings()
+Void PlaYUVerApp::writeSettings()
 {
   QSettings appSettings;
 
@@ -911,6 +962,7 @@ Void plaYUVerApp::writeSettings()
   m_appModuleVideo->writeSettings();
   m_appModuleQuality->writeSettings();
   m_appModuleExtensions->writeSettings();
+  m_pcWindowHandle->writeSettings();
 }
 
 }  // NAMESPACE

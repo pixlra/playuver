@@ -55,17 +55,22 @@ Options& PlaYUVerCmdParser::Opts()
   return m_cParserOptions;
 }
 
-Bool PlaYUVerCmdParser::parse( Int argc, Char *argv[] )
+std::list<const Char*>& PlaYUVerCmdParser::getNoArgs()
+{
+  return m_aUnhandledArgs;
+}
+
+Bool PlaYUVerCmdParser::parse()
 {
   try
   {
     // m_cParserOptions.setDefaults();
-    const std::list<const Char*>& argv_unhandled = scanArgv( m_cParserOptions, argc, ( const Char** )argv );
+    m_aUnhandledArgs = m_cParserOptions.scanArgv( m_iArgc, ( const Char** )m_ppArgv );
 
-    for( std::list<const Char*>::const_iterator it = argv_unhandled.begin(); it != argv_unhandled.end(); it++ )
-    {
-      fprintf( stderr, "Unhandled argument ignored: `%s'\n", *it );
-    }
+    //    for( std::list<const Char*>::const_iterator it = argv_unhandled.begin(); it != argv_unhandled.end(); it++ )
+    //    {
+    //      fprintf( stderr, "Unhandled argument ignored: `%s'\n", *it );
+    //    }
 
     if( checkListingOpts() )
     {
@@ -86,15 +91,31 @@ Bool PlaYUVerCmdParser::parse( Int argc, Char *argv[] )
   return true;
 }
 
+Bool PlaYUVerCmdParser::parse( Options& opts, Int argc, Char *argv[] )
+{
+  try
+  {
+    // m_cParserOptions.setDefaults();
+    m_aUnhandledArgs = opts.scanArgv( argc, ( const Char** )argv );
+
+  }
+  catch( std::exception& e )
+  {
+    std::cerr << "error: "
+              << e.what()
+              << "\n";
+    return false;
+  }
+  catch( ... )
+  {
+    std::cerr << "Exception of unknown type!\n";
+  }
+  return true;
+}
+
 Bool PlaYUVerCmdParser::checkListingOpts()
 {
   Bool bRet = false;
-
-  if( m_cParserOptions["help"]->count() )
-  {
-    doHelp( std::cout, m_cParserOptions );
-    bRet |= true;
-  }
 
   if( m_cParserOptions["version"]->count() )
   {
@@ -109,6 +130,15 @@ Bool PlaYUVerCmdParser::checkListingOpts()
     for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
     {
       printf( "   %s\n", PlaYUVerFrame::supportedPixelFormatListNames()[i].c_str() );
+    }
+    bRet |= true;
+  }
+  if( Opts()["quality_metrics"]->count() )
+  {
+    printf( "PlaYUVer supported quality metrics: \n" );
+    for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
+    {
+      printf( "   %s\n", PlaYUVerFrame::supportedQualityMetricsList()[i].c_str() );
     }
     bRet |= true;
   }

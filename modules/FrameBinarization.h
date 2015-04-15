@@ -18,45 +18,37 @@
  */
 
 /**
- * \file     LibOpenCVHandler.h
- * \ingroup  PlaYUVerLib
- * \brief    Interface with opencv lib
+ * \file     FrameBinarization.h
+ * \brief    Binarize frame module
  */
 
-#ifndef __LIBOPENCVHANDLER_H__
-#define __LIBOPENCVHANDLER_H__
+#ifndef __FRAMEBINARIZATION_H__
+#define __FRAMEBINARIZATION_H__
 
-#include <inttypes.h>
-#include <vector>
-#include <string>
-#include <opencv2/opencv.hpp>
-#include "PlaYUVerDefs.h"
+#include "PlaYUVerModuleIf.h"
 
 namespace plaYUVer
 {
 
-class PlaYUVerFrame;
-
-class LibOpenCVHandler
+class FrameBinarization: public PlaYUVerModuleIf
 {
+REGISTER_CLASS_FACTORY( FrameBinarization )
+
+private:
+  PlaYUVerFrame* m_pcBinFrame;
+  UInt m_uiThreshold;
 public:
-
-  static std::vector<std::string> supportedReadFormatsExt();
-  static std::vector<std::string> supportedReadFormatsName();
-  static std::vector<std::string> supportedWriteFormatsExt();
-  static std::vector<std::string> supportedWriteFormatsName();
-  static std::vector<std::string> supportedSaveFormatsExt();
-  static std::vector<std::string> supportedSaveFormatsName();
-
-  LibOpenCVHandler()
+  FrameBinarization();
+  virtual ~FrameBinarization()
   {
   }
-
-  static PlaYUVerFrame* loadFrame( std::string filename );
-  static Bool saveFrame( PlaYUVerFrame* pcFrame, std::string filename );
+  Void create( PlaYUVerFrame* );
+  PlaYUVerFrame* process( PlaYUVerFrame* );
+  Void destroy();
 
 };
 
 }  // NAMESPACE
 
-#endif // __LIBOPENCVHANDLER_H__
+#endif // __FRAMEBINARIZATION_H__
+

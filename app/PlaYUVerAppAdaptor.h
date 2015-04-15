@@ -38,7 +38,7 @@ namespace plaYUVer
 #define PLAYUVER_DBUS_SESSION_NAME "org.pixlra.PlaYUVer.application"
 #define PLAYUVER_DBUS_PATH "/MainApplication"
 
-class plaYUVerApp;
+class PlaYUVerApp;
 
 class PlaYUVerAppAdaptor: public QDBusAbstractAdaptor
 {
@@ -46,7 +46,7 @@ Q_OBJECT
 Q_CLASSINFO("D-Bus Interface", "org.pixlra.PlaYUVer.application")
 Q_PROPERTY(QString activeSession READ activeSession)
 public:
-  PlaYUVerAppAdaptor( plaYUVerApp *app );
+  PlaYUVerAppAdaptor( PlaYUVerApp *app );
   ~PlaYUVerAppAdaptor();
   /**
    * emit the exiting signal
@@ -78,7 +78,7 @@ Q_SIGNALS:
 public:
   QString activeSession();
 private:
-  plaYUVerApp *m_app;
+  PlaYUVerApp *m_app;
 };
 
 }  // NAMESPACE

@@ -37,8 +37,13 @@ ADD_MODULE( FilterComponentChromaU "FilterComponent" )
 ADD_MODULE( FilterComponentChromaV "FilterComponent" )
 ADD_MODULE( FrameDifference "FrameDifference" )
 ADD_MODULE( AbsoluteFrameDifference "AbsoluteFrameDifference" )
+ADD_MODULE( FrameBinarization "FrameBinarization" )
+ADD_MODULE( SetChromaHalfScale "SetChromaHalfScale" )
+ADD_MODULE( EightBitsSampling "EightBitsSampling" )
+ADD_MODULE( FrameCrop "FrameCrop" )
 ADD_MODULE( LumaAverage "LumaAverage" )
 IF( USE_OPENCV )
+  ADD_MODULE( DisparityStereoBM "DisparityStereoBM" )
   ADD_MODULE( DisparityStereoVar "DisparityStereoVar" )
 ENDIF()
 
@@ -48,4 +53,7 @@ ENDIF()
 #
 file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#endif // __MODULESLISTHEADER_H__\n" )
 
+INCLUDE_DIRECTORIES( ${OpenCV_INCLUDE_DIRS} )
 ADD_LIBRARY( PlaYUVerModules ${plaYUver_Mod_SRCS} )
+TARGET_LINK_LIBRARIES( PlaYUVerModules PlaYUVerLib  ${OpenCV_LIBRARIES}  )
+

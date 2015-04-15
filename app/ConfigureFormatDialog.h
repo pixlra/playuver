@@ -34,17 +34,11 @@
 #endif
 #include <QtCore>
 
-
-
 class QPixmap;
 class QColor;
 
 namespace plaYUVer
 {
-
-#define ADD_STANDARD_RESOLUTION( name, width, height) \
-    standardResolutionNames.push_back( QString( name ) ); \
-    standardResolutionSizesList.push_back( QSize( width, height ) )
 
 /**
  *
@@ -56,10 +50,12 @@ Q_OBJECT
 public:
 
   ConfigureFormatDialog( QWidget *parent = 0 );
-  Int runConfigureFormatDialog ( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
+  Int runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, UInt& rFrameRate );
 
 private Q_SLOTS:
-  void StandardResolutionSelection();
+  void slotStandardResolutionSelected( int );
+  void slotResolutionChange();
+  void slotColorSpaceChange( int );
 
 private:
   QStringList standardResolutionNames;
@@ -69,7 +65,9 @@ private:
   QComboBox *m_comboBoxStandardResolution;
   QSpinBox *m_spinBoxWidth;
   QSpinBox *m_spinBoxheight;
+  QComboBox *m_comboBoxColorSpace;
   QComboBox *m_comboBoxPixelFormat;
+  QSpinBox *m_spinBoxBits;
   QSpinBox *m_spinBoxFrameRate;
 
 };

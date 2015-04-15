@@ -18,45 +18,39 @@
  */
 
 /**
- * \file     LibOpenCVHandler.h
- * \ingroup  PlaYUVerLib
- * \brief    Interface with opencv lib
+ * \file     ModulesHandleOptDialog.h
+ * \brief    Dialog box to config modules opts
  */
 
-#ifndef __LIBOPENCVHANDLER_H__
-#define __LIBOPENCVHANDLER_H__
+#ifndef __MODULEHANDLEOPTDIALOG_H__
+#define __MODULEHANDLEOPTDIALOG_H__
 
-#include <inttypes.h>
-#include <vector>
-#include <string>
-#include <opencv2/opencv.hpp>
-#include "PlaYUVerDefs.h"
+#include "config.h"
+#include "PlaYUVerAppDefs.h"
+#include "PlaYUVerAppModuleIf.h"
+#include <QDialog>
+#include <QVector>
 
 namespace plaYUVer
 {
 
-class PlaYUVerFrame;
+class OpionConfiguration;
 
-class LibOpenCVHandler
+/**
+ *
+ */
+class ModulesHandleOptDialog: public QDialog
 {
+Q_OBJECT
+
 public:
-
-  static std::vector<std::string> supportedReadFormatsExt();
-  static std::vector<std::string> supportedReadFormatsName();
-  static std::vector<std::string> supportedWriteFormatsExt();
-  static std::vector<std::string> supportedWriteFormatsName();
-  static std::vector<std::string> supportedSaveFormatsExt();
-  static std::vector<std::string> supportedSaveFormatsName();
-
-  LibOpenCVHandler()
-  {
-  }
-
-  static PlaYUVerFrame* loadFrame( std::string filename );
-  static Bool saveFrame( PlaYUVerFrame* pcFrame, std::string filename );
-
+  ModulesHandleOptDialog( QWidget *parent, PlaYUVerAppModuleIf *pcCurrModuleIf );
+  Int runConfiguration();
+private:
+  PlaYUVerAppModuleIf *m_pcCurrModuleIf;
+  QVector<OpionConfiguration*> m_apcOptionList;
 };
 
 }  // NAMESPACE
 
-#endif // __LIBOPENCVHANDLER_H__
+#endif // __MODULEHANDLEOPTDIALOG_H__

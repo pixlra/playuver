@@ -30,13 +30,14 @@ namespace plaYUVer
 LumaAverage::LumaAverage()
 {
   /* Module Definition */
-  m_iModuleType = FRAME_MEASUREMENT_MODULE;
-  m_pchModuleCategory = "Measurements";
-  m_pchModuleName = "LumaAverage";
-  m_pchModuleTooltip = "Measure the average of luma component";
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
-  m_uiModuleRequirements = MODULE_REQUIRES_SIDEBAR;
-  m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;
+  m_iModuleType = FRAME_MEASUREMENT_MODULE;                       // Apply module to the frames or to the whole sequence.
+                                                                  // Currently only support for frame
+  m_pchModuleCategory = "Measurements";                           // Category (sub-menu)
+  m_pchModuleName = "LumaAverage";                                // Name
+  m_pchModuleTooltip = "Measure the average of luma component";   // Description
+  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;                 // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
+  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;               // Module requirements (check PlaYUVerModulesIf.h).
+                                                                  // Several requirements should be "or" between each others.
 }
 
 Void LumaAverage::create( PlaYUVerFrame* frame )
@@ -61,5 +62,6 @@ Void LumaAverage::destroy()
 
 }
 
-}  // NAMESPACE
+}
+// NAMESPACE
 

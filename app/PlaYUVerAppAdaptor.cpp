@@ -24,12 +24,12 @@
 
 #include <QDBusAbstractAdaptor>
 #include "PlaYUVerAppAdaptor.h"
-#include "plaYUVerApp.h"
+#include "PlaYUVerApp.h"
 
 namespace plaYUVer
 {
 
-PlaYUVerAppAdaptor::PlaYUVerAppAdaptor( plaYUVerApp *app ) :
+PlaYUVerAppAdaptor::PlaYUVerAppAdaptor( PlaYUVerApp *app ) :
         QDBusAbstractAdaptor( app ),
         m_app( app )
 {

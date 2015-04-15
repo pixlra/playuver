@@ -18,45 +18,37 @@
  */
 
 /**
- * \file     LibOpenCVHandler.h
- * \ingroup  PlaYUVerLib
- * \brief    Interface with opencv lib
+ * \file     ProgressBar.h
+ * \brief    Progress bar code
  */
 
-#ifndef __LIBOPENCVHANDLER_H__
-#define __LIBOPENCVHANDLER_H__
+#ifndef __PROGRESSBAR_H__
+#define __PROGRESSBAR_H__
 
-#include <inttypes.h>
-#include <vector>
-#include <string>
-#include <opencv2/opencv.hpp>
-#include "PlaYUVerDefs.h"
+#include "PlaYUVerAppDefs.h"
+#include <QWidget>
+#include <QDialog>
+
+class QProgressBar;
 
 namespace plaYUVer
 {
 
-class PlaYUVerFrame;
-
-class LibOpenCVHandler
+class ProgressBar: public QWidget
 {
+Q_OBJECT
+
 public:
+  ProgressBar( QWidget *parent, UInt maxValue );
 
-  static std::vector<std::string> supportedReadFormatsExt();
-  static std::vector<std::string> supportedReadFormatsName();
-  static std::vector<std::string> supportedWriteFormatsExt();
-  static std::vector<std::string> supportedWriteFormatsName();
-  static std::vector<std::string> supportedSaveFormatsExt();
-  static std::vector<std::string> supportedSaveFormatsName();
+  Void incrementProgress( UInt );
 
-  LibOpenCVHandler()
-  {
-  }
-
-  static PlaYUVerFrame* loadFrame( std::string filename );
-  static Bool saveFrame( PlaYUVerFrame* pcFrame, std::string filename );
-
+private:
+  UInt m_uiTotalProgress;
+  UInt m_uiProgress;
+  QProgressBar* m_pcProgressBar;
 };
 
 }  // NAMESPACE
 
-#endif // __LIBOPENCVHANDLER_H__
+#endif // __PROGRESSBAR_H__

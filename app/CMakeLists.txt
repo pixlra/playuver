@@ -45,16 +45,16 @@ ENDIF()
 set(plaYUVer_App_SRCS
 # Main
     main.cpp
-    plaYUVerApp.cpp
+    PlaYUVerApp.cpp
     PlaYUVerSubWindowHandle.cpp
     PlaYUVerMdiSubWindow.cpp
-    SubWindowHandle.cpp
+    SubWindowAbstract.cpp
     Settings.cpp
 # Module Video
     VideoSubWindow.cpp
     ViewArea.cpp
     VideoHandle.cpp
-    FramePropertiesSidebar.cpp
+    FramePropertiesDock.cpp
 # Module Quality
     QualityHandle.cpp
     QualityMeasurementSidebar.cpp
@@ -62,6 +62,7 @@ set(plaYUVer_App_SRCS
     external/qcustomplot.cpp
 # Module Plugins
     ModulesHandle.cpp
+    ModulesHandleOptDialog.cpp
     ModuleHandleDock.cpp
     PlaYUVerAppModuleIf.cpp
     GridManager.cpp
@@ -69,6 +70,7 @@ set(plaYUVer_App_SRCS
     AboutDialog.cpp
     ConfigureFormatDialog.cpp
     DialogSubWindowSelector.cpp
+    ProgressBar.cpp
 # Widgets
     HistogramWidget.cpp
     WidgetFrameNumber.cpp

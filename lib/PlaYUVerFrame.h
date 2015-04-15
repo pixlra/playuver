@@ -34,6 +34,10 @@
 #include "PlaYUVerFrameStats.h"
 
 class PixFcSSE;
+namespace cv
+{
+class Mat;
+}
 
 namespace plaYUVer
 {
@@ -117,9 +121,9 @@ public:
   {
     COLOR_INVALID = -1,  //!< Invalid
     COLOR_YUV = 0,  //!< YUV
-    COLOR_RGB,  //!< RGB
-    COLOR_ARGB,  //!< RGB + Alpha
-    COLOR_GRAY,  //!< Grayscale
+    COLOR_RGB = 1,  //!< RGB
+    COLOR_ARGB = 3,  //!< RGB + Alpha
+    COLOR_GRAY = 2,  //!< Grayscale
   };
 
   /** ColorSpace Enum
@@ -139,18 +143,26 @@ public:
   };
 
   /**
+   * Function that handles the supported color space
+   * of PlaYUVerFrame
+   * @return vector of strings with pixel formats names
+   */
+  static std::vector<std::string> supportedColorSpacesListNames();
+
+  /**
    * Function that handles the supported pixel formats
    * of PlaYUVerFrame
    * @return vector of strings with pixel formats names
    */
   static std::vector<std::string> supportedPixelFormatListNames();
+  static std::vector<std::string> supportedPixelFormatListNames( Int colorSpace );
 
   /**
    * Get number of bytes per frame of a specific
    * pixel format
    * @return number of bytes per frame
    */
-  static UInt64 getBytesPerFrame( UInt, UInt, Int );
+  static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, Int bitsPixel );
 
   /**
    * Convert a Pixel to a new color space
@@ -169,7 +181,7 @@ public:
    *
    * @note this function might misbehave if the pixel format enum is not correct
    */
-  PlaYUVerFrame( UInt width, UInt height, Int pel_format = 0 );
+  PlaYUVerFrame( UInt width, UInt height, Int pelFormat = 0, Int bitsPixel = 8 );
 
   /**
    * Creates and new frame with the configuration of an
@@ -206,8 +218,8 @@ public:
   UInt getChromaHeight() const;
   UInt getChromaLength() const;
 
-  Void frameFromBuffer( Pel*, UInt64 );
-  Void frameToBuffer( Pel* );
+  Void frameFromBuffer( Byte*, UInt64 );
+  Void frameToBuffer( Byte* );
 
   Void fillRGBBuffer();
 
@@ -216,6 +228,10 @@ public:
 
   PlaYUVerFrame::Pixel getPixelValue( Int xPos, Int yPos, ColorSpace eColorSpace = COLOR_INVALID );
 
+  std::string getPelFmtName()
+  {
+    return m_cPelFmtName;
+  }
   UInt getWidth() const
   {
     return m_uiWidth;
@@ -228,9 +244,9 @@ public:
   {
     return m_iPixelFormat;
   }
-  Int getBitsChannel() const
+  Int getBitsPel() const
   {
-    return m_iBitsChannels;
+    return m_iBitsPel;
   }
   Bool isValid() const
   {
@@ -278,8 +294,8 @@ public:
   /**
    * Interface with OpenCV lib
    */
-  Void getCvMat( Void** );
-  Void fromCvMat( Void* );
+  cv::Mat* getCvMat( Bool convertToGray = false );
+  Void fromCvMat( cv::Mat* );
 
   /**
    * @defgroup PlaYUVerLib_QualityMetrics Quality Metrics Interface
@@ -321,12 +337,13 @@ private:
 
   //! Strcut with the pixel format description.
   PlaYUVerPixFmtDescriptor* m_pcPelFormat;
+  std::string m_cPelFmtName;
 
   UInt m_uiWidth;  //!< Width of the frame
   UInt m_uiHeight;  //!< Height of the frame
   Int m_iPixelFormat;  //!< Pixel format number (it follows the list of supported pixel formats)
   Int m_iNumberChannels;  //!< Number of channels
-  Int m_iBitsChannels;  //!< Bits per pixel/channel
+  Int m_iBitsPel;  //!< Bits per pixel/channel
 
   Pel*** m_pppcInputPel;
 
@@ -341,7 +358,7 @@ private:
    * @param pel_format pixel format index (always use PixelFormats enum)
    *
    */
-  Void init( UInt width, UInt height, Int pel_format );
+  Void init( UInt width, UInt height, Int pel_format, Int bitsPixel );
 
   Void openPixfc();
   Void closePixfc();

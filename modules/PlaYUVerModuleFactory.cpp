@@ -38,9 +38,14 @@ PlaYUVerModuleFactory::PlaYUVerModuleFactory()
   Register( "FilterComponentChromaV", &FilterComponentChromaV::Create );
   Register( "FrameDifference", &FrameDifference::Create );
   Register( "AbsoluteFrameDifference", &AbsoluteFrameDifference::Create );
+  Register( "SetChromaHalfScale", &SetChromaHalfScale::Create );
+  Register( "FrameCrop", &FrameCrop::Create );
+  Register( "FrameBinarization", &FrameBinarization::Create );
+  Register( "EightBitsSampling", &EightBitsSampling::Create );
   Register( "LumaAverage", &LumaAverage::Create );
 #ifdef USE_OPENCV
   Register( "DisparityStereoVar", &DisparityStereoVar::Create );
+  Register( "DisparityStereoBM", &DisparityStereoBM::Create );
 #endif
 
 }
@@ -59,7 +64,7 @@ PlaYUVerModuleIf *PlaYUVerModuleFactory::CreateModule( const char* moduleName )
 {
   PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
   PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
-  for( ; it != PlaYUVerModuleFactoryMap.end(); ++it)
+  for( ; it != PlaYUVerModuleFactoryMap.end(); ++it )
   {
     if( !strcmp( it->first, moduleName ) )
     {

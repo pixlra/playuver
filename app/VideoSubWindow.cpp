@@ -24,8 +24,9 @@
 
 #include "VideoSubWindow.h"
 #include "ModulesHandle.h"
-#include "SubWindowHandle.h"
 #include "ConfigureFormatDialog.h"
+#include "SubWindowAbstract.h"
+#include <QScrollArea>
 #if( QT_VERSION_PLAYUVER == 5 )
 #include "QtConcurrent/qtconcurrentrun.h"
 #endif
@@ -43,6 +44,7 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array
     out << d.m_cFilename << d.m_uiWidth
                          << d.m_uiHeight
                          << d.m_iPelFormat
+                         << d.m_uiBitsPelPixel
                          << d.m_uiFrameRate
                          << d.m_uiFileSize;
   }
@@ -60,6 +62,7 @@ QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& array )
     in >> d.m_uiWidth;
     in >> d.m_uiHeight;
     in >> d.m_iPelFormat;
+    in >> d.m_uiBitsPelPixel;
     in >> d.m_uiFrameRate;
     in >> d.m_uiFileSize;
     array.append( d );
@@ -76,7 +79,7 @@ Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename )
 }
 
 VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget * parent ) :
-        SubWindowHandle( parent, SubWindowHandle::VIDEO_SUBWINDOW | category ),
+        SubWindowAbstract( parent, SubWindowAbstract::VIDEO_SUBWINDOW | category ),
         m_pCurrStream( NULL ),
         m_pcCurrFrame( NULL ),
         m_pcCurrentDisplayModule( NULL ),
@@ -84,10 +87,14 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
         m_bIsPlaying( false ),
         m_bIsModule( category == MODULE_SUBWINDOW )
 {
-  setVisible( false );
+
+  // Create a new scroll area inside the sub-window
+  m_pcScrollArea = new QScrollArea;
+  connect( m_pcScrollArea->horizontalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValues() ) );
+  connect( m_pcScrollArea->verticalScrollBar(), SIGNAL( actionTriggered( int ) ), this, SLOT( updateCurScrollValues() ) );
 
   // Create a new interface to show images
-  m_cViewArea = new ViewArea( this );
+  m_cViewArea = new ViewArea;
   connect( m_cViewArea, SIGNAL( zoomFactorChanged_byWheel( double , QPoint) ), this, SLOT( adjustScrollBarByScale( double, QPoint ) ) );
   connect( m_cViewArea, SIGNAL( zoomFactorChanged_byWheel( double , QPoint) ), this, SIGNAL( zoomFactorChanged_SWindow( double, QPoint ) ) );
 
@@ -97,12 +104,18 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
   connect( m_cViewArea, SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectedArea( QRect ) ) );
   connect( m_cViewArea, SIGNAL( positionChanged( const QPoint & ) ), this, SLOT( updatePixelValueStatusBar( const QPoint & ) ) );
 
-  setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-  setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  m_pcScrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  m_pcScrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
   // Define the cViewArea as the widget inside the scroll area
-  m_cViewArea->setMinimumSize( size() );
-  setWidget( m_cViewArea );
+  // m_cViewArea->setMinimumSize( size() );
+
+  m_pcScrollArea->setWidget( m_cViewArea );
+  m_pcScrollArea->setWidgetResizable( true );
+
+  setWidget( m_pcScrollArea );
+
+  m_cLastScroll = QPoint();
 
   m_apcCurrentModule.clear();
 
@@ -110,6 +123,7 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
 
 VideoSubWindow::~VideoSubWindow()
 {
+  m_pcCurrFrame = NULL;
   disableModule();
   delete m_cViewArea;
   if( m_pCurrStream )
@@ -118,35 +132,46 @@ VideoSubWindow::~VideoSubWindow()
 
 Void VideoSubWindow::loadAll()
 {
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   m_pCurrStream->loadAll();
   refreshFrame();
+  QApplication::restoreOverrideCursor();
 }
 
-Void VideoSubWindow::reloadFile()
+Void VideoSubWindow::refreshSubWindow()
 {
-  Int currFrameNum = m_pCurrStream->getCurrFrameNum();
-  loadFile( m_cFilename, false );
-  seekAbsoluteEvent( currFrameNum );
+  if( getCategory() & SubWindowAbstract::VIDEO_STREAM_SUBWINDOW )
+  {
+    Int currFrameNum = m_pCurrStream->getCurrFrameNum();
+    if( !loadFile( m_cFilename, false ) )
+    {
+      close();
+      return;
+    }
+    seekAbsoluteEvent( currFrameNum );
+  }
+  else
+  {
+    refreshFrame();
+  }
 }
 
 Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
 {
-  UInt Width = 0, Height = 0, FrameRate = 30;
+  UInt Width = 0, Height = 0, BitsPel = 8, FrameRate = 30;
   Int InputFormat = PlaYUVerFrame::YUV420p;
 
   if( m_pCurrStream )
-    m_pCurrStream->getFormat( Width, Height, InputFormat, FrameRate );
+    m_pCurrStream->getFormat( Width, Height, InputFormat, BitsPel, FrameRate );
 
   if( guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
   {
     ConfigureFormatDialog formatDialog( this );
-    if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, FrameRate ) == QDialog::Rejected )
+    if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, FrameRate ) == QDialog::Rejected )
     {
       return false;
     }
   }
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-  QApplication::restoreOverrideCursor();
 
   if( !m_pCurrStream )
   {
@@ -158,12 +183,13 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
     m_pCurrStream = new PlaYUVerStream;
   }
 
-  m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, FrameRate );
+  m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, FrameRate );
 
   m_sStreamInfo.m_cFilename = cFilename;
   m_sStreamInfo.m_uiWidth = Width;
   m_sStreamInfo.m_uiHeight = Height;
   m_sStreamInfo.m_iPelFormat = InputFormat;
+  m_sStreamInfo.m_uiBitsPelPixel = BitsPel;
   m_sStreamInfo.m_uiFrameRate = FrameRate;
   m_sStreamInfo.m_uiFileSize = QFileInfo( cFilename ).size();
 
@@ -190,7 +216,7 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
   }
 
   if( !m_pCurrStream->open( streamInfo->m_cFilename.toStdString(), streamInfo->m_uiWidth, streamInfo->m_uiHeight, streamInfo->m_iPelFormat,
-      streamInfo->m_uiFrameRate ) )
+      streamInfo->m_uiBitsPelPixel, streamInfo->m_uiFrameRate ) )
   {
     return false;
   }
@@ -214,23 +240,23 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
 
 Void VideoSubWindow::updateVideoWindowInfo()
 {
-  if( m_pCurrStream )
+  m_cStreamInformation = "";
+  if( m_pcCurrentDisplayModule )
+  {
+    m_cStreamInformation = "Module";
+  }
+  else if( m_pCurrStream )
   {
     QString m_cFormatName = QString::fromStdString( m_pCurrStream->getFormatName() );
     QString m_cCodedName = QString::fromStdString( m_pCurrStream->getCodecName() );
-    QString m_cPelFmtName = QString::fromStdString( m_pCurrStream->getPelFmtName() );
-    m_cStreamInformation = m_cFormatName + " | " + m_cCodedName + " | " + m_cPelFmtName;
+    m_cStreamInformation = m_cFormatName + " | " + m_cCodedName;
   }
-  else if( m_pcCurrFrame )
+  if( m_pcCurrFrame )
   {
-    if( m_bIsModule || m_pcCurrentDisplayModule )
-    {
-      m_cStreamInformation = "Module | ";
-    }
-    QString m_cPelFmtName = QString::fromStdString( PlaYUVerFrame::supportedPixelFormatListNames()[m_pcCurrFrame->getPelFormat()].c_str() );
-    m_cStreamInformation += m_cPelFmtName;
+    QString m_cPelFmtName = QString::fromStdString( m_pcCurrFrame->getPelFmtName() );
+    m_cStreamInformation += " | " + m_cPelFmtName;
   }
-  else
+  if( m_cStreamInformation.isEmpty() )
   {
     m_cStreamInformation = "          ";
   }
@@ -309,7 +335,7 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
         Int count = 0, module, frame_bytes, match;
         for( UInt i = 0; i < stdResList.size(); i++ )
         {
-          frame_bytes = PlaYUVerFrame::getBytesPerFrame( stdResList[i].uiWidth, stdResList[i].uiHeight, rInputFormat );
+          frame_bytes = PlaYUVerFrame::getBytesPerFrame( stdResList[i].uiWidth, stdResList[i].uiHeight, rInputFormat, 8 );
           module = uiFileSize % frame_bytes;
           if( module == 0 )
           {
@@ -391,8 +417,8 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
   }
   if( bRefresh )
   {
-    updateVideoWindowInfo();
     refreshFrame();
+    updateVideoWindowInfo();
   }
 }
 
@@ -403,8 +429,12 @@ Void VideoSubWindow::associateModule( PlaYUVerAppModuleIf* pcModule )
 
 Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
-  m_pcCurrFrame = pcCurrFrame;
-  m_cViewArea->setImage( m_pcCurrFrame );
+  // if( m_pcCurrFrame )
+  {
+    m_pcCurrFrame = pcCurrFrame;
+    m_cViewArea->setImage( m_pcCurrFrame );
+    updateVideoWindowInfo();
+  }
 }
 
 Void VideoSubWindow::refreshFrameOperation()
@@ -533,6 +563,100 @@ Void VideoSubWindow::stop()
   m_bIsPlaying = false;
   seekAbsoluteEvent( 0 );
   return;
+}
+
+QSize VideoSubWindow::getScrollSize()
+{
+  return QSize( m_pcScrollArea->viewport()->size().width() - 5, m_pcScrollArea->viewport()->size().height() - 5 );
+}
+
+Void VideoSubWindow::adjustScrollBarByOffset( QPoint Offset )
+{
+  QPoint cLastScroll = m_cCurrScroll;
+  QScrollBar *scrollBarH, *scrollBarV;
+  Int valueX, valueY;
+
+  valueX = int( cLastScroll.x() + Offset.x() );
+  valueY = int( cLastScroll.y() + Offset.y() );
+
+  scrollBarH = m_pcScrollArea->horizontalScrollBar();
+  if( valueX > scrollBarH->maximum() )
+    valueX = scrollBarH->maximum();
+  if( valueX < scrollBarH->minimum() )
+    valueX = scrollBarH->minimum();
+  m_cCurrScroll.setX( valueX );
+
+  scrollBarV = m_pcScrollArea->verticalScrollBar();
+  if( valueY > scrollBarV->maximum() )
+    valueY = scrollBarV->maximum();
+  if( valueY < scrollBarV->minimum() )
+    valueY = scrollBarV->minimum();
+  m_cCurrScroll.setY( valueY );
+
+  // Update window scroll
+  scrollBarH->setValue( m_cCurrScroll.x() );
+  scrollBarV->setValue( m_cCurrScroll.y() );
+}
+
+// This function was developed with help of the schematics presented in
+// http://stackoverflow.com/questions/13155382/jscrollpane-zoom-relative-to-mouse-position
+Void VideoSubWindow::adjustScrollBarByScale( Double scale, QPoint center )
+{
+  QPoint cLastScroll = m_cCurrScroll;
+  QScrollBar *scrollBarH, *scrollBarV;
+
+  scrollBarH = m_pcScrollArea->horizontalScrollBar();
+  if( center.isNull() )
+  {
+    m_cCurrScroll.setX( int( scale * cLastScroll.x() + ( ( scale - 1 ) * scrollBarH->pageStep() / 2 ) ) );
+  }
+  else
+  {
+    Int x = center.x() - cLastScroll.x();
+    Int value = int( scale * cLastScroll.x() + ( ( scale - 1 ) * x ) );
+    if( value > scrollBarH->maximum() )
+      value = scrollBarH->maximum();
+    if( value < scrollBarH->minimum() )
+      value = scrollBarH->minimum();
+    m_cCurrScroll.setX( value );
+  }
+
+  scrollBarV = m_pcScrollArea->verticalScrollBar();
+  if( center.isNull() )
+  {
+    m_cCurrScroll.setY( int( scale * cLastScroll.y() + ( ( scale - 1 ) * scrollBarV->pageStep() / 2 ) ) );
+  }
+  else
+  {
+    Int y = center.y() - cLastScroll.y();
+    Int value = int( scale * cLastScroll.y() + ( ( scale - 1 ) * y ) );
+    if( value > scrollBarV->maximum() )
+      value = scrollBarV->maximum();
+    if( value < scrollBarV->minimum() )
+      value = scrollBarV->minimum();
+    m_cCurrScroll.setY( value );
+  }
+
+  // Update window scroll
+  scrollBarH->setValue( m_cCurrScroll.x() );
+  scrollBarV->setValue( m_cCurrScroll.y() );
+
+}
+
+Void VideoSubWindow::updateCurScrollValues()
+{
+  QScrollBar *scrollBar = m_pcScrollArea->horizontalScrollBar();
+  m_cCurrScroll.setX( scrollBar->value() );
+  scrollBar = m_pcScrollArea->verticalScrollBar();
+  m_cCurrScroll.setY( scrollBar->value() );
+}
+
+Void VideoSubWindow::setCurScrollValues()
+{
+  QScrollBar *scrollBar = m_pcScrollArea->horizontalScrollBar();
+  scrollBar->setValue( m_cCurrScroll.x() );
+  scrollBar = m_pcScrollArea->verticalScrollBar();
+  scrollBar->setValue( m_cCurrScroll.y() );
 }
 
 Void VideoSubWindow::normalSize()
@@ -680,17 +804,17 @@ QSize VideoSubWindow::sizeHint( const QSize & maxSize ) const
   return isize;
 }
 
-Void VideoSubWindow::closeEvent( QCloseEvent *event )
-{
-  Bool bAccept = m_bIsPlaying ? false : true;
-  if( bAccept )
-  {
-    event->accept();
-  }
-  else
-  {
-    event->ignore();
-  }
-}
+//Void VideoSubWindow::closeEvent( QCloseEvent *event )
+//{
+//  Bool bAccept = m_bIsPlaying ? false : true;
+//  if( bAccept )
+//  {
+//    event->accept();
+//  }
+//  else
+//  {
+//    event->ignore();
+//  }
+//}
 
-}  // NAMESPACE
+}// NAMESPACE

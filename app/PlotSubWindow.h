@@ -32,31 +32,50 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
-#include "SubWindowHandle.h"
-#include "qcustomplot.h"
+#include "SubWindowAbstract.h"
+
+class QCustomPlot;
 
 namespace plaYUVer
 {
 
-class PlotSubWindow: public SubWindowHandle
+class PlotSubWindow: public SubWindowAbstract
 {
 Q_OBJECT
 
 private:
   QCustomPlot* m_cPlotArea;
 
-  Void Example();
+  QVector<QColor> m_arrayColorList;
+  QPen m_cPlotPen;
+
+  enum Axis
+  {
+    HORIZONTAL,
+    VERTICAL,
+  };
+  Double m_aAxisRange[2][2];
+  Double m_dScaleFactor;
+  Int m_iNumberPlots;
 
 public:
-  PlotSubWindow( QWidget * parent = 0 );
+
+  PlotSubWindow( const QString& windowTitle, QWidget * parent = NULL );
   ~PlotSubWindow();
+
+  Void definePlotColors();
+
+  Void refreshSubWindow()
+  {
+
+  }
 
   Void setTool( UInt uiTool )
   {
   }
 
   /**
-   * Virtual functions from SubWindowHandle
+   * Virtual functions from SubWindowAbstract
    */
   Void normalSize();
   Void zoomToFit();
@@ -65,14 +84,24 @@ public:
 
   Double getScaleFactor()
   {
-    return 0;
+    return m_dScaleFactor;
   }
 
   /**
    * Size related functions
    */
-//  QSize sizeHint() const;
-//  QSize sizeHint( const QSize & ) const;
+  QSize sizeHint() const;
+  QSize sizeHint( const QSize & ) const;
+
+  Void setAxisName( const QString& nameAxisX, const QString& nameAxisY );
+
+  Void setAxisRange( const QLine& axisLimits );
+  Void setAxisRange( PlotSubWindow::Axis eAxis, const Int& axisStart, const Int& axisEnd );
+
+  Void setKey( const QString& key );
+
+  Void addPlot( const QVector<Double> &arrayX, const QVector<Double> &arrayY, const QString& key = QString() );
+
 };
 
 }  // NAMESPACE

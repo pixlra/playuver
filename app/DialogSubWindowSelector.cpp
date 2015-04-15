@@ -22,6 +22,8 @@
  * \brief    Dialog box to select sub windows
  */
 
+#include <QCheckBox>
+#include <QGroupBox>
 #include "PlaYUVerSubWindowHandle.h"
 #include "DialogSubWindowSelector.h"
 #include "VideoSubWindow.h"
@@ -29,135 +31,140 @@
 namespace plaYUVer
 {
 
-DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWindowHandle *windowManager, UInt uiCategory, Int minWindowsSelected, Int maxWindowsSelected ) :
+DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWindowHandle *windowManager, UInt uiCategory, Int minWindowsSelected,
+    Int maxWindowsSelected ) :
         QDialog( parent ),
         m_uiCategory( uiCategory ),
         m_iMinSelectedWindows( minWindowsSelected ),
         m_iMaxSlectedWindows( maxWindowsSelected ),
         m_pcMainWindowManager( windowManager )
 {
-  QFont titleFont, menusFont;
-
-  titleFont.setPointSize( 14 );
-  titleFont.setBold( true );
-  titleFont.setWeight( 75 );
-
-  menusFont.setBold( true );
-  menusFont.setWeight( 75 );
 
   QSize windowSize( 350, 80 );
   resize( windowSize );
-  setWindowTitle( "Sub Windows Selection" );
+  setWindowTitle( "Select desired Sub-Windows" );
 
-  QHBoxLayout* MainLayout = new QHBoxLayout( this );
+  QVBoxLayout* mainLayout = new QVBoxLayout( this );
 
-  // Window list and add button
-  m_comboBoxWindowList = new QComboBox();
-  QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
-  sizePolicy.setHorizontalStretch( 0 );
-  sizePolicy.setVerticalStretch( 0 );
-  sizePolicy.setHeightForWidth( m_comboBoxWindowList->sizePolicy().hasHeightForWidth() );
-  m_comboBoxWindowList->setSizePolicy( sizePolicy );
-  m_comboBoxWindowList->setAcceptDrops( true );
+  minWindowsSelected = minWindowsSelected == 0 ? 1 : minWindowsSelected;
 
-  m_pushButtonAdd = new QPushButton( "Add", this );
+  m_pcGroupCheckBox = new QGroupBox();
+  m_pcGroupCheckBox->setLayout( new QVBoxLayout() );
+
+  mainLayout->addWidget( m_pcGroupCheckBox );
+
   m_pushButtonAddAll = new QPushButton( "Add all", this );
-  m_pushButtonRemove = new QPushButton( "Remove", this );
   m_pushButtonRemoveAll = new QPushButton( "Remove All", this );
-  m_pushButtonRemove->setEnabled( false );
   m_pushButtonRemoveAll->setEnabled( false );
-
-  // Selected Sub Window List
-  m_listSelectedWindows = new QListWidget( this );
 
   // Confirmation buttons
   m_pushButtonOkCancel = new QDialogButtonBox();
   m_pushButtonOkCancel->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
-  m_pushButtonOkCancel->setOrientation( Qt::Vertical );
+  m_pushButtonOkCancel->setOrientation( Qt::Horizontal );
   m_pushButtonOkCancel->setCenterButtons( false );
   m_pushButtonOkCancel->buttons().at( 0 )->setEnabled( false );
 
-  // Create Layouts
-  QVBoxLayout* LeftVLayout = new QVBoxLayout();
-  LeftVLayout->addWidget( m_comboBoxWindowList );
-  //LeftVLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-  LeftVLayout->addWidget( m_listSelectedWindows );
-
-  QVBoxLayout* RightVLayout = new QVBoxLayout();
-  RightVLayout->addWidget( m_pushButtonAdd );
-  RightVLayout->addWidget( m_pushButtonAddAll );
-  RightVLayout->addWidget( m_pushButtonRemove );
-  RightVLayout->addWidget( m_pushButtonRemoveAll );
-  RightVLayout->addItem( new QSpacerItem( 40, 20, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
-  RightVLayout->addWidget( m_pushButtonOkCancel );
+  QHBoxLayout* BottomHLayout = new QHBoxLayout();
+  BottomHLayout->addWidget( m_pushButtonAddAll );
+  BottomHLayout->addWidget( m_pushButtonRemoveAll );
+  BottomHLayout->addWidget( m_pushButtonOkCancel );
 
   // Add components
-  //MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Expanding, QSizePolicy::Fixed ) );
-  MainLayout->addLayout( LeftVLayout );
-  MainLayout->addLayout( RightVLayout );
+  mainLayout->addLayout( BottomHLayout );
 
-  setLayout( MainLayout );
+  setLayout( mainLayout );
 
   // Create actions
   connect( m_pushButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( m_pushButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
-  connect( m_pushButtonAdd, SIGNAL( clicked() ), this, SLOT( addSubWindow() ) );
-  connect( m_pushButtonAddAll, SIGNAL( clicked() ), this, SLOT( addAllSubWindow() ) );
-  connect( m_pushButtonRemove, SIGNAL( clicked() ), this, SLOT( removeSubWindow() ) );
-  connect( m_pushButtonRemoveAll, SIGNAL( clicked() ), this, SLOT( removeAllSubWindow() ) );
-  QMetaObject::connectSlotsByName( this );
 
-  updateSubWindowList();
+  connect( m_pushButtonAddAll, SIGNAL( clicked() ), this, SLOT( addAllSubWindow() ) );
+  connect( m_pushButtonRemoveAll, SIGNAL( clicked() ), this, SLOT( removeAllSubWindow() ) );
+
+  m_mapperWindowsList = new QSignalMapper( this );
+  connect( m_mapperWindowsList, SIGNAL( mapped(int) ), this, SLOT( toggleSubWindow(int) ) );
+
+  SubWindowAbstract *subWindow;
+  QString currSubWindowName;
+  QCheckBox* windowCheckBox;
+  m_apcSubWindowList = m_pcMainWindowManager->findSubWindow( m_uiCategory );
+  for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
+  {
+    subWindow = m_apcSubWindowList.at( i );
+    currSubWindowName = subWindow->getWindowName();
+    windowCheckBox = new QCheckBox( currSubWindowName, this );
+    connect( windowCheckBox, SIGNAL( stateChanged(int) ), m_mapperWindowsList, SLOT( map() ) );
+    m_mapperWindowsList->setMapping( windowCheckBox, i );
+    m_apcWindowsListCheckBox.append( windowCheckBox );
+  }
+
+  update();
+
+  setFixedSize( mainLayout->sizeHint() );
+
 }
 
 Void DialogSubWindowSelector::updateSubWindowList()
 {
-  SubWindowHandle *subWindow;
-  QString currSubWindowName;
-  m_pcWindowListNames.clear();
-  QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( m_uiCategory );
-  for( Int i = 0; i < subWindowList.size(); i++ )
-  {
-    subWindow = subWindowList.at( i );
-    currSubWindowName = subWindow->getWindowName();
-    if( !m_pcSelectedWindowListNames.contains( currSubWindowName ) )
-      m_pcWindowListNames.append( currSubWindowName );
-  }
-  m_comboBoxWindowList->clear();
-  m_comboBoxWindowList->insertItems( 0, m_pcWindowListNames );
-  m_comboBoxWindowList->setCurrentIndex( -1 );
+  QLayout* pcLayout = m_pcGroupCheckBox->layout();
+  QLayoutItem* pcLayoutItem;
+  QCheckBox* windowCheckBox;
+  Int iIdx;
 
-  Bool enableAddAll = true;
-
-  if( m_iMaxSlectedWindows >= 0 )
+  /**
+   * Remove all check boxes
+   */
+  for( Int i = 0; i < pcLayout->count(); i++ )
   {
-    if( m_pcSelectedWindowListNames.size() >= m_iMaxSlectedWindows )
+    pcLayoutItem = pcLayout->itemAt( i );
+    if( pcLayoutItem )
     {
-      m_pushButtonAdd->setEnabled( false );
-    }
-    else
-    {
-      m_pushButtonAdd->setEnabled( true );
-    }
-    if( m_pcWindowListNames.size() > m_iMaxSlectedWindows )
-    {
-      enableAddAll = false;
+      pcLayout->removeWidget( pcLayoutItem->widget() );
+      pcLayout->removeItem( pcLayoutItem );
     }
   }
-  m_pushButtonAddAll->setEnabled( enableAddAll );
 
-  if( m_pcSelectedWindowListNames.size() > 0 )
+  for( Int i = 0; i < m_apcSelectedSubWindowList.size(); i++ )
   {
-    m_pushButtonRemove->setEnabled( true );
+    iIdx = m_apcSubWindowList.indexOf( m_apcSelectedSubWindowList.at( i ) );
+    if( iIdx >= 0 )
+    {
+      windowCheckBox = m_apcWindowsListCheckBox.at( iIdx );
+      m_pcGroupCheckBox->layout()->addWidget( windowCheckBox );
+    }
+  }
+  for( Int i = 0; i < m_apcWindowsListCheckBox.size(); i++ )
+  {
+    if( !m_apcSelectedSubWindowList.contains( m_apcSubWindowList.at( i ) ) )
+      m_pcGroupCheckBox->layout()->addWidget( m_apcWindowsListCheckBox.at( i ) );
+  }
+
+//  qDebug( ) << "Selected windows: "
+//            << m_apcSelectedSubWindowList.size();
+}
+
+Void DialogSubWindowSelector::selectSubWindow( SubWindowAbstract * subWindow )
+{
+  Int iIdx = m_apcSubWindowList.indexOf( subWindow );
+  if( iIdx >= 0 )
+  {
+    m_apcWindowsListCheckBox.at( iIdx )->setChecked( true );
+    //m_apcSelectedSubWindowList.append( m_apcSubWindowList.at( iIdx ) );
+  }
+}
+
+Void DialogSubWindowSelector::update()
+{
+  if( m_apcSelectedSubWindowList.size() > 0 )
+  {
     m_pushButtonRemoveAll->setEnabled( true );
   }
   else
   {
-    m_pushButtonRemove->setEnabled( false );
     m_pushButtonRemoveAll->setEnabled( false );
   }
 
-  if( m_pcSelectedWindowListNames.size() >= m_iMinSelectedWindows )
+  if( m_apcSelectedSubWindowList.size() >= m_iMinSelectedWindows )
   {
     m_pushButtonOkCancel->buttons().at( 0 )->setEnabled( true );
   }
@@ -166,68 +173,76 @@ Void DialogSubWindowSelector::updateSubWindowList()
     m_pushButtonOkCancel->buttons().at( 0 )->setEnabled( false );
   }
 
-}
-
-Void DialogSubWindowSelector::setSubWindowList( QStringList cWindowListNames )
-{
-  m_pcSelectedWindowListNames = cWindowListNames;
-  m_listSelectedWindows->clear();
-  m_listSelectedWindows->insertItems( 0, cWindowListNames );
+  if( m_iMaxSlectedWindows > 0 )
+  {
+    if( m_apcWindowsListCheckBox.size() > m_iMaxSlectedWindows )
+    {
+      m_pushButtonAddAll->setEnabled( false );
+    }
+    else
+    {
+      m_pushButtonAddAll->setEnabled( true );
+    }
+    if( m_apcSelectedSubWindowList.size() >= m_iMaxSlectedWindows )
+    {
+      for( Int i = 0; i < m_apcWindowsListCheckBox.size(); i++ )
+      {
+        if( m_apcSelectedSubWindowList.contains( m_apcSubWindowList.at( i ) ) )
+        {
+          m_apcWindowsListCheckBox.at( i )->setEnabled( true );
+        }
+        else
+        {
+          m_apcWindowsListCheckBox.at( i )->setEnabled( false );
+        }
+      }
+    }
+    else
+    {
+      for( Int i = 0; i < m_apcWindowsListCheckBox.size(); i++ )
+      {
+        m_apcWindowsListCheckBox.at( i )->setEnabled( true );
+      }
+    }
+  }
   updateSubWindowList();
 }
 
 // -----------------------  Slot Functions  -----------------------
 
-Void DialogSubWindowSelector::addSubWindow()
+Void DialogSubWindowSelector::toggleSubWindow( Int idx )
 {
-  Int iSelectedIdx = m_comboBoxWindowList->currentIndex();
-  if( iSelectedIdx >= 0 )
+  Bool isChecked = m_apcWindowsListCheckBox.at( idx )->isChecked();
+
+  if( isChecked )
   {
-    m_pcSelectedWindowListNames.append( m_pcWindowListNames.at( iSelectedIdx ) );
-    m_listSelectedWindows->clear();
-    m_listSelectedWindows->insertItems( 0, m_pcSelectedWindowListNames );
-    updateSubWindowList();
+    m_apcSelectedSubWindowList.append( m_apcSubWindowList.at( idx ) );
   }
+  else
+  {
+    m_apcSelectedSubWindowList.removeOne( m_apcSubWindowList.at( idx ) );
+  }
+  update();
 }
 
 Void DialogSubWindowSelector::addAllSubWindow()
 {
-  if( m_iMaxSlectedWindows <= 0 || m_pcWindowListNames.size() <= m_iMaxSlectedWindows )
+  m_apcSelectedSubWindowList.clear();
+  for( Int i = 0; i < m_apcWindowsListCheckBox.size(); i++ )
   {
-    for( Int i = 0; i < m_pcWindowListNames.size(); i++ )
-    {
-      m_pcSelectedWindowListNames.append( m_pcWindowListNames.at( i ) );
-    }
-    m_listSelectedWindows->clear();
-    m_listSelectedWindows->insertItems( 0, m_pcSelectedWindowListNames );
-    updateSubWindowList();
+    m_apcWindowsListCheckBox.at( i )->setChecked( true );
   }
-}
-
-Void DialogSubWindowSelector::removeSubWindow()
-{
-  QList<QListWidgetItem*> selectedWindows = m_listSelectedWindows->selectedItems();
-  if( selectedWindows.size() )
-  {
-    for( Int i = 0; i < selectedWindows.size(); i++ )
-    {
-      QString currName = selectedWindows.at( i )->text();
-      Int indexCurrName = m_pcSelectedWindowListNames.indexOf( currName );
-      m_pcSelectedWindowListNames.removeAt( indexCurrName );
-      m_listSelectedWindows->removeItemWidget( selectedWindows[i] );
-    }
-    m_listSelectedWindows->clear();
-    m_listSelectedWindows->insertItems( 0, m_pcSelectedWindowListNames );
-    updateSubWindowList();
-  }
+  update();
 }
 
 Void DialogSubWindowSelector::removeAllSubWindow()
 {
-  QList<QListWidgetItem*> selectedWindows = m_listSelectedWindows->selectedItems();
-  m_listSelectedWindows->clear();
-  m_pcSelectedWindowListNames.clear();
-  updateSubWindowList();
+  for( Int i = 0; i < m_apcWindowsListCheckBox.size(); i++ )
+  {
+    m_apcWindowsListCheckBox.at( i )->setChecked( false );
+  }
+  m_apcSelectedSubWindowList.clear();
+  update();
 }
 
 }  // Namespace SCode

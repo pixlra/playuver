@@ -18,9 +18,9 @@
  */
 
 /**
- * \file     SubWindowHandle.h
+ * \file     SubWindowAbstract.h
  * \ingroup  PlaYUVerApp PlaYUVerApp_Subwindow
- * \brief    Sub windows handling
+ * \brief    Abstract class to handle subwindows
  *
  * @defgroup PlaYUVerApp_Subwindow SubWindow definition
  * @{
@@ -34,30 +34,31 @@
  * @}
  */
 
-#ifndef __SUBWINDOWHANDLE_H__
-#define __SUBWINDOWHANDLE_H__
+#ifndef __SUBWINDOWABSTRACT_H__
+#define __SUBWINDOWABSTRACT_H__
 
 #include "config.h"
 #include "PlaYUVerAppDefs.h"
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
+#include <QWidget>
+#include <QString>
+#include <QPoint>
+#include <QSize>
+
+class QHBoxLayout;
+class QFocusEvent;
+class QCloseEvent;
 
 namespace plaYUVer
 {
 
 class PlaYUVerMdiSubWindow;
 
-class SubWindowHandle: public QScrollArea
+class SubWindowAbstract: public QWidget
 {
 Q_OBJECT
 
 private:
-  QPoint m_cLastScroll;
-  QPoint m_cCurrScroll;
-
+  QHBoxLayout* m_pcLayout;
   UInt m_uiCategory;
   QString m_cWindowName;
 
@@ -73,8 +74,13 @@ public:
     PLOT_SUBWINDOW = 8,
   };
 
-  SubWindowHandle( QWidget *, UInt );
-  ~SubWindowHandle();
+  SubWindowAbstract( QWidget *, UInt );
+  ~SubWindowAbstract();
+
+  /**
+   * Show the image at its original size
+   */
+  virtual Void refreshSubWindow() = 0;
 
   /**
    * Show the image at its original size
@@ -105,7 +111,7 @@ public:
   /**
    * Size related functions
    */
-  //virtual QSize sizeHint() const;
+  virtual QSize sizeHint() const;
   virtual QSize sizeHint( const QSize & ) const;
 
   /**
@@ -117,9 +123,26 @@ public:
 
   virtual Bool mayClose();
 
+  /**
+   * Get category of the SubWindow
+   * @return category value based on enum SubWindowCategories
+   * @note This function should be used with enum SubWindowCategories
+   *        with an & operation and it may belong to several categories
+   */
   UInt getCategory()
   {
     return m_uiCategory;
+  }
+
+  /**
+   * Check category of the SubWindow
+   * @param checkCateory SubWindow category to check against;
+   *        it should be enum SubWindowCategories type
+   * @return true when SubWindow belong to checkCateory
+   */
+  Bool checkCategory( UInt checkCateory )
+  {
+    return m_uiCategory & checkCateory;
   }
 
   Void setSubWindow( PlaYUVerMdiSubWindow* subWindow )
@@ -130,9 +153,10 @@ public:
   Void closeSubWindow();
 
 protected:
-  void focusInEvent( QFocusEvent * event );
-  void closeEvent( QCloseEvent *event );
-  QSize getScrollSize();
+  void focusInEvent( QFocusEvent* event );
+  void closeEvent( QCloseEvent* event );
+
+  Void setWidget( QWidget* widget );
 
 Q_SIGNALS:
   /**
@@ -148,19 +172,15 @@ Q_SIGNALS:
    */
   void updateStatusBar( const QString& );
 
-  void aboutToActivate( SubWindowHandle* );
-  void aboutToClose( SubWindowHandle* );
+  void aboutToActivate( SubWindowAbstract* );
+  void aboutToClose( SubWindowAbstract* );
 
 public Q_SLOTS:
   void onDestroyed();
-  void adjustScrollBarByScale( double scale, QPoint center );
-  void adjustScrollBarByOffset( QPoint Offset );
-  void updateCurScrollValues();
-  void setCurScrollValues();
 
 };
 
 }  // NAMESPACE
 
-#endif // __SUBWINDOWHANDLE_H__
+#endif // __SUBWINDOWABSTRACT_H__
 

@@ -66,95 +66,23 @@ std::vector<std::string> LibOpenCVHandler::supportedWriteFormatsName()
 
 std::vector<std::string> LibOpenCVHandler::supportedSaveFormatsExt()
 {
-  std::vector<std::string> formatsExt;
-  formatsExt.push_back( "bmp" );
-  formatsExt.push_back( "bmp" );
-  formatsExt.push_back( "jpg" );
-  formatsExt.push_back( "png" );
-  return formatsExt;
+  return supportedReadFormatsExt();
 }
 
 std::vector<std::string> LibOpenCVHandler::supportedSaveFormatsName()
 {
-  std::vector<std::string> formatsName;
-  formatsName.push_back( "Windows Bitmap" );
-  formatsName.push_back( "Windows Bitmap" );
-  formatsName.push_back( "Joint Photographic Experts Group" );
-  formatsName.push_back( "Portable Network Graphics" );
-  return formatsName;
+  return supportedReadFormatsName();
 }
 
 PlaYUVerFrame* LibOpenCVHandler::loadFrame( std::string filename )
 {
-  cv::Mat pcCvFrame = cv::imread( filename );
-  Int cvChannels = pcCvFrame.channels();
-  std::string pelFormatName;
-  Int iPelFormat = -1;
-  switch( cvChannels )
-  {
-  case 1:
-    pelFormatName = "GRAY";
-    break;
-  case 3:
-    pelFormatName = "BRG24";
-    break;
-  default:
-    return NULL;
-  }
-
-  for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
-  {
-    if( PlaYUVerFrame::supportedPixelFormatListNames()[i] == pelFormatName )
-    {
-      iPelFormat = i;
-      break;
-    }
-  }
-
-  if( iPelFormat >= 0 )
-  {
-    PlaYUVerFrame* pcFrame = new PlaYUVerFrame( pcCvFrame.cols, pcCvFrame.rows, iPelFormat );
-    pcFrame->frameFromBuffer( pcCvFrame.ptr(), pcFrame->getBytesPerFrame() );
-    return pcFrame;
-  }
   return NULL;
 }
 
 Bool LibOpenCVHandler::saveFrame( PlaYUVerFrame* pcFrame, std::string filename )
 {
-  Int cvType = CV_8UC3;
-  switch( pcFrame->getNumberChannels() )
-  {
-  case 3:
-    cvType = CV_8UC3;
-    break;
-  case 1:
-    cvType = CV_8UC1;
-    break;
-  default:
-    return false;
-    break;
-  }
-
-  cv::Mat pcCvFrame( pcFrame->getHeight(), pcFrame->getWidth(), cvType );
-
-  if( pcFrame->getColorSpace() != PlaYUVerFrame::COLOR_GRAY )
-  {
-    UChar* pCvPel = pcCvFrame.data;
-    UChar* pARGB = pcFrame->getRGBBuffer();
-    for( UInt i = 0; i < pcFrame->getHeight() * pcFrame->getWidth(); i++ )
-    {
-      *pCvPel++ = *pARGB++;
-      *pCvPel++ = *pARGB++;
-      *pCvPel++ = *pARGB++;
-      pARGB++;
-    }
-  }
-  else
-  {
-    memcpy( pcCvFrame.data, pcFrame->getPelBufferYUV()[LUMA][0], pcFrame->getHeight() * pcFrame->getWidth() * sizeof(Pel) );
-  }
-  return cv::imwrite( filename, pcCvFrame );
+  cv::Mat* pcCvFrame = pcFrame->getCvMat();
+  return cv::imwrite( filename, *pcCvFrame );
 }
 
 }  // NAMESPACE

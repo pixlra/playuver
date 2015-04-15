@@ -28,6 +28,8 @@
 #include "lib/PlaYUVerDefs.h"
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"
+#include "lib/ProgramOptions.h"
+#include <vector>
 
 namespace plaYUVer
 {
@@ -37,7 +39,20 @@ public: \
   static PlaYUVerModuleIf* Create() { return new X(); } \
   void Delete() { delete this; }
 
-enum // Module type
+#define _BASIC_MODULE_API_2_CHECK_ \
+if( apcFrameList.size() != m_uiNumberOfFrames ) \
+  return false; \
+for( UInt i = 0; i < apcFrameList.size(); i++ ) \
+  if( !apcFrameList[i] ) \
+  return false;
+
+enum  // Module API
+{
+  MODULE_API_1,
+  MODULE_API_2,
+};
+
+enum  // Module type
 {
   FRAME_PROCESSING_MODULE,
   FRAME_MEASUREMENT_MODULE,
@@ -46,59 +61,75 @@ enum // Module type
 #define APPLY_WHILE_PLAYING true
 #define MAX_NUMBER_FRAMES 3
 
-enum // Number of frames
+enum Module_NumberOfFrames
 {
   MODULE_REQUIRES_ONE_FRAME = 1,
-  MODULE_REQUIRES_TWO_FRAMES = 2,
-  MODULE_REQUIRES_THREE_FRAMES = 3,
+  MODULE_REQUIRES_TWO_FRAMES,
+  MODULE_REQUIRES_THREE_FRAMES,
+  MODULE_REQUIRES_FOUR_FRAMES,
+  MODULE_REQUIRES_FIVE_FRAMES,
+  MODULE_REQUIRES_SIX_FRAMES,
 };
 
-enum // Requirements
+enum Module_Requirements
 {
   MODULE_REQUIRES_NOTHING = 0,
-  MODULE_REQUIRES_NEW_WINDOW = 2,
-  MODULE_REQUIRES_SIDEBAR = 4,
-  MODULES_REQUIREMENTS_TOTAL,
+  MODULE_REQUIRES_SKIP_WHILE_PLAY = 1,
+  MODULE_REQUIRES_OPTIONS = 2,
+  MODULE_REQUIRES_NEW_WINDOW = 4,
 };
-
-typedef struct
-{
-  Int m_iModuleType;
-  const Char* m_pchModuleCategory;
-  const Char* m_pchModuleName;
-  const Char* m_pchModuleTooltip;
-  UInt m_uiNumberOfFrames;
-  UInt m_uiModuleRequirements;
-  Bool m_bApplyWhilePlaying;
-} PlaYUVerModuleDefinition;
 
 class PlaYUVerModuleIf
 {
 public:
 
+  Int m_iModuleAPI;
   Int m_iModuleType;
   const Char* m_pchModuleCategory;
   const Char* m_pchModuleName;
   const Char* m_pchModuleTooltip;
-  UInt m_uiNumberOfFrames;
+  enum Module_NumberOfFrames m_uiNumberOfFrames;
   UInt m_uiModuleRequirements;
-  Bool m_bApplyWhilePlaying;
 
-  PlaYUVerModuleIf() {}
-  virtual ~PlaYUVerModuleIf() {}
+  Options m_cModuleOptions;
+
+  PlaYUVerModuleIf()
+  {
+    m_iModuleAPI = MODULE_API_1;
+    m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
+  }
+  virtual ~PlaYUVerModuleIf()
+  {
+  }
 
   virtual void Delete() = 0;
 
-  virtual Void create() {}
-  virtual Void create( PlaYUVerFrame* ) {}
-
-  virtual PlaYUVerFrame*  process( PlaYUVerFrame* ) { return NULL; }
-  virtual PlaYUVerFrame*  process( PlaYUVerFrame*, PlaYUVerFrame* ) { return NULL; }
-  virtual PlaYUVerFrame*  process( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* ) { return NULL; }
-
-  virtual Double          measure( PlaYUVerFrame* ) { return 0; }
-  virtual Double          measure( PlaYUVerFrame*, PlaYUVerFrame* ) { return 0; }
-  virtual Double          measure( PlaYUVerFrame*, PlaYUVerFrame*, PlaYUVerFrame* ) { return 0; }
+  virtual Void create()
+  {
+  }
+  virtual Void create( PlaYUVerFrame* )
+  {
+  }
+  virtual Bool create( std::vector<PlaYUVerFrame*> apcFrameList )
+  {
+    return false;
+  }
+  virtual PlaYUVerFrame* process( PlaYUVerFrame* )
+  {
+    return NULL;
+  }
+  virtual PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> )
+  {
+    return NULL;
+  }
+  virtual Double measure( PlaYUVerFrame* )
+  {
+    return 0;
+  }
+  virtual Double measure( std::vector<PlaYUVerFrame*> )
+  {
+    return 0;
+  }
 
   virtual Void destroy() = 0;
 

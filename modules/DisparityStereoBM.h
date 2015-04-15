@@ -18,45 +18,41 @@
  */
 
 /**
- * \file     LibOpenCVHandler.h
- * \ingroup  PlaYUVerLib
- * \brief    Interface with opencv lib
+ * \file     DisparityStereoBM.h
+ * \brief    Measure the disparity between two images using the Stereo Var method (OpenCV)
  */
 
-#ifndef __LIBOPENCVHANDLER_H__
-#define __LIBOPENCVHANDLER_H__
+#ifndef __DISPARITYSTEREOBM_H__
+#define __DISPARITYSTEREOBM_H__
 
-#include <inttypes.h>
-#include <vector>
-#include <string>
+#include <iostream>
+#include "PlaYUVerModuleIf.h"
 #include <opencv2/opencv.hpp>
-#include "PlaYUVerDefs.h"
+
+#include <cassert>
 
 namespace plaYUVer
 {
 
-class PlaYUVerFrame;
-
-class LibOpenCVHandler
+class DisparityStereoBM: public PlaYUVerModuleIf
 {
+REGISTER_CLASS_FACTORY( DisparityStereoBM )
+
+private:
+  PlaYUVerFrame* m_pcDisparityFrame;
+  cv::StereoBM m_cStereoBM;
 public:
-
-  static std::vector<std::string> supportedReadFormatsExt();
-  static std::vector<std::string> supportedReadFormatsName();
-  static std::vector<std::string> supportedWriteFormatsExt();
-  static std::vector<std::string> supportedWriteFormatsName();
-  static std::vector<std::string> supportedSaveFormatsExt();
-  static std::vector<std::string> supportedSaveFormatsName();
-
-  LibOpenCVHandler()
+  DisparityStereoBM();
+  virtual ~DisparityStereoBM()
   {
   }
 
-  static PlaYUVerFrame* loadFrame( std::string filename );
-  static Bool saveFrame( PlaYUVerFrame* pcFrame, std::string filename );
-
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
+  Void destroy();
 };
 
 }  // NAMESPACE
 
-#endif // __LIBOPENCVHANDLER_H__
+#endif // __DISPARITYSTEREOBM_H__
+

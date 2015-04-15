@@ -95,7 +95,7 @@ public:
 private:
 
   /** The histogram data.*/
-  Double* m_pdHistogram;
+  UInt* m_puiHistogram;
 
   /** If true, calc the luminosity channel histogram when the image is RGB */
   Bool calcLuma;

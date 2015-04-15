@@ -31,24 +31,27 @@ namespace plaYUVer
 AbsoluteFrameDifference::AbsoluteFrameDifference()
 {
   /* Module Definition */
+  m_iModuleAPI = MODULE_API_2;
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Measurements";
   m_pchModuleName = "AbsoluteFrameDifference";
   m_pchModuleTooltip = "Measure the absolute difference between two images (Y plane), e. g., abs( Y1 - Y2 )";
   m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
-  m_bApplyWhilePlaying = APPLY_WHILE_PLAYING;
-
   m_pcFrameDifference = NULL;
 }
 
-Void AbsoluteFrameDifference::create( PlaYUVerFrame* Input )
+Bool AbsoluteFrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  m_pcFrameDifference = new PlaYUVerFrame( Input->getWidth(), Input->getHeight(), PlaYUVerFrame::GRAY );
+  _BASIC_MODULE_API_2_CHECK_
+  m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+  return true;
 }
 
-PlaYUVerFrame* AbsoluteFrameDifference::process( PlaYUVerFrame* Input1, PlaYUVerFrame* Input2 )
+PlaYUVerFrame* AbsoluteFrameDifference::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
+  PlaYUVerFrame* Input1 = apcFrameList[0];
+  PlaYUVerFrame* Input2 = apcFrameList[1];
   Pel* pInput1PelYUV = Input1->getPelBufferYUV()[0][0];
   Pel* pInput2PelYUV = Input2->getPelBufferYUV()[0][0];
   Pel* pOutputPelYUV = m_pcFrameDifference->getPelBufferYUV()[0][0];

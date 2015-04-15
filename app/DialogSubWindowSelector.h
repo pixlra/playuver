@@ -34,13 +34,19 @@
 #endif
 #include <QtCore>
 
+#include <QVector>
+
 class QPixmap;
 class QColor;
+class QCheckBox;
+class QGroupBox;
 
 namespace plaYUVer
 {
 
 class PlaYUVerSubWindowHandle;
+class SubWindowAbstract;
+
 /**
  * Class to define the dialog box to select sub windows
  * This class enable the selection of several group of windows
@@ -50,35 +56,37 @@ class DialogSubWindowSelector: public QDialog
 Q_OBJECT
 
 public:
-  DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWindowHandle *windowManager, UInt uiCategory, Int minWindowsSelected = 0, Int maxWindowsSelected = -1 );
+  DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWindowHandle *windowManager, UInt uiCategory, Int minWindowsSelected = 1, Int maxWindowsSelected = -1 );
 
-  Void setSubWindowList( QStringList cWindowListNames );
-  QStringList getSelectedWindows()
+  Void selectSubWindow( SubWindowAbstract* subWindow );
+  QList<SubWindowAbstract*> getSelectedWindows()
   {
-    return m_pcSelectedWindowListNames;
+    return m_apcSelectedSubWindowList;
   }
 private:
   UInt m_uiCategory;
   Int m_iMinSelectedWindows;
   Int m_iMaxSlectedWindows;
   PlaYUVerSubWindowHandle* m_pcMainWindowManager;
-  QStringList m_pcWindowListNames;
-  QStringList m_pcSelectedWindowListNames;
+
+  QList<SubWindowAbstract*> m_apcSubWindowList;
+  QList<SubWindowAbstract*> m_apcSelectedSubWindowList;
+
+  QSignalMapper* m_mapperWindowsList;
+  QGroupBox* m_pcGroupCheckBox;
+  QVector<QCheckBox*> m_apcWindowsListCheckBox;
 
   QComboBox* m_comboBoxWindowList;
   QDialogButtonBox* m_pushButtonOkCancel;
-  QPushButton* m_pushButtonAdd;
   QPushButton* m_pushButtonAddAll;
-  QPushButton* m_pushButtonRemove;
   QPushButton* m_pushButtonRemoveAll;
-  QListWidget* m_listSelectedWindows;
 
   Void updateSubWindowList();
+  Void update();
 
 private Q_SLOTS:
-  void addSubWindow();
+  void toggleSubWindow( int );
   void addAllSubWindow();
-  void removeSubWindow();
   void removeAllSubWindow();
 
 };

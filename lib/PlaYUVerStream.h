@@ -67,7 +67,7 @@ private:
     FFMPEG,
     TOTAL_HANDLERR
   };
-  UInt m_uiStreamHandler;
+  Int m_iStreamHandler;
   LibAvContextHandle* m_cLibAvContext;
 
   std::string m_cFilename;
@@ -75,15 +75,18 @@ private:
 
   std::string m_cFormatName;
   std::string m_cCodedName;
-  std::string m_cPelFmtName;
+
+  UInt m_uiWidth;
+  UInt m_uiHeight;
+  Int m_iPixelFormat;
+  UInt m_uiBitsPerPixel;
+  Double m_dFrameRate;
+  UInt64 m_uiTotalFrameNum;
+  Int64 m_iCurrFrameNum;
 
   FILE* m_pFile; /**< The input file pointer >*/
   std::fstream m_fsIOStream; /**< The input file pointer >*/
-
-  Int m_iFileFormat;
-  Int m_iPixelFormat;
-
-  Pel* m_pStreamBuffer;
+  Byte* m_pStreamBuffer;
 
   UInt m_uiFrameBufferSize;
   PlaYUVerFrame **m_ppcFrameBuffer;
@@ -92,11 +95,7 @@ private:
   UInt m_uiFrameBufferIndex;
   UInt64 m_uiCurrFrameFileIdx;
 
-  UInt m_uiWidth;
-  UInt m_uiHeight;
-  Double m_dFrameRate;
-  UInt64 m_uiTotalFrameNum;
-  Int64 m_iCurrFrameNum;
+  Void findHandler();
 
 public:
 
@@ -121,14 +120,14 @@ public:
     END_OF_SEQ,
   };
 
-  Bool open( std::string filename, std::string resolution, std::string input_format, UInt frame_rate, Bool bInput = true );
-  Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt frame_rate, Bool bInput = true );
+  Bool open( std::string filename, std::string resolution, std::string input_format, UInt bitsPel, UInt frame_rate, Bool bInput = true );
+  Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, UInt frame_rate, Bool bInput = true );
   Void close();
 
   Bool openFile();
   Void closeFile();
 
-  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
+  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, UInt& rFrameRate );
 
   Void loadAll();
 
@@ -164,10 +163,6 @@ public:
   std::string getCodecName()
   {
     return m_cCodedName;
-  }
-  std::string getPelFmtName()
-  {
-    return m_cPelFmtName;
   }
 
   UInt getFrameNum()

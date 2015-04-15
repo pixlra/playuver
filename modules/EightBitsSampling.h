@@ -18,45 +18,36 @@
  */
 
 /**
- * \file     LibOpenCVHandler.h
- * \ingroup  PlaYUVerLib
- * \brief    Interface with opencv lib
+ * \file     EightBitsSampling.h
+ * \brief    Binarize frame module
  */
 
-#ifndef __LIBOPENCVHANDLER_H__
-#define __LIBOPENCVHANDLER_H__
+#ifndef __EIGHTBITSSAMPLING_H__
+#define __EIGHTBITSSAMPLING_H__
 
-#include <inttypes.h>
-#include <vector>
-#include <string>
-#include <opencv2/opencv.hpp>
-#include "PlaYUVerDefs.h"
+#include "PlaYUVerModuleIf.h"
 
 namespace plaYUVer
 {
 
-class PlaYUVerFrame;
-
-class LibOpenCVHandler
+class EightBitsSampling: public PlaYUVerModuleIf
 {
+REGISTER_CLASS_FACTORY( EightBitsSampling )
+
+private:
+  PlaYUVerFrame* m_pcSubSampledFrame;
 public:
-
-  static std::vector<std::string> supportedReadFormatsExt();
-  static std::vector<std::string> supportedReadFormatsName();
-  static std::vector<std::string> supportedWriteFormatsExt();
-  static std::vector<std::string> supportedWriteFormatsName();
-  static std::vector<std::string> supportedSaveFormatsExt();
-  static std::vector<std::string> supportedSaveFormatsName();
-
-  LibOpenCVHandler()
+  EightBitsSampling();
+  virtual ~EightBitsSampling()
   {
   }
-
-  static PlaYUVerFrame* loadFrame( std::string filename );
-  static Bool saveFrame( PlaYUVerFrame* pcFrame, std::string filename );
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
+  Void destroy();
 
 };
 
 }  // NAMESPACE
 
-#endif // __LIBOPENCVHANDLER_H__
+#endif // __EIGHTBITSSAMPLING_H__
+

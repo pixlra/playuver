@@ -56,15 +56,17 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerS
   m_comboBoxMetric->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
 
   m_comboBoxRef = new QComboBox;
-  m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLength );
+  QSpacerItem* spaceQuality = new QSpacerItem( 1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed );
+  //m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLength );
   m_comboBoxRef->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
   updateSubWindowList();
 
   QGridLayout *mainLayout = new QGridLayout;
   mainLayout->addWidget( MetricLabel, 0, 0, Qt::AlignLeft );
   mainLayout->addWidget( m_comboBoxMetric, 0, 1, Qt::AlignLeft );
+  mainLayout->addItem( spaceQuality, 0, 2, Qt::AlignRight );
   mainLayout->addWidget( RefLabel, 1, 0, Qt::AlignLeft );
-  mainLayout->addWidget( m_comboBoxRef, 1, 1, Qt::AlignLeft );
+  mainLayout->addWidget( m_comboBoxRef, 1, 1, 1, 2, Qt::AlignLeft );
 
   m_ppcLabelQualityLabel[LUMA] = new QLabel( "PSNR Y:" );
   m_ppcLabelQualityLabel[LUMA]->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
@@ -134,7 +136,7 @@ Void QualityMeasurementSidebar::updateSubWindowList()
   m_pcVideoWindowList.clear();
 
   VideoSubWindow* pcVideoSubWindow;
-  QList<SubWindowHandle*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowHandle::VIDEO_SUBWINDOW );
+  QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
@@ -185,7 +187,7 @@ Void QualityMeasurementSidebar::updateCurrentWindow( VideoSubWindow *subWindow )
 
 Void QualityMeasurementSidebar::updateSidebarData()
 {
-  QString value( "0.0000" );
+  QString zeroValue( "0.0000" );
   if( m_pcCurrentVideoSubWindow )
   {
     VideoSubWindow* refSubWindow = m_pcCurrentVideoSubWindow->getRefSubWindow();
@@ -194,11 +196,17 @@ Void QualityMeasurementSidebar::updateSidebarData()
       PlaYUVerFrame* currFrame = m_pcCurrentVideoSubWindow->getCurrFrame();
       PlaYUVerFrame* refFrame = refSubWindow->getCurrFrame();
       Double quality;
-
-      for( Int component = 0; component < 3; component++ )
+      QString value;
+      UInt component = 0;
+      for( ; component < currFrame->getNumberChannels(); component++ )
       {
         quality = currFrame->getQuality( m_comboBoxMetric->currentIndex(), refFrame, component );
         m_ppcLabelQualityValue[component]->setText( value.setNum( quality, 'f', 4 ) );
+      }
+      for( ; component < 3; component++ )
+      {
+        quality = currFrame->getQuality( m_comboBoxMetric->currentIndex(), refFrame, component );
+        m_ppcLabelQualityValue[component]->setText( zeroValue );
       }
       return;
     }
@@ -209,7 +217,7 @@ Void QualityMeasurementSidebar::updateSidebarData()
   }
   for( Int component = 0; component < 3; component++ )
   {
-    m_ppcLabelQualityValue[component]->setText( value );
+    m_ppcLabelQualityValue[component]->setText( zeroValue );
   }
 
 }

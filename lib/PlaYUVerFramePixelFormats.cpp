@@ -52,48 +52,8 @@ namespace plaYUVer
 #define ADD_FFMPEG_PEL_FMT( fmt ) 0
 #endif
 
-
-Void fillARGB32bufferYUV( Pel*** in, UChar* out, UInt width, UInt height, UInt ratioChromaHor, UInt ratioChromaVer )
-{
-  Pel* pLineY = in[LUMA][0];
-  Pel* pLineU = in[CHROMA_U][0];
-  Pel* pLineV = in[CHROMA_V][0];
-  UInt uiChromaStride = CHROMASHIFT( width, ratioChromaHor );
-  Pel* pY;
-  Pel* pU;
-  Pel* pV;
-  Int iY, iU, iV, iR, iG, iB;
-  UInt* pARGBLine = ( UInt* )out;
-  UInt* pARGB;
-
-  for( UInt y = 0; y < height >> ratioChromaVer; y++ )
-  {
-    for( Int i = 0; i < 1 << ratioChromaVer; i++ )
-    {
-      pY = pLineY;
-      pU = pLineU;
-      pV = pLineV;
-      pARGB = pARGBLine;
-      for( UInt x = 0; x < width >> ratioChromaHor; x++ )
-      {
-        iU = *pU++;
-        iV = *pV++;
-        for( Int j = 0; j < 1 << ratioChromaHor; j++ )
-        {
-          iY = *pY++;
-          YUV2RGB( iY, iU, iV, iR, iG, iB );
-          *pARGB++ = PEL_RGB( iR, iG, iB );
-        }
-      }
-      pLineY += width;
-      pARGBLine += width;
-    }
-    pLineU += uiChromaStride;
-    pLineV += uiChromaStride;
-  }
-}
-
-Void fillARGB32bufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height )
+#if 0
+Void fillARGB32bufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height, UInt depth )
 {
 #ifdef USE_SSE
   if( ( width % 16 ) == 0 )
@@ -184,14 +144,14 @@ Void fillARGB32bufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height )
         b00 = _mm_srai_epi16( _mm_add_epi16( y00r0, bu00 ), 6 );
         b01 = _mm_srai_epi16( _mm_add_epi16( y01r0, bu01 ), 6 );
 
-        r00 = _mm_packus_epi16( r00, r01 );  // rrrr.. saturated
-        g00 = _mm_packus_epi16( g00, g01 );  // gggg.. saturated
-        b00 = _mm_packus_epi16( b00, b01 );  // bbbb.. saturated
+        r00 = _mm_packus_epi16( r00, r01 );// rrrr.. saturated
+        g00 = _mm_packus_epi16( g00, g01 );// gggg.. saturated
+        b00 = _mm_packus_epi16( b00, b01 );// bbbb.. saturated
 
-        r01 = _mm_unpacklo_epi8( r00, zero );  // 0r0r..
-        gbgb = _mm_unpacklo_epi8( b00, g00 );  // gbgb..
-        rgb0123 = _mm_unpacklo_epi16( gbgb, r01 );  // 0rgb0rgb..
-        rgb4567 = _mm_unpackhi_epi16( gbgb, r01 );  // 0rgb0rgb..
+        r01 = _mm_unpacklo_epi8( r00, zero );// 0r0r..
+        gbgb = _mm_unpacklo_epi8( b00, g00 );// gbgb..
+        rgb0123 = _mm_unpacklo_epi16( gbgb, r01 );// 0rgb0rgb..
+        rgb4567 = _mm_unpackhi_epi16( gbgb, r01 );// 0rgb0rgb..
 
         r01 = _mm_unpackhi_epi8( r00, zero );
         gbgb = _mm_unpackhi_epi8( b00, g00 );
@@ -211,14 +171,14 @@ Void fillARGB32bufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height )
         b00 = _mm_srai_epi16( _mm_add_epi16( y00r1, bu00 ), 6 );
         b01 = _mm_srai_epi16( _mm_add_epi16( y01r1, bu01 ), 6 );
 
-        r00 = _mm_packus_epi16( r00, r01 );  // rrrr.. saturated
-        g00 = _mm_packus_epi16( g00, g01 );  // gggg.. saturated
-        b00 = _mm_packus_epi16( b00, b01 );  // bbbb.. saturated
+        r00 = _mm_packus_epi16( r00, r01 );// rrrr.. saturated
+        g00 = _mm_packus_epi16( g00, g01 );// gggg.. saturated
+        b00 = _mm_packus_epi16( b00, b01 );// bbbb.. saturated
 
-        r01 = _mm_unpacklo_epi8( r00, zero );  // 0r0r..
-        gbgb = _mm_unpacklo_epi8( b00, g00 );  // gbgb..
-        rgb0123 = _mm_unpacklo_epi16( gbgb, r01 );  // 0rgb0rgb..
-        rgb4567 = _mm_unpackhi_epi16( gbgb, r01 );  // 0rgb0rgb..
+        r01 = _mm_unpacklo_epi8( r00, zero );// 0r0r..
+        gbgb = _mm_unpacklo_epi8( b00, g00 );// gbgb..
+        rgb0123 = _mm_unpacklo_epi16( gbgb, r01 );// 0rgb0rgb..
+        rgb4567 = _mm_unpackhi_epi16( gbgb, r01 );// 0rgb0rgb..
 
         r01 = _mm_unpackhi_epi8( r00, zero );
         gbgb = _mm_unpackhi_epi8( b00, g00 );
@@ -236,49 +196,10 @@ Void fillARGB32bufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height )
   else
 #endif
   {
-    fillARGB32bufferYUV( in, out, width, height, 1, 1 );
+    fillARGB32bufferYUV( in, out, width, height, depth, 1, 1 );
   }
 }
-
-Void fillARGB32bufferYUV444p( Pel*** in, UChar* out, UInt width, UInt height )
-{
-  fillARGB32bufferYUV( in, out, width, height, 0, 0 );
-}
-
-Void fillARGB32bufferYUV422( Pel*** in, UChar* out, UInt width, UInt height )
-{
-  fillARGB32bufferYUV( in, out, width, height, 1, 0 );
-}
-
-Void fillARGB32bufferGray( Pel*** in, UChar* out, UInt width, UInt height )
-{
-  Pel *inPel = in[0][0];
-  Pel iY;
-  UInt* buff = ( UInt* )out;
-  for( UInt i = 0; i < height * width; i++ )
-  {
-    iY = *inPel;
-    *buff++ = PEL_RGB( iY, iY, iY );
-    inPel++;
-  }
-}
-
-Void fillARGB32bufferRGB( Pel*** in, UChar* out, UInt width, UInt height )
-{
-  Pel* pR = in[COLOR_R][0];
-  Pel* pG = in[COLOR_G][0];
-  Pel* pB = in[COLOR_B][0];
-  Int iR, iG, iB;
-  UInt* buff = ( UInt* )out;
-  for( UInt i = 0; i < height * width; i++ )
-  {
-    iR = *pR++;
-    iG = *pG++;
-    iB = *pB++;
-    *buff++ = PEL_RGB( iR, iG, iB );
-  }
-}
-
+#endif
 
 PlaYUVerPixFmtDescriptor yuv420p =
 {
@@ -294,7 +215,6 @@ PlaYUVerPixFmtDescriptor yuv420p =
     { 1, 0, 1, 0, 7 },        /* U */
     { 2, 0, 1, 0, 7 },        /* V */
   },
-  fillARGB32bufferYUV420p,
 };
 
 PlaYUVerPixFmtDescriptor yuv422p =
@@ -311,7 +231,6 @@ PlaYUVerPixFmtDescriptor yuv422p =
     { 1, 0, 1, 0, 7 },        /* U */
     { 2, 0, 1, 0, 7 },        /* V */
   },
-  fillARGB32bufferYUV422,
 };
 
 PlaYUVerPixFmtDescriptor yuv444p =
@@ -328,7 +247,6 @@ PlaYUVerPixFmtDescriptor yuv444p =
     { 1, 0, 1, 0, 7 },        /* U */
     { 2, 0, 1, 0, 7 },        /* V */
   },
-  fillARGB32bufferYUV444p,
 };
 
 PlaYUVerPixFmtDescriptor yuyv422 =
@@ -345,7 +263,6 @@ PlaYUVerPixFmtDescriptor yuyv422 =
     { 0, 3, 2, 0, 7 },        /* U */
     { 0, 3, 4, 0, 7 },        /* V */
   },
-  fillARGB32bufferYUV422,
 };
 
 PlaYUVerPixFmtDescriptor gray =
@@ -358,7 +275,6 @@ PlaYUVerPixFmtDescriptor gray =
   0,
   ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_GRAY8 ),
   { { 0, 0, 1, 0, 7 } },        /* Y */
-  fillARGB32bufferGray,
 };
 
 PlaYUVerPixFmtDescriptor RGB24 =
@@ -375,7 +291,6 @@ PlaYUVerPixFmtDescriptor RGB24 =
     { 0, 2, 2, 0, 7 },        /* G */
     { 0, 2, 3, 0, 7 },        /* B */
   },
-  fillARGB32bufferRGB,
 };
 
 PlaYUVerPixFmtDescriptor BGR24 =
@@ -392,7 +307,6 @@ PlaYUVerPixFmtDescriptor BGR24 =
     { 0, 2, 2, 0, 7 },        /* G */
     { 0, 2, 1, 0, 7 },        /* B */
   },
-  fillARGB32bufferRGB,
 };
 
 PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PLAYUVER_NUMBER_FORMATS] =
@@ -405,5 +319,4 @@ PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PLAYUVER_NUMBER_FORMATS
   RGB24,
   BGR24,
 };
-
 }  // NAMESPACE

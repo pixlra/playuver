@@ -43,19 +43,19 @@ class VideoSubWindow;
 
 class PlaYUVerAppModuleIf
 #ifdef PLAYUVER_THREADED_MODULES
-   : public QThread
+    : public QThread
 #else
-   : public QObject
+    : public QObject
 #endif
 {
   friend class ModulesHandle;
   friend class ModuleHandleDock;
+  friend class ModulesHandleOptDialog;
 
 private:
 
   QAction* m_pcModuleAction;
   PlaYUVerModuleIf* m_pcModule;
-
 
   VideoSubWindow* m_pcSubWindow[MAX_NUMBER_FRAMES];
 
@@ -83,8 +83,10 @@ public:
     PlaYUVerAppModuleIf* m_pcModule;
   };
 
-  PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module  );
-  virtual ~PlaYUVerAppModuleIf() {}
+  PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module );
+  virtual ~PlaYUVerAppModuleIf()
+  {
+  }
 
 protected:
   virtual void run();

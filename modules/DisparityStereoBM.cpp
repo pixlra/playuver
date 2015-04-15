@@ -18,67 +18,72 @@
  */
 
 /**
- * \file     DisparityStereoVar.cpp
+ * \file     DisparityStereoBM.cpp
  * \brief    Measure the disparity between two images using the Stereo Var method (OpenCV)
  */
 
 #include <cstdio>
 
-#include "DisparityStereoVar.h"
+#include "DisparityStereoBM.h"
 
 namespace plaYUVer
 {
 
-DisparityStereoVar::DisparityStereoVar()
+DisparityStereoBM::DisparityStereoBM()
 {
   /* Module Definition */
   m_iModuleAPI = MODULE_API_2;
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Disparity";
-  m_pchModuleName = "StereoVar";
-  m_pchModuleTooltip = "Measure the disparity between two images using the Stereo Var method (OpenCV)";
+  m_pchModuleName = "BlockMatching";
+  m_pchModuleTooltip = "Measure the disparity between two images using the Stereo BM method (OpenCV)";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
-  m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW;
+  m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
+
+  m_cModuleOptions.addOptions()/**/
+  ( "block_size", m_cStereoBM.state->SADWindowSize, "Block Size (positive odd number) [9]" );
 
   m_pcDisparityFrame = NULL;
-  m_cStereoVar.levels = 3;                                 // ignored with USE_AUTO_PARAMS
-  m_cStereoVar.pyrScale = 0.5;                             // ignored with USE_AUTO_PARAMS
-  m_cStereoVar.nIt = 25;
 
-  m_cStereoVar.maxDisp = 0;
-  m_cStereoVar.poly_n = 3;
-  m_cStereoVar.poly_sigma = 0.0;
-  m_cStereoVar.fi = 15.0f;
-  m_cStereoVar.lambda = 0.03f;
-  m_cStereoVar.penalization = m_cStereoVar.PENALIZATION_TICHONOV;            // ignored with USE_AUTO_PARAMS
-  m_cStereoVar.cycle = m_cStereoVar.CYCLE_V;                                 // ignored with USE_AUTO_PARAMS
-  m_cStereoVar.flags = m_cStereoVar.USE_SMART_ID | m_cStereoVar.USE_AUTO_PARAMS | m_cStereoVar.USE_INITIAL_DISPARITY | m_cStereoVar.USE_MEDIAN_FILTERING;
+  m_cStereoBM.state->preFilterCap = 31;
+  m_cStereoBM.state->SADWindowSize = 9;
+  m_cStereoBM.state->minDisparity = 0;
+  m_cStereoBM.state->textureThreshold = 10;
+  m_cStereoBM.state->uniquenessRatio = 15;
+  m_cStereoBM.state->speckleWindowSize = 100;
+  m_cStereoBM.state->speckleRange = 32;
+  m_cStereoBM.state->disp12MaxDiff = 1;
+
 }
 
-Bool DisparityStereoVar::create( std::vector<PlaYUVerFrame*> apcFrameList )
+Bool DisparityStereoBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
   m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
-  m_cStereoVar.minDisp = -( ( ( apcFrameList[0]->getWidth() / 8 ) + 15 ) & -16 );
+  if( ( m_cStereoBM.state->SADWindowSize % 2 ) == 0 )
+  {
+    m_cStereoBM.state->SADWindowSize++;
+  }
+  m_cStereoBM.state->numberOfDisparities = ( ( ( apcFrameList[0]->getWidth() / 8 ) + 15 ) & -16 );
   return true;
 }
-PlaYUVerFrame* DisparityStereoVar::process( std::vector<PlaYUVerFrame*> apcFrameList )
+PlaYUVerFrame* DisparityStereoBM::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   PlaYUVerFrame* InputLeft = apcFrameList[0];
   PlaYUVerFrame* InputRight = apcFrameList[1];
 
-  cv::Mat* leftImage = InputLeft->getCvMat();
-  cv::Mat* rightImage = InputRight->getCvMat();
+  cv::Mat* leftImage = InputLeft->getCvMat( true );
+  cv::Mat* rightImage = InputRight->getCvMat( true );
   cv::Mat disparityImage, disparityImage8;
 
-  m_cStereoVar( *leftImage, *rightImage, disparityImage );
+  m_cStereoBM( *leftImage, *rightImage, disparityImage );
   disparityImage.convertTo( disparityImage8, CV_8U );
 
   m_pcDisparityFrame->fromCvMat( &disparityImage8 );
   return m_pcDisparityFrame;
 }
 
-Void DisparityStereoVar::destroy()
+Void DisparityStereoBM::destroy()
 {
   if( m_pcDisparityFrame )
     delete m_pcDisparityFrame;

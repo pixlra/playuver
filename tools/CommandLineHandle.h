@@ -42,13 +42,6 @@ public:
   CommandLineHandle();
   ~CommandLineHandle();
 
-  enum LOG_LEVEL
-  {
-    INFO = 0,
-    WARNINGS = 1,
-    RESULT = 2,
-    ERROR = 3,
-  };
   Void setLogLevel( enum LOG_LEVEL level )
   {
     m_uiLogLevel = level;
@@ -85,6 +78,7 @@ private:
   std::string m_strOutput;
   std::string m_strResolution;
   std::string m_strPelFmt;
+  UInt m_uiBitsPerPixel;
   Bool m_bListPelFmts;
   Int m_iFrames;
 
@@ -94,6 +88,7 @@ private:
   std::string m_strModule;
 
   Void listModules();
+  Void listModuleHelp();
 
 };
 

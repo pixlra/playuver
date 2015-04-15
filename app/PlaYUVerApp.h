@@ -18,9 +18,9 @@
  */
 
 /**
- * \file     plaYUVerApp.h
+ * \file     PlaYUVerApp.h
  * \ingroup  PlaYUVerApp
- * \brief    Main definition of the plaYUVerApp app
+ * \brief    Main definition of the PlaYUVerApp app
  *
  * @defgroup PlaYUVerApp PlaYUVer App (GUI)
  * @{
@@ -37,39 +37,49 @@
 #define __PLAYUVERAPP_H__
 
 #include "config.h"
+#include <QMainWindow>
+#include <QVector>
+#include <QString>
 #include "PlaYUVerAppDefs.h"
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
 #ifdef USE_QTDBUS
 #include "PlaYUVerAppAdaptor.h"
 #endif
-#include <QMainWindow>
-
-#include "SubWindowHandle.h"
-#include "AboutDialog.h"
 #include "VideoSubWindow.h"
+
+class QCloseEvent;
+class QDragEnterEvent;
+class QDropEvent;
+class QDoubleSpinBox;
+class QActionGroup;
+class QAction;
+class QSignalMapper;
 
 namespace plaYUVer
 {
 
+class PlaYUVerCmdParser;
 class PlaYUVerStream;
 class PlaYUVerSubWindowHandle;
 class VideoHandle;
 class QualityHandle;
 class ModulesHandle;
 class PlaYUVerAppAdaptor;
+class VideoSubWindow;
+class SubWindowAbstract;
+class AboutDialog;
 
-class plaYUVerApp: public QMainWindow
+class PlaYUVerApp: public QMainWindow
 {
 Q_OBJECT
 
 public:
-  plaYUVerApp();
-  Void parseArgs( Int argc, Char *argv[] );
+  PlaYUVerApp();
+  Bool parseArgs( Int argc, Char *argv[] );
   Void loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo = NULL );
+
+public Q_SLOTS:
+  void printMessage( const QString& msg );
+  void printMessage( const QString& msg, UInt logLevel );
 
 protected:
   Void closeEvent( QCloseEvent *event );
@@ -108,16 +118,15 @@ private Q_SLOTS:
 
   void update();
   void updateZoomFactorSBox();
-  void updateStatusBar( const QString& );
 
 private:
 
   PlaYUVerAppAdaptor* m_pDBusAdaptor;
-
+  PlaYUVerCmdParser* m_pcCmdParser;
   /**
    * Save the current subwindow for every category
    */
-  SubWindowHandle* m_pcCurrentSubWindow;  //!< General always set
+  SubWindowAbstract* m_pcCurrentSubWindow;  //!< General always set
   VideoSubWindow* m_pcCurrentVideoSubWindow;
 
   QString m_cLastOpenPath;
@@ -246,3 +255,4 @@ private:
 }  // NAMESPACE
 
 #endif // __PLAYUVERAPP_H__
+

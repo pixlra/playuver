@@ -79,6 +79,7 @@ private:
     STOP_ACT,
     VIDEO_FORWARD_ACT,
     VIDEO_BACKWARD_ACT,
+    VIDEO_GOTO_ACT,
     VIDEO_LOOP_ACT,
     VIDEO_ZOOM_LOCK_ACT,
     VIDEO_LOCK_ACT,
@@ -129,6 +130,7 @@ private Q_SLOTS:
   void playEvent();
   void seekSliderEvent( int new_frame_num );
   void seekEvent( int direction );
+  void seekVideo();
   void videoSelectionButtonEvent();
 
 };

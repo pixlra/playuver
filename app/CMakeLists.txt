@@ -71,6 +71,7 @@ set(plaYUVer_App_SRCS
     ConfigureFormatDialog.cpp
     DialogSubWindowSelector.cpp
     ProgressBar.cpp
+    SeekStreamDialog.cpp
 # Widgets
     HistogramWidget.cpp
     WidgetFrameNumber.cpp

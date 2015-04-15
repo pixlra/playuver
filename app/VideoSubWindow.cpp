@@ -201,6 +201,7 @@ Void VideoSubWindow::refreshSubWindow()
   {
     refreshFrame();
   }
+  updateVideoWindowInfo();
 }
 
 Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
@@ -497,7 +498,6 @@ Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
   {
     m_pcCurrFrame = pcCurrFrame;
     m_cViewArea->setImage( m_pcCurrFrame );
-    //updateVideoWindowInfo();
   }
 }
 

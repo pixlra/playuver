@@ -70,7 +70,6 @@ ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget *parent, PlaYUVerAppModu
 {
   resize( 400, 10 );
   setWindowTitle( "Select module parameters" );
-  setWindowIcon( QIcon( ":/images/configureformat.png" ) );
 
   const Options::OptionsList& moduleOptions = m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.getOptionList();
 

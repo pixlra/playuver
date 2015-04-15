@@ -27,6 +27,7 @@
 #include "VideoSubWindow.h"
 #include "PlaYUVerSubWindowHandle.h"
 #include "DialogSubWindowSelector.h"
+#include "SeekStreamDialog.h"
 #include "FramePropertiesDock.h"
 #include "WidgetFrameNumber.h"
 #include <QtGui>
@@ -90,6 +91,10 @@ Void VideoHandle::createActions()
   connect( m_arrayActions[VIDEO_FORWARD_ACT], SIGNAL( triggered() ), m_mapperVideoSeek, SLOT( map() ) );
   m_mapperVideoSeek->setMapping( m_arrayActions[VIDEO_FORWARD_ACT], 1 );
 
+  m_arrayActions[VIDEO_GOTO_ACT] = new QAction( "Go to", this );
+  m_arrayActions[VIDEO_GOTO_ACT]->setShortcut( tr( "Ctrl+G" ) );
+  connect( m_arrayActions[VIDEO_GOTO_ACT], SIGNAL( triggered() ), this, SLOT( seekVideo() ) );
+
   m_arrayActions[VIDEO_LOOP_ACT] = new QAction( "Repeat", this );
   m_arrayActions[VIDEO_LOOP_ACT]->setCheckable( true );
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( false );
@@ -117,6 +122,8 @@ QMenu* VideoHandle::createMenu()
   m_pcMenuVideo->addAction( m_arrayActions[STOP_ACT] );
   m_pcMenuVideo->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
   m_pcMenuVideo->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
+  m_pcMenuVideo->addAction( m_arrayActions[VIDEO_GOTO_ACT] );
+  m_pcMenuVideo->addSeparator();
   m_pcMenuVideo->addAction( m_arrayActions[VIDEO_LOOP_ACT] );
   m_pcMenuVideo->addAction( m_arrayActions[VIDEO_ZOOM_LOCK_ACT] );
   m_pcMenuVideo->addAction( m_arrayActions[VIDEO_LOCK_SELECTION_ACT] );
@@ -559,6 +566,33 @@ Void VideoHandle::seekEvent( Int direction )
     }
     emit changed();
     //update();
+  }
+}
+
+Void VideoHandle::seekVideo()
+{
+  if( m_pcCurrentVideoSubWindow )
+  {
+    if( m_pcCurrentVideoSubWindow->getInputStream() )
+    {
+      SeekStreamDialog* dialogSeekVideo = new SeekStreamDialog( m_pcCurrentVideoSubWindow->getInputStream(), this );
+      Int newFrameNum = dialogSeekVideo->runDialog();
+      if( newFrameNum >= 0 )
+      {
+        if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
+        {
+          for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+          {
+            m_acPlayingSubWindows.at( i )->seekAbsoluteEvent( ( UInt )newFrameNum );
+          }
+        }
+        else
+        {
+          m_pcCurrentVideoSubWindow->seekAbsoluteEvent( ( UInt )newFrameNum );
+        }
+        emit changed();
+      }
+    }
   }
 }
 

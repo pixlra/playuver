@@ -34,16 +34,20 @@ namespace plaYUVer
 {
 
 SeekStreamDialog::SeekStreamDialog( PlaYUVerStream *pcCurrStream, QWidget *parent ) :
-        QDialog( parent ),
+        QDialog( parent, Qt::Dialog | Qt::WindowTitleHint ),
         m_iSelectedFrameNum()
 {
 
   m_iSelectedFrameNum = pcCurrStream->getCurrFrameNum();
 
-  setWindowTitle( "Go to frame" );
+  setWindowModality( Qt::ApplicationModal );
+  setWindowTitle( "Seek Video" );
 
+  QFont labelFont;
+  labelFont.setStretch( 110 );
   QLabel* pcLabel = new QLabel;
   pcLabel->setText( QString( "Go to frame (0 - %1)" ).arg( pcCurrStream->getFrameNum() - 1 ) );
+  pcLabel->setFont( labelFont );
 
   m_spinFrameNum = new QSpinBox;
   m_spinFrameNum->setMinimumSize( 70, 5 );
@@ -63,7 +67,7 @@ SeekStreamDialog::SeekStreamDialog( PlaYUVerStream *pcCurrStream, QWidget *paren
   mainLayout->addWidget( dialogButtonOkCancel, 1, 0, 1, 2, Qt::AlignRight );
   setLayout( mainLayout );
 
-  setFixedSize( 250, mainLayout->sizeHint().height() );
+  setFixedSize( 220, mainLayout->sizeHint().height() );
 
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );

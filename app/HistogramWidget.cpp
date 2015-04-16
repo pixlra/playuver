@@ -177,7 +177,20 @@ HistogramWidget::HistogramWidget( Int width, Int height, QWidget *parent ) :
   setAttribute( Qt::WA_DeleteOnClose );
 
   d = new HistogramWidgetPrivate;
-  setupWidget( width, height );
+
+  m_channelType = LumaHistogram;
+  m_scaleType = LogScaleHistogram;
+  m_colorType = FirstChannelColor;
+  m_renderingType = FullImageHistogram;
+
+  setOptions( HistogramWidget::BlinkComputation | HistogramWidget::SelectMode | HistogramWidget::ShowLumaChannel );
+
+  setMouseTracking( true );
+  setMinimumSize( width, height );
+
+  d->blinkTimer = new QTimer( this );
+
+  connect( d->blinkTimer, SIGNAL( timeout() ), this, SLOT( slotBlinkTimerDone() ) );
 
   m_imageHistogram = 0;
   m_selectionHistogram = 0;
@@ -209,23 +222,6 @@ HistogramWidget::~HistogramWidget()
 ////////////////////////////////////////////////////////////////////////////////
 //                              Setup Functions 
 ////////////////////////////////////////////////////////////////////////////////
-
-Void HistogramWidget::setupWidget( Int width, Int height, HistogramOptions options )
-{
-  m_channelType = LumaHistogram;
-  m_scaleType = LogScaleHistogram;
-  m_colorType = FirstChannelColor;
-  m_renderingType = FullImageHistogram;
-
-  setOptions( options );
-
-  setMouseTracking( true );
-  setMinimumSize( width, height );
-
-  d->blinkTimer = new QTimer( this );
-
-  connect( d->blinkTimer, SIGNAL( timeout() ), this, SLOT( slotBlinkTimerDone() ) );
-}
 
 Void HistogramWidget::setOptions( HistogramOptions options )
 {
@@ -1037,7 +1033,7 @@ Void HistogramWidget::mouseMoveEvent( QMouseEvent * e )
 {
   if( d->selectMode == true && d->clearFlag == HistogramWidgetPrivate::HistogramCompleted )
   {
-    setCursor( Qt::CrossCursor );
+    setCursor( Qt::SizeHorCursor );
 
     if( d->inSelected )
     {

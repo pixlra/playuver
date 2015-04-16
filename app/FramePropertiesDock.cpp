@@ -134,8 +134,7 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
 
   // -------------------------------------------------------------
 
-  histogramWidget = new HistogramWidget( 256, 100 );
-  histogramWidget->setOptions( HistogramWidget::BlinkComputation | HistogramWidget::SelectMode | HistogramWidget::ShowLumaChannel );
+  histogramWidget = new HistogramWidget( 100, 100 );
   histogramWidget->setWhatsThis( tr( "<p>This is the histogram drawing of "
       "the selected image channel" ) );
 

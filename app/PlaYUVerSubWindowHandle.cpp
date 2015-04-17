@@ -250,6 +250,7 @@ Void PlaYUVerSubWindowHandle::removeSubWindow( Int windowIdx )
       PlaYUVerMdiSubWindow* mdiSubWindow = m_apcMdiSubWindowList.at( windowIdx );
       m_apcMdiSubWindowList.removeAt( windowIdx );
       m_pcMdiArea->removeSubWindow( m_apcSubWindowList.at( windowIdx ) );
+      m_apcSubWindowList.at( windowIdx )->close();
       mdiSubWindow->close();
       m_apcSubWindowList.removeAt( windowIdx );
     }

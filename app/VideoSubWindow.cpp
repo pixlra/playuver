@@ -128,6 +128,7 @@ protected:
 
 VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget * parent ) :
         SubWindowAbstract( parent, SubWindowAbstract::VIDEO_SUBWINDOW | category ),
+        m_bWindowBusy( false ),
         m_pCurrStream( NULL ),
         m_pcCurrFrame( NULL ),
         m_pcCurrentDisplayModule( NULL ),
@@ -511,6 +512,7 @@ Void VideoSubWindow::refreshFrameOperation()
   }
   if( m_pcCurrentDisplayModule )
   {
+    m_bWindowBusy = true;
     ModulesHandle::applyModuleIf( m_pcCurrentDisplayModule, m_bIsPlaying );
     bSetFrame = false;
   }
@@ -520,6 +522,7 @@ Void VideoSubWindow::refreshFrameOperation()
   }
   for( Int i = 0; i < m_apcCurrentModule.size(); i++ )
   {
+    m_bWindowBusy = true;
     ModulesHandle::applyModuleIf( m_apcCurrentModule.at( i ), m_bIsPlaying );
   }
 }

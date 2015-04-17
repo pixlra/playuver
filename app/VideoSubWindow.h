@@ -67,6 +67,8 @@ Q_OBJECT
 
 private:
 
+  Bool m_bWindowBusy;
+
   QScrollArea* m_pcScrollArea;
   QPoint m_cLastScroll;
   QPoint m_cCurrScroll;
@@ -248,6 +250,11 @@ public:
   Bool getIsModule()
   {
     return getCategory() | SubWindowAbstract::MODULE_SUBWINDOW;
+  }
+
+  Void clearWindowBusy()
+  {
+    m_bWindowBusy = false;
   }
 
 protected:

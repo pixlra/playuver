@@ -40,13 +40,15 @@ class QAction;
 namespace plaYUVer
 {
 
+#define PLAYUVER_THREADED_MODULES
+
 class VideoSubWindow;
 
 class PlaYUVerAppModuleIf
 #ifdef PLAYUVER_THREADED_MODULES
     : public QThread
 #else
-    : public QObject
+: public QObject
 #endif
 {
   friend class ModulesHandle;
@@ -54,6 +56,8 @@ class PlaYUVerAppModuleIf
   friend class ModulesHandleOptDialog;
 
 private:
+
+  Bool m_bIsRunning;
 
   QAction* m_pcModuleAction;
   PlaYUVerModuleIf* m_pcModule;
@@ -69,7 +73,6 @@ private:
   PlaYUVerFrame* m_pcProcessedFrame;
   Double m_dMeasurementResult;
 
-  Void postProgress( Bool success );
 public:
   class EventData: public QEvent
   {
@@ -98,6 +101,7 @@ public:
     return arraySubWindows;
   }
 
+  Void destroy();
 protected:
   virtual void run();
 };

@@ -65,8 +65,7 @@ public:
   static Void destroyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
   static Bool applyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf, Bool isPlaying = false, Bool disableThreads = false );
 
-  static Bool showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame );
-  static Bool showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Double moduleResult );
+  static Void showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf );
 
 private:
   QWidget* m_pcParent;

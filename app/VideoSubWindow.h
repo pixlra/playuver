@@ -41,6 +41,7 @@ class QScrollArea;
 namespace plaYUVer
 {
 
+class VideoInformation;
 class VideoSubWindow;
 class PlaYUVerAppModuleIf;
 
@@ -66,11 +67,15 @@ Q_OBJECT
 
 private:
 
+  Bool m_bWindowBusy;
+
   QScrollArea* m_pcScrollArea;
   QPoint m_cLastScroll;
   QPoint m_cCurrScroll;
 
   ViewArea* m_cViewArea;
+
+  VideoInformation* m_pcVideoInfo;
 
   QString m_cFilename;
   QString m_cStreamInformation;
@@ -89,8 +94,8 @@ private:
   QString m_cCurrFileName;
 
   Bool m_bIsPlaying;
-  Bool m_bIsModule;
 
+  QTimer* m_pcUpdateTimer;
   /**
    * Threads variables
    * QtConcurrent
@@ -115,8 +120,8 @@ private:
 public:
   enum VideoSubWindowCategories
   {
-    VIDEO_STREAM_SUBWINDOW = 2,
-    MODULE_SUBWINDOW = 4,
+    VIDEO_STREAM_SUBWINDOW = SubWindowAbstract::VIDEO_STREAM_SUBWINDOW,
+    MODULE_SUBWINDOW = SubWindowAbstract::MODULE_SUBWINDOW,
   };
   VideoSubWindow( enum VideoSubWindowCategories category, QWidget * parent = 0 );
   ~VideoSubWindow();
@@ -245,13 +250,22 @@ public:
 
   Bool getIsModule()
   {
-    return m_bIsModule;
+    return getCategory() | SubWindowAbstract::MODULE_SUBWINDOW;
   }
 
-//protected:
+  Void clearWindowBusy()
+  {
+    m_bWindowBusy = false;
+  }
+
+  Void setFillWindow( Bool bFlag );
+
+protected:
+  Void resizeEvent( QResizeEvent* event );
   //void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:
+  void updateWindowOnTimeout();
   void adjustScrollBarByScale( double scale, QPoint center );
   void adjustScrollBarByOffset( QPoint Offset );
   void updateCurScrollValues();

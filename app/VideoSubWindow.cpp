@@ -22,6 +22,7 @@
  * \brief    Video Sub windows handling
  */
 
+#include <QStaticText>
 #include "VideoSubWindow.h"
 #include "ModulesHandle.h"
 #include "ConfigureFormatDialog.h"
@@ -33,6 +34,10 @@
 
 namespace plaYUVer
 {
+
+/**
+ * \brief Functions to control data stream from stream information
+ */
 
 QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array )
 {
@@ -78,14 +83,71 @@ Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename )
   return -1;
 }
 
+/**
+ * \class VideoInformation
+ * \brief Shows information about video sub window
+ */
+
+class VideoInformation: public QWidget
+{
+private:
+  QList<QStaticText> m_cTopLeftTextList;
+  QFont m_cTopLeftTextFont;
+  QFont m_cCenterTextFont;
+  Bool m_bBusyWindow;
+public:
+  VideoInformation( QWidget *parent ) :
+          QWidget( parent ),
+          m_bBusyWindow( false )
+  {
+    setPalette( Qt::transparent );
+    setAttribute( Qt::WA_TransparentForMouseEvents );
+    m_cTopLeftTextFont.setPointSize( 8 );
+    m_cCenterTextFont.setPointSize( 12 );
+  }
+  Void setInformationTopLeft( const QStringList& textLines )
+  {
+    m_cTopLeftTextList.clear();
+    for( Int i = 0; i < textLines.size(); i++ )
+    {
+      m_cTopLeftTextList.append( textLines.at( i ) );
+    }
+  }
+  Void setBusyWindow( Bool bFlag )
+  {
+    m_bBusyWindow = bFlag;
+  }
+protected:
+  void paintEvent( QPaintEvent *event )
+  {
+    QPainter painter( this );
+    painter.setFont( m_cTopLeftTextFont );
+    if( !m_cTopLeftTextList.isEmpty() && size().width() > 300 )
+    {
+      QPoint topLeftCorner( 10, 10 );
+      for( Int i = 0; i < m_cTopLeftTextList.size(); i++ )
+      {
+        painter.drawStaticText( topLeftCorner, m_cTopLeftTextList.at( i ) );
+        topLeftCorner += QPoint( 0, 15 );
+      }
+    }
+    if( m_bBusyWindow )
+    {
+      painter.setFont( m_cCenterTextFont );
+      painter.drawText( rect(), Qt::AlignHCenter | Qt::AlignVCenter, QStringLiteral( "Refreshing..." ) );
+      painter.fillRect( rect(), QBrush( QColor::fromRgb( 255, 255, 255, 50 ), Qt::SolidPattern ) );
+    }
+  }
+};
+
 VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget * parent ) :
         SubWindowAbstract( parent, SubWindowAbstract::VIDEO_SUBWINDOW | category ),
+        m_bWindowBusy( false ),
         m_pCurrStream( NULL ),
         m_pcCurrFrame( NULL ),
         m_pcCurrentDisplayModule( NULL ),
         m_pcReferenceSubWindow( NULL ),
-        m_bIsPlaying( false ),
-        m_bIsModule( category == MODULE_SUBWINDOW )
+        m_bIsPlaying( false )
 {
 
   // Create a new scroll area inside the sub-window
@@ -108,8 +170,6 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
   m_pcScrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
   // Define the cViewArea as the widget inside the scroll area
-  // m_cViewArea->setMinimumSize( size() );
-
   m_pcScrollArea->setWidget( m_cViewArea );
   m_pcScrollArea->setWidgetResizable( true );
 
@@ -119,6 +179,12 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
 
   m_apcCurrentModule.clear();
 
+  m_pcUpdateTimer = new QTimer();
+  m_pcUpdateTimer->setInterval( 800 );
+  connect( m_pcUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateWindowOnTimeout() ) );
+
+  //! Add video information
+  m_pcVideoInfo = new VideoInformation( this );
 }
 
 VideoSubWindow::~VideoSubWindow()
@@ -154,6 +220,7 @@ Void VideoSubWindow::refreshSubWindow()
   {
     refreshFrame();
   }
+  updateVideoWindowInfo();
 }
 
 Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
@@ -244,6 +311,23 @@ Void VideoSubWindow::updateVideoWindowInfo()
   if( m_pcCurrentDisplayModule )
   {
     m_cStreamInformation = "Module";
+    QList<VideoSubWindow*> arraySubWindows = m_pcCurrentDisplayModule->getSubWindowList();
+    QStringList sourceWindowList;
+    if( arraySubWindows.size() > 0 )
+    {
+      for( Int i = 0; i < arraySubWindows.size(); i++ )
+      {
+        if( arraySubWindows.at( i )->getWindowName() != getWindowName() )
+        {
+          sourceWindowList.append( QString( "Input %1 - " + arraySubWindows.at( i )->getWindowName() ).arg( i + 1 ) );
+        }
+      }
+    }
+    qDebug( ) << sourceWindowList;
+    if( sourceWindowList.size() > 0 )
+    {
+      m_pcVideoInfo->setInformationTopLeft( sourceWindowList );
+    }
   }
   else if( m_pCurrStream )
   {
@@ -427,13 +511,16 @@ Void VideoSubWindow::associateModule( PlaYUVerAppModuleIf* pcModule )
   m_apcCurrentModule.append( pcModule );
 }
 
+Void VideoSubWindow::setFillWindow( Bool bFlag )
+{
+  m_pcVideoInfo->setBusyWindow( bFlag );
+}
 Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
-  // if( m_pcCurrFrame )
+// if( m_pcCurrFrame )
   {
     m_pcCurrFrame = pcCurrFrame;
     m_cViewArea->setImage( m_pcCurrFrame );
-    updateVideoWindowInfo();
   }
 }
 
@@ -447,6 +534,7 @@ Void VideoSubWindow::refreshFrameOperation()
   }
   if( m_pcCurrentDisplayModule )
   {
+    m_bWindowBusy = true;
     ModulesHandle::applyModuleIf( m_pcCurrentDisplayModule, m_bIsPlaying );
     bSetFrame = false;
   }
@@ -456,6 +544,7 @@ Void VideoSubWindow::refreshFrameOperation()
   }
   for( Int i = 0; i < m_apcCurrentModule.size(); i++ )
   {
+    m_bWindowBusy = true;
     ModulesHandle::applyModuleIf( m_apcCurrentModule.at( i ), m_bIsPlaying );
   }
 }
@@ -593,7 +682,7 @@ Void VideoSubWindow::adjustScrollBarByOffset( QPoint Offset )
     valueY = scrollBarV->minimum();
   m_cCurrScroll.setY( valueY );
 
-  // Update window scroll
+// Update window scroll
   scrollBarH->setValue( m_cCurrScroll.x() );
   scrollBarV->setValue( m_cCurrScroll.y() );
 }
@@ -637,7 +726,7 @@ Void VideoSubWindow::adjustScrollBarByScale( Double scale, QPoint center )
     m_cCurrScroll.setY( value );
   }
 
-  // Update window scroll
+// Update window scroll
   scrollBarH->setValue( m_cCurrScroll.x() );
   scrollBarV->setValue( m_cCurrScroll.y() );
 
@@ -802,6 +891,15 @@ QSize VideoSubWindow::sizeHint( const QSize & maxSize ) const
     isize.scale( maxSize, Qt::KeepAspectRatio );
   }
   return isize;
+}
+
+Void VideoSubWindow::updateWindowOnTimeout()
+{
+  m_pcVideoInfo->update();
+}
+Void VideoSubWindow::resizeEvent( QResizeEvent* event )
+{
+  m_pcVideoInfo->resize( event->size() );
 }
 
 //Void VideoSubWindow::closeEvent( QCloseEvent *event )

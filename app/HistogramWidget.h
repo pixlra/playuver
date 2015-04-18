@@ -109,9 +109,6 @@ public  :
    */
   HistogramWidget( Int width, Int height, QWidget *parent = 0 );
 
-  Void setupWidget( Int width, Int height,
-      HistogramOptions options = AllOptions );
-
   ~HistogramWidget();
 
   /** Stop current histogram computations.*/

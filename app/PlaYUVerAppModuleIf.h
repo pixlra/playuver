@@ -29,6 +29,7 @@
 #include "PlaYUVerAppDefs.h"
 #include <iostream>
 #include <cstdio>
+#include <QVector>
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"
 #include "ModuleHandleDock.h"
@@ -39,13 +40,15 @@ class QAction;
 namespace plaYUVer
 {
 
+#define PLAYUVER_THREADED_MODULES
+
 class VideoSubWindow;
 
 class PlaYUVerAppModuleIf
 #ifdef PLAYUVER_THREADED_MODULES
     : public QThread
 #else
-    : public QObject
+: public QObject
 #endif
 {
   friend class ModulesHandle;
@@ -53,6 +56,8 @@ class PlaYUVerAppModuleIf
   friend class ModulesHandleOptDialog;
 
 private:
+
+  Bool m_bIsRunning;
 
   QAction* m_pcModuleAction;
   PlaYUVerModuleIf* m_pcModule;
@@ -68,7 +73,6 @@ private:
   PlaYUVerFrame* m_pcProcessedFrame;
   Double m_dMeasurementResult;
 
-  Void postProgress( Bool success );
 public:
   class EventData: public QEvent
   {
@@ -88,6 +92,16 @@ public:
   {
   }
 
+  QList<VideoSubWindow*> getSubWindowList()
+  {
+    QList<VideoSubWindow*> arraySubWindows;
+    for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
+      if( m_pcSubWindow[i] )
+        arraySubWindows.append( m_pcSubWindow[i] );
+    return arraySubWindows;
+  }
+
+  Void destroy();
 protected:
   virtual void run();
 };

@@ -291,7 +291,6 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   }
   else
   {
-    windowName.append( pcVideoSubWindow->getWindowName() );
     videoSubWindowList.append( pcVideoSubWindow );
   }
 
@@ -302,9 +301,8 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     return;
   }
 
-  windowName.append( " <" );
+  windowName.append( QStringLiteral( "Module " ) );
   windowName.append( pcCurrModuleIf->m_pcModule->m_pchModuleName );
-  windowName.append( ">" );
 
   for( Int i = 0; i < videoSubWindowList.size(); i++ )
   {
@@ -387,7 +385,7 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     }
   }
 
-  applyModuleIf( pcCurrModuleIf, false );
+  applyModuleIf( pcCurrModuleIf, false, true );
   QCoreApplication::processEvents();
 
   if( pcModuleSubWindow )
@@ -402,40 +400,7 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
   if( pcCurrModuleIf )
   {
-    if( pcCurrModuleIf->m_pcModuleDock )
-    {
-      pcCurrModuleIf->m_pcModuleDock->close();
-      pcCurrModuleIf->m_pcModuleDock = NULL;
-    }
-    if( pcCurrModuleIf->m_pcDockWidget )
-    {
-      pcCurrModuleIf->m_pcDockWidget->close();
-      pcCurrModuleIf->m_pcDockWidget = NULL;
-    }
-    if( pcCurrModuleIf->m_pcDisplaySubWindow )
-      pcCurrModuleIf->m_pcDisplaySubWindow->closeSubWindow();
-    pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
-
-    for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
-    {
-      if( pcCurrModuleIf->m_pcSubWindow[i] )
-      {
-        pcCurrModuleIf->m_pcSubWindow[i]->disableModule( pcCurrModuleIf );
-        pcCurrModuleIf->m_pcSubWindow[i] = NULL;
-      }
-    }
-    if( pcCurrModuleIf->m_pcModuleStream )
-    {
-      pcCurrModuleIf->m_pcModuleStream->close();
-      delete pcCurrModuleIf->m_pcModuleStream;
-      pcCurrModuleIf->m_pcModuleStream = NULL;
-    }
-    if( pcCurrModuleIf->m_pcModule )
-    {
-      pcCurrModuleIf->m_pcModule->destroy();
-      pcCurrModuleIf->m_pcModule->Delete();
-      pcCurrModuleIf->m_pcModule = NULL;
-    }
+    pcCurrModuleIf->destroy();
   }
 }
 
@@ -460,14 +425,22 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isP
 {
   Bool bRet = false;
   QApplication::setOverrideCursor( Qt::WaitCursor );
+  if( pcCurrModuleIf->m_pcDisplaySubWindow )
+  {
+    pcCurrModuleIf->m_pcDisplaySubWindow->setFillWindow( true );
+  }
+  else
+  {
+    pcCurrModuleIf->m_pcSubWindow[0]->setFillWindow( true );
+  }
   if( !( isPlaying && ( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_SKIP_WHILE_PLAY ) ) )
   {
 #ifdef PLAYUVER_THREADED_MODULES
     if( !disableThreads )
-    pcCurrModuleIf->start();
+      pcCurrModuleIf->start();
     else
 #endif
-    pcCurrModuleIf->run();
+      pcCurrModuleIf->run();
 
     if( pcCurrModuleIf->m_pcDisplaySubWindow || pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
     {
@@ -562,29 +535,28 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   }
 }
 
-Bool ModulesHandle::showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, PlaYUVerFrame* processedFrame )
+Void ModulesHandle::showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
-  Bool bRet = false;
-  //if( processedFrame  )
+  switch( pcCurrModuleIf->m_pcModule->m_iModuleType )
   {
+  case FRAME_PROCESSING_MODULE:
     if( pcCurrModuleIf->m_pcDisplaySubWindow )
     {
-      pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( processedFrame );
-      bRet = true;
+      pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( pcCurrModuleIf->m_pcProcessedFrame );
+      pcCurrModuleIf->m_pcDisplaySubWindow->setFillWindow( false );
+      pcCurrModuleIf->m_pcDisplaySubWindow->clearWindowBusy();
     }
     else
     {
-      pcCurrModuleIf->m_pcSubWindow[0]->setCurrFrame( processedFrame );
+      pcCurrModuleIf->m_pcSubWindow[0]->setCurrFrame( pcCurrModuleIf->m_pcProcessedFrame );
+      pcCurrModuleIf->m_pcSubWindow[0]->setFillWindow( false );
+      pcCurrModuleIf->m_pcSubWindow[0]->clearWindowBusy();
     }
+    break;
+  case FRAME_MEASUREMENT_MODULE:
+    pcCurrModuleIf->m_pcModuleDock->setModulueReturnValue( pcCurrModuleIf->m_dMeasurementResult );
+    break;
   }
-  return bRet;
-}
-
-Bool ModulesHandle::showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Double moduleResult )
-{
-  Bool bRet = false;
-  pcCurrModuleIf->m_pcModuleDock->setModulueReturnValue( moduleResult );
-  return bRet;
 }
 
 Void ModulesHandle::swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
@@ -607,15 +579,7 @@ Void ModulesHandle::customEvent( QEvent *event )
   PlaYUVerAppModuleIf::EventData *eventData = ( PlaYUVerAppModuleIf::EventData* )event;
   if( eventData->m_bSuccess )
   {
-    switch( eventData->m_pcModule->m_pcModule->m_iModuleType )
-    {
-    case FRAME_PROCESSING_MODULE:
-      showModuleIf( eventData->m_pcModule, eventData->m_pcModule->m_pcProcessedFrame );
-      break;
-    case FRAME_MEASUREMENT_MODULE:
-      showModuleIf( eventData->m_pcModule, eventData->m_pcModule->m_dMeasurementResult );
-      break;
-    }
+    showModuleIf( eventData->m_pcModule );
   }
 }
 

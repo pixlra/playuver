@@ -93,13 +93,17 @@ class VideoInformation: public QWidget
 private:
   QList<QStaticText> m_cTopLeftTextList;
   QFont m_cTopLeftTextFont;
+  QFont m_cCenterTextFont;
+  Bool m_bBusyWindow;
 public:
   VideoInformation( QWidget *parent ) :
-          QWidget( parent )
+          QWidget( parent ),
+          m_bBusyWindow( false )
   {
     setPalette( Qt::transparent );
     setAttribute( Qt::WA_TransparentForMouseEvents );
     m_cTopLeftTextFont.setPointSize( 8 );
+    m_cCenterTextFont.setPointSize( 12 );
   }
   Void setInformationTopLeft( const QStringList& textLines )
   {
@@ -108,6 +112,10 @@ public:
     {
       m_cTopLeftTextList.append( textLines.at( i ) );
     }
+  }
+  Void setBusyWindow( Bool bFlag )
+  {
+    m_bBusyWindow = bFlag;
   }
 protected:
   void paintEvent( QPaintEvent *event )
@@ -122,6 +130,12 @@ protected:
         painter.drawStaticText( topLeftCorner, m_cTopLeftTextList.at( i ) );
         topLeftCorner += QPoint( 0, 15 );
       }
+    }
+    if( m_bBusyWindow )
+    {
+      painter.setFont( m_cCenterTextFont );
+      painter.drawText( rect(), Qt::AlignHCenter | Qt::AlignVCenter, QStringLiteral( "Refreshing..." ) );
+      painter.fillRect( rect(), QBrush( QColor::fromRgb( 255, 255, 255, 50 ), Qt::SolidPattern ) );
     }
   }
 };
@@ -164,6 +178,10 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget 
   m_cLastScroll = QPoint();
 
   m_apcCurrentModule.clear();
+
+  m_pcUpdateTimer = new QTimer();
+  m_pcUpdateTimer->setInterval( 800 );
+  connect( m_pcUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateWindowOnTimeout() ) );
 
   //! Add video information
   m_pcVideoInfo = new VideoInformation( this );
@@ -493,6 +511,10 @@ Void VideoSubWindow::associateModule( PlaYUVerAppModuleIf* pcModule )
   m_apcCurrentModule.append( pcModule );
 }
 
+Void VideoSubWindow::setFillWindow( Bool bFlag )
+{
+  m_pcVideoInfo->setBusyWindow( bFlag );
+}
 Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
 // if( m_pcCurrFrame )
@@ -871,6 +893,10 @@ QSize VideoSubWindow::sizeHint( const QSize & maxSize ) const
   return isize;
 }
 
+Void VideoSubWindow::updateWindowOnTimeout()
+{
+  m_pcVideoInfo->update();
+}
 Void VideoSubWindow::resizeEvent( QResizeEvent* event )
 {
   m_pcVideoInfo->resize( event->size() );

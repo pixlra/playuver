@@ -425,6 +425,14 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isP
 {
   Bool bRet = false;
   QApplication::setOverrideCursor( Qt::WaitCursor );
+  if( pcCurrModuleIf->m_pcDisplaySubWindow )
+  {
+    pcCurrModuleIf->m_pcDisplaySubWindow->setFillWindow( true );
+  }
+  else
+  {
+    pcCurrModuleIf->m_pcSubWindow[0]->setFillWindow( true );
+  }
   if( !( isPlaying && ( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_SKIP_WHILE_PLAY ) ) )
   {
 #ifdef PLAYUVER_THREADED_MODULES
@@ -535,11 +543,13 @@ Void ModulesHandle::showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     if( pcCurrModuleIf->m_pcDisplaySubWindow )
     {
       pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( pcCurrModuleIf->m_pcProcessedFrame );
+      pcCurrModuleIf->m_pcDisplaySubWindow->setFillWindow( false );
       pcCurrModuleIf->m_pcDisplaySubWindow->clearWindowBusy();
     }
     else
     {
       pcCurrModuleIf->m_pcSubWindow[0]->setCurrFrame( pcCurrModuleIf->m_pcProcessedFrame );
+      pcCurrModuleIf->m_pcSubWindow[0]->setFillWindow( false );
       pcCurrModuleIf->m_pcSubWindow[0]->clearWindowBusy();
     }
     break;

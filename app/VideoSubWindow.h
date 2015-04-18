@@ -95,6 +95,7 @@ private:
 
   Bool m_bIsPlaying;
 
+  QTimer* m_pcUpdateTimer;
   /**
    * Threads variables
    * QtConcurrent
@@ -257,11 +258,14 @@ public:
     m_bWindowBusy = false;
   }
 
+  Void setFillWindow( Bool bFlag );
+
 protected:
   Void resizeEvent( QResizeEvent* event );
   //void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:
+  void updateWindowOnTimeout();
   void adjustScrollBarByScale( double scale, QPoint center );
   void adjustScrollBarByOffset( QPoint Offset );
   void updateCurScrollValues();

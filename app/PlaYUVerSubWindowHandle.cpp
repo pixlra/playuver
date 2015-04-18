@@ -116,6 +116,7 @@ Void PlaYUVerSubWindowHandle::resetWindowMode()
     m_apcMdiSubWindowList.clear();
     if( m_pcMdiArea )
       delete m_pcMdiArea;
+    m_pcMdiArea = NULL;
     if( m_pcWindowManagerLayout )
       delete m_pcWindowManagerLayout;
 

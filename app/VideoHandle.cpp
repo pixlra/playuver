@@ -99,11 +99,11 @@ Void VideoHandle::createActions()
   m_arrayActions[VIDEO_LOOP_ACT]->setCheckable( true );
   m_arrayActions[VIDEO_LOOP_ACT]->setChecked( false );
 
-  m_arrayActions[VIDEO_ZOOM_LOCK_ACT] = new QAction( "Video Zoom Lock", this );
+  m_arrayActions[VIDEO_ZOOM_LOCK_ACT] = new QAction( "Zoom Lock", this );
   m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setCheckable( true );
   m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setChecked( false );
 
-  m_arrayActions[VIDEO_LOCK_SELECTION_ACT] = new QAction( "Video Lock Window Selection", this );
+  m_arrayActions[VIDEO_LOCK_SELECTION_ACT] = new QAction( "Playing Lock", this );
   connect( m_arrayActions[VIDEO_LOCK_SELECTION_ACT], SIGNAL( triggered() ), this, SLOT( videoSelectionButtonEvent() ) );
 
   m_pcFrameSlider = new QSlider;
@@ -338,7 +338,7 @@ Void VideoHandle::zoomToFactorAll( const Double scale, const QPoint center )
 Void VideoHandle::moveAllScrollBars( const QPoint offset )
 {
   QPoint newOffset = offset;
-  if( m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() )
+  if( m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() && m_pcCurrentVideoSubWindow )
   {
     VideoSubWindow *videoSubWindow;
     QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );

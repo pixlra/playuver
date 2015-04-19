@@ -64,8 +64,17 @@ ViewArea::ViewArea( QWidget *parent ) :
   m_gridVisible = false;
   m_snapToGrid = false;
   m_blockTrackEnable = false;
+  m_visibleZoomRect = true;
   m_pStream = NULL;
 
+  m_zoomWinTimer.setSingleShot(true);
+  m_zoomWinTimer.setInterval(2000);
+  connect( &m_zoomWinTimer, SIGNAL( timeout() ), this, SLOT( update() ) );
+}
+
+void ViewArea::startZoomWinTimer()
+{
+  m_zoomWinTimer.start();
 }
 
 void ViewArea::setImage( PlaYUVerFrame* pcFrame )
@@ -85,6 +94,8 @@ void ViewArea::setImage( const QPixmap &pixmap )
   updateSize();
   update();
   updateGeometry();
+
+  initZoomWinRect();
 }
 
 void ViewArea::clear()
@@ -107,6 +118,7 @@ Void ViewArea::setZoomFactor( Double f )
   m_zoomFactor = f;
 
   updateSize();
+  startZoomWinTimer();
   update();
 }
 
@@ -274,6 +286,53 @@ void ViewArea::setSelectedArea( QRect &rect )
   update( updateRect.normalized() );
 }
 
+void ViewArea::initZoomWinRect()
+{
+  int iMinX = 80;
+  int iMinY = 80;
+
+  int iMaxX = iMinX*5;
+  int iMaxY = iMinY*5;
+
+  double dSizeRatio, dWinZoomRatio;
+
+  int iHorizontalImg = (m_pixmap.width() > m_pixmap.height()) ? 1 : 0;
+
+  if( iHorizontalImg )
+  {
+    dSizeRatio = (double)m_pixmap.width()/(double)m_pixmap.height();
+  }
+  else
+  {
+    dSizeRatio = (double)m_pixmap.height()/(double)m_pixmap.width();
+  }
+
+  if( dSizeRatio > 5.0)
+  {
+    if( iHorizontalImg )
+    {
+      dWinZoomRatio = (double)(m_pixmap.width()*1024/iMaxX)/1000.0;
+    }
+    else
+    {
+      dWinZoomRatio = (double)(m_pixmap.height()*1024/iMaxY)/1000.0;
+    }
+  }
+  else
+  {
+    if( iHorizontalImg )
+    {
+      dWinZoomRatio = (double)(m_pixmap.height()*1024/iMinY)/1000.0;
+    }
+    else
+    {
+      dWinZoomRatio = (double)(m_pixmap.width()*1024/iMinX)/1000.0;
+    }
+  }
+
+  m_dZoomWinRatio = dWinZoomRatio;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //                            Geometry Updates 
 ////////////////////////////////////////////////////////////////////////////////
@@ -325,6 +384,7 @@ void ViewArea::resizeEvent( QResizeEvent *event )
     return;
 
   updateOffset();
+  startZoomWinTimer();
   update();
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -475,32 +535,52 @@ void ViewArea::paintEvent( QPaintEvent *event )
     }
   }
 
-  QRect zoomWinRect = QRect(0, 0, m_pixmap.width()/10, m_pixmap.height()/10 );
-  QPoint zWinPosition = QPoint(winRect.bottomRight()) -
-      QPoint(m_pixmap.width()/10,m_pixmap.height()/10) - QPoint(10,10);
 
-  zoomWinRect.moveTopLeft(zWinPosition);
-  painter.fillRect(zoomWinRect, QBrush(QColor(128, 128, 255, 128)));
-  painter.drawRect(zoomWinRect);
+  // VISIBLE ZOOM RECT
+  if( m_visibleZoomRect && m_zoomWinTimer.isActive() )
+  {
+    double dRatio = m_dZoomWinRatio;
 
+    QRect cImg = QRect(0, 0, m_pixmap.width(), m_pixmap.height() );
+    QPoint cZWinRBpos = QPoint(winRect.bottomRight()) - QPoint(15,15);
+    QRect cImgWinRect(0, 0, round((double)cImg.width()/dRatio), round((double)cImg.height()/dRatio) );
+    cImgWinRect.moveBottomRight(cZWinRBpos);
 
+    QRect vr = windowToView( winRect );
+    QRect cVisibleImg = vr & cImg;
+    //cVisibleImg.moveTopLeft(vr.topLeft());
+    QRect cVisibleWinRect;
+    cVisibleWinRect.setLeft(floor((double)cVisibleImg.x()/dRatio));
+    cVisibleWinRect.setTop(floor((double)cVisibleImg.y()/dRatio));
+    cVisibleWinRect.setRight(round((double)cVisibleImg.right()/dRatio));
+    cVisibleWinRect.setBottom(round((double)cVisibleImg.bottom()/dRatio));
 
-  QRect vr = windowToView( winRect );
-  zoomWinRect.moveTopLeft(QPoint(0,0));
-  QRect zoomVisibleRect = QRect(0,0,vr.width()/10,vr.height()/10) & zoomWinRect;
-  zoomVisibleRect.moveTopLeft(vr.topLeft()/10);
+    painter.fillRect(cImgWinRect, QBrush(QColor(128, 128, 128, 128)));
+    painter.setPen(QColor(50, 50, 50, 128));
+    painter.drawRect(cImgWinRect);
 
-  qDebug() << winRect << vr << zoomVisibleRect << m_pixmap.size() << zoomWinRect;
+    cVisibleWinRect.moveTopLeft( cImgWinRect.topLeft() + cVisibleWinRect.topLeft() );
 
-  if(zoomVisibleRect.left()<0)
-    zoomVisibleRect.moveLeft(0);
-  if(zoomVisibleRect.top()<0)
-    zoomVisibleRect.moveTop(0);
+    cVisibleWinRect = cVisibleWinRect & cImgWinRect;
 
-    zoomVisibleRect.moveTopLeft(zoomVisibleRect.topLeft() + zWinPosition);
+    if(cVisibleWinRect.left()<0)
+      cVisibleWinRect.moveLeft(0);
+    if(cVisibleWinRect.top()<0)
+      cVisibleWinRect.moveTop(0);
 
-    painter.fillRect(zoomVisibleRect, QBrush(QColor(128, 200, 255, 128)));
-    painter.drawRect(zoomVisibleRect);
+    if(cVisibleWinRect.width()<=0)
+      cVisibleWinRect.setWidth(1);
+    if(cVisibleWinRect.height()<=0)
+      cVisibleWinRect.setHeight(1);
+
+    painter.fillRect(cVisibleWinRect, QBrush(QColor(200, 200, 200, 128)));
+    painter.setPen(QColor(255, 255, 255, 128));
+    painter.drawRect(cVisibleWinRect);
+
+    qDebug() << "Debug VisibleZoomRect: " << winRect << vr << cImgWinRect << cVisibleWinRect << cVisibleImg << dRatio;
+
+  }
+
 
   QRect sr = viewToWindow( m_selectedArea );
   QRect ir = sr & winRect;
@@ -742,6 +822,8 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
     if( tool() == NavigationTool )
     {
       QPoint offset = m_lastWindowPos - event->pos();
+
+      startZoomWinTimer();
       emit scrollBarMoved( offset );
     }
 

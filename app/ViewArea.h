@@ -32,6 +32,7 @@
 #include <QPixmap>
 #include <QBitmap>
 #include <QColor>
+#include <QTimer>
 #include "GridManager.h"
 #include "lib/PlaYUVerFrame.h"
 
@@ -153,6 +154,8 @@ protected:
 
 private:
 
+  void initZoomWinRect();
+  void startZoomWinTimer();
   bool isPosValid( const QPoint &pos ) const;
   void updateMask( const QRect &rect );
   void setZoomFactor( double );
@@ -182,6 +185,9 @@ private:
   bool m_gridVisible;
   bool m_snapToGrid;
   bool m_cursorInGrid;
+  bool m_visibleZoomRect;
+  double m_dZoomWinRatio;
+  QTimer m_zoomWinTimer;
 
   PlaYUVerStream *m_pStream;
 

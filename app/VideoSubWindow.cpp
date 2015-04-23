@@ -225,20 +225,12 @@ Void VideoSubWindow::refreshSubWindow()
 
 Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
 {
+  ConfigureFormatDialog formatDialog( this );
   UInt Width = 0, Height = 0, BitsPel = 8, FrameRate = 30;
   Int InputFormat = PlaYUVerFrame::YUV420p;
 
   if( m_pCurrStream )
     m_pCurrStream->getFormat( Width, Height, InputFormat, BitsPel, FrameRate );
-
-  if( guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
-  {
-    ConfigureFormatDialog formatDialog( this );
-    if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, FrameRate ) == QDialog::Rejected )
-    {
-      return false;
-    }
-  }
 
   if( !m_pCurrStream )
   {
@@ -250,7 +242,26 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
     m_pCurrStream = new PlaYUVerStream;
   }
 
-  m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, FrameRate );
+  if( guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
+  {
+    if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, FrameRate ) == QDialog::Rejected )
+    {
+      return false;
+    }
+  }
+
+  try
+  {
+    m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, FrameRate );
+  }
+  catch( const char *msg )
+  {
+    if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, FrameRate ) == QDialog::Rejected )
+    {
+      return false;
+    }
+    m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, FrameRate );
+  }
 
   m_sStreamInfo.m_cFilename = cFilename;
   m_sStreamInfo.m_uiWidth = Width;

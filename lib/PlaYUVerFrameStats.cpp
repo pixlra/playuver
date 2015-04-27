@@ -45,7 +45,7 @@ PlaYUVerFrameStats::~PlaYUVerFrameStats()
 {
   if( m_puiHistogram )
     freeMem1D( m_puiHistogram );
-
+  m_puiHistogram = NULL;
 }
 
 // statistics

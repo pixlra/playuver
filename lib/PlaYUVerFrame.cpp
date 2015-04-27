@@ -138,9 +138,11 @@ PlaYUVerFrame::~PlaYUVerFrame()
 {
   if( m_pppcInputPel )
     freeMem3ImageComponents<Pel>( m_pppcInputPel );
+  m_pppcInputPel = NULL;
 
   if( m_pcARGB32 )
     freeMem1D( m_pcARGB32 );
+  m_pcARGB32 = NULL;
 
   closePixfc();
 }

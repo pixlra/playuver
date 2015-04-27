@@ -44,8 +44,12 @@ PlaYUVerFrameStats::PlaYUVerFrameStats() :
 PlaYUVerFrameStats::~PlaYUVerFrameStats()
 {
   if( m_puiHistogram )
-    freeMem1D( m_puiHistogram );
+  {
+    delete [] m_puiHistogram;
+    //freeMem1D( m_puiHistogram );
+  }
   m_puiHistogram = NULL;
+  m_bHasHistogram = false;
 }
 
 // statistics
@@ -73,19 +77,19 @@ Void PlaYUVerFrameStats::xSetupStatistics( const PlaYUVerFrame *pcFrame, UInt op
 
 Void PlaYUVerFrameStats::calcHistogram()
 {
-  m_bRunningFlag = true;
-  //m_bHasHistogram = false;
   if( m_bHasHistogram )
     return;
-  getMem1D<UInt>( &( m_puiHistogram ), m_uiHistoSegments * histoChannels );
 
+  m_bHasHistogram = new UInt[m_uiHistoSegments * histoChannels];
+  //getMem1D<UInt>( &( m_puiHistogram ), m_uiHistoSegments * histoChannels );
   if( !m_puiHistogram )
   {
-//    qWarning( ) << "PlaYUVerFrameStats::calcHistogramValuess: "
-//                "Unable to allocate memory!"
-//                << endl;
+//    qWarning() << "PlaYUVerFrameStats::calcHistogramValuess: "
+//        "Unable to allocate memory!" << endl;
     return;
   }
+
+  m_bRunningFlag = true;
 
   UInt i, j;
 
@@ -135,6 +139,7 @@ Void PlaYUVerFrameStats::calcHistogram()
     }
   }
   m_bHasHistogram = true;
+  m_bRunningFlag = false;
 }
 
 Int PlaYUVerFrameStats::getHistogramSegment()

@@ -130,18 +130,14 @@ Void VideoSubWindow::refreshSubWindow()
 {
   if( getCategory() & SubWindowAbstract::VIDEO_STREAM_SUBWINDOW )
   {
-    Int currFrameNum = m_pCurrStream->getCurrFrameNum();
-    if( !loadFile( m_cFilename, false ) )
+    if( !m_pCurrStream->reload() )
     {
       close();
       return;
     }
-    seekAbsoluteEvent( currFrameNum );
+    //seekAbsoluteEvent( currFrameNum );
   }
-  else
-  {
-    refreshFrame();
-  }
+  refreshFrame();
 }
 
 Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )

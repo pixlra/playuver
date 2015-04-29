@@ -384,6 +384,46 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   return m_bInit;
 }
 
+Bool PlaYUVerStream::reload()
+{
+#ifdef USE_FFMPEG
+  if( m_iStreamHandler == FFMPEG )
+  {
+    m_cLibAvContext->closeAvFormat();
+    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_dFrameRate, m_uiTotalFrameNum ) )
+    {
+      throw "Cannot open file using FFmpeg libs";
+    }
+    m_cCodedName = m_cLibAvContext->getCodecName();
+  }
+#endif
+  if( m_iStreamHandler == YUV_IO )
+  {
+    closeFile();
+    if( !openFile() )
+    {
+      return false;
+    }
+    UInt64 frameBytesInput = m_pcCurrFrame->getBytesPerFrame();
+    fseek( m_pFile, 0, SEEK_END );
+    UInt64 fileSize = ftell( m_pFile );
+    m_uiTotalFrameNum = fileSize / frameBytesInput;
+    fseek( m_pFile, 0, SEEK_SET );
+  }
+  if( m_uiWidth <= 0 || m_uiHeight <= 0 || m_iPixelFormat < 0 || m_uiTotalFrameNum < 1 )
+  {
+    return false;
+  }
+  if( UInt( m_iCurrFrameNum ) >= m_uiTotalFrameNum )
+  {
+    m_iCurrFrameNum = 0;
+  }
+  Int currFrameNum = m_iCurrFrameNum;
+  m_iCurrFrameNum = -1;
+  seekInput( currFrameNum );
+  return true;
+}
+
 Bool PlaYUVerStream::openFile()
 {
 //m_fsIOStream.open( m_cFilename,  std::ios::in | std::ios::binary )
@@ -744,6 +784,8 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 #endif
   if( m_iStreamHandler == YUV_IO )
   {
+    if( !m_pFile )
+      return false;
     UInt64 frame_bytes_input = m_ppcFrameBuffer[0]->getBytesPerFrame();
     UInt64 nbytes_seek = frame_bytes_input * new_frame_num;
     fseek( m_pFile, nbytes_seek, SEEK_SET );

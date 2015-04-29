@@ -122,6 +122,9 @@ public:
 
   Bool open( std::string filename, std::string resolution, std::string input_format, UInt bitsPel, UInt frame_rate, Bool bInput = true );
   Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, UInt frame_rate, Bool bInput = true );
+
+  Bool reload();
+
   Void close();
 
   Bool openFile();

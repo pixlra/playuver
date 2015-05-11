@@ -39,24 +39,6 @@ class PlaYUVerFrameStats
 
 public:
 
-  enum StatisticsChannel
-  {
-    LumaChannel = 0,
-    RedChannel = 1,
-    GreenChannel = 2,
-    BlueChannel = 3,
-    AlphaChannel = 4,
-    YChannel = 1,
-    CbChannel = 2,
-    CrChannel = 3
-  };
-
-  enum StatisticsOptions
-  {
-    CalcLumaWhenRGB = 1
-  };
-
-public:
   PlaYUVerFrameStats();
   ~PlaYUVerFrameStats();
 
@@ -97,9 +79,6 @@ private:
   /** The histogram data.*/
   UInt* m_puiHistogram;
 
-  /** If true, calc the luminosity channel histogram when the image is RGB */
-  Bool calcLuma;
-
   /** If the image is RGB and calcLuma is true, we have 1 more channel */
   Int histoChannels;
 
@@ -123,7 +102,7 @@ protected:
 
   Bool m_bHasHistogram;
 
-  Void xSetupStatistics( const PlaYUVerFrame *pcFrame, UInt options = CalcLumaWhenRGB );
+  Void xSetupStatistics( const PlaYUVerFrame *pcFrame );
 
 };
 

@@ -527,24 +527,24 @@ Void HistogramWidget::paintEvent( QPaintEvent * )
   switch( m_channelType )
   {
   case HistogramWidget::FirstChannelHistogram:      // Y channel.
-    max = histogram->getMaximum( PlaYUVerFrameStats::YChannel );
+    max = histogram->getMaximum( LUMA );
     break;
   case HistogramWidget::SecondChannelHistogram:    // Cb channel.
-    max = histogram->getMaximum( PlaYUVerFrameStats::CbChannel );
+    max = histogram->getMaximum( CHROMA_U );
     break;
   case HistogramWidget::ThirdChannelHistogram:     // Cr channel.
-    max = histogram->getMaximum( PlaYUVerFrameStats::CrChannel );
+    max = histogram->getMaximum( CHROMA_V );
     break;
   case HistogramWidget::AlphaChannelHistogram:    // Alpha channel.
-    max = histogram->getMaximum( PlaYUVerFrameStats::AlphaChannel );
+    max = histogram->getMaximum( COLOR_A );
     break;
 
   case HistogramWidget::ColorChannelsHistogram:   // All color channels.
-    max = qMax( qMax( histogram->getMaximum( PlaYUVerFrameStats::YChannel ), histogram->getMaximum( PlaYUVerFrameStats::CbChannel ) ),
-        histogram->getMaximum( PlaYUVerFrameStats::CrChannel ) );
+    max = qMax( qMax( histogram->getMaximum( LUMA ), histogram->getMaximum( CHROMA_U ) ),
+        histogram->getMaximum( CHROMA_V ) );
     break;
   case HistogramWidget::LumaHistogram:            // Luminance.
-    max = histogram->getMaximum( PlaYUVerFrameStats::LumaChannel );
+    max = histogram->getMaximum( LUMA );
     break;
   }
 
@@ -591,24 +591,24 @@ Void HistogramWidget::paintEvent( QPaintEvent * )
       switch( m_channelType )
       {
       case HistogramWidget::FirstChannelHistogram:    // Y channel.
-        v = histogram->getHistogramValue( PlaYUVerFrameStats::YChannel, i++ );
+        v = histogram->getHistogramValue( LUMA, i++ );
         break;
       case HistogramWidget::SecondChannelHistogram:  // Cb channel.
-        v = histogram->getHistogramValue( PlaYUVerFrameStats::CbChannel, i++ );
+        v = histogram->getHistogramValue( CHROMA_U, i++ );
         break;
       case HistogramWidget::ThirdChannelHistogram:   // Cr channel.
-        v = histogram->getHistogramValue( PlaYUVerFrameStats::CrChannel, i++ );
+        v = histogram->getHistogramValue( CHROMA_V, i++ );
         break;
       case HistogramWidget::AlphaChannelHistogram:  // Alpha channel.
-        v = histogram->getHistogramValue( PlaYUVerFrameStats::AlphaChannel, i++ );
+        v = histogram->getHistogramValue( COLOR_A, i++ );
         break;
       case HistogramWidget::ColorChannelsHistogram:  // All color.
-        vr = histogram->getHistogramValue( PlaYUVerFrameStats::YChannel, i );
-        vg = histogram->getHistogramValue( PlaYUVerFrameStats::CbChannel, i );
-        vb = histogram->getHistogramValue( PlaYUVerFrameStats::CrChannel, i++ );
+        vr = histogram->getHistogramValue( LUMA, i );
+        vg = histogram->getHistogramValue( CHROMA_U, i );
+        vb = histogram->getHistogramValue( CHROMA_U, i++ );
         break;
       case HistogramWidget::LumaHistogram:           // Luminance.
-        v = histogram->getHistogramValue( PlaYUVerFrameStats::LumaChannel, i++ );
+        v = histogram->getHistogramValue( LUMA, i++ );
         break;
 
       }

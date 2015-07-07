@@ -330,7 +330,7 @@ Void VideoSubWindow::updateVideoWindowInfo()
         }
       }
     }
-    qDebug( ) << sourceWindowList;
+    //qDebug( ) << sourceWindowList;
     if( sourceWindowList.size() > 0 )
     {
       m_pcVideoInfo->setInformationTopLeft( sourceWindowList );

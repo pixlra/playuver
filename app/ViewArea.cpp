@@ -537,6 +537,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
 
 
   // VISIBLE ZOOM RECT
+#if 0
   if( m_visibleZoomRect && m_zoomWinTimer.isActive() )
   {
     double dRatio = m_dZoomWinRatio;
@@ -577,10 +578,10 @@ void ViewArea::paintEvent( QPaintEvent *event )
     painter.setPen(QColor(255, 255, 255, 128));
     painter.drawRect(cVisibleWinRect);
 
-    qDebug() << "Debug VisibleZoomRect: " << winRect << vr << cImgWinRect << cVisibleWinRect << cVisibleImg << dRatio;
+    //qDebug() << "Debug VisibleZoomRect: " << winRect << vr << cImgWinRect << cVisibleWinRect << cVisibleImg << dRatio;
 
   }
-
+#endif
 
   QRect sr = viewToWindow( m_selectedArea );
   QRect ir = sr & winRect;

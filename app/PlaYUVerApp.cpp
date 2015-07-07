@@ -547,8 +547,9 @@ Void PlaYUVerApp::update()
       updateZoomFactorSBox();
     }
   }
-  m_appModuleVideo->update( m_pcCurrentVideoSubWindow );
+  //! Check this - these two function should swap order
   m_appModuleQuality->update( m_pcCurrentVideoSubWindow );
+  m_appModuleVideo->update( m_pcCurrentVideoSubWindow );
   updateMenus();
 }
 

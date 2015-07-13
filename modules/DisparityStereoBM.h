@@ -40,7 +40,13 @@ REGISTER_CLASS_FACTORY( DisparityStereoBM )
 
 private:
   PlaYUVerFrame* m_pcDisparityFrame;
+  UInt m_uiBlockSize;
+#if( CV_MAJOR_VERSION == 2)
   cv::StereoBM m_cStereoBM;
+#else
+  cv::Ptr<cv::StereoBM> m_cStereoBM;
+#endif
+
 public:
   DisparityStereoBM();
   virtual ~DisparityStereoBM()

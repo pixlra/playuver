@@ -38,20 +38,34 @@ class OpionConfiguration: public QWidget
 public:
   OpionConfiguration( OptionBase* option )
   {
+    m_pcChecked = NULL;
     m_cName = option->opt_string;
     m_pcDescription = new QLabel;
     m_pcDescription->setText( QString::fromStdString( option->opt_desc ) );
-    m_pcValue = new QLineEdit;
-    m_pcValue->setMinimumWidth( 40 );
-    m_pcValue->setMaximumWidth( 65 );
     QHBoxLayout* layout = new QHBoxLayout;
     layout->addWidget( m_pcDescription, Qt::AlignLeft );
-    layout->addWidget( m_pcValue, Qt::AlignRight );
+    if( !option->isBinary() )
+    {
+      m_pcValue = new QLineEdit;
+      m_pcValue->setMinimumWidth( 40 );
+      m_pcValue->setMaximumWidth( 65 );
+      layout->addWidget( m_pcValue, Qt::AlignRight );
+    }
+    else
+    {
+      m_pcChecked = new QCheckBox;
+      m_pcChecked->setChecked( false );
+      layout->addWidget( m_pcChecked, Qt::AlignRight );
+    }
     layout->setContentsMargins( 1, 1, 1, 1 );
     setLayout( layout );
   }
   const QString getValue() const
   {
+    if( m_pcChecked )
+    {
+      return m_pcChecked->isChecked() ? "true" : "";
+    }
     return m_pcValue->text();
   }
   const std::string& getName()
@@ -60,6 +74,7 @@ public:
   }
 private:
   QLineEdit* m_pcValue;
+  QCheckBox* m_pcChecked;
   QLabel* m_pcDescription;
   std::string m_cName;
 };
@@ -116,8 +131,11 @@ Int ModulesHandleOptDialog::runConfiguration()
     {
       optionString.append( "--" );
       optionString.append( m_apcOptionList.at( i )->getName() );
-      optionString.append( "=" );
-      optionString.append( valueString.toStdString() );
+      if( !( valueString == "true" ) )
+      {
+        optionString.append( "=" );
+        optionString.append( valueString.toStdString() );
+      }
       argsArray.push_back( optionString );
     }
     optionString.clear();

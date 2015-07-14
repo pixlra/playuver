@@ -63,7 +63,6 @@ struct ParseFailure: public std::exception
   ~ParseFailure() throw()
   {
   }
-  ;
 
   std::string arg;
   std::string val;
@@ -85,7 +84,6 @@ struct OptionBase
           opt_desc( desc )
   {
   }
-  ;
 
   virtual ~OptionBase()
   {
@@ -99,10 +97,15 @@ struct OptionBase
   {
     return arg_count;
   }
+  Bool isBinary()
+  {
+    return is_binary;
+  }
 
   int arg_count;
   std::string opt_string;
   std::string opt_desc;
+  Bool is_binary;
 };
 
 /** Type specific option storage */
@@ -113,6 +116,7 @@ struct FlagOpt: public OptionBase
           opt_storage( false ),
           opt_default_val( default_val )
   {
+    is_binary = true;
   }
 
   void parse( const std::string& arg )
@@ -137,6 +141,7 @@ struct StandardOpt: public OptionBase
           OptionBase( name, desc ),
           opt_storage( storage )
   {
+    is_binary = false;
   }
 
   void parse( const std::string& arg );
@@ -194,6 +199,7 @@ struct OptionFunc: public OptionBase
           parent( parent_ ),
           func( func_ )
   {
+    is_binary = false;
   }
 
   void parse( const std::string& arg )

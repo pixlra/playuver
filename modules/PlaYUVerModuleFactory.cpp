@@ -46,6 +46,7 @@ PlaYUVerModuleFactory::PlaYUVerModuleFactory()
 #ifdef USE_OPENCV
   //Register( "DisparityStereoVar", &DisparityStereoVar::Create );
   Register( "DisparityStereoBM", &DisparityStereoBM::Create );
+  Register( "DisparityStereoSGBM", &DisparityStereoSGBM::Create );
 #endif
 
 }

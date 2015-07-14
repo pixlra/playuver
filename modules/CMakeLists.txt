@@ -43,6 +43,7 @@ ADD_MODULE( FrameCrop "FrameCrop" )
 ADD_MODULE( LumaAverage "LumaAverage" )
 IF( USE_OPENCV )
   ADD_MODULE( DisparityStereoBM "DisparityStereoBM" )
+  ADD_MODULE( DisparityStereoSGBM "DisparityStereoSGBM" )
   #ADD_MODULE( DisparityStereoVar "DisparityStereoVar" )
 ENDIF()
 

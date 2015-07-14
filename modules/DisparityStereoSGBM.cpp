@@ -18,37 +18,38 @@
  */
 
 /**
- * \file     DisparityStereoBM.cpp
- * \brief    Measure the disparity between two images using the Stereo Var method (OpenCV)
+ * \file     DisparityStereoSGBM.cpp
+ * \brief    Measure the disparity between two images using the SGBM method (OpenCV)
  */
 
 #include <cstdio>
 
-#include "DisparityStereoBM.h"
+#include "DisparityStereoSGBM.h"
 
 namespace plaYUVer
 {
 
-DisparityStereoBM::DisparityStereoBM()
+DisparityStereoSGBM::DisparityStereoSGBM()
 {
   /* Module Definition */
   m_iModuleAPI = MODULE_API_2;
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Stereo";
-  m_pchModuleName = "Disparity-BM";
-  m_pchModuleTooltip = "Measure the disparity between two images using the Stereo BM method (OpenCV)";
+  m_pchModuleName = "Disparity-SGBM";
+  m_pchModuleTooltip = "Measure the disparity between two images using the Stereo SGBM method (OpenCV)";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
   m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions()/**/
-  ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [9]" );
+  ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [3]" );
+  //( "HHAlgorithm", m_bUseHH, "Use HH algorithm [false]" );
 
   m_pcDisparityFrame = NULL;
   m_uiBlockSize = 9;
 
 }
 
-Bool DisparityStereoBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
+Bool DisparityStereoSGBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
   m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
@@ -57,32 +58,24 @@ Bool DisparityStereoBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
     m_uiBlockSize++;
   }
   m_uiNumberOfDisparities = ( ( apcFrameList[0]->getWidth() / 8 ) + 15 ) & -16;
-#if( CV_MAJOR_VERSION == 2)
-  m_cStereoBM.state->preFilterCap = 31;
-  m_cStereoBM.state->SADWindowSize = 9;
-  m_cStereoBM.state->minDisparity = 0;
-  m_cStereoBM.state->textureThreshold = 10;
-  m_cStereoBM.state->uniquenessRatio = 15;
-  m_cStereoBM.state->speckleWindowSize = 100;
-  m_cStereoBM.state->speckleRange = 32;
-  m_cStereoBM.state->disp12MaxDiff = 1;
-  m_cStereoBM.state->SADWindowSize = m_uiBlockSize;
-  m_cStereoBM.state->numberOfDisparities = m_uiNumberOfDisparities;
-#else
-  m_cStereoBM = cv::StereoBM::create( 16, m_uiBlockSize );
-  m_cStereoBM->setPreFilterCap( 31 );
-  m_cStereoBM->setBlockSize( m_uiBlockSize );
-  m_cStereoBM->setMinDisparity( 0 );
-  m_cStereoBM->setNumDisparities( m_uiNumberOfDisparities );
-  m_cStereoBM->setTextureThreshold( 10 );
-  m_cStereoBM->setUniquenessRatio( 15 );
-  m_cStereoBM->setSpeckleWindowSize( 100 );
-  m_cStereoBM->setSpeckleRange( 32 );
-  m_cStereoBM->setDisp12MaxDiff( 1 );
+#if( CV_MAJOR_VERSION == 3)
+  m_cStereoMatch = cv::StereoSGBM::create( 0, 16, m_uiBlockSize );
+  m_cStereoMatch->setPreFilterCap(63);
+  int cn = apcFrameList[0]->getNumberChannels();
+  m_cStereoMatch->setP1( 8 * cn * m_uiBlockSize * m_uiBlockSize );
+  m_cStereoMatch->setP2( 32 * cn * m_uiBlockSize * m_uiBlockSize );
+  m_cStereoMatch->setMinDisparity( 0 );
+  m_cStereoMatch->setNumDisparities( m_uiNumberOfDisparities );
+  m_cStereoMatch->setUniquenessRatio( 10 );
+  m_cStereoMatch->setSpeckleWindowSize( 100 );
+  m_cStereoMatch->setSpeckleRange( 32 );
+  m_cStereoMatch->setDisp12MaxDiff( 1 );
+  //m_cStereoMatch->setMode( alg == STEREO_HH ? StereoSGBM::MODE_HH : StereoSGBM::MODE_SGBM );
+  m_cStereoMatch->setMode( m_bUseHH ? cv::StereoSGBM::MODE_HH :cv::StereoSGBM::MODE_SGBM );
 #endif
   return true;
 }
-PlaYUVerFrame* DisparityStereoBM::process( std::vector<PlaYUVerFrame*> apcFrameList )
+PlaYUVerFrame* DisparityStereoSGBM::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   PlaYUVerFrame* InputLeft = apcFrameList[0];
   PlaYUVerFrame* InputRight = apcFrameList[1];
@@ -91,10 +84,10 @@ PlaYUVerFrame* DisparityStereoBM::process( std::vector<PlaYUVerFrame*> apcFrameL
   cv::Mat* rightImage = InputRight->getCvMat( true );
   cv::Mat disparityImage, disparityImage8;
 
-#if( CV_MAJOR_VERSION == 2)
-  m_cStereoBM( *leftImage, *rightImage, disparityImage );
+#if( CV_MAJOR_VERSION == 3)
+  m_cStereoMatch->compute( *leftImage, *rightImage, disparityImage );
 #else
-  m_cStereoBM->compute( *leftImage, *rightImage, disparityImage );
+  m_cStereoMatch( *leftImage, *rightImage, disparityImage );
 #endif
 
   disparityImage.convertTo( disparityImage8, CV_8U );
@@ -103,7 +96,7 @@ PlaYUVerFrame* DisparityStereoBM::process( std::vector<PlaYUVerFrame*> apcFrameL
   return m_pcDisparityFrame;
 }
 
-Void DisparityStereoBM::destroy()
+Void DisparityStereoSGBM::destroy()
 {
   if( m_pcDisparityFrame )
     delete m_pcDisparityFrame;

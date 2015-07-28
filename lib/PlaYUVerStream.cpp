@@ -179,7 +179,7 @@ Void PlaYUVerStream::findHandler()
 #ifdef USE_FFMPEG
     for( UInt i = 0; i < LibAvContextHandle::supportedReadFormatsExt().size(); i++ )
     {
-      if( LibAvContextHandle::supportedReadFormatsExt()[i] == currExt )
+      if( LibAvContextHandle::supportedReadFormatsExt()[i] == lowercase( currExt ) )
       {
         m_cFormatName = LibAvContextHandle::supportedReadFormatsExt()[i];
         m_iStreamHandler = FFMPEG;
@@ -195,7 +195,7 @@ Void PlaYUVerStream::findHandler()
 #ifdef USE_FFMPEG
     for( UInt i = 0; i < LibAvContextHandle::supportedWriteFormatsExt().size(); i++ )
     {
-      if( LibAvContextHandle::supportedWriteFormatsExt()[i] == currExt )
+      if( LibAvContextHandle::supportedWriteFormatsExt()[i] == lowercase( currExt ) )
       {
         m_cFormatName = LibAvContextHandle::supportedWriteFormatsExt()[i];
         m_iStreamHandler = FFMPEG;

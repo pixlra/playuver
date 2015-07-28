@@ -41,11 +41,12 @@ DisparityStereoSGBM::DisparityStereoSGBM()
   m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions()/**/
-  ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [3]" );
-  //( "HHAlgorithm", m_bUseHH, "Use HH algorithm [false]" );
+  ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [3]" )
+  ( "HHAlgorithm", m_bUseHH, "Use HH algorithm [false]" );
 
   m_pcDisparityFrame = NULL;
-  m_uiBlockSize = 9;
+  m_uiBlockSize = 3;
+  m_uiNumberOfDisparities = 0;
 
 }
 
@@ -75,6 +76,7 @@ Bool DisparityStereoSGBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
 #endif
   return true;
 }
+
 PlaYUVerFrame* DisparityStereoSGBM::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   PlaYUVerFrame* InputLeft = apcFrameList[0];

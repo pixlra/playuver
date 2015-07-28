@@ -43,19 +43,19 @@ public:
     m_pcDescription = new QLabel;
     m_pcDescription->setText( QString::fromStdString( option->opt_desc ) );
     QHBoxLayout* layout = new QHBoxLayout;
-    layout->addWidget( m_pcDescription, Qt::AlignLeft );
+    layout->addWidget( m_pcDescription, 0, Qt::AlignLeft );
     if( !option->isBinary() )
     {
       m_pcValue = new QLineEdit;
       m_pcValue->setMinimumWidth( 40 );
       m_pcValue->setMaximumWidth( 65 );
-      layout->addWidget( m_pcValue, Qt::AlignRight );
+      layout->addWidget( m_pcValue, 0, Qt::AlignRight );
     }
     else
     {
       m_pcChecked = new QCheckBox;
       m_pcChecked->setChecked( false );
-      layout->addWidget( m_pcChecked, Qt::AlignRight );
+      layout->addWidget( m_pcChecked, 0, Qt::AlignRight );
     }
     layout->setContentsMargins( 1, 1, 1, 1 );
     setLayout( layout );

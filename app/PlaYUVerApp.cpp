@@ -259,17 +259,16 @@ Void PlaYUVerApp::open()
 {
   QString supported = tr( "Supported Files (" );
   QStringList formatsList;
-  std::vector<std::string> formatsExt = PlaYUVerStream::supportedReadFormatsExt();
-  std::vector<std::string> formatsName = PlaYUVerStream::supportedReadFormatsName();
+  std::vector<PlaYUVerSupportedFormat> supportedFmts = PlaYUVerStream::supportedReadFormats();
 
-  for( UInt i = 0; i < formatsName.size(); i++ )
+  for( UInt i = 0; i < supportedFmts.size(); i++ )
   {
     QString currFmt;
     supported.append( " *." );
-    supported.append( QString::fromStdString( formatsExt[i] ) );
-    currFmt.append( QString::fromStdString( formatsName[i] ) );
+    supported.append( QString::fromStdString( supportedFmts[i].formatExt ) );
+    currFmt.append( QString::fromStdString( supportedFmts[i].formatName ) );
     currFmt.append( " (*." );
-    currFmt.append( QString::fromStdString( formatsExt[i] ) );
+    currFmt.append( QString::fromStdString( supportedFmts[i].formatExt ) );
     currFmt.append( ")" );
     formatsList << currFmt;
   }
@@ -306,17 +305,16 @@ Void PlaYUVerApp::save()
     VideoSubWindow *saveWindow = m_pcCurrentVideoSubWindow;
     QString supported = tr( "Supported Files (" );
     QStringList formatsList;
-    std::vector<std::string> formatsExt = PlaYUVerStream::supportedSaveFormatsExt();
-    std::vector<std::string> formatsName = PlaYUVerStream::supportedSaveFormatsName();
 
-    for( UInt i = 0; i < formatsName.size(); i++ )
+    std::vector<PlaYUVerSupportedFormat> supportedFmts = PlaYUVerStream::supportedSaveFormats();
+    for( UInt i = 0; i < supportedFmts.size(); i++ )
     {
       QString currFmt;
       supported.append( " *." );
-      supported.append( QString::fromStdString( formatsExt[i] ) );
-      currFmt.append( QString::fromStdString( formatsName[i] ) );
+      supported.append( QString::fromStdString( supportedFmts[i].formatExt ) );
+      currFmt.append( QString::fromStdString( supportedFmts[i].formatName ) );
       currFmt.append( " (*." );
-      currFmt.append( QString::fromStdString( formatsExt[i] ) );
+      currFmt.append( QString::fromStdString( supportedFmts[i].formatExt ) );
       currFmt.append( ")" );
       formatsList << currFmt;
     }

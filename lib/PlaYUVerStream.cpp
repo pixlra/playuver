@@ -38,71 +38,44 @@
 namespace plaYUVer
 {
 
-std::vector<std::string> PlaYUVerStream::supportedReadFormatsExt()
+std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
 {
-  std::vector<std::string> formatsExt;
-  formatsExt.push_back( "yuv" );
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Raw Video", "yuv" );
 #ifdef USE_FFMPEG
-  std::vector<std::string> libAvFmt = LibAvContextHandle::supportedReadFormatsExt();
-  formatsExt.insert( formatsExt.end(), libAvFmt.begin(), libAvFmt.end() );
+  APPEND_PLAYUVER_SUPPORTED_FMT( LibAvContextHandle, Read );
 #endif
 //#ifdef USE_OPENCV
-//  std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedReadFormatsExt();
-//  formatsExt.insert( formatsExt.end(), opencvFmt.begin(), opencvFmt.end() );
+//  APPEND_PLAYUVER_SUPPORTED_FMT( LibOpenCVHandler );
 //#endif
-  return formatsExt;
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
-std::vector<std::string> PlaYUVerStream::supportedReadFormatsName()
+std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedWriteFormats()
 {
-  std::vector<std::string> formatsName;
-  formatsName.push_back( "Raw video" );
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Raw Video", "yuv" );
 #ifdef USE_FFMPEG
-  std::vector<std::string> libAvFmt = LibAvContextHandle::supportedReadFormatsName();
-  formatsName.insert( formatsName.end(), libAvFmt.begin(), libAvFmt.end() );
+  APPEND_PLAYUVER_SUPPORTED_FMT( LibAvContextHandle, Write );
 #endif
-//#ifdef USE_OPENCV
-//  std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedReadFormatsName();
-//  formatsName.insert( formatsName.end(), opencvFmt.begin(), opencvFmt.end() );
-//#endif
-  return formatsName;
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
-std::vector<std::string> PlaYUVerStream::supportedWriteFormatsExt()
+std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedSaveFormats()
 {
-  std::vector<std::string> formatsExt;
-  formatsExt.push_back( "yuv" );
-  return formatsExt;
-}
-
-std::vector<std::string> PlaYUVerStream::supportedWriteFormatsName()
-{
-  std::vector<std::string> formatsName;
-  formatsName.push_back( "Raw video" );
-  return formatsName;
-}
-
-std::vector<std::string> PlaYUVerStream::supportedSaveFormatsExt()
-{
-  std::vector<std::string> formatsExt = supportedWriteFormatsExt();
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  APPEND_PLAYUVER_SUPPORTED_FMT( PlaYUVerStream, Write );
+#ifdef USE_FFMPEG
+  APPEND_PLAYUVER_SUPPORTED_FMT( LibAvContextHandle, Save );
+#endif
 #ifdef USE_OPENCV
-  std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedSaveFormatsExt();
-  formatsExt.insert( formatsExt.end(), opencvFmt.begin(), opencvFmt.end() );
+  APPEND_PLAYUVER_SUPPORTED_FMT( LibOpenCVHandler, Save );
 #endif
-  formatsExt.erase( unique( formatsExt.begin(), formatsExt.end() ), formatsExt.end() );
-  return formatsExt;
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
-std::vector<std::string> PlaYUVerStream::supportedSaveFormatsName()
+std::vector<PlaYUVerStdResolution> PlaYUVerStream::stdResolutionSizes()
 {
-  std::vector<std::string> formatsName = supportedWriteFormatsName();
-#ifdef USE_OPENCV
-  std::vector<std::string> opencvFmt = LibOpenCVHandler::supportedSaveFormatsName();
-  formatsName.insert( formatsName.end(), opencvFmt.begin(), opencvFmt.end() );
-#endif
-  formatsName.erase( unique( formatsName.begin(), formatsName.end() ), formatsName.end() );
-  return formatsName;
-}
 
 #define REGIST_PLAYUVER_STANDARD_RESOLUTION( name, width, height) \
     stdResElement.shortName = name; \
@@ -110,8 +83,6 @@ std::vector<std::string> PlaYUVerStream::supportedSaveFormatsName()
     stdResElement.uiHeight = height; \
     stdResList.push_back( stdResElement );
 
-std::vector<PlaYUVerStdResolution> PlaYUVerStream::stdResolutionSizes()
-{
   std::vector<PlaYUVerStdResolution> stdResList;
   PlaYUVerStdResolution stdResElement;
   REGIST_PLAYUVER_STANDARD_RESOLUTION( "CIF", 352, 288 );
@@ -174,14 +145,17 @@ Void PlaYUVerStream::findHandler()
   }
 
   std::string currExt = m_cFilename.substr( m_cFilename.find_last_of( "." ) + 1 );
+  currExt = lowercase( currExt );
+
   if( m_bIsInput )
   {
 #ifdef USE_FFMPEG
-    for( UInt i = 0; i < LibAvContextHandle::supportedReadFormatsExt().size(); i++ )
+    std::vector<PlaYUVerSupportedFormat> supportedFmts = LibAvContextHandle::supportedReadFormats();
+    for( UInt i = 0; i < supportedFmts.size(); i++ )
     {
-      if( LibAvContextHandle::supportedReadFormatsExt()[i] == lowercase( currExt ) )
+      if( supportedFmts[i].formatExt == currExt )
       {
-        m_cFormatName = LibAvContextHandle::supportedReadFormatsExt()[i];
+        m_cFormatName = supportedFmts[i].formatExt[i];
         m_iStreamHandler = FFMPEG;
         return;
       }
@@ -193,11 +167,12 @@ Void PlaYUVerStream::findHandler()
   else
   {
 #ifdef USE_FFMPEG
-    for( UInt i = 0; i < LibAvContextHandle::supportedWriteFormatsExt().size(); i++ )
+    std::vector<PlaYUVerSupportedFormat> supportedFmts = LibAvContextHandle::supportedWriteFormats();
+    for( UInt i = 0; i < supportedFmts.size(); i++ )
     {
-      if( LibAvContextHandle::supportedWriteFormatsExt()[i] == lowercase( currExt ) )
+      if( supportedFmts[i].formatExt == currExt )
       {
-        m_cFormatName = LibAvContextHandle::supportedWriteFormatsExt()[i];
+        m_cFormatName = supportedFmts[i].formatExt;
         m_iStreamHandler = FFMPEG;
         return;
       }
@@ -651,12 +626,13 @@ Bool PlaYUVerStream::saveFrame( const std::string& filename, PlaYUVerFrame *save
 //std::string currExt = QFileInfo( qtString ).suffix().toStdString();
   std::string currExt = filename.substr( filename.find_last_of( "." ) + 1 );
 
-  for( UInt i = 0; i < PlaYUVerStream::supportedSaveFormatsExt().size(); i++ )
+  std::vector<PlaYUVerSupportedFormat> supportedFmts = PlaYUVerStream::supportedSaveFormats();
+  for( UInt i = 0; i < supportedFmts.size(); i++ )
   {
-    if( PlaYUVerStream::supportedSaveFormatsExt()[i] == currExt )
+    if( supportedFmts[i].formatExt == currExt )
     {
       iFileFormat = i;
-      fmtExt = PlaYUVerStream::supportedSaveFormatsExt()[i];
+      fmtExt = supportedFmts[i].formatExt[i];
       break;
     }
   }

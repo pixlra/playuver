@@ -48,6 +48,7 @@ extern "C"
 }
 
 #include "PlaYUVerDefs.h"
+#include "PlaYUVerStream.h"
 
 namespace plaYUVer
 {
@@ -56,12 +57,9 @@ class LibAvContextHandle
 {
 public:
 
-  static std::vector<std::string> supportedReadFormatsExt();
-  static std::vector<std::string> supportedReadFormatsName();
-  static std::vector<std::string> supportedWriteFormatsExt();
-  static std::vector<std::string> supportedWriteFormatsName();
-  static std::vector<std::string> supportedSaveFormatsExt();
-  static std::vector<std::string> supportedSaveFormatsName();
+  static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
+  static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
+  static std::vector<PlaYUVerSupportedFormat> supportedSaveFormats();
 
   LibAvContextHandle() :
           m_bHasStream( false )

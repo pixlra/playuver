@@ -45,6 +45,30 @@ typedef struct
   UInt uiHeight;
 } PlaYUVerStdResolution;
 
+typedef struct
+{
+  std::string formatName;
+  std::string formatExt;
+} PlaYUVerSupportedFormat;
+
+#define INI_REGIST_PLAYUVER_SUPPORTED_FMT \
+  std::vector<PlaYUVerSupportedFormat> formatsList; \
+  PlaYUVerSupportedFormat formatElem;
+
+#define END_REGIST_PLAYUVER_SUPPORTED_FMT \
+        return formatsList;
+
+#define REGIST_PLAYUVER_SUPPORTED_FMT( name, ext ) \
+        formatElem.formatName = name; \
+        formatElem.formatExt = lowercase( ext ); \
+        formatsList.push_back( formatElem );
+
+#define APPEND_PLAYUVER_SUPPORTED_FMT( class_name, fct ) \
+  { \
+    std::vector<PlaYUVerSupportedFormat> new_fmts = class_name::supported##fct##Formats(); \
+    formatsList.insert( formatsList.end(), new_fmts.begin(), new_fmts.end() ); \
+  }
+
 /**
  * \class PlaYUVerStream
  * \ingroup  PlaYUVerLib PlaYUVerLib_Stream
@@ -99,12 +123,9 @@ private:
 
 public:
 
-  static std::vector<std::string> supportedReadFormatsExt();
-  static std::vector<std::string> supportedReadFormatsName();
-  static std::vector<std::string> supportedWriteFormatsExt();
-  static std::vector<std::string> supportedWriteFormatsName();
-  static std::vector<std::string> supportedSaveFormatsExt();
-  static std::vector<std::string> supportedSaveFormatsName();
+  static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
+  static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
+  static std::vector<PlaYUVerSupportedFormat> supportedSaveFormats();
 
   static std::vector<PlaYUVerStdResolution> stdResolutionSizes();
 

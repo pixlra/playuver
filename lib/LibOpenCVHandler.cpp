@@ -32,46 +32,27 @@
 namespace plaYUVer
 {
 
-std::vector<std::string> LibOpenCVHandler::supportedReadFormatsExt()
+std::vector<PlaYUVerSupportedFormat> LibOpenCVHandler::supportedReadFormats()
 {
-  std::vector<std::string> formatsExt;
-  formatsExt.push_back( "pgm" );
-  formatsExt.push_back( "png" );
-  formatsExt.push_back( "bmp" );
-  formatsExt.push_back( "jpg" );
-  return formatsExt;
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Portable Grayscale Map ", "pgm" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Portable Network Graphics", "png" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Joint Photographic Experts Group", "jpg" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Windows Bitmap", "bmp" );
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
-std::vector<std::string> LibOpenCVHandler::supportedReadFormatsName()
+std::vector<PlaYUVerSupportedFormat> LibOpenCVHandler::supportedWriteFormats()
 {
-  std::vector<std::string> formatsName;
-  formatsName.push_back( "Portable Grayscale Map" );
-  formatsName.push_back( "Portable Network Graphics" );
-  formatsName.push_back( "Windows Bitmap" );
-  formatsName.push_back( "Joint Photographic Experts Group" );
-  return formatsName;
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
-std::vector<std::string> LibOpenCVHandler::supportedWriteFormatsExt()
+std::vector<PlaYUVerSupportedFormat> LibOpenCVHandler::supportedSaveFormats()
 {
-  std::vector<std::string> formatsExt;
-  return formatsExt;
-}
-
-std::vector<std::string> LibOpenCVHandler::supportedWriteFormatsName()
-{
-  std::vector<std::string> formatsName;
-  return formatsName;
-}
-
-std::vector<std::string> LibOpenCVHandler::supportedSaveFormatsExt()
-{
-  return supportedReadFormatsExt();
-}
-
-std::vector<std::string> LibOpenCVHandler::supportedSaveFormatsName()
-{
-  return supportedReadFormatsName();
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  APPEND_PLAYUVER_SUPPORTED_FMT( LibOpenCVHandler, Read );
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
 PlaYUVerFrame* LibOpenCVHandler::loadFrame( std::string filename )

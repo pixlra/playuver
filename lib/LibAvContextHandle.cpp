@@ -32,54 +32,30 @@
 namespace plaYUVer
 {
 
-std::vector<std::string> LibAvContextHandle::supportedReadFormatsExt()
+std::vector<PlaYUVerSupportedFormat> LibAvContextHandle::supportedReadFormats()
 {
-  std::vector<std::string> formatsExt;
-  formatsExt.push_back( "avi" );
-  formatsExt.push_back( "mp4" );
-  formatsExt.push_back( "wmv" );
-  formatsExt.push_back( "pgm" );
-  formatsExt.push_back( "png" );
-  formatsExt.push_back( "bmp" );
-  formatsExt.push_back( "jpg" );
-  return formatsExt;
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Portable Grayscale Map ", "pgm" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Portable Network Graphics", "png" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Joint Photographic Experts Group", "jpg" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Windows Bitmap", "bmp" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Audio video interleaved", "avi" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Windows media video", "wmv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "MPEG4", "mp4" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Matroska Multimedia Container", "mkv" );
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
-std::vector<std::string> LibAvContextHandle::supportedReadFormatsName()
+std::vector<PlaYUVerSupportedFormat> LibAvContextHandle::supportedWriteFormats()
 {
-  std::vector<std::string> formatsName;
-  formatsName.push_back( "Audio video interleaved" );
-  formatsName.push_back( "MPEG4" );
-  formatsName.push_back( "Windows media video" );
-  formatsName.push_back( "Portable Grayscale Map" );
-  formatsName.push_back( "Portable Network Graphics" );
-  formatsName.push_back( "Windows Bitmap" );
-  formatsName.push_back( "Joint Photographic Experts Group" );
-  return formatsName;
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
-std::vector<std::string> LibAvContextHandle::supportedWriteFormatsExt()
+std::vector<PlaYUVerSupportedFormat> LibAvContextHandle::supportedSaveFormats()
 {
-  std::vector<std::string> formatsExt;
-  return formatsExt;
-}
-
-std::vector<std::string> LibAvContextHandle::supportedWriteFormatsName()
-{
-  std::vector<std::string> formatsName;
-  return formatsName;
-}
-
-std::vector<std::string> LibAvContextHandle::supportedSaveFormatsExt()
-{
-  std::vector<std::string> formatsExt;
-  return formatsExt;
-}
-
-std::vector<std::string> LibAvContextHandle::supportedSaveFormatsName()
-{
-  std::vector<std::string> formatsName;
-  return formatsName;
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
 static int open_codec_context( int *stream_idx, AVFormatContext *fmt_ctx, enum AVMediaType type )

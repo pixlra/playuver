@@ -103,22 +103,15 @@ public:
   }
 
   virtual void Delete() = 0;
+  virtual Void destroy() = 0;
 
-  virtual Void create()
-  {
-  }
+  /**
+   * Module API version 1
+   */
   virtual Void create( PlaYUVerFrame* )
   {
   }
-  virtual Bool create( std::vector<PlaYUVerFrame*> apcFrameList )
-  {
-    return false;
-  }
   virtual PlaYUVerFrame* process( PlaYUVerFrame* )
-  {
-    return NULL;
-  }
-  virtual PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> )
   {
     return NULL;
   }
@@ -126,12 +119,22 @@ public:
   {
     return 0;
   }
+
+  /**
+   * Module API version 2
+   */
+  virtual Bool create( std::vector<PlaYUVerFrame*> apcFrameList )
+  {
+    return false;
+  }
+  virtual PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> )
+  {
+    return NULL;
+  }
   virtual Double measure( std::vector<PlaYUVerFrame*> )
   {
     return 0;
   }
-
-  virtual Void destroy() = 0;
 
 };
 

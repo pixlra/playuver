@@ -34,10 +34,11 @@ FilterComponentModule::FilterComponentModule()
   m_pcFilteredFrame = NULL;
 }
 
-Void FilterComponentModule::createFilter( UInt uiWidth, UInt uiHeight, UInt bitsPixel )
+Bool FilterComponentModule::createFilter( UInt uiWidth, UInt uiHeight, UInt bitsPixel )
 {
   m_pcFilteredFrame = NULL;
   m_pcFilteredFrame = new PlaYUVerFrame( uiWidth, uiHeight, PlaYUVerFrame::GRAY, bitsPixel );
+  return true;
 }
 
 PlaYUVerFrame* FilterComponentModule::filterComponent( PlaYUVerFrame* InputFrame, Int Component )
@@ -58,6 +59,7 @@ Void FilterComponentModule::destroy()
 FilterComponentLuma::FilterComponentLuma()
 {
   /* Module Definition */
+  m_iModuleAPI = MODULE_API_2;
   m_iModuleType = FRAME_PROCESSING_MODULE;              // Apply module to the frames or to the whole sequence.
                                                         // Currently only support for frame
   m_pchModuleCategory = "FilterComponent";              // Category (sub-menu)
@@ -68,19 +70,20 @@ FilterComponentLuma::FilterComponentLuma()
                                                         // Several requirements should be "or" between each others.
 }
 
-Void FilterComponentLuma::create( PlaYUVerFrame* InputFrame )
+Bool FilterComponentLuma::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  createFilter( InputFrame->getWidth(), InputFrame->getHeight(), InputFrame->getBitsPel() );
+  return createFilter( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), apcFrameList[0]->getBitsPel() );
 }
 
-PlaYUVerFrame* FilterComponentLuma::process( PlaYUVerFrame* InputFrame )
+PlaYUVerFrame* FilterComponentLuma::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  return filterComponent( InputFrame, LUMA );
+  return filterComponent( apcFrameList[0], LUMA );
 }
 
 FilterComponentChromaU::FilterComponentChromaU()
 {
   /* Module Definition */
+  m_iModuleAPI = MODULE_API_2;
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "FilterComponent";
   m_pchModuleName = "ChromaU";
@@ -89,19 +92,24 @@ FilterComponentChromaU::FilterComponentChromaU()
   m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
 }
 
-Void FilterComponentChromaU::create( PlaYUVerFrame* InputFrame )
+Bool FilterComponentChromaU::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  createFilter( InputFrame->getChromaWidth(), InputFrame->getChromaHeight(), InputFrame->getBitsPel() );
+  if( apcFrameList[0]->getNumberChannels() > 1 )
+  {
+    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(), apcFrameList[0]->getBitsPel() );
+  }
+  return false;
 }
 
-PlaYUVerFrame* FilterComponentChromaU::process( PlaYUVerFrame* InputFrame )
+PlaYUVerFrame* FilterComponentChromaU::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  return filterComponent( InputFrame, CHROMA_U );
+  return filterComponent( apcFrameList[0], CHROMA_U );
 }
 
 FilterComponentChromaV::FilterComponentChromaV()
 {
   /* Module Definition */
+  m_iModuleAPI = MODULE_API_2;
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "FilterComponent";
   m_pchModuleName = "ChromaV";
@@ -110,14 +118,18 @@ FilterComponentChromaV::FilterComponentChromaV()
   m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
 }
 
-Void FilterComponentChromaV::create( PlaYUVerFrame* InputFrame )
+Bool FilterComponentChromaV::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  createFilter( InputFrame->getChromaWidth(), InputFrame->getChromaHeight(), InputFrame->getBitsPel() );
+  if( apcFrameList[0]->getNumberChannels() > 1 )
+  {
+    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(), apcFrameList[0]->getBitsPel() );
+  }
+  return false;
 }
 
-PlaYUVerFrame* FilterComponentChromaV::process( PlaYUVerFrame* InputFrame )
+PlaYUVerFrame* FilterComponentChromaV::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  return filterComponent( InputFrame, CHROMA_V );
+  return filterComponent( apcFrameList[0], CHROMA_V );
 }
 
 }  // NAMESPACE

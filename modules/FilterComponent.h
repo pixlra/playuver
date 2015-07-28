@@ -39,48 +39,48 @@ public:
   virtual ~FilterComponentModule()
   {
   }
-  Void create( PlaYUVerFrame* ) = 0;
-  PlaYUVerFrame* process( PlaYUVerFrame* ) = 0;
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList ) = 0;
+  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList ) = 0;
   Void destroy();
 
-  Void createFilter( UInt uiWidth, UInt uiHeight, UInt bitsPixel );
-  PlaYUVerFrame* filterComponent( PlaYUVerFrame* InputFrame,  Int Component );
+  Bool createFilter( UInt uiWidth, UInt uiHeight, UInt bitsPixel );
+  PlaYUVerFrame* filterComponent( PlaYUVerFrame* InputFrame, Int Component );
 };
 
 class FilterComponentLuma: public FilterComponentModule
 {
-  REGISTER_CLASS_FACTORY( FilterComponentLuma )
+REGISTER_CLASS_FACTORY( FilterComponentLuma )
 public:
   FilterComponentLuma();
   virtual ~FilterComponentLuma()
   {
   }
-  Void create( PlaYUVerFrame* InputFrame );
-  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
 };
 
 class FilterComponentChromaU: public FilterComponentModule
 {
-  REGISTER_CLASS_FACTORY( FilterComponentChromaU )
+REGISTER_CLASS_FACTORY( FilterComponentChromaU )
 public:
   FilterComponentChromaU();
   virtual ~FilterComponentChromaU()
   {
   }
-  Void create( PlaYUVerFrame* InputFrame );
-  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
 };
 
 class FilterComponentChromaV: public FilterComponentModule
 {
-  REGISTER_CLASS_FACTORY( FilterComponentChromaV )
+REGISTER_CLASS_FACTORY( FilterComponentChromaV )
 public:
   FilterComponentChromaV();
   virtual ~FilterComponentChromaV()
   {
   }
-  Void create( PlaYUVerFrame* InputFrame );
-  PlaYUVerFrame* process( PlaYUVerFrame* InputFrame );
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
 };
 
 }  // NAMESPACE

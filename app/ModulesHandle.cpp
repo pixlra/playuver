@@ -267,7 +267,6 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     {
       dialogWindowsSelection.selectSubWindow( pcVideoSubWindow );
     }
-
     if( dialogWindowsSelection.exec() == QDialog::Accepted )
     {
       VideoSubWindow *videoSubWindow;
@@ -277,7 +276,6 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
         videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
         videoSubWindowList.append( videoSubWindow );
       }
-
     }
     // Check for same fmt in more than one frame modules
     for( Int i = 1; i < videoSubWindowList.size(); i++ )
@@ -312,31 +310,12 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   if( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_OPTIONS )
   {
     ModulesHandleOptDialog moduleOptDialog( m_pcParent, pcCurrModuleIf );
-    moduleOptDialog.runConfiguration();
-  }
-
-  // Create Module
-  Bool moduleCreated = false;
-  if( pcCurrModuleIf->m_pcModule->m_iModuleAPI == MODULE_API_2 )
-  {
-    std::vector<PlaYUVerFrame*> apcFrameList;
-    for( UInt i = 0; i < pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames; i++ )
+    if( moduleOptDialog.runConfiguration() == QDialog::Rejected )
     {
-      apcFrameList.push_back( pcCurrModuleIf->m_pcSubWindow[i]->getCurrFrame() );
+      qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Module canceled by user!", LOG_WARNINGS );
+      destroyModuleIf( pcCurrModuleIf );
+      return;
     }
-    moduleCreated = pcCurrModuleIf->m_pcModule->create( apcFrameList );
-  }
-  else if( pcCurrModuleIf->m_pcModule->m_iModuleAPI == MODULE_API_1 )
-  {
-    pcCurrModuleIf->m_pcModule->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
-    moduleCreated = true;
-  }
-
-  if( !moduleCreated )
-  {
-    qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Error! Module cannot be applied", LOG_ERROR );
-    destroyModuleIf( pcCurrModuleIf );
-    return;
   }
 
   if( pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_PROCESSING_MODULE )
@@ -354,7 +333,6 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 
       pcCurrModuleIf->m_pcDisplaySubWindow = pcModuleSubWindow;
     }
-
   }
   else if( pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
   {
@@ -383,6 +361,30 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     {
       pcCurrModuleIf->m_pcSubWindow[i]->associateModule( pcCurrModuleIf );
     }
+  }
+
+  // Create Module
+  Bool moduleCreated = false;
+  if( pcCurrModuleIf->m_pcModule->m_iModuleAPI == MODULE_API_2 )
+  {
+    std::vector<PlaYUVerFrame*> apcFrameList;
+    for( UInt i = 0; i < pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames; i++ )
+    {
+      apcFrameList.push_back( pcCurrModuleIf->m_pcSubWindow[i]->getCurrFrame() );
+    }
+    moduleCreated = pcCurrModuleIf->m_pcModule->create( apcFrameList );
+  }
+  else if( pcCurrModuleIf->m_pcModule->m_iModuleAPI == MODULE_API_1 )
+  {
+    pcCurrModuleIf->m_pcModule->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
+    moduleCreated = true;
+  }
+
+  if( !moduleCreated )
+  {
+    qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Error! Module cannot be applied", LOG_ERROR );
+    destroyModuleIf( pcCurrModuleIf );
+    return;
   }
 
   applyModuleIf( pcCurrModuleIf, false, true );

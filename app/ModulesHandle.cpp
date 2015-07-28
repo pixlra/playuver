@@ -228,29 +228,24 @@ Void ModulesHandle::processOpt( Int index )
 Void ModulesHandle::activateModule()
 {
   QAction *pcAction = qobject_cast<QAction *>( sender() );
-  VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
-  if( pcVideoSubWindow )
+  Qt::KeyboardModifiers keyModifiers =  QApplication::keyboardModifiers();
+  Bool bTmpForceNewWindow = false;
+  if( keyModifiers & Qt::ControlModifier )
   {
-    QString ModuleIfName = pcAction->data().toString();
-    PlaYUVerModuleIf* pcCurrModuleIf = PlaYUVerModuleFactory::Get()->CreateModule( ModuleIfName.toLocal8Bit().constData() );
-
-    PlaYUVerAppModuleIf* pcCurrAppModuleIf = new PlaYUVerAppModuleIf( this, pcAction, pcCurrModuleIf );
-    enableModuleIf( pcCurrAppModuleIf );
-    m_pcPlaYUVerAppModuleIfList.append( pcCurrAppModuleIf );
+    bTmpForceNewWindow = true;
   }
-  emit changed();
-}
-
-Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
-{
-  VideoSubWindow* pcModuleSubWindow = NULL;
-  Bool bShowModulesNewWindow = m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked();
   VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
+  if( !pcVideoSubWindow )
+  {
+    return;
+  }
+  QString ModuleIfName = pcAction->data().toString();
+  PlaYUVerModuleIf* pcCurrModuleIf = PlaYUVerModuleFactory::Get()->CreateModule( ModuleIfName.toLocal8Bit().constData() );
+  PlaYUVerAppModuleIf* pcCurrAppModuleIf = new PlaYUVerAppModuleIf( this, pcAction, pcCurrModuleIf );
 
-  QString windowName;
 
   QList<VideoSubWindow*> videoSubWindowList;
-  Int numberOfFrames = pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames;
+  Int numberOfFrames = pcCurrAppModuleIf->m_pcModule->m_uiNumberOfFrames;
   if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )  // Show dialog to select sub windows
   {
     DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMainWindowManager, SubWindowAbstract::VIDEO_SUBWINDOW, numberOfFrames, numberOfFrames );
@@ -295,32 +290,36 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   if( videoSubWindowList.size() == 0 )
   {
     qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Error! Module cannot be applied", LOG_ERROR );
-    destroyModuleIf( pcCurrModuleIf );
+    destroyModuleIf( pcCurrAppModuleIf );
     return;
   }
 
+  QString windowName;
   windowName.append( QStringLiteral( "Module " ) );
-  windowName.append( pcCurrModuleIf->m_pcModule->m_pchModuleName );
+  windowName.append( pcCurrAppModuleIf->m_pcModule->m_pchModuleName );
 
   for( Int i = 0; i < videoSubWindowList.size(); i++ )
   {
-    pcCurrModuleIf->m_pcSubWindow[i] = videoSubWindowList.at( i );
+    pcCurrAppModuleIf->m_pcSubWindow[i] = videoSubWindowList.at( i );
   }
 
-  if( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_OPTIONS )
+  if( pcCurrAppModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_OPTIONS )
   {
-    ModulesHandleOptDialog moduleOptDialog( m_pcParent, pcCurrModuleIf );
+    ModulesHandleOptDialog moduleOptDialog( m_pcParent, pcCurrAppModuleIf );
     if( moduleOptDialog.runConfiguration() == QDialog::Rejected )
     {
       qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Module canceled by user!", LOG_WARNINGS );
-      destroyModuleIf( pcCurrModuleIf );
+      destroyModuleIf( pcCurrAppModuleIf );
       return;
     }
   }
 
-  if( pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_PROCESSING_MODULE )
+  Bool bShowModulesNewWindow = m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked() | bTmpForceNewWindow;
+
+  VideoSubWindow* pcModuleSubWindow = NULL;
+  if( pcCurrAppModuleIf->m_pcModule->m_iModuleType == FRAME_PROCESSING_MODULE )
   {
-    if( ( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
+    if( ( pcCurrAppModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
       pcModuleSubWindow = new VideoSubWindow( VideoSubWindow::MODULE_SUBWINDOW );
       pcModuleSubWindow->setWindowShortName( windowName );
@@ -331,63 +330,63 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
           SLOT( zoomToFactorAll( double, QPoint ) ) );
       connect( pcModuleSubWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo, SLOT( moveAllScrollBars( const QPoint ) ) );
 
-      pcCurrModuleIf->m_pcDisplaySubWindow = pcModuleSubWindow;
+      pcCurrAppModuleIf->m_pcDisplaySubWindow = pcModuleSubWindow;
     }
   }
-  else if( pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
+  else if( pcCurrAppModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
   {
-    pcCurrModuleIf->m_pcDisplaySubWindow = NULL;
-    pcCurrModuleIf->m_pcModuleDock = new ModuleHandleDock( m_pcParent, pcCurrModuleIf );
+    pcCurrAppModuleIf->m_pcDisplaySubWindow = NULL;
+    pcCurrAppModuleIf->m_pcModuleDock = new ModuleHandleDock( m_pcParent, pcCurrAppModuleIf );
     QString titleDockWidget;
-    titleDockWidget.append( pcCurrModuleIf->m_pcModule->m_pchModuleName );
+    titleDockWidget.append( pcCurrAppModuleIf->m_pcModule->m_pchModuleName );
     titleDockWidget.append( " Information" );
-    pcCurrModuleIf->m_pcDockWidget = new QDockWidget( titleDockWidget, m_pcParent );
-    pcCurrModuleIf->m_pcDockWidget->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
-    pcCurrModuleIf->m_pcDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    pcCurrModuleIf->m_pcDockWidget->setWidget( pcCurrModuleIf->m_pcModuleDock );
-    qobject_cast<QMainWindow*>( m_pcParent )->addDockWidget( Qt::RightDockWidgetArea, pcCurrModuleIf->m_pcDockWidget );
+    pcCurrAppModuleIf->m_pcDockWidget = new QDockWidget( titleDockWidget, m_pcParent );
+    pcCurrAppModuleIf->m_pcDockWidget->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
+    pcCurrAppModuleIf->m_pcDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+    pcCurrAppModuleIf->m_pcDockWidget->setWidget( pcCurrAppModuleIf->m_pcModuleDock );
+    qobject_cast<QMainWindow*>( m_pcParent )->addDockWidget( Qt::RightDockWidgetArea, pcCurrAppModuleIf->m_pcDockWidget );
   }
 
   // Associate module with subwindows
-  if( !pcCurrModuleIf->m_pcDisplaySubWindow && !pcCurrModuleIf->m_pcModuleDock )
+  if( !pcCurrAppModuleIf->m_pcDisplaySubWindow && !pcCurrAppModuleIf->m_pcModuleDock )
   {
-    pcCurrModuleIf->m_pcSubWindow[0]->enableModule( pcCurrModuleIf );
+    pcCurrAppModuleIf->m_pcSubWindow[0]->enableModule( pcCurrAppModuleIf );
   }
   else
   {
-    if( pcCurrModuleIf->m_pcDisplaySubWindow )
-      pcCurrModuleIf->m_pcDisplaySubWindow->enableModule( pcCurrModuleIf );
+    if( pcCurrAppModuleIf->m_pcDisplaySubWindow )
+      pcCurrAppModuleIf->m_pcDisplaySubWindow->enableModule( pcCurrAppModuleIf );
     for( Int i = 0; i < numberOfFrames; i++ )
     {
-      pcCurrModuleIf->m_pcSubWindow[i]->associateModule( pcCurrModuleIf );
+      pcCurrAppModuleIf->m_pcSubWindow[i]->associateModule( pcCurrAppModuleIf );
     }
   }
 
   // Create Module
   Bool moduleCreated = false;
-  if( pcCurrModuleIf->m_pcModule->m_iModuleAPI == MODULE_API_2 )
+  if( pcCurrAppModuleIf->m_pcModule->m_iModuleAPI == MODULE_API_2 )
   {
     std::vector<PlaYUVerFrame*> apcFrameList;
-    for( UInt i = 0; i < pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames; i++ )
+    for( UInt i = 0; i < pcCurrAppModuleIf->m_pcModule->m_uiNumberOfFrames; i++ )
     {
-      apcFrameList.push_back( pcCurrModuleIf->m_pcSubWindow[i]->getCurrFrame() );
+      apcFrameList.push_back( pcCurrAppModuleIf->m_pcSubWindow[i]->getCurrFrame() );
     }
-    moduleCreated = pcCurrModuleIf->m_pcModule->create( apcFrameList );
+    moduleCreated = pcCurrAppModuleIf->m_pcModule->create( apcFrameList );
   }
-  else if( pcCurrModuleIf->m_pcModule->m_iModuleAPI == MODULE_API_1 )
+  else if( pcCurrAppModuleIf->m_pcModule->m_iModuleAPI == MODULE_API_1 )
   {
-    pcCurrModuleIf->m_pcModule->create( pcCurrModuleIf->m_pcSubWindow[0]->getCurrFrame() );
+    pcCurrAppModuleIf->m_pcModule->create( pcCurrAppModuleIf->m_pcSubWindow[0]->getCurrFrame() );
     moduleCreated = true;
   }
 
   if( !moduleCreated )
   {
     qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Error! Module cannot be applied", LOG_ERROR );
-    destroyModuleIf( pcCurrModuleIf );
+    destroyModuleIf( pcCurrAppModuleIf );
     return;
   }
 
-  applyModuleIf( pcCurrModuleIf, false, true );
+  applyModuleIf( pcCurrAppModuleIf, false, true );
   QCoreApplication::processEvents();
 
   if( pcModuleSubWindow )
@@ -395,7 +394,10 @@ Void ModulesHandle::enableModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     m_pcMainWindowManager->addSubWindow( pcModuleSubWindow );
     pcModuleSubWindow->show();
   }
-  return;
+
+  m_pcPlaYUVerAppModuleIfList.append( pcCurrAppModuleIf );
+
+  emit changed();
 }
 
 Void ModulesHandle::destroyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
@@ -486,8 +488,8 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 
       QStringList filter;
       filter << supported
-             << formatsList
-             << tr( "All Files (*)" );
+          << formatsList
+          << tr( "All Files (*)" );
 
       QString fileName = QFileDialog::getSaveFileName( m_pcParent, tr( "Open File" ), QString(), filter.join( ";;" ) );
 

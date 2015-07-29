@@ -57,6 +57,7 @@ public:
   Void createActions();
   QMenu* createMenu();
   //QDockWidget* createDock();
+  Void buildMenu();
   Void updateMenus();
 
   Void readSettings();
@@ -84,16 +85,16 @@ private:
   QList<PlaYUVerAppModuleIf*> m_pcPlaYUVerAppModuleIfList;
 
   QVector<QAction*> m_arrayModulesActions;
-  QSignalMapper* m_pcModulesActionMapper;
 
   enum MODULES_ACTION_LIST
   {
-    FORCE_NEW_WINDOW_ACT = 0,
-    FORCE_PLAYING_REFRESH_ACT,
+    LOAD_EXTERNAL_ACT,
+    //FORCE_PLAYING_REFRESH_ACT,
     APPLY_ALL_ACT,
     SWAP_FRAMES_ACT,
     DISABLE_ACT,
     DISABLE_ALL_ACT,
+    FORCE_NEW_WINDOW_ACT,
     MODULES_TOTAL_ACT
   };
   QVector<QAction*> m_arrayActions;
@@ -109,6 +110,7 @@ Q_SIGNALS:
   void changed();
 
 private Q_SLOTS:
+  void loadExternalModule();
   void activateModule();
   void processOpt( int index );
   void destroyWindowModules();

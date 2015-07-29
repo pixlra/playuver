@@ -55,12 +55,13 @@ Void ModulesHandle::createActions()
   m_pcActionMapper = new QSignalMapper( this );
   connect( m_pcActionMapper, SIGNAL( mapped(int) ), this, SLOT( processOpt(int) ) );
 
-  m_arrayActions[FORCE_NEW_WINDOW_ACT] = new QAction( "Use New Window", parent() );
-  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setStatusTip( "Show module result in a new window. Some modules already force this feature" );
-  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setCheckable( true );
-  m_arrayActions[FORCE_PLAYING_REFRESH_ACT] = new QAction( "Refresh while playing", parent() );
-  m_arrayActions[FORCE_PLAYING_REFRESH_ACT]->setStatusTip( "Force module refreshing while playing" );
-  m_arrayActions[FORCE_PLAYING_REFRESH_ACT]->setCheckable( true );
+  //  m_arrayActions[FORCE_PLAYING_REFRESH_ACT] = new QAction( "Refresh while playing", parent() );
+  //  m_arrayActions[FORCE_PLAYING_REFRESH_ACT]->setStatusTip( "Force module refreshing while playing" );
+  //  m_arrayActions[FORCE_PLAYING_REFRESH_ACT]->setCheckable( true );
+
+  m_arrayActions[LOAD_EXTERNAL_ACT] = new QAction( "Load external module", parent() );
+  m_arrayActions[LOAD_EXTERNAL_ACT]->setStatusTip( "Load an externally build module" );
+  connect( m_arrayActions[LOAD_EXTERNAL_ACT], SIGNAL( triggered() ), this, SLOT( loadExternalModule() ) );
 
   m_arrayActions[APPLY_ALL_ACT] = new QAction( "Apply to All", parent() );
   m_arrayActions[APPLY_ALL_ACT]->setStatusTip( "Apply module to all frames and save the result" );
@@ -78,23 +79,37 @@ Void ModulesHandle::createActions()
   m_arrayActions[DISABLE_ALL_ACT] = new QAction( "Disable All Modules", parent() );
   connect( m_arrayActions[DISABLE_ALL_ACT], SIGNAL( triggered() ), this, SLOT( destroyAllModulesIf() ) );
 
+  m_arrayActions[FORCE_NEW_WINDOW_ACT] = new QAction( "Use New Window", parent() );
+  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setStatusTip( "Show module result in a new window. Some modules already force this feature" );
+  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setCheckable( true );
+
 }
 
 QMenu* ModulesHandle::createMenu()
+{
+  m_pcModulesMenu = new QMenu( "&Modules", this );
+  buildMenu();
+  return m_pcModulesMenu;
+}
+
+Void ModulesHandle::buildMenu()
 {
   PlaYUVerModuleIf* pcCurrModuleIf;
   QString ModuleIfInternalName;
   QAction* currAction;
   QMenu* currSubMenu;
 
-  m_pcModulesMenu = new QMenu( "&Modules", this );
+  for( Int i = 0; i < m_arrayModulesActions.size(); i++ )
+  {
+    delete m_arrayModulesActions.at( i );
+  }
+  m_arrayModulesActions.clear();
+  m_pcModulesMenu->clear();
+  m_pcModulesSubMenuList.clear();
 
-  m_pcModulesActionMapper = new QSignalMapper( this );
-
-  UInt i = 0;
   PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
   PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
-  for( ; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ )
+  for( ; it != PlaYUVerModuleFactoryMap.end(); ++it )
   {
     pcCurrModuleIf = it->second();
     ModuleIfInternalName = QString::fromLocal8Bit( it->first );
@@ -122,8 +137,6 @@ QMenu* ModulesHandle::createMenu()
     currAction->setData( ModuleIfInternalName );
     currAction->setCheckable( false );
     connect( currAction, SIGNAL( triggered() ), this, SLOT( activateModule() ) );
-    //connect( currAction, SIGNAL( triggered() ), m_pcModulesActionMapper, SLOT( map() ) );
-    m_pcModulesActionMapper->setMapping( currAction, i );
     m_arrayModulesActions.append( currAction );
 
     if( currSubMenu )
@@ -134,14 +147,13 @@ QMenu* ModulesHandle::createMenu()
     pcCurrModuleIf->Delete();
   }
 
+  m_pcModulesMenu->addAction( m_arrayActions[LOAD_EXTERNAL_ACT] );
   m_pcModulesMenu->addSeparator();
   m_pcModulesMenu->addAction( m_arrayActions[APPLY_ALL_ACT] );
   m_pcModulesMenu->addAction( m_arrayActions[SWAP_FRAMES_ACT] );
   m_pcModulesMenu->addAction( m_arrayActions[DISABLE_ACT] );
   m_pcModulesMenu->addAction( m_arrayActions[DISABLE_ALL_ACT] );
   m_pcModulesMenu->addAction( m_arrayActions[FORCE_NEW_WINDOW_ACT] );
-
-  return m_pcModulesMenu;
 }
 
 Void ModulesHandle::updateMenus()
@@ -165,6 +177,7 @@ Void ModulesHandle::updateMenus()
   {
     m_arrayActions.at( i )->setEnabled( false );
   }
+  m_arrayActions[LOAD_EXTERNAL_ACT]->setEnabled( true );
   m_arrayActions[FORCE_NEW_WINDOW_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[DISABLE_ALL_ACT]->setEnabled( m_pcPlaYUVerAppModuleIfList.size() > 0 );
 
@@ -224,10 +237,29 @@ Void ModulesHandle::processOpt( Int index )
   }
 }
 
+Void ModulesHandle::loadExternalModule()
+{
+  QString supported = tr( "Supported Files (*.so)" );
+  QStringList formatsList;
+  formatsList << "Shared Libraries (*.so)";
+
+  QStringList filter;
+  filter << supported
+         << formatsList
+         << tr( "All Files (*)" );
+
+  QString fileName = QFileDialog::getSaveFileName( m_pcParent, tr( "Open File" ), QString(), filter.join( ";;" ) );
+  if( !fileName.isEmpty() )
+  {
+    PlaYUVerModuleFactory::Get()->RegisterDl( fileName.toStdString().data() );
+    buildMenu();
+  }
+}
+
 Void ModulesHandle::activateModule()
 {
   QAction *pcAction = qobject_cast<QAction *>( sender() );
-  Qt::KeyboardModifiers keyModifiers =  QApplication::keyboardModifiers();
+  Qt::KeyboardModifiers keyModifiers = QApplication::keyboardModifiers();
   Bool bTmpForceNewWindow = false;
   if( keyModifiers & Qt::ControlModifier )
   {
@@ -241,7 +273,6 @@ Void ModulesHandle::activateModule()
   QString ModuleIfName = pcAction->data().toString();
   PlaYUVerModuleIf* pcCurrModuleIf = PlaYUVerModuleFactory::Get()->CreateModule( ModuleIfName.toLocal8Bit().constData() );
   PlaYUVerAppModuleIf* pcCurrAppModuleIf = new PlaYUVerAppModuleIf( this, pcAction, pcCurrModuleIf );
-
 
   QList<VideoSubWindow*> videoSubWindowList;
   Int numberOfFrames = pcCurrAppModuleIf->m_pcModule->m_uiNumberOfFrames;
@@ -486,8 +517,8 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 
       QStringList filter;
       filter << supported
-          << formatsList
-          << tr( "All Files (*)" );
+             << formatsList
+             << tr( "All Files (*)" );
 
       QString fileName = QFileDialog::getSaveFileName( m_pcParent, tr( "Open File" ), QString(), filter.join( ";;" ) );
 

@@ -33,8 +33,9 @@
 
 namespace plaYUVer
 {
+
 #define REGISTER_CLASS_MAKER(X) \
-  extern "C" PlaYUVerModuleIf* Maker() { return new AbsoluteFrameDifference; }
+  extern "C" PlaYUVerModuleIf* Maker() { return new X; }
 
 #define REGISTER_CLASS_FACTORY(X) \
 public: \

@@ -23,7 +23,7 @@ SET( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLA
 
 OPTION( PLAYUVER_BUILD_APP      "Build GUI Application"                 ON  )
 OPTION( PLAYUVER_BUILD_TOOLS    "Build Command Line Application"        ON  )
-OPTION( PLAYUVER_BUILD_EXEMPLES "Build Examples"                        ON  )
+OPTION( PLAYUVER_BUILD_EXEMPLES "Build Examples"                        OFF )
 OPTION( USE_SSE                 "Build with SSE support"                OFF )
 OPTION( USE_FERVOR              "Add Fervor support"                    OFF )
 OPTION( USE_WERROR              "Warnings as errors"                    OFF )

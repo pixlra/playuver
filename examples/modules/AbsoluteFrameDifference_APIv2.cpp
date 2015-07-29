@@ -18,15 +18,17 @@
  */
 
 /**
- * \file     AbsoluteFrameDifference.cpp
+ * \file     AbsoluteFrameDifference_APIv2.cpp
  * \brief    Absolute Frame Difference module
  */
 
-#include "AbsoluteFrameDifference.h"
+#include "AbsoluteFrameDifference_APIv2.h"
 #include <cstdlib>
 
 namespace plaYUVer
 {
+
+REGISTER_CLASS_MAKER( AbsoluteFrameDifference )
 
 AbsoluteFrameDifference::AbsoluteFrameDifference()
 {
@@ -37,7 +39,7 @@ AbsoluteFrameDifference::AbsoluteFrameDifference()
   m_pchModuleCategory = "Measurements";                     // Category (sub-menu)
   m_pchModuleName = "AbsoluteFrameDifference";              // Name
   m_pchModuleTooltip = "Measure the absolute difference "   // Description
-      "between two images (Y plane), e. g., abs( Y1 - Y2 )";
+          "between two images (Y plane), e. g., abs( Y1 - Y2 )";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;          // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
   m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;      // Module requirements (check PlaYUVerModulesIf.h).
                                                             // Several requirements should be "or" between each others.

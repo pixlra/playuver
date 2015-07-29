@@ -90,7 +90,6 @@ QMenu* ModulesHandle::createMenu()
   m_pcModulesMenu = new QMenu( "&Modules", this );
 
   m_pcModulesActionMapper = new QSignalMapper( this );
-  //connect( m_pcModulesActionMapper, SIGNAL( mapped(int) ), this, SLOT( activateModule(int) ) );
 
   UInt i = 0;
   PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();

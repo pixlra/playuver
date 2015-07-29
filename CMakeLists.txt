@@ -23,6 +23,7 @@ SET( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLA
 
 OPTION( PLAYUVER_BUILD_APP      "Build GUI Application"                 ON  )
 OPTION( PLAYUVER_BUILD_TOOLS    "Build Command Line Application"        ON  )
+OPTION( PLAYUVER_BUILD_EXEMPLES "Build Examples"                        ON  )
 OPTION( USE_SSE                 "Build with SSE support"                OFF )
 OPTION( USE_FERVOR              "Add Fervor support"                    OFF )
 OPTION( USE_WERROR              "Warnings as errors"                    OFF )
@@ -134,6 +135,10 @@ ENDIF()
 
 IF( ${PLAYUVER_BUILD_APP} )
   ADD_SUBDIRECTORY( app )
+ENDIF()
+
+IF( ${PLAYUVER_BUILD_EXEMPLES} )
+  ADD_SUBDIRECTORY( examples )
 ENDIF()
 
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )

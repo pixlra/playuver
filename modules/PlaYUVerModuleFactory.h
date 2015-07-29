@@ -42,7 +42,10 @@ class PlaYUVerModuleFactory
 {
 private:
   PlaYUVerModuleFactory();
-  PlaYUVerModuleFactory &operator=( const PlaYUVerModuleFactory & ) { return *this; }
+  PlaYUVerModuleFactory &operator=( const PlaYUVerModuleFactory & )
+  {
+    return *this;
+  }
 
   PlaYUVerModuleFactoryMap m_FactoryMap;
 public:
@@ -55,8 +58,13 @@ public:
   }
 
   Void Register( const char* moduleName, CreateModuleFn pfnCreate );
+  Void RegisterDl( const char* dlName );
+
   PlaYUVerModuleIf *CreateModule( const char *moduleName );
-  PlaYUVerModuleFactoryMap& getMap(){ return m_FactoryMap; }
+  PlaYUVerModuleFactoryMap& getMap()
+  {
+    return m_FactoryMap;
+  }
 };
 
 //// typedef to make it easier to set up our factory

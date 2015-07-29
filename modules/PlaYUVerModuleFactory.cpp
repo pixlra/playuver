@@ -25,6 +25,7 @@
 #include "config.h"
 #include <functional>
 #include <cstring>
+#include <dlfcn.h>
 #include "PlaYUVerModuleFactory.h"
 #include "ModulesListHeader.h"
 
@@ -36,8 +37,8 @@ PlaYUVerModuleFactory::PlaYUVerModuleFactory()
   Register( "FilterComponentLuma", &FilterComponentLuma::Create );
   Register( "FilterComponentChromaU", &FilterComponentChromaU::Create );
   Register( "FilterComponentChromaV", &FilterComponentChromaV::Create );
+  //Register( "AbsoluteFrameDifference", &AbsoluteFrameDifference::Create );
   Register( "FrameDifference", &FrameDifference::Create );
-  Register( "AbsoluteFrameDifference", &AbsoluteFrameDifference::Create );
   Register( "SetChromaHalfScale", &SetChromaHalfScale::Create );
   Register( "FrameCrop", &FrameCrop::Create );
   Register( "FrameBinarization", &FrameBinarization::Create );
@@ -48,7 +49,6 @@ PlaYUVerModuleFactory::PlaYUVerModuleFactory()
   Register( "DisparityStereoBM", &DisparityStereoBM::Create );
   Register( "DisparityStereoSGBM", &DisparityStereoSGBM::Create );
 #endif
-
 }
 
 PlaYUVerModuleFactory::~PlaYUVerModuleFactory()
@@ -59,6 +59,19 @@ PlaYUVerModuleFactory::~PlaYUVerModuleFactory()
 Void PlaYUVerModuleFactory::Register( const char* moduleName, CreateModuleFn pfnCreate )
 {
   m_FactoryMap[moduleName] = pfnCreate;
+}
+
+Void PlaYUVerModuleFactory::RegisterDl( const char* dlName )
+{
+  void *pHndl = dlopen( dlName, RTLD_NOW );
+  if( pHndl == NULL )
+  {
+    std::cerr << dlerror()
+              << std::endl;
+    exit( -1 );
+  }
+  CreateModuleFn pfnCreate = (CreateModuleFn) dlsym( pHndl, "CreateModule" );
+  Register( dlName, pfnCreate );
 }
 
 PlaYUVerModuleIf *PlaYUVerModuleFactory::CreateModule( const char* moduleName )

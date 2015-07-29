@@ -25,7 +25,7 @@
 #ifndef __CHROMA128_H__
 #define __CHROMA128_H__
 
-#include "PlaYUVerModuleIf.h"
+#include "lib/PlaYUVerModuleIf.h"
 
 namespace plaYUVer
 {

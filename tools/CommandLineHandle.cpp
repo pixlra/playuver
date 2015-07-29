@@ -27,7 +27,7 @@
 #include "CommandLineHandle.h"
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"
-#include "modules/PlaYUVerModuleIf.h"
+#include "lib/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
 namespace plaYUVer

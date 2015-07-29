@@ -25,10 +25,10 @@
 #ifndef __PLAYUVERMODULESIF_H__
 #define __PLAYUVERMODULESIF_H__
 
-#include "lib/PlaYUVerDefs.h"
-#include "lib/PlaYUVerFrame.h"
-#include "lib/PlaYUVerStream.h"
-#include "lib/ProgramOptions.h"
+#include "PlaYUVerDefs.h"
+#include "PlaYUVerFrame.h"
+#include "PlaYUVerStream.h"
+#include "ProgramOptions.h"
 #include <vector>
 
 namespace plaYUVer

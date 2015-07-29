@@ -33,7 +33,7 @@
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"
 #include "ModuleHandleDock.h"
-#include "PlaYUVerModuleIf.h"
+#include "lib/PlaYUVerModuleIf.h"
 
 class QAction;
 

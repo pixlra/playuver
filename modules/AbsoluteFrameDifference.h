@@ -25,7 +25,7 @@
 #ifndef __ABSOLUTEFRAMEDIFFERENCE_H__
 #define __ABSOLUTEFRAMEDIFFERENCE_H__
 
-#include "PlaYUVerModuleIf.h"
+#include "lib/PlaYUVerModuleIf.h"
 
 #include <cassert>
 

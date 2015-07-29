@@ -29,6 +29,7 @@ set(plaYUver_Lib_HEADERS
     PlaYUVerDefs.h
     PlaYUVerFrame.h
     PlaYUVerStream.h
+    PlaYUVerModuleIf.h
 )
 
 # OPTION( USE_PIXFC  "Add PIXFC support"  OFF )

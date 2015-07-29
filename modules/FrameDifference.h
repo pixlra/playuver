@@ -25,7 +25,7 @@
 #ifndef __FRAMEDIFFERENCE_H__
 #define __FRAMEDIFFERENCE_H__
 
-#include "PlaYUVerModuleIf.h"
+#include "lib/PlaYUVerModuleIf.h"
 
 #include <cassert>
 

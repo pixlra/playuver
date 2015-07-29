@@ -26,7 +26,7 @@
 #ifndef __LUMAAVERAGE_H__
 #define __LUMAAVERAGE_H__
 
-#include "PlaYUVerModuleIf.h"
+#include "lib/PlaYUVerModuleIf.h"
 
 namespace plaYUVer
 {

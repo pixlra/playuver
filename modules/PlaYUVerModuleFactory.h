@@ -27,7 +27,7 @@
 
 #include <functional>
 #include <map>
-#include "PlaYUVerModuleIf.h"
+#include "lib/PlaYUVerModuleIf.h"
 
 namespace plaYUVer
 {

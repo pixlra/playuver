@@ -24,7 +24,7 @@
 
 #include <cstring>
 #include "PlaYUVerTools.h"
-#include "modules/PlaYUVerModuleIf.h"
+#include "lib/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
 namespace plaYUVer

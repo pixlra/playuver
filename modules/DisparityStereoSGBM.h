@@ -38,7 +38,7 @@
 #define __DISPARITYSTEREOSGBM_H__
 
 #include <iostream>
-#include "PlaYUVerModuleIf.h"
+#include "lib/PlaYUVerModuleIf.h"
 #include <opencv2/opencv.hpp>
 
 #include <cassert>

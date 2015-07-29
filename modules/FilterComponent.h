@@ -25,7 +25,7 @@
 #ifndef __FILTERCOMPONENT_H__
 #define __FILTERCOMPONENT_H__
 
-#include "PlaYUVerModuleIf.h"
+#include "lib/PlaYUVerModuleIf.h"
 
 namespace plaYUVer
 {

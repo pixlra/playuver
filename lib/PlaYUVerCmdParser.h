@@ -23,7 +23,7 @@
  */
 
 #include "PlaYUVerDefs.h"
-#include "ProgramOptions.h"
+#include "PlaYUVerProgramOptions.h"
 
 namespace plaYUVer
 {

@@ -13,7 +13,7 @@ set(plaYUver_Lib_SRCS
     PlaYUVerStream.cpp
     # Command Parser
     PlaYUVerCmdParser.cpp
-    ProgramOptions.cpp
+    PlaYUVerProgramOptions.cpp
 )
 
 IF( USE_FFMPEG )
@@ -27,6 +27,7 @@ ENDIF()
 
 set(plaYUver_Lib_HEADERS
     PlaYUVerDefs.h
+    PlaYUVerProgramOptions.h
     PlaYUVerFrameStats.h
     PlaYUVerFrame.h
     PlaYUVerStream.h

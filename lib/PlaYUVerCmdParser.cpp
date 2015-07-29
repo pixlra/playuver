@@ -28,7 +28,6 @@
 #include <string>
 #include <vector>
 #include "PlaYUVerCmdParser.h"
-#include "ProgramOptions.h"
 #include "PlaYUVerFrame.h"
 
 namespace plaYUVer

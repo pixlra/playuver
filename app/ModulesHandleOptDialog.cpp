@@ -23,7 +23,7 @@
  */
 
 #include "ModulesHandleOptDialog.h"
-#include "lib/ProgramOptions.h"
+#include "lib/PlaYUVerProgramOptions.h"
 #include <QWidget>
 #include <QLabel>
 #include <QVector>

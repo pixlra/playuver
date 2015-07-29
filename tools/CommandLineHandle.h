@@ -28,7 +28,6 @@
 #include "config.h"
 #include "lib/PlaYUVerDefs.h"
 #include "lib/PlaYUVerCmdParser.h"
-#include "lib/ProgramOptions.h"
 
 namespace plaYUVer
 {

@@ -28,7 +28,7 @@
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerStream.h"
-#include "ProgramOptions.h"
+#include "PlaYUVerProgramOptions.h"
 #include <vector>
 
 namespace plaYUVer

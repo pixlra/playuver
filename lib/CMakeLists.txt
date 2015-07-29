@@ -27,6 +27,7 @@ ENDIF()
 
 set(plaYUver_Lib_HEADERS
     PlaYUVerDefs.h
+    PlaYUVerFrameStats.h
     PlaYUVerFrame.h
     PlaYUVerStream.h
     PlaYUVerModuleIf.h

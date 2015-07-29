@@ -239,21 +239,22 @@ Void ModulesHandle::processOpt( Int index )
 
 Void ModulesHandle::loadExternalModule()
 {
+  Bool bUpdate = false;
   QString supported = tr( "Supported Files (*.so)" );
   QStringList formatsList;
   formatsList << "Shared Libraries (*.so)";
-
   QStringList filter;
   filter << supported
          << formatsList
          << tr( "All Files (*)" );
+  QStringList fileNames = QFileDialog::getOpenFileNames( m_pcParent, tr( "Open File" ), QString(), filter.join( ";;" ) );
 
-  QString fileName = QFileDialog::getSaveFileName( m_pcParent, tr( "Open File" ), QString(), filter.join( ";;" ) );
-  if( !fileName.isEmpty() )
+  for( Int i = 0; i < fileNames.size(); i++ )
   {
-    PlaYUVerModuleFactory::Get()->RegisterDl( fileName.toStdString().data() );
-    buildMenu();
+    bUpdate |= PlaYUVerModuleFactory::Get()->RegisterDl( fileNames.at( i ).toStdString().data() );
   }
+  if( bUpdate )
+    buildMenu();
 }
 
 Void ModulesHandle::activateModule()

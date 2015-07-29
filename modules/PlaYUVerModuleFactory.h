@@ -58,7 +58,7 @@ public:
   }
 
   Void Register( const char* moduleName, CreateModuleFn pfnCreate );
-  Void RegisterDl( const char* dlName );
+  Bool RegisterDl( const char* dlName );
 
   PlaYUVerModuleIf *CreateModule( const char *moduleName );
   PlaYUVerModuleFactoryMap& getMap()

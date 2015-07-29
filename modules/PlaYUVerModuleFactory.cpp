@@ -61,17 +61,22 @@ Void PlaYUVerModuleFactory::Register( const char* moduleName, CreateModuleFn pfn
   m_FactoryMap[moduleName] = pfnCreate;
 }
 
-Void PlaYUVerModuleFactory::RegisterDl( const char* dlName )
+Bool PlaYUVerModuleFactory::RegisterDl( const char* dlName )
 {
   void *pHndl = dlopen( dlName, RTLD_NOW );
   if( pHndl == NULL )
   {
     std::cerr << dlerror()
               << std::endl;
-    exit( -1 );
+    return false;
   }
-  CreateModuleFn pfnCreate = (CreateModuleFn) dlsym( pHndl, "CreateModule" );
+  CreateModuleFn pfnCreate = ( CreateModuleFn )dlsym( pHndl, "Maker" );
+  if( pfnCreate == NULL )
+  {
+    return false;
+  }
   Register( dlName, pfnCreate );
+  return true;
 }
 
 PlaYUVerModuleIf *PlaYUVerModuleFactory::CreateModule( const char* moduleName )

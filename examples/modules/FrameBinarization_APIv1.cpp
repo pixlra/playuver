@@ -27,6 +27,8 @@
 namespace plaYUVer
 {
 
+REGISTER_CLASS_MAKER( FrameBinarization )
+
 FrameBinarization::FrameBinarization()
 {
   /* Module Definition */

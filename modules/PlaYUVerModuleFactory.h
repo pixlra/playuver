@@ -37,7 +37,7 @@ namespace plaYUVer
 typedef PlaYUVerModuleIf* (*CreateModuleFn)( void );
 typedef std::map<const char *, CreateModuleFn> PlaYUVerModuleFactoryMap;
 
-// Factory for creating instances of IAnimal
+// Factory for creating instances of PlaYUVerModuleIf
 class PlaYUVerModuleFactory
 {
 private:
@@ -55,7 +55,7 @@ public:
   }
 
   Void Register( const char* moduleName, CreateModuleFn pfnCreate );
-  PlaYUVerModuleIf *CreateModule( const char *animalName );
+  PlaYUVerModuleIf *CreateModule( const char *moduleName );
   PlaYUVerModuleFactoryMap& getMap(){ return m_FactoryMap; }
 };
 

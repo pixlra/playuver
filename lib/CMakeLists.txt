@@ -8,7 +8,7 @@ set(plaYUver_Lib_SRCS
     # Frame
     PlaYUVerFrame.cpp
     PlaYUVerFramePixelFormats.cpp
-    PlaYUVerFrameStats.cpp
+    #    PlaYUVerFrameStats.cpp
     # Stream
     PlaYUVerStream.cpp
     # Command Parser
@@ -28,7 +28,7 @@ ENDIF()
 set(plaYUver_Lib_HEADERS
     PlaYUVerDefs.h
     PlaYUVerProgramOptions.h
-    PlaYUVerFrameStats.h
+    #   PlaYUVerFrameStats.h
     PlaYUVerFrame.h
     PlaYUVerStream.h
     PlaYUVerModuleIf.h

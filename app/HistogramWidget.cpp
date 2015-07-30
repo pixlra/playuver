@@ -38,24 +38,24 @@ class HistogramWorker: public QThread
 {
 private:
   QObject* m_parent;
-  PlaYUVerFrameStats* m_histogram;
+  PlaYUVerFrame* m_pcFrame;
 
 public:
 
   HistogramWorker( QObject* parent )
   {
-    m_histogram = NULL;
+    m_pcFrame = NULL;
     m_parent = parent;
   }
 
-  Void setup( PlaYUVerFrameStats* hist )
+  Void setup( PlaYUVerFrame* frame )
   {
-    m_histogram = hist;
+    m_pcFrame = frame;
     run();
   }
   Void run()
   {
-    if( m_histogram && m_parent )
+    if( m_pcFrame && m_parent )
     {
       EventData *eventData = new EventData();
 //      eventDm_imageHistogramata->starting = true;
@@ -63,11 +63,11 @@ public:
 //      eventData->histogram = m_histogram;
 //      QCoreApplication::postEvent( m_parent, eventData );
 
-      m_histogram->calcHistogram();
+      m_pcFrame->calcHistogram();
 
       eventData->starting = false;
-      eventData->success = m_histogram->getHasHistogram();
-      eventData->histogram = m_histogram;
+      eventData->success = m_pcFrame->getHasHistogram();
+      eventData->frame = m_pcFrame;
       QCoreApplication::postEvent( m_parent, eventData );
     }
   }
@@ -85,12 +85,12 @@ public:
     {
       starting = false;
       success = false;
-      histogram = 0;
+      frame = NULL;
     }
 
     bool starting;
     bool success;
-    PlaYUVerFrameStats *histogram;
+    PlaYUVerFrame *frame;
   };
 
 };
@@ -192,8 +192,8 @@ HistogramWidget::HistogramWidget( Int width, Int height, QWidget *parent ) :
 
   connect( d->blinkTimer, SIGNAL( timeout() ), this, SLOT( slotBlinkTimerDone() ) );
 
-  m_imageHistogram = 0;
-  m_selectionHistogram = 0;
+  m_fullImage = NULL;
+  m_selectionImage = NULL;
 
   m_imageWorker = new HistogramWorker( this );
   m_selectionWorker = new HistogramWorker( this );
@@ -208,11 +208,11 @@ HistogramWidget::~HistogramWidget()
 {
   d->blinkTimer->stop();
 
-  if( m_imageHistogram )
-    delete m_imageHistogram;
-
-  if( m_selectionHistogram )
-    delete m_selectionHistogram;
+//  if( m_imageHistogram )
+//    delete m_imageHistogram;
+//
+//  if( m_selectionHistogram )
+//    delete m_selectionHistogram;
 
   delete m_imageWorker;
   delete m_selectionWorker;
@@ -243,8 +243,8 @@ Void HistogramWidget::reset()
   d->guideVisible = false;
   d->clearFlag = HistogramWidgetPrivate::HistogramNone;
   // Remove histogram data from memory.
-  m_imageHistogram = NULL;
-  m_selectionHistogram = NULL;
+  m_fullImage = NULL;
+  m_selectionImage = NULL;
   update();
 }
 
@@ -266,7 +266,7 @@ Void HistogramWidget::customEvent( QEvent *event )
     return;
   }
 
-  if( ed->histogram != m_imageHistogram && ed->histogram != m_selectionHistogram )
+  if( ed->frame != m_fullImage && ed->frame != m_selectionImage )
   {
     return;
   }
@@ -322,16 +322,18 @@ Void HistogramWidget::customEvent( QEvent *event )
       update();
       unsetCursor();
       // Remove old histogram data from memory.
-      if( m_imageHistogram )
-      {
-        delete m_imageHistogram;
-        m_imageHistogram = 0;
-      }
-      if( m_selectionHistogram )
-      {
-        delete m_selectionHistogram;
-        m_selectionHistogram = 0;
-      }
+      m_fullImage = NULL;
+      m_selectionImage = NULL;
+//      if( m_imageHistogram )
+//      {
+//        delete m_imageHistogram;
+//        m_imageHistogram = 0;
+//      }
+//      if( m_selectionHistogram )
+//      {
+//        delete m_selectionHistogram;
+//        m_selectionHistogram = 0;
+//      }
       emit signalHistogramComputationFailed();
     }
   }
@@ -391,7 +393,7 @@ Void HistogramWidget::stopHistogramComputation()
 //                          Update Data Methods  
 ////////////////////////////////////////////////////////////////////////////////
 
-Void HistogramWidget::updateData( const PlaYUVerFrame *pcFrame, const PlaYUVerFrame *pcFrameSelection )
+Void HistogramWidget::updateData( PlaYUVerFrame *pcFrame, PlaYUVerFrame *pcFrameSelection )
 {
   d->imageBits = pcFrame->getBitsPel();
   //d->imageColorSpace = image.getPelFormat();
@@ -408,18 +410,18 @@ Void HistogramWidget::updateData( const PlaYUVerFrame *pcFrame, const PlaYUVerFr
   d->range = ( 1 << d->imageBits ) - 1;
   emit signalMaximumValueChanged( d->range );
 
-  m_imageHistogram = ( PlaYUVerFrameStats* )pcFrame;
-  m_imageWorker->setup( m_imageHistogram );
+  m_fullImage = pcFrame;
+  m_imageWorker->setup( pcFrame );
 
-  m_selectionHistogram = ( PlaYUVerFrameStats* )pcFrameSelection;
-  m_selectionWorker->setup( m_selectionHistogram );
+  m_selectionImage = pcFrameSelection;
+  m_selectionWorker->setup( pcFrameSelection );
 
 }
 
-Void HistogramWidget::updateSelectionData( const PlaYUVerFrame *pcFrameSelection )
+Void HistogramWidget::updateSelectionData( PlaYUVerFrame *pcFrameSelection )
 {
-  m_selectionHistogram = ( PlaYUVerFrame* )pcFrameSelection;
-  m_selectionWorker->setup( m_selectionHistogram );
+  m_selectionImage = pcFrameSelection;
+  m_selectionWorker->setup( pcFrameSelection );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -503,14 +505,14 @@ Void HistogramWidget::paintEvent( QPaintEvent * )
   int wWidth = width() - 1;
   int wHeight = height() - 1;
   double max;
-  PlaYUVerFrameStats *histogram;
+  PlaYUVerFrame *frame;
 
-  if( m_renderingType == ImageSelectionHistogram && m_selectionHistogram )
-    histogram = m_selectionHistogram;
+  if( m_renderingType == ImageSelectionHistogram && m_selectionImage )
+    frame = m_selectionImage;
   else
-    histogram = m_imageHistogram;
+    frame = m_fullImage;
 
-  if( !histogram )
+  if( !frame )
     return;
 
   x = 0;
@@ -523,24 +525,23 @@ Void HistogramWidget::paintEvent( QPaintEvent * )
   switch( m_channelType )
   {
   case HistogramWidget::FirstChannelHistogram:      // Y channel.
-    max = histogram->getMaximum( LUMA );
+    max = frame->getMaximum( LUMA );
     break;
   case HistogramWidget::SecondChannelHistogram:    // Cb channel.
-    max = histogram->getMaximum( CHROMA_U );
+    max = frame->getMaximum( CHROMA_U );
     break;
   case HistogramWidget::ThirdChannelHistogram:     // Cr channel.
-    max = histogram->getMaximum( CHROMA_V );
+    max = frame->getMaximum( CHROMA_V );
     break;
   case HistogramWidget::AlphaChannelHistogram:    // Alpha channel.
-    max = histogram->getMaximum( COLOR_A );
+    max = frame->getMaximum( COLOR_A );
     break;
 
   case HistogramWidget::ColorChannelsHistogram:   // All color channels.
-    max = qMax( qMax( histogram->getMaximum( LUMA ), histogram->getMaximum( CHROMA_U ) ),
-        histogram->getMaximum( CHROMA_V ) );
+    max = qMax( qMax( frame->getMaximum( LUMA ), frame->getMaximum( CHROMA_U ) ), frame->getMaximum( CHROMA_V ) );
     break;
   case HistogramWidget::LumaHistogram:            // Luminance.
-    max = histogram->getMaximum( LUMA );
+    max = frame->getMaximum( LUMA );
     break;
   }
 
@@ -571,8 +572,8 @@ Void HistogramWidget::paintEvent( QPaintEvent * )
     double value_r = 0.0, value_g = 0.0, value_b = 0.0;  // For all channels.
     int i, j;
 
-    i = ( x * histogram->getHistogramSegment() ) / wWidth;
-    j = ( ( x + 1 ) * histogram->getHistogramSegment() ) / wWidth;
+    i = ( x * frame->getHistogramSegment() ) / wWidth;
+    j = ( ( x + 1 ) * frame->getHistogramSegment() ) / wWidth;
 
     do
     {
@@ -587,24 +588,24 @@ Void HistogramWidget::paintEvent( QPaintEvent * )
       switch( m_channelType )
       {
       case HistogramWidget::FirstChannelHistogram:    // Y channel.
-        v = histogram->getHistogramValue( LUMA, i++ );
+        v = frame->getHistogramValue( LUMA, i++ );
         break;
       case HistogramWidget::SecondChannelHistogram:  // Cb channel.
-        v = histogram->getHistogramValue( CHROMA_U, i++ );
+        v = frame->getHistogramValue( CHROMA_U, i++ );
         break;
       case HistogramWidget::ThirdChannelHistogram:   // Cr channel.
-        v = histogram->getHistogramValue( CHROMA_V, i++ );
+        v = frame->getHistogramValue( CHROMA_V, i++ );
         break;
       case HistogramWidget::AlphaChannelHistogram:  // Alpha channel.
-        v = histogram->getHistogramValue( COLOR_A, i++ );
+        v = frame->getHistogramValue( COLOR_A, i++ );
         break;
       case HistogramWidget::ColorChannelsHistogram:  // All color.
-        vr = histogram->getHistogramValue( LUMA, i );
-        vg = histogram->getHistogramValue( CHROMA_U, i );
-        vb = histogram->getHistogramValue( CHROMA_U, i++ );
+        vr = frame->getHistogramValue( LUMA, i );
+        vg = frame->getHistogramValue( CHROMA_U, i );
+        vb = frame->getHistogramValue( CHROMA_U, i++ );
         break;
       case HistogramWidget::LumaHistogram:           // Luminance.
-        v = histogram->getHistogramValue( LUMA, i++ );
+        v = frame->getHistogramValue( LUMA, i++ );
         break;
 
       }
@@ -916,7 +917,7 @@ Void HistogramWidget::paintEvent( QPaintEvent * )
 
     if( guidePos != -1 )
     {
-      int xGuide = ( guidePos * wWidth ) / histogram->getHistogramSegment();
+      int xGuide = ( guidePos * wWidth ) / frame->getHistogramSegment();
       p1.drawLine( xGuide, 0, xGuide, wHeight );
 
       QString string = tr( "x:%1" ).arg( guidePos );
@@ -953,23 +954,23 @@ Void HistogramWidget::paintEvent( QPaintEvent * )
     tipText = "<table cellspacing=0 cellpadding=0>";
 
     tipText += cellBeg + tr( "Mean:" ) + cellMid;
-    double mean = histogram->getMean( m_channelType, 0, histogram->getHistogramSegment() - 1 );
+    double mean = frame->getMean( m_channelType, 0, frame->getHistogramSegment() - 1 );
     tipText += value.setNum( mean, 'f', 1 ) + cellEnd;
 
     tipText += cellBeg + tr( "Pixels:" ) + cellMid;
-    double pixels = histogram->getPixels();
+    double pixels = frame->getPixels();
     tipText += value.setNum( ( float )pixels, 'f', 0 ) + cellEnd;
 
     tipText += cellBeg + tr( "Std dev.:" ) + cellMid;
-    double stddev = histogram->getStdDev( m_channelType, 0, histogram->getHistogramSegment() - 1 );
+    double stddev = frame->getStdDev( m_channelType, 0, frame->getHistogramSegment() - 1 );
     tipText += value.setNum( stddev, 'f', 1 ) + cellEnd;
 
     tipText += cellBeg + tr( "Selected:" ) + cellMid;
-    double counts = histogram->getCount( m_channelType, 0, histogram->getHistogramSegment() - 1 );
+    double counts = frame->getCount( m_channelType, 0, frame->getHistogramSegment() - 1 );
     tipText += value.setNum( ( float )counts, 'f', 0 ) + cellEnd;
 
     tipText += cellBeg + tr( "Median:" ) + cellMid;
-    double median = histogram->getMedian( m_channelType, 0, histogram->getHistogramSegment() - 1 );
+    double median = frame->getMedian( m_channelType, 0, frame->getHistogramSegment() - 1 );
     tipText += value.setNum( median, 'f', 1 ) + cellEnd;
 
     tipText += cellBeg + tr( "Percent:" ) + cellMid;

@@ -51,7 +51,8 @@ struct PlaYUVerPixFmtDescriptor;
  * \ingroup  PlaYUVerLib PlaYUVerLib_Frame
  * \brief    Frame handling class
  */
-class PlaYUVerFrame: public PlaYUVerFrameStats
+class PlaYUVerFrame
+    //: public PlaYUVerFrameStats
 {
 public:
 
@@ -214,14 +215,51 @@ public:
 
   Int getColorSpace() const;
   UInt getNumberChannels() const;
+
+  UInt getPixels() const;
   UInt getChromaWidth() const;
   UInt getChromaHeight() const;
   UInt getChromaLength() const;
+  UInt getChromaSize() const;
 
   Void frameFromBuffer( Byte*, UInt64 );
   Void frameToBuffer( Byte* );
 
   Void fillRGBBuffer();
+
+  Void calcHistogram();
+
+  // Methods for to manipulate the histogram data.
+  Double getCount( Int channel, UInt start, UInt end );
+  Double getMean( Int channel, UInt start, UInt end );
+  Int getMedian( Int channel, UInt start, UInt end );
+
+  /**
+   * @return Number of image pixels
+   */
+
+  Double getStdDev( Int channel, UInt start, UInt end );
+  Double getHistogramValue( Int channel, UInt bin );
+  Double getMaximum( Int channel );
+
+  /**
+   * @return Number of histogram segments: 256 or 65536 for 8 or 16 bits per
+   *         sample.
+   */
+  Int getHistogramSegment();
+
+  /**
+   * Control calculation
+   */
+  Void setRunningFlag( Bool bFlag )
+  {
+    m_bRunningFlag = bFlag;
+  }
+  Bool getHasHistogram()
+  {
+    return m_bHasHistogram;
+  }
+
 
   Void copyFrom( PlaYUVerFrame* );
   Void copyFrom( PlaYUVerFrame*, UInt, UInt );
@@ -349,6 +387,22 @@ private:
 
   Bool m_bHasRGBPel;  //!< Flag indicating that the ARGB buffer was computed
   UChar* m_pcARGB32;  //!< Buffer with the ARGB pixels used in Qt libs
+
+  /** The histogram data.*/
+  UInt* m_puiHistogram;
+
+  /** If the image is RGB and calcLuma is true, we have 1 more channel */
+  UInt m_uiHistoChannels;
+
+  /** Numbers of histogram segments depending of image bytes depth*/
+  UInt m_uiHistoSegments;
+
+  /** Used to stop thread during calculations.*/
+  Bool m_bRunningFlag;
+
+  Int getRealHistoChannel( Int channel );
+
+  Bool m_bHasHistogram;
 
   /**
    * Common constructor function of a frame

@@ -209,7 +209,13 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
   }
   getMem1D( &m_pcARGB32, m_uiHeight * m_uiWidth * 4 );
 
-  xSetupStatistics( this );
+  m_uiHistoSegments = 1 << m_iBitsPel;
+
+  if( m_pcPelFormat->colorSpace == PlaYUVerFrame::COLOR_RGB || m_pcPelFormat->colorSpace == PlaYUVerFrame::COLOR_ARGB )
+    m_uiHistoChannels = m_pcPelFormat->numberChannels + 1;
+  else
+    m_uiHistoChannels = m_pcPelFormat->numberChannels;
+
   m_cPelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[m_iPixelFormat].c_str();
 }
 
@@ -241,6 +247,11 @@ UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelF
   return numberBytes * bytesPerPixel;
 }
 
+UInt PlaYUVerFrame::getPixels() const
+{
+  return ( m_uiWidth * m_uiHeight );
+}
+
 UInt PlaYUVerFrame::getChromaWidth() const
 {
   if( m_pcPelFormat->colorSpace == GRAY )
@@ -256,6 +267,11 @@ UInt PlaYUVerFrame::getChromaHeight() const
 }
 
 UInt PlaYUVerFrame::getChromaLength() const
+{
+  return getChromaWidth() * getChromaHeight();
+}
+
+UInt PlaYUVerFrame::getChromaSize() const
 {
   return getChromaWidth() * getChromaHeight();
 }
@@ -427,6 +443,342 @@ Void PlaYUVerFrame::fillRGBBuffer()
   }
   m_bHasRGBPel = true;
 }
+
+// statistics
+Void PlaYUVerFrame::calcHistogram()
+{
+  if( m_bHasHistogram )
+    return;
+
+  if( !m_puiHistogram )
+  {
+    //m_puiHistogram = new UInt[m_uiHistoSegments * histoChannels];
+    getMem1D<UInt>( &( m_puiHistogram ), m_uiHistoSegments * m_uiHistoChannels );
+    if( !m_puiHistogram )
+    {
+      return;
+    }
+  }
+  m_bRunningFlag = true;
+
+  UInt i, j;
+  UInt numberChannels = m_pcPelFormat->numberChannels;
+  Int colorSpace = m_pcPelFormat->colorSpace;
+  if( colorSpace == PlaYUVerFrame::COLOR_YUV )
+  {
+    const Pel *data[3];
+    data[LUMA] = m_pppcInputPel[LUMA][0];
+    data[CHROMA_U] = m_pppcInputPel[CHROMA_U][0];
+    data[CHROMA_V] = m_pppcInputPel[CHROMA_V][0];
+    for( i = 0; i < m_uiHeight * m_uiWidth && m_bRunningFlag; i++ )
+    {
+      m_puiHistogram[*( data[LUMA] ) + LUMA * m_uiHistoSegments]++;
+      data[LUMA] += 1;
+    }
+    for( i = 0; ( i < getChromaSize() ) && m_bRunningFlag; i++ )
+    {
+      for( j = 1; j < numberChannels; j++ )
+      {
+        m_puiHistogram[*( data[j] ) + j * m_uiHistoSegments]++;
+        data[j] += 1;
+      }
+    }
+  }
+  else
+  {
+    const Pel* data[3];
+    Pel luma;
+    data[COLOR_R] = m_pppcInputPel[COLOR_R][0];
+    data[COLOR_G] = m_pppcInputPel[COLOR_G][0];
+    data[COLOR_B] = m_pppcInputPel[COLOR_B][0];
+
+    for( i = 0; ( i <  m_uiHeight * m_uiWidth ) && m_bRunningFlag; i++ )
+    {
+      for( j = 0; j < numberChannels; j++ )
+      {
+        m_puiHistogram[*( data[j] ) + j * m_uiHistoSegments]++;
+      }
+      if( ( colorSpace == PlaYUVerFrame::COLOR_RGB || colorSpace == PlaYUVerFrame::COLOR_ARGB ) )
+      {
+        PlaYUVerFrame::Pixel currPixel( colorSpace, *( data[COLOR_R] ), *( data[COLOR_G] ), *( data[COLOR_B] ) );
+        luma = PlaYUVerFrame::ConvertPixel( currPixel, PlaYUVerFrame::COLOR_YUV ).Y();
+        m_puiHistogram[luma + j * m_uiHistoSegments]++;
+      }
+      for( j = 0; j < numberChannels; j++ )
+        data[j] += 1;
+    }
+  }
+  m_bHasHistogram = true;
+  m_bRunningFlag = false;
+}
+
+Int PlaYUVerFrame::getHistogramSegment()
+{
+  return m_uiHistoSegments;
+}
+
+Int PlaYUVerFrame::getRealHistoChannel( Int channel )
+{
+  Int histoChannel;
+
+  switch( getColorSpace() )
+  {
+  case PlaYUVerFrame::COLOR_GRAY:
+    if( channel != LUMA )
+    {
+      return -1;
+    }
+    histoChannel = 0;
+    break;
+  case PlaYUVerFrame::COLOR_RGB:
+    if( channel != COLOR_R && channel != COLOR_G && channel != COLOR_B && channel != LUMA )
+    {
+      return -1;
+    }
+    else
+    {
+      if( channel == LUMA )
+      {
+        histoChannel = 3;
+      }
+      else
+      {
+        histoChannel = channel;
+      }
+    }
+    break;
+  case PlaYUVerFrame::COLOR_ARGB:
+    if( channel != COLOR_R && channel != COLOR_G && channel != COLOR_B && channel != COLOR_A && channel != LUMA )
+    {
+      return -1;
+    }
+    else
+    {
+      if( channel == LUMA )
+      {
+        histoChannel = 4;
+      }
+      else
+      {
+        histoChannel = channel;
+      }
+    }
+    break;
+  case PlaYUVerFrame::COLOR_YUV:
+    if( channel != LUMA && channel != CHROMA_U && channel != CHROMA_V )
+    {
+      return -1;
+    }
+    else
+    {
+      histoChannel = channel;
+    }
+    break;
+  default:
+    histoChannel = -1;
+  }
+  return histoChannel;
+}
+
+Double PlaYUVerFrame::getCount( Int channel, UInt start, UInt end )
+{
+  UInt i;
+  Int histoChannel;
+  Int indexStart;
+  Double count = 0.0;
+
+  if( !m_bHasHistogram || start < 0 || end > m_uiHistoSegments - 1 || start > end )
+  {
+    return 0.0;
+  }
+
+  histoChannel = getRealHistoChannel( channel );
+
+  if( histoChannel == -1 )
+  {
+    return 0.0;
+  }
+
+  indexStart = histoChannel * m_uiHistoSegments;
+
+  for( i = start; i <= end; i++ )
+  {
+    count += m_puiHistogram[indexStart + i];
+  }
+  return count;
+}
+
+
+
+Double PlaYUVerFrame::getMean( Int channel, UInt start, UInt end )
+{
+  Int indexStart;
+  Int histoChannel;
+  Double mean = 0.0;
+  Double count;
+
+  if( !m_bHasHistogram || start < 0 || end > m_uiHistoSegments - 1 || start > end )
+  {
+    return 0.0;
+  }
+
+  histoChannel = getRealHistoChannel( channel );
+
+  if( histoChannel == -1 )
+  {
+    return 0.0;
+  }
+
+  indexStart = histoChannel * m_uiHistoSegments;
+
+  for( UInt i = start; i <= end; i++ )
+  {
+    mean += i * m_puiHistogram[indexStart + i];
+  }
+
+  count = getCount( channel, start, end );
+
+  if( count > 0.0 )
+  {
+    return mean / count;
+  }
+
+  return mean;
+}
+
+Int PlaYUVerFrame::getMedian( Int channel, UInt start, UInt end )
+{
+  Int histoChannel;
+  Int indexStart;
+  Double sum = 0.0;
+  Double count;
+
+  if( !m_bHasHistogram || start < 0 || end > m_uiHistoSegments - 1 || start > end )
+  {
+    return 0;
+  }
+
+  histoChannel = getRealHistoChannel( channel );
+
+  if( histoChannel == -1 )
+  {
+    return 0;
+  }
+
+  indexStart = histoChannel * m_uiHistoSegments;
+
+  count = getCount( channel, start, end );
+
+  for( UInt i = start; i <= end; i++ )
+  {
+    sum += m_puiHistogram[indexStart + i];
+    if( sum * 2 > count )
+      return i;
+  }
+
+  return 0;
+}
+
+Double PlaYUVerFrame::getStdDev( Int channel, UInt start, UInt end )
+{
+  Int histoChannel;
+  Int indexStart;
+  Double dev = 0.0;
+  Double count;
+  Double mean;
+
+  if( !m_bHasHistogram || start < 0 || end > m_uiHistoSegments - 1 || start > end )
+  {
+    return 0.0;
+  }
+
+  histoChannel = getRealHistoChannel( channel );
+
+  if( histoChannel == -1 )
+  {
+    return 0.0;
+  }
+
+  indexStart = histoChannel * m_uiHistoSegments;
+  mean = getMean( channel, start, end );
+  count = getCount( channel, start, end );
+
+  if( count == 0.0 )
+    count = 1.0;
+
+  /*------------ original
+
+   for ( i = start ; i <= end ; i++ )
+   {
+   dev += ( i - mean ) * ( i - mean ) * m_puiHistogram[indexStart +i];
+   }
+
+   return sqrt( dev / count );
+
+   -----------------------*/
+
+  for( UInt i = start; i <= end; i++ )
+  {
+    dev += ( i * i ) * m_puiHistogram[indexStart + i];
+  }
+
+  return sqrt( ( dev - count * mean * mean ) / ( count - 1 ) );
+
+}
+
+Double PlaYUVerFrame::getHistogramValue( Int channel, UInt bin )
+{
+  Double value;
+  Int histoChannel;
+  Int indexStart;
+
+  if( !m_bHasHistogram || bin < 0 || bin > m_uiHistoSegments - 1 )
+    return 0.0;
+
+  histoChannel = getRealHistoChannel( channel );
+
+  if( histoChannel == -1 )
+  {
+    return 0.0;
+  }
+
+  indexStart = histoChannel * m_uiHistoSegments;
+
+  value = m_puiHistogram[indexStart + bin];
+
+  return value;
+}
+
+Double PlaYUVerFrame::getMaximum( Int channel )
+{
+  Double max = 0.0;
+
+  Int histoChannel;
+  Int indexStart;
+
+  if( !m_bHasHistogram )
+    return 0.0;
+
+  histoChannel = getRealHistoChannel( channel );
+
+  if( histoChannel == -1 )
+  {
+    return 0.0;
+  }
+
+  indexStart = histoChannel * m_uiHistoSegments;
+
+  for( UInt x = 0; x < m_uiHistoSegments; x++ )
+  {
+    if( m_puiHistogram[indexStart + x] > max )
+    {
+      max = m_puiHistogram[indexStart + x];
+    }
+  }
+
+  return max;
+}
+
 
 Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame )
 {

@@ -359,8 +359,7 @@ Void FramePropertiesDock::setSelection( const QRect &selectionArea )
     if( selectionArea.isValid() )
     {
       histogramWidget->stopHistogramComputation();
-      histogramWidget->updateSelectionData(
-          new PlaYUVerFrame( m_pcFrame, selectionArea.x(), selectionArea.y(), selectionArea.width(), selectionArea.height() ) );
+      histogramWidget->updateSelectionData( new PlaYUVerFrame( m_pcFrame, selectionArea.x(), selectionArea.y(), selectionArea.width(), selectionArea.height() ) );
       fullImageButton->show();
       selectionImageButton->show();
       selectionImageButton->click();
@@ -414,28 +413,28 @@ Void FramePropertiesDock::updateStatistiques()
   if( channel == HistogramWidget::ColorChannelsHistogram )
     channel = colorsCB->currentIndex() + 1;
 
-  PlaYUVerFrameStats* histogram;
+  PlaYUVerFrame* frame;
 
   if( histogramWidget->m_renderingType == HistogramWidget::FullImageHistogram )
-    histogram = histogramWidget->m_imageHistogram;
+    frame = histogramWidget->m_fullImage;
   else
-    histogram = histogramWidget->m_selectionHistogram;
+    frame = histogramWidget->m_selectionImage;
 
-  if( histogram )
+  if( frame )
   {
-    double mean = histogram->getMean( channel, min, max );
+    double mean = frame->getMean( channel, min, max );
     labelMeanValue->setText( value.setNum( mean, 'f', 1 ) );
 
-    double pixels = histogram->getPixels();
+    double pixels = frame->getPixels();
     labelPixelsValue->setText( value.setNum( ( float )pixels, 'f', 0 ) );
 
-    double stddev = histogram->getStdDev( channel, min, max );
+    double stddev = frame->getStdDev( channel, min, max );
     labelStdDevValue->setText( value.setNum( stddev, 'f', 1 ) );
 
-    double counts = histogram->getCount( channel, min, max );
+    double counts = frame->getCount( channel, min, max );
     labelCountValue->setText( value.setNum( ( float )counts, 'f', 0 ) );
 
-    double median = histogram->getMedian( channel, min, max );
+    double median = frame->getMedian( channel, min, max );
     labelMedianValue->setText( value.setNum( median, 'f', 1 ) );
 
     double percentile = ( pixels > 0 ? ( 100.0 * counts / pixels ) : 0.0 );

@@ -114,11 +114,11 @@ public  :
   /** Stop current histogram computations.*/
   Void stopHistogramComputation();
 
-  /** Update full image histogram data from SImage.*/
-  Void updateData( const PlaYUVerFrame *pcFrame, const PlaYUVerFrame *pcFrameSelection );
+  /** Update full image histogram data. */
+  Void updateData( PlaYUVerFrame *pcFrame, PlaYUVerFrame *pcFrameSelection );
 
-  /** Update image selection histogram data from SImage.*/
-  Void updateSelectionData( const PlaYUVerFrame *pcFrameSelection );
+  /** Update image selection histogram data.*/
+  Void updateSelectionData( PlaYUVerFrame *pcFrameSelection );
 
   /** @see @p HistogramOption */
   Void setOptions( HistogramOptions options = AllOptions );
@@ -141,10 +141,12 @@ public:
 
   /** Full image */
   HistogramWorker* m_imageWorker;
-  PlaYUVerFrameStats* m_imageHistogram;
+  //PlaYUVerFrameStats* m_imageHistogram;
+  PlaYUVerFrame* m_fullImage;
   /** Histogram area selection */
   HistogramWorker* m_selectionWorker;
-  PlaYUVerFrameStats* m_selectionHistogram;
+  //PlaYUVerFrameStats* m_selectionHistogram;
+  PlaYUVerFrame* m_selectionImage;
 
   Q_SIGNALS:
   void signalIntervalChanged( int min, int max );

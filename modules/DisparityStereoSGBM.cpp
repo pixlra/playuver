@@ -73,6 +73,18 @@ Bool DisparityStereoSGBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
   m_cStereoMatch->setDisp12MaxDiff( 1 );
   //m_cStereoMatch->setMode( alg == STEREO_HH ? StereoSGBM::MODE_HH : StereoSGBM::MODE_SGBM );
   m_cStereoMatch->setMode( m_bUseHH ? cv::StereoSGBM::MODE_HH :cv::StereoSGBM::MODE_SGBM );
+#else
+  m_cStereoMatch.preFilterCap = 63;
+  m_cStereoMatch.SADWindowSize = m_uiBlockSize;
+  m_cStereoMatch.P1 = 8*cn*sgbm.SADWindowSize*sgbm.SADWindowSize;
+  m_cStereoMatch.P2 = 32*cn*sgbm.SADWindowSize*sgbm.SADWindowSize;
+  m_cStereoMatch.minDisparity = 0;
+  m_cStereoMatch.numberOfDisparities = m_uiNumberOfDisparities;
+  m_cStereoMatch.uniquenessRatio = 10;
+  m_cStereoMatch.speckleWindowSize = 100;
+  m_cStereoMatch.speckleRange = 32;
+  m_cStereoMatch.disp12MaxDiff = 1;
+  m_cStereoMatch.fullDP = m_bUseHH ? 1 : 0;
 #endif
   return true;
 }

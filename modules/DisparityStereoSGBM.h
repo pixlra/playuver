@@ -57,6 +57,8 @@ private:
   UInt m_uiBlockSize;
 #if( CV_MAJOR_VERSION == 3)
   cv::Ptr<cv::StereoSGBM> m_cStereoMatch;
+#else
+  StereoSGBM m_cStereoMatch;
 #endif
 
 public:

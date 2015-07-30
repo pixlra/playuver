@@ -41,8 +41,7 @@ DisparityStereoSGBM::DisparityStereoSGBM()
   m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions()/**/
-  ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [3]" )
-  ( "HHAlgorithm", m_bUseHH, "Use HH algorithm [false]" );
+  ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [3]" )( "HHAlgorithm", m_bUseHH, "Use HH algorithm [false]" );
 
   m_pcDisparityFrame = NULL;
   m_uiBlockSize = 3;
@@ -59,10 +58,11 @@ Bool DisparityStereoSGBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
     m_uiBlockSize++;
   }
   m_uiNumberOfDisparities = ( ( apcFrameList[0]->getWidth() / 8 ) + 15 ) & -16;
+  Int cn = apcFrameList[0]->getNumberChannels();
 #if( CV_MAJOR_VERSION == 3)
   m_cStereoMatch = cv::StereoSGBM::create( 0, 16, m_uiBlockSize );
-  m_cStereoMatch->setPreFilterCap(63);
-  int cn = apcFrameList[0]->getNumberChannels();
+  m_cStereoMatch->setPreFilterCap( 63 );
+
   m_cStereoMatch->setP1( 8 * cn * m_uiBlockSize * m_uiBlockSize );
   m_cStereoMatch->setP2( 32 * cn * m_uiBlockSize * m_uiBlockSize );
   m_cStereoMatch->setMinDisparity( 0 );
@@ -72,12 +72,12 @@ Bool DisparityStereoSGBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
   m_cStereoMatch->setSpeckleRange( 32 );
   m_cStereoMatch->setDisp12MaxDiff( 1 );
   //m_cStereoMatch->setMode( alg == STEREO_HH ? StereoSGBM::MODE_HH : StereoSGBM::MODE_SGBM );
-  m_cStereoMatch->setMode( m_bUseHH ? cv::StereoSGBM::MODE_HH :cv::StereoSGBM::MODE_SGBM );
+  m_cStereoMatch->setMode( m_bUseHH ? cv::StereoSGBM::MODE_HH : cv::StereoSGBM::MODE_SGBM );
 #else
   m_cStereoMatch.preFilterCap = 63;
   m_cStereoMatch.SADWindowSize = m_uiBlockSize;
-  m_cStereoMatch.P1 = 8*cn*sgbm.SADWindowSize*sgbm.SADWindowSize;
-  m_cStereoMatch.P2 = 32*cn*sgbm.SADWindowSize*sgbm.SADWindowSize;
+  m_cStereoMatch.P1 = 8 * cn * m_uiBlockSize * m_uiBlockSize;
+  m_cStereoMatch.P2 = 32 * cn * m_uiBlockSize * m_uiBlockSize;
   m_cStereoMatch.minDisparity = 0;
   m_cStereoMatch.numberOfDisparities = m_uiNumberOfDisparities;
   m_cStereoMatch.uniquenessRatio = 10;

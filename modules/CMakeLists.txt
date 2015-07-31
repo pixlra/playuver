@@ -55,5 +55,5 @@ file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#endif // __MODU
 
 INCLUDE_DIRECTORIES( ${OpenCV_INCLUDE_DIRS} )
 ADD_LIBRARY( PlaYUVerModules ${plaYUver_Mod_SRCS} )
-TARGET_LINK_LIBRARIES( PlaYUVerModules PlaYUVerLib  ${OpenCV_LIBRARIES}  )
+TARGET_LINK_LIBRARIES( PlaYUVerModules PlaYUVerLib  ${OpenCV_LIBRARIES} -ldl )
 

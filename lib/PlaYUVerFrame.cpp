@@ -136,6 +136,13 @@ PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt a
 
 PlaYUVerFrame::~PlaYUVerFrame()
 {
+  if( m_puiHistogram )
+  {
+    freeMem1D( m_puiHistogram );
+  }
+  m_puiHistogram = NULL;
+  m_bHasHistogram = false;
+
   if( m_pppcInputPel )
     freeMem3ImageComponents<Pel>( m_pppcInputPel );
   m_pppcInputPel = NULL;
@@ -208,6 +215,9 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
     getMem3ImageComponents( &m_pppcInputPel, m_uiHeight, m_uiWidth, m_pcPelFormat->log2ChromaHeight, m_pcPelFormat->log2ChromaWidth );
   }
   getMem1D( &m_pcARGB32, m_uiHeight * m_uiWidth * 4 );
+
+  m_puiHistogram = NULL;
+  m_bHasHistogram = false;
 
   m_uiHistoSegments = 1 << m_iBitsPel;
 
@@ -492,7 +502,7 @@ Void PlaYUVerFrame::calcHistogram()
     data[COLOR_G] = m_pppcInputPel[COLOR_G][0];
     data[COLOR_B] = m_pppcInputPel[COLOR_B][0];
 
-    for( i = 0; ( i <  m_uiHeight * m_uiWidth ) && m_bRunningFlag; i++ )
+    for( i = 0; ( i < m_uiHeight * m_uiWidth ) && m_bRunningFlag; i++ )
     {
       for( j = 0; j < numberChannels; j++ )
       {
@@ -607,8 +617,6 @@ Double PlaYUVerFrame::getCount( Int channel, UInt start, UInt end )
   }
   return count;
 }
-
-
 
 Double PlaYUVerFrame::getMean( Int channel, UInt start, UInt end )
 {
@@ -778,7 +786,6 @@ Double PlaYUVerFrame::getMaximum( Int channel )
 
   return max;
 }
-
 
 Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame )
 {

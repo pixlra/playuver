@@ -31,7 +31,6 @@
 #include <cassert>
 #include <vector>
 #include "PlaYUVerDefs.h"
-#include "PlaYUVerFrameStats.h"
 
 class PixFcSSE;
 namespace cv

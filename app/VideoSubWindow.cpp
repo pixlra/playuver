@@ -232,11 +232,6 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   {
     m_pCurrStream = new PlaYUVerStream;
   }
-//  else
-//  {
-//    delete m_pCurrStream;
-//    m_pCurrStream = new PlaYUVerStream;
-//  }
 
   if( guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
   {
@@ -274,11 +269,10 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   refreshFrame();
 
   m_cFilename = cFilename;
-  m_cWindowShortName = QFileInfo( cFilename ).fileName();
 
   updateVideoWindowInfo();
 
-  setWindowName( m_cWindowShortName );
+
   return true;
 }
 
@@ -296,7 +290,6 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
   }
 
   m_sStreamInfo = *streamInfo;
-
   m_cViewArea->setInputStream( m_pCurrStream );
 
   QApplication::restoreOverrideCursor();
@@ -304,11 +297,8 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
   refreshFrame();
 
   m_cFilename = streamInfo->m_cFilename;
-  m_cWindowShortName = QFileInfo( streamInfo->m_cFilename ).fileName();
-
   updateVideoWindowInfo();
-
-  setWindowName( m_cWindowShortName );
+  setWindowName( QFileInfo( m_cFilename ).fileName() );
   return true;
 }
 

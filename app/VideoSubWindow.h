@@ -90,7 +90,7 @@ private:
 
   VideoSubWindow* m_pcReferenceSubWindow;
 
-  QString m_cWindowShortName;
+  //QString m_cWindowShortName;
   QString m_cCurrFileName;
 
   Bool m_bIsPlaying;
@@ -235,14 +235,6 @@ public:
   QSize sizeHint() const;
   QSize sizeHint( const QSize & ) const;
 
-  Void setWindowShortName( const QString& name )
-  {
-    m_cWindowShortName = name;
-  }
-  QString getWindowShortName()
-  {
-    return m_cWindowShortName;
-  }
   QString getCurrentFileName()
   {
     return m_cFilename;

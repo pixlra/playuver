@@ -151,7 +151,7 @@ Void QualityMeasurementSidebar::updateSubWindowList()
         continue;
       }
     }
-    currSubWindowName = pcVideoSubWindow->getWindowShortName();
+    currSubWindowName = pcVideoSubWindow->getWindowName();
     m_pcWindowListNames.append( currSubWindowName );
     m_pcVideoWindowList.append( pcVideoSubWindow );
   }

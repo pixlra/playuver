@@ -353,7 +353,6 @@ Void ModulesHandle::activateModule()
     if( ( pcCurrAppModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
       pcModuleSubWindow = new VideoSubWindow( VideoSubWindow::MODULE_SUBWINDOW );
-      pcModuleSubWindow->setWindowShortName( windowName );
       pcModuleSubWindow->setWindowName( windowName );
 
       connect( pcModuleSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
@@ -362,6 +361,14 @@ Void ModulesHandle::activateModule()
       connect( pcModuleSubWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo, SLOT( moveAllScrollBars( const QPoint ) ) );
 
       pcCurrAppModuleIf->m_pcDisplaySubWindow = pcModuleSubWindow;
+    }
+    else
+    {
+      QString windowName = videoSubWindowList.at( 0 )->getWindowName();
+      windowName.append( QStringLiteral( " - Module " ) );
+      windowName.append( pcCurrAppModuleIf->m_pcModule->m_pchModuleName );
+      videoSubWindowList.at( 0 )->setWindowName( windowName );
+
     }
   }
   else if( pcCurrAppModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )

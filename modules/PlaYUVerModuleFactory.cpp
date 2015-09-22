@@ -25,7 +25,9 @@
 #include "config.h"
 #include <functional>
 #include <cstring>
+#ifdef USE_DYNLOAD
 #include <dlfcn.h>
+#endif
 #include "PlaYUVerModuleFactory.h"
 #include "ModulesListHeader.h"
 
@@ -63,6 +65,7 @@ Void PlaYUVerModuleFactory::Register( const char* moduleName, CreateModuleFn pfn
 
 Bool PlaYUVerModuleFactory::RegisterDl( const char* dlName )
 {
+#ifdef USE_DYNLOAD
   void *pHndl = dlopen( dlName, RTLD_NOW );
   if( pHndl == NULL )
   {
@@ -77,6 +80,9 @@ Bool PlaYUVerModuleFactory::RegisterDl( const char* dlName )
   }
   Register( dlName, pfnCreate );
   return true;
+#else
+  return false;
+#endif
 }
 
 PlaYUVerModuleIf *PlaYUVerModuleFactory::CreateModule( const char* moduleName )

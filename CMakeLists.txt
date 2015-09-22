@@ -29,6 +29,7 @@ OPTION( USE_FERVOR              "Add Fervor support"                    OFF )
 OPTION( USE_WERROR              "Warnings as errors"                    OFF )
 OPTION( USE_QT4                 "Build with Qt4"                        OFF )
 OPTION( USE_QTDBUS              "Build with Qt4"                        OFF )
+OPTION( USE_DYNLOAD             "Use dynamic load of modules"           ON  )
 # To be switched on when releasing.
 OPTION(RELEASE_BUILD "Remove Git revision from program version (use for stable releases)" ON)
 

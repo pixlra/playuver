@@ -19,6 +19,8 @@ SET(QT_DIR "QT-Dir" CACHE PATH "Where to find QT Lib on Windows")
 SET(QT_DLL_POSTFIX "" CACHE STRING "Postfix to dll's name for debug" )
 SET(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH} ${QT_DIR}" )
 
+SET(WINDLLIB "Dl-location" CACHE PATH "Where to find DL Lib on Windows")
+
 
 IF( NOT USE_QT4 )
   INSTALL(FILES ${QT_DIR}/bin/Qt5Core${QT_DLL_POSTFIX}.dll DESTINATION bin )

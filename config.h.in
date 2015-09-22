@@ -51,6 +51,9 @@
 /* QtDBus */
 #cmakedefine USE_QTDBUS
 
+/* Dynamic Modules Loading */
+#cmakedefine USE_DYNLOAD
+
 #cmakedefine PLAYUVER_THREADED_MODULES
 
 /* Boost support */

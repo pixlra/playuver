@@ -11,7 +11,7 @@ INCLUDE_DIRECTORIES(
 set(plaYUver_Tools_SRCS
   main.cpp
   PlaYUVerTools.cpp
-  CommandLineHandle.cpp
+  PlaYUVerToolsCmdParser.cpp
 )
 
 ADD_EXECUTABLE( ${PROJECT_NAME}Tools ${plaYUver_Tools_SRCS} )

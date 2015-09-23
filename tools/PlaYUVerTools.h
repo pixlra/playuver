@@ -29,7 +29,7 @@
 #include "lib/PlaYUVerDefs.h"
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"
-#include "CommandLineHandle.h"
+#include "PlaYUVerToolsCmdParser.h"
 
 namespace plaYUVer
 {
@@ -49,7 +49,7 @@ public:
   Int Close();
 
 private:
-  CommandLineHandle m_cCmdLineHandler;
+  PlaYUVerToolsCmdParser m_cCmdLineHandler;
   Bool m_bVerbose;
 
   UInt m_uiOperation;

@@ -18,13 +18,13 @@
  */
 
 /**
- * \file     CommandLineHandle.cpp
+ * \file     PlaYUVerToolsCmdParser.cpp
  * \brief    Handle for command line
  */
 
 #include <cstring>
 #include <cstdarg>
-#include "CommandLineHandle.h"
+#include "PlaYUVerToolsCmdParser.h"
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"
 #include "lib/PlaYUVerModuleIf.h"
@@ -33,7 +33,7 @@
 namespace plaYUVer
 {
 
-CommandLineHandle::CommandLineHandle()
+PlaYUVerToolsCmdParser::PlaYUVerToolsCmdParser()
 {
   m_uiLogLevel = 0;
   m_bQuiet = false;
@@ -41,12 +41,12 @@ CommandLineHandle::CommandLineHandle()
   m_iFrames = -1;
 }
 
-CommandLineHandle::~CommandLineHandle()
+PlaYUVerToolsCmdParser::~PlaYUVerToolsCmdParser()
 {
 
 }
 
-Void CommandLineHandle::log( UInt level, const char *fmt, ... )
+Void PlaYUVerToolsCmdParser::log( UInt level, const char *fmt, ... )
 {
   if( level >= m_uiLogLevel )
   {
@@ -57,7 +57,7 @@ Void CommandLineHandle::log( UInt level, const char *fmt, ... )
   }
 }
 
-Int CommandLineHandle::parseToolsArgs( Int argc, Char *argv[] )
+Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char *argv[] )
 {
   Int iRet = 0;
 
@@ -108,7 +108,7 @@ Int CommandLineHandle::parseToolsArgs( Int argc, Char *argv[] )
   return iRet;
 }
 
-Void CommandLineHandle::listModules()
+Void PlaYUVerToolsCmdParser::listModules()
 {
   Bool bDetailed = false;
 
@@ -164,7 +164,7 @@ Void CommandLineHandle::listModules()
   }
 }
 
-Void CommandLineHandle::listModuleHelp()
+Void PlaYUVerToolsCmdParser::listModuleHelp()
 {
   std::string moduleName = m_strModule;
   PlaYUVerModuleIf* pcCurrModuleIf = NULL;

@@ -18,12 +18,12 @@
  */
 
 /**
- * \file     CommandLineHandle.h
+ * \file     PlaYUVerToolsCmdParser.h
  * \brief    Handle for command line
  */
 
-#ifndef __COMMANDLINEHANDLE_H__
-#define __COMMANDLINEHANDLE_H__
+#ifndef __PLAYUVERTOOLSCMDPARSER_H__
+#define __PLAYUVERTOOLSCMDPARSER_H__
 
 #include "config.h"
 #include "lib/PlaYUVerDefs.h"
@@ -34,12 +34,12 @@ namespace plaYUVer
 
 class PlaYUVerStream;
 
-class CommandLineHandle: public PlaYUVerCmdParser
+class PlaYUVerToolsCmdParser: public PlaYUVerCmdParser
 {
   friend class PlaYUVerTools;
 public:
-  CommandLineHandle();
-  ~CommandLineHandle();
+  PlaYUVerToolsCmdParser();
+  ~PlaYUVerToolsCmdParser();
 
   Void setLogLevel( enum LOG_LEVEL level )
   {
@@ -93,4 +93,4 @@ private:
 
 }  // NAMESPACE
 
-#endif // __COMMANDLINEHANDLE_H__
+#endif // __PLAYUVERTOOLSCMDPARSER_H__

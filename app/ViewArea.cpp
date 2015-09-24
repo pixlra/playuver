@@ -164,7 +164,7 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
         scale = hfactor;
 
       zoomFactor = zoomFactor * scale * 100.0;
-      zoomFactor = round( zoomFactor );
+      zoomFactor = floor( zoomFactor );
       zoomFactor = zoomFactor / 100.0;
       scale = zoomFactor / m_zoomFactor;
     }

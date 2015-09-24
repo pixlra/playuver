@@ -203,7 +203,7 @@ VideoSubWindow::~VideoSubWindow()
 
 Void VideoSubWindow::keyPressEvent( QKeyEvent* event )
 {
-  if( checkCategory( MODULE_SUBWINDOW ) && m_pcCurrentDisplayModule )
+  if( m_pcCurrentDisplayModule )
   {
     if( m_pcCurrentDisplayModule->getModuleRequirements() & MODULE_USES_KEYS )
     {
@@ -215,6 +215,12 @@ Void VideoSubWindow::keyPressEvent( QKeyEvent* event )
         break;
       case Qt::Key_D:
         bRet = m_pcCurrentDisplayModule->getModule()->keyPressed( MODULE_KEY_RIGHT );
+        break;
+      case Qt::Key_W:
+        bRet = m_pcCurrentDisplayModule->getModule()->keyPressed( MODULE_KEY_UP );
+        break;
+      case Qt::Key_S:
+        bRet = m_pcCurrentDisplayModule->getModule()->keyPressed( MODULE_KEY_DOWN );
         break;
       }
       if( bRet )

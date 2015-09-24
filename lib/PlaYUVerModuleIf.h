@@ -87,6 +87,8 @@ enum Module_Key_Supported
 {
   MODULE_KEY_LEFT,
   MODULE_KEY_RIGHT,
+  MODULE_KEY_UP,
+  MODULE_KEY_DOWN,
 };
 
 

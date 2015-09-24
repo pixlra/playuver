@@ -231,12 +231,19 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
 
 Void PlaYUVerFrame::clear()
 {
+  Pel* pPel;
   Pel uiValue = 128;
+  Int ratioH, ratioW;
+  UInt i;
   for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
   {
-    //uiValue = ch > 0 ? 0 : 128;
-    memset( m_pppcInputPel[ch][0], uiValue,
-    CHROMASHIFT( m_uiHeight, m_pcPelFormat->log2ChromaHeight ) * CHROMASHIFT( m_uiWidth, m_pcPelFormat->log2ChromaWidth ) * sizeof(Pel) );
+    ratioW = ch > 0 ? m_pcPelFormat->log2ChromaWidth : 0;
+    ratioH = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
+    pPel = m_pppcInputPel[ch][0];
+    for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ); i++ )
+    {
+      *pPel++ = uiValue;
+    }
   }
 }
 

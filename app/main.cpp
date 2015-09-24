@@ -63,7 +63,7 @@ int main( int argc, char *argv[] )
     QStringList filenameList;
     for( Int i = 1; i < argc; i++ )
     {
-      filenameList.append( QString( argv[i] ) );
+      filenameList.append( QFileInfo( QString( argv[i] ) ).absoluteFilePath() );
     }
     if( filenameList.isEmpty() )
     {

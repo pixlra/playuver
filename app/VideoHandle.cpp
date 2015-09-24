@@ -84,7 +84,7 @@ Void VideoHandle::createActions()
   m_arrayActions[VIDEO_BACKWARD_ACT] = new QAction( "Video Backward", this );
   m_arrayActions[VIDEO_BACKWARD_ACT]->setStatusTip( "Seek backward" );
   m_arrayActions[VIDEO_BACKWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
-  m_arrayActions[VIDEO_BACKWARD_ACT]->setShortcut( Qt::Key_Left );
+  //m_arrayActions[VIDEO_BACKWARD_ACT]->setShortcut( Qt::Key_Left );
   connect( m_arrayActions[VIDEO_BACKWARD_ACT], SIGNAL( triggered() ), m_mapperVideoSeek, SLOT( map() ) );
   m_mapperVideoSeek->setMapping( m_arrayActions[VIDEO_BACKWARD_ACT], 0 );
 

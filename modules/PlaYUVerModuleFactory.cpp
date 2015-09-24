@@ -44,6 +44,7 @@ PlaYUVerModuleFactory::PlaYUVerModuleFactory()
   Register( "SetChromaHalfScale", &SetChromaHalfScale::Create );
   Register( "FrameCrop", &FrameCrop::Create );
   Register( "FrameBinarization", &FrameBinarization::Create );
+  Register( "FrameShift", &FrameShift::Create );
   Register( "EightBitsSampling", &EightBitsSampling::Create );
   Register( "LumaAverage", &LumaAverage::Create );
 #ifdef USE_OPENCV

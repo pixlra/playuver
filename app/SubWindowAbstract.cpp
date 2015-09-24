@@ -39,7 +39,8 @@ SubWindowAbstract::SubWindowAbstract( QWidget * parent, UInt category ) :
 {
   setParent( parent );
   setVisible( false );
-  setFocusPolicy( Qt::WheelFocus );
+  //setFocusPolicy( Qt::WheelFocus );
+  setFocusPolicy(Qt::StrongFocus);
   setAttribute( Qt::WA_DeleteOnClose );
   setBackgroundRole( QPalette::Background );
 

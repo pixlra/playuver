@@ -36,8 +36,6 @@ namespace plaYUVer
 
 #define CHROMARATIO( SIZE, RATIO ) ( RATIO > 1 ? ( ( SIZE + 1 ) / RATIO ) : SIZE )
 
-#define CHROMASHIFT( SIZE, SHIFT ) UInt( -( ( - ( Int( SIZE ) ) ) >> SHIFT ) )
-
 #define CLAMP(X) X = X < 0 ? 0 : X > 255 ? 255 : X;
 
 #define YUV2RGB(  iY, iU, iV, iR, iG, iB ) \

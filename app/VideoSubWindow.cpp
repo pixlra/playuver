@@ -46,12 +46,13 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array
   for( Int i = 0; i < array.size(); i++ )
   {
     d = array.at( i );
-    out << d.m_cFilename << d.m_uiWidth
-                         << d.m_uiHeight
-                         << d.m_iPelFormat
-                         << d.m_uiBitsPelPixel
-                         << d.m_uiFrameRate
-                         << d.m_uiFileSize;
+    out << d.m_cFilename
+        << d.m_uiWidth
+        << d.m_uiHeight
+        << d.m_iPelFormat
+        << d.m_uiBitsPelPixel
+        << d.m_uiFrameRate
+        << d.m_uiFileSize;
   }
   return out;
 }
@@ -196,6 +197,83 @@ VideoSubWindow::~VideoSubWindow()
     delete m_pCurrStream;
 }
 
+/**
+ * Events handlers
+ */
+
+Void VideoSubWindow::keyPressEvent( QKeyEvent* event )
+{
+  if( checkCategory( MODULE_SUBWINDOW ) && m_pcCurrentDisplayModule )
+  {
+    if( m_pcCurrentDisplayModule->getModuleRequirements() & MODULE_USES_KEYS )
+    {
+      Bool bRet = false;
+      switch( event->key() )
+      {
+      case Qt::Key_A:
+        bRet = m_pcCurrentDisplayModule->getModule()->keyPressed( MODULE_KEY_LEFT );
+        break;
+      case Qt::Key_D:
+        bRet = m_pcCurrentDisplayModule->getModule()->keyPressed( MODULE_KEY_RIGHT );
+        break;
+      }
+      if( bRet )
+      {
+        refreshFrame();
+        return;
+      }
+    }
+  }
+  QWidget::keyPressEvent( event );
+}
+
+Void VideoSubWindow::resizeEvent( QResizeEvent* event )
+{
+  m_pcVideoInfo->resize( event->size() );
+}
+
+/**
+ * Size related handlers
+ */
+
+QSize VideoSubWindow::sizeHint() const
+{
+  QSize maxSize;
+
+  QWidget *p = parentWidget();
+  if( p )
+  {
+    maxSize = p->size();
+  }
+  else
+  {
+    maxSize = QApplication::desktop()->availableGeometry().size();
+  }
+  return sizeHint( maxSize );
+}
+
+QSize VideoSubWindow::sizeHint( const QSize & maxSize ) const
+{
+  QSize isize;
+  if( m_pcCurrFrame )
+    isize = QSize( m_pcCurrFrame->getWidth() + 50, m_pcCurrFrame->getHeight() + 50 );
+  else if( m_pCurrStream )
+    isize = QSize( m_pCurrStream->getWidth() + 50, m_pCurrStream->getHeight() + 50 );
+
+// If the VideoSubWindow needs more space that the avaiable, we'll give
+// to the subwindow a reasonable size preserving the image aspect ratio.
+  if( !( isize.width() < maxSize.width() && isize.height() < maxSize.height() ) )
+  {
+    isize.scale( maxSize, Qt::KeepAspectRatio );
+  }
+  return isize;
+}
+
+Void VideoSubWindow::updateWindowOnTimeout()
+{
+  m_pcVideoInfo->update();
+}
+
 Void VideoSubWindow::loadAll()
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -272,7 +350,6 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
 
   updateVideoWindowInfo();
 
-
   return true;
 }
 
@@ -332,11 +409,11 @@ Void VideoSubWindow::updateVideoWindowInfo()
     QString m_cCodedName = QString::fromStdString( m_pCurrStream->getCodecName() );
     m_cStreamInformation = m_cFormatName + " | " + m_cCodedName;
   }
-  if( m_pcCurrFrame )
-  {
-    QString m_cPelFmtName = QString::fromStdString( m_pcCurrFrame->getPelFmtName() );
-    m_cStreamInformation += " | " + m_cPelFmtName;
-  }
+//  if( m_pcCurrFrame )
+//  {
+//    QString m_cPelFmtName = QString::fromStdString( m_pcCurrFrame->getPelFmtName() );
+//    m_cStreamInformation += " | " + m_cPelFmtName;
+//  }
   if( m_cStreamInformation.isEmpty() )
   {
     m_cStreamInformation = "          ";
@@ -855,48 +932,6 @@ Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
       emit updateStatusBar( strStatus );
     }
   }
-}
-
-QSize VideoSubWindow::sizeHint() const
-{
-  QSize maxSize;
-
-  QWidget *p = parentWidget();
-  if( p )
-  {
-    maxSize = p->size();
-  }
-  else
-  {
-    maxSize = QApplication::desktop()->availableGeometry().size();
-  }
-  return sizeHint( maxSize );
-}
-
-QSize VideoSubWindow::sizeHint( const QSize & maxSize ) const
-{
-  QSize isize;
-  if( m_pcCurrFrame )
-    isize = QSize( m_pcCurrFrame->getWidth() + 50, m_pcCurrFrame->getHeight() + 50 );
-  else if( m_pCurrStream )
-    isize = QSize( m_pCurrStream->getWidth() + 50, m_pCurrStream->getHeight() + 50 );
-
-// If the VideoSubWindow needs more space that the avaiable, we'll give
-// to the subwindow a reasonable size preserving the image aspect ratio.
-  if( !( isize.width() < maxSize.width() && isize.height() < maxSize.height() ) )
-  {
-    isize.scale( maxSize, Qt::KeepAspectRatio );
-  }
-  return isize;
-}
-
-Void VideoSubWindow::updateWindowOnTimeout()
-{
-  m_pcVideoInfo->update();
-}
-Void VideoSubWindow::resizeEvent( QResizeEvent* event )
-{
-  m_pcVideoInfo->resize( event->size() );
 }
 
 //Void VideoSubWindow::closeEvent( QCloseEvent *event )

@@ -229,6 +229,22 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
   m_cPelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[m_iPixelFormat].c_str();
 }
 
+Void PlaYUVerFrame::clear()
+{
+  Pel uiValue = 128;
+  for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
+  {
+    //uiValue = ch > 0 ? 0 : 128;
+    memset( m_pppcInputPel[ch][0], uiValue,
+    CHROMASHIFT( m_uiHeight, m_pcPelFormat->log2ChromaHeight ) * CHROMASHIFT( m_uiWidth, m_pcPelFormat->log2ChromaWidth ) * sizeof(Pel) );
+  }
+}
+
+std::string PlaYUVerFrame::getPelFmtName()
+{
+  return m_pcPelFormat->name;
+}
+
 Int PlaYUVerFrame::getColorSpace() const
 {
   return m_pcPelFormat->colorSpace;
@@ -260,6 +276,16 @@ UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelF
 UInt PlaYUVerFrame::getPixels() const
 {
   return ( m_uiWidth * m_uiHeight );
+}
+
+UInt8 PlaYUVerFrame::getChromaWidthRatio() const
+{
+  return m_pcPelFormat->log2ChromaWidth;
+}
+
+UInt8 PlaYUVerFrame::getChromaHeightRatio() const
+{
+  return m_pcPelFormat->log2ChromaHeight;
 }
 
 UInt PlaYUVerFrame::getChromaWidth() const

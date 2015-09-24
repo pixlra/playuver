@@ -74,13 +74,21 @@ enum Module_NumberOfFrames
   MODULE_REQUIRES_SIX_FRAMES,
 };
 
-enum Module_Requirements
+enum Module_Features
 {
   MODULE_REQUIRES_NOTHING = 0,
   MODULE_REQUIRES_SKIP_WHILE_PLAY = 1,
   MODULE_REQUIRES_OPTIONS = 2,
   MODULE_REQUIRES_NEW_WINDOW = 4,
+  MODULE_USES_KEYS = 8,
 };
+
+enum Module_Key_Supported
+{
+  MODULE_KEY_LEFT,
+  MODULE_KEY_RIGHT,
+};
+
 
 class PlaYUVerModuleIf
 {
@@ -137,6 +145,11 @@ public:
   virtual Double measure( std::vector<PlaYUVerFrame*> )
   {
     return 0;
+  }
+
+  virtual Bool keyPressed( enum Module_Key_Supported )
+  {
+    return false;
   }
 
 };

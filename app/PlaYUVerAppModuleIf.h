@@ -101,6 +101,16 @@ public:
     return arraySubWindows;
   }
 
+  PlaYUVerModuleIf* getModule()
+  {
+    return m_pcModule;
+  }
+
+  UInt getModuleRequirements()
+  {
+    return m_pcModule->m_uiModuleRequirements;
+  }
+
   Void destroy();
 protected:
   virtual void run();

@@ -45,13 +45,15 @@ struct PlaYUVerPixFmtDescriptor;
 
 #define MAX_NUMBER_COMPONENTS 4
 
+#define CHROMASHIFT( SIZE, SHIFT ) UInt( -( ( - ( Int( SIZE ) ) ) >> SHIFT ) )
+
 /**
  * \class    PlaYUVerFrame
  * \ingroup  PlaYUVerLib PlaYUVerLib_Frame
  * \brief    Frame handling class
  */
 class PlaYUVerFrame
-    //: public PlaYUVerFrameStats
+//: public PlaYUVerFrameStats
 {
 public:
 
@@ -206,6 +208,8 @@ public:
 
   ~PlaYUVerFrame();
 
+  Void clear();
+
   /**
    * Get number of bytes per frame of an existing frame
    * @return number of bytes per frame
@@ -216,6 +220,8 @@ public:
   UInt getNumberChannels() const;
 
   UInt getPixels() const;
+  UInt8 getChromaWidthRatio() const;
+  UInt8 getChromaHeightRatio() const;
   UInt getChromaWidth() const;
   UInt getChromaHeight() const;
   UInt getChromaLength() const;
@@ -259,16 +265,13 @@ public:
     return m_bHasHistogram;
   }
 
-
   Void copyFrom( PlaYUVerFrame* );
   Void copyFrom( PlaYUVerFrame*, UInt, UInt );
 
   PlaYUVerFrame::Pixel getPixelValue( Int xPos, Int yPos, ColorSpace eColorSpace = COLOR_INVALID );
 
-  std::string getPelFmtName()
-  {
-    return m_cPelFmtName;
-  }
+  std::string getPelFmtName();
+
   UInt getWidth() const
   {
     return m_uiWidth;

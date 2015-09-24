@@ -253,6 +253,7 @@ public:
   Void setFillWindow( Bool bFlag );
 
 protected:
+  Void keyPressEvent( QKeyEvent* event );
   Void resizeEvent( QResizeEvent* event );
   //void closeEvent( QCloseEvent *event );
 

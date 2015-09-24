@@ -286,21 +286,31 @@ Void ModulesHandle::activateModule()
     {
       for( Int i = 0; i < windowsList.size(); i++ )
       {
-        dialogWindowsSelection.selectSubWindow( windowsList.at( i ) );
+        videoSubWindowList.append( qobject_cast<VideoSubWindow*>( windowsList.at( i ) ) );
       }
     }
     else
     {
-      dialogWindowsSelection.selectSubWindow( pcVideoSubWindow );
-    }
-    if( dialogWindowsSelection.exec() == QDialog::Accepted )
-    {
-      VideoSubWindow *videoSubWindow;
-      QList<SubWindowAbstract*> subWindowList = dialogWindowsSelection.getSelectedWindows();
-      for( Int i = 0; i < subWindowList.size(); i++ )
+      if( windowsList.size() <= numberOfFrames )
       {
-        videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
-        videoSubWindowList.append( videoSubWindow );
+        for( Int i = 0; i < windowsList.size(); i++ )
+        {
+          dialogWindowsSelection.selectSubWindow( windowsList.at( i ) );
+        }
+      }
+      else
+      {
+        dialogWindowsSelection.selectSubWindow( pcVideoSubWindow );
+      }
+      if( dialogWindowsSelection.exec() == QDialog::Accepted )
+      {
+        VideoSubWindow *videoSubWindow;
+        QList<SubWindowAbstract*> subWindowList = dialogWindowsSelection.getSelectedWindows();
+        for( Int i = 0; i < subWindowList.size(); i++ )
+        {
+          videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
+          videoSubWindowList.append( videoSubWindow );
+        }
       }
     }
     // Check for same fmt in more than one frame modules

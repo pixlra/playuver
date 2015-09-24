@@ -51,6 +51,8 @@ Bool FrameShift::create( std::vector<PlaYUVerFrame*> apcFrameList )
   m_pcProcessedFrame = NULL;
   m_pcProcessedFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), apcFrameList[0]->getPelFormat(),
       apcFrameList[0]->getBitsPel() );
+
+  m_iShiftHor = ( ( m_iShiftHor + 1 ) >> 1 ) << 1;
   return true;
 }
 

@@ -415,11 +415,11 @@ Void VideoSubWindow::updateVideoWindowInfo()
     QString m_cCodedName = QString::fromStdString( m_pCurrStream->getCodecName() );
     m_cStreamInformation = m_cFormatName + " | " + m_cCodedName;
   }
-//  if( m_pcCurrFrame )
-//  {
-//    QString m_cPelFmtName = QString::fromStdString( m_pcCurrFrame->getPelFmtName() );
-//    m_cStreamInformation += " | " + m_cPelFmtName;
-//  }
+  if( m_pcCurrFrame )
+  {
+    QString m_cPelFmtName = QString::fromStdString( m_pcCurrFrame->getPelFmtName() );
+    m_cStreamInformation += " | " + m_cPelFmtName;
+  }
   if( m_cStreamInformation.isEmpty() )
   {
     m_cStreamInformation = "          ";

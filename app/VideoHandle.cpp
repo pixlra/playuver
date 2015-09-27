@@ -107,12 +107,12 @@ Void VideoHandle::createActions()
   m_arrayActions[VIDEO_REPEAT_ACT]->setChecked( false );
 
   m_arrayActions[VIDEO_ZOOM_LOCK_ACT] = new QAction( "Zoom Lock", this );
-  m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setStatusTip( "Lock zoom between all video windows" );
+  m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setStatusTip( "Sync zoom between all video windows" );
   m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setShortcut( tr( "Ctrl+L" ) );
   m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setCheckable( true );
   m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setChecked( false );
 
-  m_arrayActions[VIDEO_LOCK_SELECTION_ACT] = new QAction( "Playing Lock", this );
+  m_arrayActions[VIDEO_LOCK_SELECTION_ACT] = new QAction( "Sync Play", this );
   m_arrayActions[VIDEO_LOCK_SELECTION_ACT]->setStatusTip(
       "Select which windows should be played synchronized. Press Ctrl while click to quickly to select all!" );
   connect( m_arrayActions[VIDEO_LOCK_SELECTION_ACT], SIGNAL( triggered() ), this, SLOT( videoSelectionButtonEvent() ) );

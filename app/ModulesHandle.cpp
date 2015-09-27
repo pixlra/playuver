@@ -335,10 +335,6 @@ Void ModulesHandle::activateModule()
     return;
   }
 
-  QString windowName;
-  windowName.append( QStringLiteral( "Module " ) );
-  windowName.append( pcCurrAppModuleIf->m_pcModule->m_pchModuleName );
-
   for( Int i = 0; i < videoSubWindowList.size(); i++ )
   {
     pcCurrAppModuleIf->m_pcSubWindow[i] = videoSubWindowList.at( i );
@@ -357,13 +353,16 @@ Void ModulesHandle::activateModule()
 
   Bool bShowModulesNewWindow = m_arrayActions[FORCE_NEW_WINDOW_ACT]->isChecked() | bTmpForceNewWindow;
 
+  QString windowName;
+
   VideoSubWindow* pcModuleSubWindow = NULL;
   if( pcCurrAppModuleIf->m_pcModule->m_iModuleType == FRAME_PROCESSING_MODULE )
   {
     if( ( pcCurrAppModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
       pcModuleSubWindow = new VideoSubWindow( VideoSubWindow::MODULE_SUBWINDOW );
-      pcModuleSubWindow->setWindowName( windowName );
+      windowName.append( QStringLiteral( "Module " ) );
+      windowName.append( pcCurrAppModuleIf->m_pcModule->m_pchModuleName );
 
       connect( pcModuleSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
       connect( pcModuleSubWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo,
@@ -371,14 +370,6 @@ Void ModulesHandle::activateModule()
       connect( pcModuleSubWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo, SLOT( moveAllScrollBars( const QPoint ) ) );
 
       pcCurrAppModuleIf->m_pcDisplaySubWindow = pcModuleSubWindow;
-    }
-    else
-    {
-      QString windowName = videoSubWindowList.at( 0 )->getWindowName();
-      windowName.append( QStringLiteral( " - Module " ) );
-      windowName.append( pcCurrAppModuleIf->m_pcModule->m_pchModuleName );
-      videoSubWindowList.at( 0 )->setWindowName( windowName );
-
     }
   }
   else if( pcCurrAppModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
@@ -439,8 +430,16 @@ Void ModulesHandle::activateModule()
 
   if( pcModuleSubWindow )
   {
+    pcModuleSubWindow->setWindowName( windowName );
     m_pcMainWindowManager->addSubWindow( pcModuleSubWindow );
     pcModuleSubWindow->show();
+  }
+  else
+  {
+    windowName = videoSubWindowList.at( 0 )->getWindowName();
+    windowName.append( QStringLiteral( " - Module " ) );
+    windowName.append( pcCurrAppModuleIf->m_pcModule->m_pchModuleName );
+    videoSubWindowList.at( 0 )->setWindowName( windowName );
   }
 
   m_pcPlaYUVerAppModuleIfList.append( pcCurrAppModuleIf );

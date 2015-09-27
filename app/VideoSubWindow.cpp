@@ -415,11 +415,13 @@ Void VideoSubWindow::updateVideoWindowInfo()
     QString m_cCodedName = QString::fromStdString( m_pCurrStream->getCodecName() );
     m_cStreamInformation = m_cFormatName + " | " + m_cCodedName;
   }
+//#if 0
   if( m_pcCurrFrame )
   {
     QString m_cPelFmtName = QString::fromStdString( m_pcCurrFrame->getPelFmtName() );
     m_cStreamInformation += " | " + m_cPelFmtName;
   }
+//#endif
   if( m_cStreamInformation.isEmpty() )
   {
     m_cStreamInformation = "          ";
@@ -558,6 +560,7 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
       pcModule = m_pcCurrentDisplayModule;
       m_pcCurrentDisplayModule = 0;
       ModulesHandle::destroyModuleIf( pcModule );
+      setWindowName( QFileInfo( m_cFilename ).fileName() );
       bRefresh |= true;
     }
   }

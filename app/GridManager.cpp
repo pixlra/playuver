@@ -33,7 +33,6 @@
 #include <QDebug>
 
 #include "GridManager.h"
-#include "Settings.h"
 
 namespace plaYUVer
 {
@@ -44,6 +43,8 @@ namespace plaYUVer
 GridManager::GridManager()
 {
   m_nearPos = QPoint();
+  m_uiHSpace = m_uiVSpace = 64;
+  m_cGridColor = QColor( Qt::white );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,21 +52,21 @@ GridManager::GridManager()
 ////////////////////////////////////////////////////////////////////////////////
 void GridManager::drawGrid( QPixmap &image, const QRect& area, QPainter *painter )
 {
-  Settings settings;
-
   int offsetx = 0;                // Grid offset doesn't applies to SCODE
   int offsety = 0;                // project for now...
 
   int imageWidth = image.width();
   int imageHeight = image.height();
-  int hSpacing = settings.gridHSpacing();
-  int vSpacing = settings.gridVSpacing();
-  QColor color = settings.gridColor();
-  Style style = settings.gridStyle();
+  int hSpacing = m_uiHSpace;
+  int vSpacing = m_uiVSpace;
+  QColor color = m_cGridColor;
+  Style style = m_eGridStyle;
 
   // Set pen for solid line.
   QPen mainPen = QPen( color, 1, Qt::SolidLine );
 
+  style = Solid;
+  hSpacing = vSpacing = 64;
   switch( style )
   {
   case IntersectionDot:
@@ -102,7 +103,7 @@ void GridManager::drawGrid( QPixmap &image, const QRect& area, QPainter *painter
     // Change pen to the dashed line 
     mainPen.setStyle( Qt::DashLine );
   }
-  default: // Solid:
+  default:  // Solid:
   {
     painter->setPen( mainPen );
 
@@ -149,9 +150,8 @@ QRect GridManager::rectContains( int x, int y ) const
   int multiPosX;
   int multiPosY;
 
-  Settings settings;
-  int hSpacing = settings.gridHSpacing();
-  int vSpacing = settings.gridVSpacing();
+  int hSpacing = m_uiHSpace;
+  int vSpacing = m_uiVSpace;
 
   if( ( x < 0 ) || ( y < 0 ) )
   {
@@ -176,9 +176,8 @@ bool GridManager::contains( int x, int y )
   int resX;
   int resY;
 
-  Settings settings;
-  int hSpacing = settings.gridHSpacing();
-  int vSpacing = settings.gridVSpacing();
+  int hSpacing = m_uiHSpace;
+  int vSpacing = m_uiVSpace;
 
   if( ( x < hSpacing ) || ( y < vSpacing ) || ( x < 0 ) || ( y < 0 ) )
     return false;
@@ -215,9 +214,8 @@ bool GridManager::isNear( int x, int y )
   int multiPosX;
   int multiPosY;
 
-  Settings settings;
-  int hSpacing = settings.gridHSpacing();
-  int vSpacing = settings.gridVSpacing();
+  int hSpacing = m_uiHSpace;
+  int vSpacing = m_uiVSpace;
 
   if( ( x < 0 ) || ( y < 0 ) )
   {
@@ -270,4 +268,4 @@ bool GridManager::isNear( const QPoint &pos )
   return isNear( pos.x(), pos.y() );
 }
 
-} // NameSpace plaYUVer
+}  // NameSpace plaYUVer

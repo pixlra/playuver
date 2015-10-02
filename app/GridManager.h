@@ -95,6 +95,10 @@ public:
 
 private:
 
+  UInt m_uiHSpace;
+  UInt m_uiVSpace;
+  QColor m_cGridColor;
+  Style m_eGridStyle;
   QPoint m_nearPos;
 };
 

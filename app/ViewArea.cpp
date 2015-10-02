@@ -67,8 +67,8 @@ ViewArea::ViewArea( QWidget *parent ) :
   m_visibleZoomRect = true;
   m_pStream = NULL;
 
-  m_zoomWinTimer.setSingleShot(true);
-  m_zoomWinTimer.setInterval(2000);
+  m_zoomWinTimer.setSingleShot( true );
+  m_zoomWinTimer.setInterval( 2000 );
   connect( &m_zoomWinTimer, SIGNAL( timeout() ), this, SLOT( update() ) );
 }
 
@@ -218,7 +218,13 @@ void ViewArea::setMaskColor( const QColor &color )
 
 void ViewArea::setTool( eTool tool )
 {
+  m_snapToGrid = tool == BlockSelectionTool;
+  if( tool == BlockSelectionTool )
+  {
+    tool = NormalSelectionTool;
+  }
   m_tool = tool;
+
 }
 
 void ViewArea::setMaskTool()
@@ -291,42 +297,42 @@ void ViewArea::initZoomWinRect()
   int iMinX = 80;
   int iMinY = 80;
 
-  int iMaxX = iMinX*5;
-  int iMaxY = iMinY*5;
+  int iMaxX = iMinX * 5;
+  int iMaxY = iMinY * 5;
 
   double dSizeRatio, dWinZoomRatio;
 
-  int iHorizontalImg = (m_pixmap.width() > m_pixmap.height()) ? 1 : 0;
+  int iHorizontalImg = ( m_pixmap.width() > m_pixmap.height() ) ? 1 : 0;
 
   if( iHorizontalImg )
   {
-    dSizeRatio = (double)m_pixmap.width()/(double)m_pixmap.height();
+    dSizeRatio = ( double )m_pixmap.width() / ( double )m_pixmap.height();
   }
   else
   {
-    dSizeRatio = (double)m_pixmap.height()/(double)m_pixmap.width();
+    dSizeRatio = ( double )m_pixmap.height() / ( double )m_pixmap.width();
   }
 
-  if( dSizeRatio > 5.0)
+  if( dSizeRatio > 5.0 )
   {
     if( iHorizontalImg )
     {
-      dWinZoomRatio = (double)(m_pixmap.width()*1024/iMaxX)/1000.0;
+      dWinZoomRatio = ( double )( m_pixmap.width() * 1024 / iMaxX ) / 1000.0;
     }
     else
     {
-      dWinZoomRatio = (double)(m_pixmap.height()*1024/iMaxY)/1000.0;
+      dWinZoomRatio = ( double )( m_pixmap.height() * 1024 / iMaxY ) / 1000.0;
     }
   }
   else
   {
     if( iHorizontalImg )
     {
-      dWinZoomRatio = (double)(m_pixmap.height()*1024/iMinY)/1000.0;
+      dWinZoomRatio = ( double )( m_pixmap.height() * 1024 / iMinY ) / 1000.0;
     }
     else
     {
-      dWinZoomRatio = (double)(m_pixmap.width()*1024/iMinX)/1000.0;
+      dWinZoomRatio = ( double )( m_pixmap.width() * 1024 / iMinX ) / 1000.0;
     }
   }
 
@@ -418,6 +424,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
   painter.drawPixmap( exposedRect, m_pixmap, exposedRect );
 
   // Draw the Grid if it's visible.
+  //m_gridVisible = true;
   if( m_gridVisible )
   {
     // Do we need to draw the whole grid?
@@ -535,7 +542,6 @@ void ViewArea::paintEvent( QPaintEvent *event )
     }
   }
 
-
   // VISIBLE ZOOM RECT
 #if 0
   if( m_visibleZoomRect && m_zoomWinTimer.isActive() )
@@ -565,14 +571,14 @@ void ViewArea::paintEvent( QPaintEvent *event )
     cVisibleWinRect = cVisibleWinRect & cImgWinRect;
 
     if(cVisibleWinRect.left()<0)
-      cVisibleWinRect.moveLeft(0);
+    cVisibleWinRect.moveLeft(0);
     if(cVisibleWinRect.top()<0)
-      cVisibleWinRect.moveTop(0);
+    cVisibleWinRect.moveTop(0);
 
     if(cVisibleWinRect.width()<=0)
-      cVisibleWinRect.setWidth(1);
+    cVisibleWinRect.setWidth(1);
     if(cVisibleWinRect.height()<=0)
-      cVisibleWinRect.setHeight(1);
+    cVisibleWinRect.setHeight(1);
 
     painter.fillRect(cVisibleWinRect, QBrush(QColor(200, 200, 200, 128)));
     painter.setPen(QColor(255, 255, 255, 128));
@@ -757,7 +763,7 @@ void ViewArea::mousePressEvent( QMouseEvent *event )
     {
       // Find if the cursor is near a grid intersection
       bool isNear = m_grid.isNear( m_lastPos );
-
+      isNear = true;
       if( isNear )
       {
         // The grid 'near intersection' found when used isNear()

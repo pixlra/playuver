@@ -49,7 +49,6 @@ set(plaYUVer_App_SRCS
     PlaYUVerSubWindowHandle.cpp
     PlaYUVerMdiSubWindow.cpp
     SubWindowAbstract.cpp
-    Settings.cpp
 # Module Video
     VideoSubWindow.cpp
     ViewArea.cpp

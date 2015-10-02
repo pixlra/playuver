@@ -86,9 +86,11 @@ Void PlaYUVerAppModuleIf::run()
     return;
   }
   m_bIsRunning = false;
+#ifdef PLAYUVER_THREADED_MODULES
   EventData *eventData = new EventData( true, this );
   if( parent() )
     QCoreApplication::postEvent( parent(), eventData );
+#endif
   return;
 }
 

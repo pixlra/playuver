@@ -491,7 +491,10 @@ Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isP
       pcCurrModuleIf->start();
     else
 #endif
+    {
       pcCurrModuleIf->run();
+      showModuleIf( pcCurrModuleIf );
+    }
 
     if( pcCurrModuleIf->m_pcDisplaySubWindow || pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
     {

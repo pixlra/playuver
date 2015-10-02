@@ -618,14 +618,14 @@ Void VideoSubWindow::refreshFrameOperation()
   if( m_pcCurrentDisplayModule )
   {
     m_bWindowBusy = true;
-    ModulesHandle::applyModuleIf( m_pcCurrentDisplayModule, m_bIsPlaying );
+    ModulesHandle::applyModuleIf( m_pcCurrentDisplayModule, m_bIsPlaying, !m_bIsPlaying && m_apcCurrentModule.size()  );
     bSetFrame = false;
   }
   if( bSetFrame )
   {
     m_cViewArea->setImage( m_pcCurrFrame );
   }
-  for( Int i = 0; i < m_apcCurrentModule.size(); i++ )
+  for( Int i = 0; i < m_apcCurrentModule.size() && !m_bIsPlaying; i++ )
   {
     m_bWindowBusy = true;
     ModulesHandle::applyModuleIf( m_apcCurrentModule.at( i ), m_bIsPlaying );

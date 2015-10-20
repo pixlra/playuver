@@ -355,7 +355,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   m_cFilename = cFilename;
 
   updateVideoWindowInfo();
-
+  setWindowName( QFileInfo( m_cFilename ).fileName() );
   return true;
 }
 

@@ -65,9 +65,9 @@ PlaYUVerFrame* FrameDifference9Bits::process( std::vector<PlaYUVerFrame*> apcFra
       aux_pel_1 = *pInput1PelYUV++;
       aux_pel_2 = *pInput2PelYUV++;
       diff = aux_pel_1 - aux_pel_2;
-      diff = std::min( diff, m_iMaxDiffValue );
+      diff = std::min( diff, m_iMaxDiffValue - 1 );
       diff = std::max( diff, -m_iMaxDiffValue );
-      diff += m_iMaxDiffValue + 1;
+      diff += m_iMaxDiffValue;
       *pOutputPelYUV++ = diff;
     }
   return m_pcFrameDifference9Bits;

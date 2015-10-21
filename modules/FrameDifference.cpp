@@ -66,9 +66,9 @@ PlaYUVerFrame* FrameDifference::process( std::vector<PlaYUVerFrame*> apcFrameLis
       aux_pel_2 = *pInput2PelYUV++;
       diff = aux_pel_1 - aux_pel_2;
       diff = diff / 2;
-      diff = std::min( diff, m_iMaxDiffValue );
+      diff = std::min( diff, m_iMaxDiffValue - 1 );
       diff = std::max( diff, -m_iMaxDiffValue );
-      diff += m_iMaxDiffValue + 1;
+      diff += m_iMaxDiffValue;
       *pOutputPelYUV++ = diff;
     }
   return m_pcFrameDifference;

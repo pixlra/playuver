@@ -57,7 +57,7 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerS
 
   m_comboBoxRef = new QComboBox;
   QSpacerItem* spaceQuality = new QSpacerItem( 1, 1, QSizePolicy::Expanding, QSizePolicy::Fixed );
-  //m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToMinimumContentsLength );
+  m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToContents );
   m_comboBoxRef->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
   updateSubWindowList();
 
@@ -166,7 +166,7 @@ Void QualityMeasurementSidebar::updateSubWindowList()
       m_comboBoxRef->setCurrentIndex( index );
     }
   }
-  m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToContents );
+//  m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToContents );
 }
 
 Void QualityMeasurementSidebar::updateCurrentWindow( VideoSubWindow *subWindow )

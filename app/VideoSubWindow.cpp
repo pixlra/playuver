@@ -863,7 +863,7 @@ Void VideoSubWindow::zoomToFactor( Double factor, QPoint center )
 
 Void VideoSubWindow::scaleView( Double scale, QPoint center )
 {
-  Q_ASSERT( m_cViewArea->image() );
+  Q_ASSERT( !m_cViewArea->image().isNull() );
   if( scale != 1.0 )
   {
     Double usedScale;

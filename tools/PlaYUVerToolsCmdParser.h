@@ -79,7 +79,7 @@ private:
   std::string m_strPelFmt;
   UInt m_uiBitsPerPixel;
   Bool m_bListPelFmts;
-  Int m_iFrames;
+  Int64 m_iFrames;
 
   Bool m_bListQuality;
   std::string m_strQualityMetric;

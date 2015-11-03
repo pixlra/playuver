@@ -23,6 +23,7 @@
  */
 
 #include <cstring>
+#include <climits>
 #include "PlaYUVerTools.h"
 #include "lib/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
@@ -129,6 +130,40 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
   if( openInputs() > 0 )
   {
     return 2;
+  }
+
+  if( m_cCmdLineHandler.Opts()["save"]->count() )
+  {
+    if( m_apcInputStreams.size() == 0 )
+    {
+      m_cCmdLineHandler.log( LOG_ERROR, "Invalid number of input streams! " );
+      return 2;
+    }
+    Int64 currFrames = 0;
+    Int64 numberOfFrames = LONG_MAX;
+    for( UInt i = 0; i < m_apcInputStreams.size(); i++ )
+    {
+      currFrames = m_apcInputStreams[i]->getFrameNum();
+      if( currFrames < numberOfFrames )
+        numberOfFrames = currFrames;
+    }
+    m_iFrameNum = m_cCmdLineHandler.m_iFrames;
+    if( !( m_iFrameNum >= 0 && m_iFrameNum < numberOfFrames ) )
+    {
+      m_cCmdLineHandler.log( LOG_ERROR, "Invalid frame number! Use --frame option " );
+      return 2;
+    }
+    if( m_cCmdLineHandler.Opts()["output"]->count() )
+      m_pcOutputFileNames.push_back( m_cCmdLineHandler.m_strOutput );
+    if( m_pcOutputFileNames.size() != m_apcInputStreams.size() )
+    {
+      m_cCmdLineHandler.log( LOG_ERROR, "Invalid number of outputs! Each input must have an output filename. " );
+      return 2;
+    }
+
+    m_uiOperation = SAVE_OPERATION;
+    m_fpProcess = &PlaYUVerTools::SaveOperation;
+    m_cCmdLineHandler.log( LOG_INFO, "PlaYUVer Save Frame\n" );
   }
 
   /**
@@ -262,6 +297,21 @@ Int PlaYUVerTools::Process()
 Int PlaYUVerTools::Close()
 {
 // Finish
+  return 0;
+}
+
+Int PlaYUVerTools::SaveOperation()
+{
+  Bool bRet = true;
+  for( UInt s = 0; s < m_apcInputStreams.size(); s++ )
+  {
+    bRet = m_apcInputStreams[s]->seekInput( m_iFrameNum );
+    if( bRet == false )
+    {
+      return 2;
+    }
+    m_apcInputStreams[s]->saveFrame( m_pcOutputFileNames[s] );
+  }
   return 0;
 }
 

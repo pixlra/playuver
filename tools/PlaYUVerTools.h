@@ -56,6 +56,7 @@ private:
   enum TOOLS_OPERATIONS_LIST
   {
     INVALID_OPERATION,
+    SAVE_OPERATION,
     QUALITY_OPERATION,
     MODULE_OPERATION,
   };
@@ -70,6 +71,9 @@ private:
   typedef Int (PlaYUVerTools::*FpProcess) ();
   FpProcess m_fpProcess;
 
+  Int64 m_iFrameNum;
+  std::vector<std::string> m_pcOutputFileNames;
+  Int SaveOperation();
 
   Int m_uiQualityMetric;
   Int QualityOperation();

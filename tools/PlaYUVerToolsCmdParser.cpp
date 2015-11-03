@@ -75,7 +75,8 @@ Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char *argv[] )
 
   Opts().addOptions()/**/
   ( "quality", m_strQualityMetric, "select a quality metric" ) /**/
-  ( "module", m_strModule, "select a module (use internal name)" );
+  ( "module", m_strModule, "select a module (use internal name)" ) /**/
+  ( "save", "save a specific frame" );
 
   config( argc, argv );
   if( !parse() )
@@ -95,7 +96,7 @@ Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char *argv[] )
   }
   else if( Opts()["help"]->count() )
   {
-    printf( "Usage: %s modules/quality [options] -input=input_file [--output=output_file]\n", argv[0] );
+    printf( "Usage: %s modules/quality/save [options] -input=input_file [--output=output_file]\n", argv[0] );
     Opts().doHelp( std::cout );
     iRet = 1;
   }

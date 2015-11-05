@@ -211,6 +211,11 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
         break;
       }
     }
+    if( !m_pcCurrModuleIf )
+    {
+      m_cCmdLineHandler.log( LOG_ERROR, "Invalid module! " );
+      return 2;
+    }
 
     if( m_apcInputStreams.size() != m_pcCurrModuleIf->m_uiNumberOfFrames )
     {
@@ -261,7 +266,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
           pcModFrame = applyFrameModule();
         }
         PlaYUVerStream* pcModStream = new PlaYUVerStream;
-        if( !pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(), pcModFrame->getPelFormat(), 8, 1, false ) )
+        if( !pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(), pcModFrame->getPelFormat(), pcModFrame->getBitsPel(), 1, false ) )
         {
           delete pcModStream;
           pcModStream = NULL;

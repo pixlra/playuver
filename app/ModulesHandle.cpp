@@ -461,6 +461,7 @@ Void ModulesHandle::destroyWindowModules()
   if( pcVideoSubWindow )
   {
     pcVideoSubWindow->disableModule();
+    emit changed();
   }
 }
 
@@ -470,6 +471,7 @@ Void ModulesHandle::destroyAllModulesIf()
   {
     destroyModuleIf( m_pcPlaYUVerAppModuleIfList.at( i ) );
   }
+  emit changed();
 }
 
 Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isPlaying, Bool disableThreads )

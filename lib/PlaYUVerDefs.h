@@ -91,16 +91,6 @@ typedef UChar Byte;
 // Macro functions
 // ====================================================================================================================
 
-#define DATA_ALIGN                  1                                                                 ///< use 32-bit aligned malloc/free
-#if     DATA_ALIGN && _WIN32 && ( _MSC_VER > 1300 )
-#define xMalloc( type, len )        _aligned_malloc( sizeof(type)*(len), 32 )
-#define xFree( ptr )                _aligned_free  ( ptr )
-#define xMemSet( type, len, ptr )
-#else
-#define xMemSet( type, len, ptr )   memset ( ptr, 0, (len)*sizeof(type) )
-#define xMalloc( type, len )        malloc   ( sizeof(type)*(len) )
-#define xFree( ptr )                free     ( ptr )
-#endif
 
 // ====================================================================================================================
 // PlaYUVer definitions

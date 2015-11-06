@@ -50,31 +50,21 @@ typedef long long Int64;
 typedef unsigned long long UInt64;
 #endif
 
-static inline void* mem_malloc( size_t nitems )
-{
-  void *d;
-  if( ( d = malloc( nitems ) ) == NULL )
-  {
-    return NULL;
-  }
-  return d;
-}
-
-
-static inline void mem_free( void *ptr )
-{
-  if( ptr != NULL )
-  {
-    free( ptr );
-    ptr = NULL;
-  }
-}
-
+#define DATA_ALIGN                  1                                                                 ///< use 32-bit aligned malloc/free
+#if     DATA_ALIGN && _WIN32 && ( _MSC_VER > 1300 )
+#define xMalloc( len )              _aligned_malloc( len, 32 )
+#define xFree( ptr )                _aligned_free  ( ptr )
+#define xMemSet( type, len, ptr )
+#else
+#define xMemSet( type, len, ptr )   memset    ( ptr, 0, (len)*sizeof(type) )
+#define xMalloc(  len )             malloc    ( len )
+#define xFreeMem( ptr )                free      ( ptr )
+#endif
 
 static inline Void* xMallocMem( SizeT nitems )
 {
   Void *d;
-  if( ( d = malloc( nitems ) ) == NULL )
+  if( ( d = xMalloc( nitems ) ) == NULL )
   {
     printf( "malloc failed.\n" );
     return NULL;
@@ -88,20 +78,6 @@ static inline Void* xCallocMem( SizeT nitems, SizeT size )
   Void *d = xMallocMem( padded_size );
   memset( d, 0, ( int )padded_size );
   return d;
-}
-
-static inline Void xFreePointer( Void *pointer )
-{
-  if( pointer != NULL )
-  {
-    free( pointer );
-    pointer = NULL;
-  }
-}
-
-static inline Void xFreeMem( Void *mem )
-{
-  xFreePointer( mem );
 }
 
 template<typename T>
@@ -182,7 +158,7 @@ Void freeMem1D( T *array1D )
 {
   if( array1D )
   {
-    mem_free( array1D );
+    xFreeMem( array1D );
   }
 }
 
@@ -257,7 +233,6 @@ Void freeMem3ImageComponents( T*** array3D )
     freeMem2D<T*>( array3D );
   }
 }
-
 
 }  // NAMESPACE
 

@@ -504,6 +504,8 @@ Void PlaYUVerFrame::calcHistogram()
   }
   m_bRunningFlag = true;
 
+  xMemSet( UInt, m_uiHistoSegments * m_uiHistoChannels, m_puiHistogram );
+
   UInt i, j;
   UInt numberChannels = m_pcPelFormat->numberChannels;
   Int colorSpace = m_pcPelFormat->colorSpace;

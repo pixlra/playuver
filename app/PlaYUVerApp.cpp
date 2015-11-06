@@ -639,6 +639,7 @@ Void PlaYUVerApp::createActions()
   m_arrayActions[RELOAD_ACT] = new QAction( tr( "&Reload" ), this );
   m_arrayActions[RELOAD_ACT]->setIcon( style()->standardIcon( QStyle::SP_BrowserReload ) );
   m_arrayActions[RELOAD_ACT]->setShortcut( Qt::CTRL + Qt::Key_R );
+  m_arrayActions[RELOAD_ACT]->setShortcut( Qt::Key_F5 );
   m_arrayActions[RELOAD_ACT]->setStatusTip( tr( "Reload current sequence" ) );
   connect( m_arrayActions[RELOAD_ACT], SIGNAL( triggered() ), this, SLOT( reload() ) );
 

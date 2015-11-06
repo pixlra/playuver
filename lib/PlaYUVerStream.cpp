@@ -132,6 +132,10 @@ PlaYUVerStream::PlaYUVerStream()
 PlaYUVerStream::~PlaYUVerStream()
 {
   close();
+#ifdef USE_FFMPEG
+  if( m_cLibAvContext )
+    delete m_cLibAvContext;
+#endif
 }
 
 Void PlaYUVerStream::findHandler()
@@ -432,7 +436,6 @@ Void PlaYUVerStream::close()
 #ifdef USE_FFMPEG
   if( m_iStreamHandler == FFMPEG )
     m_cLibAvContext->closeAvFormat();
-  delete m_cLibAvContext;
 #endif
 
   if( m_ppcFrameBuffer )

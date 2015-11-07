@@ -64,9 +64,7 @@ public:
   Void writeSettings();
 
   static Void destroyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
-  static Bool applyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf, Bool isPlaying = false, Bool disableThreads = false );
-
-  static Void showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf );
+  static Void applyModuleIf( QList<PlaYUVerAppModuleIf*> pcCurrModuleIfList,  Bool isPlaying = false, Bool disableThreads = false );
 
 private:
   QWidget* m_pcParent;

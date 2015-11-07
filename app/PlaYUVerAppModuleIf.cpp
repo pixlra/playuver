@@ -47,11 +47,46 @@ PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaY
   }
 }
 
+Bool PlaYUVerAppModuleIf::apply( Bool isPlaying, Bool disableThreads )
+{
+  Bool bRet = false;
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  if( m_pcDisplaySubWindow )
+  {
+    m_pcDisplaySubWindow->setFillWindow( true );
+  }
+  else
+  {
+    m_pcSubWindow[0]->setFillWindow( true );
+  }
+  if( !( isPlaying && ( m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_SKIP_WHILE_PLAY ) ) )
+  {
+#ifdef PLAYUVER_THREADED_MODULES
+    if( !disableThreads )
+      start();
+    else
+#endif
+    {
+      run();
+      show();
+    }
+
+    if( m_pcDisplaySubWindow || m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
+    {
+      bRet = true;
+    }
+  }
+  else
+  {
+    bRet = true;
+  }
+  QApplication::restoreOverrideCursor();
+  return bRet;
+}
+
 Void PlaYUVerAppModuleIf::run()
 {
   m_bIsRunning = true;
-//  m_pcProcessedFrame = NULL;
-//  m_dMeasurementResult = 0;
 
   std::vector<PlaYUVerFrame*> apcFrameList;
   for( UInt i = 0; i < m_pcModule->m_uiNumberOfFrames; i++ )
@@ -92,6 +127,30 @@ Void PlaYUVerAppModuleIf::run()
     QCoreApplication::postEvent( parent(), eventData );
 #endif
   return;
+}
+
+Void PlaYUVerAppModuleIf::show()
+{
+  switch( m_pcModule->m_iModuleType )
+  {
+  case FRAME_PROCESSING_MODULE:
+    if( m_pcDisplaySubWindow )
+    {
+      m_pcDisplaySubWindow->setCurrFrame( m_pcProcessedFrame );
+      m_pcDisplaySubWindow->setFillWindow( false );
+      m_pcDisplaySubWindow->clearWindowBusy();
+    }
+    else
+    {
+      m_pcSubWindow[0]->setCurrFrame( m_pcProcessedFrame );
+      m_pcSubWindow[0]->setFillWindow( false );
+      m_pcSubWindow[0]->clearWindowBusy();
+    }
+    break;
+  case FRAME_MEASUREMENT_MODULE:
+    m_pcModuleDock->setModulueReturnValue( m_dMeasurementResult );
+    break;
+  }
 }
 
 Void PlaYUVerAppModuleIf::destroy()

@@ -111,6 +111,8 @@ public:
     return m_pcModule->m_uiModuleRequirements;
   }
 
+  Bool apply( Bool isPlaying = false, Bool disableThreads = false );
+  Void show();
   Void destroy();
 protected:
   virtual void run();

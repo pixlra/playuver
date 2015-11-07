@@ -425,7 +425,7 @@ Void ModulesHandle::activateModule()
     return;
   }
 
-  applyModuleIf( pcCurrAppModuleIf, false, true );
+  pcCurrAppModuleIf->apply( false, true );
   QCoreApplication::processEvents();
 
   if( pcModuleSubWindow )
@@ -474,41 +474,12 @@ Void ModulesHandle::destroyAllModulesIf()
   emit changed();
 }
 
-Bool ModulesHandle::applyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf, Bool isPlaying, Bool disableThreads )
+Void ModulesHandle::applyModuleIf( QList<PlaYUVerAppModuleIf*> pcCurrModuleIfList, Bool isPlaying, Bool disableThreads )
 {
-  Bool bRet = false;
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-  if( pcCurrModuleIf->m_pcDisplaySubWindow )
+  for( Int i = 0; i < pcCurrModuleIfList.size() && !isPlaying; i++ )
   {
-    pcCurrModuleIf->m_pcDisplaySubWindow->setFillWindow( true );
+    pcCurrModuleIfList.at( i )->apply( isPlaying, disableThreads );
   }
-  else
-  {
-    pcCurrModuleIf->m_pcSubWindow[0]->setFillWindow( true );
-  }
-  if( !( isPlaying && ( pcCurrModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_SKIP_WHILE_PLAY ) ) )
-  {
-#ifdef PLAYUVER_THREADED_MODULES
-    if( !disableThreads )
-      pcCurrModuleIf->start();
-    else
-#endif
-    {
-      pcCurrModuleIf->run();
-      showModuleIf( pcCurrModuleIf );
-    }
-
-    if( pcCurrModuleIf->m_pcDisplaySubWindow || pcCurrModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
-    {
-      bRet = true;
-    }
-  }
-  else
-  {
-    bRet = true;
-  }
-  QApplication::restoreOverrideCursor();
-  return bRet;
 }
 
 Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
@@ -574,7 +545,7 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     QApplication::setOverrideCursor( Qt::WaitCursor );
     for( UInt f = 1; f < numberOfFrames; f++ )
     {
-      applyModuleIf( pcCurrModuleIf, false, true );
+      pcCurrModuleIf->apply( false, true );
       QCoreApplication::processEvents();
       pcCurrModuleIf->m_pcModuleStream->writeFrame( pcCurrModuleIf->m_pcProcessedFrame );
       for( UInt i = 0; i < numberOfWindows; i++ )
@@ -591,30 +562,6 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   }
 }
 
-Void ModulesHandle::showModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
-{
-  switch( pcCurrModuleIf->m_pcModule->m_iModuleType )
-  {
-  case FRAME_PROCESSING_MODULE:
-    if( pcCurrModuleIf->m_pcDisplaySubWindow )
-    {
-      pcCurrModuleIf->m_pcDisplaySubWindow->setCurrFrame( pcCurrModuleIf->m_pcProcessedFrame );
-      pcCurrModuleIf->m_pcDisplaySubWindow->setFillWindow( false );
-      pcCurrModuleIf->m_pcDisplaySubWindow->clearWindowBusy();
-    }
-    else
-    {
-      pcCurrModuleIf->m_pcSubWindow[0]->setCurrFrame( pcCurrModuleIf->m_pcProcessedFrame );
-      pcCurrModuleIf->m_pcSubWindow[0]->setFillWindow( false );
-      pcCurrModuleIf->m_pcSubWindow[0]->clearWindowBusy();
-    }
-    break;
-  case FRAME_MEASUREMENT_MODULE:
-    pcCurrModuleIf->m_pcModuleDock->setModulueReturnValue( pcCurrModuleIf->m_dMeasurementResult );
-    break;
-  }
-}
-
 Void ModulesHandle::swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 {
   if( pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames == MODULE_REQUIRES_TWO_FRAMES )
@@ -622,7 +569,7 @@ Void ModulesHandle::swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     VideoSubWindow* auxWindowHandle = pcCurrModuleIf->m_pcSubWindow[0];
     pcCurrModuleIf->m_pcSubWindow[0] = pcCurrModuleIf->m_pcSubWindow[1];
     pcCurrModuleIf->m_pcSubWindow[1] = auxWindowHandle;
-    applyModuleIf( pcCurrModuleIf );
+    pcCurrModuleIf->apply();
   }
 }
 
@@ -635,7 +582,7 @@ Void ModulesHandle::customEvent( QEvent *event )
   PlaYUVerAppModuleIf::EventData *eventData = ( PlaYUVerAppModuleIf::EventData* )event;
   if( eventData->m_bSuccess )
   {
-    showModuleIf( eventData->m_pcModule );
+    eventData->m_pcModule->show();
   }
 }
 

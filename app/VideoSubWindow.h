@@ -103,7 +103,6 @@ private:
   QFuture<Void> m_cRefreshResult;
   QFuture<Void> m_cReadResult;
 
-  Void refreshFrame( Bool bThreaded = false );
   Void refreshFrameOperation();
 
   static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
@@ -132,6 +131,7 @@ public:
   Bool save( QString filename );
 
   Void refreshSubWindow();
+  Void refreshFrame( Bool bThreaded = false );
 
   Bool play();
   Void pause();

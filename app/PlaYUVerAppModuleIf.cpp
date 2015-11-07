@@ -47,6 +47,14 @@ PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaY
   }
 }
 
+Void PlaYUVerAppModuleIf::update()
+{
+  if( m_pcDisplaySubWindow )
+  {
+    m_pcDisplaySubWindow->refreshFrame();
+  }
+}
+
 Bool PlaYUVerAppModuleIf::apply( Bool isPlaying, Bool disableThreads )
 {
   Bool bRet = false;

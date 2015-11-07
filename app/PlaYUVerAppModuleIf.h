@@ -111,6 +111,7 @@ public:
     return m_pcModule->m_uiModuleRequirements;
   }
 
+  Void update();
   Bool apply( Bool isPlaying = false, Bool disableThreads = false );
   Void show();
   Void destroy();

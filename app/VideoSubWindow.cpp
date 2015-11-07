@@ -598,13 +598,11 @@ Void VideoSubWindow::setFillWindow( Bool bFlag )
 {
   m_pcVideoInfo->setBusyWindow( bFlag );
 }
+
 Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
 {
-// if( m_pcCurrFrame )
-  {
-    m_pcCurrFrame = pcCurrFrame;
-    m_cViewArea->setImage( m_pcCurrFrame );
-  }
+  m_pcCurrFrame = pcCurrFrame;
+  m_cViewArea->setImage( m_pcCurrFrame );
 }
 
 Void VideoSubWindow::refreshFrameOperation()
@@ -625,7 +623,10 @@ Void VideoSubWindow::refreshFrameOperation()
   {
     m_cViewArea->setImage( m_pcCurrFrame );
   }
-  ModulesHandle::applyModuleIf( m_apcCurrentModule, m_bIsPlaying );
+  for( Int i = 0; i < m_apcCurrentModule.size() && !m_bIsPlaying; i++ )
+  {
+    m_apcCurrentModule.at( i )->update();
+  }
 }
 
 Void VideoSubWindow::refreshFrame( Bool bThreaded )

@@ -119,11 +119,11 @@ Void VideoHandle::createActions()
 
   m_pcFrameSlider = new QSlider;
   m_pcFrameSlider->setOrientation( Qt::Horizontal );
-  m_pcFrameSlider->setMaximumWidth( 100 );
-  m_pcFrameSlider->setMaximumWidth( /* 300 */2000 );
+  m_pcFrameSlider->setMaximumWidth( 2000 );
   m_pcFrameSlider->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
   m_pcFrameSlider->setEnabled( false );
-  connect( m_pcFrameSlider, SIGNAL( sliderMoved(int) ), this, SLOT( seekSliderEvent(int) ) );
+  m_pcFrameSlider->setTracking( false );
+  connect( m_pcFrameSlider, SIGNAL( valueChanged(int) ), this, SLOT( seekSliderEvent(int) ) );
 }
 
 QMenu* VideoHandle::createMenu()
@@ -615,7 +615,7 @@ Void VideoHandle::seekVideo()
 
 Void VideoHandle::seekSliderEvent( Int new_frame_num )
 {
-  if( m_pcCurrentVideoSubWindow )
+  if( m_pcCurrentVideoSubWindow && !m_bIsPlaying ) // TODO: Fix this slot
   {
     if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
     {

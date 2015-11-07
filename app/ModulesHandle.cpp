@@ -269,7 +269,7 @@ Void ModulesHandle::activateModule()
     return;
   }
 
-  if( keyModifiers & Qt::ControlModifier || pcVideoSubWindow->checkCategory( VideoSubWindow::MODULE_SUBWINDOW ) )
+  if( ( keyModifiers & Qt::ControlModifier ) || pcVideoSubWindow->checkCategory( VideoSubWindow::MODULE_SUBWINDOW ) )
   {
     bTmpForceNewWindow = true;
   }

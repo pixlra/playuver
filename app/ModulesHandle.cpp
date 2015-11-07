@@ -262,15 +262,18 @@ Void ModulesHandle::activateModule()
   QAction *pcAction = qobject_cast<QAction *>( sender() );
   Qt::KeyboardModifiers keyModifiers = QApplication::keyboardModifiers();
   Bool bTmpForceNewWindow = false;
-  if( keyModifiers & Qt::ControlModifier )
-  {
-    bTmpForceNewWindow = true;
-  }
+
   VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
   if( !pcVideoSubWindow )
   {
     return;
   }
+
+  if( keyModifiers & Qt::ControlModifier || pcVideoSubWindow->checkCategory( VideoSubWindow::MODULE_SUBWINDOW ) )
+  {
+    bTmpForceNewWindow = true;
+  }
+
   QString ModuleIfName = pcAction->data().toString();
   PlaYUVerModuleIf* pcCurrModuleIf = PlaYUVerModuleFactory::Get()->CreateModule( ModuleIfName.toLocal8Bit().constData() );
   PlaYUVerAppModuleIf* pcCurrAppModuleIf = new PlaYUVerAppModuleIf( this, pcAction, pcCurrModuleIf );

@@ -346,8 +346,6 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   m_sStreamInfo.m_uiFrameRate = FrameRate;
   m_sStreamInfo.m_uiFileSize = QFileInfo( cFilename ).size();
 
-  m_cViewArea->setInputStream( m_pCurrStream );
-
   QApplication::restoreOverrideCursor();
 
   refreshFrame();
@@ -373,7 +371,6 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
   }
 
   m_sStreamInfo = *streamInfo;
-  m_cViewArea->setInputStream( m_pCurrStream );
 
   QApplication::restoreOverrideCursor();
 

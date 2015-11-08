@@ -106,9 +106,6 @@ public:
     return m_zoomFactor;
   }
 
-  Void setInputStream( PlaYUVerStream *stream );
-  PlaYUVerStream* getInputStream();
-
   // Scale function. Return used scale value (it may change when it touches the min or max zoom value)
   Double scaleZoomFactor( Double scale, QPoint center, QSize minimumSize );
 
@@ -170,7 +167,7 @@ private:
 
   Void initZoomWinRect();
   Void startZoomWinTimer();
-  bool isPosValid( const QPoint &pos ) const;
+  Bool isPosValid( const QPoint &pos ) const;
   Void updateMask( const QRect &rect );
   Void setZoomFactor( double );
 
@@ -191,19 +188,17 @@ private:
   ViewMode m_mode;
   Tool m_eTool;
   QColor m_maskColor;
-  double m_zoomFactor;
-  int m_xOffset;
-  int m_yOffset;
-  bool m_blockTrackEnable;
-  bool m_newShape;
-  bool m_gridVisible;
-  bool m_snapToGrid;
-  bool m_cursorInGrid;
-  bool m_visibleZoomRect;
-  double m_dZoomWinRatio;
+  Double m_zoomFactor;
+  Int m_xOffset;
+  Int m_yOffset;
+  Bool m_blockTrackEnable;
+  Bool m_newShape;
+  Bool m_gridVisible;
+  Bool m_snapToGrid;
+  Bool m_cursorInGrid;
+  Bool m_visibleZoomRect;
+  Double m_dZoomWinRatio;
   QTimer m_zoomWinTimer;
-
-  PlaYUVerStream *m_pStream;
 
 };
 

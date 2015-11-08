@@ -75,52 +75,6 @@ typedef struct
  */
 class PlaYUVerStream
 {
-private:
-
-  Bool m_bInit;
-  Bool m_bIsInput;
-  Bool m_bIsOpened;
-
-  Bool m_bLoadAll;
-
-  enum PlaYUVerStreamHandlers
-  {
-    INVALID_HANDLER = -1,
-    YUV_IO,
-    OPENCV_HANDLER,
-    FFMPEG,
-    TOTAL_HANDLERR
-  };
-  Int m_iStreamHandler;
-  LibAvContextHandle* m_cLibAvContext;
-
-  std::string m_cFilename;
-  Char* m_pchFilename;
-
-  std::string m_cFormatName;
-  std::string m_cCodedName;
-
-  UInt m_uiWidth;
-  UInt m_uiHeight;
-  Int m_iPixelFormat;
-  UInt m_uiBitsPerPixel;
-  Double m_dFrameRate;
-  UInt64 m_uiTotalFrameNum;
-  Int64 m_iCurrFrameNum;
-
-  FILE* m_pFile; /**< The input file pointer >*/
-  std::fstream m_fsIOStream; /**< The input file pointer >*/
-  Byte* m_pStreamBuffer;
-
-  UInt m_uiFrameBufferSize;
-  PlaYUVerFrame **m_ppcFrameBuffer;
-  PlaYUVerFrame *m_pcCurrFrame;
-  PlaYUVerFrame *m_pcNextFrame;
-  UInt m_uiFrameBufferIndex;
-  UInt64 m_uiCurrFrameFileIdx;
-
-  Void findHandler();
-
 public:
 
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
@@ -210,6 +164,52 @@ public:
     return m_dFrameRate;
   }
   Void getDuration( Int* duration_array );
+
+private:
+
+  Bool m_bInit;
+  Bool m_bIsInput;
+  Bool m_bIsOpened;
+
+  Bool m_bLoadAll;
+
+  enum PlaYUVerStreamHandlers
+  {
+    INVALID_HANDLER = -1,
+    YUV_IO,
+    OPENCV_HANDLER,
+    FFMPEG,
+    TOTAL_HANDLERR
+  };
+  Int m_iStreamHandler;
+  LibAvContextHandle* m_cLibAvContext;
+
+  std::string m_cFilename;
+  Char* m_pchFilename;
+
+  std::string m_cFormatName;
+  std::string m_cCodedName;
+
+  UInt m_uiWidth;
+  UInt m_uiHeight;
+  Int m_iPixelFormat;
+  UInt m_uiBitsPerPixel;
+  Double m_dFrameRate;
+  UInt64 m_uiTotalFrameNum;
+  Int64 m_iCurrFrameNum;
+
+  FILE* m_pFile; /**< The input file pointer >*/
+  std::fstream m_fsIOStream; /**< The input file pointer >*/
+  Byte* m_pStreamBuffer;
+
+  UInt m_uiFrameBufferSize;
+  PlaYUVerFrame **m_ppcFrameBuffer;
+  PlaYUVerFrame *m_pcCurrFrame;
+  PlaYUVerFrame *m_pcNextFrame;
+  UInt m_uiFrameBufferIndex;
+  UInt64 m_uiCurrFrameFileIdx;
+
+  Void findHandler();
 
 };
 

@@ -39,7 +39,8 @@ FrameShift::FrameShift()
   m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS | MODULE_USES_KEYS;
 
   m_cModuleOptions.addOptions()/**/
-  ( "ShiftHorizontal", m_iShiftHor, "Amount of pixels to shift in horizontal direction" );
+  ( "ShiftHorizontal", m_iShiftHor, "Amount of pixels to shift in horizontal direction" )/**/
+  ( "ShiftVertical", m_iShiftVer, "Amount of pixels to shift in vertical direction" );
 
   m_pcProcessedFrame = NULL;
   m_iShiftHor = 10;
@@ -48,9 +49,7 @@ FrameShift::FrameShift()
 Bool FrameShift::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
-  m_pcProcessedFrame = NULL;
-  m_pcProcessedFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), apcFrameList[0]->getPelFormat(),
-      apcFrameList[0]->getBitsPel() );
+  m_pcProcessedFrame = new PlaYUVerFrame( apcFrameList[0], false );
 
   m_iShiftHor = ( ( m_iShiftHor + 1 ) >> 1 ) << 1;
   return true;

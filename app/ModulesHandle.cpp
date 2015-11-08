@@ -316,13 +316,18 @@ Void ModulesHandle::activateModule()
         }
       }
     }
-    // Check for same fmt in more than one frame modules
-    for( Int i = 1; i < videoSubWindowList.size(); i++ )
+    if( pcCurrAppModuleIf->m_pcModule->m_iModuleAPI == MODULE_API_1 )
     {
-      if( !videoSubWindowList.at( i )->getCurrFrame()->haveSameFmt( videoSubWindowList.at( 0 )->getCurrFrame() ) )
+      // Check for same fmt in more than one frame modules
+      for( Int i = 1; i < videoSubWindowList.size(); i++ )
       {
-        videoSubWindowList.clear();
-        break;
+        if( !videoSubWindowList.at( i )->getCurrFrame()->haveSameFmt( videoSubWindowList.at( 0 )->getCurrFrame() ) )
+        {
+          videoSubWindowList.clear();
+          qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Error! Incompatible frames", LOG_ERROR );
+          destroyModuleIf( pcCurrAppModuleIf );
+          return;
+        }
       }
     }
   }
@@ -333,7 +338,7 @@ Void ModulesHandle::activateModule()
 
   if( videoSubWindowList.size() == 0 )
   {
-    qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Error! Module cannot be applied", LOG_ERROR );
+    qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Error! There is no windows to apply the module", LOG_ERROR );
     destroyModuleIf( pcCurrAppModuleIf );
     return;
   }
@@ -423,7 +428,7 @@ Void ModulesHandle::activateModule()
 
   if( !moduleCreated )
   {
-    qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Error! Module cannot be applied", LOG_ERROR );
+    qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Error! Module cannot be created", LOG_ERROR );
     destroyModuleIf( pcCurrAppModuleIf );
     return;
   }

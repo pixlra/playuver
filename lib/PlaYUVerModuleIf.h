@@ -47,7 +47,7 @@ if( apcFrameList.size() != m_uiNumberOfFrames ) \
   return false; \
 for( UInt i = 0; i < apcFrameList.size(); i++ ) \
   if( !apcFrameList[i] ) \
-  return false;
+    return false;
 
 enum  // Module API
 {

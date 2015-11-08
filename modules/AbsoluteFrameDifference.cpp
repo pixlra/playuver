@@ -37,7 +37,7 @@ AbsoluteFrameDifference::AbsoluteFrameDifference()
   m_pchModuleCategory = "Measurements";                     // Category (sub-menu)
   m_pchModuleName = "AbsoluteFrameDifference";              // Name
   m_pchModuleTooltip = "Measure the absolute difference "   // Description
-      "between two images (Y plane), e. g., abs( Y1 - Y2 )";
+          "between two images (Y plane), e. g., abs( Y1 - Y2 )";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;          // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
   m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;      // Module requirements (check PlaYUVerModulesIf.h).
                                                             // Several requirements should be "or" between each others.
@@ -48,6 +48,11 @@ AbsoluteFrameDifference::AbsoluteFrameDifference()
 Bool AbsoluteFrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
+
+  for( UInt i = 0; i < apcFrameList.size(); i++ )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[i], PlaYUVerFrame::MATCH_RESOLUTION ) )
+      return false;
+
   m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
   return true;
 }

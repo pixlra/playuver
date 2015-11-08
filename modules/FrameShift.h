@@ -37,6 +37,7 @@ REGISTER_CLASS_FACTORY( FrameShift )
 private:
   PlaYUVerFrame* m_pcProcessedFrame;
   Int m_iShiftHor;
+  Int m_iShiftVer;
 public:
   FrameShift();
   virtual ~FrameShift()

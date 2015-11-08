@@ -560,7 +560,7 @@ Void PlaYUVerApp::printMessage( const QString& msg, UInt logLevel )
 {
   if( !msg.isEmpty() )
   {
-    statusBar()->showMessage( msg, 5000 );
+    statusBar()->showMessage( msg, 10000 );
     if( logLevel >= LOG_INFO )
     {
       m_pcWindowHandle->processLogMsg( msg );

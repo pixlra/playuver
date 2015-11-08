@@ -144,6 +144,16 @@ public:
     NUMBER_FORMATS
   };
 
+  /** Format match opts
+   */
+  enum FormatMatching
+  {
+    MATCH_RESOLUTION = 1,
+    MATCH_PEL_FMT = 2,
+    MATCH_BITS = 4,
+    MATCH_ALL = 0xFFFF,
+  };
+
   /**
    * Function that handles the supported color space
    * of PlaYUVerFrame
@@ -191,7 +201,7 @@ public:
    *
    * @param other existing frame to copy from
    */
-  PlaYUVerFrame( PlaYUVerFrame * );
+  PlaYUVerFrame( PlaYUVerFrame *other, Bool copy = true );
 
   /**
    * Creates and new frame with the configuration of an
@@ -210,68 +220,6 @@ public:
 
   Void clear();
 
-  /**
-   * Get number of bytes per frame of an existing frame
-   * @return number of bytes per frame
-   */
-  UInt64 getBytesPerFrame();
-
-  Int getColorSpace() const;
-  UInt getNumberChannels() const;
-
-  UInt getPixels() const;
-  UInt8 getChromaWidthRatio() const;
-  UInt8 getChromaHeightRatio() const;
-  UInt getChromaWidth() const;
-  UInt getChromaHeight() const;
-  UInt getChromaLength() const;
-  UInt getChromaSize() const;
-
-  Void frameFromBuffer( Byte*, UInt64 );
-  Void frameToBuffer( Byte* );
-
-  Void fillRGBBuffer();
-
-  Void calcHistogram();
-
-  // Methods for to manipulate the histogram data.
-  Double getCount( Int channel, UInt start, UInt end );
-  Double getMean( Int channel, UInt start, UInt end );
-  Int getMedian( Int channel, UInt start, UInt end );
-
-  /**
-   * @return Number of image pixels
-   */
-
-  Double getStdDev( Int channel, UInt start, UInt end );
-  Double getHistogramValue( Int channel, UInt bin );
-  Double getMaximum( Int channel );
-
-  /**
-   * @return Number of histogram segments: 256 or 65536 for 8 or 16 bits per
-   *         sample.
-   */
-  Int getHistogramSegment();
-
-  /**
-   * Control calculation
-   */
-  Void setRunningFlag( Bool bFlag )
-  {
-    m_bRunningFlag = bFlag;
-  }
-  Bool getHasHistogram()
-  {
-    return m_bHasHistogram;
-  }
-
-  Void copyFrom( PlaYUVerFrame* );
-  Void copyFrom( PlaYUVerFrame*, UInt, UInt );
-
-  PlaYUVerFrame::Pixel getPixelValue( Int xPos, Int yPos, ColorSpace eColorSpace = COLOR_INVALID );
-
-  std::string getPelFmtName();
-
   UInt getWidth() const
   {
     return m_uiWidth;
@@ -288,21 +236,7 @@ public:
   {
     return m_iBitsPel;
   }
-  Bool isValid() const
-  {
-    return ( m_uiWidth > 0 ) && ( m_uiHeight > 0 ) && ( m_iPixelFormat >= 0 );
-  }
-  Bool haveSameFmt( PlaYUVerFrame* other ) const
-  {
-    if( other )
-    {
-      return ( m_uiWidth == other->getWidth() ) && ( m_uiHeight == other->getHeight() ) && ( m_iPixelFormat == other->getPelFormat() );
-    }
-    else
-    {
-      return false;
-    }
-  }
+
   Pel*** getPelBufferYUV() const
   {
     return m_pppcInputPel;
@@ -329,6 +263,59 @@ public:
       fillRGBBuffer();
     }
     return m_pcARGB32;
+  }
+
+  /**
+   * Get number of bytes per frame of an existing frame
+   * @return number of bytes per frame
+   */
+  UInt64 getBytesPerFrame();
+
+  Int getColorSpace() const;
+  UInt getNumberChannels() const;
+
+  UInt getPixels() const;
+  UInt8 getChromaWidthRatio() const;
+  UInt8 getChromaHeightRatio() const;
+  UInt getChromaWidth() const;
+  UInt getChromaHeight() const;
+  UInt getChromaLength() const;
+  UInt getChromaSize() const;
+
+  PlaYUVerFrame::Pixel getPixelValue( Int xPos, Int yPos, ColorSpace eColorSpace = COLOR_INVALID );
+
+  Void copyFrom( PlaYUVerFrame* );
+  Void copyFrom( PlaYUVerFrame*, UInt, UInt );
+
+  Void frameFromBuffer( Byte*, UInt64 );
+  Void frameToBuffer( Byte* );
+
+  Void fillRGBBuffer();
+
+  Bool haveSameFmt( PlaYUVerFrame* other, FormatMatching match = MATCH_ALL ) const;
+
+  std::string getPelFmtName();
+
+  /**
+   * Histogram
+   */
+  Void calcHistogram();
+
+  Double getCount( Int channel, UInt start, UInt end );
+  Double getMean( Int channel, UInt start, UInt end );
+  Int getMedian( Int channel, UInt start, UInt end );
+  Double getStdDev( Int channel, UInt start, UInt end );
+  Double getHistogramValue( Int channel, UInt bin );
+  Double getMaximum( Int channel );
+  Int getHistogramSegment();
+
+  Void setRunningFlag( Bool bFlag )
+  {
+    m_bRunningFlag = bFlag;
+  }
+  Bool getHasHistogram()
+  {
+    return m_bHasHistogram;
   }
 
   /**
@@ -375,7 +362,9 @@ public:
 
 private:
 
-  //! Strcut with the pixel format description.
+  Bool m_bInit;
+
+  //! Struct with the pixel format description.
   PlaYUVerPixFmtDescriptor* m_pcPelFormat;
   std::string m_cPelFmtName;
 

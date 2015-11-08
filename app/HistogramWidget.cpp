@@ -418,12 +418,6 @@ Void HistogramWidget::updateData( PlaYUVerFrame *pcFrame, PlaYUVerFrame *pcFrame
 
 }
 
-Void HistogramWidget::updateSelectionData( PlaYUVerFrame *pcFrameSelection )
-{
-  m_selectionImage = pcFrameSelection;
-  m_selectionWorker->setup( pcFrameSelection );
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 
 Void HistogramWidget::slotBlinkTimerDone()

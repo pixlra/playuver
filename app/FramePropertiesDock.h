@@ -49,9 +49,9 @@ public:
 
   QSize sizeHint() const;
 
-  Void setData( PlaYUVerFrame* m_pcStream, Bool isPlaying );
+  Void setFrame( PlaYUVerFrame* m_pcFrame );
   Void setSelection( const QRect &selectionArea );
-
+  Void reset();
   Void stopHistogram();
 
 private:
@@ -73,10 +73,10 @@ private:
   };
 
   PlaYUVerFrame *m_pcFrame;
+  PlaYUVerFrame *m_pcSelectedFrame;
   Int m_iLastFrameType;
 
-  Bool* pbMainPlaySwitch;
-  Bool m_pbIsPlaying;
+  Bool* m_pbIsPlaying;
 
 
   QComboBox *channelCB;

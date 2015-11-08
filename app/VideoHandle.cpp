@@ -65,7 +65,6 @@ VideoHandle::~VideoHandle()
 
 Void VideoHandle::createActions()
 {
-
   m_arrayActions.resize( TOTAL_ACT );
   m_arrayActions[PLAY_ACT] = new QAction( "Play", this );
   m_arrayActions[PLAY_ACT]->setStatusTip( "Play/Pause" );
@@ -268,7 +267,7 @@ Void VideoHandle::update()
       m_pcResolutionLabel->setText( resolution );
     }
 
-    m_pcFramePropertiesSideBar->setData( pcFrame, m_pcCurrentVideoSubWindow->isPlaying() );
+    m_pcFramePropertiesSideBar->setFrame( pcFrame );
 
     m_pcFrameNumInfo->setTotalFrameNum( total_frame_num );
     m_pcFrameSlider->setMaximum( total_frame_num - 1 );
@@ -286,13 +285,12 @@ Void VideoHandle::update()
       m_arrayActions[PLAY_ACT]->setText( "Play" );
       m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPlay ) );
     }
-
   }
   else
   {
     m_pcVideoFormatLabel->setText( "" );
     m_pcResolutionLabel->setText( "" );
-    m_pcFramePropertiesSideBar->setData( NULL, false );
+    m_pcFramePropertiesSideBar->reset();
     m_pcFrameSlider->setValue( 0 );
     m_pcFrameNumInfo->clear();
   }
@@ -615,7 +613,7 @@ Void VideoHandle::seekVideo()
 
 Void VideoHandle::seekSliderEvent( Int new_frame_num )
 {
-  if( m_pcCurrentVideoSubWindow && !m_bIsPlaying ) // TODO: Fix this slot
+  if( m_pcCurrentVideoSubWindow && !m_bIsPlaying )  // TODO: Fix this slot
   {
     if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
     {

@@ -32,12 +32,12 @@ namespace plaYUVer
 
 FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitch ) :
         QWidget( parent ),
-        pbMainPlaySwitch( pbMainPlaySwitch )
+        m_pbIsPlaying( pbMainPlaySwitch )
 {
   // -------------- Variables definition --------------
   m_pcFrame = NULL;
+  m_pcSelectedFrame = NULL;
   m_iLastFrameType = -1;
-  m_pbIsPlaying = false;
 
   // Histogram area -----------------------------------------------------
 
@@ -259,110 +259,123 @@ QSize FramePropertiesDock::sizeHint() const
   return currSize;
 }
 
-Void FramePropertiesDock::setData( PlaYUVerFrame* pcFrame, Bool isPlaying )
+Void FramePropertiesDock::reset()
 {
-  m_pbIsPlaying = isPlaying;
-  if( !pcFrame )
+  m_pcFrame = NULL;
+  m_cSelectionArea = QRect();
+  if( m_pcSelectedFrame )
   {
-    m_pcFrame = NULL;
-    m_iLastFrameType = -1;
-    labelMeanValue->clear();
-    labelPixelsValue->clear();
-    labelStdDevValue->clear();
-    labelCountValue->clear();
-    labelMedianValue->clear();
-    labelPercentileValue->clear();
-    // Remove the histogram data from memory
-    histogramWidget->reset();
-    setEnabled( false );
-    return;
+    delete m_pcSelectedFrame;
+    m_pcSelectedFrame = NULL;
   }
-  else
+
+  m_iLastFrameType = -1;
+
+  labelMeanValue->clear();
+  labelPixelsValue->clear();
+  labelStdDevValue->clear();
+  labelCountValue->clear();
+  labelMedianValue->clear();
+  labelPercentileValue->clear();
+
+  // Remove the histogram data from memory
+  histogramWidget->reset();
+
+  setEnabled( false );
+}
+
+Void FramePropertiesDock::setFrame( PlaYUVerFrame* pcFrame )
+{
+  Int colorSpace = pcFrame->getColorSpace();
+  if( m_iLastFrameType != colorSpace )
   {
-    Int colorSpace = pcFrame->getColorSpace();
-    if( m_iLastFrameType != colorSpace )
+    m_iLastFrameType = colorSpace;
+    if( colorSpace == PlaYUVerFrame::COLOR_RGB || colorSpace == PlaYUVerFrame::COLOR_ARGB )
     {
-      m_iLastFrameType = colorSpace;
-      if( colorSpace == PlaYUVerFrame::COLOR_RGB || colorSpace == PlaYUVerFrame::COLOR_ARGB )
+      channelCB->clear();
+      channelCB->clear();
+      channelCB->insertItem( LuminosityChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
+      channelCB->insertItem( FirstChannel, QIcon( ":/images/channel-red.png" ), "Red" );
+      channelCB->insertItem( SecondChannel, QIcon( ":/images/channel-green.png" ), "Green" );
+      channelCB->insertItem( ThirdChannel, QIcon( ":/images/channel-blue.png" ), "Blue" );
+      if( colorSpace == PlaYUVerFrame::COLOR_ARGB )
       {
-        channelCB->clear();
-        channelCB->clear();
-        channelCB->insertItem( LuminosityChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
-        channelCB->insertItem( FirstChannel, QIcon( ":/images/channel-red.png" ), "Red" );
-        channelCB->insertItem( SecondChannel, QIcon( ":/images/channel-green.png" ), "Green" );
-        channelCB->insertItem( ThirdChannel, QIcon( ":/images/channel-blue.png" ), "Blue" );
-        if( colorSpace == PlaYUVerFrame::COLOR_ARGB )
-        {
-          channelCB->insertItem( AlphaChannel, QIcon( ":/images/channel-alpha.png" ), "Alpha" );
-        }
-        channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "Colors" );
+        channelCB->insertItem( AlphaChannel, QIcon( ":/images/channel-alpha.png" ), "Alpha" );
+      }
+      channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "Colors" );
 
-        colorsCB->clear();
-        colorsCB->addItem( "Red" );
-        colorsCB->addItem( "Green" );
-        colorsCB->addItem( "Blue" );
-        colorsCB->setEnabled( false );
-        colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
-            "<p><b>Red</b>: Draw the Red image channel in the foreground.<p>"
-            "<b>Green</b>: Draw the Green image channel in the foreground.<p>"
-            "<b>Blue</b>: Draw the Blue image channel in the foreground.<p>" ) );
-        colorsCB->show();
-        colorsLabel->show();
-      }
-      else if( colorSpace == PlaYUVerFrame::COLOR_YUV )
-      {
-        channelCB->clear();
-        channelCB->insertItem( FirstChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
-        channelCB->insertItem( SecondChannel, QIcon( ":/images/channel-red.png" ), "Chroma U" );
-        channelCB->insertItem( ThirdChannel, QIcon( ":/images/channel-green.png" ), "Chroma V" );
-        channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "All Channels" );
-
-        colorsCB->clear();
-        colorsCB->addItem( "Luminance" );
-        colorsCB->addItem( "Chroma U" );
-        colorsCB->addItem( "Chroma V" );
-        colorsCB->setEnabled( false );
-        colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
-            "<p><b>Luminance</b>: Draw the Luminance channel in the foreground.<p>"
-            "<b>Chroma U</b>: Draw the Chroma U channel in the foreground.<p>"
-            "<b>Chroma V</b>: Draw the Chroma V channel in the foreground.<p>" ) );
-        colorsCB->show();
-        colorsLabel->show();
-      }
-      else
-      {
-        channelCB->clear();
-        channelCB->addItem( tr( "Luminance" ) );
-        channelCB->setItemIcon( 0, QIcon( ":/images/channel-luma.png" ) );
-        colorsCB->hide();
-        colorsLabel->hide();
-      }
+      colorsCB->clear();
+      colorsCB->addItem( "Red" );
+      colorsCB->addItem( "Green" );
+      colorsCB->addItem( "Blue" );
+      colorsCB->setEnabled( false );
+      colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
+          "<p><b>Red</b>: Draw the Red image channel in the foreground.<p>"
+          "<b>Green</b>: Draw the Green image channel in the foreground.<p>"
+          "<b>Blue</b>: Draw the Blue image channel in the foreground.<p>" ) );
+      colorsCB->show();
+      colorsLabel->show();
     }
-    setEnabled( true );
-    if( m_pcFrame || !( *pbMainPlaySwitch ) )
+    else if( colorSpace == PlaYUVerFrame::COLOR_YUV )
     {
-      m_pcFrame = pcFrame;
-      updateDataHistogram();
+      channelCB->clear();
+      channelCB->insertItem( FirstChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
+      channelCB->insertItem( SecondChannel, QIcon( ":/images/channel-red.png" ), "Chroma U" );
+      channelCB->insertItem( ThirdChannel, QIcon( ":/images/channel-green.png" ), "Chroma V" );
+      channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "All Channels" );
+
+      colorsCB->clear();
+      colorsCB->addItem( "Luminance" );
+      colorsCB->addItem( "Chroma U" );
+      colorsCB->addItem( "Chroma V" );
+      colorsCB->setEnabled( false );
+      colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
+          "<p><b>Luminance</b>: DraupdateDataw the Luminance channel in the foreground.<p>"
+          "<b>Chroma U</b>: Draw the Chroma U channel in the foreground.<p>"
+          "<b>Chroma V</b>: Draw the Chroma V channel in the foreground.<p>" ) );
+      colorsCB->show();
+      colorsLabel->show();
     }
+    else
+    {
+      channelCB->clear();
+      channelCB->addItem( tr( "Luminance" ) );
+      channelCB->setItemIcon( 0, QIcon( ":/images/channel-luma.png" ) );
+      colorsCB->hide();
+      colorsLabel->hide();
+    }
+  }
+  setEnabled( true );
+  if( m_pcFrame || !( *m_pbIsPlaying ) )
+  {
+    m_pcFrame = pcFrame;
+    updateDataHistogram();
   }
 }
 
 Void FramePropertiesDock::setSelection( const QRect &selectionArea )
 {
-  // This is necessary to stop computation because image.bits() is
-  // currently used by threaded histogram algorithm.
-
   if( m_pcFrame )
   {
+    Bool bSelectionChanged = !( selectionArea.size() == m_cSelectionArea.size() );
     m_cSelectionArea = selectionArea;
-
     if( selectionArea.isValid() )
     {
       histogramWidget->stopHistogramComputation();
-      histogramWidget->updateSelectionData(
-          new PlaYUVerFrame( m_pcFrame, selectionArea.x(), selectionArea.y(), selectionArea.width(), selectionArea.height() ) );
-      fullImageButton->show();
-      selectionImageButton->show();
+
+      /*
+       * Allocate a new image for the selection
+       * or just copy information
+       */
+      if( bSelectionChanged )
+      {
+        if( m_pcSelectedFrame )
+        {
+          delete m_pcSelectedFrame;
+        }
+        m_pcSelectedFrame = new PlaYUVerFrame( m_pcFrame, selectionArea.x(), selectionArea.y(), selectionArea.width(), selectionArea.height() );
+      }
+      updateDataHistogram();
       selectionImageButton->click();
       slotRenderingChanged( HistogramWidget::ImageSelectionHistogram );
     }
@@ -377,18 +390,22 @@ Void FramePropertiesDock::setSelection( const QRect &selectionArea )
 
 Void FramePropertiesDock::updateDataHistogram()
 {
-  //if( m_pcFrame->isValid() && isVisible() )
   if( m_pcFrame && isVisible() )
   {
-    if( !( *pbMainPlaySwitch && m_pbIsPlaying ) )
+    if( !*m_pbIsPlaying )
     {
-      // If a selection area is done in Image Editor and if the current
-      // image is the same in Image Viewer, then compute too the histogram
-      // for this selection.
-      // New frame required to separate from the thread
-      histogramWidget->updateData( m_pcFrame, NULL );
-      fullImageButton->hide();
-      selectionImageButton->hide();
+      if( m_pcSelectedFrame )
+      {
+        m_pcSelectedFrame->copyFrom( m_pcFrame, m_cSelectionArea.x(), m_cSelectionArea.y() );
+        fullImageButton->show();
+        selectionImageButton->show();
+      }
+      else
+      {
+        fullImageButton->hide();
+        selectionImageButton->hide();
+      }
+      histogramWidget->updateData( m_pcFrame, m_pcSelectedFrame );
     }
     else
     {

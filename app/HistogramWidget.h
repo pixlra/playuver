@@ -117,9 +117,6 @@ public  :
   /** Update full image histogram data. */
   Void updateData( PlaYUVerFrame *pcFrame, PlaYUVerFrame *pcFrameSelection );
 
-  /** Update image selection histogram data.*/
-  Void updateSelectionData( PlaYUVerFrame *pcFrameSelection );
-
   /** @see @p HistogramOption */
   Void setOptions( HistogramOptions options = AllOptions );
   Void setDataLoading();

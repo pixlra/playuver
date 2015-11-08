@@ -70,10 +70,6 @@ public:
 
   }
 
-  Void setTool( UInt uiTool )
-  {
-  }
-
   /**
    * Virtual functions from SubWindowAbstract
    */

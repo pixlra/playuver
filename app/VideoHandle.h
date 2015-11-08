@@ -146,7 +146,7 @@ private Q_SLOTS:
   void seekVideo();
   void videoSelectionButtonEvent();
   void setTool( int tool );
-  void toggleGrid();
+  void toggleGrid( bool checked );
 
 };
 

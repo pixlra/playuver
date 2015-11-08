@@ -75,6 +75,8 @@ public:
    */
   Void setTool( UInt view );
 
+  Void setGridVisible( Bool enable );
+
   /**
    * Clears any mask content.
    */
@@ -104,7 +106,7 @@ public:
 
   Double getZoomFactor()
   {
-    return m_zoomFactor;
+    return m_dZoomFactor;
   }
 
   // Scale function. Return used scale value (it may change when it touches the min or max zoom value)
@@ -123,7 +125,6 @@ public Q_SLOTS:
 //  Void setEraserTool();
 //  Void setNormalSelectionTool();
 //  Void setBlockSelectionTool();
-  void setGridVisible( bool enable );
   void setSnapToGrid( bool enable );
 //  void setSelectedArea( QRect &rect );
 
@@ -178,7 +179,16 @@ private:
   QRect viewToWindow( const QRect& rc ) const;
 
   PlaYUVerFrame *m_pcCurrFrame;
+
   Pel m_uiPixelHalfScale;
+
+  Tool m_eTool;
+  Bool m_bGridVisible;
+
+  QTimer m_zoomWinTimer;
+  Double m_dZoomWinRatio;
+  Double m_dZoomFactor;
+
   QPixmap m_pixmap;
   QBitmap m_mask;
   QRect m_selectedArea;
@@ -186,19 +196,15 @@ private:
   QPoint m_lastWindowPos;
   GridManager m_grid;
   ViewMode m_mode;
-  Tool m_eTool;
+
   QColor m_maskColor;
-  Double m_zoomFactor;
   Int m_xOffset;
   Int m_yOffset;
   Bool m_blockTrackEnable;
   Bool m_newShape;
-  Bool m_gridVisible;
   Bool m_snapToGrid;
   Bool m_cursorInGrid;
   Bool m_visibleZoomRect;
-  Double m_dZoomWinRatio;
-  QTimer m_zoomWinTimer;
 
 };
 

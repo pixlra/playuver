@@ -211,11 +211,6 @@ public:
     return apcModulesArray;
   }
 
-  Void setTool( UInt uiTool )
-  {
-    m_cViewArea->setTool( uiTool );
-  }
-
   /**
    * Virtual functions from SubWindowAbstract
    */

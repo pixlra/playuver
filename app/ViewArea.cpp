@@ -56,12 +56,12 @@ ViewArea::ViewArea( QWidget *parent ) :
   m_grid = GridManager();
   m_mask = QBitmap();
   m_selectedArea = QRect();
-  m_zoomFactor = 1;
+  m_dZoomFactor = 1;
   m_xOffset = 0;
   m_yOffset = 0;
   m_mode = NormalMode;
   m_eTool = NavigationTool;
-  m_gridVisible = false;
+  m_bGridVisible = false;
   m_snapToGrid = false;
   m_blockTrackEnable = false;
   m_visibleZoomRect = true;
@@ -129,6 +129,12 @@ Void ViewArea::setTool( UInt view )
   update();
 }
 
+Void ViewArea::setGridVisible( Bool enable )
+{
+  m_bGridVisible = enable;
+  update();
+}
+
 Void ViewArea::clearMask()
 {
   m_mask.clear();
@@ -144,7 +150,7 @@ Void ViewArea::startZoomWinTimer()
 
 Void ViewArea::setZoomFactor( Double f )
 {
-  m_zoomFactor = f;
+  m_dZoomFactor = f;
 
   updateSize();
   startZoomWinTimer();
@@ -157,21 +163,21 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
   Double minZoom = 0.01;  //( 1.0 / m_pixmap.width() );
   Double new_scale = 1.0;
 
-  if( ( m_zoomFactor == minZoom ) && ( scale < 1 ) )
+  if( ( m_dZoomFactor == minZoom ) && ( scale < 1 ) )
     return new_scale;
 
-  if( ( m_zoomFactor == maxZoom ) && ( scale > 1 ) )
+  if( ( m_dZoomFactor == maxZoom ) && ( scale > 1 ) )
     return new_scale;
 
-  Double zoomFactor = m_zoomFactor * scale * 100.0;
+  Double zoomFactor = m_dZoomFactor * scale * 100.0;
   zoomFactor = round( zoomFactor );
   zoomFactor = zoomFactor / 100.0;
-  scale = zoomFactor / m_zoomFactor;
+  scale = zoomFactor / m_dZoomFactor;
 
   if( !minimumSize.isNull() )
   {
-    Double cw = m_pixmap.width() * m_zoomFactor;
-    Double ch = m_pixmap.height() * m_zoomFactor;
+    Double cw = m_pixmap.width() * m_dZoomFactor;
+    Double ch = m_pixmap.height() * m_dZoomFactor;
     Double fw = m_pixmap.width() * zoomFactor;
     Double fh = m_pixmap.height() * zoomFactor;
     Double mw = minimumSize.width();
@@ -195,7 +201,7 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
       zoomFactor = zoomFactor * scale * 100.0;
       zoomFactor = floor( zoomFactor );
       zoomFactor = zoomFactor / 100.0;
-      scale = zoomFactor / m_zoomFactor;
+      scale = zoomFactor / m_dZoomFactor;
     }
   }
 
@@ -204,14 +210,14 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
   if( zoomFactor < minZoom )
   {
     zoomFactor = minZoom;
-    new_scale = zoomFactor / m_zoomFactor;
+    new_scale = zoomFactor / m_dZoomFactor;
   }
   else
   {
     if( zoomFactor > maxZoom )
     {
       zoomFactor = maxZoom;
-      new_scale = zoomFactor / m_zoomFactor;
+      new_scale = zoomFactor / m_dZoomFactor;
     }
   }
 
@@ -272,12 +278,6 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
 //  setTool( BlockSelectionTool );
 //  m_blockTrackEnable = true;
 //}
-
-Void ViewArea::setGridVisible( Bool enable )
-{
-  m_gridVisible = enable;
-  update();
-}
 
 Void ViewArea::setSnapToGrid( Bool enable )
 {
@@ -362,8 +362,8 @@ Void ViewArea::initZoomWinRect()
 ////////////////////////////////////////////////////////////////////////////////
 Void ViewArea::updateSize()
 {
-  Int w = m_pixmap.width() * m_zoomFactor;
-  Int h = m_pixmap.height() * m_zoomFactor;
+  Int w = m_pixmap.width() * m_dZoomFactor;
+  Int h = m_pixmap.height() * m_dZoomFactor;
   setMinimumSize( w, h );
 
   QWidget *p = parentWidget();
@@ -381,17 +381,17 @@ Void ViewArea::updateSize()
 
 Void ViewArea::updateOffset()
 {
-  if( width() > m_pixmap.width() * m_zoomFactor )
+  if( width() > m_pixmap.width() * m_dZoomFactor )
   {
-    m_xOffset = ( width() - m_pixmap.width() * m_zoomFactor ) / 2;
+    m_xOffset = ( width() - m_pixmap.width() * m_dZoomFactor ) / 2;
   }
   else
   {
     m_xOffset = 0;
   }
-  if( height() > m_pixmap.height() * m_zoomFactor )
+  if( height() > m_pixmap.height() * m_dZoomFactor )
   {
-    m_yOffset = ( height() - m_pixmap.height() * m_zoomFactor ) / 2;
+    m_yOffset = ( height() - m_pixmap.height() * m_dZoomFactor ) / 2;
   }
   else
   {
@@ -430,7 +430,7 @@ Void ViewArea::paintEvent( QPaintEvent *event )
   // Save the actual paInter properties and scales the coordinate system.
   paInter.save();
   paInter.translate( m_xOffset, m_yOffset );
-  paInter.scale( m_zoomFactor, m_zoomFactor );
+  paInter.scale( m_dZoomFactor, m_dZoomFactor );
 
   // This line is for fast paiting. Only visible area of the image is paInted.
   // We take the exposed rect from the event (that gives us scroll/expose optimizations for free – no need
@@ -442,8 +442,7 @@ Void ViewArea::paintEvent( QPaintEvent *event )
   paInter.drawPixmap( exposedRect, m_pixmap, exposedRect );
 
   // Draw the Grid if it's visible.
-  //m_gridVisible = true;
-  if( m_gridVisible )
+  if( m_bGridVisible )
   {
     // Do we need to draw the whole grid?
     // To know that, we need to perform a transformation of the rectangle 
@@ -473,11 +472,11 @@ Void ViewArea::paintEvent( QPaintEvent *event )
   /*  if( m_xOffset || m_yOffset )
    {
    paInter.setPen( Qt::black );
-   paInter.drawRect( m_xOffset - 1, m_yOffset - 1, m_pixmap.width() * m_zoomFactor + 1, m_pixmap.height() * m_zoomFactor + 1 );
+   paInter.drawRect( m_xOffset - 1, m_yOffset - 1, m_pixmap.width() * m_dZoomFactor + 1, m_pixmap.height() * m_dZoomFactor + 1 );
    }*/
 
   // Draw pixel values in grid
-  if( m_zoomFactor >= 50.0 )
+  if( m_dZoomFactor >= 50.0 )
   {
     Int imageWidth = m_pixmap.width();
     Int imageHeight = m_pixmap.height();
@@ -496,7 +495,7 @@ Void ViewArea::paintEvent( QPaintEvent *event )
       {
         QPoint pixelTopLeft( i, j );
 
-        QRect pixelRect( viewToWindow( pixelTopLeft ), QSize( m_zoomFactor, m_zoomFactor ) );
+        QRect pixelRect( viewToWindow( pixelTopLeft ), QSize( m_dZoomFactor, m_dZoomFactor ) );
 
         Int frFormat = m_pcCurrFrame->getColorSpace();
 
@@ -676,7 +675,7 @@ Void ViewArea::paintEvent( QPaintEvent *event )
   paInter.setPen( color );
   paInter.save();
   paInter.translate( m_xOffset, m_yOffset );
-  paInter.scale( m_zoomFactor, m_zoomFactor );
+  paInter.scale( m_dZoomFactor, m_dZoomFactor );
   paInter.drawPixmap( QPoint( 0, 0 ), m_mask );
   paInter.restore();
 
@@ -1013,8 +1012,8 @@ Bool ViewArea::isPosValid( const QPoint &pos ) const
 QPoint ViewArea::windowToView( const QPoint& pt ) const
 {
   QPoint p;
-  p.setX( static_cast<Int>( ( pt.x() - m_xOffset ) / m_zoomFactor ) );
-  p.setY( static_cast<Int>( ( pt.y() - m_yOffset ) / m_zoomFactor ) );
+  p.setX( static_cast<Int>( ( pt.x() - m_xOffset ) / m_dZoomFactor ) );
+  p.setY( static_cast<Int>( ( pt.y() - m_yOffset ) / m_dZoomFactor ) );
 
   return p;
 }
@@ -1024,10 +1023,10 @@ QRect ViewArea::windowToView( const QRect& rc ) const
   QRect r;
 
   r.setTopLeft( windowToView( rc.topLeft() ) );
-//     r.setRight ( (Int)( ceil(( rc.right()  - m_xOffset)/m_zoomFactor  )));
-//     r.setBottom( (Int)( ceil(( rc.bottom()- m_yOffset)/m_zoomFactor  )));
-//     r.setRight ( static_cast<Int>(( rc.right() - m_xOffset ) / m_zoomFactor +1));
-//     r.setBottom( static_cast<Int>(( rc.bottom() - m_xOffset ) / m_zoomFactor+1));
+//     r.setRight ( (Int)( ceil(( rc.right()  - m_xOffset)/m_dZoomFactor  )));
+//     r.setBottom( (Int)( ceil(( rc.bottom()- m_yOffset)/m_dZoomFactor  )));
+//     r.setRight ( static_cast<Int>(( rc.right() - m_xOffset ) / m_dZoomFactor +1));
+//     r.setBottom( static_cast<Int>(( rc.bottom() - m_xOffset ) / m_dZoomFactor+1));
   r.setBottomRight( windowToView( rc.bottomRight() ) );
   return r;
 }
@@ -1036,8 +1035,8 @@ QPoint ViewArea::viewToWindow( const QPoint& pt ) const
 {
   QPoint p;
 
-  p.setX( static_cast<Int>( pt.x() * m_zoomFactor + m_xOffset ) );
-  p.setY( static_cast<Int>( pt.y() * m_zoomFactor + m_yOffset ) );
+  p.setX( static_cast<Int>( pt.x() * m_dZoomFactor + m_xOffset ) );
+  p.setY( static_cast<Int>( pt.y() * m_dZoomFactor + m_yOffset ) );
 
   return p;
 }
@@ -1047,13 +1046,13 @@ QRect ViewArea::viewToWindow( const QRect& rc ) const
   QRect r;
 
   r.setTopLeft( viewToWindow( rc.topLeft() ) );
-//     r.setRight ( (Int)( ceil(( rc.right() +1+m_xOffset )*m_zoomFactor ) - 1 ));
-//     r.setBottom( (Int)( ceil(( rc.bottom()+1+m_yOffset )*m_zoomFactor ) - 1 ));
-//     r.setRight ( (Int)( ceil(( rc.right()+0.5)*m_zoomFactor  )+ m_xOffset )-1);
-//     r.setBottom( (Int)( ceil(( rc.bottom()+0.5)*m_zoomFactor ) +m_yOffset )-1);
+//     r.setRight ( (Int)( ceil(( rc.right() +1+m_xOffset )*m_dZoomFactor ) - 1 ));
+//     r.setBottom( (Int)( ceil(( rc.bottom()+1+m_yOffset )*m_dZoomFactor ) - 1 ));
+//     r.setRight ( (Int)( ceil(( rc.right()+0.5)*m_dZoomFactor  )+ m_xOffset )-1);
+//     r.setBottom( (Int)( ceil(( rc.bottom()+0.5)*m_dZoomFactor ) +m_yOffset )-1);
 // qDebug()<<"Right = "<< r.right();
-//     r.setRight ( static_cast<Int>(( rc.right()+1) * m_zoomFactor + m_xOffset -1) );
-//     r.setBottom( static_cast<Int>(( rc.bottom()+1) * m_zoomFactor + m_yOffset -1));
+//     r.setRight ( static_cast<Int>(( rc.right()+1) * m_dZoomFactor + m_xOffset -1) );
+//     r.setBottom( static_cast<Int>(( rc.bottom()+1) * m_dZoomFactor + m_yOffset -1));
   r.setBottomRight( viewToWindow( rc.bottomRight() ) );
 
   return r;

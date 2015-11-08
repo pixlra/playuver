@@ -160,7 +160,7 @@ Void VideoHandle::createActions()
   m_arrayActions[SHOW_GRID_ACT] = new QAction( "Show grid", this );
   m_arrayActions[SHOW_GRID_ACT]->setCheckable( true );
   m_arrayActions[SHOW_GRID_ACT]->setChecked( false );
-  connect( m_arrayActions[SHOW_GRID_ACT], SIGNAL( triggered() ), this, SLOT( toogleGrid() ) );
+  connect( m_arrayActions[SHOW_GRID_ACT], SIGNAL( toggled(bool) ), this, SLOT( toggleGrid(bool) ) );
 }
 
 QMenu* VideoHandle::createVideoMenu()
@@ -183,9 +183,9 @@ QMenu* VideoHandle::createImageMenu()
   m_pcMenuImage = new QMenu( "Image", this );
   m_pcMenuImage->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
   m_pcMenuImage->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
-  //m_pcMenuImage->addAction( m_arrayActions[BLOCK_SELECTION_TOOL_ACT] );
-  //m_pcMenuImage->addSeparator();
-  //m_pcMenuImage->addAction( m_arrayActions[SHOW_GRID_ACT] );
+  m_pcMenuImage->addAction( m_arrayActions[BLOCK_SELECTION_TOOL_ACT] );
+  m_pcMenuImage->addSeparator();
+  m_pcMenuImage->addAction( m_arrayActions[SHOW_GRID_ACT] );
   return m_pcMenuImage;
 }
 
@@ -762,13 +762,17 @@ Void VideoHandle::setTool( Int tool )
   QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
-    qobject_cast<VideoSubWindow*>( subWindowList.at( i ) )->setTool( m_uiViewTool );
+    qobject_cast<VideoSubWindow*>( subWindowList.at( i ) )->getViewArea()->setTool( m_uiViewTool );
   }
 }
 
-Void VideoHandle::toggleGrid()
+Void VideoHandle::toggleGrid( Bool checked )
 {
-
+  QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
+  for( Int i = 0; i < subWindowList.size(); i++ )
+  {
+    qobject_cast<VideoSubWindow*>( subWindowList.at( i ) )->getViewArea()->setGridVisible( checked );
+  }
 }
 
 }   // NAMESPACE

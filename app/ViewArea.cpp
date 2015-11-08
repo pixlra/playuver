@@ -60,7 +60,7 @@ ViewArea::ViewArea( QWidget *parent ) :
   m_xOffset = 0;
   m_yOffset = 0;
   m_mode = NormalMode;
-  m_tool = NavigationTool;
+  m_eTool = NavigationTool;
   m_gridVisible = false;
   m_snapToGrid = false;
   m_blockTrackEnable = false;
@@ -72,12 +72,12 @@ ViewArea::ViewArea( QWidget *parent ) :
   connect( &m_zoomWinTimer, SIGNAL( timeout() ), this, SLOT( update() ) );
 }
 
-void ViewArea::startZoomWinTimer()
+Void ViewArea::startZoomWinTimer()
 {
   m_zoomWinTimer.start();
 }
 
-void ViewArea::setImage( PlaYUVerFrame* pcFrame )
+Void ViewArea::setImage( PlaYUVerFrame* pcFrame )
 {
   m_pcCurrFrame = pcFrame;
   m_uiPixelHalfScale = 1 << ( m_pcCurrFrame->getBitsPel() - 1 );
@@ -86,7 +86,7 @@ void ViewArea::setImage( PlaYUVerFrame* pcFrame )
   setImage( QPixmap::fromImage( qimg ) );
 }
 
-void ViewArea::setImage( const QPixmap &pixmap )
+Void ViewArea::setImage( const QPixmap &pixmap )
 {
   m_pixmap = pixmap;
   m_mask = QBitmap( pixmap.width(), pixmap.height() );
@@ -98,7 +98,7 @@ void ViewArea::setImage( const QPixmap &pixmap )
   initZoomWinRect();
 }
 
-void ViewArea::clear()
+Void ViewArea::clear()
 {
   m_pixmap = QPixmap();
   m_mask = QBitmap();
@@ -108,7 +108,34 @@ void ViewArea::clear()
   updateGeometry();
 }
 
-void ViewArea::clearMask()
+Void ViewArea::setTool( UInt view )
+{
+  switch( view )
+  {
+  case NavigationView:
+    m_eTool = NavigationTool;
+    break;
+  case NormalSelectionView:
+    m_eTool = SelectionTool;
+    m_snapToGrid = false;
+    m_blockTrackEnable = false;
+    break;
+  case BlockSelectionView:
+    m_eTool = SelectionTool;
+    m_snapToGrid = true;
+    m_blockTrackEnable = true;
+    break;
+  }
+
+  if( m_eTool != SelectionTool )
+  {
+    m_selectedArea = QRect();
+    emit selectionChanged( m_selectedArea );
+  }
+  update();
+}
+
+Void ViewArea::clearMask()
 {
   m_mask.clear();
 }
@@ -191,108 +218,97 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
   return new_scale;
 }
 
-void ViewArea::setMode( ViewMode mode )
-{
-  if( m_mode == mode )
-    return;
+//Void ViewArea::setMode( Int mode )
+//{
+//  if( m_mode == mode )
+//    return;
+//
+//  m_mode = mode;
+//  update();
+//}
+//
+//Void ViewArea::setNormalMode()
+//{
+//  setMode( NormalMode );
+//}
+//
+//Void ViewArea::setMaskMode()
+//{
+//  setMode( MaskMode );
+//}
+//
+//Void ViewArea::setMaskColor( const QColor &color )
+//{
+//  m_maskColor = color;
+//  update();
+//}
+//
+//Void ViewArea::setMaskTool()
+//{
+//  setMode( MaskMode );
+//  setTool( MaskTool );
+//  m_blockTrackEnable = true;
+//}
+//
+//Void ViewArea::setEraserTool()
+//{
+//  setMode( MaskMode );
+//  setTool( EraserTool );
+//  m_blockTrackEnable = true;
+//}
+//
+//Void ViewArea::setSelectionTool()
+//{
+//  setMode( NormalMode );
+//  setTool( SelectionTool );
+//  m_blockTrackEnable = false;
+//}
+//
+//Void ViewArea::setBlockSelectionTool()
+//{
+//  setMode( NormalMode );
+//  setTool( BlockSelectionTool );
+//  m_blockTrackEnable = true;
+//}
 
-  m_mode = mode;
-  update();
-}
-
-void ViewArea::setNormalMode()
-{
-  setMode( NormalMode );
-}
-
-void ViewArea::setMaskMode()
-{
-  setMode( MaskMode );
-}
-
-void ViewArea::setMaskColor( const QColor &color )
-{
-  m_maskColor = color;
-  update();
-}
-
-void ViewArea::setTool( eTool tool )
-{
-  m_snapToGrid = tool == BlockSelectionTool;
-  if( tool == BlockSelectionTool )
-  {
-    tool = NormalSelectionTool;
-  }
-  m_tool = tool;
-
-}
-
-void ViewArea::setMaskTool()
-{
-  setMode( MaskMode );
-  setTool( MaskTool );
-  m_blockTrackEnable = true;
-}
-
-void ViewArea::setEraserTool()
-{
-  setMode( MaskMode );
-  setTool( EraserTool );
-  m_blockTrackEnable = true;
-}
-
-void ViewArea::setNormalSelectionTool()
-{
-  setMode( NormalMode );
-  setTool( NormalSelectionTool );
-  m_blockTrackEnable = false;
-}
-
-void ViewArea::setBlockSelectionTool()
-{
-  setMode( NormalMode );
-  setTool( BlockSelectionTool );
-  m_blockTrackEnable = true;
-}
-
-void ViewArea::setGridVisible( bool enable )
+Void ViewArea::setGridVisible( bool enable )
 {
   m_gridVisible = enable;
   update();
 }
 
-void ViewArea::setSnapToGrid( bool enable )
+Void ViewArea::setSnapToGrid( bool enable )
 {
   m_snapToGrid = enable;
 }
 
-void ViewArea::setSelectedArea( QRect &rect )
-{
-  if( rect.isNull() )
-  {
-    update();
-    return;
-  }
+//Void ViewArea::setSelectedArea( QRect &rect )
+//{
+//  if( rect.isNull() )
+//  {
+//    update();
+//    return;
+//  }
+//
+//  QRect updateRect;
+// // setNormalMode();
+//
+//  if( m_selectedArea.isNull() )
+//  {
+//    m_selectedArea = rect.normalized();
+//    updateRect = m_selectedArea;
+//  }
+//  else
+//  {
+//    updateRect = m_selectedArea;
+//    m_selectedArea = rect.normalized();
+//    updateRect = updateRect.united( m_selectedArea );
+//  }
+//  updateRect.adjust( 0, 0, 1, 1 );
+//  update( updateRect.normalized() );
+//}
 
-  QRect updateRect;
-  setNormalMode();
-
-  if( m_selectedArea.isNull() )
-  {
-    m_selectedArea = rect.normalized();
-    updateRect = m_selectedArea;
-  }
-  else
-  {
-    updateRect = m_selectedArea;
-    m_selectedArea = rect.normalized();
-    updateRect = updateRect.united( m_selectedArea );
-  }
-  updateRect.adjust( 0, 0, 1, 1 );
-  update( updateRect.normalized() );
-}
-
-void ViewArea::initZoomWinRect()
+Void ViewArea::initZoomWinRect()
 {
   int iMinX = 80;
   int iMinY = 80;
@@ -342,7 +358,7 @@ void ViewArea::initZoomWinRect()
 ////////////////////////////////////////////////////////////////////////////////
 //                            Geometry Updates 
 ////////////////////////////////////////////////////////////////////////////////
-void ViewArea::updateSize()
+Void ViewArea::updateSize()
 {
   int w = m_pixmap.width() * m_zoomFactor;
   int h = m_pixmap.height() * m_zoomFactor;
@@ -361,7 +377,7 @@ void ViewArea::updateSize()
     updateOffset();
 }
 
-void ViewArea::updateOffset()
+Void ViewArea::updateOffset()
 {
   if( width() > m_pixmap.width() * m_zoomFactor )
   {
@@ -384,7 +400,7 @@ void ViewArea::updateOffset()
 ////////////////////////////////////////////////////////////////////////////////
 //                              Resize Event  
 ////////////////////////////////////////////////////////////////////////////////
-void ViewArea::resizeEvent( QResizeEvent *event )
+Void ViewArea::resizeEvent( QResizeEvent *event )
 {
   if( size().isEmpty() || m_pixmap.isNull() )
     return;
@@ -397,7 +413,7 @@ void ViewArea::resizeEvent( QResizeEvent *event )
 //                              Paint Event  
 ////////////////////////////////////////////////////////////////////////////////
 
-void ViewArea::paintEvent( QPaintEvent *event )
+Void ViewArea::paintEvent( QPaintEvent *event )
 {
   QRect winRect = event->rect();
 
@@ -704,7 +720,7 @@ void ViewArea::paintEvent( QPaintEvent *event )
 ////////////////////////////////////////////////////////////////////////////////
 //                              Mouse Events  
 ////////////////////////////////////////////////////////////////////////////////
-void ViewArea::wheelEvent( QWheelEvent *event )
+Void ViewArea::wheelEvent( QWheelEvent *event )
 {
   Double scale;
   Double usedScale;
@@ -727,7 +743,7 @@ void ViewArea::wheelEvent( QWheelEvent *event )
   }
 }
 
-void ViewArea::mousePressEvent( QMouseEvent *event )
+Void ViewArea::mousePressEvent( QMouseEvent *event )
 {
   event->accept();
 
@@ -773,7 +789,7 @@ void ViewArea::mousePressEvent( QMouseEvent *event )
 
     m_newShape = true;
 
-    if( tool() == NormalSelectionTool )
+    if( tool() == SelectionTool )
     {
       m_blockTrackEnable = false;
       return;
@@ -794,12 +810,12 @@ void ViewArea::mousePressEvent( QMouseEvent *event )
   }
 }
 
-void ViewArea::mouseMoveEvent( QMouseEvent *event )
+Void ViewArea::mouseMoveEvent( QMouseEvent *event )
 {
   event->accept();
 
 #ifndef _MSC_VER
-  // Add this code line to avoid slow navigation with some specific mouses
+  // Add this code line to aVoid slow navigation with some specific mouses
   // This seems to always appear on windows
   if( qApp->hasPendingEvents())
   return;
@@ -836,7 +852,7 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
 
     updateRect = viewToWindow( m_selectedArea );
 
-    if( tool() == NormalSelectionTool )
+    if( tool() == SelectionTool )
     {
       // If the selection is only vertical or horizontal then we have one
       // of the dimentions null.
@@ -893,7 +909,7 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
      m_selectedArea = m_selectedArea.united( m_grid.rectContains( actualPos ) );
      }
      */
-    if( tool() == NormalSelectionTool )
+    if( tool() == SelectionTool )
     {
       // Intercept the selected area with the image area to limit the
       // selection only to the image area, preventing it to come outside
@@ -936,7 +952,7 @@ void ViewArea::mouseMoveEvent( QMouseEvent *event )
   }
 }
 
-void ViewArea::mouseReleaseEvent( QMouseEvent *event )
+Void ViewArea::mouseReleaseEvent( QMouseEvent *event )
 {
   event->accept();
 
@@ -948,7 +964,7 @@ void ViewArea::mouseReleaseEvent( QMouseEvent *event )
     {
       unsetCursor();
     }
-    else if( tool() == NormalSelectionTool )
+    else if( tool() == SelectionTool )
     {
       // Normal Mode ------------------------------------------------------
       if( mode() == NormalMode )
@@ -956,9 +972,6 @@ void ViewArea::mouseReleaseEvent( QMouseEvent *event )
         if( vpos == m_lastPos )
         {
           m_selectedArea = QRect();
-
-          if( tool() == BlockSelectionTool )
-            m_blockTrackEnable = true;
         }
         emit selectionChanged( m_selectedArea );
 
@@ -1047,7 +1060,7 @@ QRect ViewArea::viewToWindow( const QRect& rc ) const
 ////////////////////////////////////////////////////////////////////////////////
 //                           Masks Management
 ////////////////////////////////////////////////////////////////////////////////
-void ViewArea::updateMask( const QRect &rect )
+Void ViewArea::updateMask( const QRect &rect )
 {
   switch( tool() )
   {
@@ -1076,7 +1089,7 @@ void ViewArea::updateMask( const QRect &rect )
   }
 }
 
-void ViewArea::setInputStream( PlaYUVerStream *stream )
+Void ViewArea::setInputStream( PlaYUVerStream *stream )
 {
   m_pStream = stream;
 }

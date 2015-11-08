@@ -213,7 +213,7 @@ public:
 
   Void setTool( UInt uiTool )
   {
-    m_cViewArea->setTool( ( ViewArea::eTool )uiTool );
+    m_cViewArea->setTool( uiTool );
   }
 
   /**

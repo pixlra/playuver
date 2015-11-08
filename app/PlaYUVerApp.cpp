@@ -231,7 +231,7 @@ Void PlaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       connect( subWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo, SLOT( moveAllScrollBars( const QPoint ) ) );
 
       videoSubWindow->zoomToFit();
-      videoSubWindow->getViewArea()->setTool( ( ViewArea::eTool )m_uiViewTool );
+      videoSubWindow->getViewArea()->setTool( m_uiViewTool );
       updateZoomFactorSBox();
 
       addStreamInfoToRecentList( videoSubWindow->getStreamInfo() );
@@ -707,21 +707,31 @@ Void PlaYUVerApp::createActions()
   m_mapperTools = new QSignalMapper( this );
   connect( m_mapperTools, SIGNAL( mapped(int) ), this, SLOT( setTool(int) ) );
 
-  m_uiViewTool = ViewArea::NavigationTool;
+  m_uiViewTool = ViewArea::NavigationView;
 
-  m_arrayActions[NAVIGATION_TOOL_ACT] = new QAction( tr( "&Navigation Tool" ), this );
+  m_arrayActions[NAVIGATION_TOOL_ACT] = new QAction( tr( "Navigation Tool" ), this );
   m_arrayActions[NAVIGATION_TOOL_ACT]->setCheckable( true );
   m_arrayActions[NAVIGATION_TOOL_ACT]->setChecked( true );
+  m_arrayActions[NAVIGATION_TOOL_ACT]->setShortcut( Qt::CTRL + Qt::Key_1 );
   actionGroupTools->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
   connect( m_arrayActions[NAVIGATION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
-  m_mapperTools->setMapping( m_arrayActions[NAVIGATION_TOOL_ACT], ViewArea::NavigationTool );
+  m_mapperTools->setMapping( m_arrayActions[NAVIGATION_TOOL_ACT], ViewArea::NavigationView );
 
-  m_arrayActions[SELECTION_TOOL_ACT] = new QAction( "&Selection Tool", this );
+  m_arrayActions[SELECTION_TOOL_ACT] = new QAction( "Selection Tool", this );
   m_arrayActions[SELECTION_TOOL_ACT]->setCheckable( true );
   m_arrayActions[SELECTION_TOOL_ACT]->setChecked( false );
+  m_arrayActions[SELECTION_TOOL_ACT]->setShortcut( Qt::CTRL + Qt::Key_2 );
   actionGroupTools->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
   connect( m_arrayActions[SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
-  m_mapperTools->setMapping( m_arrayActions[SELECTION_TOOL_ACT], ViewArea::NormalSelectionTool );
+  m_mapperTools->setMapping( m_arrayActions[SELECTION_TOOL_ACT], ViewArea::NormalSelectionView );
+
+  m_arrayActions[BLOCK_SELECTION_TOOL_ACT] = new QAction( "Block Selection Tool", this );
+  m_arrayActions[BLOCK_SELECTION_TOOL_ACT]->setCheckable( true );
+  m_arrayActions[BLOCK_SELECTION_TOOL_ACT]->setChecked( false );
+  m_arrayActions[BLOCK_SELECTION_TOOL_ACT]->setShortcut( Qt::CTRL + Qt::Key_3 );
+  actionGroupTools->addAction( m_arrayActions[BLOCK_SELECTION_TOOL_ACT] );
+  connect( m_arrayActions[BLOCK_SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
+  m_mapperTools->setMapping( m_arrayActions[BLOCK_SELECTION_TOOL_ACT], ViewArea::BlockSelectionView );
 
   m_appModuleVideo->createActions();
   m_appModuleQuality->createActions();
@@ -771,6 +781,7 @@ Void PlaYUVerApp::createMenus()
   m_arrayMenu[VIEW_MENU] = menuBar()->addMenu( tr( "&View" ) );
   m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
   m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
+  //m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[BLOCK_SELECTION_TOOL_ACT] );
   m_arrayMenu[VIEW_MENU]->addSeparator();
   m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_IN_ACT] );
   m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_OUT_ACT] );
@@ -932,8 +943,8 @@ Void PlaYUVerApp::readSettings()
 
   m_cLastOpenPath = appSettings.value( "MainWindow/LastOpenPath", QDir::homePath() ).toString();
 
-  m_uiViewTool = appSettings.value( "MainWindow/SelectedTool", ViewArea::NavigationTool ).toUInt();
-  setTool( ( ViewArea::eTool )m_uiViewTool );
+  m_uiViewTool = appSettings.value( "MainWindow/SelectedTool", ViewArea::NavigationView ).toUInt();
+  setTool( m_uiViewTool );
 
   QVariant value = appSettings.value( "MainWindow/RecentFileList" );
   m_aRecentFileStreamInfo = value.value<PlaYUVerStreamInfoVector>();

@@ -50,35 +50,34 @@ Q_OBJECT
 
 public:
 
-  enum ViewMode
+  enum ViewModes
   {
-    NormalMode,
-    MaskMode,
+    NavigationView,
+    NormalSelectionView,
+    BlockSelectionView,
   };
-  typedef enum
-  {
-    NavigationTool,
-    NormalSelectionTool,
-    BlockSelectionTool,
-    MaskTool,
-    EraserTool
-  } eTool;
 
   ViewArea( QWidget *parent = 0 );
 
-  void setImage( PlaYUVerFrame* pcFrame );
-  void setImage( const QPixmap &pixmap );
-  void setMode( ViewMode mode );
-  void setMaskColor( const QColor &color = QColor() );
+  Void setImage( PlaYUVerFrame* pcFrame );
+  Void setImage( const QPixmap &pixmap );
+  Void setMode( Int mode );
+  Void setMaskColor( const QColor &color = QColor() );
 
   /**
    * Clears any contents.
    */
-  void clear();
+  Void clear();
+
+  /**
+   * Select tool from the menu
+   */
+  Void setTool( UInt view );
+
   /**
    * Clears any mask content.
    */
-  void clearMask();
+  Void clearMask();
 
   QPixmap image() const
   {
@@ -96,14 +95,7 @@ public:
   {
     return m_grid;
   }
-  ViewMode mode() const
-  {
-    return m_mode;
-  }
-  eTool tool() const
-  {
-    return m_tool;
-  }
+
   QColor maskColor() const
   {
     return m_maskColor;
@@ -114,15 +106,13 @@ public:
     return m_zoomFactor;
   }
 
-  void setInputStream( PlaYUVerStream *stream );
+  Void setInputStream( PlaYUVerStream *stream );
   PlaYUVerStream* getInputStream();
 
   // Scale function. Return used scale value (it may change when it touches the min or max zoom value)
   Double scaleZoomFactor( Double scale, QPoint center, QSize minimumSize );
 
-  void setTool( eTool tool );
 
-//     QSize sizeHint() const;
 
 Q_SIGNALS:
   void selectionChanged( const QRect &rect );
@@ -131,34 +121,58 @@ Q_SIGNALS:
   void zoomFactorChanged_byWheel( const double factor, const QPoint center );
 
 public Q_SLOTS:
-  void setNormalMode();
-  void setMaskMode();
-  void setMaskTool();
-  void setEraserTool();
-  void setNormalSelectionTool();
-  void setBlockSelectionTool();
+//  Void setNormalMode();
+//  Void setMaskMode();
+//  Void setMaskTool();
+//  Void setEraserTool();
+//  Void setNormalSelectionTool();
+//  Void setBlockSelectionTool();
   void setGridVisible( bool enable );
   void setSnapToGrid( bool enable );
-  void setSelectedArea( QRect &rect );
+//  void setSelectedArea( QRect &rect );
 
 protected:
-  void paintEvent( QPaintEvent *event );
-  void resizeEvent( QResizeEvent * event );
-  void mousePressEvent( QMouseEvent *event );
-  void mouseMoveEvent( QMouseEvent *event );
-  void mouseReleaseEvent( QMouseEvent *event );
-  void wheelEvent( QWheelEvent *event );
+  Void paintEvent( QPaintEvent *event );
+  Void resizeEvent( QResizeEvent * event );
+  Void mousePressEvent( QMouseEvent *event );
+  Void mouseMoveEvent( QMouseEvent *event );
+  Void mouseReleaseEvent( QMouseEvent *event );
+  Void wheelEvent( QWheelEvent *event );
 
-  void updateSize();
-  void updateOffset();
+  Void updateSize();
+  Void updateOffset();
 
 private:
 
-  void initZoomWinRect();
-  void startZoomWinTimer();
+  enum ViewMode
+  {
+    NormalMode,
+    MaskMode,
+  };
+
+  enum Tool
+  {
+    NavigationTool,
+    SelectionTool,
+    MaskTool,
+    EraserTool
+  };
+
+  ViewMode mode() const
+  {
+    return m_mode;
+  }
+
+  Tool tool() const
+  {
+    return m_eTool;
+  }
+
+  Void initZoomWinRect();
+  Void startZoomWinTimer();
   bool isPosValid( const QPoint &pos ) const;
-  void updateMask( const QRect &rect );
-  void setZoomFactor( double );
+  Void updateMask( const QRect &rect );
+  Void setZoomFactor( double );
 
   QPoint windowToView( const QPoint& pt ) const;
   QRect windowToView( const QRect& rc ) const;
@@ -175,7 +189,7 @@ private:
   QPoint m_lastWindowPos;
   GridManager m_grid;
   ViewMode m_mode;
-  eTool m_tool;
+  Tool m_eTool;
   QColor m_maskColor;
   double m_zoomFactor;
   int m_xOffset;

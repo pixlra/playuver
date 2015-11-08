@@ -250,7 +250,7 @@ Void PlaYUVerFrame::clear()
   }
 }
 
-Bool PlaYUVerFrame::haveSameFmt( PlaYUVerFrame* other, FormatMatching match ) const
+Bool PlaYUVerFrame::haveSameFmt( PlaYUVerFrame* other, UInt match ) const
 {
   Bool bRet = true;
   if( other )

@@ -50,7 +50,7 @@ Bool AbsoluteFrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
   _BASIC_MODULE_API_2_CHECK_
 
   for( UInt i = 0; i < apcFrameList.size(); i++ )
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[i], PlaYUVerFrame::MATCH_RESOLUTION ) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[i], PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS) )
       return false;
 
   m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );

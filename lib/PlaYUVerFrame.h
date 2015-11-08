@@ -292,7 +292,7 @@ public:
 
   Void fillRGBBuffer();
 
-  Bool haveSameFmt( PlaYUVerFrame* other, FormatMatching match = MATCH_ALL ) const;
+  Bool haveSameFmt( PlaYUVerFrame* other, UInt match = MATCH_ALL ) const;
 
   std::string getPelFmtName();
 

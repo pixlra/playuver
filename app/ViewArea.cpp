@@ -108,6 +108,8 @@ Void ViewArea::setTool( UInt view )
   {
   case NavigationView:
     m_eTool = NavigationTool;
+    m_snapToGrid = false;
+    m_blockTrackEnable = false;
     break;
   case NormalSelectionView:
     m_eTool = SelectionTool;

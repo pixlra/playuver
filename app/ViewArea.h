@@ -61,6 +61,7 @@ public:
 
   Void setImage( PlaYUVerFrame* pcFrame );
   Void setImage( const QPixmap &pixmap );
+
   Void setMode( Int mode );
   Void setMaskColor( const QColor &color = QColor() );
 
@@ -108,8 +109,6 @@ public:
 
   // Scale function. Return used scale value (it may change when it touches the min or max zoom value)
   Double scaleZoomFactor( Double scale, QPoint center, QSize minimumSize );
-
-
 
 Q_SIGNALS:
   void selectionChanged( const QRect &rect );
@@ -167,9 +166,10 @@ private:
 
   Void initZoomWinRect();
   Void startZoomWinTimer();
+  Void setZoomFactor( Double );
+
   Bool isPosValid( const QPoint &pos ) const;
   Void updateMask( const QRect &rect );
-  Void setZoomFactor( double );
 
   QPoint windowToView( const QPoint& pt ) const;
   QRect windowToView( const QRect& rc ) const;

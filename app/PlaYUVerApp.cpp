@@ -224,15 +224,14 @@ Void PlaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       m_pcWindowHandle->addSubWindow( videoSubWindow );
       videoSubWindow->show();
 
-      connect( videoSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
-
       connect( subWindow, SIGNAL( aboutToClose( SubWindowAbstract* ) ), m_appModuleVideo, SLOT( closeSubWindow( SubWindowAbstract* ) ) );
       connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo, SLOT( zoomToFactorAll( double, QPoint ) ) );
       connect( subWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo, SLOT( moveAllScrollBars( const QPoint ) ) );
 
       videoSubWindow->zoomToFit();
-      videoSubWindow->getViewArea()->setTool( m_uiViewTool );
       updateZoomFactorSBox();
+
+      m_appModuleVideo->openSubWindow( videoSubWindow );
 
       addStreamInfoToRecentList( videoSubWindow->getStreamInfo() );
 
@@ -402,17 +401,6 @@ Void PlaYUVerApp::loadAll()
     printMessage( "Loading file into memory...", LOG_INFO );
     m_pcCurrentVideoSubWindow->loadAll();
     printMessage( "File loaded", LOG_INFO );
-  }
-}
-
-Void PlaYUVerApp::setTool( Int idxTool )
-{
-  m_uiViewTool = idxTool;
-  actionGroupTools->actions().at( m_uiViewTool )->setChecked( true );
-  QList<SubWindowAbstract*> subWindowList = m_pcWindowHandle->findSubWindow();
-  for( Int i = 0; i < subWindowList.size(); i++ )
-  {
-    subWindowList.at( i )->setTool( m_uiViewTool );
   }
 }
 
@@ -595,9 +583,6 @@ Void PlaYUVerApp::updateMenus()
   m_arrayActions[ZOOM_FIT_ALL_ACT]->setEnabled( hasSubWindow );
   m_pcZoomFactorSBox->setEnabled( hasSubWindow );
 
-  m_arrayActions[NAVIGATION_TOOL_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[SELECTION_TOOL_ACT]->setEnabled( hasSubWindow );
-
   m_appModuleVideo->updateMenus();
   m_appModuleQuality->updateMenus();
   m_appModuleExtensions->updateMenus();
@@ -700,39 +685,6 @@ Void PlaYUVerApp::createActions()
   m_arrayActions[ZOOM_FIT_ALL_ACT]->setStatusTip( tr( "Apply zoom to fit to all windows" ) );
   connect( m_arrayActions[ZOOM_FIT_ALL_ACT], SIGNAL( triggered() ), this, SLOT( zoomToFitAll() ) );
 
-  // ------------ Tools ------------
-  actionGroupTools = new QActionGroup( this );
-  actionGroupTools->setExclusive( true );
-
-  m_mapperTools = new QSignalMapper( this );
-  connect( m_mapperTools, SIGNAL( mapped(int) ), this, SLOT( setTool(int) ) );
-
-  m_uiViewTool = ViewArea::NavigationView;
-
-  m_arrayActions[NAVIGATION_TOOL_ACT] = new QAction( tr( "Navigation Tool" ), this );
-  m_arrayActions[NAVIGATION_TOOL_ACT]->setCheckable( true );
-  m_arrayActions[NAVIGATION_TOOL_ACT]->setChecked( true );
-  m_arrayActions[NAVIGATION_TOOL_ACT]->setShortcut( Qt::CTRL + Qt::Key_1 );
-  actionGroupTools->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
-  connect( m_arrayActions[NAVIGATION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
-  m_mapperTools->setMapping( m_arrayActions[NAVIGATION_TOOL_ACT], ViewArea::NavigationView );
-
-  m_arrayActions[SELECTION_TOOL_ACT] = new QAction( "Selection Tool", this );
-  m_arrayActions[SELECTION_TOOL_ACT]->setCheckable( true );
-  m_arrayActions[SELECTION_TOOL_ACT]->setChecked( false );
-  m_arrayActions[SELECTION_TOOL_ACT]->setShortcut( Qt::CTRL + Qt::Key_2 );
-  actionGroupTools->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
-  connect( m_arrayActions[SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
-  m_mapperTools->setMapping( m_arrayActions[SELECTION_TOOL_ACT], ViewArea::NormalSelectionView );
-
-  m_arrayActions[BLOCK_SELECTION_TOOL_ACT] = new QAction( "Block Selection Tool", this );
-  m_arrayActions[BLOCK_SELECTION_TOOL_ACT]->setCheckable( true );
-  m_arrayActions[BLOCK_SELECTION_TOOL_ACT]->setChecked( false );
-  m_arrayActions[BLOCK_SELECTION_TOOL_ACT]->setShortcut( Qt::CTRL + Qt::Key_3 );
-  actionGroupTools->addAction( m_arrayActions[BLOCK_SELECTION_TOOL_ACT] );
-  connect( m_arrayActions[BLOCK_SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
-  m_mapperTools->setMapping( m_arrayActions[BLOCK_SELECTION_TOOL_ACT], ViewArea::BlockSelectionView );
-
   m_appModuleVideo->createActions();
   m_appModuleQuality->createActions();
   m_appModuleExtensions->createActions();
@@ -779,10 +731,6 @@ Void PlaYUVerApp::createMenus()
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[EXIT_ACT] );
 
   m_arrayMenu[VIEW_MENU] = menuBar()->addMenu( tr( "&View" ) );
-  m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
-  m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
-  //m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[BLOCK_SELECTION_TOOL_ACT] );
-  m_arrayMenu[VIEW_MENU]->addSeparator();
   m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_IN_ACT] );
   m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_OUT_ACT] );
   m_arrayMenu[VIEW_MENU]->addAction( m_arrayActions[ZOOM_NORMAL_ACT] );
@@ -800,12 +748,8 @@ Void PlaYUVerApp::createMenus()
     actionPopupMenu->setText( tr( "&Toolbars/Docks" ) );
   }
 
-//  m_arrayMenu[TOOLS_MENU] = menuBar()->addMenu( tr( "Tools" ) );
-//  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
-//  m_arrayMenu[TOOLS_MENU]->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
-
-  QMenu* VideoMenu = m_appModuleVideo->createMenu();
-  menuBar()->addMenu( VideoMenu );
+  menuBar()->addMenu( m_appModuleVideo->createVideoMenu() );
+  menuBar()->addMenu( m_appModuleVideo->createImageMenu() );
   QMenu* QualityMenu = m_appModuleQuality->createMenu();
   menuBar()->addMenu( QualityMenu );
   QMenu* ModuleMenu = m_appModuleExtensions->createMenu();
@@ -943,9 +887,6 @@ Void PlaYUVerApp::readSettings()
 
   m_cLastOpenPath = appSettings.value( "MainWindow/LastOpenPath", QDir::homePath() ).toString();
 
-  m_uiViewTool = appSettings.value( "MainWindow/SelectedTool", ViewArea::NavigationView ).toUInt();
-  setTool( m_uiViewTool );
-
   QVariant value = appSettings.value( "MainWindow/RecentFileList" );
   m_aRecentFileStreamInfo = value.value<PlaYUVerStreamInfoVector>();
   checkRecentFileActions();
@@ -964,7 +905,6 @@ Void PlaYUVerApp::writeSettings()
   appSettings.setValue( "MainWindow/Position", pos() );
   appSettings.setValue( "MainWindow/Size", size() );
   appSettings.setValue( "MainWindow/LastOpenPath", m_cLastOpenPath );
-  appSettings.setValue( "MainWindow/SelectedTool", m_uiViewTool );
 
   QVariant var;
   var.setValue<PlaYUVerStreamInfoVector>( m_aRecentFileStreamInfo );

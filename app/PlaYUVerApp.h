@@ -111,8 +111,6 @@ private Q_SLOTS:
   void zoomToFit();
   void zoomToFitAll();
 
-  void setTool( int idxTool );
-
   void dragEnterEvent( QDragEnterEvent *event );
   void dropEvent( QDropEvent *event );
 
@@ -152,17 +150,6 @@ private:
 
   QSignalMapper *mapperZoom;
   QSignalMapper *mapperWindow;
-
-  // Tools Actions;
-  QActionGroup *actionGroupTools;
-  enum APP_TOOLS_ACTION_LIST
-  {
-    NAVIGATION_TOOL,
-    SELECTION_TOOL,
-    TOTAL_TOOLS,
-  };
-  QSignalMapper *m_mapperTools;
-  UInt m_uiViewTool;
 
   /**
    * App modules
@@ -236,9 +223,6 @@ private:
     ZOOM_NORMAL_ACT,
     ZOOM_FIT_ACT,
     ZOOM_FIT_ALL_ACT,
-    NAVIGATION_TOOL_ACT,
-    SELECTION_TOOL_ACT,
-    BLOCK_SELECTION_TOOL_ACT,
     UPDATE_ACT,
     ABOUT_ACT,
     ABOUTQT_ACT,

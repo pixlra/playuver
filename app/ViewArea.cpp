@@ -71,11 +71,6 @@ ViewArea::ViewArea( QWidget *parent ) :
   connect( &m_zoomWinTimer, SIGNAL( timeout() ), this, SLOT( update() ) );
 }
 
-Void ViewArea::startZoomWinTimer()
-{
-  m_zoomWinTimer.start();
-}
-
 Void ViewArea::setImage( PlaYUVerFrame* pcFrame )
 {
   m_pcCurrFrame = pcFrame;
@@ -137,6 +132,14 @@ Void ViewArea::setTool( UInt view )
 Void ViewArea::clearMask()
 {
   m_mask.clear();
+}
+
+/**
+ * Zoom related function
+ */
+Void ViewArea::startZoomWinTimer()
+{
+  m_zoomWinTimer.start();
 }
 
 Void ViewArea::setZoomFactor( Double f )

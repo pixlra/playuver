@@ -85,11 +85,6 @@ public:
   /**
    * Show the image at its original size
    */
-  virtual Void setTool( UInt uiTool ) = 0;
-
-  /**
-   * Show the image at its original size
-   */
   virtual Void normalSize() = 0;
   /**
    * Scale the image (zoomed in or out) to fit on the window.

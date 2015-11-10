@@ -372,6 +372,7 @@ Void VideoHandle::openSubWindow( VideoSubWindow* subWindow )
 {
   connect( subWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectionArea( QRect ) ) );
   subWindow->getViewArea()->setTool( m_uiViewTool );
+  subWindow->getViewArea()->setGridVisible( m_arrayActions[SHOW_GRID_ACT]->isChecked() );
 }
 
 Void VideoHandle::closeSubWindow( SubWindowAbstract* subWindow )

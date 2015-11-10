@@ -66,7 +66,6 @@ void GridManager::drawGrid( QPixmap &image, const QRect& area, QPainter *painter
   QPen mainPen = QPen( color, 1, Qt::SolidLine );
 
   style = Solid;
-  hSpacing = vSpacing = 64;
   switch( style )
   {
   case IntersectionDot:

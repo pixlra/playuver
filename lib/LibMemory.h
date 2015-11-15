@@ -53,13 +53,12 @@ typedef unsigned long long UInt64;
 #define DATA_ALIGN                  1                                                                 ///< use 32-bit aligned malloc/free
 #if     DATA_ALIGN && _WIN32 && ( _MSC_VER > 1300 )
 #define xMalloc( len )              _aligned_malloc( len, 32 )
-#define xFree( ptr )                _aligned_free  ( ptr )
-#define xMemSet( type, len, ptr )
+#define xFreeMem( ptr )             _aligned_free  ( ptr )
 #else
-#define xMemSet( type, len, ptr )   memset    ( ptr, 0, (len)*sizeof(type) )
 #define xMalloc(  len )             malloc    ( len )
-#define xFreeMem( ptr )                free      ( ptr )
+#define xFreeMem( ptr )             free      ( ptr )
 #endif
+#define xMemSet( type, len, ptr )   memset    ( ptr, 0, (len)*sizeof(type) )
 
 static inline Void* xMallocMem( SizeT nitems )
 {

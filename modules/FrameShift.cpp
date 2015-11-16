@@ -64,12 +64,18 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
   UInt xStartIn = m_iShiftHor >= 0 ? 0 : -m_iShiftHor;
   UInt xEndOut = m_iShiftHor >= 0 ? m_pcProcessedFrame->getWidth() : m_pcProcessedFrame->getWidth() + m_iShiftHor;
 
+  UInt yStartOut = m_iShiftVer >= 0 ? 0 : -m_iShiftVer;
+  UInt yStartIn = m_iShiftVer >= 0 ? m_iShiftVer : 0;
+  UInt yEndOut = m_iShiftVer >= 0 ? m_pcProcessedFrame->getHeight() - m_iShiftVer : m_pcProcessedFrame->getHeight();
+
+  UInt numberLines = yEndOut - yStartOut;
+
   m_pcProcessedFrame->clear();
 
-  for( UInt y = 0; y < m_pcProcessedFrame->getHeight(); y++ )
+  for( UInt y = 0; y < numberLines; y++ )
   {
-    pPelInput = &( apcFrameList[0]->getPelBufferYUV()[LUMA][y][xStartIn] );
-    pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[LUMA][y][xStartOut] );
+    pPelInput = &( apcFrameList[0]->getPelBufferYUV()[LUMA][y + yStartIn][xStartIn] );
+    pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[LUMA][y + yStartOut][xStartOut] );
     for( UInt x = xStartOut; x < xEndOut; x++ )
     {
       *pPelOut = *pPelInput;
@@ -79,16 +85,24 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
   }
 
   Int iShiftHorChroma = CHROMASHIFT( m_iShiftHor, m_pcProcessedFrame->getChromaWidthRatio() );
+  Int iShiftVerChroma = CHROMASHIFT( m_iShiftVer, m_pcProcessedFrame->getChromaWidthRatio() );
+
   xStartOut = iShiftHorChroma >= 0 ? iShiftHorChroma : 0;
   xStartIn = iShiftHorChroma >= 0 ? 0 : -iShiftHorChroma;
   xEndOut = iShiftHorChroma >= 0 ? m_pcProcessedFrame->getChromaWidth() : m_pcProcessedFrame->getChromaWidth() + iShiftHorChroma;
 
+  yStartOut = iShiftVerChroma >= 0 ? 0 : -iShiftVerChroma;
+  yStartIn = iShiftVerChroma >= 0 ? iShiftVerChroma : 0;
+  yEndOut = iShiftVerChroma >= 0 ? m_pcProcessedFrame->getChromaHeight() - iShiftVerChroma : m_pcProcessedFrame->getChromaHeight();
+
+  numberLines = yEndOut - yStartOut;
+
   for( UInt c = 1; c < m_pcProcessedFrame->getNumberChannels(); c++ )
   {
-    for( UInt y = 0; y < m_pcProcessedFrame->getChromaHeight(); y++ )
+    for( UInt y = 0; y < numberLines; y++ )
     {
-      pPelInput = &( apcFrameList[0]->getPelBufferYUV()[c][y][xStartIn] );
-      pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[c][y][xStartOut] );
+      pPelInput = &( apcFrameList[0]->getPelBufferYUV()[c][y + yStartIn][xStartIn] );
+      pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[c][y + yStartOut][xStartOut] );
       for( UInt x = xStartOut; x < xEndOut; x++ )
       {
         *pPelOut = *pPelInput;
@@ -110,6 +124,16 @@ Bool FrameShift::keyPressed( enum Module_Key_Supported value )
   if( value == MODULE_KEY_RIGHT )
   {
     m_iShiftHor += 2;
+    return true;
+  }
+  if( value == MODULE_KEY_DOWN )
+  {
+    m_iShiftVer -= 2;
+    return true;
+  }
+  if( value == MODULE_KEY_UP )
+  {
+    m_iShiftVer += 2;
     return true;
   }
   return false;

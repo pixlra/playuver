@@ -27,6 +27,7 @@ OPTION( PLAYUVER_BUILD_EXEMPLES "Build Examples"                        OFF )
 OPTION( USE_SSE                 "Build with SSE support"                OFF )
 OPTION( USE_FERVOR              "Add Fervor support"                    OFF )
 OPTION( USE_WERROR              "Warnings as errors"                    OFF )
+OPTION( USE_STATIC              "Use static libs"                       ON  )
 OPTION( USE_QT4                 "Build with Qt4"                        OFF )
 OPTION( USE_QTDBUS              "Build with Qt4"                        OFF )
 OPTION( USE_DYNLOAD             "Use dynamic load of modules"           ON  )
@@ -103,6 +104,7 @@ ADD_FEATURE_INFO(WErrors USE_WERROR "Warnings as errors"  )
 
 
 IF( WIN32 )
+  SET( USE_STATIC OFF )
   INCLUDE( cmake/Win32.cmake )
 ENDIF()
 
@@ -151,6 +153,7 @@ MESSAGE("")
 MESSAGE( STATUS "${PROJECT_NAME} INFORMATION"                     )
 MESSAGE( STATUS "Version: "          "${PLAYUVER_VERSION_STRING}" )
 MESSAGE( STATUS "Configuration:"                                  )
+MESSAGE( STATUS "    Static libs: "         "${USE_STATIC}" )
 MESSAGE( STATUS "    Build type: "          "${CMAKE_BUILD_TYPE}" )
 MESSAGE( STATUS "    Build flags: "         "${CMAKE_CXX_FLAGS}"  )
 

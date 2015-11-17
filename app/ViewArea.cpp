@@ -119,7 +119,7 @@ Void ViewArea::setTool( UInt view )
   case BlockSelectionView:
     m_eTool = SelectionTool;
     m_snapToGrid = true;
-    m_blockTrackEnable = true;
+    m_blockTrackEnable = false;
     break;
   }
 

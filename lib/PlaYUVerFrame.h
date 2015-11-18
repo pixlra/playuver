@@ -148,9 +148,10 @@ public:
    */
   enum FormatMatching
   {
-    MATCH_RESOLUTION = 1,
-    MATCH_PEL_FMT = 2,
-    MATCH_BITS = 4,
+    MATCH_COLOR_SPACE = 1,
+    MATCH_RESOLUTION = 2,
+    MATCH_PEL_FMT = 4,
+    MATCH_BITS = 8,
     MATCH_ALL = 0xFFFF,
   };
 
@@ -174,7 +175,7 @@ public:
    * pixel format
    * @return number of bytes per frame
    */
-  static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, Int bitsPixel );
+  static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel );
 
   /**
    * Convert a Pixel to a new color space
@@ -232,9 +233,9 @@ public:
   {
     return m_iPixelFormat;
   }
-  Int getBitsPel() const
+  UInt getBitsPel() const
   {
-    return m_iBitsPel;
+    return m_uiBitsPel;
   }
 
   Pel*** getPelBufferYUV() const
@@ -372,7 +373,7 @@ private:
   UInt m_uiHeight;  //!< Height of the frame
   Int m_iPixelFormat;  //!< Pixel format number (it follows the list of supported pixel formats)
   Int m_iNumberChannels;  //!< Number of channels
-  Int m_iBitsPel;  //!< Bits per pixel/channel
+  UInt m_uiBitsPel;  //!< Bits per pixel/channel
 
   Pel*** m_pppcInputPel;
 

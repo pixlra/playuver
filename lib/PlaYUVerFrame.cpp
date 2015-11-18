@@ -197,7 +197,7 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
   m_uiHeight = height;
   m_iPixelFormat = pel_format;
   m_iNumberChannels = 3;
-  m_iBitsPel = bitsPixel > 8 ? bitsPixel : 8;
+  m_uiBitsPel = bitsPixel > 8 ? bitsPixel : 8;
 
   if( m_uiWidth == 0 || m_uiHeight == 0 || m_iPixelFormat == -1 || bitsPixel > 16 )
   {
@@ -220,7 +220,7 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
   m_puiHistogram = NULL;
   m_bHasHistogram = false;
 
-  m_uiHistoSegments = 1 << m_iBitsPel;
+  m_uiHistoSegments = 1 << m_uiBitsPel;
 
   if( m_pcPelFormat->colorSpace == PlaYUVerFrame::COLOR_RGB || m_pcPelFormat->colorSpace == PlaYUVerFrame::COLOR_ARGB )
     m_uiHistoChannels = m_pcPelFormat->numberChannels + 1;
@@ -255,12 +255,14 @@ Bool PlaYUVerFrame::haveSameFmt( PlaYUVerFrame* other, UInt match ) const
   Bool bRet = true;
   if( other )
   {
+    if( match & MATCH_COLOR_SPACE )
+      bRet &= ( getColorSpace() == other->getColorSpace() );
     if( match & MATCH_RESOLUTION )
-      bRet &= ( m_uiWidth == other->getWidth() ) && ( m_uiHeight == other->getHeight() );
+      bRet &= ( getWidth() == other->getWidth() ) && ( getHeight() == other->getHeight() );
     if( match & MATCH_PEL_FMT )
-      bRet &= ( m_iPixelFormat == other->getPelFormat() );
+      bRet &= ( getPelFormat() == other->getPelFormat() );
     if( match & MATCH_BITS )
-      bRet &= ( m_iBitsPel == other->getBitsPel() );
+      bRet &= ( getBitsPel() == other->getBitsPel() );
   }
   else
   {
@@ -286,10 +288,10 @@ UInt PlaYUVerFrame::getNumberChannels() const
 
 UInt64 PlaYUVerFrame::getBytesPerFrame()
 {
-  return getBytesPerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat, m_iBitsPel );
+  return getBytesPerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPel );
 }
 
-UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, Int bitsPixel )
+UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel )
 {
   PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[iPixelFormat] );
   UInt bytesPerPixel = ( bitsPixel - 1 ) / 8 + 1;
@@ -392,7 +394,7 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, UInt64 uiBuffSize )
   Byte* ppBuff[MAX_NUMBER_PLANES];
   Byte* pTmpBuff;
   Pel* pTmpPel;
-  UInt bytesPixel = ( m_iBitsPel - 1 ) / 8 + 1;
+  UInt bytesPixel = ( m_uiBitsPel - 1 ) / 8 + 1;
   Int ratioH, ratioW, step;
   UInt i, ch, b;
 
@@ -431,7 +433,7 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, UInt64 uiBuffSize )
 
 Void PlaYUVerFrame::frameToBuffer( Byte *output_buffer )
 {
-  UInt bytesPixel = ( m_iBitsPel - 1 ) / 8 + 1;
+  UInt bytesPixel = ( m_uiBitsPel - 1 ) / 8 + 1;
   Byte* ppBuff[MAX_NUMBER_PLANES];
   Byte* pTmpBuff;
   Pel* pTmpPel;
@@ -474,7 +476,7 @@ Void PlaYUVerFrame::fillRGBBuffer()
   if( m_bHasRGBPel )
     return;
   Int iR, iG, iB;
-  Int shiftBits = m_iBitsPel - 8;
+  Int shiftBits = m_uiBitsPel - 8;
   UInt* pARGB = ( UInt* )m_pcARGB32;
   if( m_pcPelFormat->colorSpace == COLOR_GRAY )
   {

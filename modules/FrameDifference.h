@@ -37,6 +37,8 @@ class FrameDifference: public PlaYUVerModuleIf
 REGISTER_CLASS_FACTORY( FrameDifference )
 
 private:
+  UInt m_uiBitsPixel;
+  Int m_iDiffBitShift;
   Int m_iMaxDiffValue;
   PlaYUVerFrame* m_pcFrameDifference;
 

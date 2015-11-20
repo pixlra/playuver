@@ -4,7 +4,7 @@
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
 
-set(plaYUver_Lib_SRCS
+set(PlaYUVer_Lib_SRCS
     # Frame
     PlaYUVerFrame.cpp
     PlaYUVerFramePixelFormats.cpp
@@ -17,18 +17,17 @@ set(plaYUver_Lib_SRCS
 )
 
 IF( USE_FFMPEG )
-  LIST( APPEND plaYUver_Lib_SRCS LibAvContextHandle.cpp )
+  LIST( APPEND PlaYUVer_Lib_SRCS LibAvContextHandle.cpp )
 ENDIF()
 
 IF( USE_OPENCV )
-  LIST( APPEND plaYUver_Lib_SRCS LibOpenCVHandler.cpp )
+  LIST( APPEND PlaYUVer_Lib_SRCS LibOpenCVHandler.cpp )
 ENDIF()
 
 
-set(plaYUver_Lib_HEADERS
+set(PlaYUVer_Lib_HEADERS
     PlaYUVerDefs.h
     PlaYUVerProgramOptions.h
-    #   PlaYUVerFrameStats.h
     PlaYUVerFrame.h
     PlaYUVerStream.h
     PlaYUVerModuleIf.h
@@ -48,16 +47,16 @@ set(plaYUver_Lib_HEADERS
 CONFIGURE_FILE( PlaYUVerConfig.cmake.in PlaYUVerConfig.cmake @ONLY)
 
 IF( USE_STATIC )
-  ADD_LIBRARY( PlaYUVerLib STATIC ${plaYUver_Lib_SRCS} )
+  ADD_LIBRARY( PlaYUVerLib STATIC ${PlaYUVer_Lib_SRCS} )
 ELSE()
-  ADD_LIBRARY( PlaYUVerLib SHARED ${plaYUver_Lib_SRCS} )
+  ADD_LIBRARY( PlaYUVerLib SHARED ${PlaYUVer_Lib_SRCS} )
 ENDIF()
 
 INCLUDE_DIRECTORIES( ${FFMPEG_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} )
 TARGET_LINK_LIBRARIES( PlaYUVerLib ${FFMPEG_LIBRARIES} ${OpenCV_LIBRARIES}  )
 
 IF( NOT USE_STATIC )
-  INSTALL(FILES ${plaYUver_Lib_HEADERS} DESTINATION include )
+  INSTALL(FILES ${PlaYUVer_Lib_HEADERS} DESTINATION include )
   INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/PlaYUVerConfig.cmake DESTINATION share/PlaYUVer )
   INSTALL(TARGETS PlaYUVerLib DESTINATION lib )
 ENDIF()

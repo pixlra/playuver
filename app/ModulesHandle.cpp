@@ -28,9 +28,9 @@
 #include "PlaYUVerSubWindowHandle.h"
 #include "VideoSubWindow.h"
 #include "VideoHandle.h"
-#include "PlaYUVerModuleFactory.h"
 #include "DialogSubWindowSelector.h"
 #include "ModulesHandleOptDialog.h"
+#include "modules/PlaYUVerModuleFactory.h"
 
 namespace plaYUVer
 {

@@ -129,6 +129,9 @@ SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2" )
 ADD_FEATURE_INFO(PlaYUVerApp     PLAYUVER_BUILD_TOOLS    "Build Graphical Interface")
 ADD_FEATURE_INFO(PlaYUVerTools   PLAYUVER_BUILD_APP      "Build Command line tool"  )
 
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
+
 ADD_SUBDIRECTORY( lib )
 ADD_SUBDIRECTORY( modules )
 
@@ -144,7 +147,6 @@ IF( ${PLAYUVER_BUILD_EXEMPLES} )
   ADD_SUBDIRECTORY( examples )
 ENDIF()
 
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
 ######################################################################################
 # Final information dump

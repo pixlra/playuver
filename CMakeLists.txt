@@ -23,13 +23,13 @@ SET( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLA
 
 OPTION( PLAYUVER_BUILD_APP      "Build GUI Application"                 ON  )
 OPTION( PLAYUVER_BUILD_TOOLS    "Build Command Line Application"        ON  )
-OPTION( PLAYUVER_BUILD_EXEMPLES "Build Examples"                        OFF )
+OPTION( PLAYUVER_BUILD_EXAMPLES "Build Examples"                        OFF )
 OPTION( USE_SSE                 "Build with SSE support"                OFF )
 OPTION( USE_FERVOR              "Add Fervor support"                    OFF )
 OPTION( USE_WERROR              "Warnings as errors"                    OFF )
 OPTION( USE_STATIC              "Use static libs"                       ON  )
 OPTION( USE_QT4                 "Build with Qt4"                        OFF )
-OPTION( USE_QTDBUS              "Build with Qt4"                        OFF )
+OPTION( USE_QTDBUS              "Build with QtDBus"                     OFF )
 OPTION( USE_DYNLOAD             "Use dynamic load of modules"           ON  )
 # To be switched on when releasing.
 OPTION(RELEASE_BUILD "Remove Git revision from program version (use for stable releases)" ON)
@@ -126,8 +126,8 @@ SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g" )
 SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2" )
 
 
-ADD_FEATURE_INFO(PlaYUVerApp     PLAYUVER_BUILD_TOOLS    "Build Graphical Interface")
-ADD_FEATURE_INFO(PlaYUVerTools   PLAYUVER_BUILD_APP      "Build Command line tool"  )
+ADD_FEATURE_INFO(PlaYUVerApp     PLAYUVER_BUILD_APP    "Build Graphical Interface")
+ADD_FEATURE_INFO(PlaYUVerTools   PLAYUVER_BUILD_TOOLS  "Build Command line tool"  )
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
@@ -141,10 +141,6 @@ ENDIF()
 
 IF( ${PLAYUVER_BUILD_APP} )
   ADD_SUBDIRECTORY( app )
-ENDIF()
-
-IF( ${PLAYUVER_BUILD_EXEMPLES} )
-  ADD_SUBDIRECTORY( examples )
 ENDIF()
 
 

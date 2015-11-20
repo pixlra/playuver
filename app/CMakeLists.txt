@@ -80,9 +80,9 @@ IF( USE_QTDBUS )
 ENDIF()
 
 
-set(plaYUver_App_UI "" )
+set(PlaYUVer_App_UI "" )
 
-set(plaYUver_App_RCC
+set(PlaYUVer_App_RCC
   resources/playuver.qrc
 )
 
@@ -140,11 +140,11 @@ SET_PACKAGE_PROPERTIES(Fervor PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "F
 ADD_FEATURE_INFO(Fervor USE_FERVOR "Fervor lib includes check for updates feature.")
 
 IF( USE_QT4 )
-  QT4_WRAP_UI( plaYUver_App_UI_Wrap ${plaYUver_App_UI} )
-  QT4_ADD_RESOURCES( plaYUver_App_RCC ${plaYUver_App_RCC} )
+  QT4_WRAP_UI( PlaYUVer_App_UI_Wrap ${PlaYUVer_App_UI} )
+  QT4_ADD_RESOURCES( PlaYUVer_App_RCC ${PlaYUVer_App_RCC} )
 ELSE()
-  QT5_WRAP_UI( plaYUver_App_UI_Wrap ${plaYUver_App_UI} )
-  QT5_ADD_RESOURCES( plaYUver_App_RCC ${plaYUver_App_RCC} )
+  QT5_WRAP_UI( PlaYUVer_App_UI_Wrap ${PlaYUVer_App_UI} )
+  QT5_ADD_RESOURCES( PlaYUVer_App_RCC ${PlaYUVer_App_RCC} )
 ENDIF()
 
 # Instruct CMake to run moc automatically when needed.
@@ -167,7 +167,7 @@ IF( WIN32 )
 ENDIF()
 
 
-ADD_EXECUTABLE( ${PROJECT_NAME} ${plaYUVer_App_SRCS} ${HEADERS_MOC_FILES} ${plaYUver_App_UI_Wrap} ${plaYUver_App_RCC} ${WINDOWS_RES_FILE} )
+ADD_EXECUTABLE( ${PROJECT_NAME} ${plaYUVer_App_SRCS} ${HEADERS_MOC_FILES} ${PlaYUVer_App_UI_Wrap} ${PlaYUVer_App_RCC} ${WINDOWS_RES_FILE} )
 
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib PlaYUVerModules ${APP_LINKER_LIBS} ${QT_LINKER_LIBS} )
 

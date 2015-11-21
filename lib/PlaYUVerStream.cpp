@@ -524,7 +524,7 @@ Void PlaYUVerStream::loadAll()
 
 Void PlaYUVerStream::getDuration( Int* duration_array )
 {
-  Int hours, mins, secs;
+  Int hours, mins, secs = 0;
 #ifdef USE_FFMPEG
   if( m_iStreamHandler == FFMPEG )
   {
@@ -533,7 +533,6 @@ Void PlaYUVerStream::getDuration( Int* duration_array )
   else
 #endif
   if( m_iStreamHandler == YUV_IO )
-
   {
     secs = m_uiTotalFrameNum / m_dFrameRate;
   }

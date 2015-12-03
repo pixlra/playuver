@@ -35,7 +35,7 @@ namespace plaYUVer
 std::vector<PlaYUVerSupportedFormat> LibAvContextHandle::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( "Portable Grayscale Map ", "pgm" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Portable Grayscale Map", "pgm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( "Portable Network Graphics", "png" );
   REGIST_PLAYUVER_SUPPORTED_FMT( "Joint Photographic Experts Group", "jpg" );
   REGIST_PLAYUVER_SUPPORTED_FMT( "Windows Bitmap", "bmp" );
@@ -43,6 +43,8 @@ std::vector<PlaYUVerSupportedFormat> LibAvContextHandle::supportedReadFormats()
   REGIST_PLAYUVER_SUPPORTED_FMT( "Windows media video", "wmv" );
   REGIST_PLAYUVER_SUPPORTED_FMT( "MPEG4", "mp4" );
   REGIST_PLAYUVER_SUPPORTED_FMT( "Matroska Multimedia Container", "mkv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "H.264 streams", "h264" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "HEVC streams", "hevc" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 

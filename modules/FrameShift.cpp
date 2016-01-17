@@ -43,7 +43,8 @@ FrameShift::FrameShift()
   ( "ShiftVertical", m_iShiftVer, "Amount of pixels to shift in vertical direction" );
 
   m_pcProcessedFrame = NULL;
-  m_iShiftHor = 10;
+  m_iShiftHor = 0;
+  m_iShiftVer = 0;
 }
 
 Bool FrameShift::create( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -52,6 +53,7 @@ Bool FrameShift::create( std::vector<PlaYUVerFrame*> apcFrameList )
   m_pcProcessedFrame = new PlaYUVerFrame( apcFrameList[0], false );
 
   m_iShiftHor = ( ( m_iShiftHor + 1 ) >> 1 ) << 1;
+  m_iShiftVer = ( ( m_iShiftVer + 1 ) >> 1 ) << 1;
   return true;
 }
 
@@ -64,11 +66,15 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
   UInt xStartIn = m_iShiftHor >= 0 ? 0 : -m_iShiftHor;
   UInt xEndOut = m_iShiftHor >= 0 ? m_pcProcessedFrame->getWidth() : m_pcProcessedFrame->getWidth() + m_iShiftHor;
 
+  UInt yStartOut = m_iShiftVer >= 0 ? m_iShiftVer : 0;
+  UInt yStartIn = m_iShiftVer >= 0 ? 0 : -m_iShiftVer;
+  UInt yEndOut = m_iShiftVer >= 0 ? m_pcProcessedFrame->getHeight() : m_pcProcessedFrame->getHeight() + m_iShiftVer;
+
   m_pcProcessedFrame->clear();
 
-  for( UInt y = 0; y < m_pcProcessedFrame->getHeight(); y++ )
+  for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ )
   {
-    pPelInput = &( apcFrameList[0]->getPelBufferYUV()[LUMA][y][xStartIn] );
+    pPelInput = &( apcFrameList[0]->getPelBufferYUV()[LUMA][yIn][xStartIn] );
     pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[LUMA][y][xStartOut] );
     for( UInt x = xStartOut; x < xEndOut; x++ )
     {
@@ -83,11 +89,17 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
   xStartIn = iShiftHorChroma >= 0 ? 0 : -iShiftHorChroma;
   xEndOut = iShiftHorChroma >= 0 ? m_pcProcessedFrame->getChromaWidth() : m_pcProcessedFrame->getChromaWidth() + iShiftHorChroma;
 
+  Int iShiftVerChroma = CHROMASHIFT( m_iShiftVer, m_pcProcessedFrame->getChromaHeightRatio() );
+  yStartOut = iShiftVerChroma >= 0 ? iShiftVerChroma : 0;
+  yStartIn = iShiftVerChroma >= 0 ? 0 : -iShiftVerChroma;
+  yEndOut = iShiftVerChroma >= 0 ? m_pcProcessedFrame->getChromaHeight() : m_pcProcessedFrame->getChromaHeight() + iShiftVerChroma;
+
+
   for( UInt c = 1; c < m_pcProcessedFrame->getNumberChannels(); c++ )
   {
-    for( UInt y = 0; y < m_pcProcessedFrame->getChromaHeight(); y++ )
+    for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ )
     {
-      pPelInput = &( apcFrameList[0]->getPelBufferYUV()[c][y][xStartIn] );
+      pPelInput = &( apcFrameList[0]->getPelBufferYUV()[c][yIn][xStartIn] );
       pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[c][y][xStartOut] );
       for( UInt x = xStartOut; x < xEndOut; x++ )
       {
@@ -110,6 +122,16 @@ Bool FrameShift::keyPressed( enum Module_Key_Supported value )
   if( value == MODULE_KEY_RIGHT )
   {
     m_iShiftHor += 2;
+    return true;
+  }
+  if( value == MODULE_KEY_DOWN )
+  {
+    m_iShiftVer -= 2;
+    return true;
+  }
+  if( value == MODULE_KEY_UP )
+  {
+    m_iShiftVer += 2;
     return true;
   }
   return false;

@@ -52,8 +52,8 @@ Bool FrameShift::create( std::vector<PlaYUVerFrame*> apcFrameList )
   _BASIC_MODULE_API_2_CHECK_
   m_pcProcessedFrame = new PlaYUVerFrame( apcFrameList[0], false );
 
-  m_iShiftHor = ( ( m_iShiftHor + 1 ) >> 1 ) << 1;
-  m_iShiftVer = ( ( m_iShiftVer + 1 ) >> 1 ) << 1;
+//  m_iShiftHor = ( ( m_iShiftHor + 1 ) >> 1 ) << 1;
+//  m_iShiftVer = ( ( m_iShiftVer + 1 ) >> 1 ) << 1;
   return true;
 }
 
@@ -116,22 +116,22 @@ Bool FrameShift::keyPressed( enum Module_Key_Supported value )
 {
   if( value == MODULE_KEY_LEFT )
   {
-    m_iShiftHor -= 2;
+    m_iShiftHor -= 1;
     return true;
   }
   if( value == MODULE_KEY_RIGHT )
   {
-    m_iShiftHor += 2;
-    return true;
-  }
-  if( value == MODULE_KEY_DOWN )
-  {
-    m_iShiftVer -= 2;
+    m_iShiftHor += 1;
     return true;
   }
   if( value == MODULE_KEY_UP )
   {
-    m_iShiftVer += 2;
+    m_iShiftVer -= 1;
+    return true;
+  }
+  if( value == MODULE_KEY_DOWN )
+  {
+    m_iShiftVer += 1;
     return true;
   }
   return false;

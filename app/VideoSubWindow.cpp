@@ -579,6 +579,7 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
       pcModule = m_pcCurrentDisplayModule;
       m_pcCurrentDisplayModule = 0;
       ModulesHandle::destroyModuleIf( pcModule );
+      setWindowName( QFileInfo( m_cFilename ).fileName() );
       bRefresh |= true;
     }
   }

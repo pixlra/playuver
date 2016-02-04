@@ -142,11 +142,11 @@ Void PlaYUVerStream::findHandler()
 {
   m_iStreamHandler = INVALID_HANDLER;
 
-  if( m_uiBitsPerPixel != 8 )
-  {
-    m_iStreamHandler = YUV_IO;
-    return;
-  }
+//  if( m_uiBitsPerPixel != 8 )
+//  {
+//    m_iStreamHandler = YUV_IO;
+//    return;
+//  }
 
   std::string currExt = m_cFilename.substr( m_cFilename.find_last_of( "." ) + 1 );
   currExt = lowercase( currExt );
@@ -246,7 +246,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
 #ifdef USE_FFMPEG
   if( m_iStreamHandler == FFMPEG )
   {
-    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_dFrameRate, m_uiTotalFrameNum ) )
+    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPerPixel, m_dFrameRate, m_uiTotalFrameNum ) )
     {
       throw "Cannot open file using FFmpeg libs";
     }
@@ -369,7 +369,7 @@ Bool PlaYUVerStream::reload()
   if( m_iStreamHandler == FFMPEG )
   {
     m_cLibAvContext->closeAvFormat();
-    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_dFrameRate, m_uiTotalFrameNum ) )
+    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPerPixel, m_dFrameRate, m_uiTotalFrameNum ) )
     {
       throw "Cannot open file using FFmpeg libs";
     }

@@ -85,7 +85,7 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
   }
 
   Int iShiftHorChroma = CHROMASHIFT( m_iShiftHor, m_pcProcessedFrame->getChromaWidthRatio() );
-  Int iShiftVerChroma = CHROMASHIFT( m_iShiftVer, m_pcProcessedFrame->getChromaWidthRatio() );
+  Int iShiftVerChroma = CHROMASHIFT( m_iShiftVer, m_pcProcessedFrame->getChromaHeightRatio() );
 
   xStartOut = iShiftHorChroma >= 0 ? iShiftHorChroma : 0;
   xStartIn = iShiftHorChroma >= 0 ? 0 : -iShiftHorChroma;

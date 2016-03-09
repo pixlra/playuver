@@ -159,7 +159,7 @@ Void PlaYUVerStream::findHandler()
     {
       if( supportedFmts[i].formatExt == currExt )
       {
-        m_cFormatName = supportedFmts[i].formatExt[i];
+        m_cFormatName = uppercase( supportedFmts[i].formatExt );
         m_iStreamHandler = FFMPEG;
         return;
       }
@@ -176,7 +176,7 @@ Void PlaYUVerStream::findHandler()
     {
       if( supportedFmts[i].formatExt == currExt )
       {
-        m_cFormatName = supportedFmts[i].formatExt;
+        m_cFormatName = uppercase( supportedFmts[i].formatExt );
         m_iStreamHandler = FFMPEG;
         return;
       }

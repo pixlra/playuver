@@ -71,7 +71,10 @@ Bool PlaYUVerAppModuleIf::apply( Bool isPlaying, Bool disableThreads )
   {
 #ifdef PLAYUVER_THREADED_MODULES
     if( !disableThreads )
+    {
+      wait();
       start();
+    }
     else
 #endif
     {

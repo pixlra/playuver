@@ -35,7 +35,7 @@ namespace plaYUVer
 std::vector<PlaYUVerSupportedFormat> LibAvContextHandle::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( "Portable Grayscale Map ", "pgm" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Portable Grayscale Map", "pgm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( "Portable Network Graphics", "png" );
   REGIST_PLAYUVER_SUPPORTED_FMT( "Joint Photographic Experts Group", "jpg" );
   REGIST_PLAYUVER_SUPPORTED_FMT( "Windows Bitmap", "bmp" );
@@ -43,6 +43,8 @@ std::vector<PlaYUVerSupportedFormat> LibAvContextHandle::supportedReadFormats()
   REGIST_PLAYUVER_SUPPORTED_FMT( "Windows media video", "wmv" );
   REGIST_PLAYUVER_SUPPORTED_FMT( "MPEG4", "mp4" );
   REGIST_PLAYUVER_SUPPORTED_FMT( "Matroska Multimedia Container", "mkv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "H.264 streams", "h264" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "HEVC streams", "hevc" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
@@ -110,7 +112,8 @@ Void LibAvContextHandle::closeAvFormat()
   m_bHasStream = false;
 }
 
-Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, Double& frame_rate, UInt64& num_frames )
+Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& bits_pel, Double& frame_rate,
+    UInt64& num_frames )
 {
   fmt_ctx = NULL;
   video_dec_ctx = NULL;
@@ -209,6 +212,13 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
   num_frames = num_frames == 0 ? 1 : num_frames;
 
   Int pix_fmt = video_dec_ctx->pix_fmt;
+
+  // Set bits per pixel to default (8 bits)
+  bits_pel = 8;
+
+  /**
+   * Auxiliar conversation to re-use similar pixfmt
+   */
   switch( pix_fmt )
   {
   case AV_PIX_FMT_YUVJ420P:
@@ -219,6 +229,11 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
     break;
   case AV_PIX_FMT_YUVJ444P:
     pix_fmt = AV_PIX_FMT_YUV444P;
+    break;
+  case AV_PIX_FMT_GRAY16LE:
+  case AV_PIX_FMT_GRAY16BE:
+    bits_pel = 16;
+    pix_fmt = AV_PIX_FMT_GRAY8;
     break;
   }
 

@@ -44,7 +44,7 @@ public:
   {
     m_acLogMessages.push_front( msg );
     if( m_acLogMessages.size() > 5 )
-      m_acLogMessages.removeLast();
+      m_acLogMessages.remove( m_acLogMessages.size() - 1 );
     update();
   }
 protected:

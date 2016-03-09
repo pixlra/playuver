@@ -75,6 +75,10 @@ public:
   {
     return m_bHasStream;
   }
+  Char* getFormatName()
+  {
+    return m_acFormatName;
+  }
   Char* getCodecName()
   {
     return m_acCodecName;
@@ -101,6 +105,7 @@ private:
 
   Bool m_bHasStream;
 
+  Char m_acFormatName[20];
   Char m_acCodecName[20];
   UInt64 m_uiSecs;
   UInt64 m_uiMicroSec;

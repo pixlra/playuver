@@ -126,6 +126,13 @@ inline std::string lowercase( const std::string& in )
   return out;
 }
 
+inline std::string uppercase( const std::string& in )
+{
+  std::string out;
+  transform( in.begin(), in.end(), std::back_inserter( out ), toupper );
+  return out;
+}
+
 }  // NAMESPACE
 
 #endif // __PLAYUVERDEFS_H__

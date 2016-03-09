@@ -177,9 +177,9 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
     getMem1D( &m_pchFrameBuffer, m_uiFrameBufferSize );
   }
 
-  const char *codec_name = avcodec_get_name( video_dec_ctx->codec_id );
-  sprintf( m_acCodecName, "%s", codec_name );
-
+  const char *name = avcodec_get_name( video_dec_ctx->codec_id );  
+  sprintf( m_acCodecName, "%s", name );
+  
   Double fr = 30;
   if( video_stream->avg_frame_rate.den && video_stream->avg_frame_rate.num )
     fr = av_q2d( video_stream->avg_frame_rate );

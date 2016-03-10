@@ -351,6 +351,8 @@ Void PlaYUVerFrame::setPixelValue( Int xPos, Int yPos, PlaYUVerPixel pixel )
     Int ratioW = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
     m_pppcInputPel[ch][( yPos >> ratioH )][( xPos >> ratioW )] = pixel.Components()[ch];
   }
+  m_bHasHistogram = false;
+  m_bHasRGBPel = false;
 }
 
 Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame )

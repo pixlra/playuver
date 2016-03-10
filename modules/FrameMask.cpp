@@ -41,7 +41,7 @@ FrameMask::FrameMask()
 
   m_dWeigth = 0.3;
 
-  m_pcFrameMask = NULL;
+  m_pcFrameProcessed = NULL;
 }
 
 Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -56,47 +56,40 @@ Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
       return false;
     }
   }
-
-  m_pcFrameMask = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), apcFrameList[0]->getPelFormat(), apcFrameList[0]->getBitsPel() );
+  Int iPelFmt = apcFrameList[0]->getPelFormat();
+  iPelFmt = apcFrameList[1]->getPelFormat() > iPelFmt ? apcFrameList[1]->getPelFormat() : iPelFmt;
+  m_pcFrameProcessed = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), iPelFmt, apcFrameList[0]->getBitsPel() );
   return true;
 }
 
 PlaYUVerFrame* FrameMask::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  Pel* pInput1PelYUV = apcFrameList[0]->getPelBufferYUV()[0][0];
-  Pel* pInput2PelYUV = apcFrameList[1]->getPelBufferYUV()[0][0];
-  Pel* pOutputPelYUV = m_pcFrameMask->getPelBufferYUV()[0][0];
-  Double aux_pel_1, aux_pel_2, aux_pel_mask;
+  PlaYUVerFrame* InputFrame = apcFrameList[0];
+  PlaYUVerFrame* MaskFrame = apcFrameList[1];
+  PlaYUVerPixel pixelImg;
+  PlaYUVerPixel pixelMask;
+  PlaYUVerPixel pixelOut;
 
-  for( UInt y = 0; y < m_pcFrameMask->getHeight(); y++ )
-    for( UInt x = 0; x < m_pcFrameMask->getWidth(); x++ )
+  for( UInt y = 0; y < m_pcFrameProcessed->getHeight(); y++ )
+  {
+    for( UInt x = 0; x < m_pcFrameProcessed->getWidth(); x++ )
     {
-      aux_pel_1 = *pInput1PelYUV++;
-      aux_pel_2 = *pInput2PelYUV++;
-      aux_pel_mask = aux_pel_1 * ( 1 - m_dWeigth ) + aux_pel_2 * m_dWeigth;
-      *pOutputPelYUV++ = aux_pel_mask;
+      pixelImg = InputFrame->getPixelValue( x, y );
+      pixelMask = MaskFrame->getPixelValue( x, y );
+      pixelOut = pixelImg * ( 1 - m_dWeigth ) + pixelMask * m_dWeigth;
+      m_pcFrameProcessed->setPixelValue( x, y, pixelOut );
     }
-
-  for( UInt c = 1; c < m_pcFrameMask->getNumberChannels(); c++ )
-    for( UInt y = 0; y < m_pcFrameMask->getChromaHeight(); y++ )
-      for( UInt x = 0; x < m_pcFrameMask->getChromaWidth(); x++ )
-      {
-        aux_pel_1 = *pInput1PelYUV++;
-        aux_pel_2 = *pInput2PelYUV++;
-        aux_pel_mask = aux_pel_1 * ( 1 - m_dWeigth ) + aux_pel_2 * m_dWeigth;
-        *pOutputPelYUV++ = aux_pel_mask;
-      }
-
-  return m_pcFrameMask;
+  }
+  return m_pcFrameProcessed;
 }
 
 Void FrameMask::destroy()
 {
-  if( m_pcFrameMask )
+  if( m_pcFrameProcessed )
   {
-    delete m_pcFrameMask;
+    delete m_pcFrameProcessed;
   }
-  m_pcFrameMask = NULL;
+  m_pcFrameProcessed = NULL;
 }
 
 }  // NAMESPACE

@@ -38,7 +38,7 @@ class FrameMask: public PlaYUVerModuleIf
 
 private:
   Double m_dWeigth;
-  PlaYUVerFrame* m_pcFrameMask;
+  PlaYUVerFrame* m_pcFrameProcessed;
 
 public:
   FrameMask();

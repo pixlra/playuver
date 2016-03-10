@@ -63,9 +63,9 @@ public:
   {
     NO_FMT = -1,
     YUV420p = 0,
-    YUV444p,
     YUV422p,
     YUYV422,
+    YUV444p,
     GRAY,
     RGB24,
     BRG24,
@@ -205,7 +205,6 @@ public:
 
   PlaYUVerPixel getPixelValue( Int xPos, Int yPos );
   PlaYUVerPixel getPixelValue( Int xPos, Int yPos, PlaYUVerPixel::ColorSpace eColorSpace );
-
   Void setPixelValue( Int xPos, Int yPos, PlaYUVerPixel pixel );
   
   Void copyFrom( PlaYUVerFrame* );

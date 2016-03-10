@@ -28,6 +28,7 @@
 
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerFrame.h"
+#include "PlaYUVerPixel.h"
 
 namespace plaYUVer
 {
@@ -35,21 +36,6 @@ namespace plaYUVer
 #define CHROMA_RESAMPLING( X ) ( ( ( X + 1 ) >> 1 ) << 1 )
 
 #define CHROMARATIO( SIZE, RATIO ) ( RATIO > 1 ? ( ( SIZE + 1 ) / RATIO ) : SIZE )
-
-#define CLAMP(X) X = X < 0 ? 0 : X > 255 ? 255 : X;
-
-#define YUV2RGB(  iY, iU, iV, iR, iG, iB ) \
-    iR = iY + ( ( 1436 * ( iV - 128) ) >> 10 ); \
-    iG = iY - ( ( 352 * ( iU - 128 ) + 731 * ( iV - 128 ) ) >> 10 ); \
-    iB = iY + ( ( 1812 * ( iU - 128 ) ) >> 10 ); \
-    CLAMP(iR) CLAMP(iG) CLAMP(iB)
-
-static inline Void rgbToYuv( Int iR, Int iG, Int iB, Int &iY, Int &iU, Int &iV )
-{
-  iY = ( 299 * iR + 587 * iG + 114 * iB + 500 ) / 1000;
-  iU = ( 1000 * ( iB - iY ) + 226816 ) / 1772;
-  iV = ( 1000 * ( iR - iY ) + 179456 ) / 1402;
-}
 
 inline Int pelRed( UInt rgb )             // get red part of RGB
 {

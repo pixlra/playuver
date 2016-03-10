@@ -61,6 +61,7 @@ public:
 
   Void setImage( PlaYUVerFrame* pcFrame );
   Void setImage( const QPixmap &pixmap );
+
   Void setMode( Int mode );
   Void setMaskColor( const QColor &color = QColor() );
 
@@ -73,6 +74,8 @@ public:
    * Select tool from the menu
    */
   Void setTool( UInt view );
+
+  Void setGridVisible( Bool enable );
 
   /**
    * Clears any mask content.
@@ -103,16 +106,11 @@ public:
 
   Double getZoomFactor()
   {
-    return m_zoomFactor;
+    return m_dZoomFactor;
   }
-
-  Void setInputStream( PlaYUVerStream *stream );
-  PlaYUVerStream* getInputStream();
 
   // Scale function. Return used scale value (it may change when it touches the min or max zoom value)
   Double scaleZoomFactor( Double scale, QPoint center, QSize minimumSize );
-
-
 
 Q_SIGNALS:
   void selectionChanged( const QRect &rect );
@@ -127,7 +125,6 @@ public Q_SLOTS:
 //  Void setEraserTool();
 //  Void setNormalSelectionTool();
 //  Void setBlockSelectionTool();
-  void setGridVisible( bool enable );
   void setSnapToGrid( bool enable );
 //  void setSelectedArea( QRect &rect );
 
@@ -170,9 +167,10 @@ private:
 
   Void initZoomWinRect();
   Void startZoomWinTimer();
-  bool isPosValid( const QPoint &pos ) const;
+  Void setZoomFactor( Double );
+
+  Bool isPosValid( const QPoint &pos ) const;
   Void updateMask( const QRect &rect );
-  Void setZoomFactor( double );
 
   QPoint windowToView( const QPoint& pt ) const;
   QRect windowToView( const QRect& rc ) const;
@@ -181,7 +179,16 @@ private:
   QRect viewToWindow( const QRect& rc ) const;
 
   PlaYUVerFrame *m_pcCurrFrame;
+
   Pel m_uiPixelHalfScale;
+
+  Tool m_eTool;
+  Bool m_bGridVisible;
+
+  QTimer m_zoomWinTimer;
+  Double m_dZoomWinRatio;
+  Double m_dZoomFactor;
+
   QPixmap m_pixmap;
   QBitmap m_mask;
   QRect m_selectedArea;
@@ -189,21 +196,15 @@ private:
   QPoint m_lastWindowPos;
   GridManager m_grid;
   ViewMode m_mode;
-  Tool m_eTool;
-  QColor m_maskColor;
-  double m_zoomFactor;
-  int m_xOffset;
-  int m_yOffset;
-  bool m_blockTrackEnable;
-  bool m_newShape;
-  bool m_gridVisible;
-  bool m_snapToGrid;
-  bool m_cursorInGrid;
-  bool m_visibleZoomRect;
-  double m_dZoomWinRatio;
-  QTimer m_zoomWinTimer;
 
-  PlaYUVerStream *m_pStream;
+  QColor m_maskColor;
+  Int m_xOffset;
+  Int m_yOffset;
+  Bool m_blockTrackEnable;
+  Bool m_newShape;
+  Bool m_snapToGrid;
+  Bool m_cursorInGrid;
+  Bool m_visibleZoomRect;
 
 };
 

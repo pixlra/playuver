@@ -59,7 +59,8 @@ public:
   ~VideoHandle();
 
   Void createActions();
-  QMenu* createMenu();
+  QMenu* createVideoMenu();
+  QMenu* createImageMenu();
   QToolBar* createToolBar();
   QDockWidget* createDock();
   QWidget* createStatusBarMessage();
@@ -69,6 +70,8 @@ public:
   Void writeSettings();
 
   Void update( VideoSubWindow* currSubWindow );
+
+  Void openSubWindow( VideoSubWindow* subWindow );
 
 private:
   QWidget* m_pcParet;
@@ -84,6 +87,10 @@ private:
     VIDEO_ZOOM_LOCK_ACT,
     VIDEO_LOCK_ACT,
     VIDEO_LOCK_SELECTION_ACT,
+    NAVIGATION_TOOL_ACT,
+    SELECTION_TOOL_ACT,
+    BLOCK_SELECTION_TOOL_ACT,
+    SHOW_GRID_ACT,
     TOTAL_ACT,
   };
   QVector<QAction*> m_arrayActions;
@@ -92,7 +99,13 @@ private:
   QSlider* m_pcFrameSlider;
   WidgetFrameNumber* m_pcFrameNumInfo;
 
+  // Tools Actions;
+  QActionGroup *actionGroupTools;
+  QSignalMapper *m_mapperTools;
+  UInt m_uiViewTool;
+
   QMenu* m_pcMenuVideo;
+  QMenu* m_pcMenuImage;
   QToolBar* m_toolbarVideo;
 
   QDockWidget* m_pcFramePropertiesDock;
@@ -132,6 +145,8 @@ private Q_SLOTS:
   void seekEvent( int direction );
   void seekVideo();
   void videoSelectionButtonEvent();
+  void setTool( int tool );
+  void toggleGrid( bool checked );
 
 };
 

@@ -2,9 +2,12 @@
 ### CMakeLists for playuver lib component
 ###
 
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
+
 set(PlaYUVer_Lib_SRCS
     # Frame
     PlaYUVerFrame.cpp
+    PlaYUVerPixel.cpp
     PlaYUVerFramePixelFormats.cpp
     #    PlaYUVerFrameStats.cpp
     # Stream

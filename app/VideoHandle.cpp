@@ -123,9 +123,47 @@ Void VideoHandle::createActions()
   m_pcFrameSlider->setEnabled( false );
   m_pcFrameSlider->setTracking( false );
   connect( m_pcFrameSlider, SIGNAL( valueChanged(int) ), this, SLOT( seekSliderEvent(int) ) );
+
+  // ------------ Tools ------------
+  actionGroupTools = new QActionGroup( this );
+  actionGroupTools->setExclusive( true );
+
+  m_mapperTools = new QSignalMapper( this );
+  connect( m_mapperTools, SIGNAL( mapped(int) ), this, SLOT( setTool(int) ) );
+
+  m_uiViewTool = ViewArea::NavigationView;
+
+  m_arrayActions[NAVIGATION_TOOL_ACT] = new QAction( tr( "Navigation Tool" ), this );
+  m_arrayActions[NAVIGATION_TOOL_ACT]->setCheckable( true );
+  m_arrayActions[NAVIGATION_TOOL_ACT]->setChecked( true );
+  m_arrayActions[NAVIGATION_TOOL_ACT]->setShortcut( Qt::CTRL + Qt::Key_1 );
+  actionGroupTools->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
+  connect( m_arrayActions[NAVIGATION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
+  m_mapperTools->setMapping( m_arrayActions[NAVIGATION_TOOL_ACT], ViewArea::NavigationView );
+
+  m_arrayActions[SELECTION_TOOL_ACT] = new QAction( "Selection Tool", this );
+  m_arrayActions[SELECTION_TOOL_ACT]->setCheckable( true );
+  m_arrayActions[SELECTION_TOOL_ACT]->setChecked( false );
+  m_arrayActions[SELECTION_TOOL_ACT]->setShortcut( Qt::CTRL + Qt::Key_2 );
+  actionGroupTools->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
+  connect( m_arrayActions[SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
+  m_mapperTools->setMapping( m_arrayActions[SELECTION_TOOL_ACT], ViewArea::NormalSelectionView );
+
+  m_arrayActions[BLOCK_SELECTION_TOOL_ACT] = new QAction( "Block Selection Tool", this );
+  m_arrayActions[BLOCK_SELECTION_TOOL_ACT]->setCheckable( true );
+  m_arrayActions[BLOCK_SELECTION_TOOL_ACT]->setChecked( false );
+  m_arrayActions[BLOCK_SELECTION_TOOL_ACT]->setShortcut( Qt::CTRL + Qt::Key_3 );
+  actionGroupTools->addAction( m_arrayActions[BLOCK_SELECTION_TOOL_ACT] );
+  connect( m_arrayActions[BLOCK_SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
+  m_mapperTools->setMapping( m_arrayActions[BLOCK_SELECTION_TOOL_ACT], ViewArea::BlockSelectionView );
+
+  m_arrayActions[SHOW_GRID_ACT] = new QAction( "Show grid", this );
+  m_arrayActions[SHOW_GRID_ACT]->setCheckable( true );
+  m_arrayActions[SHOW_GRID_ACT]->setChecked( false );
+  connect( m_arrayActions[SHOW_GRID_ACT], SIGNAL( toggled(bool) ), this, SLOT( toggleGrid(bool) ) );
 }
 
-QMenu* VideoHandle::createMenu()
+QMenu* VideoHandle::createVideoMenu()
 {
   m_pcMenuVideo = new QMenu( "Video", this );
   m_pcMenuVideo->addAction( m_arrayActions[PLAY_ACT] );
@@ -138,6 +176,17 @@ QMenu* VideoHandle::createMenu()
   m_pcMenuVideo->addAction( m_arrayActions[VIDEO_ZOOM_LOCK_ACT] );
   m_pcMenuVideo->addAction( m_arrayActions[VIDEO_LOCK_SELECTION_ACT] );
   return m_pcMenuVideo;
+}
+
+QMenu* VideoHandle::createImageMenu()
+{
+  m_pcMenuImage = new QMenu( "Image", this );
+  m_pcMenuImage->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
+  m_pcMenuImage->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
+  m_pcMenuImage->addAction( m_arrayActions[BLOCK_SELECTION_TOOL_ACT] );
+  m_pcMenuImage->addSeparator();
+  m_pcMenuImage->addAction( m_arrayActions[SHOW_GRID_ACT] );
+  return m_pcMenuImage;
 }
 
 QToolBar* VideoHandle::createToolBar()
@@ -216,6 +265,11 @@ Void VideoHandle::updateMenus()
     m_pcFrameSlider->setValue( 0 );
     m_pcFrameNumInfo->clear();
   }
+
+  m_arrayActions[NAVIGATION_TOOL_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[SELECTION_TOOL_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[BLOCK_SELECTION_TOOL_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[SHOW_GRID_ACT]->setEnabled( hasSubWindow );
 }
 
 Void VideoHandle::readSettings()
@@ -225,6 +279,9 @@ Void VideoHandle::readSettings()
   m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setChecked( appSettings.value( "VideoHandle/VideoZoomLock", false ).toBool() );
   if( !appSettings.value( "VideoHandle/FrameProperties", true ).toBool() )
     m_pcFramePropertiesDock->close();
+
+  m_uiViewTool = appSettings.value( "VideoHandle/SelectedTool", ViewArea::NavigationView ).toUInt();
+  setTool( m_uiViewTool );
 }
 
 Void VideoHandle::writeSettings()
@@ -233,6 +290,7 @@ Void VideoHandle::writeSettings()
   appSettings.setValue( "VideoHandle/Repeat", m_arrayActions[VIDEO_REPEAT_ACT]->isChecked() );
   appSettings.setValue( "VideoHandle/VideoZoomLock", m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() );
   appSettings.setValue( "VideoHandle/FrameProperties", m_pcFramePropertiesSideBar->isVisible() );
+  appSettings.setValue( "VideoHandle/SelectedTool", m_uiViewTool );
 }
 
 Void VideoHandle::update()
@@ -308,6 +366,13 @@ Void VideoHandle::updateSelectionArea( QRect area )
   {
     m_pcFramePropertiesSideBar->setSelection( area );
   }
+}
+
+Void VideoHandle::openSubWindow( VideoSubWindow* subWindow )
+{
+  connect( subWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectionArea( QRect ) ) );
+  subWindow->getViewArea()->setTool( m_uiViewTool );
+  subWindow->getViewArea()->setGridVisible( m_arrayActions[SHOW_GRID_ACT]->isChecked() );
 }
 
 Void VideoHandle::closeSubWindow( SubWindowAbstract* subWindow )
@@ -688,6 +753,26 @@ Void VideoHandle::videoSelectionButtonEvent()
   else
   {
     stop();
+  }
+}
+
+Void VideoHandle::setTool( Int tool )
+{
+  m_uiViewTool = tool;
+  actionGroupTools->actions().at( m_uiViewTool )->setChecked( true );
+  QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
+  for( Int i = 0; i < subWindowList.size(); i++ )
+  {
+    qobject_cast<VideoSubWindow*>( subWindowList.at( i ) )->getViewArea()->setTool( m_uiViewTool );
+  }
+}
+
+Void VideoHandle::toggleGrid( Bool checked )
+{
+  QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
+  for( Int i = 0; i < subWindowList.size(); i++ )
+  {
+    qobject_cast<VideoSubWindow*>( subWindowList.at( i ) )->getViewArea()->setGridVisible( checked );
   }
 }
 

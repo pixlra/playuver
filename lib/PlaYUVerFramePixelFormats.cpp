@@ -204,7 +204,7 @@ Void fillARGB32bufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height, UI
 PlaYUVerPixFmtDescriptor yuv420p =
 {
   "YUV420p",
-  PlaYUVerFrame::COLOR_YUV,
+  PlaYUVerPixel::COLOR_YUV,
   3,
   3,
   1,
@@ -220,7 +220,7 @@ PlaYUVerPixFmtDescriptor yuv420p =
 PlaYUVerPixFmtDescriptor yuv422p =
 {
   "YUV422p",
-  PlaYUVerFrame::COLOR_YUV,
+  PlaYUVerPixel::COLOR_YUV,
   3,
   3,
   1,
@@ -236,7 +236,7 @@ PlaYUVerPixFmtDescriptor yuv422p =
 PlaYUVerPixFmtDescriptor yuv444p =
 {
   "YUV444p",
-  PlaYUVerFrame::COLOR_YUV,
+  PlaYUVerPixel::COLOR_YUV,
   3,
   3,
   0,
@@ -252,7 +252,7 @@ PlaYUVerPixFmtDescriptor yuv444p =
 PlaYUVerPixFmtDescriptor yuyv422 =
 {
   "YUYV422",
-  PlaYUVerFrame::COLOR_YUV,
+  PlaYUVerPixel::COLOR_YUV,
   3,
   1,
   1,
@@ -268,7 +268,7 @@ PlaYUVerPixFmtDescriptor yuyv422 =
 PlaYUVerPixFmtDescriptor gray =
 {
   "GRAY",
-  PlaYUVerFrame::COLOR_GRAY,
+  PlaYUVerPixel::COLOR_GRAY,
   1,
   1,
   0,
@@ -280,7 +280,7 @@ PlaYUVerPixFmtDescriptor gray =
 PlaYUVerPixFmtDescriptor RGB24 =
 {
   "RGB24",
-  PlaYUVerFrame::COLOR_RGB,
+  PlaYUVerPixel::COLOR_RGB,
   3,
   1,
   0,
@@ -296,7 +296,7 @@ PlaYUVerPixFmtDescriptor RGB24 =
 PlaYUVerPixFmtDescriptor BGR24 =
 {
   "BRG24",
-  PlaYUVerFrame::COLOR_RGB,
+  PlaYUVerPixel::COLOR_RGB,
   3,
   1,
   0,

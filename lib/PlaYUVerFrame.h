@@ -31,6 +31,7 @@
 #include <cassert>
 #include <vector>
 #include "PlaYUVerDefs.h"
+#include "PlaYUVerPixel.h"
 
 class PixFcSSE;
 namespace cv
@@ -43,8 +44,6 @@ namespace plaYUVer
 
 struct PlaYUVerPixFmtDescriptor;
 
-#define MAX_NUMBER_COMPONENTS 4
-
 #define CHROMASHIFT( SIZE, SHIFT ) UInt( -( ( - ( Int( SIZE ) ) ) >> SHIFT ) )
 
 /**
@@ -56,77 +55,6 @@ class PlaYUVerFrame
 //: public PlaYUVerFrameStats
 {
 public:
-
-  /**
-   * \class    Pixel
-   * \ingroup  PlaYUVerLib PlaYUVerLib_Frame
-   * \brief    Pel handling class
-   */
-  class Pixel
-  {
-  private:
-    Int m_iColorSpace;
-    Pel PixelComponents[3];
-  public:
-    Pixel()
-    {
-      m_iColorSpace = PlaYUVerFrame::COLOR_INVALID;
-      PixelComponents[0] = 0;
-      PixelComponents[1] = 0;
-      PixelComponents[2] = 0;
-    }
-    Pixel( Int ColorSpace, Pel c0, Pel c1, Pel c2 )
-    {
-      m_iColorSpace = ColorSpace == PlaYUVerFrame::COLOR_GRAY ? PlaYUVerFrame::COLOR_YUV : ColorSpace;
-      PixelComponents[0] = c0;
-      PixelComponents[1] = c1;
-      PixelComponents[2] = c2;
-    }
-    Int ColorSpace()
-    {
-      return m_iColorSpace;
-    }
-    Pel* Components()
-    {
-      return PixelComponents;
-    }
-    Pel& Y()
-    {
-      return PixelComponents[0];
-    }
-    Pel& Cb()
-    {
-      return PixelComponents[1];
-    }
-    Pel& Cr()
-    {
-      return PixelComponents[2];
-    }
-    Pel& R()
-    {
-      return PixelComponents[0];
-    }
-    Pel& G()
-    {
-      return PixelComponents[1];
-    }
-    Pel& B()
-    {
-      return PixelComponents[2];
-    }
-  };
-
-  /** ColorSpace Enum
-   * List of supported color spaces
-   */
-  enum ColorSpace
-  {
-    COLOR_INVALID = -1,  //!< Invalid
-    COLOR_YUV = 0,  //!< YUV
-    COLOR_RGB = 1,  //!< RGB
-    COLOR_ARGB = 3,  //!< RGB + Alpha
-    COLOR_GRAY = 2,  //!< Grayscale
-  };
 
   /** ColorSpace Enum
    * List of supported pixel formats (deprecated)
@@ -176,14 +104,6 @@ public:
    * @return number of bytes per frame
    */
   static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel );
-
-  /**
-   * Convert a Pixel to a new color space
-   * @param inputPixel input pixel (PlaYUVerFrame::Pixel)
-   * @param eOutputSpace output color space
-   * @return converted pixel
-   */
-  static PlaYUVerFrame::Pixel ConvertPixel( Pixel inputPixel, ColorSpace eOutputSpace );
 
   /**
    * Creates a new frame using the following configuration
@@ -283,7 +203,8 @@ public:
   UInt getChromaLength() const;
   UInt getChromaSize() const;
 
-  PlaYUVerFrame::Pixel getPixelValue( Int xPos, Int yPos, ColorSpace eColorSpace = COLOR_INVALID );
+  PlaYUVerPixel getPixelValue( Int xPos, Int yPos );
+  PlaYUVerPixel getPixelValue( Int xPos, Int yPos, PlaYUVerPixel::ColorSpace eColorSpace );
 
   Void copyFrom( PlaYUVerFrame* );
   Void copyFrom( PlaYUVerFrame*, UInt, UInt );

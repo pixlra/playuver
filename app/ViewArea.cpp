@@ -482,7 +482,7 @@ Void ViewArea::paintEvent( QPaintEvent *event )
   {
     Int imageWidth = m_pixmap.width();
     Int imageHeight = m_pixmap.height();
-    PlaYUVerFrame::Pixel sPixelValue;
+    PlaYUVerPixel sPixelValue;
 
     QFont font( "Helvetica" );
     font.setPixelSize( 12 );
@@ -501,7 +501,7 @@ Void ViewArea::paintEvent( QPaintEvent *event )
 
         Int frFormat = m_pcCurrFrame->getColorSpace();
 
-        if( frFormat == PlaYUVerFrame::COLOR_YUV )
+        if( frFormat == PlaYUVerPixel::COLOR_YUV )
         {
           sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y() );
 
@@ -514,7 +514,7 @@ Void ViewArea::paintEvent( QPaintEvent *event )
               "Y: " + QString::number( sPixelValue.Y() ) + "\n" + "U: " + QString::number( sPixelValue.Cb() ) + "\n" + "V: "
                   + QString::number( sPixelValue.Cr() ) );
         }
-        if( frFormat == PlaYUVerFrame::COLOR_GRAY )
+        if( frFormat == PlaYUVerPixel::COLOR_GRAY )
         {
           sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y() );
 
@@ -526,7 +526,7 @@ Void ViewArea::paintEvent( QPaintEvent *event )
           paInter.drawText( pixelRect, Qt::AlignCenter, "Y: " + QString::number( sPixelValue.Y() ) );
         }
 
-        if( ( frFormat == PlaYUVerFrame::COLOR_RGB ) )
+        if( ( frFormat == PlaYUVerPixel::COLOR_RGB ) )
         {
           sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y() );
 

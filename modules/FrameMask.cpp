@@ -41,9 +41,9 @@ FrameMask::FrameMask()
   m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS | MODULE_USES_KEYS;
 
   m_cModuleOptions.addOptions()/**/
-  ( "MaskWeigth", m_uiWeight, "Influence of the mask [60%]" );
+  ( "MaskWeigth", m_iWeight, "Influence of the mask [60%]" );
 
-  m_uiWeight = 6;
+  m_iWeight = 6;
 
   m_pcFrameProcessed = NULL;
 }
@@ -60,6 +60,9 @@ Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
       return false;
     }
   }
+  
+  m_iWeight = m_iWeight > 100 || m_iWeight < 0  ? 5 : m_iWeight;
+  m_iWeight = m_iWeight > 10 ? m_iWeight / 10 : m_iWeight;
 
   Int iPelFmt = 0;
   Int iColorSpace = apcFrameList[0]->getColorSpace();
@@ -98,7 +101,7 @@ PlaYUVerFrame* FrameMask::process( std::vector<PlaYUVerFrame*> apcFrameList )
     {
       pixelImg = InputFrame->getPixelValue( x, y );
       pixelMask = MaskFrame->getPixelValue( x, y );
-      pixelOut = pixelImg * ( 10 - m_uiWeight ) + pixelMask * m_uiWeight;
+      pixelOut = pixelImg * ( 10 - m_iWeight ) + pixelMask * m_iWeight;
       pixelOut = pixelOut * 0.1;
       m_pcFrameProcessed->setPixelValue( x, y, pixelOut );
     }
@@ -108,14 +111,14 @@ PlaYUVerFrame* FrameMask::process( std::vector<PlaYUVerFrame*> apcFrameList )
 
 Bool FrameMask::keyPressed( enum Module_Key_Supported value )
 {
-  if( value == MODULE_KEY_UP )
+  if( value == MODULE_KEY_UP && m_iWeight < 10)
   {
-    m_uiWeight -= 1;
+    m_iWeight += 1;
     return true;
   }
-  if( value == MODULE_KEY_DOWN )
+  if( value == MODULE_KEY_DOWN && m_iWeight > 0 )
   {
-    m_uiWeight += 1;
+    m_iWeight -= 1;
     return true;
   }
   return false;

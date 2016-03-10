@@ -56,16 +56,16 @@ class PlaYUVerFrame
 {
 public:
 
-  /** ColorSpace Enum
-   * List of supported pixel formats (deprecated)
+  /** ColorSpace Enum (deprecated)
+   * List of supported pixel formats - do not change order
    */
   enum PixelFormats
   {
     NO_FMT = -1,
     YUV420p = 0,
+    YUV444p,
     YUV422p,
     YUYV422,
-    YUV444p,
     GRAY,
     RGB24,
     BRG24,
@@ -80,6 +80,7 @@ public:
     MATCH_RESOLUTION = 2,
     MATCH_PEL_FMT = 4,
     MATCH_BITS = 8,
+    MATCH_COLOR_SPACE_IGNORE_GRAY = 16,
     MATCH_ALL = 0xFFFF,
   };
 
@@ -296,6 +297,7 @@ private:
   Int m_iPixelFormat;  //!< Pixel format number (it follows the list of supported pixel formats)
   Int m_iNumberChannels;  //!< Number of channels
   UInt m_uiBitsPel;  //!< Bits per pixel/channel
+  UInt m_uiHalfPelValue;  //!< Bits per pixel/channel
 
   Pel*** m_pppcInputPel;
 

@@ -37,7 +37,7 @@ class FrameMask: public PlaYUVerModuleIf
   REGISTER_CLASS_FACTORY( FrameMask )
 
 private:
-  Double m_dWeigth;
+  UInt m_uiWeight;
   PlaYUVerFrame* m_pcFrameProcessed;
 
 public:

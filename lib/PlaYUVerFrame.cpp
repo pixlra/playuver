@@ -173,7 +173,8 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
   m_iPixelFormat = pel_format;
   m_iNumberChannels = 3;
   m_uiBitsPel = bitsPixel > 8 ? bitsPixel : 8;
-
+  m_uiHalfPelValue = 1 << ( m_uiBitsPel - 1 );
+  
   if( m_uiWidth == 0 || m_uiHeight == 0 || m_iPixelFormat == -1 || bitsPixel > 16 )
   {
     throw "Cannot create a PlYUVerFrame of this type";
@@ -238,6 +239,8 @@ Bool PlaYUVerFrame::haveSameFmt( PlaYUVerFrame* other, UInt match ) const
       bRet &= ( getPelFormat() == other->getPelFormat() );
     if( match & MATCH_BITS )
       bRet &= ( getBitsPel() == other->getBitsPel() );
+    if( match & MATCH_COLOR_SPACE_IGNORE_GRAY )
+      bRet &= ( getColorSpace() == PlaYUVerPixel::COLOR_GRAY || getColorSpace() == other->getColorSpace() );
   }
   else
   {
@@ -320,7 +323,7 @@ UInt PlaYUVerFrame::getChromaSize() const
 
 PlaYUVerPixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos )
 {
-  PlaYUVerPixel PixelValue( m_pcPelFormat->colorSpace, 0, 0, 0 );
+  PlaYUVerPixel PixelValue( m_pcPelFormat->colorSpace, m_uiHalfPelValue, m_uiHalfPelValue, m_uiHalfPelValue );
   for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
   {
     Int ratioH = ch > 0 ? m_pcPelFormat->log2ChromaWidth : 0;
@@ -332,7 +335,7 @@ PlaYUVerPixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos )
 
 PlaYUVerPixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos, PlaYUVerPixel::ColorSpace eColorSpace )
 {
-  PlaYUVerPixel PixelValue( m_pcPelFormat->colorSpace, 0, 0, 0 );
+  PlaYUVerPixel PixelValue( m_pcPelFormat->colorSpace );
   for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
   {
     Int ratioH = ch > 0 ? m_pcPelFormat->log2ChromaWidth : 0;

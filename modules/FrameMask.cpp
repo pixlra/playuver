@@ -24,6 +24,7 @@
 
 #include "FrameMask.h"
 #include <algorithm>
+class be;
 
 namespace plaYUVer
 {
@@ -36,10 +37,13 @@ FrameMask::FrameMask()
   m_pchModuleCategory = "Utilities";
   m_pchModuleName = "FrameMask";
   m_pchModuleTooltip = "Applies a mask to the selected image (first image)";
-  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
+  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS | MODULE_USES_KEYS;
 
-  m_dWeigth = 0.3;
+  m_cModuleOptions.addOptions()/**/
+  ( "MaskWeigth", m_uiWeight, "Influence of the mask [60%]" );
+
+  m_uiWeight = 6;
 
   m_pcFrameProcessed = NULL;
 }
@@ -48,16 +52,34 @@ Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
 
-  for( UInt i = 0; i < apcFrameList.size(); i++ )
+  for( UInt i = 1; i < apcFrameList.size(); i++ )
   {
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[i], PlaYUVerFrame::MATCH_COLOR_SPACE |
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE_IGNORE_GRAY |
                                        PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
     {
       return false;
     }
   }
-  Int iPelFmt = apcFrameList[0]->getPelFormat();
-  iPelFmt = apcFrameList[1]->getPelFormat() > iPelFmt ? apcFrameList[1]->getPelFormat() : iPelFmt;
+
+  Int iPelFmt = 0;
+  Int iColorSpace = apcFrameList[0]->getColorSpace();
+  if( iColorSpace == PlaYUVerPixel::COLOR_GRAY )
+  {
+    iColorSpace = apcFrameList[1]->getPelFormat();
+  }
+  switch( iColorSpace )
+  {
+  case PlaYUVerPixel::COLOR_GRAY:
+    iPelFmt = PlaYUVerFrame::GRAY;
+    break;
+  case PlaYUVerPixel::COLOR_YUV:
+    iPelFmt = PlaYUVerFrame::YUV444p;
+    break;
+  case PlaYUVerPixel::COLOR_RGB:
+    iPelFmt = PlaYUVerFrame::RGB24;
+    break;
+  }
+
   m_pcFrameProcessed = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), iPelFmt, apcFrameList[0]->getBitsPel() );
   return true;
 }
@@ -76,12 +98,29 @@ PlaYUVerFrame* FrameMask::process( std::vector<PlaYUVerFrame*> apcFrameList )
     {
       pixelImg = InputFrame->getPixelValue( x, y );
       pixelMask = MaskFrame->getPixelValue( x, y );
-      pixelOut = pixelImg * ( 1 - m_dWeigth ) + pixelMask * m_dWeigth;
+      pixelOut = pixelImg * ( 10 - m_uiWeight ) + pixelMask * m_uiWeight;
+      pixelOut = pixelOut * 0.1;
       m_pcFrameProcessed->setPixelValue( x, y, pixelOut );
     }
   }
   return m_pcFrameProcessed;
 }
+
+Bool FrameMask::keyPressed( enum Module_Key_Supported value )
+{
+  if( value == MODULE_KEY_UP )
+  {
+    m_uiWeight -= 1;
+    return true;
+  }
+  if( value == MODULE_KEY_DOWN )
+  {
+    m_uiWeight += 1;
+    return true;
+  }
+  return false;
+}
+
 
 Void FrameMask::destroy()
 {

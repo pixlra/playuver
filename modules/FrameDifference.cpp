@@ -54,7 +54,7 @@ Bool FrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
   UInt uiMaxBitsPixel = 0;
   for( UInt i = 0; i < apcFrameList.size(); i++ )
   {
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[i], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION ) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION ) )
       return false;
     if( apcFrameList[i]->getBitsPel() > uiMaxBitsPixel )
     {

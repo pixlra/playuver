@@ -74,6 +74,7 @@ public:
   };
 
   PlaYUVerPixel();
+  PlaYUVerPixel( Int ColorSpace );
   PlaYUVerPixel( Int ColorSpace, Pel c0, Pel c1, Pel c2 );
   
   Int ColorSpaceType()

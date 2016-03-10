@@ -40,6 +40,15 @@ PlaYUVerPixel::PlaYUVerPixel()
   PixelComponents[3] = 0;
 }
 
+PlaYUVerPixel::PlaYUVerPixel( Int ColorSpace )
+{
+  m_iColorSpace = ColorSpace == COLOR_GRAY ? COLOR_YUV : ColorSpace;
+  PixelComponents[0] = 0;
+  PixelComponents[1] = 0;
+  PixelComponents[2] = 0;
+  PixelComponents[3] = 0;
+}
+
 PlaYUVerPixel::PlaYUVerPixel( Int ColorSpace, Pel c0, Pel c1, Pel c2 )
 {
   m_iColorSpace = ColorSpace == COLOR_GRAY ? COLOR_YUV : ColorSpace;

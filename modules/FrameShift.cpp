@@ -135,16 +135,6 @@ Bool FrameShift::keyPressed( enum Module_Key_Supported value )
     m_iShiftVer += 1;
     return true;
   }
-  if( value == MODULE_KEY_DOWN )
-  {
-    m_iShiftVer -= 2;
-    return true;
-  }
-  if( value == MODULE_KEY_UP )
-  {
-    m_iShiftVer += 2;
-    return true;
-  }
   return false;
 }
 

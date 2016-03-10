@@ -47,6 +47,7 @@ public:
   }
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
+  Bool keyPressed( enum Module_Key_Supported value );
   Void destroy();
 
 };

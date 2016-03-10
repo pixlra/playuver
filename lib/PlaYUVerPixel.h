@@ -73,22 +73,9 @@ public:
     COLOR_ARGB = 3,  //!< RGB + Alpha
   };
 
-  PlaYUVerPixel()
-  {
-    m_iColorSpace = COLOR_INVALID;
-    PixelComponents[0] = 0;
-    PixelComponents[1] = 0;
-    PixelComponents[2] = 0;
-    PixelComponents[3] = 0;
-  }
-  PlaYUVerPixel( Int ColorSpace, Pel c0, Pel c1, Pel c2 )
-  {
-    m_iColorSpace = ColorSpace == COLOR_GRAY ? COLOR_YUV : ColorSpace;
-    PixelComponents[0] = c0;
-    PixelComponents[1] = c1;
-    PixelComponents[2] = c2;
-    PixelComponents[3] = 0;
-  }
+  PlaYUVerPixel();
+  PlaYUVerPixel( Int ColorSpace, Pel c0, Pel c1, Pel c2 );
+  
   Int ColorSpaceType()
   {
     return m_iColorSpace;
@@ -96,6 +83,18 @@ public:
   Pel* Components()
   {
     return PixelComponents;
+  }
+  Pel Y() const
+  {
+    return PixelComponents[0];
+  }
+  Pel Cb() const
+  {
+    return PixelComponents[1];
+  }
+  Pel Cr() const
+  {
+    return PixelComponents[2];
   }
   Pel& Y()
   {
@@ -126,6 +125,10 @@ public:
     return PixelComponents[3];
   }
 
+  PlaYUVerPixel operator+ ( const PlaYUVerPixel& );
+  PlaYUVerPixel operator- ( const PlaYUVerPixel& );
+  PlaYUVerPixel operator* ( const Double& );
+  
   /**
    * Convert a Pixel to a new color space
    * @param inputPixel input pixel (PlaYUVerPixel)

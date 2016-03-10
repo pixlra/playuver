@@ -206,6 +206,8 @@ public:
   PlaYUVerPixel getPixelValue( Int xPos, Int yPos );
   PlaYUVerPixel getPixelValue( Int xPos, Int yPos, PlaYUVerPixel::ColorSpace eColorSpace );
 
+  Void setPixelValue( Int xPos, Int yPos, PlaYUVerPixel pixel );
+  
   Void copyFrom( PlaYUVerFrame* );
   Void copyFrom( PlaYUVerFrame*, UInt, UInt );
 

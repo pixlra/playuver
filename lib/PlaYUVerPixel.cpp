@@ -31,6 +31,42 @@
 namespace plaYUVer
 {
 
+PlaYUVerPixel::PlaYUVerPixel()
+{
+  m_iColorSpace = COLOR_INVALID;
+  PixelComponents[0] = 0;
+  PixelComponents[1] = 0;
+  PixelComponents[2] = 0;
+  PixelComponents[3] = 0;
+}
+
+PlaYUVerPixel::PlaYUVerPixel( Int ColorSpace, Pel c0, Pel c1, Pel c2 )
+{
+  m_iColorSpace = ColorSpace == COLOR_GRAY ? COLOR_YUV : ColorSpace;
+  PixelComponents[0] = c0;
+  PixelComponents[1] = c1;
+  PixelComponents[2] = c2;
+  PixelComponents[3] = 0;
+}
+
+PlaYUVerPixel PlaYUVerPixel::operator+ ( const PlaYUVerPixel& in )
+{
+  PlaYUVerPixel out( m_iColorSpace, Y() + in.Y(), Cb() + in.Cb(), Cr() + in.Cr() );
+  return out;
+}
+
+PlaYUVerPixel PlaYUVerPixel::operator- ( const PlaYUVerPixel& in )
+{
+  PlaYUVerPixel out( m_iColorSpace, Y() - in.Y(), Cb() - in.Cb(), Cr() - in.Cr() );
+  return out;
+}
+
+PlaYUVerPixel PlaYUVerPixel::operator* ( const Double& d )
+{
+  PlaYUVerPixel out( m_iColorSpace, Y() * d, Cb() * d, Cr() * d );
+  return out;
+}
+
 PlaYUVerPixel PlaYUVerPixel::ConvertPixel( ColorSpace eOutputSpace )
 {
   Int outA, outB, outC;
@@ -55,5 +91,5 @@ PlaYUVerPixel PlaYUVerPixel::ConvertPixel( ColorSpace eOutputSpace )
   }
   return outPixel;
 }
-  
+
 }  // NAMESPACE

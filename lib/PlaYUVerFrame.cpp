@@ -343,6 +343,16 @@ PlaYUVerPixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos, PlaYUVerPixel::C
   return PixelValue;
 }
 
+Void PlaYUVerFrame::setPixelValue( Int xPos, Int yPos, PlaYUVerPixel pixel )
+{
+  for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
+  {
+    Int ratioH = ch > 0 ? m_pcPelFormat->log2ChromaWidth : 0;
+    Int ratioW = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
+    m_pppcInputPel[ch][( yPos >> ratioH )][( xPos >> ratioW )] = pixel.Components()[ch];
+  }
+}
+
 Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame )
 {
   if( m_iPixelFormat != input_frame->getPelFormat() && m_uiWidth == input_frame->getWidth() && m_uiHeight == input_frame->getHeight() )

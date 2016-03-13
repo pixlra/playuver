@@ -42,6 +42,7 @@ std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
   REGIST_PLAYUVER_SUPPORTED_FMT( "Raw Video", "yuv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( "Raw Video", "gray" );
 #ifdef USE_FFMPEG
   APPEND_PLAYUVER_SUPPORTED_FMT( LibAvContextHandle, Read );
 #endif

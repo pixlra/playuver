@@ -190,7 +190,7 @@ Void PlaYUVerStream::findHandler()
   }
 }
 
-Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::string input_format_name, UInt bitsPel, UInt frame_rate, Bool bInput )
+Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::string input_format_name, UInt bitsPel, UInt endianness, UInt frame_rate, Bool bInput )
 {
   UInt width;
   UInt height;
@@ -212,10 +212,10 @@ Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::st
       break;
     }
   }
-  return open( filename, width, height, input_format, bitsPel, frame_rate, bInput );
+  return open( filename, width, height, input_format, bitsPel, endianness, frame_rate, bInput );
 }
 
-Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, UInt frame_rate, Bool bInput )
+Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, UInt endianness, UInt frame_rate, Bool bInput )
 {
   if( m_bInit )
   {
@@ -228,6 +228,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   m_uiHeight = height;
   m_iPixelFormat = input_format;
   m_uiBitsPerPixel = bitsPel;
+  m_uiEndianness = endianness;
   m_dFrameRate = frame_rate;
 
   m_pchFilename = new Char[m_cFilename.size() + 1];
@@ -247,7 +248,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
 #ifdef USE_FFMPEG
   if( m_iStreamHandler == FFMPEG )
   {
-    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPerPixel, m_dFrameRate, m_uiTotalFrameNum ) )
+    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPerPixel, m_uiEndianness, m_dFrameRate, m_uiTotalFrameNum ) )
     {
       throw "Cannot open file using FFmpeg libs";
     }
@@ -370,7 +371,7 @@ Bool PlaYUVerStream::reload()
   if( m_iStreamHandler == FFMPEG )
   {
     m_cLibAvContext->closeAvFormat();
-    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPerPixel, m_dFrameRate, m_uiTotalFrameNum ) )
+    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPerPixel, m_uiEndianness, m_dFrameRate, m_uiTotalFrameNum ) )
     {
       throw "Cannot open file using FFmpeg libs";
     }
@@ -578,7 +579,7 @@ Void PlaYUVerStream::readFrame()
       throw "[PlaYUVerStream] Error reading frame from libav";
       return;
     }
-    m_pcNextFrame->frameFromBuffer( m_cLibAvContext->m_pchFrameBuffer, m_cLibAvContext->m_uiFrameBufferSize );
+    m_pcNextFrame->frameFromBuffer( m_cLibAvContext->m_pchFrameBuffer, m_cLibAvContext->m_uiFrameBufferSize, m_uiEndianness );
   }
 #endif
   if( m_iStreamHandler == YUV_IO )
@@ -590,7 +591,7 @@ Void PlaYUVerStream::readFrame()
       throw "[PlaYUVerStream] Cannot read file";
       return;
     }
-    m_pcNextFrame->frameFromBuffer( m_pStreamBuffer, bytes_read );
+    m_pcNextFrame->frameFromBuffer( m_pStreamBuffer, bytes_read, m_uiEndianness );
   }
   m_uiCurrFrameFileIdx++;
   return;

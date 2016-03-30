@@ -174,7 +174,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   pixelGridLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ), 1, 1 );
   pixelGridLayout->addWidget( m_comboBoxPixelFormat, 1, 2 );
 
-  QHBoxLayout* bitsPerPelLayout = new QHBoxLayout();
+
   QLabel* bitsPerPelLabel = new QLabel();
   bitsPerPelLabel->setFont( normalFont );
   bitsPerPelLabel->setText( "Pixel bit depth" );
@@ -186,6 +186,27 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   pixelGridLayout->addWidget( bitsPerPelLabel, 2, 0 );
   pixelGridLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ), 2, 1 );
   pixelGridLayout->addWidget( m_spinBoxBits, 2, 2 );
+
+  /*
+   *  Endianess
+   */
+  QHBoxLayout* endiannessLayout = new QHBoxLayout();
+  QLabel* endiannessLabel = new QLabel();
+  endiannessLabel->setFont( menusFont );
+  endiannessLabel->setText( "Endianness" );
+  QComboBox* endiannessComboBox = new QComboBox();
+  endiannessComboBox->setFont( normalFont );
+  endiannessComboBox->setSizePolicy( sizePolicy );
+  endiannessComboBox->clear();
+  endiannessComboBox->addItem( QStringLiteral("Big Endian") );
+  endiannessComboBox->addItem( QStringLiteral("Little Endian") );
+  endiannessComboBox->setCurrentIndex( 0 );
+  endiannessLayout->addWidget( endiannessLabel );
+  endiannessLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  endiannessLayout->addWidget( endiannessComboBox );
+  m_widgetEndianness = new QWidget();
+  m_widgetEndianness->setLayout( endiannessLayout );
+  m_widgetEndianness->setVisible( true );
 
   /*
    *  Frame rate format
@@ -212,13 +233,11 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   dialogButtonOkCancel->setCenterButtons( false );
 
   MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Minimum ) );
-  // MainLayout->addLayout( standardResolutionLayout );
-  // MainLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum ) );
   MainLayout->addWidget( resolutionGroup );
   MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Minimum ) );
   MainLayout->addWidget( pixelGroup );
-  MainLayout->addLayout( bitsPerPelLayout );
   MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Minimum ) );
+  MainLayout->addWidget( m_widgetEndianness );
   MainLayout->addLayout( framerateFormatLayout );
   MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
   MainLayout->addWidget( dialogButtonOkCancel );
@@ -226,8 +245,9 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   connect( m_comboBoxStandardResolution, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotStandardResolutionSelected(int) ) );
   connect( m_spinBoxWidth, SIGNAL( valueChanged(int) ), this, SLOT( slotResolutionChange() ) );
   connect( m_spinBoxheight, SIGNAL( valueChanged(int) ), this, SLOT( slotResolutionChange() ) );
-
   connect( m_comboBoxColorSpace, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotColorSpaceChange(int) ) );
+  connect( m_spinBoxBits, SIGNAL( valueChanged(int) ), this, SLOT( slotBitsChange(int) ) );
+
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
@@ -237,7 +257,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
 }
 
-Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, UInt& rFrameRate )
+Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, UInt& rEndianess, UInt& rFrameRate )
 {
   // Set default values
   //setWindowTitle( "Configure resolution for " + Filename );
@@ -338,6 +358,18 @@ Void ConfigureFormatDialog::slotColorSpaceChange( Int idx )
     m_comboBoxPixelFormat->insertItem( i, PlaYUVerFrame::supportedPixelFormatListNames( idx )[i].c_str() );
   }
   m_comboBoxPixelFormat->setCurrentIndex( 0 );
+}
+
+Void ConfigureFormatDialog::slotBitsChange( Int idx )
+{
+  if( idx > 8 )
+  {
+    m_widgetEndianness->setVisible( true );
+  }
+  else
+  {
+    m_widgetEndianness->setVisible( false );
+  }
 }
 
 }  // NAMESPACE

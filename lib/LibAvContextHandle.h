@@ -65,7 +65,7 @@ public:
           m_bHasStream( false )
   {
   }
-  Bool initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& bits_pel, Double& frame_rate, UInt64& num_frames );
+  Bool initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& bits_pel, UInt& endianness, Double& frame_rate, UInt64& num_frames );
   Void closeAvFormat();
   Bool decodeAvFormat();
 

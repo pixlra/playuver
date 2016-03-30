@@ -78,6 +78,8 @@ private:
   std::string m_strResolution;
   std::string m_strPelFmt;
   UInt m_uiBitsPerPixel;
+  std::string m_strEndianness;
+  UInt m_uiEndianness;
   Bool m_bListPelFmts;
   Int64 m_iFrames;
 

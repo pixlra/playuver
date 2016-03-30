@@ -95,8 +95,8 @@ public:
     END_OF_SEQ,
   };
 
-  Bool open( std::string filename, std::string resolution, std::string input_format, UInt bitsPel, UInt frame_rate, Bool bInput = true );
-  Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, UInt frame_rate, Bool bInput = true );
+  Bool open( std::string filename, std::string resolution, std::string input_format, UInt bitsPel, UInt endianness, UInt frame_rate,  Bool bInput = true );
+  Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, UInt endianness, UInt frame_rate, Bool bInput = true );
 
   Bool reload();
 
@@ -194,6 +194,7 @@ private:
   UInt m_uiHeight;
   Int m_iPixelFormat;
   UInt m_uiBitsPerPixel;
+  UInt m_uiEndianness;
   Double m_dFrameRate;
   UInt64 m_uiTotalFrameNum;
   Int64 m_iCurrFrameNum;

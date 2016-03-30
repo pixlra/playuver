@@ -174,7 +174,7 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
   m_iNumberChannels = 3;
   m_uiBitsPel = bitsPixel > 8 ? bitsPixel : 8;
   m_uiHalfPelValue = 1 << ( m_uiBitsPel - 1 );
-  
+
   if( m_uiWidth == 0 || m_uiHeight == 0 || m_iPixelFormat == -1 || bitsPixel > 16 )
   {
     throw "Cannot create a PlYUVerFrame of this type";
@@ -385,17 +385,29 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
   m_bHasHistogram = false;
 }
 
-Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, UInt64 uiBuffSize )
+Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, UInt64 uiBuffSize, Int endianess )
 {
   if( uiBuffSize != getBytesPerFrame() )
     return;
 
   Byte* ppBuff[MAX_NUMBER_PLANES];
   Byte* pTmpBuff;
-  Pel* pTmpPel;
+  Pel* pPel;
   UInt bytesPixel = ( m_uiBitsPel - 1 ) / 8 + 1;
+  UInt shiftInput, shiftOutput;
   Int ratioH, ratioW, step;
   UInt i, ch, b;
+
+  if( endianess == 1 )
+  {
+    shiftInput = 8;
+    shiftOutput = 0;
+  }
+  else
+  {
+    shiftInput = 0;
+    shiftOutput = 8;
+  }
 
   ppBuff[0] = Buff;
   for( i = 1; i < MAX_NUMBER_PLANES; i++ )
@@ -411,18 +423,18 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, UInt64 uiBuffSize )
     ratioH = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
     step = m_pcPelFormat->comp[ch].step_minus1 + 1;
 
-    pTmpPel = m_pppcInputPel[ch][0];
+    pPel = m_pppcInputPel[ch][0];
     pTmpBuff = ppBuff[m_pcPelFormat->comp[ch].plane] + ( m_pcPelFormat->comp[ch].offset_plus1 - 1 );
 
     for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ); i++ )
     {
-      *pTmpPel = *pTmpBuff;
+      *pPel = *pTmpBuff;
       for( b = 1; b < bytesPixel; b++ )
       {
         pTmpBuff++;
-        *pTmpPel |= ( *pTmpBuff << ( 8 * b ) );
+        *pPel = ( *pPel << shiftOutput ) + ( *pTmpBuff << shiftInput );
       }
-      pTmpPel++;
+      pPel++;
       pTmpBuff += step;
     }
   }
@@ -1186,3 +1198,4 @@ Double PlaYUVerFrame::getSSIM( PlaYUVerFrame* Org, Int component )
 }
 
 }  // NAMESPACE
+

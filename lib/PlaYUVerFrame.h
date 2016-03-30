@@ -211,7 +211,7 @@ public:
   Void copyFrom( PlaYUVerFrame* );
   Void copyFrom( PlaYUVerFrame*, UInt, UInt );
 
-  Void frameFromBuffer( Byte*, UInt64 );
+  Void frameFromBuffer( Byte*, UInt64, Int );
   Void frameToBuffer( Byte* );
 
   Void fillRGBBuffer();

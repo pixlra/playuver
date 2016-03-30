@@ -112,7 +112,7 @@ Void LibAvContextHandle::closeAvFormat()
   m_bHasStream = false;
 }
 
-Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& bits_pel, Double& frame_rate,
+Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& endianness, UInt& bits_pel, Double& frame_rate,
     UInt64& num_frames )
 {
   fmt_ctx = NULL;
@@ -177,9 +177,9 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
     getMem1D( &m_pchFrameBuffer, m_uiFrameBufferSize );
   }
 
-  const char *name = avcodec_get_name( video_dec_ctx->codec_id );  
+  const char *name = avcodec_get_name( video_dec_ctx->codec_id );
   sprintf( m_acCodecName, "%s", name );
-  
+
   Double fr = 30;
   if( video_stream->avg_frame_rate.den && video_stream->avg_frame_rate.num )
     fr = av_q2d( video_stream->avg_frame_rate );

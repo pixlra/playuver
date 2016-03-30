@@ -119,6 +119,7 @@ enum RGBcomponent
   COLOR_A,
 };
 
+
 inline std::string lowercase( const std::string& in )
 {
   std::string out;

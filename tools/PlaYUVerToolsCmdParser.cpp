@@ -71,6 +71,7 @@ Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char *argv[] )
   ( "size,s", m_strResolution, "size (WxH)" ) /**/
   ( "pel_fmt", m_strPelFmt, "pixel format" ) /**/
   ( "bits_pel", m_uiBitsPerPixel, "bits per pixel" ) /**/
+  ( "endianness", m_strEndianness, "File endianness (big, little)" ) /**/
   ( "frames,f", m_iFrames, "number of frames to parse" );
 
   Opts().addOptions()/**/

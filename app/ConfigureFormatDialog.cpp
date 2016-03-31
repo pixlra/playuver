@@ -205,6 +205,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   endiannessLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
   endiannessLayout->addWidget( endiannessComboBox );
   m_widgetEndianness = new QWidget();
+  m_widgetEndianness->setContentsMargins( 0,0,0,0 );
   m_widgetEndianness->setLayout( endiannessLayout );
   m_widgetEndianness->setVisible( true );
 
@@ -223,6 +224,10 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   framerateFormatLayout->addWidget( framerateFormatLabel );
   framerateFormatLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
   framerateFormatLayout->addWidget( m_spinBoxFrameRate );
+  QWidget* framerateWidget = new QWidget();
+  framerateWidget->setContentsMargins( 0,0,0,0 );
+  framerateWidget->setLayout( framerateFormatLayout );
+
 
   /*
    *  Confirmation buttons
@@ -238,7 +243,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   MainLayout->addWidget( pixelGroup );
   MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Minimum ) );
   MainLayout->addWidget( m_widgetEndianness );
-  MainLayout->addLayout( framerateFormatLayout );
+  MainLayout->addWidget( framerateWidget );
   MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
   MainLayout->addWidget( dialogButtonOkCancel );
 
@@ -286,6 +291,14 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWi
   m_comboBoxColorSpace->setCurrentIndex( colorSpace );
   m_comboBoxPixelFormat->setCurrentIndex( sampling );
   m_spinBoxBits->setValue( rBits );
+  if( rBits > 8 )
+  {
+    m_widgetEndianness->setVisible( true );
+  }
+  else
+  {
+    m_widgetEndianness->setVisible( false );
+  }
   m_spinBoxFrameRate->setValue( rFrameRate );
   for( Int i = 0; i < standardResolutionSizes.size(); i++ )
   {

@@ -35,8 +35,9 @@
 namespace plaYUVer
 {
 
-class LibAvContextHandle;
+class StreamHandlerLibav;
 class LibOpenCVHandler;
+class PlaYUVerStreamHandlerIf;
 
 typedef struct
 {
@@ -69,6 +70,7 @@ typedef struct
     formatsList.insert( formatsList.end(), new_fmts.begin(), new_fmts.end() ); \
   }
 
+
 /**
  * \class PlaYUVerStream
  * \ingroup  PlaYUVerLib PlaYUVerLib_Stream
@@ -95,15 +97,15 @@ public:
     END_OF_SEQ,
   };
 
+  std::string getFormatName();
+  std::string getCodecName();
+
   Bool open( std::string filename, std::string resolution, std::string input_format, UInt bitsPel, Int endianness, UInt frame_rate,  Bool bInput = true );
   Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput = true );
 
   Bool reload();
 
   Void close();
-
-  Bool openFile();
-  Void closeFile();
 
   Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, UInt& rFrameRate );
 
@@ -133,14 +135,6 @@ public:
   std::string getFileName()
   {
     return m_cFilename;
-  }
-  std::string getFormatName()
-  {
-    return m_cFormatName;
-  }
-  std::string getCodecName()
-  {
-    return m_cCodedName;
   }
 
   UInt getFrameNum()
@@ -182,13 +176,11 @@ private:
     TOTAL_HANDLERR
   };
   Int m_iStreamHandler;
-  LibAvContextHandle* m_cLibAvContext;
+  PlaYUVerStreamHandlerIf* m_pcStreamHandler;
+  StreamHandlerLibav* m_cLibAvContext;
 
   std::string m_cFilename;
   Char* m_pchFilename;
-
-  std::string m_cFormatName;
-  std::string m_cCodedName;
 
   UInt m_uiWidth;
   UInt m_uiHeight;
@@ -199,8 +191,6 @@ private:
   UInt64 m_uiTotalFrameNum;
   Int64 m_iCurrFrameNum;
 
-  FILE* m_pFile; /**< The input file pointer >*/
-  std::fstream m_fsIOStream; /**< The input file pointer >*/
   Byte* m_pStreamBuffer;
 
   UInt m_uiFrameBufferSize;

@@ -32,7 +32,7 @@
 #include <limits.h>
 #endif
 #ifdef USE_FFMPEG
-#include "LibAvContextHandle.h"
+#include "StreamHandlerLibav.h"
 #endif
 #include "PlaYUVerFramePixelFormats.h"
 

@@ -18,13 +18,13 @@
  */
 
 /**
- * \file     LibAvContextHandle.cpp
+ * \file     StreamHandlerLibav.cpp
  * \ingroup  PlaYUVerLib
  * \brief    Interface with libav libs
  */
 
 #include <cstdio>
-#include "LibAvContextHandle.h"
+#include "StreamHandlerLibav.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"
 #include "LibMemory.h"
@@ -32,7 +32,7 @@
 namespace plaYUVer
 {
 
-std::vector<PlaYUVerSupportedFormat> LibAvContextHandle::supportedReadFormats()
+std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
   REGIST_PLAYUVER_SUPPORTED_FMT( "Portable Grayscale Map", "pgm" );
@@ -48,26 +48,26 @@ std::vector<PlaYUVerSupportedFormat> LibAvContextHandle::supportedReadFormats()
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
-std::vector<PlaYUVerSupportedFormat> LibAvContextHandle::supportedWriteFormats()
+std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedWriteFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
-std::vector<PlaYUVerSupportedFormat> LibAvContextHandle::supportedSaveFormats()
+std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedSaveFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
-static int open_codec_context( int *stream_idx, AVFormatContext *fmt_ctx, enum AVMediaType type )
+static int open_codec_context( int *stream_idx, AVFormatContext *m_cFmtCtx, enum AVMediaType type )
 {
   int ret;
   AVStream *st;
   AVCodecContext *dec_ctx = NULL;
   AVCodec *dec = NULL;
 
-  ret = av_find_best_stream( fmt_ctx, type, -1, -1, NULL, 0 );
+  ret = av_find_best_stream( m_cFmtCtx, type, -1, -1, NULL, 0 );
   if( ret < 0 )
   {
     return ret;
@@ -75,7 +75,7 @@ static int open_codec_context( int *stream_idx, AVFormatContext *fmt_ctx, enum A
   else
   {
     *stream_idx = ret;
-    st = fmt_ctx->streams[*stream_idx];
+    st = m_cFmtCtx->streams[*stream_idx];
 
     /* find decoder for the stream */
     dec_ctx = st->codec;
@@ -96,34 +96,21 @@ static int open_codec_context( int *stream_idx, AVFormatContext *fmt_ctx, enum A
   return 0;
 }
 
-Void LibAvContextHandle::closeAvFormat()
+// Bool StreamHandlerLibav::initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& bits_pel, Int& endianness, Double& frame_rate,
+//     UInt64& num_frames )
+Bool StreamHandlerLibav::openHandler( std::string strFilename, Bool bInput )
 {
-  if( m_bHasStream )
-  {
-    if( video_dec_ctx )
-      avcodec_close( video_dec_ctx );
+  const char* filename = strFilename.c_str();
 
-    if( fmt_ctx )
-      avformat_close_input( &fmt_ctx );
-
-    av_free( frame );
-    //av_free( video_dst_data[0] );
-  }
-  m_bHasStream = false;
-}
-
-Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& bits_pel, Int& endianness, Double& frame_rate,
-    UInt64& num_frames )
-{
-  fmt_ctx = NULL;
-  video_dec_ctx = NULL;
-  video_stream = NULL;
+  m_cFmtCtx = NULL;
+  m_cCodecCtx = NULL;
+  m_cStream = NULL;
 //  video_dst_data[0] = NULL;
 //  video_dst_data[1] = NULL;
 //  video_dst_data[2] = NULL;
 //  video_dst_data[3] = NULL;
-  video_stream_idx = -1;
-  frame = NULL;
+  m_iStreamIdx = -1;
+  m_cFrame = NULL;
   m_bHasStream = false;
 
   AVDictionary *format_opts = NULL;
@@ -131,40 +118,40 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
   /* register all formats and codecs */
   av_register_all();
 
-  if( width > 0 && height > 0 )
-  {
-    Char aux_string[10];
-    sprintf( aux_string, "%dx%d", width, height );
-    av_dict_set( &format_opts, "video_size", aux_string, 0 );
-  }
+//   if( width > 0 && height > 0 )
+//   {
+//     Char aux_string[10];
+//     sprintf( aux_string, "%dx%d", width, height );
+//     av_dict_set( &format_opts, "video_size", aux_string, 0 );
+//   }
 
-  Int ffmpeg_pel_format = g_PlaYUVerPixFmtDescriptorsList[pixel_format].ffmpegPelFormat;
-  if( ffmpeg_pel_format >= 0 )
-  {
-    av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AVPixelFormat( ffmpeg_pel_format ) ), 0 );
-  }
+//   Int ffmpeg_pel_format = g_PlaYUVerPixFmtDescriptorsList[pixel_format].ffmpegPelFormat;
+//   if( ffmpeg_pel_format >= 0 )
+//   {
+//     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AVPixelFormat( ffmpeg_pel_format ) ), 0 );
+//   }
 
   /* open input file, and allocate format context */
-  if( avformat_open_input( &fmt_ctx, filename, NULL, &format_opts ) < 0 )
+  if( avformat_open_input( &m_cFmtCtx, filename, NULL, &format_opts ) < 0 )
   {
     //qDebug( ) << " Could not open source file %s !!!" << filename << endl;
     return false;
   }
 
   /* retrieve stream information */
-  if( avformat_find_stream_info( fmt_ctx, NULL ) < 0 )
+  if( avformat_find_stream_info( m_cFmtCtx, NULL ) < 0 )
   {
     //qDebug( ) << " Could not find stream information !!!" << endl;
     return false;
   }
 
-  if( open_codec_context( &video_stream_idx, fmt_ctx, AVMEDIA_TYPE_VIDEO ) >= 0 )
+  if( open_codec_context( &m_iStreamIdx, m_cFmtCtx, AVMEDIA_TYPE_VIDEO ) >= 0 )
   {
-    video_stream = fmt_ctx->streams[video_stream_idx];
-    video_dec_ctx = video_stream->codec;
+    m_cStream = m_cFmtCtx->streams[m_iStreamIdx];
+    m_cCodecCtx = m_cStream->codec;
 
 //    /* allocate image where the decoded image will be put */
-//    ret = av_image_alloc( video_dst_data, video_dst_linesize, video_dec_ctx->width, video_dec_ctx->height, video_dec_ctx->pix_fmt, 1 );
+//    ret = av_image_alloc( video_dst_data, video_dst_linesize, m_cCodecCtx->width, m_cCodecCtx->height, m_cCodecCtx->pix_fmt, 1 );
 //    if( ret < 0 )
 //    {
 //      //qDebug( ) << " Could not allocate raw video buffer !!!" << endl;
@@ -173,48 +160,31 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
 //    }
 //    video_dst_bufsize = ret;
 
-    m_uiFrameBufferSize = av_image_get_buffer_size( video_dec_ctx->pix_fmt, video_dec_ctx->width, video_dec_ctx->height, 1 );
+    m_uiFrameBufferSize = av_image_get_buffer_size( m_cCodecCtx->pix_fmt, m_cCodecCtx->width, m_cCodecCtx->height, 1 );
     getMem1D( &m_pchFrameBuffer, m_uiFrameBufferSize );
   }
 
-  const char *name = avcodec_get_name( video_dec_ctx->codec_id );
+  const char *name = avcodec_get_name( m_cCodecCtx->codec_id );
   sprintf( m_acCodecName, "%s", name );
 
   Double fr = 30;
-  if( video_stream->avg_frame_rate.den && video_stream->avg_frame_rate.num )
-    fr = av_q2d( video_stream->avg_frame_rate );
+  if( m_cStream->avg_frame_rate.den && m_cStream->avg_frame_rate.num )
+    fr = av_q2d( m_cStream->avg_frame_rate );
 #if FF_API_R_FRAME_RATE
-  else if( video_stream->r_frame_rate.den && video_stream->r_frame_rate.num )
-    fr = av_q2d( video_stream->r_frame_rate );
+  else if( m_cStream->r_frame_rate.den && m_cStream->r_frame_rate.num )
+    fr = av_q2d( m_cStream->r_frame_rate );
 #endif
-  else if( video_stream->time_base.den && video_stream->time_base.num )
-    fr = 1 / av_q2d( video_stream->time_base );
-  else if( video_stream->codec->time_base.den && video_stream->codec->time_base.num )
-    fr = 1 / av_q2d( video_stream->codec->time_base );
+  else if( m_cStream->time_base.den && m_cStream->time_base.num )
+    fr = 1 / av_q2d( m_cStream->time_base );
+  else if( m_cStream->codec->time_base.den && m_cStream->codec->time_base.num )
+    fr = 1 / av_q2d( m_cStream->codec->time_base );
 
-  frame_rate = fr;
+  m_dFrameRate = fr;
 
-  /*if( video_stream->nb_frames )
-   {
-   num_frames = video_stream->nb_frames;
-   }
-   else*/if( fmt_ctx->duration != AV_NOPTS_VALUE )
-  {
-    Int64 duration = fmt_ctx->duration + 5000;
-    m_uiSecs = duration / AV_TIME_BASE;
-    num_frames = m_uiSecs * frame_rate;
-    m_uiMicroSec = duration % AV_TIME_BASE;
-  }
-  else
-  {
-    num_frames = 0;
-  }
-  num_frames = num_frames == 0 ? 1 : num_frames;
-
-  Int pix_fmt = video_dec_ctx->pix_fmt;
+  Int pix_fmt = m_cCodecCtx->pix_fmt;
 
   // Set bits per pixel to default (8 bits)
-  bits_pel = 8;
+  m_uiBitsPerPixel = 8;
 
   /**
    * Auxiliar conversation to re-use similar pixfmt
@@ -231,55 +201,52 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
     pix_fmt = AV_PIX_FMT_YUV444P;
     break;
   case AV_PIX_FMT_GRAY16LE:
-    bits_pel = 16;
-    endianness = 1;
+    m_uiBitsPerPixel = 16;
+    m_iEndianness = 1;
     pix_fmt = AV_PIX_FMT_GRAY8;
     break;
   case AV_PIX_FMT_GRAY16BE:
-    bits_pel = 16;
-    endianness = 0;
+    m_uiBitsPerPixel = 16;
+    m_iEndianness = 0;
     pix_fmt = AV_PIX_FMT_GRAY8;
     break;
   }
 
-  width = video_dec_ctx->width;
-  height = video_dec_ctx->height;
+  m_uiWidth = m_cCodecCtx->width;
+  m_uiHeight = m_cCodecCtx->height;
 
-  pixel_format = PlaYUVerFrame::NO_FMT;
+  m_iPixelFormat = PlaYUVerFrame::NO_FMT;
   for( Int i = 0; i < PLAYUVER_NUMBER_FORMATS; i++ )
   {
     if( g_PlaYUVerPixFmtDescriptorsList[i].ffmpegPelFormat == pix_fmt )
     {
-      pixel_format = i;
+      m_iPixelFormat = i;
       break;
     }
   }
-  if( pixel_format == PlaYUVerFrame::NO_FMT )
+  if( m_iPixelFormat == PlaYUVerFrame::NO_FMT )
   {
     throw "Cannot open file using FFmpeg libs - unsupported pixel format";
-    closeAvFormat();
     return false;
   }
 
   /* dump input information to stderr */
-  av_dump_format( fmt_ctx, 0, filename, 0 );
-  if( !video_stream )
+  av_dump_format( m_cFmtCtx, 0, filename, 0 );
+  if( !m_cStream )
   {
     //qDebug( ) << " Could not find audio or video stream in the input, aborting !!!" << endl;
-    closeAvFormat();
+    closeHandler();
     return false;
   }
 
 #if( LIBAVFORMAT_VERSION_MAJOR >= 55 )
-  frame = av_frame_alloc();
+  m_cFrame = av_frame_alloc();
 #else
-  frame = avcodec_alloc_frame();
+  m_cFrame = avcodec_alloc_frame();
 #endif
-  if( !frame )
+  if( !m_cFrame )
   {
-    //qDebug( ) << " Could not allocate frame !!!" << endl;
-    //ret = AVERROR( ENOMEM );
-    closeAvFormat();
+    closeHandler();
     return false;
   }
 
@@ -293,13 +260,62 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
   return true;
 }
 
-Bool LibAvContextHandle::decodeVideoPkt()
+Void StreamHandlerLibav::closeHandler()
+{
+  if( m_bHasStream )
+  {
+    if( m_cCodecCtx )
+      avcodec_close( m_cCodecCtx );
+
+    if( m_cFmtCtx )
+      avformat_close_input( &m_cFmtCtx );
+
+    av_free( m_cFrame );
+  }
+  m_bHasStream = false;
+}
+
+Void StreamHandlerLibav::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate )
+{
+  rWidth = m_uiWidth;
+  rHeight = m_uiHeight;
+  rInputFormat = m_iPixelFormat;
+  rBitsPerPel = m_uiBitsPerPixel;
+  rEndianness = m_iEndianness;
+  rFrameRate = m_dFrameRate;
+}
+
+
+UInt64 StreamHandlerLibav::calculateFrameNumber()
+{
+  UInt64 num_frames;
+//   if( m_cStream->nb_frames )
+//    {                                            *
+//    num_frames = m_cStream->nb_frames;
+//   }
+//   else
+  if( m_cFmtCtx->duration != AV_NOPTS_VALUE )
+  {
+    Int64 duration = m_cFmtCtx->duration + 5000;
+    m_uiSecs = duration / AV_TIME_BASE;
+    num_frames = m_uiSecs * m_dFrameRate;
+    m_uiMicroSec = duration % AV_TIME_BASE;
+  }
+  else
+  {
+    num_frames = 0;
+  }
+  num_frames = num_frames == 0 ? 1 : num_frames;
+  return num_frames;
+}
+
+Bool StreamHandlerLibav::decodeVideoPkt()
 {
   Int got_frame = 0;
   Int decResult;
-  if( pkt.stream_index == video_stream_idx )
+  if( pkt.stream_index == m_iStreamIdx )
   {
-    decResult = avcodec_decode_video2( video_dec_ctx, frame, &got_frame, &pkt );
+    decResult = avcodec_decode_video2( m_cCodecCtx, m_cFrame, &got_frame, &pkt );
     if( decResult < 0 )
     {
       fprintf( stderr, "Error decoding video frame\n" );
@@ -315,7 +331,7 @@ Bool LibAvContextHandle::decodeVideoPkt()
   return got_frame > 0 ? true : false;
 }
 
-Bool LibAvContextHandle::decodeAvFormat()
+Bool StreamHandlerLibav::read( Byte* pchBuffer )
 {
   Bool bGotFrame = false;
   AVPacket orig_pkt = pkt;
@@ -323,7 +339,7 @@ Bool LibAvContextHandle::decodeAvFormat()
   bGotFrame |= decodeVideoPkt();
 
   /* read frames from the file */
-  while( !bGotFrame && ( av_read_frame( fmt_ctx, &pkt ) >= 0 ) )
+  while( !bGotFrame && ( av_read_frame( m_cFmtCtx, &pkt ) >= 0 ) )
   {
     orig_pkt = pkt;
     do
@@ -348,9 +364,10 @@ Bool LibAvContextHandle::decodeAvFormat()
 
   if( bGotFrame )
   {
-    av_image_copy_to_buffer( m_pchFrameBuffer, m_uiFrameBufferSize, frame->data, frame->linesize, video_dec_ctx->pix_fmt, video_dec_ctx->width,
-        video_dec_ctx->height, 1 );
-
+    av_image_copy_to_buffer( m_pchFrameBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, m_cCodecCtx->pix_fmt, m_cCodecCtx->width,
+                             m_cCodecCtx->height, 1 );
+    av_image_copy_to_buffer( pchBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, m_cCodecCtx->pix_fmt, m_cCodecCtx->width,
+                             m_cCodecCtx->height, 1 );
     if( orig_pkt.size )
       av_free_packet( &orig_pkt );
 
@@ -360,9 +377,15 @@ Bool LibAvContextHandle::decodeAvFormat()
   return false;
 }
 
-Void LibAvContextHandle::seekAvFormat( UInt64 frame_num )
+Bool StreamHandlerLibav::write( Byte* pchBuffer )
 {
-  av_seek_frame( fmt_ctx, video_stream_idx, frame_num, AVSEEK_FLAG_FRAME );
+  return false;
+}
+
+Bool StreamHandlerLibav::seek( UInt64 iFrameNum )
+{
+  av_seek_frame( m_cFmtCtx, m_iStreamIdx, iFrameNum, AVSEEK_FLAG_FRAME );
+  return true;
 }
 
 }  // NAMESPACE

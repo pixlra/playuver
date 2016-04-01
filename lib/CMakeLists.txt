@@ -18,7 +18,7 @@ set(PlaYUVer_Lib_SRCS
 )
 
 IF( USE_FFMPEG )
-  LIST( APPEND PlaYUVer_Lib_SRCS LibAvContextHandle.cpp )
+  LIST( APPEND PlaYUVer_Lib_SRCS StreamHandlerLibav.cpp )
 ENDIF()
 
 IF( USE_OPENCV )

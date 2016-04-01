@@ -18,7 +18,7 @@
  */
 
 /**
- * \file     LibAvContextHandle.h
+ * \file     StreamHandlerLibav.h
  * \ingroup  PlaYUVerLib
  * \brief    Interface with libav libs
  */
@@ -49,11 +49,12 @@ extern "C"
 
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerStream.h"
+#include "PlaYUVerStreamHandlerIf.h"
 
 namespace plaYUVer
 {
 
-class LibAvContextHandle
+class StreamHandlerLibav: public PlaYUVerStreamHandlerIf
 {
 public:
 
@@ -61,46 +62,42 @@ public:
   static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedSaveFormats();
 
-  LibAvContextHandle() :
-          m_bHasStream( false )
+  StreamHandlerLibav()
   {
   }
-  Bool initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& bits_pel, Int& endianness, Double& frame_rate, UInt64& num_frames );
-  Void closeAvFormat();
-  Bool decodeAvFormat();
 
-  Void seekAvFormat( UInt64 frame_num );
+  Bool openHandler( std::string strFilename, Bool bInput );
+//   Bool initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& bits_pel, Int& endianness, Double& frame_rate, UInt64& num_frames );
+  Void closeHandler();
+  UInt64 calculateFrameNumber();
+  Bool seek( UInt64 iFrameNum );
+  Bool read( Byte* pchBuffer );
+  Bool write( Byte* pchBuffer );
 
-  Bool getStatus()
-  {
-    return m_bHasStream;
-  }
-  Char* getFormatName()
-  {
-    return m_acFormatName;
-  }
-  Char* getCodecName()
-  {
-    return m_acCodecName;
-  }
+  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate );
+
   UInt getStreamDuration()
   {
     return m_uiSecs;
   }
 
-//  uint8_t *video_dst_data[4];
-//  int video_dst_linesize[4];
-//  int video_dst_bufsize;
-
   UChar* m_pchFrameBuffer;
   UInt64 m_uiFrameBufferSize;
 
 private:
-  AVFormatContext *fmt_ctx;
-  AVCodecContext *video_dec_ctx;
-  AVStream *video_stream;
-  Int video_stream_idx;
-  AVFrame *frame;
+
+  UInt m_uiWidth;
+  UInt m_uiHeight;
+  Int m_iPixelFormat;
+  UInt m_uiBitsPerPixel;
+  Int m_iEndianness;
+  Double m_dFrameRate;
+
+  AVFormatContext* m_cFmtCtx;
+  AVCodecContext* m_cCodecCtx;
+  AVStream* m_cStream;
+  Int m_iStreamIdx;
+  AVFrame* m_cFrame;
   AVPacket pkt;
 
   Bool m_bHasStream;

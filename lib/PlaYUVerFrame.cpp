@@ -30,7 +30,7 @@
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"
 #ifdef USE_FFMPEG
-#include "LibAvContextHandle.h"
+#include "StreamHandlerLibav.h"
 #endif
 #ifdef USE_OPENCV
 #include "LibOpenCVHandler.h"

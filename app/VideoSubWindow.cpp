@@ -308,7 +308,8 @@ Void VideoSubWindow::refreshSubWindow()
 Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
 {
   ConfigureFormatDialog formatDialog( this );
-  UInt Width = 0, Height = 0, BitsPel = 8, Endianness = 0, FrameRate = 30;
+  UInt Width = 0, Height = 0, BitsPel = 8, FrameRate = 30;
+  Int Endianness = 0;
   Int InputFormat = PlaYUVerFrame::YUV420p;
 
   if( m_pCurrStream )

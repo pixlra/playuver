@@ -50,7 +50,7 @@ Q_OBJECT
 public:
 
   ConfigureFormatDialog( QWidget *parent = 0 );
-  Int runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, UInt& rEndianess, UInt& rFrameRate );
+  Int runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, Int& rEndianess, UInt& rFrameRate );
 
 private Q_SLOTS:
   void slotStandardResolutionSelected( int );
@@ -70,6 +70,7 @@ private:
   QComboBox *m_comboBoxPixelFormat;
   QSpinBox *m_spinBoxBits;
   QWidget* m_widgetEndianness;
+  QComboBox* m_comboBoxEndianness;
   QHBoxLayout* framerateFormatLayout;
   QSpinBox *m_spinBoxFrameRate;
 

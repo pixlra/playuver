@@ -194,16 +194,15 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   QLabel* endiannessLabel = new QLabel();
   endiannessLabel->setFont( menusFont );
   endiannessLabel->setText( "Endianness" );
-  QComboBox* endiannessComboBox = new QComboBox();
-  endiannessComboBox->setFont( normalFont );
-  endiannessComboBox->setSizePolicy( sizePolicy );
-  endiannessComboBox->clear();
-  endiannessComboBox->addItem( QStringLiteral("Big Endian") );
-  endiannessComboBox->addItem( QStringLiteral("Little Endian") );
-  endiannessComboBox->setCurrentIndex( 0 );
+  m_comboBoxEndianness = new QComboBox();
+  m_comboBoxEndianness->setFont( normalFont );
+  m_comboBoxEndianness->setSizePolicy( sizePolicy );
+  m_comboBoxEndianness->clear();
+  m_comboBoxEndianness->addItem( QStringLiteral("Big Endian") );
+  m_comboBoxEndianness->addItem( QStringLiteral("Little Endian") );
   endiannessLayout->addWidget( endiannessLabel );
   endiannessLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-  endiannessLayout->addWidget( endiannessComboBox );
+  endiannessLayout->addWidget( m_comboBoxEndianness );
   m_widgetEndianness = new QWidget();
   m_widgetEndianness->setContentsMargins( 0,0,0,0 );
   m_widgetEndianness->setLayout( endiannessLayout );
@@ -262,7 +261,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
 }
 
-Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, UInt& rEndianess, UInt& rFrameRate )
+Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, Int& rEndianess, UInt& rFrameRate )
 {
   // Set default values
   //setWindowTitle( "Configure resolution for " + Filename );
@@ -291,6 +290,7 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWi
   m_comboBoxColorSpace->setCurrentIndex( colorSpace );
   m_comboBoxPixelFormat->setCurrentIndex( sampling );
   m_spinBoxBits->setValue( rBits );
+  m_comboBoxEndianness->setCurrentIndex( rEndianess );
   if( rBits > 8 )
   {
     m_widgetEndianness->setVisible( true );
@@ -326,6 +326,7 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWi
     }
   }
   rBits = m_spinBoxBits->value();
+  rEndianess = m_comboBoxEndianness->currentIndex();
   rFrameRate = m_spinBoxFrameRate->value();
   return QDialog::Accepted;
 }

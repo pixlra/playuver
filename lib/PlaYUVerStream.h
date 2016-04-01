@@ -95,8 +95,8 @@ public:
     END_OF_SEQ,
   };
 
-  Bool open( std::string filename, std::string resolution, std::string input_format, UInt bitsPel, UInt endianness, UInt frame_rate,  Bool bInput = true );
-  Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, UInt endianness, UInt frame_rate, Bool bInput = true );
+  Bool open( std::string filename, std::string resolution, std::string input_format, UInt bitsPel, Int endianness, UInt frame_rate,  Bool bInput = true );
+  Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput = true );
 
   Bool reload();
 
@@ -105,7 +105,7 @@ public:
   Bool openFile();
   Void closeFile();
 
-  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, UInt& rEndianness, UInt& rFrameRate );
+  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, UInt& rFrameRate );
 
   Void loadAll();
 
@@ -194,7 +194,7 @@ private:
   UInt m_uiHeight;
   Int m_iPixelFormat;
   UInt m_uiBitsPerPixel;
-  UInt m_uiEndianness;
+  Int m_iEndianness;
   Double m_dFrameRate;
   UInt64 m_uiTotalFrameNum;
   Int64 m_iCurrFrameNum;

@@ -116,6 +116,7 @@ PlaYUVerStream::PlaYUVerStream()
   m_iCurrFrameNum = -1;
   m_iPixelFormat = -1;
   m_uiBitsPerPixel = 8;
+  m_iEndianness = -1;
   m_dFrameRate = 30;
   m_pStreamBuffer = NULL;
   m_cFilename = "";
@@ -190,7 +191,7 @@ Void PlaYUVerStream::findHandler()
   }
 }
 
-Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::string input_format_name, UInt bitsPel, UInt endianness, UInt frame_rate, Bool bInput )
+Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::string input_format_name, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput )
 {
   UInt width;
   UInt height;
@@ -215,7 +216,7 @@ Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::st
   return open( filename, width, height, input_format, bitsPel, endianness, frame_rate, bInput );
 }
 
-Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, UInt endianness, UInt frame_rate, Bool bInput )
+Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput )
 {
   if( m_bInit )
   {
@@ -228,7 +229,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   m_uiHeight = height;
   m_iPixelFormat = input_format;
   m_uiBitsPerPixel = bitsPel;
-  m_uiEndianness = endianness;
+  m_iEndianness = endianness;
   m_dFrameRate = frame_rate;
 
   m_pchFilename = new Char[m_cFilename.size() + 1];
@@ -248,7 +249,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
 #ifdef USE_FFMPEG
   if( m_iStreamHandler == FFMPEG )
   {
-    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPerPixel, m_uiEndianness, m_dFrameRate, m_uiTotalFrameNum ) )
+    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPerPixel, m_iEndianness, m_dFrameRate, m_uiTotalFrameNum ) )
     {
       throw "Cannot open file using FFmpeg libs";
     }
@@ -371,7 +372,7 @@ Bool PlaYUVerStream::reload()
   if( m_iStreamHandler == FFMPEG )
   {
     m_cLibAvContext->closeAvFormat();
-    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPerPixel, m_uiEndianness, m_dFrameRate, m_uiTotalFrameNum ) )
+    if( !m_cLibAvContext->initAvFormat( m_pchFilename, m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPerPixel, m_iEndianness, m_dFrameRate, m_uiTotalFrameNum ) )
     {
       throw "Cannot open file using FFmpeg libs";
     }
@@ -462,7 +463,7 @@ Void PlaYUVerStream::close()
   m_bInit = false;
 }
 
-Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, UInt& rEndianness, UInt& rFrameRate )
+Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, UInt& rFrameRate )
 {
   if( m_bInit )
   {
@@ -470,7 +471,7 @@ Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, 
     rHeight = m_uiHeight;
     rInputFormat = m_iPixelFormat;
     rBitsPerPel = m_uiBitsPerPixel;
-    rEndianness = m_uiEndianness;
+    rEndianness = m_iEndianness;
     rFrameRate = m_dFrameRate;
   }
   else
@@ -581,7 +582,7 @@ Void PlaYUVerStream::readFrame()
       throw "[PlaYUVerStream] Error reading frame from libav";
       return;
     }
-    m_pcNextFrame->frameFromBuffer( m_cLibAvContext->m_pchFrameBuffer, m_cLibAvContext->m_uiFrameBufferSize, m_uiEndianness );
+    m_pcNextFrame->frameFromBuffer( m_cLibAvContext->m_pchFrameBuffer, m_cLibAvContext->m_uiFrameBufferSize, m_iEndianness );
   }
 #endif
   if( m_iStreamHandler == YUV_IO )
@@ -593,7 +594,7 @@ Void PlaYUVerStream::readFrame()
       throw "[PlaYUVerStream] Cannot read file";
       return;
     }
-    m_pcNextFrame->frameFromBuffer( m_pStreamBuffer, bytes_read, m_uiEndianness );
+    m_pcNextFrame->frameFromBuffer( m_pStreamBuffer, bytes_read, m_iEndianness );
   }
   m_uiCurrFrameFileIdx++;
   return;

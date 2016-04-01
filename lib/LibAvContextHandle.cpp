@@ -231,8 +231,13 @@ Bool LibAvContextHandle::initAvFormat( const char* filename, UInt& width, UInt& 
     pix_fmt = AV_PIX_FMT_YUV444P;
     break;
   case AV_PIX_FMT_GRAY16LE:
+    bits_pel = 16;
+    endianness = 1;
+    pix_fmt = AV_PIX_FMT_GRAY8;
+    break;
   case AV_PIX_FMT_GRAY16BE:
     bits_pel = 16;
+    endianness = 0;
     pix_fmt = AV_PIX_FMT_GRAY8;
     break;
   }

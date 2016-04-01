@@ -312,7 +312,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   Int InputFormat = PlaYUVerFrame::YUV420p;
 
   if( m_pCurrStream )
-    m_pCurrStream->getFormat( Width, Height, InputFormat, BitsPel, FrameRate );
+    m_pCurrStream->getFormat( Width, Height, InputFormat, BitsPel, Endianness, FrameRate );
 
   if( !m_pCurrStream )
   {

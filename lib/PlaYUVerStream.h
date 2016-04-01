@@ -105,7 +105,7 @@ public:
   Bool openFile();
   Void closeFile();
 
-  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, UInt& rFrameRate );
+  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, UInt& rEndianness, UInt& rFrameRate );
 
   Void loadAll();
 

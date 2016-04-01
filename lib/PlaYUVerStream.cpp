@@ -462,7 +462,7 @@ Void PlaYUVerStream::close()
   m_bInit = false;
 }
 
-Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, UInt& rFrameRate )
+Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, UInt& rEndianness, UInt& rFrameRate )
 {
   if( m_bInit )
   {
@@ -470,6 +470,7 @@ Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, 
     rHeight = m_uiHeight;
     rInputFormat = m_iPixelFormat;
     rBitsPerPel = m_uiBitsPerPixel;
+    rEndianness = m_uiEndianness;
     rFrameRate = m_dFrameRate;
   }
   else
@@ -478,6 +479,7 @@ Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, 
     rHeight = 0;
     rInputFormat = PlaYUVerFrame::YUV420p;
     rBitsPerPel = 8;
+    rEndianness = 0;
     rFrameRate = 30;
   }
 }

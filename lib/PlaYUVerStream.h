@@ -85,7 +85,8 @@ public:
 
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
-  static std::vector<PlaYUVerSupportedFormat> supportedSaveFormats();
+
+  static CreateStreamHandlerFn findStreamHandler( std::string strFilename, bool bRead );
 
   static std::vector<PlaYUVerStdResolution> stdResolutionSizes();
 
@@ -166,26 +167,11 @@ public:
 private:
 
   Bool m_bInit;
-  Bool m_bIsInput;
-  Bool m_bIsOpened;
-
-  Bool m_bLoadAll;
-
-  enum PlaYUVerStreamHandlers
-  {
-    INVALID_HANDLER = -1,
-    YUV_IO,
-    OPENCV_HANDLER,
-    FFMPEG,
-    TOTAL_HANDLERR
-  };
-  Int m_iStreamHandler;
   CreateStreamHandlerFn m_pfctCreateHandler;
   PlaYUVerStreamHandlerIf* m_pcStreamHandler;
 
+  Bool m_bIsInput;
   std::string m_cFilename;
-  Char* m_pchFilename;
-
   UInt m_uiWidth;
   UInt m_uiHeight;
   Int m_iPixelFormat;
@@ -195,7 +181,7 @@ private:
   UInt64 m_uiTotalFrameNum;
   Int64 m_iCurrFrameNum;
 
-  Byte* m_pStreamBuffer;
+  Bool m_bLoadAll;
 
   UInt m_uiFrameBufferSize;
   PlaYUVerFrame **m_ppcFrameBuffer;

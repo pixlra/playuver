@@ -62,7 +62,6 @@ public:
 
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
-  static std::vector<PlaYUVerSupportedFormat> supportedSaveFormats();
 
   StreamHandlerLibav()
   {

@@ -305,7 +305,7 @@ Void PlaYUVerApp::save()
     QString supported = tr( "Supported Files (" );
     QStringList formatsList;
 
-    std::vector<PlaYUVerSupportedFormat> supportedFmts = PlaYUVerStream::supportedSaveFormats();
+    std::vector<PlaYUVerSupportedFormat> supportedFmts = PlaYUVerStream::supportedWriteFormats();
     for( UInt i = 0; i < supportedFmts.size(); i++ )
     {
       QString currFmt;

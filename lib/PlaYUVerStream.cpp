@@ -63,18 +63,8 @@ std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedWriteFormats()
 #ifdef USE_FFMPEG
   APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerLibav, Write );
 #endif
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
-}
-
-std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedSaveFormats()
-{
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  APPEND_PLAYUVER_SUPPORTED_FMT( PlaYUVerStream, Write );
-#ifdef USE_FFMPEG
-  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerLibav, Save );
-#endif
 #ifdef USE_OPENCV
-  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerOpenCV, Save );
+  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerOpenCV, Write );
 #endif
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
@@ -105,15 +95,38 @@ std::vector<PlaYUVerStdResolution> PlaYUVerStream::stdResolutionSizes()
   return stdResList;
 }
 
+
+CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( std::string strFilename, bool bRead )
+{
+  std::string currExt = strFilename.substr( strFilename.find_last_of( "." ) + 1 );
+  currExt = lowercase( currExt );
+
+  std::vector<PlaYUVerSupportedFormat> supportedFmts;
+  if( bRead )
+  {
+    supportedFmts = PlaYUVerStream::supportedReadFormats();
+  }
+  else
+  {
+    supportedFmts = PlaYUVerStream::supportedWriteFormats();
+  }
+  for( UInt i = 0; i < supportedFmts.size(); i++ )
+  {
+    if( supportedFmts[i].formatExt == currExt )
+    {
+      return supportedFmts[i].formatFct;
+    }
+  }
+  return NULL;
+}
+
 PlaYUVerStream::PlaYUVerStream()
 {
   m_bInit = false;
-  m_bIsInput = true;
-  m_bIsOpened = false;
-  m_bLoadAll = false;
-  m_iStreamHandler = INVALID_HANDLER;
+  m_pfctCreateHandler = NULL;
   m_pcStreamHandler = NULL;
-  m_pchFilename = NULL;
+  m_bIsInput = true;
+  m_bLoadAll = false;
   m_uiWidth = 0;
   m_uiHeight = 0;
   m_uiTotalFrameNum = 0;
@@ -122,7 +135,6 @@ PlaYUVerStream::PlaYUVerStream()
   m_uiBitsPerPixel = 8;
   m_iEndianness = -1;
   m_dFrameRate = 30;
-  m_pStreamBuffer = NULL;
   m_cFilename = "";
   m_pcCurrFrame = NULL;
   m_pcNextFrame = NULL;
@@ -187,40 +199,6 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   m_iEndianness = endianness;
   m_dFrameRate = frame_rate;
 
-  m_pchFilename = new Char[m_cFilename.size() + 1];
-  std::copy( m_cFilename.begin(), m_cFilename.end(), m_pchFilename );
-  m_pchFilename[m_cFilename.size()] = '\0';  // don't forget the terminating 0
-
-
-  m_iStreamHandler = INVALID_HANDLER;
-  std::string currExt = m_cFilename.substr( m_cFilename.find_last_of( "." ) + 1 );
-  currExt = lowercase( currExt );
-
-  std::vector<PlaYUVerSupportedFormat> supportedFmts;
-  if( m_bIsInput )
-  {
-    supportedFmts = supportedReadFormats();
-  }
-  else
-  {
-    supportedFmts = supportedWriteFormats();
-  }
-  for( UInt i = 0; i < supportedFmts.size(); i++ )
-  {
-    if( supportedFmts[i].formatExt == currExt )
-    {
-      m_pfctCreateHandler = supportedFmts[i].formatFct;
-      break;
-    }
-  }
-
-//   if( m_iStreamHandler == INVALID_HANDLER )
-//   {
-//     close();
-//     throw "Invalid file format";
-//     return m_bInit;
-//   }
-
 
 // #ifdef USE_OPENCV
 //   if( m_iStreamHandler == OPENCV_HANDLER )
@@ -238,6 +216,13 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
 //     m_uiTotalFrameNum = 1;
 //   }
 // #endif
+
+  m_pfctCreateHandler = PlaYUVerStream::findStreamHandler( filename, m_bIsInput );
+  if( !m_pfctCreateHandler )
+  {
+    close();
+    throw "[PlaYUVerStream] Invalid handler";
+  }
 
   m_pcStreamHandler = m_pfctCreateHandler();
 
@@ -323,12 +308,12 @@ Bool PlaYUVerStream::reload()
 {
   m_pcStreamHandler->setBytesPerFrame( m_pcCurrFrame->getBytesPerFrame() );
 
-    m_pcStreamHandler->closeHandler();
-    if( !m_pcStreamHandler->openHandler( m_cFilename, m_bIsInput ) )
-    {
-      throw "[PlaYUVerStream] Cannot open file using FFmpeg libs";
-    }
-    m_uiTotalFrameNum = m_pcStreamHandler->calculateFrameNumber();
+  m_pcStreamHandler->closeHandler();
+  if( !m_pcStreamHandler->openHandler( m_cFilename, m_bIsInput ) )
+  {
+    throw "[PlaYUVerStream] Cannot open file using FFmpeg libs";
+  }
+  m_uiTotalFrameNum = m_pcStreamHandler->calculateFrameNumber();
 
 
   if( m_uiWidth <= 0 || m_uiHeight <= 0 || m_iPixelFormat < 0 || m_uiTotalFrameNum < 1 )
@@ -350,7 +335,7 @@ Void PlaYUVerStream::close()
   if( !m_bInit )
     return;
 
-    m_pcStreamHandler->closeHandler();
+  m_pcStreamHandler->closeHandler();
 
 
 
@@ -365,12 +350,6 @@ Void PlaYUVerStream::close()
     freeMem1D<PlaYUVerFrame*>( m_ppcFrameBuffer );
     m_ppcFrameBuffer = NULL;
   }
-
-  if( m_pStreamBuffer )
-    freeMem1D<Byte>( m_pStreamBuffer );
-
-  if( m_pchFilename )
-    delete[] m_pchFilename;
 
   m_bLoadAll = false;
   m_bInit = false;
@@ -482,17 +461,11 @@ Void PlaYUVerStream::readFrame()
     return;
   }
 
-  if( m_iStreamHandler == OPENCV_HANDLER )
+  if( !m_pcStreamHandler->read( m_pcNextFrame ) )
   {
+    throw "[PlaYUVerStream] Cannot read file";
     return;
   }
-
-  if( !m_pcStreamHandler->read( m_pcNextFrame ) )
-    {
-      throw "[PlaYUVerStream] Cannot read file";
-      return;
-    }
-
 
   m_uiCurrFrameFileIdx++;
   return;
@@ -519,51 +492,14 @@ Bool PlaYUVerStream::saveFrame( const std::string& filename )
 
 Bool PlaYUVerStream::saveFrame( const std::string& filename, PlaYUVerFrame *saveFrame )
 {
-  Int iFileFormat = INVALID_HANDLER;
-  std::string fmtExt;
-
-  std::string currExt = filename.substr( filename.find_last_of( "." ) + 1 );
-
-  std::vector<PlaYUVerSupportedFormat> supportedFmts = PlaYUVerStream::supportedSaveFormats();
-  for( UInt i = 0; i < supportedFmts.size(); i++ )
+  PlaYUVerStream auxSaveStream;
+  if( !auxSaveStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(), saveFrame->getPelFormat(), saveFrame->getBitsPel(), saveFrame->getEndianness(), 1, false ) )
   {
-    if( supportedFmts[i].formatExt == currExt )
-    {
-      iFileFormat = i;
-      fmtExt = supportedFmts[i].formatExt[i];
-      break;
-    }
+    return false;
   }
-
-  if( iFileFormat != INVALID_HANDLER )
-  {
-    if( fmtExt == "yuv" )
-    {
-      PlaYUVerStream auxFrameStream;
-      if( !auxFrameStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(), saveFrame->getPelFormat(), saveFrame->getBitsPel(), 1, false ) )
-      {
-        return false;
-      }
-      auxFrameStream.writeFrame( saveFrame );
-      auxFrameStream.close();
-      return true;
-    }
-#if 0
-    else
-    {
-      saveFrame->fillRGBBuffer();
-      QImage qimg = QImage( saveFrame->getRGBBuffer(), saveFrame->getWidth(), saveFrame->getHeight(), QImage::Format_RGB32 );
-      return qimg.save( qtString );
-    }
-#endif
-// #ifdef USE_OPENCV
-//     else
-//     {
-//       return LibOpenCVHandler::saveFrame( saveFrame, filename );
-//     }
-// #endif
-  }
-  return false;
+  auxSaveStream.writeFrame( saveFrame );
+  auxSaveStream.close();
+  return true;
 }
 
 Bool PlaYUVerStream::setNextFrame()

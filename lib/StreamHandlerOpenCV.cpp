@@ -45,19 +45,13 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedReadFormats()
 std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedWriteFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
-}
-
-std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedSaveFormats()
-{
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-//   APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerOpenCV, Read );
+  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerOpenCV, Read );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
 Bool StreamHandlerOpenCV::openHandler( std::string strFilename, Bool bInput )
 {
-  m_cFilename = m_cFilename;
+  m_cFilename = strFilename;
   return true;
 }
 
@@ -93,8 +87,14 @@ Bool StreamHandlerOpenCV::read( PlaYUVerFrame* pcFrame )
 
 Bool StreamHandlerOpenCV::write( PlaYUVerFrame* pcFrame )
 {
+  Bool bRet = false;
   cv::Mat* pcCvFrame = pcFrame->getCvMat();
-  return cv::imwrite( m_cFilename.c_str(), *pcCvFrame );
+  if( pcCvFrame )
+  {
+    bRet = cv::imwrite( m_cFilename.c_str(), *pcCvFrame );
+    delete pcCvFrame;
+  }
+  return bRet;
 }
 
 }  // NAMESPACE

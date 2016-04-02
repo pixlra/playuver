@@ -54,12 +54,6 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedWriteFormats()
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
-std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedSaveFormats()
-{
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
-}
-
 static int open_codec_context( int *stream_idx, AVFormatContext *m_cFmtCtx, enum AVMediaType type )
 {
   int ret;
@@ -162,8 +156,10 @@ Bool StreamHandlerLibav::openHandler( std::string strFilename, Bool bInput )
     getMem1D( &m_pchFrameBuffer, m_uiFrameBufferSize );
   }
 
+  m_strFormatName = uppercase (strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
   const char *name = avcodec_get_name( m_cCodecCtx->codec_id );
-  sprintf( m_acCodecName, "%s", name );
+//   sprintf( m_acCodecName, "%s", name );
+  m_strCodecName = name;
 
   Double fr = 30;
   if( m_cStream->avg_frame_rate.den && m_cStream->avg_frame_rate.num )
@@ -206,6 +202,8 @@ Bool StreamHandlerLibav::openHandler( std::string strFilename, Bool bInput )
   case AV_PIX_FMT_GRAY16BE:
     m_uiBitsPerPixel = 16;
     m_iEndianness = 0;
+    pix_fmt = AV_PIX_FMT_GRAY8;
+  case AV_PIX_FMT_PAL8:
     pix_fmt = AV_PIX_FMT_GRAY8;
     break;
   }

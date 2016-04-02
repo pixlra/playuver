@@ -51,7 +51,7 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array
         << d.m_uiHeight
         << d.m_iPelFormat
         << d.m_uiBitsPelPixel
-        << d.m_uiEndianness
+        << d.m_iEndianness
         << d.m_uiFrameRate
         << d.m_uiFileSize;
   }
@@ -70,7 +70,7 @@ QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& array )
     in >> d.m_uiHeight;
     in >> d.m_iPelFormat;
     in >> d.m_uiBitsPelPixel;
-    in >> d.m_uiEndianness;
+    in >> d.m_iEndianness;
     in >> d.m_uiFrameRate;
     in >> d.m_uiFileSize;
     array.append( d );
@@ -346,6 +346,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   m_sStreamInfo.m_uiHeight = Height;
   m_sStreamInfo.m_iPelFormat = InputFormat;
   m_sStreamInfo.m_uiBitsPelPixel = BitsPel;
+  m_sStreamInfo.m_iEndianness = Endianness;
   m_sStreamInfo.m_uiFrameRate = FrameRate;
   m_sStreamInfo.m_uiFileSize = QFileInfo( cFilename ).size();
 
@@ -368,7 +369,7 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
   }
 
   if( !m_pCurrStream->open( streamInfo->m_cFilename.toStdString(), streamInfo->m_uiWidth, streamInfo->m_uiHeight, streamInfo->m_iPelFormat,
-    streamInfo->m_uiBitsPelPixel, streamInfo->m_uiEndianness, streamInfo->m_uiFrameRate ) )
+    streamInfo->m_uiBitsPelPixel, streamInfo->m_iEndianness, streamInfo->m_uiFrameRate ) )
   {
     return false;
   }

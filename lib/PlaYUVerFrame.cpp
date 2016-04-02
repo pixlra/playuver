@@ -33,7 +33,7 @@
 #include "StreamHandlerLibav.h"
 #endif
 #ifdef USE_OPENCV
-#include "LibOpenCVHandler.h"
+#include "StreamHandlerOpenCV.h"
 #endif
 #ifdef USE_PIXFC
 #include "pixfc-sse.h"
@@ -74,14 +74,14 @@ std::vector<std::string> PlaYUVerFrame::supportedPixelFormatListNames( Int color
   return formatsList;
 }
 
-PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel )
+PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel, Int endianness )
 {
-  init( width, height, pelFormat, bitsPixel );
+  init( width, height, pelFormat, bitsPixel, endianness );
 }
 
 PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, Bool bCopy )
 {
-  init( other->getWidth(), other->getHeight(), other->getPelFormat(), other->getBitsPel() );
+  init( other->getWidth(), other->getHeight(), other->getPelFormat(), other->getBitsPel(), other->getEndianness() );
   copyFrom( other );
 }
 
@@ -105,7 +105,7 @@ PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt a
       areaHeight++;
   }
 
-  init( areaWidth, areaHeight, other->getPelFormat(), other->getBitsPel() );
+  init( areaWidth, areaHeight, other->getPelFormat(), other->getBitsPel(), other->getEndianness() );
   copyFrom( other, posX, posY );
 }
 
@@ -138,10 +138,10 @@ static Int getMem3ImageComponents( Pel**** array3D, Int dim1, Int dim2, Int log2
 
   total_mem_size += getMem2D<Pel*>( array3D, dim0, dim1 );
 
-  if( ( ( *array3D )[0][0] = ( Pel* )xCallocMem( mem_size, sizeof(Pel) ) ) == NULL )
+  if( ( ( *array3D )[0][0] = ( Pel* )xCallocMem( mem_size, sizeof( Pel ) ) ) == NULL )
     printf( "getMem3DImageComponents: array1D" );
 
-  total_mem_size += mem_size * sizeof(Pel);
+  total_mem_size += mem_size * sizeof( Pel );
 
   // Luma
   for( i = 1; i < dim1; i++ )
@@ -163,7 +163,7 @@ static Int getMem3ImageComponents( Pel**** array3D, Int dim1, Int dim2, Int log2
   return total_mem_size;
 }
 
-Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel )
+Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel, Int endianness )
 {
   m_bInit = false;
   m_pppcInputPel = NULL;
@@ -173,6 +173,11 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
   m_iPixelFormat = pel_format;
   m_iNumberChannels = 3;
   m_uiBitsPel = bitsPixel > 8 ? bitsPixel : 8;
+  m_iEndianness = endianness;
+  if( m_uiBitsPel > 8 && m_iEndianness == -1 )
+  {
+    throw "Invalid endianness type for Bits per Pixel greater than 8";
+  }
   m_uiHalfPelValue = 1 << ( m_uiBitsPel - 1 );
 
   if( m_uiWidth == 0 || m_uiHeight == 0 || m_iPixelFormat == -1 || bitsPixel > 16 )
@@ -364,7 +369,7 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame )
     return;
   m_bHasRGBPel = false;
   m_bHasHistogram = false;
-  memcpy( *m_pppcInputPel[LUMA], input_frame->getPelBufferYUV()[LUMA][0], getBytesPerFrame() * sizeof(Pel) );
+  memcpy( *m_pppcInputPel[LUMA], input_frame->getPelBufferYUV()[LUMA][0], getBytesPerFrame() * sizeof( Pel ) );
 }
 
 Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
@@ -378,18 +383,23 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
     Int ratioW = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
     for( UInt i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ); i++ )
     {
-      memcpy( m_pppcInputPel[ch][i], &( pInput[ch][( yPos >> ratioH ) + i][( xPos >> ratioW )] ), ( m_uiWidth >> ratioW ) * sizeof(Pel) );
+      memcpy( m_pppcInputPel[ch][i], &( pInput[ch][( yPos >> ratioH ) + i][( xPos >> ratioW )] ), ( m_uiWidth >> ratioW ) * sizeof( Pel ) );
     }
   }
   m_bHasRGBPel = false;
   m_bHasHistogram = false;
 }
 
-Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, UInt64 uiBuffSize, Int endianess )
+Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, UInt64 uiBuffSize )
 {
   if( uiBuffSize != getBytesPerFrame() )
     return;
 
+  frameFromBuffer( Buff );
+}
+
+Void PlaYUVerFrame::frameFromBuffer( Byte *Buff )
+{
   Byte* ppBuff[MAX_NUMBER_PLANES];
   Byte* pTmpBuff;
   Pel* pPel;
@@ -398,7 +408,7 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, UInt64 uiBuffSize, Int endianes
   Int ratioH, ratioW, step;
   UInt i, ch, b;
 
-  if( endianess == 1 )
+  if( m_iEndianness == 1 )
   {
     shiftInput = 8;
     shiftOutput = 0;
@@ -913,11 +923,11 @@ Void PlaYUVerFrame::openPixfc()
 #ifdef USE_PIXFC
   m_pcPixfc = NULL;
   PixFcPixelFormat input_format = PixFcYUV420P;
-  PixFcFlag flags = (PixFcFlag)(PixFcFlag_Default + PixFcFlag_NNbResamplingOnly);
+  PixFcFlag flags = ( PixFcFlag )( PixFcFlag_Default + PixFcFlag_NNbResamplingOnly );
   UInt input_row_size = m_uiWidth;
-  if (create_pixfc(&m_pcPixfc, input_format, PixFcRGB24, m_uiWidth, m_uiHeight, input_row_size, m_uiWidth * 3, flags ) != 0)
+  if( create_pixfc( &m_pcPixfc, input_format, PixFcRGB24, m_uiWidth, m_uiHeight, input_row_size, m_uiWidth * 3, flags ) != 0 )
   {
-    fprintf(stderr, "Error creating struct pixfc\n");
+    fprintf( stderr, "Error creating struct pixfc\n" );
     m_pcPixfc = NULL;
     return;
   }
@@ -928,7 +938,7 @@ Void PlaYUVerFrame::closePixfc()
 {
 #ifdef USE_PIXFC
   if( m_pcPixfc )
-  destroy_pixfc(m_pcPixfc);
+    destroy_pixfc( m_pcPixfc );
 #endif
 }
 
@@ -937,20 +947,20 @@ Void PlaYUVerFrame::FrametoRGB8Pixfc()
 #ifdef USE_PIXFC
   switch( m_iPixelFormat )
   {
-    case YUV420p:
-    m_pcPixfc->convert(m_pcPixfc, m_pppcInputPel, m_pcRGB32);
+  case YUV420p:
+    m_pcPixfc->convert( m_pcPixfc, m_pppcInputPel, m_pcRGB32 );
     break;
-    case YUV422p:
+  case YUV422p:
     break;
-    case YUV444p:
-    case YUYV422:
-    m_pcPixfc->convert(m_pcPixfc, m_pppcInputPel, m_pcRGB32);
+  case YUV444p:
+  case YUYV422:
+    m_pcPixfc->convert( m_pcPixfc, m_pppcInputPel, m_pcRGB32 );
     break;
-    case GRAY:
+  case GRAY:
     break;
-    case RGB8:
+  case RGB8:
     break;
-    default:
+  default:
     // No action.
     break;
   }
@@ -1020,7 +1030,7 @@ Void PlaYUVerFrame::fromCvMat( cv::Mat* pcCvFrame )
 
   if( !m_bInit )
   {
-    init( pcCvFrame->cols, pcCvFrame->rows, m_iPixelFormat, 8 );
+    init( pcCvFrame->cols, pcCvFrame->rows, m_iPixelFormat, 8, -1 );
   }
 
   m_bHasRGBPel = false;

@@ -38,9 +38,14 @@ namespace plaYUVer
  */
 class PlaYUVerRawHandler: public PlaYUVerStreamHandlerIf
 {
+  REGISTER_STREAM_HANDLER( PlaYUVerRawHandler )
+
 private:
   FILE* m_pFile; /**< The input file pointer >*/
+
 public:
+  PlaYUVerRawHandler() {}
+  ~PlaYUVerRawHandler() {}
 
   Bool openHandler( std::string strFilename, Bool bInput )
   {
@@ -78,16 +83,18 @@ public:
     }
     return false;
   }
-  Bool read( Byte* pchBuffer )
+  Bool read( PlaYUVerFrame* pcFrame )
   {
-    UInt64 processed_bytes = fread( pchBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
+    UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
     if( processed_bytes != m_uiNBytesPerFrame )
       return false;
+    pcFrame->frameFromBuffer( m_pStreamBuffer );
     return true;
   }
-  Bool write( Byte* pchBuffer )
+  Bool write( PlaYUVerFrame* pcFrame )
   {
-    UInt64 processed_bytes = fwrite( pchBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
+    pcFrame->frameToBuffer( m_pStreamBuffer );
+    UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
     if( processed_bytes != m_uiNBytesPerFrame )
       return false;
     return true;

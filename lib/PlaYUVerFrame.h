@@ -115,7 +115,7 @@ public:
    *
    * @note this function might misbehave if the pixel format enum is not correct
    */
-  PlaYUVerFrame( UInt width, UInt height, Int pelFormat = 0, Int bitsPixel = 8 );
+  PlaYUVerFrame( UInt width, UInt height, Int pelFormat = 0, Int bitsPixel = 8, Int endianness = -1 );
 
   /**
    * Creates and new frame with the configuration of an
@@ -158,7 +158,10 @@ public:
   {
     return m_uiBitsPel;
   }
-
+  Int getEndianness() const
+  {
+    return m_iEndianness;
+  }
   Pel*** getPelBufferYUV() const
   {
     return m_pppcInputPel;
@@ -207,11 +210,12 @@ public:
   PlaYUVerPixel getPixelValue( Int xPos, Int yPos );
   PlaYUVerPixel getPixelValue( Int xPos, Int yPos, PlaYUVerPixel::ColorSpace eColorSpace );
   Void setPixelValue( Int xPos, Int yPos, PlaYUVerPixel pixel );
-  
+
   Void copyFrom( PlaYUVerFrame* );
   Void copyFrom( PlaYUVerFrame*, UInt, UInt );
 
-  Void frameFromBuffer( Byte*, UInt64, Int );
+  Void frameFromBuffer( Byte*, UInt64 );
+  Void frameFromBuffer( Byte* );
   Void frameToBuffer( Byte* );
 
   Void fillRGBBuffer();
@@ -297,6 +301,7 @@ private:
   Int m_iPixelFormat;  //!< Pixel format number (it follows the list of supported pixel formats)
   Int m_iNumberChannels;  //!< Number of channels
   UInt m_uiBitsPel;  //!< Bits per pixel/channel
+  Int m_iEndianness;  //!< Endiannes of bytes
   UInt m_uiHalfPelValue;  //!< Bits per pixel/channel
 
   Pel*** m_pppcInputPel;
@@ -328,7 +333,7 @@ private:
    * @param pel_format pixel format index (always use PixelFormats enum)
    *
    */
-  Void init( UInt width, UInt height, Int pel_format, Int bitsPixel );
+  Void init( UInt width, UInt height, Int pel_format, Int bitsPixel, Int endianness );
 
   Void openPixfc();
   Void closePixfc();

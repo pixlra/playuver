@@ -56,6 +56,8 @@ namespace plaYUVer
 
 class StreamHandlerLibav: public PlaYUVerStreamHandlerIf
 {
+  REGISTER_STREAM_HANDLER( StreamHandlerLibav )
+
 public:
 
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
@@ -65,14 +67,16 @@ public:
   StreamHandlerLibav()
   {
   }
+  ~StreamHandlerLibav()
+  {
+  }
 
   Bool openHandler( std::string strFilename, Bool bInput );
-//   Bool initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& bits_pel, Int& endianness, Double& frame_rate, UInt64& num_frames );
   Void closeHandler();
   UInt64 calculateFrameNumber();
   Bool seek( UInt64 iFrameNum );
-  Bool read( Byte* pchBuffer );
-  Bool write( Byte* pchBuffer );
+  Bool read( PlaYUVerFrame* pcFrame );
+  Bool write( PlaYUVerFrame* pcFrame );
 
   Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate );
 

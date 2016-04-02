@@ -18,13 +18,13 @@
  */
 
 /**
- * \file     LibOpenCVHandler.h
+ * \file     StreamHandlerOpenCV.h
  * \ingroup  PlaYUVerLib
  * \brief    Interface with opencv lib
  */
 
-#ifndef __LIBOPENCVHANDLER_H__
-#define __LIBOPENCVHANDLER_H__
+#ifndef __STREAMHANDLEROPENCV_H__
+#define __STREAMHANDLEROPENCV_H__
 
 #include <inttypes.h>
 #include <vector>
@@ -32,29 +32,43 @@
 #include <opencv2/opencv.hpp>
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerStream.h"
+#include "PlaYUVerStreamHandlerIf.h"
 
 namespace plaYUVer
 {
 
 class PlaYUVerFrame;
 
-class LibOpenCVHandler
+class StreamHandlerOpenCV: public PlaYUVerStreamHandlerIf
 {
+  REGISTER_STREAM_HANDLER( StreamHandlerOpenCV )
+
 public:
 
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedSaveFormats();
 
-  LibOpenCVHandler()
+  StreamHandlerOpenCV()
+  {
+  }
+  ~StreamHandlerOpenCV()
   {
   }
 
-  static PlaYUVerFrame* loadFrame( std::string filename );
-  static Bool saveFrame( PlaYUVerFrame* pcFrame, std::string filename );
+  Bool openHandler( std::string strFilename, Bool bInput );
+  Void closeHandler();
+  UInt64 calculateFrameNumber();
+  Bool seek( UInt64 iFrameNum );
+  Bool read( PlaYUVerFrame* pcFrame );
+  Bool write( PlaYUVerFrame* pcFrame );
 
+  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate );
+
+private:
+  std::string m_cFilename;
 };
 
 }  // NAMESPACE
 
-#endif // __LIBOPENCVHANDLER_H__
+#endif // __STREAMHANDLEROPENCV_H__

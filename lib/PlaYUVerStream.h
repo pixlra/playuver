@@ -35,7 +35,6 @@
 namespace plaYUVer
 {
 
-class StreamHandlerLibav;
 class LibOpenCVHandler;
 class PlaYUVerStreamHandlerIf;
 
@@ -46,10 +45,14 @@ typedef struct
   UInt uiHeight;
 } PlaYUVerStdResolution;
 
+
+typedef PlaYUVerStreamHandlerIf* (*CreateStreamHandlerFn)( void );
+
 typedef struct
 {
   std::string formatName;
   std::string formatExt;
+  CreateStreamHandlerFn formatFct;
 } PlaYUVerSupportedFormat;
 
 #define INI_REGIST_PLAYUVER_SUPPORTED_FMT \
@@ -59,9 +62,10 @@ typedef struct
 #define END_REGIST_PLAYUVER_SUPPORTED_FMT \
         return formatsList;
 
-#define REGIST_PLAYUVER_SUPPORTED_FMT( name, ext ) \
+        #define REGIST_PLAYUVER_SUPPORTED_FMT( handler, name, ext ) \
         formatElem.formatName = name; \
         formatElem.formatExt = lowercase( ext ); \
+        formatElem.formatFct = handler; \
         formatsList.push_back( formatElem );
 
 #define APPEND_PLAYUVER_SUPPORTED_FMT( class_name, fct ) \
@@ -176,8 +180,8 @@ private:
     TOTAL_HANDLERR
   };
   Int m_iStreamHandler;
+  CreateStreamHandlerFn m_pfctCreateHandler;
   PlaYUVerStreamHandlerIf* m_pcStreamHandler;
-  StreamHandlerLibav* m_cLibAvContext;
 
   std::string m_cFilename;
   Char* m_pchFilename;
@@ -199,8 +203,6 @@ private:
   PlaYUVerFrame *m_pcNextFrame;
   UInt m_uiFrameBufferIndex;
   UInt64 m_uiCurrFrameFileIdx;
-
-  Void findHandler();
 
 };
 

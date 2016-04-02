@@ -35,16 +35,16 @@ namespace plaYUVer
 std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( "Portable Grayscale Map", "pgm" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( "Portable Network Graphics", "png" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( "Joint Photographic Experts Group", "jpg" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( "Windows Bitmap", "bmp" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( "Audio video interleaved", "avi" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( "Windows media video", "wmv" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( "MPEG4", "mp4" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( "Matroska Multimedia Container", "mkv" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( "H.264 streams", "h264" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( "HEVC streams", "hevc" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Portable Grayscale Map", "pgm" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Portable Network Graphics", "png" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Joint Photographic Experts Group", "jpg" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows Bitmap", "bmp" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Audio video interleaved", "avi" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows media video", "wmv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "MPEG4", "mp4" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Matroska Multimedia Container", "mkv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "H.264 streams", "h264" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "HEVC streams", "hevc" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
@@ -96,8 +96,6 @@ static int open_codec_context( int *stream_idx, AVFormatContext *m_cFmtCtx, enum
   return 0;
 }
 
-// Bool StreamHandlerLibav::initAvFormat( const char* filename, UInt& width, UInt& height, Int& pixel_format, UInt& bits_pel, Int& endianness, Double& frame_rate,
-//     UInt64& num_frames )
 Bool StreamHandlerLibav::openHandler( std::string strFilename, Bool bInput )
 {
   const char* filename = strFilename.c_str();
@@ -331,7 +329,7 @@ Bool StreamHandlerLibav::decodeVideoPkt()
   return got_frame > 0 ? true : false;
 }
 
-Bool StreamHandlerLibav::read( Byte* pchBuffer )
+Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
 {
   Bool bGotFrame = false;
   AVPacket orig_pkt = pkt;
@@ -364,12 +362,14 @@ Bool StreamHandlerLibav::read( Byte* pchBuffer )
 
   if( bGotFrame )
   {
-    av_image_copy_to_buffer( m_pchFrameBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, m_cCodecCtx->pix_fmt, m_cCodecCtx->width,
-                             m_cCodecCtx->height, 1 );
-    av_image_copy_to_buffer( pchBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, m_cCodecCtx->pix_fmt, m_cCodecCtx->width,
+//     av_image_copy_to_buffer( m_pchFrameBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, m_cCodecCtx->pix_fmt, m_cCodecCtx->width,
+//                              m_cCodecCtx->height, 1 );
+    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, m_cCodecCtx->pix_fmt, m_cCodecCtx->width,
                              m_cCodecCtx->height, 1 );
     if( orig_pkt.size )
       av_free_packet( &orig_pkt );
+
+    pcFrame->frameFromBuffer( m_pStreamBuffer );
 
     return true;
   }
@@ -377,7 +377,7 @@ Bool StreamHandlerLibav::read( Byte* pchBuffer )
   return false;
 }
 
-Bool StreamHandlerLibav::write( Byte* pchBuffer )
+Bool StreamHandlerLibav::write( PlaYUVerFrame* pcFrame )
 {
   return false;
 }

@@ -22,7 +22,7 @@ IF( USE_FFMPEG )
 ENDIF()
 
 IF( USE_OPENCV )
-  LIST( APPEND PlaYUVer_Lib_SRCS LibOpenCVHandler.cpp )
+  LIST( APPEND PlaYUVer_Lib_SRCS StreamHandlerOpenCV.cpp )
 ENDIF()
 
 

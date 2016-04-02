@@ -12,6 +12,8 @@ set(PlaYUVer_Lib_SRCS
     #    PlaYUVerFrameStats.cpp
     # Stream
     PlaYUVerStream.cpp
+    StreamHandlerRaw.cpp
+    StreamHandlerPortableMap.cpp
     # Command Parser
     PlaYUVerCmdParser.cpp
     PlaYUVerProgramOptions.cpp

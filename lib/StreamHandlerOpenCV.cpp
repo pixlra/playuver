@@ -60,6 +60,12 @@ Void StreamHandlerOpenCV::closeHandler()
 
 }
 
+Bool StreamHandlerOpenCV::configureBuffer( PlaYUVerFrame* pcFrame )
+{
+  return true;
+}
+
+
 Void StreamHandlerOpenCV::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate )
 {
 //   rWidth = m_uiWidth;
@@ -69,6 +75,7 @@ Void StreamHandlerOpenCV::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFor
 //   rEndianness = m_iEndianness;
   rFrameRate = 1;
 }
+
 
 UInt64 StreamHandlerOpenCV::calculateFrameNumber()
 {

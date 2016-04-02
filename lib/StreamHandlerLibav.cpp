@@ -203,9 +203,6 @@ Bool StreamHandlerLibav::openHandler( std::string strFilename, Bool bInput )
     m_uiBitsPerPixel = 16;
     m_iEndianness = 0;
     pix_fmt = AV_PIX_FMT_GRAY8;
-  case AV_PIX_FMT_PAL8:
-    pix_fmt = AV_PIX_FMT_GRAY8;
-    break;
   }
 
   m_uiWidth = m_cCodecCtx->width;
@@ -269,7 +266,17 @@ Void StreamHandlerLibav::closeHandler()
     av_free( m_cFrame );
   }
   m_bHasStream = false;
+
+  if( m_pStreamBuffer )
+    freeMem1D( m_pStreamBuffer );
+
 }
+
+Bool StreamHandlerLibav::configureBuffer( PlaYUVerFrame* pcFrame )
+{
+  return getMem1D<Byte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
+}
+
 
 Void StreamHandlerLibav::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate )
 {

@@ -44,10 +44,6 @@ class StreamHandlerPortableMap: public PlaYUVerStreamHandlerIf
   REGISTER_STREAM_HANDLER( StreamHandlerPortableMap )
 
 public:
-
-  static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
-  static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
-
   StreamHandlerPortableMap() {}
   ~StreamHandlerPortableMap() {}
 
@@ -62,7 +58,13 @@ public:
   Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate );
 
 private:
-  std::string m_cFilename;
+  FILE* m_pFile; /**< The input file pointer >*/
+  Int m_iMagicNumber;
+  Int m_iMaxValue;
+  Int m_iWidth;
+  Int m_iHeight;
+  Int m_iPixelFormat;
+  UInt m_uiBitsPerPixel;
 };
 
 }  // NAMESPACE

@@ -72,6 +72,7 @@ public:
 
   Bool openHandler( std::string strFilename, Bool bInput );
   Void closeHandler();
+  Bool configureBuffer( PlaYUVerFrame* pcFrame );
   UInt64 calculateFrameNumber();
   Bool seek( UInt64 iFrameNum );
   Bool read( PlaYUVerFrame* pcFrame );

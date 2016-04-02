@@ -26,7 +26,7 @@
 #define __PLAYUVERSTREAMHANDLERIF_H__
 
 #include "PlaYUVerDefs.h"
-#include "LibMemory.h"
+#include "PlaYUVerFrame.h"
 
 namespace plaYUVer
 {
@@ -51,17 +51,14 @@ public:
   virtual ~PlaYUVerStreamHandlerIf()
   {
   }
+
   virtual Bool openHandler( std::string strFilename, Bool bInput ) = 0;
-  virtual UInt64 calculateFrameNumber() = 0;
   virtual Void closeHandler() = 0;
+  virtual Bool configureBuffer( PlaYUVerFrame* pcFrame ) = 0;
+  virtual UInt64 calculateFrameNumber() = 0;
+  virtual Bool seek( UInt64 iFrameNum ) = 0;
   virtual Bool read( PlaYUVerFrame* pcFrame ) = 0;
   virtual Bool write( PlaYUVerFrame* pcFrame ) = 0;
-  virtual Bool seek( UInt64 iFrameNum ) = 0;
-
-  virtual Bool configureBuffer( PlaYUVerFrame* pcFrame )
-  {
-    return getMem1D<Byte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
-  }
 
   virtual Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate )
   {

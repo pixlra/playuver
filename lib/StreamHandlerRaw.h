@@ -18,12 +18,12 @@
  */
 
 /**
- * \file     PlaYUVerRawHandler.h
+ * \file     StreamHandlerRaw.h
  * \brief    Abstract class for stream handling
  */
 
-#ifndef __PLAYUVERRAWHANDLER_H__
-#define __PLAYUVERRAWHANDLER_H__
+#ifndef __STREAMHANDLERRAW_H__
+#define __STREAMHANDLERRAW_H__
 
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerStreamHandlerIf.h"
@@ -47,62 +47,19 @@ public:
   PlaYUVerRawHandler() {}
   ~PlaYUVerRawHandler() {}
 
-  Bool openHandler( std::string strFilename, Bool bInput )
-  {
-    m_bIsInput = bInput;
-    m_pFile = NULL;
-    m_pFile = fopen( strFilename.c_str(), bInput ? "rb" : "wb" );
-    if( m_pFile == NULL )
-    {
-      return false;
-    }
-    m_strFormatName = "YUV";
-    m_strCodecName = "Raw Video";
-    return true;
-  }
-  Void closeHandler()
-  {
-    if( m_pFile )
-      fclose( m_pFile );
-  }
-  UInt64 calculateFrameNumber()
-  {
-    if( !m_pFile || m_uiNBytesPerFrame == 0 )
-      return 0;
-    fseek( m_pFile, 0, SEEK_END );
-    UInt64 fileSize = ftell( m_pFile );
-    fseek( m_pFile, 0, SEEK_SET );
-    return ( fileSize / m_uiNBytesPerFrame );
-  }
-  Bool seek( UInt64 iFrameNum )
-  {
-    if( m_bIsInput && m_pFile )
-    {
-      fseek( m_pFile, iFrameNum >= 0 ? iFrameNum * m_uiNBytesPerFrame : 0, SEEK_SET );
-      return true;
-    }
-    return false;
-  }
-  Bool read( PlaYUVerFrame* pcFrame )
-  {
-    UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
-    if( processed_bytes != m_uiNBytesPerFrame )
-      return false;
-    pcFrame->frameFromBuffer( m_pStreamBuffer );
-    return true;
-  }
-  Bool write( PlaYUVerFrame* pcFrame )
-  {
-    pcFrame->frameToBuffer( m_pStreamBuffer );
-    UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
-    if( processed_bytes != m_uiNBytesPerFrame )
-      return false;
-    return true;
-  }
+  Bool openHandler( std::string strFilename, Bool bInput );
+  Void closeHandler();
+  Bool configureBuffer( PlaYUVerFrame* pcFrame );
+  UInt64 calculateFrameNumber();
+  Bool seek( UInt64 iFrameNum );
+  Bool read( PlaYUVerFrame* pcFrame );
+  Bool write( PlaYUVerFrame* pcFrame );
+
+
 };
 
 
 }  // NAMESPACE
 
-#endif // __PLAYUVERRAWHANDLER_H__
+#endif // __STREAMHANDLERRAW_H__
 

@@ -30,7 +30,7 @@
 #include "PlaYUVerStream.h"
 #include "PlaYUVerStreamHandlerIf.h"
 #include "StreamHandlerRaw.h"
-#include "StreamHandlerPortable.h"
+#include "StreamHandlerPortableMap.h"
 
 #ifdef USE_FFMPEG
 #include "StreamHandlerLibav.h"
@@ -47,6 +47,9 @@ std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
   REGIST_PLAYUVER_SUPPORTED_FMT( &PlaYUVerRawHandler::Create, "Raw Video", "yuv" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &PlaYUVerRawHandler::Create, "Raw Video", "gray" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm"  );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm"  );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable PixMap ", "ppm"  );
 #ifdef USE_FFMPEG
   APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerLibav, Read );
 #endif
@@ -198,24 +201,6 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   m_uiBitsPerPixel = bitsPel;
   m_iEndianness = endianness;
   m_dFrameRate = frame_rate;
-
-
-// #ifdef USE_OPENCV
-//   if( m_iStreamHandler == OPENCV_HANDLER )
-//   {
-//     m_pcCurrFrame = LibOpenCVHandler::loadFrame( m_cFilename );
-//     if( m_pcCurrFrame )
-//     {
-//       m_uiWidth = m_pcCurrFrame->getWidth();
-//       m_uiHeight = m_pcCurrFrame->getHeight();
-//       m_iPixelFormat = m_pcCurrFrame->getPelFormat();
-//     }
-//     m_pcNextFrame = NULL;
-//     m_uiFrameBufferSize = 0;
-//     m_uiFrameBufferIndex = 0;
-//     m_uiTotalFrameNum = 1;
-//   }
-// #endif
 
   m_pfctCreateHandler = PlaYUVerStream::findStreamHandler( filename, m_bIsInput );
   if( !m_pfctCreateHandler )

@@ -32,46 +32,80 @@
 namespace plaYUVer
 {
 
-std::vector<PlaYUVerSupportedFormat> StreamHandlerPortableMap::supportedReadFormats()
-{
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable Grayscale Map ", "pgm"  );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable Pix Map ", "ppm"  );
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
-}
-
-std::vector<PlaYUVerSupportedFormat> StreamHandlerPortableMap::supportedWriteFormats()
-{
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-//   APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerPortableMap, Read );
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
-}
-
 Bool StreamHandlerPortableMap::openHandler( std::string strFilename, Bool bInput )
 {
-  m_cFilename = strFilename;
+  m_bIsInput = bInput;
+  m_pFile = NULL;
+  m_pFile = fopen( strFilename.c_str(), bInput ? "rb" : "wb" );
+  if( m_pFile == NULL )
+  {
+    return false;
+  }
+  m_strFormatName = "PGM";
+  m_strCodecName = "Raw Video";
+  if( m_bIsInput )
+  {
+    char line[101];
+    do
+    {
+      fgets( line, 100, m_pFile );
+    }
+    while( line[0] == '#' );
+    sscanf( line,"P%d", &m_iMagicNumber );
+
+    do
+    {
+      fgets( line, 100, m_pFile );
+    }
+    while( line[0] == '#' );
+    sscanf( line,"%d %d", &m_iWidth, &m_iHeight );
+
+    if( m_iMagicNumber == 1 || m_iMagicNumber == 4 )
+    {
+      m_uiBitsPerPixel = 1;
+      m_iMaxValue = 1;
+      m_iPixelFormat = PlaYUVerFrame::GRAY;
+    }
+    else
+    {
+      do
+      {
+        fgets( line, 100, m_pFile );
+      }
+      while( line[0] == '#' );
+      sscanf( line,"%d", &m_iMaxValue );
+
+      m_uiBitsPerPixel = log( m_iMaxValue + 1 )/log( 2 );
+      m_iPixelFormat = m_iMagicNumber == 2 || m_iMagicNumber == 5 ? PlaYUVerFrame::GRAY :  PlaYUVerFrame::RGB24;
+    }
+  }
   return true;
 }
 
 Void StreamHandlerPortableMap::closeHandler()
 {
+  if( m_pFile )
+    fclose( m_pFile );
 
-}
-
-Bool StreamHandlerPortableMap::configureBuffer( PlaYUVerFrame* pcFrame )
-{
-  return true;
+  if( m_pStreamBuffer )
+    freeMem1D( m_pStreamBuffer );
 }
 
 Void StreamHandlerPortableMap::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate )
 {
-//   rWidth = m_uiWidth;
-//   rHeight = m_uiHeight;
-//   rInputFormat = m_iPixelFormat;
-//   rBitsPerPel = m_uiBitsPerPixel;
-//   rEndianness = m_iEndianness;
+  rWidth = m_iWidth;
+  rHeight = m_iHeight;
+  rInputFormat = m_iPixelFormat;
+  rBitsPerPel = m_uiBitsPerPixel;
+  rEndianness = 0;
   rFrameRate = 1;
 }
+
+Bool StreamHandlerPortableMap::configureBuffer( PlaYUVerFrame* pcFrame )
+{
+  return getMem1D<Byte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
+}
+
 
 UInt64 StreamHandlerPortableMap::calculateFrameNumber()
 {
@@ -85,19 +119,20 @@ Bool StreamHandlerPortableMap::seek( UInt64 iFrameNum )
 
 Bool StreamHandlerPortableMap::read( PlaYUVerFrame* pcFrame )
 {
-  return false;
+  UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
+  if( processed_bytes != m_uiNBytesPerFrame )
+    return false;
+  pcFrame->frameFromBuffer( m_pStreamBuffer );
+  return true;
 }
 
 Bool StreamHandlerPortableMap::write( PlaYUVerFrame* pcFrame )
 {
-  Bool bRet = false;
-  cv::Mat* pcCvFrame = pcFrame->getCvMat();
-  if( pcCvFrame )
-  {
-    bRet = cv::imwrite( m_cFilename.c_str(), *pcCvFrame );
-    delete pcCvFrame;
-  }
-  return bRet;
+  pcFrame->frameToBuffer( m_pStreamBuffer );
+  UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
+  if( processed_bytes != m_uiNBytesPerFrame )
+    return false;
+  return true;
 }
 
 }  // NAMESPACE

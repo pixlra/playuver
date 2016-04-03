@@ -404,19 +404,18 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff )
   Byte* pTmpBuff;
   Pel* pPel;
   UInt bytesPixel = ( m_uiBitsPel - 1 ) / 8 + 1;
-  UInt shiftInput, shiftOutput;
   Int ratioH, ratioW, step;
-  UInt i, ch, b;
+  UInt i, ch;
+  Int startByte = 0;
+  Int endByte = bytesPixel;
+  Int incByte = 1;
+  Int b;
 
-  if( m_iEndianness == 1 )
+  if( m_iEndianness == 0 )
   {
-    shiftInput = 8;
-    shiftOutput = 0;
-  }
-  else
-  {
-    shiftInput = 0;
-    shiftOutput = 8;
+    startByte = bytesPixel - 1;
+    endByte = -1;
+    incByte = -1;
   }
 
   ppBuff[0] = Buff;
@@ -431,18 +430,18 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff )
   {
     ratioW = ch > 0 ? m_pcPelFormat->log2ChromaWidth : 0;
     ratioH = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
-    step = m_pcPelFormat->comp[ch].step_minus1 + 1;
+    step = m_pcPelFormat->comp[ch].step_minus1;
 
     pPel = m_pppcInputPel[ch][0];
     pTmpBuff = ppBuff[m_pcPelFormat->comp[ch].plane] + ( m_pcPelFormat->comp[ch].offset_plus1 - 1 );
 
     for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ); i++ )
     {
-      *pPel = *pTmpBuff;
-      for( b = 1; b < bytesPixel; b++ )
+      *pPel = 0;
+      for( b = startByte; b != endByte; b += incByte )
       {
+        *pPel += *pTmpBuff << ( b * 8 );
         pTmpBuff++;
-        *pPel = ( *pPel << shiftOutput ) + ( *pTmpBuff << shiftInput );
       }
       pPel++;
       pTmpBuff += step;
@@ -459,7 +458,18 @@ Void PlaYUVerFrame::frameToBuffer( Byte *output_buffer )
   Byte* pTmpBuff;
   Pel* pTmpPel;
   Int ratioH, ratioW, step;
-  UInt i, ch, b;
+  UInt i, ch;
+  Int startByte = 0;
+  Int endByte = bytesPixel;
+  Int incByte = 1;
+  Int b;
+
+  if( m_iEndianness == 0 )
+  {
+    startByte = bytesPixel - 1;
+    endByte = -1;
+    incByte = -1;
+  }
 
   ppBuff[0] = output_buffer;
   for( Int i = 1; i < MAX_NUMBER_PLANES; i++ )
@@ -473,18 +483,17 @@ Void PlaYUVerFrame::frameToBuffer( Byte *output_buffer )
   {
     ratioW = ch > 0 ? m_pcPelFormat->log2ChromaWidth : 0;
     ratioH = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
-    step = m_pcPelFormat->comp[ch].step_minus1 + 1;
+    step = m_pcPelFormat->comp[ch].step_minus1;
 
     pTmpPel = m_pppcInputPel[ch][0];
     pTmpBuff = ppBuff[m_pcPelFormat->comp[ch].plane];
 
     for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ); i++ )
     {
-      *pTmpBuff = ( *pTmpPel & 0x00FF );
-      for( b = 1; b < bytesPixel; b++ )
+      for( b = startByte; b != endByte; b += incByte )
       {
+        *pTmpBuff = *pTmpPel >> ( 8 * b );
         pTmpBuff++;
-        *pTmpBuff = ( *pTmpPel >> ( 8 * b ) ) & 0x00FF;
       }
       pTmpPel++;
       pTmpBuff += step;

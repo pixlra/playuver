@@ -63,6 +63,9 @@ std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedWriteFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
   REGIST_PLAYUVER_SUPPORTED_FMT( &PlaYUVerRawHandler::Create, "Raw Video", "yuv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable PixMap ", "ppm" );
 #ifdef USE_FFMPEG
   APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerLibav, Write );
 #endif

@@ -78,8 +78,6 @@ public:
   Bool read( PlaYUVerFrame* pcFrame );
   Bool write( PlaYUVerFrame* pcFrame );
 
-  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate );
-
   UInt getStreamDuration()
   {
     return m_uiSecs;
@@ -90,13 +88,6 @@ public:
 
 private:
 
-  UInt m_uiWidth;
-  UInt m_uiHeight;
-  Int m_iPixelFormat;
-  UInt m_uiBitsPerPixel;
-  Int m_iEndianness;
-  Double m_dFrameRate;
-
   AVFormatContext* m_cFmtCtx;
   AVCodecContext* m_cCodecCtx;
   AVStream* m_cStream;
@@ -106,8 +97,6 @@ private:
 
   Bool m_bHasStream;
 
-  Char m_acFormatName[20];
-  Char m_acCodecName[20];
   UInt64 m_uiSecs;
   UInt64 m_uiMicroSec;
 

@@ -55,16 +55,10 @@ public:
   Bool read( PlaYUVerFrame* pcFrame );
   Bool write( PlaYUVerFrame* pcFrame );
 
-  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate );
-
 private:
   FILE* m_pFile; /**< The input file pointer >*/
   Int m_iMagicNumber;
   Int m_iMaxValue;
-  Int m_iWidth;
-  Int m_iHeight;
-  Int m_iPixelFormat;
-  UInt m_uiBitsPerPixel;
 };
 
 }  // NAMESPACE

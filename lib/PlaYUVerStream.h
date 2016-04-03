@@ -107,11 +107,15 @@ public:
 
   Bool open( std::string filename, std::string resolution, std::string input_format, UInt bitsPel, Int endianness, UInt frame_rate,  Bool bInput = true );
   Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput = true );
-
   Bool reload();
-
   Void close();
 
+  std::string getFileName();
+  UInt getFrameNum();
+  UInt getWidth() const;
+  UInt getHeight() const;
+  Int getCurrFrameNum();
+  Double getFrameRate();
   Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, UInt& rFrameRate );
 
   Void loadAll();
@@ -137,47 +141,17 @@ public:
     return m_bInit;
   }
 
-  std::string getFileName()
-  {
-    return m_cFilename;
-  }
 
-  UInt getFrameNum()
-  {
-    return m_uiTotalFrameNum;
-  }
-  UInt getWidth() const
-  {
-    return m_uiWidth;
-  }
-  UInt getHeight() const
-  {
-    return m_uiHeight;
-  }
-  Int getCurrFrameNum()
-  {
-    return m_iCurrFrameNum;
-  }
-  Double getFrameRate()
-  {
-    return m_dFrameRate;
-  }
   Void getDuration( Int* duration_array );
 
 private:
 
   Bool m_bInit;
   CreateStreamHandlerFn m_pfctCreateHandler;
-  PlaYUVerStreamHandlerIf* m_pcStreamHandler;
+  PlaYUVerStreamHandlerIf* m_pcHandler;
 
   Bool m_bIsInput;
   std::string m_cFilename;
-  UInt m_uiWidth;
-  UInt m_uiHeight;
-  Int m_iPixelFormat;
-  UInt m_uiBitsPerPixel;
-  Int m_iEndianness;
-  Double m_dFrameRate;
   UInt64 m_uiTotalFrameNum;
   Int64 m_iCurrFrameNum;
 

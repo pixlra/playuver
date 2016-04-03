@@ -278,17 +278,6 @@ Bool StreamHandlerLibav::configureBuffer( PlaYUVerFrame* pcFrame )
 }
 
 
-Void StreamHandlerLibav::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate )
-{
-  rWidth = m_uiWidth;
-  rHeight = m_uiHeight;
-  rInputFormat = m_iPixelFormat;
-  rBitsPerPel = m_uiBitsPerPixel;
-  rEndianness = m_iEndianness;
-  rFrameRate = m_dFrameRate;
-}
-
-
 UInt64 StreamHandlerLibav::calculateFrameNumber()
 {
   UInt64 num_frames;

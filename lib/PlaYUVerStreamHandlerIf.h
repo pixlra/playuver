@@ -26,6 +26,7 @@
 #define __PLAYUVERSTREAMHANDLERIF_H__
 
 #include "PlaYUVerDefs.h"
+#include "PlaYUVerStream.h"
 #include "PlaYUVerFrame.h"
 
 namespace plaYUVer
@@ -43,10 +44,17 @@ namespace plaYUVer
  */
 class PlaYUVerStreamHandlerIf
 {
+  friend class PlaYUVerStream;
 public:
   PlaYUVerStreamHandlerIf()
   {
     m_bIsInput = true;
+    m_uiWidth = 0;
+    m_uiHeight = 0;
+    m_iPixelFormat = -1;
+    m_uiBitsPerPixel = 8;
+    m_iEndianness = -1;
+    m_dFrameRate = 30;
   }
   virtual ~PlaYUVerStreamHandlerIf()
   {
@@ -60,10 +68,6 @@ public:
   virtual Bool read( PlaYUVerFrame* pcFrame ) = 0;
   virtual Bool write( PlaYUVerFrame* pcFrame ) = 0;
 
-  virtual Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate )
-  {
-    return;
-  }
   Void setBytesPerFrame( UInt64 uiNBytes )
   {
     m_uiNBytesPerFrame = uiNBytes;
@@ -79,6 +83,14 @@ public:
 
 protected:
   Bool m_bIsInput;
+  std::string m_cFilename;
+  UInt m_uiWidth;
+  UInt m_uiHeight;
+  Int m_iPixelFormat;
+  UInt m_uiBitsPerPixel;
+  Int m_iEndianness;
+  Double m_dFrameRate;
+
   Byte* m_pStreamBuffer;
   UInt64 m_uiNBytesPerFrame;
   std::string m_strFormatName;

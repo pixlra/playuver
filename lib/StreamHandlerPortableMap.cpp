@@ -46,19 +46,10 @@ Bool StreamHandlerPortableMap::openHandler( std::string strFilename, Bool bInput
   if( m_bIsInput )
   {
     char line[101];
-    do
-    {
-      fgets( line, 100, m_pFile );
-    }
-    while( line[0] == '#' );
+    while( fgets( line, 100, m_pFile ) && line[0] == '#' );
     sscanf( line,"P%d", &m_iMagicNumber );
-
-    do
-    {
-      fgets( line, 100, m_pFile );
-    }
-    while( line[0] == '#' );
-    sscanf( line,"%d %d", &m_iWidth, &m_iHeight );
+    while( fgets( line, 100, m_pFile ) && line[0] == '#' );
+    sscanf( line,"%u %u", &m_uiWidth, &m_uiHeight );
 
     if( m_iMagicNumber == 1 || m_iMagicNumber == 4 )
     {
@@ -68,17 +59,34 @@ Bool StreamHandlerPortableMap::openHandler( std::string strFilename, Bool bInput
     }
     else
     {
-      do
-      {
-        fgets( line, 100, m_pFile );
-      }
-      while( line[0] == '#' );
+      while( fgets( line, 100, m_pFile ) && line[0] == '#' );
       sscanf( line,"%d", &m_iMaxValue );
-
       m_uiBitsPerPixel = log( m_iMaxValue + 1 )/log( 2 );
       m_iPixelFormat = m_iMagicNumber == 2 || m_iMagicNumber == 5 ? PlaYUVerFrame::GRAY :  PlaYUVerFrame::RGB24;
     }
   }
+  else
+  {
+    m_iMaxValue = ( 1 << m_uiBitsPerPixel ) - 1;
+    if( m_uiBitsPerPixel == 1 )
+    {
+      m_iMagicNumber = 4;
+    }
+    else if( m_iPixelFormat == PlaYUVerFrame::GRAY )
+    {
+      m_iMagicNumber = 5;
+    }
+    else if( m_iPixelFormat == PlaYUVerFrame::RGB24 )
+    {
+      m_iMagicNumber = 6;
+    }
+    else
+    {
+      return false;
+    }
+  }
+  m_iEndianness = 0;
+  m_dFrameRate = 1;
   return true;
 }
 
@@ -89,16 +97,6 @@ Void StreamHandlerPortableMap::closeHandler()
 
   if( m_pStreamBuffer )
     freeMem1D( m_pStreamBuffer );
-}
-
-Void StreamHandlerPortableMap::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate )
-{
-  rWidth = m_iWidth;
-  rHeight = m_iHeight;
-  rInputFormat = m_iPixelFormat;
-  rBitsPerPel = m_uiBitsPerPixel;
-  rEndianness = 0;
-  rFrameRate = 1;
 }
 
 Bool StreamHandlerPortableMap::configureBuffer( PlaYUVerFrame* pcFrame )
@@ -128,6 +126,12 @@ Bool StreamHandlerPortableMap::read( PlaYUVerFrame* pcFrame )
 
 Bool StreamHandlerPortableMap::write( PlaYUVerFrame* pcFrame )
 {
+  fseek( m_pFile, 0, SEEK_SET );
+  fprintf( m_pFile, "P%d\n%d %d\n", m_iMagicNumber, m_uiWidth, m_uiHeight );
+  if( m_iMagicNumber > 4 )
+  {
+    fprintf( m_pFile, "%d\n", m_iMaxValue );
+  }
   pcFrame->frameToBuffer( m_pStreamBuffer );
   UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )

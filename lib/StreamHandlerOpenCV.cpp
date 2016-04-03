@@ -52,6 +52,7 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedWriteFormats(
 Bool StreamHandlerOpenCV::openHandler( std::string strFilename, Bool bInput )
 {
   m_cFilename = strFilename;
+  m_dFrameRate = 1;
   return true;
 }
 
@@ -64,18 +65,6 @@ Bool StreamHandlerOpenCV::configureBuffer( PlaYUVerFrame* pcFrame )
 {
   return true;
 }
-
-
-Void StreamHandlerOpenCV::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, Double& rFrameRate )
-{
-//   rWidth = m_uiWidth;
-//   rHeight = m_uiHeight;
-//   rInputFormat = m_iPixelFormat;
-//   rBitsPerPel = m_uiBitsPerPixel;
-//   rEndianness = m_iEndianness;
-  rFrameRate = 1;
-}
-
 
 UInt64 StreamHandlerOpenCV::calculateFrameNumber()
 {

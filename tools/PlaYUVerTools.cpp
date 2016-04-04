@@ -184,11 +184,11 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
   if( m_cCmdLineHandler.Opts()["quality"]->count() )
   {
     std::string qualityMetric = m_cCmdLineHandler.m_strQualityMetric;
-//    if( m_apcInputStreams.size() != 2 )
-//    {
-//      m_cCmdLineHandler.log( LOG_ERROR, "Invalid number of inputs! " );
-//      return 2;
-//    }
+    if( m_apcInputStreams.size() < 2 )
+    {
+      m_cCmdLineHandler.log( LOG_ERROR, "Invalid number of inputs! " );
+      return 2;
+    }
     for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
     {
       if( lowercase( PlaYUVerFrame::supportedQualityMetricsList()[i] ) == lowercase( qualityMetric ) )

@@ -334,12 +334,45 @@ Int PlaYUVerTools::SaveOperation()
 
 Int PlaYUVerTools::QualityOperation()
 {
+  const char *pchQualityMetricName = PlaYUVerFrame::supportedQualityMetricsList()[m_uiQualityMetric].c_str();
   PlaYUVerFrame* apcCurrFrame[MAX_NUMBER_INPUTS];
   Bool abEOF[MAX_NUMBER_INPUTS];
   Double adAverageQuality[MAX_NUMBER_INPUTS - 1][MAX_NUMBER_COMPONENTS];
   Double dQuality;
 
-  m_cCmdLineHandler.log( LOG_INFO, "  Measuring Quality using %s ... \n", PlaYUVerFrame::supportedQualityMetricsList()[m_uiQualityMetric].c_str() );
+  std::string metric_fmt = " ";
+  switch( m_uiQualityMetric )
+  {
+    case PlaYUVerFrame::PSNR_METRIC:
+                 //"PSNR_0_0"
+      metric_fmt += " %6.3f ";
+      break;
+    case PlaYUVerFrame::SSIM_METRIC:
+                 //"SSIM_0_0"
+      metric_fmt += " %6.4f ";
+      break;
+    case PlaYUVerFrame::MSE_METRIC:
+                 //"MSE_0_0"
+      metric_fmt += "%7.2f";
+      break;
+    default:
+      metric_fmt += " %6.3f ";
+  }
+  metric_fmt += " ";
+
+  m_cCmdLineHandler.log( LOG_INFO, "  Measuring Quality using %s ... \n", pchQualityMetricName );
+  m_cCmdLineHandler.log( LOG_INFO, "#  Frame   ", pchQualityMetricName );
+
+  for( UInt s = 1; s < m_apcInputStreams.size(); s++ )
+  {
+    for( UInt c = 0; c < m_uiNumberOfComponents; c++ )
+    {
+      m_cCmdLineHandler.log( LOG_INFO, "%s_%d_%d  ", pchQualityMetricName, s, c );
+    }
+    m_cCmdLineHandler.log( LOG_INFO, "   " );
+  }
+
+  m_cCmdLineHandler.log( LOG_INFO, "\n" );
 
   for( UInt s = 0; s < m_apcInputStreams.size(); s++ )
   {
@@ -351,7 +384,7 @@ Int PlaYUVerTools::QualityOperation()
   }
   for( UInt frame = 0; frame < m_uiNumberOfFrames; frame++ )
   {
-    m_cCmdLineHandler.log( LOG_INFO, "   %3d", frame );
+    m_cCmdLineHandler.log( LOG_INFO, "   %3d  ", frame );
     for( UInt s = 0; s < m_apcInputStreams.size(); s++ )
       apcCurrFrame[s] = m_apcInputStreams[s]->getCurrFrame();
 
@@ -362,8 +395,9 @@ Int PlaYUVerTools::QualityOperation()
       {
         dQuality = apcCurrFrame[s]->getQuality( m_uiQualityMetric, apcCurrFrame[0], c );
         adAverageQuality[s - 1][c] = ( adAverageQuality[s - 1][c] * Double( frame ) + dQuality ) / Double( frame + 1 );
-        m_cCmdLineHandler.log( LOG_RESULT, "  %5.3f", dQuality );
+        m_cCmdLineHandler.log( LOG_RESULT, metric_fmt.c_str(), dQuality );
       }
+      m_cCmdLineHandler.log( LOG_RESULT, " " );
     }
     m_cCmdLineHandler.log( LOG_RESULT, "\n" );
     for( UInt s = 0; s < m_apcInputStreams.size(); s++ )
@@ -375,14 +409,14 @@ Int PlaYUVerTools::QualityOperation()
       }
     }
   }
-  m_cCmdLineHandler.log( LOG_INFO, "\n  Mean Values: \n        " );
+  m_cCmdLineHandler.log( LOG_INFO, "\n  Mean Values: \n          " );
   for( UInt s = 0; s < m_apcInputStreams.size() - 1; s++ )
   {
     for( UInt c = 0; c < m_uiNumberOfComponents; c++ )
     {
-      m_cCmdLineHandler.log( LOG_INFO, "  %5.3f", adAverageQuality[s][c] );
+      m_cCmdLineHandler.log( LOG_INFO, metric_fmt.c_str(), adAverageQuality[s][c] );
     }
-    m_cCmdLineHandler.log( LOG_RESULT, "  " );
+    m_cCmdLineHandler.log( LOG_RESULT, "   " );
   }
   m_cCmdLineHandler.log( LOG_INFO, "\n" );
   return 0;

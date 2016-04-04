@@ -382,6 +382,7 @@ Int PlaYUVerTools::QualityOperation()
     {
       m_cCmdLineHandler.log( LOG_INFO, "  %5.3f", adAverageQuality[s][c] );
     }
+    m_cCmdLineHandler.log( LOG_RESULT, "  " );
   }
   m_cCmdLineHandler.log( LOG_INFO, "\n" );
   return 0;

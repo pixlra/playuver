@@ -24,6 +24,7 @@
  */
 
 #include <cstdio>
+#include <cmath>
 #include "StreamHandlerPortableMap.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"

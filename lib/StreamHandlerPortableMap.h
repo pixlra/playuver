@@ -29,7 +29,6 @@
 #include <inttypes.h>
 #include <vector>
 #include <string>
-#include <opencv2/opencv.hpp>
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerStream.h"
 #include "PlaYUVerStreamHandlerIf.h"

@@ -40,7 +40,7 @@ class QAction;
 namespace plaYUVer
 {
 
-#define PLAYUVER_THREADED_MODULES
+//#define PLAYUVER_THREADED_MODULES
 
 class VideoSubWindow;
 

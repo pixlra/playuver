@@ -58,14 +58,18 @@ Void PlaYUVerAppModuleIf::update()
 Bool PlaYUVerAppModuleIf::apply( Bool isPlaying, Bool disableThreads )
 {
   Bool bRet = false;
+
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  if( m_pcDisplaySubWindow )
+  if( m_pcModule->m_iModuleType == FRAME_PROCESSING_MODULE )
   {
-    m_pcDisplaySubWindow->setFillWindow( true );
-  }
-  else
-  {
-    m_pcSubWindow[0]->setFillWindow( true );
+    if( m_pcDisplaySubWindow )
+    {
+      m_pcDisplaySubWindow->setFillWindow( true );
+    }
+    else
+    {
+      m_pcSubWindow[0]->setFillWindow( true );
+    }
   }
   if( !( isPlaying && ( m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_SKIP_WHILE_PLAY ) ) )
   {

@@ -9,7 +9,7 @@ set(PlaYUVer_Lib_SRCS
     PlaYUVerFrame.cpp
     PlaYUVerPixel.cpp
     PlaYUVerFramePixelFormats.cpp
-    #    PlaYUVerFrameStats.cpp
+    # PlaYUVerFrameStats.cpp
     # Stream
     PlaYUVerStream.cpp
     StreamHandlerRaw.cpp

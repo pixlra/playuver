@@ -48,6 +48,7 @@ PlaYUVerModuleFactory::PlaYUVerModuleFactory()
   Register( "FrameShift", &FrameShift::Create );
   Register( "EightBitsSampling", &EightBitsSampling::Create );
   Register( "LumaAverage", &LumaAverage::Create );
+  Register( "WeightedPSNR", &WeightedPSNR::Create );
 #ifdef USE_OPENCV
   //Register( "DisparityStereoVar", &DisparityStereoVar::Create );
   Register( "DisparityStereoBM", &DisparityStereoBM::Create );

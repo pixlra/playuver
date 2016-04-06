@@ -54,46 +54,49 @@ PlaYUVerTools::~PlaYUVerTools()
   }
 }
 
+#define GET_PARAM( X , i ) X[X.size() > i ? i : X.size() - 1]
+
+
 Int PlaYUVerTools::openInputs()
 {
   /**
    * Create input streams
    */
-  if( m_cCmdLineHandler.Opts()["input"]->count() )
+  if( m_cCmdLineHandler.Opts().hasOpt( "input" ) )
   {
-    std::string resolutionString( "" );
-    if( m_cCmdLineHandler.Opts()["size"]->count() )
-    {
-      resolutionString = m_cCmdLineHandler.m_strResolution;
-    }
-    std::string fmtString( "yuv420p" );
-    if( m_cCmdLineHandler.Opts()["pel_fmt"]->count() )
-    {
-      fmtString = m_cCmdLineHandler.m_strPelFmt;
-    }
-    UInt uiBitPerPixel = 8;
-    if( m_cCmdLineHandler.Opts()["bits_pel"]->count() )
-    {
-      uiBitPerPixel = m_cCmdLineHandler.m_uiBitsPerPixel;
-    }
-    UInt uiEndianness = 0;
-    if( m_cCmdLineHandler.Opts()["endianness"]->count() )
-    {
-      if( m_cCmdLineHandler.m_strEndianness == "big" )
-      {
-        uiEndianness = 0;
-      }
-      if( m_cCmdLineHandler.m_strEndianness == "little" )
-      {
-        uiEndianness = 1;
-      }
-    }
-
     std::vector<std::string> inputFileNames = m_cCmdLineHandler.m_apcInputs;
+
+    std::string resolutionString( "" );
+    std::string fmtString( "yuv420p" );
+    UInt uiBitPerPixel = 8;
+    UInt uiEndianness = 0;
 
     PlaYUVerStream* pcStream;
     for( UInt i = 0; i < inputFileNames.size() && i < MAX_NUMBER_INPUTS; i++ )
     {
+      if( m_cCmdLineHandler.Opts().hasOpt( "size" ) )
+      {
+        resolutionString = GET_PARAM( m_cCmdLineHandler.m_strResolution, 0 );
+      }
+      if( m_cCmdLineHandler.Opts().hasOpt( "pel_fmt" ) )
+      {
+        fmtString = GET_PARAM( m_cCmdLineHandler.m_strPelFmt, i );
+      }
+      if( m_cCmdLineHandler.Opts().hasOpt( "bits_pel" ) )
+      {
+        uiBitPerPixel = GET_PARAM( m_cCmdLineHandler.m_uiBitsPerPixel, i );
+      }
+      if( m_cCmdLineHandler.Opts().hasOpt( "endianness" ) )
+      {
+        if( GET_PARAM( m_cCmdLineHandler.m_strEndianness, i ) == "big" )
+        {
+          uiEndianness = 0;
+        }
+        if( GET_PARAM( m_cCmdLineHandler.m_strEndianness, i ) == "little" )
+        {
+          uiEndianness = 1;
+        }
+      }
       pcStream = new PlaYUVerStream;
       try
       {
@@ -113,7 +116,7 @@ Int PlaYUVerTools::openInputs()
   }
 
   m_uiNumberOfFrames = MAX_UINT;
-  if( m_cCmdLineHandler.Opts()["frames"]->count() )
+  if( m_cCmdLineHandler.Opts().hasOpt( "frames" ) )
   {
     m_uiNumberOfFrames = m_cCmdLineHandler.m_iFrames;
   }
@@ -144,7 +147,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
     return 2;
   }
 
-  if( m_cCmdLineHandler.Opts()["save"]->count() )
+  if( m_cCmdLineHandler.Opts().hasOpt( "save" ) )
   {
     if( m_apcInputStreams.size() == 0 )
     {
@@ -165,7 +168,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
       m_cCmdLineHandler.log( LOG_ERROR, "Invalid frame number! Use --frame option " );
       return 2;
     }
-    if( m_cCmdLineHandler.Opts()["output"]->count() )
+    if( m_cCmdLineHandler.Opts().hasOpt( "output" ) )
       m_pcOutputFileNames.push_back( m_cCmdLineHandler.m_strOutput );
     if( m_pcOutputFileNames.size() != m_apcInputStreams.size() )
     {
@@ -181,7 +184,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
   /**
    * Check Quality operation
    */
-  if( m_cCmdLineHandler.Opts()["quality"]->count() )
+  if( m_cCmdLineHandler.Opts().hasOpt( "quality" ) )
   {
     std::string qualityMetric = m_cCmdLineHandler.m_strQualityMetric;
     if( m_apcInputStreams.size() < 2 )
@@ -209,7 +212,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
   /**
    * Check Module operation
    */
-  if( m_cCmdLineHandler.Opts()["module"]->count() )
+  if( m_cCmdLineHandler.Opts().hasOpt( "module" ) )
   {
     std::string moduleName = m_cCmdLineHandler.m_strModule;
 
@@ -263,7 +266,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
     {
       // Check outputs
       std::vector<std::string> outputFileNames;
-      if( m_cCmdLineHandler.Opts()["output"]->count() )
+      if( m_cCmdLineHandler.Opts().hasOpt( "output" ) )
         outputFileNames.push_back( m_cCmdLineHandler.m_strOutput );
 
       if( outputFileNames.size() == 1 )
@@ -343,20 +346,20 @@ Int PlaYUVerTools::QualityOperation()
   std::string metric_fmt = " ";
   switch( m_uiQualityMetric )
   {
-    case PlaYUVerFrame::PSNR_METRIC:
-                 //"PSNR_0_0"
-      metric_fmt += " %6.3f ";
-      break;
-    case PlaYUVerFrame::SSIM_METRIC:
-                 //"SSIM_0_0"
-      metric_fmt += " %6.4f ";
-      break;
-    case PlaYUVerFrame::MSE_METRIC:
-                 //"MSE_0_0"
-      metric_fmt += "%7.2f";
-      break;
-    default:
-      metric_fmt += " %6.3f ";
+  case PlaYUVerFrame::PSNR_METRIC:
+    //"PSNR_0_0"
+    metric_fmt += " %6.3f ";
+    break;
+  case PlaYUVerFrame::SSIM_METRIC:
+    //"SSIM_0_0"
+    metric_fmt += " %6.4f ";
+    break;
+  case PlaYUVerFrame::MSE_METRIC:
+    //"MSE_0_0"
+    metric_fmt += "%7.2f";
+    break;
+  default:
+    metric_fmt += " %6.3f ";
   }
   metric_fmt += " ";
 

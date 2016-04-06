@@ -37,7 +37,6 @@ PlaYUVerToolsCmdParser::PlaYUVerToolsCmdParser()
 {
   m_uiLogLevel = 0;
   m_bQuiet = false;
-  m_strPelFmt = std::string( "YUV420p" );
   m_iFrames = -1;
 }
 
@@ -69,7 +68,7 @@ Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char *argv[] )
   //( "input,i", m_strInput, "input file" ) /**/
   ( "output,o", m_strOutput, "output file" ) /**/
   ( "size,s", m_strResolution, "size (WxH)" ) /**/
-  ( "pel_fmt", m_strPelFmt, "pixel format" ) /**/
+  ( "pel_fmt,p", m_strPelFmt, "pixel format" ) /**/
   ( "bits_pel", m_uiBitsPerPixel, "bits per pixel" ) /**/
   ( "endianness", m_strEndianness, "File endianness (big, little)" ) /**/
   ( "frames,f", m_iFrames, "number of frames to parse" );
@@ -90,19 +89,19 @@ Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char *argv[] )
     m_uiLogLevel = LOG_RESULT;
   }
 
-  if( Opts()["module"]->count() && Opts()["help"]->count() )
+  if( Opts().hasOpt("module") && Opts().hasOpt("help") )
   {
     listModuleHelp();
     iRet = 1;
   }
-  else if( Opts()["help"]->count() )
+  else if( Opts().hasOpt("help") )
   {
     printf( "Usage: %s modules/quality/save [options] -input=input_file [--output=output_file]\n", argv[0] );
     Opts().doHelp( std::cout );
     iRet = 1;
   }
 
-  if( Opts()["module_list"]->count() || Opts()["module_list_full"]->count() )
+  if( Opts().hasOpt("module_list") || Opts().hasOpt("module_list_full") )
   {
     listModules();
     iRet = 1;
@@ -114,7 +113,7 @@ Void PlaYUVerToolsCmdParser::listModules()
 {
   Bool bDetailed = false;
 
-  if( Opts()["module_list_full"]->count() )
+  if( Opts().hasOpt("module_list_full") )
     bDetailed = true;
 
   PlaYUVerModuleIf* pcCurrModuleIf;

@@ -1,7 +1,7 @@
 /* The copyright in this software is being made available under the BSD
  * License, included below. This software may be subject to other third party
  * and contributor rights, including patent rights, and no such rights are
- * granted under this license.  
+ * granted under this license.
  *
  * Copyright (c) 2010-2014, ITU/ISO/IEC
  * All rights reserved.
@@ -171,8 +171,43 @@ inline void StandardOpt<T>::parse( const std::string& arg )
   arg_count++;
 }
 
-/* string parsing is specialized -- copy the whole string, not just the
- * first word */
+template<>
+inline void StandardOpt< std::vector<UInt> >::parse( const std::string& arg )
+{
+  UInt aux_opt_storage;
+  std::istringstream arg_ss( arg, std::istringstream::in );
+  arg_ss.exceptions( std::ios::failbit );
+  try
+  {
+    arg_ss >> aux_opt_storage;
+    opt_storage.push_back( aux_opt_storage );
+  }
+  catch( ... )
+  {
+    throw ParseFailure( opt_string, arg );
+  }
+  arg_count++;
+}
+
+template<>
+inline void StandardOpt< std::vector<Int> >::parse( const std::string& arg )
+{
+  Int aux_opt_storage;
+  std::istringstream arg_ss( arg, std::istringstream::in );
+  arg_ss.exceptions( std::ios::failbit );
+  try
+  {
+    arg_ss >> aux_opt_storage;
+    opt_storage.push_back( aux_opt_storage );
+  }
+  catch( ... )
+  {
+    throw ParseFailure( opt_string, arg );
+  }
+  arg_count++;
+}
+
+/* string parsing is specialized */
 template<>
 inline void StandardOpt<std::string>::parse( const std::string& arg )
 {
@@ -180,8 +215,7 @@ inline void StandardOpt<std::string>::parse( const std::string& arg )
   arg_count++;
 }
 
-/* string parsing is specialized -- copy the whole string, not just the
- * first word */
+/* string vector parsing is specialized */
 template<>
 inline void StandardOpt<std::vector<std::string> >::parse( const std::string& arg )
 {
@@ -258,6 +292,8 @@ public:
   {
     return opt_list;
   }
+
+  Bool hasOpt( const std::string& optName );
 
   void addOption( OptionBase *opt );
 

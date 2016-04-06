@@ -1,7 +1,7 @@
 /* The copyright in this software is being made available under the BSD
  * License, included below. This software may be subject to other third party
  * and contributor rights, including patent rights, and no such rights are
- * granted under this license.  
+ * granted under this license.
  *
  * Copyright (c) 2010-2014, ITU/ISO/IEC
  * All rights reserved.
@@ -92,6 +92,11 @@ OptionBase* Options::getOption( const std::string& optName )
     }
   }
   return NULL;
+}
+
+Bool Options::hasOpt( const std::string& optName )
+{
+  return getOption( optName )->count() > 0 ? true : false;
 }
 
 void Options::addOption( OptionBase *opt )

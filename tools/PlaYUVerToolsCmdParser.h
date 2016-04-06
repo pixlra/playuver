@@ -72,21 +72,21 @@ private:
   Bool m_bShowHelp;
   Bool m_bShowVersion;
   Bool m_bQuiet;
+
   std::vector<std::string> m_apcInputs;
-  std::string m_strInput;
+  std::vector<std::string> m_strResolution;
+  std::vector<std::string> m_strPelFmt;
+  std::vector<UInt> m_uiBitsPerPixel;
+  std::vector<std::string> m_strEndianness;
   std::string m_strOutput;
-  std::string m_strResolution;
-  std::string m_strPelFmt;
-  UInt m_uiBitsPerPixel;
-  std::string m_strEndianness;
-  UInt m_uiEndianness;
-  Bool m_bListPelFmts;
   Int64 m_iFrames;
 
-  Bool m_bListQuality;
   std::string m_strQualityMetric;
-  Bool m_bListModules;
   std::string m_strModule;
+
+  Bool m_bListPelFmts;
+  Bool m_bListQuality;
+  Bool m_bListModules;
 
   Void listModules();
   Void listModuleHelp();

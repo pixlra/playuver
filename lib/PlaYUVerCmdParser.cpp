@@ -66,11 +66,6 @@ Bool PlaYUVerCmdParser::parse()
     // m_cParserOptions.setDefaults();
     m_aUnhandledArgs = m_cParserOptions.scanArgv( m_iArgc, ( const Char** )m_ppArgv );
 
-    //    for( std::list<const Char*>::const_iterator it = argv_unhandled.begin(); it != argv_unhandled.end(); it++ )
-    //    {
-    //      fprintf( stderr, "Unhandled argument ignored: `%s'\n", *it );
-    //    }
-
     if( checkListingOpts() )
     {
       return false;

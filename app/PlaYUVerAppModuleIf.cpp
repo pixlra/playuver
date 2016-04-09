@@ -53,6 +53,10 @@ Void PlaYUVerAppModuleIf::update()
   {
     m_pcDisplaySubWindow->refreshFrame();
   }
+  else
+  {
+    apply();
+  }
 }
 
 Bool PlaYUVerAppModuleIf::apply( Bool isPlaying, Bool disableThreads )

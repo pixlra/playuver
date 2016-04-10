@@ -229,7 +229,7 @@ public:
    */
   Void calcHistogram();
 
-  Double getCount( Int channel, UInt start, UInt end );
+  UInt getCount( Int channel, UInt start, UInt end );
   Double getMean( Int channel, UInt start, UInt end );
   Int getMedian( Int channel, UInt start, UInt end );
   Double getStdDev( Int channel, UInt start, UInt end );

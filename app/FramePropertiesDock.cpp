@@ -427,10 +427,9 @@ Void FramePropertiesDock::updateStatistiques()
   Int min = minInterv->value();
   Int max = maxInterv->value();
   Int channel = histogramWidget->m_channelType;
-  //Int channel = channelCB->currentIndex();
 
   if( channel == HistogramWidget::ColorChannelsHistogram )
-    channel = colorsCB->currentIndex() + 1;
+    channel = colorsCB->currentIndex();
 
   PlaYUVerFrame* frame;
 
@@ -528,7 +527,8 @@ Void FramePropertiesDock::slotChannelChanged( Int channel )
     colorsCB->setEnabled( true );
     break;
   default:          // Luminance.
-    histogramWidget->m_channelType = HistogramWidget::LumaHistogram;
+    //histogramWidget->m_channelType = HistogramWidget::LumaHistogram;
+    histogramWidget->m_channelType = HistogramWidget::FirstChannelHistogram;
     colorsCB->setEnabled( false );
     break;
   }

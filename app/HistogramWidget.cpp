@@ -24,7 +24,7 @@
  */
 
 //TODO:
-//      - Optimizar paintEvent. Parece haver codigo redundante  !! 
+//      - Optimizar paintEvent. Parece haver codigo redundante  !!
 #include "config.h"
 #include <cmath>
 #include <QtGui>
@@ -62,6 +62,8 @@ public:
 //      eventData->success = false;
 //      eventData->histogram = m_histogram;
 //      QCoreApplication::postEvent( m_parent, eventData );
+
+      eventData->starting = true;
 
       m_pcFrame->calcHistogram();
 
@@ -167,7 +169,7 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-//                              Constructors 
+//                              Constructors
 ////////////////////////////////////////////////////////////////////////////////
 
 //Constructor without image data
@@ -178,7 +180,8 @@ HistogramWidget::HistogramWidget( Int width, Int height, QWidget *parent ) :
 
   d = new HistogramWidgetPrivate;
 
-  m_channelType = LumaHistogram;
+//   m_channelType = LumaHistogram;
+  m_channelType = FirstChannelHistogram;
   m_scaleType = LogScaleHistogram;
   m_colorType = FirstChannelColor;
   m_renderingType = FullImageHistogram;
@@ -202,7 +205,7 @@ HistogramWidget::HistogramWidget( Int width, Int height, QWidget *parent ) :
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                               Destructor 
+//                               Destructor
 ////////////////////////////////////////////////////////////////////////////////
 HistogramWidget::~HistogramWidget()
 {
@@ -220,7 +223,7 @@ HistogramWidget::~HistogramWidget()
   delete d;
 }
 ////////////////////////////////////////////////////////////////////////////////
-//                              Setup Functions 
+//                              Setup Functions
 ////////////////////////////////////////////////////////////////////////////////
 
 Void HistogramWidget::setOptions( HistogramOptions options )
@@ -249,7 +252,7 @@ Void HistogramWidget::reset()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                          Custom Event Handler  
+//                          Custom Event Handler
 ////////////////////////////////////////////////////////////////////////////////
 
 Void HistogramWidget::customEvent( QEvent *event )
@@ -341,7 +344,7 @@ Void HistogramWidget::customEvent( QEvent *event )
   //delete ed;
 }
 ////////////////////////////////////////////////////////////////////////////////
-//                          Data Loading Functions 
+//                          Data Loading Functions
 ////////////////////////////////////////////////////////////////////////////////
 
 Void HistogramWidget::setDataLoading()
@@ -390,13 +393,12 @@ Void HistogramWidget::stopHistogramComputation()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                          Update Data Methods  
+//                          Update Data Methods
 ////////////////////////////////////////////////////////////////////////////////
 
 Void HistogramWidget::updateData( PlaYUVerFrame *pcFrame, PlaYUVerFrame *pcFrameSelection )
 {
   d->imageBits = pcFrame->getBitsPel();
-  //d->imageColorSpace = image.getPelFormat();
   d->imageColorSpace = pcFrame->getColorSpace();
   d->imageChannels = pcFrame->getNumberChannels();
 
@@ -429,7 +431,7 @@ Void HistogramWidget::slotBlinkTimerDone()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                              Paint Event  
+//                              Paint Event
 ////////////////////////////////////////////////////////////////////////////////
 
 Void HistogramWidget::paintEvent( QPaintEvent * )
@@ -534,9 +536,9 @@ Void HistogramWidget::paintEvent( QPaintEvent * )
   case HistogramWidget::ColorChannelsHistogram:   // All color channels.
     max = qMax( qMax( frame->getMaximum( LUMA ), frame->getMaximum( CHROMA_U ) ), frame->getMaximum( CHROMA_V ) );
     break;
-  case HistogramWidget::LumaHistogram:            // Luminance.
-    max = frame->getMaximum( LUMA );
-    break;
+//   case HistogramWidget::LumaHistogram:            // Luminance.
+//     max = frame->getMaximum( LUMA );
+//     break;
   }
 
   switch( m_scaleType )
@@ -596,11 +598,11 @@ Void HistogramWidget::paintEvent( QPaintEvent * )
       case HistogramWidget::ColorChannelsHistogram:  // All color.
         vr = frame->getHistogramValue( LUMA, i );
         vg = frame->getHistogramValue( CHROMA_U, i );
-        vb = frame->getHistogramValue( CHROMA_U, i++ );
+        vb = frame->getHistogramValue( CHROMA_V, i++ );
         break;
-      case HistogramWidget::LumaHistogram:           // Luminance.
-        v = frame->getHistogramValue( LUMA, i++ );
-        break;
+//       case HistogramWidget::LumaHistogram:           // Luminance.
+//         v = frame->getHistogramValue( LUMA, i++ );
+//         break;
 
       }
 
@@ -900,9 +902,9 @@ Void HistogramWidget::paintEvent( QPaintEvent * )
       guidePos = d->colorGuide.blue();
       break;
 
-    case HistogramWidget::LumaHistogram:
-      guidePos = qMax( qMax( d->colorGuide.red(), d->colorGuide.green() ), d->colorGuide.blue() );
-      break;
+//     case HistogramWidget::LumaHistogram:
+//       guidePos = qMax( qMax( d->colorGuide.red(), d->colorGuide.green() ), d->colorGuide.blue() );
+//       break;
 
     default:                                     // Alpha.
       guidePos = -1;
@@ -985,7 +987,7 @@ Void HistogramWidget::paintEvent( QPaintEvent * )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                              Mouse Events  
+//                              Mouse Events
 ////////////////////////////////////////////////////////////////////////////////
 
 Void HistogramWidget::mousePressEvent( QMouseEvent * e )

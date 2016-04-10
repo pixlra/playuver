@@ -681,11 +681,11 @@ Int PlaYUVerFrame::getRealHistoChannel( Int channel )
     }
     else
     {
-      if( channel == LUMA )
-      {
-        histoChannel = 3;
-      }
-      else
+//       if( channel == LUMA )
+//       {
+//         histoChannel = 3;
+//       }
+//       else
       {
         histoChannel = channel;
       }
@@ -724,12 +724,12 @@ Int PlaYUVerFrame::getRealHistoChannel( Int channel )
   return histoChannel;
 }
 
-Double PlaYUVerFrame::getCount( Int channel, UInt start, UInt end )
+UInt PlaYUVerFrame::getCount( Int channel, UInt start, UInt end )
 {
   UInt i;
   Int histoChannel;
   Int indexStart;
-  Double count = 0.0;
+  UInt count = 0;
 
   if( !m_bHasHistogram || start < 0 || end > m_uiHistoSegments - 1 || start > end )
   {
@@ -740,7 +740,7 @@ Double PlaYUVerFrame::getCount( Int channel, UInt start, UInt end )
 
   if( histoChannel == -1 )
   {
-    return 0.0;
+    return 0;
   }
 
   indexStart = histoChannel * m_uiHistoSegments;

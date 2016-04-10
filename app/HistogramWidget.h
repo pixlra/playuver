@@ -49,9 +49,9 @@ public:
   enum HistogramChannel
   {
     /** Luminance */
-    LumaHistogram = 0,
+    //LumaHistogram = 0,
     /** Channels */
-    FirstChannelHistogram,
+    FirstChannelHistogram = 0,
     SecondChannelHistogram,
     ThirdChannelHistogram,
     /** Alpha channel */

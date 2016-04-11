@@ -123,7 +123,7 @@ CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( std::string strFilename
       return supportedFmts[i].formatFct;
     }
   }
-  return NULL;
+  return &PlaYUVerRawHandler::Create;
 }
 
 PlaYUVerStream::PlaYUVerStream()

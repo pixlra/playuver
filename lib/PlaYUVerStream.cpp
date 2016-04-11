@@ -195,7 +195,6 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   m_pfctCreateHandler = PlaYUVerStream::findStreamHandler( filename, m_bIsInput );
   if( !m_pfctCreateHandler )
   {
-    close();
     throw "[PlaYUVerStream] Invalid handler";
   }
 
@@ -203,8 +202,7 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
 
   if( !m_pcHandler )
   {
-    close();
-    throw "[PlaYUVerStream] Invalid handler";
+    throw "[PlaYUVerStream] Cannot create handler";
   }
 
   m_cFilename = filename;

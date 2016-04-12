@@ -44,10 +44,8 @@ SeekStreamDialog::SeekStreamDialog( PlaYUVerStream *pcCurrStream, QWidget *paren
   setWindowTitle( "Seek Video" );
 
   QFont labelFont;
-  labelFont.setStretch( 110 );
   QLabel* pcLabel = new QLabel;
   pcLabel->setText( QString( "Go to frame (0 - %1)" ).arg( pcCurrStream->getFrameNum() - 1 ) );
-  pcLabel->setFont( labelFont );
 
   m_spinFrameNum = new QSpinBox;
   m_spinFrameNum->setMinimumSize( 70, 5 );
@@ -61,13 +59,14 @@ SeekStreamDialog::SeekStreamDialog( PlaYUVerStream *pcCurrStream, QWidget *paren
   dialogButtonOkCancel->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
   dialogButtonOkCancel->setCenterButtons( false );
 
-  QGridLayout* mainLayout = new QGridLayout;
-  mainLayout->addWidget( pcLabel, 0, 0 );
-  mainLayout->addWidget( m_spinFrameNum, 0, 1 );
-  mainLayout->addWidget( dialogButtonOkCancel, 1, 0, 1, 2, Qt::AlignRight );
-  setLayout( mainLayout );
-
-  setFixedSize( 220, mainLayout->sizeHint().height() );
+  QVBoxLayout* verticalLayout = new QVBoxLayout;
+  QHBoxLayout* horizontalLayout = new QHBoxLayout;
+  horizontalLayout->addWidget( pcLabel );
+  horizontalLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  horizontalLayout->addWidget( m_spinFrameNum );
+  verticalLayout->addLayout( horizontalLayout );
+  verticalLayout->addWidget( dialogButtonOkCancel, Qt::AlignRight );
+  setLayout( verticalLayout );
 
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
@@ -75,6 +74,7 @@ SeekStreamDialog::SeekStreamDialog( PlaYUVerStream *pcCurrStream, QWidget *paren
 
 Int SeekStreamDialog::runDialog()
 {
+  m_spinFrameNum->selectAll();
   if( exec() == QDialog::Rejected )
   {
     return -1;

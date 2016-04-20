@@ -104,7 +104,7 @@ ADD_FEATURE_INFO(WErrors USE_WERROR "Warnings as errors"  )
 
 
 IF( WIN32 )
-  SET( USE_STATIC OFF )
+  SET( USE_STATIC ON )
   INCLUDE( cmake/Win32.cmake )
 ENDIF()
 

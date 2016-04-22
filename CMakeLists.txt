@@ -8,14 +8,13 @@ cmake_minimum_required( VERSION 2.8.9 )
 # Project Definition
 ######################################################################################
 
-SET( PROJECT_NAME "playuver" )
+set( PROJECT_NAME "playuver" CACHE INTERNAL "" FORCE )
 
 PROJECT( ${PROJECT_NAME} )
 SET( PLAYUVER_VERSION_MAJOR "0" )
 SET( PLAYUVER_VERSION_MINOR "10" )
 SET( PLAYUVER_VERSION_PATCH "0" )
-SET( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLAYUVER_VERSION_PATCH}")
-
+set( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLAYUVER_VERSION_PATCH}" CACHE INTERNAL "" FORCE )
 
 ######################################################################################
 # Variables

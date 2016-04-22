@@ -33,7 +33,7 @@
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerPixel.h"
 
-class PixFcSSE;
+
 namespace cv
 {
 class Mat;
@@ -335,9 +335,6 @@ private:
    */
   Void init( UInt width, UInt height, Int pel_format, Int bitsPixel, Int endianness );
 
-  Void openPixfc();
-  Void closePixfc();
-  PixFcSSE* m_pcPixfc;
   Void FrametoRGB8Pixfc();
 };
 

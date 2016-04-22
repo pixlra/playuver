@@ -54,10 +54,8 @@
 /* Dynamic Modules Loading */
 #cmakedefine USE_DYNLOAD
 
+/* Use modules in a different thread */
 #cmakedefine PLAYUVER_THREADED_MODULES
-
-/* Boost support */
-#cmakedefine USE_BOOST
 
 /* OpenCV */
 #cmakedefine USE_OPENCV
@@ -67,9 +65,6 @@
 
 /* Fervor update lib */
 #cmakedefine USE_FERVOR
-
-/* PIXFC-SSE lib */
-#cmakedefine USE_PIXFC
 
 
 #endif // __CONFIG_PLAYUVER_H__

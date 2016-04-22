@@ -36,16 +36,6 @@ set(PlaYUVer_Lib_HEADERS
     PlaYUVerModuleIf.h
 )
 
-# OPTION( USE_PIXFC  "Add PIXFC support"  OFF )
-# IF( USE_PIXFC )
-#   IF(EXISTS "${EXTERNAL_SRC}/pixfc-sse/build/src/libpixfc-sse.a")
-#     INCLUDE_DIRECTORIES( ${EXTERNAL_SRC}/pixfc-sse/include )
-#     LIST(APPEND LINKER_LIBS ${EXTERNAL_SRC}/pixfc-sse/build/src/libpixfc-sse.a )
-#     LIST(APPEND LINKER_LIBS rt)
-#   ELSE()
-#     SET( USE_PIXFC OFF )
-#   ENDIF()
-# ENDIF()
 
 CONFIGURE_FILE( PlaYUVerConfig.cmake.in PlaYUVerConfig.cmake @ONLY)
 

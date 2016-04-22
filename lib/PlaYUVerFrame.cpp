@@ -35,9 +35,6 @@
 #ifdef USE_OPENCV
 #include "StreamHandlerOpenCV.h"
 #endif
-#ifdef USE_PIXFC
-#include "pixfc-sse.h"
-#endif
 
 namespace plaYUVer
 {
@@ -125,8 +122,6 @@ PlaYUVerFrame::~PlaYUVerFrame()
   if( m_pcARGB32 )
     freeMem1D( m_pcARGB32 );
   m_pcARGB32 = NULL;
-
-  closePixfc();
 }
 
 static Int getMem3ImageComponents( Pel**** array3D, Int dim1, Int dim2, Int log2ChromaHeight, Int log2ChromaWidth )
@@ -926,56 +921,6 @@ Double PlaYUVerFrame::getMaximum( Int channel )
  * Interface to other libs
  **************************************************************
  */
-
-Void PlaYUVerFrame::openPixfc()
-{
-#ifdef USE_PIXFC
-  m_pcPixfc = NULL;
-  PixFcPixelFormat input_format = PixFcYUV420P;
-  PixFcFlag flags = ( PixFcFlag )( PixFcFlag_Default + PixFcFlag_NNbResamplingOnly );
-  UInt input_row_size = m_uiWidth;
-  if( create_pixfc( &m_pcPixfc, input_format, PixFcRGB24, m_uiWidth, m_uiHeight, input_row_size, m_uiWidth * 3, flags ) != 0 )
-  {
-    fprintf( stderr, "Error creating struct pixfc\n" );
-    m_pcPixfc = NULL;
-    return;
-  }
-#endif
-}
-
-Void PlaYUVerFrame::closePixfc()
-{
-#ifdef USE_PIXFC
-  if( m_pcPixfc )
-    destroy_pixfc( m_pcPixfc );
-#endif
-}
-
-Void PlaYUVerFrame::FrametoRGB8Pixfc()
-{
-#ifdef USE_PIXFC
-  switch( m_iPixelFormat )
-  {
-  case YUV420p:
-    m_pcPixfc->convert( m_pcPixfc, m_pppcInputPel, m_pcRGB32 );
-    break;
-  case YUV422p:
-    break;
-  case YUV444p:
-  case YUYV422:
-    m_pcPixfc->convert( m_pcPixfc, m_pppcInputPel, m_pcRGB32 );
-    break;
-  case GRAY:
-    break;
-  case RGB8:
-    break;
-  default:
-    // No action.
-    break;
-  }
-  m_bHasRGBPel = true;
-#endif
-}
 
 cv::Mat* PlaYUVerFrame::getCvMat( Bool convertToGray )
 {

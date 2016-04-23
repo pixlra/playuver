@@ -35,7 +35,6 @@ namespace plaYUVer
 std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Portable Grayscale Map ", "pgm"  );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Portable Network Graphics", "png" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Joint Photographic Experts Group", "jpg" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Windows Bitmap", "bmp" );
@@ -87,7 +86,7 @@ Bool StreamHandlerOpenCV::write( PlaYUVerFrame* pcFrame )
   cv::Mat* pcCvFrame = pcFrame->getCvMat();
   if( pcCvFrame )
   {
-    bRet = cv::imwrite( m_cFilename.c_str(), *pcCvFrame );
+    bRet = cv::imwrite( m_cFilename, *pcCvFrame );
     delete pcCvFrame;
   }
   return bRet;

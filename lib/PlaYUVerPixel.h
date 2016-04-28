@@ -35,7 +35,8 @@
 namespace plaYUVer
 {
 
-#define CLAMP(X) X = X < 0 ? 0 : X > 255 ? 255 : X;
+#define CLAMP_RANGE(X, MIN, MAX ) X = X < MIN ? MIN : X > MAX ? MAX : X;
+#define CLAMP(X) CLAMP_RANGE(X, 0, 255);
 
 #define YUV2RGB(  iY, iU, iV, iR, iG, iB ) \
     iR = iY + ( ( 1436 * ( iV - 128) ) >> 10 ); \
@@ -76,7 +77,7 @@ public:
   PlaYUVerPixel();
   PlaYUVerPixel( Int ColorSpace );
   PlaYUVerPixel( Int ColorSpace, Pel c0, Pel c1, Pel c2 );
-  
+
   Int ColorSpaceType()
   {
     return m_iColorSpace;
@@ -129,7 +130,7 @@ public:
   PlaYUVerPixel operator+ ( const PlaYUVerPixel& );
   PlaYUVerPixel operator- ( const PlaYUVerPixel& );
   PlaYUVerPixel operator* ( const Double& );
-  
+
   /**
    * Convert a Pixel to a new color space
    * @param inputPixel input pixel (PlaYUVerPixel)

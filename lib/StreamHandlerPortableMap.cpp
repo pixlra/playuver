@@ -83,6 +83,7 @@ Bool StreamHandlerPortableMap::openHandler( std::string strFilename, Bool bInput
     }
     else
     {
+      closeHandler();
       return false;
     }
   }

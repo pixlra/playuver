@@ -329,10 +329,16 @@ Void PlaYUVerApp::save()
     if( !fileName.isEmpty() )
     {
       m_cLastOpenPath = QFileInfo( fileName ).path();
-      if( !saveWindow->save( fileName ) )
+      try
+      {
+        saveWindow->save( fileName );
+      }
+      catch( const char *msg )
       {
         QApplication::restoreOverrideCursor();
-        QMessageBox::warning( this, tr( "plaYUVer" ), tr( "Cannot save file %1" ).arg( fileName ) );
+        QString warningMsg = "Cannot save file " + QFileInfo( fileName ).fileName() + " with the following error: \n" + msg;
+        QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
+        printMessage( warningMsg, LOG_ERROR );
         return;
       }
     }

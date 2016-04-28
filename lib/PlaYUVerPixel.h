@@ -35,14 +35,14 @@
 namespace plaYUVer
 {
 
-#define CLAMP_RANGE(X, MIN, MAX ) X = X < MIN ? MIN : X > MAX ? MAX : X;
-#define CLAMP(X) CLAMP_RANGE(X, 0, 255);
+#define CLAMP_RANGE(X, MIN, MAX ) X = X < MIN ? MIN : X > MAX ? MAX : X
 
+#define CLAMP_YUV2RGB(X) X = X < 0 ? 0 : X > 255 ? 255 : X;
 #define YUV2RGB(  iY, iU, iV, iR, iG, iB ) \
     iR = iY + ( ( 1436 * ( iV - 128) ) >> 10 ); \
     iG = iY - ( ( 352 * ( iU - 128 ) + 731 * ( iV - 128 ) ) >> 10 ); \
     iB = iY + ( ( 1812 * ( iU - 128 ) ) >> 10 ); \
-    CLAMP(iR) CLAMP(iG) CLAMP(iB)
+    CLAMP_YUV2RGB(iR) CLAMP_YUV2RGB(iG) CLAMP_YUV2RGB(iB)
 
 
 static inline Void rgbToYuv( Int iR, Int iG, Int iB, Int &iY, Int &iU, Int &iV )

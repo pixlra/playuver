@@ -35,8 +35,6 @@
 namespace plaYUVer
 {
 
-#define CLAMP_RANGE(X, MIN, MAX ) X < MIN ? MIN : X > MAX ? MAX : X
-
 #define CLAMP_YUV2RGB(X) X = X < 0 ? 0 : X > 255 ? 255 : X;
 #define YUV2RGB(  iY, iU, iV, iR, iG, iB ) \
     iR = iY + ( ( 1436 * ( iV - 128) ) >> 10 ); \

@@ -71,6 +71,16 @@ std::vector<std::string> PlaYUVerFrame::supportedPixelFormatListNames( Int color
   return formatsList;
 }
 
+Int PlaYUVerFrame::findPixelFormat( std::string name )
+{
+  for( Int i = 0; i < PLAYUVER_NUMBER_FORMATS; i++ )
+  {
+    if( g_PlaYUVerPixFmtDescriptorsList[i].name == name )
+      return i;
+  }
+  return -1;
+}
+
 PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel, Int endianness )
 {
   init( width, height, pelFormat, bitsPixel, endianness );
@@ -967,23 +977,22 @@ cv::Mat* PlaYUVerFrame::getCvMat( Bool convertToGray )
 Void PlaYUVerFrame::fromCvMat( cv::Mat* pcCvFrame )
 {
 #ifdef USE_OPENCV
-  if( m_iPixelFormat == NO_FMT )
-  {
-    switch( pcCvFrame->channels() )
-    {
-    case 1:
-      m_iPixelFormat = GRAY;
-      break;
-    case 3:
-      m_iPixelFormat = RGB24;
-      break;
-    default:
-      return;
-    }
-  }
-
   if( !m_bInit )
   {
+    if( m_iPixelFormat == NO_FMT )
+    {
+      switch( pcCvFrame->channels() )
+      {
+        case 1:
+          m_iPixelFormat = findPixelFormat( "GRAY" );
+          break;
+        case 3:
+          m_iPixelFormat = findPixelFormat( "BGR24" );
+          break;
+        default:
+          return;
+      }
+    }
     init( pcCvFrame->cols, pcCvFrame->rows, m_iPixelFormat, 8, -1 );
   }
 
@@ -998,9 +1007,11 @@ Void PlaYUVerFrame::fromCvMat( cv::Mat* pcCvFrame )
     Pel* pInputPelB = m_pppcInputPel[COLOR_B][0];
     for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )
     {
-      *pInputPelR++ = pelRed( *pCvPel++ );
-      *pInputPelG++ = pelGreen( *pCvPel++ );
-      *pInputPelB++ = pelBlue( *pCvPel++ );
+      *pInputPelB++ = *pCvPel++;
+      *pInputPelG++ = *pCvPel++;
+      *pInputPelR++ = *pCvPel++;
+
+
     }
   }
   else

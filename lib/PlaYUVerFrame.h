@@ -98,6 +98,7 @@ public:
    */
   static std::vector<std::string> supportedPixelFormatListNames();
   static std::vector<std::string> supportedPixelFormatListNames( Int colorSpace );
+  static Int findPixelFormat( std::string name );
 
   /**
    * Get number of bytes per frame of a specific

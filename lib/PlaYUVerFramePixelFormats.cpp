@@ -295,7 +295,7 @@ PlaYUVerPixFmtDescriptor RGB24 =
 
 PlaYUVerPixFmtDescriptor BGR24 =
 {
-  "BRG24",
+  "BGR24",
   PlaYUVerPixel::COLOR_RGB,
   3,
   1,

@@ -436,6 +436,11 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
   Bool bGuessedByFilesize = false;
   QString FilenameShort = QFileInfo( filename ).fileName();
   QString fileExtension = QFileInfo( filename ).suffix();
+
+  if( filename.startsWith( "/dev/" ) )
+  {
+    return false;
+  }
   if( !fileExtension.compare( "yuv" ) )
   {
     bGuessed = false;

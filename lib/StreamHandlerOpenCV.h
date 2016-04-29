@@ -31,8 +31,12 @@
 #include <string>
 #include <opencv2/opencv.hpp>
 #include "PlaYUVerDefs.h"
-#include "PlaYUVerStream.h"
 #include "PlaYUVerStreamHandlerIf.h"
+
+namespace cv
+{
+  class VideoCapture;
+}
 
 namespace plaYUVer
 {
@@ -48,9 +52,7 @@ public:
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
 
-  StreamHandlerOpenCV()
-  {
-  }
+  StreamHandlerOpenCV();
   ~StreamHandlerOpenCV()
   {
   }
@@ -63,6 +65,9 @@ public:
   Bool read( PlaYUVerFrame* pcFrame );
   Bool write( PlaYUVerFrame* pcFrame );
 
+private:
+  cv::VideoCapture* pcVideoCapture;
+  cv::Mat* pcMat;
 };
 
 }  // NAMESPACE

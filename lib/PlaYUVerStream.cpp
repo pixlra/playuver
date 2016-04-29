@@ -53,9 +53,9 @@ std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
 #ifdef USE_FFMPEG
   APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerLibav, Read );
 #endif
-//#ifdef USE_OPENCV
-//  APPEND_PLAYUVER_SUPPORTED_FMT( LibOpenCVHandler );
-//#endif
+#ifdef USE_OPENCV
+  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerOpenCV, Read );
+#endif
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
@@ -65,7 +65,6 @@ std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedWriteFormats()
   REGIST_PLAYUVER_SUPPORTED_FMT( &PlaYUVerRawHandler::Create, "Raw Video", "yuv" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable PixMap ", "ppm" );
 #ifdef USE_FFMPEG
   APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerLibav, Write );
 #endif
@@ -118,7 +117,11 @@ CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( std::string strFilename
   }
   for( UInt i = 0; i < supportedFmts.size(); i++ )
   {
-    if( supportedFmts[i].formatExt == currExt )
+    if( currExt != "" &&  supportedFmts[i].formatExt == currExt )
+    {
+      return supportedFmts[i].formatFct;
+    }
+    else if( strFilename.find( supportedFmts[i].formatExt ) != std::string::npos )
     {
       return supportedFmts[i].formatFct;
     }

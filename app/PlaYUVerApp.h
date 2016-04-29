@@ -92,6 +92,7 @@ private Q_SLOTS:
    *  File functions slots
    */
   void open();
+  void openDevice();
   void openRecent();
   void save();
   void format();
@@ -130,6 +131,8 @@ private:
   QString m_cLastOpenPath;
 
   static VideoSubWindow* findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager, const QString& fileName );
+
+  Void load( QString fileName, PlaYUVerStreamInfo* pStreamInfo );
 
   Void updateMenus();
 
@@ -210,6 +213,7 @@ private:
   enum APP_ACTION_LIST
   {
     OPEN_ACT = 0,
+    OPEN_DEVICE_ACT,
     SAVE_ACT,
     FORMAT_ACT,
     RELOAD_ACT,

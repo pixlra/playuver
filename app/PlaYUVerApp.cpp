@@ -195,6 +195,11 @@ Void PlaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     printMessage( "File " + fileName + " do not exist!", LOG_ERROR );
     return;
   }
+  load( fileName, pStreamInfo );
+}
+
+Void PlaYUVerApp::load( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
+{
   VideoSubWindow *videoSubWindow = PlaYUVerApp::findVideoStreamSubWindow( m_pcWindowHandle, fileName );
   if( videoSubWindow )
   {
@@ -287,6 +292,11 @@ Void PlaYUVerApp::open()
       loadFile( fileNameList.at( i ) );
     }
   }
+}
+
+Void PlaYUVerApp::openDevice()
+{
+  load( "/dev/video0", NULL );
 }
 
 Void PlaYUVerApp::openRecent()
@@ -607,6 +617,10 @@ Void PlaYUVerApp::createActions()
   m_arrayActions[OPEN_ACT]->setStatusTip( tr( "Open stream" ) );
   connect( m_arrayActions[OPEN_ACT], SIGNAL( triggered() ), this, SLOT( open() ) );
 
+  m_arrayActions[OPEN_DEVICE_ACT] = new QAction( tr( "&Open Capture Device" ), this );
+  m_arrayActions[OPEN_DEVICE_ACT]->setStatusTip( tr( "Open capture device (webcam)" ) );
+  connect( m_arrayActions[OPEN_DEVICE_ACT], SIGNAL( triggered() ), this, SLOT( openDevice() ) );
+
   m_arrayRecentFilesActions.resize( MAX_RECENT_FILES );
   for( Int i = 0; i < MAX_RECENT_FILES; i++ )
   {
@@ -720,6 +734,7 @@ Void PlaYUVerApp::createMenus()
 
   m_arrayMenu[FILE_MENU] = menuBar()->addMenu( tr( "&File" ) );
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[OPEN_ACT] );
+  m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[OPEN_DEVICE_ACT] );
   m_arrayMenu[RECENT_MENU] = m_arrayMenu[FILE_MENU]->addMenu( tr( "Open Recent" ) );
   for( Int i = 0; i < MAX_RECENT_FILES; ++i )
   {

@@ -36,24 +36,7 @@ namespace plaYUVer
 
 PlaYUVerModuleFactory::PlaYUVerModuleFactory()
 {
-  Register( "FilterComponentLuma", &FilterComponentLuma::Create );
-  Register( "FilterComponentChromaU", &FilterComponentChromaU::Create );
-  Register( "FilterComponentChromaV", &FilterComponentChromaV::Create );
-  Register( "AbsoluteFrameDifference", &AbsoluteFrameDifference::Create );
-  Register( "FrameDifference", &FrameDifference::Create );
-  Register( "FrameMask", &FrameMask::Create );
-  Register( "SetChromaHalfScale", &SetChromaHalfScale::Create );
-  Register( "FrameCrop", &FrameCrop::Create );
-  Register( "FrameBinarization", &FrameBinarization::Create );
-  Register( "FrameShift", &FrameShift::Create );
-  Register( "EightBitsSampling", &EightBitsSampling::Create );
-  Register( "LumaAverage", &LumaAverage::Create );
-  Register( "WeightedPSNR", &WeightedPSNR::Create );
-#ifdef USE_OPENCV
-  //Register( "DisparityStereoVar", &DisparityStereoVar::Create );
-  Register( "DisparityStereoBM", &DisparityStereoBM::Create );
-  Register( "DisparityStereoSGBM", &DisparityStereoSGBM::Create );
-#endif
+  REGISTER_ALL_MODULES
 }
 
 PlaYUVerModuleFactory::~PlaYUVerModuleFactory()

@@ -22,7 +22,19 @@
  * \brief    Handle multiple sub-windows
  */
 
+#include <QAction>
+#include <QActionGroup>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QHBoxLayout>
+#include <QMdiArea>
+#include <QMenu>
+#include <QPainter>
+#include <QSignalMapper>
+#include <QStyle>
+
 #include "PlaYUVerSubWindowHandle.h"
+
 #include "PlaYUVerApp.h"
 #include "PlaYUVerMdiSubWindow.h"
 #include "SubWindowAbstract.h"

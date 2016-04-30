@@ -63,14 +63,15 @@ private:
   PlaYUVerMdiSubWindow* m_cSubWindow;
 
 public:
-  enum SubWindowCategories
+  enum SubWindowCategory
   {
     SUBWINDOW = 0,
     VIDEO_SUBWINDOW = 1,
     VIDEO_STREAM_SUBWINDOW = 2,
     MODULE_SUBWINDOW = 4,
     PLOT_SUBWINDOW = 8,
-  };
+  }; Q_DECLARE_FLAGS( SubWindowCategories, SubWindowCategory )
+
 
   SubWindowAbstract( QWidget *, UInt );
   ~SubWindowAbstract();

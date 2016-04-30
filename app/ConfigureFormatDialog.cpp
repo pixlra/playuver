@@ -22,10 +22,19 @@
  * \brief    Dialog box to set the sequence resolution
  */
 
-#include "ConfigureFormatDialog.h"
+#include <QComboBox>
+#include <QDialogButtonBox>
+#include <QFileInfo>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QSpinBox>
+#include <QWidget>
+
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"
 
+#include "ConfigureFormatDialog.h"
 
 ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
         QDialog( parent )
@@ -224,7 +233,6 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   QWidget* framerateWidget = new QWidget();
   framerateWidget->setContentsMargins( 0,0,0,0 );
   framerateWidget->setLayout( framerateFormatLayout );
-
 
   /*
    *  Confirmation buttons

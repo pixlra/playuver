@@ -25,14 +25,17 @@
 #ifndef __PLAYUVERSUBWINDOWHANDLE_H__
 #define __PLAYUVERSUBWINDOWHANDLE_H__
 
-#include "config.h"
-#include "PlaYUVerAppDefs.h"
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
+#include <QVector>
+#include <QWidget>
+#include <QString>
 
+#include "PlaYUVerAppDefs.h"
+
+class QAction;
+class QActionGroup;
+class QHBoxLayout;
+class QMenu;
+class QSignalMapper;
 
 class PlaYUVerApp;
 class SubWindowAbstract;

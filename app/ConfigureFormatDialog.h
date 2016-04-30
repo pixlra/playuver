@@ -25,18 +25,17 @@
 #ifndef __CONFIGUREFORMATDIALOG_H__
 #define __CONFIGUREFORMATDIALOG_H__
 
-#include "config.h"
+#include <QDialog>
+#include <QVector>
+#include <QString>
+
 #include "PlaYUVerAppDefs.h"
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
-#include <QtCore>
 
-class QPixmap;
-class QColor;
-
+class QComboBox;
+class QHBoxLayout;
+class QLabel;
+class QSpinBox;
+class QWidget;
 
 /**
  *

@@ -66,7 +66,8 @@ public:
       m_pcFrame->calcHistogram();
 
       eventData->starting = false;
-      eventData->success = m_pcFrame->getHasHistogram();
+//       eventData->success = m_pcFrame->getHasHistogram();
+      eventData->success = true;
       eventData->frame = m_pcFrame;
       QCoreApplication::postEvent( m_parent, eventData );
     }

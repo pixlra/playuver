@@ -338,7 +338,7 @@ Int PlaYUVerTools::QualityOperation()
   const char *pchQualityMetricName = PlaYUVerFrame::supportedQualityMetricsList()[m_uiQualityMetric].c_str();
   PlaYUVerFrame* apcCurrFrame[MAX_NUMBER_INPUTS];
   Bool abEOF[MAX_NUMBER_INPUTS];
-  Double adAverageQuality[MAX_NUMBER_INPUTS - 1][MAX_NUMBER_COMPONENTS];
+  Double adAverageQuality[MAX_NUMBER_INPUTS - 1][m_uiNumberOfComponents];
   Double dQuality;
 
   String metric_fmt = " ";

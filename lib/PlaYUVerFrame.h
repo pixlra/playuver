@@ -41,8 +41,9 @@ class Mat;
 
 
 struct PlaYUVerPixFmtDescriptor;
+struct PlaYUVerFramePrivate;
 
-#define CHROMASHIFT( SIZE, SHIFT ) UInt( -( ( - ( Int( SIZE ) ) ) >> SHIFT ) )
+#define CHROMASHIFT( SIZE, SHIFT ) UInt( -( ( - ( Int( SIZE ) ) ) >> ( SHIFT ) ) )
 
 /**
  * \class    PlaYUVerFrame
@@ -99,13 +100,6 @@ public:
   static Int findPixelFormat( String name );
 
   /**
-   * Get number of bytes per frame of a specific
-   * pixel format
-   * @return number of bytes per frame
-   */
-  static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel );
-
-  /**
    * Creates a new frame using the following configuration
    *
    * @param width width of the frame
@@ -141,53 +135,46 @@ public:
 
   Void clear();
 
-  UInt getWidth() const
-  {
-    return m_uiWidth;
-  }
-  UInt getHeight() const
-  {
-    return m_uiHeight;
-  }
-  Int getPelFormat() const
-  {
-    return m_iPixelFormat;
-  }
-  UInt getBitsPel() const
-  {
-    return m_uiBitsPel;
-  }
-  Int getEndianness() const
-  {
-    return m_iEndianness;
-  }
-  Pel*** getPelBufferYUV() const
-  {
-    return m_pppcInputPel;
-  }
-  Pel*** getPelBufferYUV()
-  {
-    m_bHasHistogram = false;
-    m_bHasRGBPel = false;
-    return m_pppcInputPel;
-  }
+  Bool haveSameFmt( PlaYUVerFrame* other, UInt match = MATCH_ALL ) const;
 
-  UChar* getRGBBuffer() const
-  {
-    if( m_bHasRGBPel )
-    {
-      return m_pcARGB32;
-    }
-    return NULL;
-  }
-  UChar* getRGBBuffer()
-  {
-    if( !m_bHasRGBPel )
-    {
-      fillRGBBuffer();
-    }
-    return m_pcARGB32;
-  }
+  /**
+   * Get pixel format information
+   * @return pixel format index
+   */
+  Int getPelFormat() const;
+
+  /**
+   * @return pixel format name
+   */
+  String getPelFmtName();
+
+  /**
+   * @return get color space index
+   * @
+   */
+  Int getColorSpace() const;
+
+  UInt getNumberChannels() const;
+
+  /**
+   * Get width/height of the frame or the entire
+   * number of pixels
+   * @param channel/component
+   * @return number of pixels
+   */
+  UInt getWidth( Int channel = 0 ) const;
+  UInt getHeight( Int channel = 0 ) const;
+  UInt getPixels( Int channel = 0 ) const;
+
+  UInt8 getChromaWidthRatio() const;
+  UInt8 getChromaHeightRatio() const;
+  UInt getChromaWidth() const;
+  UInt getChromaHeight() const;
+  UInt getChromaLength() const;
+  UInt getChromaSize() const;
+
+  UInt getBitsPel() const;
+  Int getEndianness() const;
 
   /**
    * Get number of bytes per frame of an existing frame
@@ -195,16 +182,17 @@ public:
    */
   UInt64 getBytesPerFrame();
 
-  Int getColorSpace() const;
-  UInt getNumberChannels() const;
+  /**
+   * Get number of bytes per frame of a specific
+   * pixel format
+   * @return number of bytes per frame
+   */
+  static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel );
 
-  UInt getPixels() const;
-  UInt8 getChromaWidthRatio() const;
-  UInt8 getChromaHeightRatio() const;
-  UInt getChromaWidth() const;
-  UInt getChromaHeight() const;
-  UInt getChromaLength() const;
-  UInt getChromaSize() const;
+  Pel*** getPelBufferYUV() const;
+  Pel*** getPelBufferYUV();
+  UChar* getRGBBuffer() const;
+  UChar* getRGBBuffer();
 
   PlaYUVerPixel getPixelValue( Int xPos, Int yPos );
   PlaYUVerPixel getPixelValue( Int xPos, Int yPos, PlaYUVerPixel::ColorSpace eColorSpace );
@@ -219,10 +207,6 @@ public:
 
   Void fillRGBBuffer();
 
-  Bool haveSameFmt( PlaYUVerFrame* other, UInt match = MATCH_ALL ) const;
-
-  String getPelFmtName();
-
   /**
    * Histogram
    */
@@ -235,15 +219,6 @@ public:
   Double getHistogramValue( Int channel, UInt bin );
   Double getMaximum( Int channel );
   Int getHistogramSegment();
-
-  Void setRunningFlag( Bool bFlag )
-  {
-    m_bRunningFlag = bFlag;
-  }
-  Bool getHasHistogram()
-  {
-    return m_bHasHistogram;
-  }
 
   /**
    * Interface with OpenCV lib
@@ -288,53 +263,7 @@ public:
   //! @}
 
 private:
-
-  Bool m_bInit;
-
-  //! Struct with the pixel format description.
-  PlaYUVerPixFmtDescriptor* m_pcPelFormat;
-  String m_cPelFmtName;
-
-  UInt m_uiWidth;  //!< Width of the frame
-  UInt m_uiHeight;  //!< Height of the frame
-  Int m_iPixelFormat;  //!< Pixel format number (it follows the list of supported pixel formats)
-  Int m_iNumberChannels;  //!< Number of channels
-  UInt m_uiBitsPel;  //!< Bits per pixel/channel
-  Int m_iEndianness;  //!< Endiannes of bytes
-  UInt m_uiHalfPelValue;  //!< Bits per pixel/channel
-
-  Pel*** m_pppcInputPel;
-
-  Bool m_bHasRGBPel;  //!< Flag indicating that the ARGB buffer was computed
-  UChar* m_pcARGB32;  //!< Buffer with the ARGB pixels used in Qt libs
-
-  /** The histogram data.*/
-  UInt* m_puiHistogram;
-
-  /** If the image is RGB and calcLuma is true, we have 1 more channel */
-  UInt m_uiHistoChannels;
-
-  /** Numbers of histogram segments depending of image bytes depth*/
-  UInt m_uiHistoSegments;
-
-  /** Used to stop thread during calculations.*/
-  Bool m_bRunningFlag;
-
-  Int getRealHistoChannel( Int channel );
-
-  Bool m_bHasHistogram;
-
-  /**
-   * Common constructor function of a frame
-   *
-   * @param width width of the frame
-   * @param height height of the frame
-   * @param pel_format pixel format index (always use PixelFormats enum)
-   *
-   */
-  Void init( UInt width, UInt height, Int pel_format, Int bitsPixel, Int endianness );
-
-  Void FrametoRGB8Pixfc();
+  PlaYUVerFramePrivate* d;
 };
 
 #endif // __PLAYUVERFRAME_H__

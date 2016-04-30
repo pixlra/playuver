@@ -37,6 +37,10 @@
 #endif
 
 
+/*! \brief Supported formats
+ *
+ *  List of supported pixels formats
+ */
 std::vector<String> PlaYUVerFrame::supportedColorSpacesListNames()
 {
   std::vector<String> colorSpaceList;
@@ -79,18 +83,69 @@ Int PlaYUVerFrame::findPixelFormat( String name )
   return -1;
 }
 
-PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel, Int endianness )
+struct PlaYUVerFramePrivate
 {
-  init( width, height, pelFormat, bitsPixel, endianness );
+  /**
+   * Common constructor function of a frame
+   *
+   * @param width width of the frame
+   * @param height height of the frame
+   * @param pel_format pixel format index (always use PixelFormats enum)
+   *
+   */
+  Void init( UInt width, UInt height, Int pel_format, Int bitsPixel, Int endianness );
+
+  Bool m_bInit;
+
+  //! Struct with the pixel format description.
+  PlaYUVerPixFmtDescriptor* m_pcPelFormat;
+  String m_cPelFmtName;
+
+  UInt m_uiWidth;  //!< Width of the frame
+  UInt m_uiHeight;  //!< Height of the frame
+  Int m_iPixelFormat;  //!< Pixel format number (it follows the list of supported pixel formats)
+  Int m_iNumberChannels;  //!< Number of channels
+  UInt m_uiBitsPel;  //!< Bits per pixel/channel
+  Int m_iEndianness;  //!< Endiannes of bytes
+  UInt m_uiHalfPelValue;  //!< Bits per pixel/channel
+
+  Pel*** m_pppcInputPel;
+
+  Bool m_bHasRGBPel;  //!< Flag indicating that the ARGB buffer was computed
+  UChar* m_pcARGB32;  //!< Buffer with the ARGB pixels used in Qt libs
+
+  /** The histogram data.*/
+  UInt* m_puiHistogram;
+
+  /** If the image is RGB and calcLuma is true, we have 1 more channel */
+  UInt m_uiHistoChannels;
+
+  /** Numbers of histogram segments depending of image bytes depth*/
+  UInt m_uiHistoSegments;
+
+  /** Used to stop thread during calculations.*/
+  Bool m_bRunningFlag;
+
+  Bool m_bHasHistogram;
+};
+
+
+/*! \brief Constructors
+ *
+ *  Constructors and init functions
+ */
+PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel, Int endianness ) : d( new PlaYUVerFramePrivate )
+{
+  d->init( width, height, pelFormat, bitsPixel, endianness );
 }
 
-PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, Bool bCopy )
+PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, Bool bCopy ) : d( new PlaYUVerFramePrivate )
 {
-  init( other->getWidth(), other->getHeight(), other->getPelFormat(), other->getBitsPel(), other->getEndianness() );
+  d->init( other->getWidth(), other->getHeight(), other->getPelFormat(), other->getBitsPel(), other->getEndianness() );
   copyFrom( other );
 }
 
-PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt areaWidth, UInt areaHeight )
+PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt areaWidth, UInt areaHeight ) : d( new PlaYUVerFramePrivate )
 {
   PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[other->getPelFormat()] );
   if( pcPelFormat->log2ChromaWidth )
@@ -110,26 +165,8 @@ PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt a
       areaHeight++;
   }
 
-  init( areaWidth, areaHeight, other->getPelFormat(), other->getBitsPel(), other->getEndianness() );
+  d->init( areaWidth, areaHeight, other->getPelFormat(), other->getBitsPel(), other->getEndianness() );
   copyFrom( other, posX, posY );
-}
-
-PlaYUVerFrame::~PlaYUVerFrame()
-{
-  if( m_puiHistogram )
-  {
-    freeMem1D( m_puiHistogram );
-  }
-  m_puiHistogram = NULL;
-  m_bHasHistogram = false;
-
-  if( m_pppcInputPel )
-    freeMem3ImageComponents<Pel>( m_pppcInputPel );
-  m_pppcInputPel = NULL;
-
-  if( m_pcARGB32 )
-    freeMem1D( m_pcARGB32 );
-  m_pcARGB32 = NULL;
 }
 
 static Int getMem3ImageComponents( Pel**** array3D, Int dim1, Int dim2, Int log2ChromaHeight, Int log2ChromaWidth )
@@ -166,7 +203,7 @@ static Int getMem3ImageComponents( Pel**** array3D, Int dim1, Int dim2, Int log2
   return total_mem_size;
 }
 
-Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel, Int endianness )
+Void PlaYUVerFramePrivate::init( UInt width, UInt height, Int pel_format, Int bitsPixel, Int endianness )
 {
   m_bInit = false;
   m_pppcInputPel = NULL;
@@ -216,18 +253,38 @@ Void PlaYUVerFrame::init( UInt width, UInt height, Int pel_format, Int bitsPixel
   m_bInit = true;
 }
 
+PlaYUVerFrame::~PlaYUVerFrame()
+{
+  if( d->m_puiHistogram )
+  {
+    freeMem1D( d->m_puiHistogram );
+  }
+  d->m_puiHistogram = NULL;
+  d->m_bHasHistogram = false;
+
+  if( d->m_pppcInputPel )
+    freeMem3ImageComponents<Pel>( d->m_pppcInputPel );
+  d->m_pppcInputPel = NULL;
+
+  if( d->m_pcARGB32 )
+    freeMem1D( d->m_pcARGB32 );
+  d->m_pcARGB32 = NULL;
+
+  delete d;
+}
+
 Void PlaYUVerFrame::clear()
 {
   Pel* pPel;
   Pel uiValue = 128;
   Int ratioH, ratioW;
   UInt i;
-  for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
+  for( UInt ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
   {
-    ratioW = ch > 0 ? m_pcPelFormat->log2ChromaWidth : 0;
-    ratioH = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
-    pPel = m_pppcInputPel[ch][0];
-    for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ); i++ )
+    ratioW = ch > 0 ? d->m_pcPelFormat->log2ChromaWidth : 0;
+    ratioH = ch > 0 ? d->m_pcPelFormat->log2ChromaHeight : 0;
+    pPel = d->m_pppcInputPel[ch][0];
+    for( i = 0; i < CHROMASHIFT( d->m_uiHeight, ratioH ) * CHROMASHIFT( d->m_uiWidth, ratioW ); i++ )
     {
       *pPel++ = uiValue;
     }
@@ -257,24 +314,81 @@ Bool PlaYUVerFrame::haveSameFmt( PlaYUVerFrame* other, UInt match ) const
   return bRet;
 }
 
+Int PlaYUVerFrame::getPelFormat() const
+{
+  return d->m_iPixelFormat;
+}
+
 String PlaYUVerFrame::getPelFmtName()
 {
-  return m_pcPelFormat->name;
+  return d->m_pcPelFormat->name;
 }
 
 Int PlaYUVerFrame::getColorSpace() const
 {
-  return m_pcPelFormat->colorSpace;
+  return d->m_pcPelFormat->colorSpace;
 }
 
 UInt PlaYUVerFrame::getNumberChannels() const
 {
-  return m_pcPelFormat->numberChannels;
+  return d->m_pcPelFormat->numberChannels;
+}
+
+UInt PlaYUVerFrame::getWidth( Int channel ) const
+{
+  return CHROMASHIFT( d->m_uiWidth, channel > 0 ? d->m_pcPelFormat->log2ChromaWidth : 0 );
+}
+UInt PlaYUVerFrame::getHeight( Int channel ) const
+{
+  return CHROMASHIFT( d->m_uiHeight, channel > 0 ? d->m_pcPelFormat->log2ChromaHeight : 0 );
+}
+
+UInt PlaYUVerFrame::getPixels( Int channel ) const
+{
+  return getWidth( channel ) * getWidth( channel );
+}
+
+UInt8 PlaYUVerFrame::getChromaWidthRatio() const
+{
+  return d->m_pcPelFormat->log2ChromaWidth;
+}
+
+UInt8 PlaYUVerFrame::getChromaHeightRatio() const
+{
+  return d->m_pcPelFormat->log2ChromaHeight;
+}
+
+UInt PlaYUVerFrame::getChromaWidth() const
+{
+  if( d->m_pcPelFormat->colorSpace == GRAY )
+    return 0;
+  return CHROMASHIFT( d->m_uiWidth, d->m_pcPelFormat->log2ChromaWidth );
+}
+
+UInt PlaYUVerFrame::getChromaHeight() const
+{
+  if( d->m_pcPelFormat->colorSpace == GRAY )
+    return 0;
+  return CHROMASHIFT( d->m_uiHeight, d->m_pcPelFormat->log2ChromaHeight );
+}
+
+UInt PlaYUVerFrame::getChromaLength() const
+{
+  return getChromaWidth() * getChromaHeight();
+}
+
+UInt PlaYUVerFrame::getBitsPel() const
+{
+  return d->m_uiBitsPel;
+}
+Int PlaYUVerFrame::getEndianness() const
+{
+  return d->m_iEndianness;
 }
 
 UInt64 PlaYUVerFrame::getBytesPerFrame()
 {
-  return getBytesPerFrame( m_uiWidth, m_uiHeight, m_iPixelFormat, m_uiBitsPel );
+  return getBytesPerFrame( d->m_uiWidth, d->m_uiHeight, d->m_iPixelFormat, d->m_uiBitsPel );
 }
 
 UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel )
@@ -290,65 +404,54 @@ UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelF
   return numberBytes * bytesPerPixel;
 }
 
-UInt PlaYUVerFrame::getPixels() const
+Pel*** PlaYUVerFrame::getPelBufferYUV() const
 {
-  return ( m_uiWidth * m_uiHeight );
+  return d->m_pppcInputPel;
+}
+Pel*** PlaYUVerFrame::getPelBufferYUV()
+{
+  d->m_bHasHistogram = false;
+  d->m_bHasRGBPel = false;
+  return d->m_pppcInputPel;
 }
 
-UInt8 PlaYUVerFrame::getChromaWidthRatio() const
+UChar* PlaYUVerFrame::getRGBBuffer() const
 {
-  return m_pcPelFormat->log2ChromaWidth;
+  if( d->m_bHasRGBPel )
+  {
+    return d->m_pcARGB32;
+  }
+  return NULL;
 }
-
-UInt8 PlaYUVerFrame::getChromaHeightRatio() const
+UChar* PlaYUVerFrame::getRGBBuffer()
 {
-  return m_pcPelFormat->log2ChromaHeight;
-}
-
-UInt PlaYUVerFrame::getChromaWidth() const
-{
-  if( m_pcPelFormat->colorSpace == GRAY )
-    return 0;
-  return CHROMASHIFT( m_uiWidth, m_pcPelFormat->log2ChromaWidth );
-}
-
-UInt PlaYUVerFrame::getChromaHeight() const
-{
-  if( m_pcPelFormat->colorSpace == GRAY )
-    return 0;
-  return CHROMASHIFT( m_uiHeight, m_pcPelFormat->log2ChromaHeight );
-}
-
-UInt PlaYUVerFrame::getChromaLength() const
-{
-  return getChromaWidth() * getChromaHeight();
-}
-
-UInt PlaYUVerFrame::getChromaSize() const
-{
-  return getChromaWidth() * getChromaHeight();
+  if( !d->m_bHasRGBPel )
+  {
+    fillRGBBuffer();
+  }
+  return d->m_pcARGB32;
 }
 
 PlaYUVerPixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos )
 {
-  PlaYUVerPixel PixelValue( m_pcPelFormat->colorSpace, m_uiHalfPelValue, m_uiHalfPelValue, m_uiHalfPelValue );
-  for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
+  PlaYUVerPixel PixelValue( d->m_pcPelFormat->colorSpace, d->m_uiHalfPelValue, d->m_uiHalfPelValue, d->m_uiHalfPelValue );
+  for( UInt ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
   {
-    Int ratioH = ch > 0 ? m_pcPelFormat->log2ChromaWidth : 0;
-    Int ratioW = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
-    PixelValue.Components()[ch] = m_pppcInputPel[ch][( yPos >> ratioH )][( xPos >> ratioW )];
+    Int ratioH = ch > 0 ? d->m_pcPelFormat->log2ChromaWidth : 0;
+    Int ratioW = ch > 0 ? d->m_pcPelFormat->log2ChromaHeight : 0;
+    PixelValue[ch] = d->m_pppcInputPel[ch][( yPos >> ratioH )][( xPos >> ratioW )];
   }
   return PixelValue;
 }
 
 PlaYUVerPixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos, PlaYUVerPixel::ColorSpace eColorSpace )
 {
-  PlaYUVerPixel PixelValue( m_pcPelFormat->colorSpace );
-  for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
+  PlaYUVerPixel PixelValue( d->m_pcPelFormat->colorSpace );
+  for( UInt ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
   {
-    Int ratioH = ch > 0 ? m_pcPelFormat->log2ChromaWidth : 0;
-    Int ratioW = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
-    PixelValue.Components()[ch] = m_pppcInputPel[ch][( yPos >> ratioH )][( xPos >> ratioW )];
+    Int ratioH = ch > 0 ? d->m_pcPelFormat->log2ChromaWidth : 0;
+    Int ratioW = ch > 0 ? d->m_pcPelFormat->log2ChromaHeight : 0;
+    PixelValue[ch] = d->m_pppcInputPel[ch][( yPos >> ratioH )][( xPos >> ratioW )];
   }
   PixelValue = PixelValue.ConvertPixel( eColorSpace );
   return PixelValue;
@@ -356,41 +459,41 @@ PlaYUVerPixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos, PlaYUVerPixel::C
 
 Void PlaYUVerFrame::setPixelValue( Int xPos, Int yPos, PlaYUVerPixel pixel )
 {
-  for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
+  for( UInt ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
   {
-    Int ratioH = ch > 0 ? m_pcPelFormat->log2ChromaWidth : 0;
-    Int ratioW = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
-    m_pppcInputPel[ch][( yPos >> ratioH )][( xPos >> ratioW )] = pixel.Components()[ch];
+    Int ratioH = ch > 0 ? d->m_pcPelFormat->log2ChromaWidth : 0;
+    Int ratioW = ch > 0 ? d->m_pcPelFormat->log2ChromaHeight : 0;
+    d->m_pppcInputPel[ch][( yPos >> ratioH )][( xPos >> ratioW )] = pixel.Components()[ch];
   }
-  m_bHasHistogram = false;
-  m_bHasRGBPel = false;
+  d->m_bHasHistogram = false;
+  d->m_bHasRGBPel = false;
 }
 
 Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame )
 {
-  if( m_iPixelFormat != input_frame->getPelFormat() && m_uiWidth == input_frame->getWidth() && m_uiHeight == input_frame->getHeight() )
+  if( d->m_iPixelFormat != input_frame->getPelFormat() && d->m_uiWidth == input_frame->getWidth() && d->m_uiHeight == input_frame->getHeight() )
     return;
-  m_bHasRGBPel = false;
-  m_bHasHistogram = false;
-  memcpy( *m_pppcInputPel[LUMA], input_frame->getPelBufferYUV()[LUMA][0], getBytesPerFrame() * sizeof( Pel ) );
+  d->m_bHasRGBPel = false;
+  d->m_bHasHistogram = false;
+  memcpy( *d->m_pppcInputPel[LUMA], input_frame->getPelBufferYUV()[LUMA][0], getBytesPerFrame() * sizeof( Pel ) );
 }
 
 Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
 {
-  if( m_iPixelFormat != input_frame->getPelFormat() )
+  if( d->m_iPixelFormat != input_frame->getPelFormat() )
     return;
   Pel ***pInput = input_frame->getPelBufferYUV();
-  for( UInt ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
+  for( UInt ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
   {
-    Int ratioH = ch > 0 ? m_pcPelFormat->log2ChromaWidth : 0;
-    Int ratioW = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
-    for( UInt i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ); i++ )
+    Int ratioH = ch > 0 ? d->m_pcPelFormat->log2ChromaWidth : 0;
+    Int ratioW = ch > 0 ? d->m_pcPelFormat->log2ChromaHeight : 0;
+    for( UInt i = 0; i < CHROMASHIFT( d->m_uiHeight, ratioH ); i++ )
     {
-      memcpy( m_pppcInputPel[ch][i], &( pInput[ch][( yPos >> ratioH ) + i][( xPos >> ratioW )] ), ( m_uiWidth >> ratioW ) * sizeof( Pel ) );
+      memcpy( d->m_pppcInputPel[ch][i], &( pInput[ch][( yPos >> ratioH ) + i][( xPos >> ratioW )] ), ( d->m_uiWidth >> ratioW ) * sizeof( Pel ) );
     }
   }
-  m_bHasRGBPel = false;
-  m_bHasHistogram = false;
+  d->m_bHasRGBPel = false;
+  d->m_bHasHistogram = false;
 }
 
 Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, UInt64 uiBuffSize )
@@ -406,7 +509,7 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff )
   Byte* ppBuff[MAX_NUMBER_PLANES];
   Byte* pTmpBuff;
   Pel* pPel;
-  UInt bytesPixel = ( m_uiBitsPel - 1 ) / 8 + 1;
+  UInt bytesPixel = ( d->m_uiBitsPel - 1 ) / 8 + 1;
   Int ratioH, ratioW, step;
   UInt i, ch;
   Int startByte = 0;
@@ -414,7 +517,7 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff )
   Int incByte = 1;
   Int b;
 
-  if( m_iEndianness == 0 )
+  if( d->m_iEndianness == 0 )
   {
     startByte = bytesPixel - 1;
     endByte = -1;
@@ -424,21 +527,21 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff )
   ppBuff[0] = Buff;
   for( i = 1; i < MAX_NUMBER_PLANES; i++ )
   {
-    ratioW = i > 1 ? m_pcPelFormat->log2ChromaWidth : 0;
-    ratioH = i > 1 ? m_pcPelFormat->log2ChromaHeight : 0;
-    ppBuff[i] = ppBuff[i - 1] + CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ) * bytesPixel;
+    ratioW = i > 1 ? d->m_pcPelFormat->log2ChromaWidth : 0;
+    ratioH = i > 1 ? d->m_pcPelFormat->log2ChromaHeight : 0;
+    ppBuff[i] = ppBuff[i - 1] + CHROMASHIFT( d->m_uiHeight, ratioH ) * CHROMASHIFT( d->m_uiWidth, ratioW ) * bytesPixel;
   }
 
-  for( ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
+  for( ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
   {
-    ratioW = ch > 0 ? m_pcPelFormat->log2ChromaWidth : 0;
-    ratioH = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
-    step = m_pcPelFormat->comp[ch].step_minus1;
+    ratioW = ch > 0 ? d->m_pcPelFormat->log2ChromaWidth : 0;
+    ratioH = ch > 0 ? d->m_pcPelFormat->log2ChromaHeight : 0;
+    step = d->m_pcPelFormat->comp[ch].step_minus1;
 
-    pPel = m_pppcInputPel[ch][0];
-    pTmpBuff = ppBuff[m_pcPelFormat->comp[ch].plane] + ( m_pcPelFormat->comp[ch].offset_plus1 - 1 );
+    pPel = d->m_pppcInputPel[ch][0];
+    pTmpBuff = ppBuff[d->m_pcPelFormat->comp[ch].plane] + ( d->m_pcPelFormat->comp[ch].offset_plus1 - 1 );
 
-    for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ); i++ )
+    for( i = 0; i < CHROMASHIFT( d->m_uiHeight, ratioH ) * CHROMASHIFT( d->m_uiWidth, ratioW ); i++ )
     {
       *pPel = 0;
       for( b = startByte; b != endByte; b += incByte )
@@ -450,13 +553,13 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff )
       pTmpBuff += step;
     }
   }
-  m_bHasRGBPel = false;
-  m_bHasHistogram = false;
+  d->m_bHasRGBPel = false;
+  d->m_bHasHistogram = false;
 }
 
 Void PlaYUVerFrame::frameToBuffer( Byte *output_buffer )
 {
-  UInt bytesPixel = ( m_uiBitsPel - 1 ) / 8 + 1;
+  UInt bytesPixel = ( d->m_uiBitsPel - 1 ) / 8 + 1;
   Byte* ppBuff[MAX_NUMBER_PLANES];
   Byte* pTmpBuff;
   Pel* pTmpPel;
@@ -467,7 +570,7 @@ Void PlaYUVerFrame::frameToBuffer( Byte *output_buffer )
   Int incByte = 1;
   Int b;
 
-  if( m_iEndianness == 0 )
+  if( d->m_iEndianness == 0 )
   {
     startByte = bytesPixel - 1;
     endByte = -1;
@@ -477,21 +580,21 @@ Void PlaYUVerFrame::frameToBuffer( Byte *output_buffer )
   ppBuff[0] = output_buffer;
   for( Int i = 1; i < MAX_NUMBER_PLANES; i++ )
   {
-    ratioW = i > 1 ? m_pcPelFormat->log2ChromaWidth : 0;
-    ratioH = i > 1 ? m_pcPelFormat->log2ChromaHeight : 0;
-    ppBuff[i] = ppBuff[i - 1] + CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ) * bytesPixel;
+    ratioW = i > 1 ? d->m_pcPelFormat->log2ChromaWidth : 0;
+    ratioH = i > 1 ? d->m_pcPelFormat->log2ChromaHeight : 0;
+    ppBuff[i] = ppBuff[i - 1] + CHROMASHIFT( d->m_uiHeight, ratioH ) * CHROMASHIFT( d->m_uiWidth, ratioW ) * bytesPixel;
   }
 
-  for( ch = 0; ch < m_pcPelFormat->numberChannels; ch++ )
+  for( ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
   {
-    ratioW = ch > 0 ? m_pcPelFormat->log2ChromaWidth : 0;
-    ratioH = ch > 0 ? m_pcPelFormat->log2ChromaHeight : 0;
-    step = m_pcPelFormat->comp[ch].step_minus1;
+    ratioW = ch > 0 ? d->m_pcPelFormat->log2ChromaWidth : 0;
+    ratioH = ch > 0 ? d->m_pcPelFormat->log2ChromaHeight : 0;
+    step = d->m_pcPelFormat->comp[ch].step_minus1;
 
-    pTmpPel = m_pppcInputPel[ch][0];
-    pTmpBuff = ppBuff[m_pcPelFormat->comp[ch].plane];
+    pTmpPel = d->m_pppcInputPel[ch][0];
+    pTmpBuff = ppBuff[d->m_pcPelFormat->comp[ch].plane];
 
-    for( i = 0; i < CHROMASHIFT( m_uiHeight, ratioH ) * CHROMASHIFT( m_uiWidth, ratioW ); i++ )
+    for( i = 0; i < CHROMASHIFT( d->m_uiHeight, ratioH ) * CHROMASHIFT( d->m_uiWidth, ratioW ); i++ )
     {
       for( b = startByte; b != endByte; b += incByte )
       {
@@ -506,16 +609,23 @@ Void PlaYUVerFrame::frameToBuffer( Byte *output_buffer )
 
 Void PlaYUVerFrame::fillRGBBuffer()
 {
-  if( m_bHasRGBPel )
+#define CLAMP_YUV2RGB(X) X = X < 0 ? 0 : X > 255 ? 255 : X;
+#define YUV2RGB(  iY, iU, iV, iR, iG, iB ) \
+iR = iY + ( ( 1436 * ( iV - 128) ) >> 10 ); \
+iG = iY - ( ( 352 * ( iU - 128 ) + 731 * ( iV - 128 ) ) >> 10 ); \
+iB = iY + ( ( 1812 * ( iU - 128 ) ) >> 10 ); \
+CLAMP_YUV2RGB(iR) CLAMP_YUV2RGB(iG) CLAMP_YUV2RGB(iB)
+
+  if( d->m_bHasRGBPel )
     return;
   Int iR, iG, iB;
-  Int shiftBits = m_uiBitsPel - 8;
-  UInt* pARGB = ( UInt* )m_pcARGB32;
-  if( m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY )
+  Int shiftBits = d->m_uiBitsPel - 8;
+  UInt* pARGB = ( UInt* )d->m_pcARGB32;
+  if( d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY )
   {
-    Pel* pY = m_pppcInputPel[LUMA][0];
+    Pel* pY = d->m_pppcInputPel[LUMA][0];
     Int iY;
-    for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )
+    for( UInt i = 0; i < d->m_uiHeight * d->m_uiWidth; i++ )
     {
       iY = *pY++;
       iY >>= shiftBits;
@@ -525,13 +635,13 @@ Void PlaYUVerFrame::fillRGBBuffer()
       *pARGB++ = PEL_RGB( iR, iG, iB );
     }
   }
-  else if( m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_RGB )
+  else if( d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_RGB )
   {
-    Pel* pR = m_pppcInputPel[COLOR_R][0];
-    Pel* pG = m_pppcInputPel[COLOR_G][0];
-    Pel* pB = m_pppcInputPel[COLOR_B][0];
+    Pel* pR = d->m_pppcInputPel[COLOR_R][0];
+    Pel* pG = d->m_pppcInputPel[COLOR_G][0];
+    Pel* pB = d->m_pppcInputPel[COLOR_B][0];
 
-    for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )
+    for( UInt i = 0; i < d->m_uiHeight * d->m_uiWidth; i++ )
     {
       iR = *pR++;
       iG = *pG++;
@@ -539,12 +649,12 @@ Void PlaYUVerFrame::fillRGBBuffer()
       *pARGB++ = PEL_RGB( ( iR >> shiftBits ), ( iG >> shiftBits ), ( iB >> shiftBits ) );
     }
   }
-  else if( m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_YUV )
+  else if( d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_YUV )
   {
-    Pel* pLineY = m_pppcInputPel[LUMA][0];
-    Pel* pLineU = m_pppcInputPel[CHROMA_U][0];
-    Pel* pLineV = m_pppcInputPel[CHROMA_V][0];
-    UInt uiChromaStride = CHROMASHIFT( m_uiWidth, m_pcPelFormat->log2ChromaWidth );
+    Pel* pLineY = d->m_pppcInputPel[LUMA][0];
+    Pel* pLineU = d->m_pppcInputPel[CHROMA_U][0];
+    Pel* pLineV = d->m_pppcInputPel[CHROMA_V][0];
+    UInt uiChromaStride = CHROMASHIFT( d->m_uiWidth, d->m_pcPelFormat->log2ChromaWidth );
     Pel* pY;
     Pel* pU;
     Pel* pV;
@@ -554,21 +664,21 @@ Void PlaYUVerFrame::fillRGBBuffer()
 
     UInt y, x;
     Int i, j;
-    for( y = 0; y < m_uiHeight >> m_pcPelFormat->log2ChromaHeight; y++ )
+    for( y = 0; y < d->m_uiHeight >> d->m_pcPelFormat->log2ChromaHeight; y++ )
     {
-      for( i = 0; i < 1 << m_pcPelFormat->log2ChromaHeight; i++ )
+      for( i = 0; i < 1 << d->m_pcPelFormat->log2ChromaHeight; i++ )
       {
         pY = pLineY;
         pU = pLineU;
         pV = pLineV;
         pARGB = pARGBLine;
-        for( x = 0; x < m_uiWidth >> m_pcPelFormat->log2ChromaWidth; x++ )
+        for( x = 0; x < d->m_uiWidth >> d->m_pcPelFormat->log2ChromaWidth; x++ )
         {
           iU = *pU++;
           iU >>= shiftBits;
           iV = *pV++;
           iV >>= shiftBits;
-          for( j = 0; j < ( 1 << m_pcPelFormat->log2ChromaWidth ); j++ )
+          for( j = 0; j < ( 1 << d->m_pcPelFormat->log2ChromaWidth ); j++ )
           {
             iY = *pY++;
             iY >>= shiftBits;
@@ -576,14 +686,14 @@ Void PlaYUVerFrame::fillRGBBuffer()
             *pARGB++ = PEL_RGB( iR, iG, iB );
           }
         }
-        pLineY += m_uiWidth;
-        pARGBLine += m_uiWidth;
+        pLineY += d->m_uiWidth;
+        pARGBLine += d->m_uiWidth;
       }
       pLineU += uiChromaStride;
       pLineV += uiChromaStride;
     }
   }
-  m_bHasRGBPel = true;
+  d->m_bHasRGBPel = true;
 }
 
 /**
@@ -592,41 +702,40 @@ Void PlaYUVerFrame::fillRGBBuffer()
 
 Void PlaYUVerFrame::calcHistogram()
 {
-  if( m_bHasHistogram )
+  if( d->m_bHasHistogram )
     return;
 
-  if( !m_puiHistogram )
+  if( !d->m_puiHistogram )
   {
-    //m_puiHistogram = new UInt[m_uiHistoSegments * histoChannels];
-    getMem1D<UInt>( &( m_puiHistogram ), m_uiHistoSegments * m_uiHistoChannels );
-    if( !m_puiHistogram )
+    getMem1D<UInt>( &( d->m_puiHistogram ), d->m_uiHistoSegments * d->m_uiHistoChannels );
+    if( !d->m_puiHistogram )
     {
       return;
     }
   }
-  m_bRunningFlag = true;
+  d->m_bRunningFlag = true;
 
-  xMemSet( UInt, m_uiHistoSegments * m_uiHistoChannels, m_puiHistogram );
+  xMemSet( UInt, d->m_uiHistoSegments * d->m_uiHistoChannels, d->m_puiHistogram );
 
   UInt i, j;
-  UInt numberChannels = m_pcPelFormat->numberChannels;
-  Int colorSpace = m_pcPelFormat->colorSpace;
+  UInt numberChannels = d->m_pcPelFormat->numberChannels;
+  Int colorSpace = d->m_pcPelFormat->colorSpace;
   if( colorSpace == PlaYUVerPixel::COLOR_YUV )
   {
     const Pel *data[3];
-    data[LUMA] = m_pppcInputPel[LUMA][0];
-    data[CHROMA_U] = m_pppcInputPel[CHROMA_U][0];
-    data[CHROMA_V] = m_pppcInputPel[CHROMA_V][0];
-    for( i = 0; i < m_uiHeight * m_uiWidth && m_bRunningFlag; i++ )
+    data[LUMA] = d->m_pppcInputPel[LUMA][0];
+    data[CHROMA_U] = d->m_pppcInputPel[CHROMA_U][0];
+    data[CHROMA_V] = d->m_pppcInputPel[CHROMA_V][0];
+    for( i = 0; i < d->m_uiHeight * d->m_uiWidth && d->m_bRunningFlag; i++ )
     {
-      m_puiHistogram[*( data[LUMA] ) + LUMA * m_uiHistoSegments]++;
+      d->m_puiHistogram[*( data[LUMA] ) + LUMA * d->m_uiHistoSegments]++;
       data[LUMA] += 1;
     }
-    for( i = 0; ( i < getChromaSize() ) && m_bRunningFlag; i++ )
+    for( i = 0; ( i < getChromaLength() ) && d->m_bRunningFlag; i++ )
     {
       for( j = 1; j < numberChannels; j++ )
       {
-        m_puiHistogram[*( data[j] ) + j * m_uiHistoSegments]++;
+        d->m_puiHistogram[*( data[j] ) + j * d->m_uiHistoSegments]++;
         data[j] += 1;
       }
     }
@@ -635,40 +744,40 @@ Void PlaYUVerFrame::calcHistogram()
   {
     const Pel* data[3];
     Pel luma;
-    data[COLOR_R] = m_pppcInputPel[COLOR_R][0];
-    data[COLOR_G] = m_pppcInputPel[COLOR_G][0];
-    data[COLOR_B] = m_pppcInputPel[COLOR_B][0];
+    data[COLOR_R] = d->m_pppcInputPel[COLOR_R][0];
+    data[COLOR_G] = d->m_pppcInputPel[COLOR_G][0];
+    data[COLOR_B] = d->m_pppcInputPel[COLOR_B][0];
 
-    for( i = 0; ( i < m_uiHeight * m_uiWidth ) && m_bRunningFlag; i++ )
+    for( i = 0; ( i < d->m_uiHeight * d->m_uiWidth ) && d->m_bRunningFlag; i++ )
     {
       for( j = 0; j < numberChannels; j++ )
       {
-        m_puiHistogram[*( data[j] ) + j * m_uiHistoSegments]++;
+        d->m_puiHistogram[*( data[j] ) + j * d->m_uiHistoSegments]++;
       }
       if( ( colorSpace == PlaYUVerPixel::COLOR_RGB || colorSpace == PlaYUVerPixel::COLOR_ARGB ) )
       {
         PlaYUVerPixel currPixel( colorSpace, *( data[COLOR_R] ), *( data[COLOR_G] ), *( data[COLOR_B] ) );
         luma = currPixel.ConvertPixel( PlaYUVerPixel::COLOR_YUV ).Y();
-        m_puiHistogram[luma + j * m_uiHistoSegments]++;
+        d->m_puiHistogram[luma + j * d->m_uiHistoSegments]++;
       }
       for( j = 0; j < numberChannels; j++ )
         data[j] += 1;
     }
   }
-  m_bHasHistogram = true;
-  m_bRunningFlag = false;
+  d->m_bHasHistogram = true;
+  d->m_bRunningFlag = false;
 }
 
 Int PlaYUVerFrame::getHistogramSegment()
 {
-  return m_uiHistoSegments;
+  return d->m_uiHistoSegments;
 }
 
-Int PlaYUVerFrame::getRealHistoChannel( Int channel )
+Int getRealHistoChannel( Int colorSpace, Int channel )
 {
   Int histoChannel;
 
-  switch( getColorSpace() )
+  switch( colorSpace )
   {
   case PlaYUVerPixel::COLOR_GRAY:
     if( channel != LUMA )
@@ -734,23 +843,23 @@ UInt PlaYUVerFrame::getCount( Int channel, UInt start, UInt end )
   Int indexStart;
   UInt count = 0;
 
-  if( !m_bHasHistogram || start < 0 || end > m_uiHistoSegments - 1 || start > end )
+  if( !d->m_bHasHistogram || start < 0 || end > d->m_uiHistoSegments - 1 || start > end )
   {
     return 0.0;
   }
 
-  histoChannel = getRealHistoChannel( channel );
+  histoChannel = getRealHistoChannel( getColorSpace(), channel );
 
   if( histoChannel == -1 )
   {
     return 0;
   }
 
-  indexStart = histoChannel * m_uiHistoSegments;
+  indexStart = histoChannel * d->m_uiHistoSegments;
 
   for( i = start; i <= end; i++ )
   {
-    count += m_puiHistogram[indexStart + i];
+    count += d->m_puiHistogram[indexStart + i];
   }
   return count;
 }
@@ -762,23 +871,23 @@ Double PlaYUVerFrame::getMean( Int channel, UInt start, UInt end )
   Double mean = 0.0;
   Double count;
 
-  if( !m_bHasHistogram || start < 0 || end > m_uiHistoSegments - 1 || start > end )
+  if( !d->m_bHasHistogram || start < 0 || end > d->m_uiHistoSegments - 1 || start > end )
   {
     return 0.0;
   }
 
-  histoChannel = getRealHistoChannel( channel );
+  histoChannel = getRealHistoChannel( getColorSpace(), channel );
 
   if( histoChannel == -1 )
   {
     return 0.0;
   }
 
-  indexStart = histoChannel * m_uiHistoSegments;
+  indexStart = histoChannel * d->m_uiHistoSegments;
 
   for( UInt i = start; i <= end; i++ )
   {
-    mean += i * m_puiHistogram[indexStart + i];
+    mean += i * d->m_puiHistogram[indexStart + i];
   }
 
   count = getCount( channel, start, end );
@@ -798,25 +907,25 @@ Int PlaYUVerFrame::getMedian( Int channel, UInt start, UInt end )
   Double sum = 0.0;
   Double count;
 
-  if( !m_bHasHistogram || start < 0 || end > m_uiHistoSegments - 1 || start > end )
+  if( !d->m_bHasHistogram || start < 0 || end > d->m_uiHistoSegments - 1 || start > end )
   {
     return 0;
   }
 
-  histoChannel = getRealHistoChannel( channel );
+  histoChannel = getRealHistoChannel( getColorSpace(), channel );
 
   if( histoChannel == -1 )
   {
     return 0;
   }
 
-  indexStart = histoChannel * m_uiHistoSegments;
+  indexStart = histoChannel * d->m_uiHistoSegments;
 
   count = getCount( channel, start, end );
 
   for( UInt i = start; i <= end; i++ )
   {
-    sum += m_puiHistogram[indexStart + i];
+    sum += d->m_puiHistogram[indexStart + i];
     if( sum * 2 > count )
       return i;
   }
@@ -832,19 +941,19 @@ Double PlaYUVerFrame::getStdDev( Int channel, UInt start, UInt end )
   Double count;
   Double mean;
 
-  if( !m_bHasHistogram || start < 0 || end > m_uiHistoSegments - 1 || start > end )
+  if( !d->m_bHasHistogram || start < 0 || end > d->m_uiHistoSegments - 1 || start > end )
   {
     return 0.0;
   }
 
-  histoChannel = getRealHistoChannel( channel );
+  histoChannel = getRealHistoChannel( getColorSpace(), channel );
 
   if( histoChannel == -1 )
   {
     return 0.0;
   }
 
-  indexStart = histoChannel * m_uiHistoSegments;
+  indexStart = histoChannel * d->m_uiHistoSegments;
   mean = getMean( channel, start, end );
   count = getCount( channel, start, end );
 
@@ -855,7 +964,7 @@ Double PlaYUVerFrame::getStdDev( Int channel, UInt start, UInt end )
 
    for ( i = start ; i <= end ; i++ )
    {
-   dev += ( i - mean ) * ( i - mean ) * m_puiHistogram[indexStart +i];
+   dev += ( i - mean ) * ( i - mean ) * d->m_puiHistogram[indexStart +i];
    }
 
    return sqrt( dev / count );
@@ -864,7 +973,7 @@ Double PlaYUVerFrame::getStdDev( Int channel, UInt start, UInt end )
 
   for( UInt i = start; i <= end; i++ )
   {
-    dev += ( i * i ) * m_puiHistogram[indexStart + i];
+    dev += ( i * i ) * d->m_puiHistogram[indexStart + i];
   }
 
   return sqrt( ( dev - count * mean * mean ) / ( count - 1 ) );
@@ -877,19 +986,19 @@ Double PlaYUVerFrame::getHistogramValue( Int channel, UInt bin )
   Int histoChannel;
   Int indexStart;
 
-  if( !m_bHasHistogram || bin < 0 || bin > m_uiHistoSegments - 1 )
+  if( !d->m_bHasHistogram || bin < 0 || bin > d->m_uiHistoSegments - 1 )
     return 0.0;
 
-  histoChannel = getRealHistoChannel( channel );
+  histoChannel = getRealHistoChannel( getColorSpace(), channel );
 
   if( histoChannel == -1 )
   {
     return 0.0;
   }
 
-  indexStart = histoChannel * m_uiHistoSegments;
+  indexStart = histoChannel * d->m_uiHistoSegments;
 
-  value = m_puiHistogram[indexStart + bin];
+  value = d->m_puiHistogram[indexStart + bin];
 
   return value;
 }
@@ -901,23 +1010,23 @@ Double PlaYUVerFrame::getMaximum( Int channel )
   Int histoChannel;
   Int indexStart;
 
-  if( !m_bHasHistogram )
+  if( !d->m_bHasHistogram )
     return 0.0;
 
-  histoChannel = getRealHistoChannel( channel );
+  histoChannel = getRealHistoChannel( getColorSpace(), channel );
 
   if( histoChannel == -1 )
   {
     return 0.0;
   }
 
-  indexStart = histoChannel * m_uiHistoSegments;
+  indexStart = histoChannel * d->m_uiHistoSegments;
 
-  for( UInt x = 0; x < m_uiHistoSegments; x++ )
+  for( UInt x = 0; x < d->m_uiHistoSegments; x++ )
   {
-    if( m_puiHistogram[indexStart + x] > max )
+    if( d->m_puiHistogram[indexStart + x] > max )
     {
-      max = m_puiHistogram[indexStart + x];
+      max = d->m_puiHistogram[indexStart + x];
     }
   }
 
@@ -933,18 +1042,18 @@ Double PlaYUVerFrame::getMaximum( Int channel )
 cv::Mat* PlaYUVerFrame::getCvMat( Bool convertToGray )
 {
 #ifdef USE_OPENCV
-  if( convertToGray && !( m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_YUV || m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY ) )
+  if( convertToGray && !( d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_YUV || d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY ) )
   {
     return NULL;
   }
-  Int cvType = CV_MAKETYPE( CV_8U, convertToGray ? 1 : m_pcPelFormat->numberChannels );
-  cv::Mat *pcCvFrame = new cv::Mat( m_uiHeight, m_uiWidth, cvType );
+  Int cvType = CV_MAKETYPE( CV_8U, convertToGray ? 1 : d->m_pcPelFormat->numberChannels );
+  cv::Mat *pcCvFrame = new cv::Mat( d->m_uiHeight, d->m_uiWidth, cvType );
   UChar* pCvPel = pcCvFrame->data;
-  if( !convertToGray && ( m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_YUV || m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_RGB ) )
+  if( !convertToGray && ( d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_YUV || d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_RGB ) )
   {
     fillRGBBuffer();
-    UChar* pARGB = m_pcARGB32;
-    for( UInt i = 0; i < m_uiWidth * m_uiHeight; i++ )
+    UChar* pARGB = d->m_pcARGB32;
+    for( UInt i = 0; i < d->m_uiWidth * d->m_uiHeight; i++ )
     {
       *pCvPel++ = *pARGB++;
       *pCvPel++ = *pARGB++;
@@ -952,10 +1061,10 @@ cv::Mat* PlaYUVerFrame::getCvMat( Bool convertToGray )
       pARGB++;
     }
   }
-  else if( convertToGray || m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY )
+  else if( convertToGray || d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY )
   {
-    Pel* pPel = m_pppcInputPel[LUMA][0];
-    for( UInt i = 0; i < m_uiWidth * m_uiHeight; i++ )
+    Pel* pPel = d->m_pppcInputPel[LUMA][0];
+    for( UInt i = 0; i < d->m_uiWidth * d->m_uiHeight; i++ )
     {
       *pCvPel++ = *pPel++;
     }
@@ -975,35 +1084,35 @@ cv::Mat* PlaYUVerFrame::getCvMat( Bool convertToGray )
 Void PlaYUVerFrame::fromCvMat( cv::Mat* pcCvFrame )
 {
 #ifdef USE_OPENCV
-  if( !m_bInit )
+  if( !d->m_bInit )
   {
-    if( m_iPixelFormat == NO_FMT )
+    if( d->m_iPixelFormat == NO_FMT )
     {
       switch( pcCvFrame->channels() )
       {
         case 1:
-          m_iPixelFormat = findPixelFormat( "GRAY" );
+          d->m_iPixelFormat = findPixelFormat( "GRAY" );
           break;
         case 3:
-          m_iPixelFormat = findPixelFormat( "BGR24" );
+          d->m_iPixelFormat = findPixelFormat( "BGR24" );
           break;
         default:
           return;
       }
     }
-    init( pcCvFrame->cols, pcCvFrame->rows, m_iPixelFormat, 8, -1 );
+    d->init( pcCvFrame->cols, pcCvFrame->rows, d->m_iPixelFormat, 8, -1 );
   }
 
-  m_bHasRGBPel = false;
-  m_bHasHistogram = false;
+  d->m_bHasRGBPel = false;
+  d->m_bHasHistogram = false;
 
   UChar* pCvPel = pcCvFrame->data;
-  if( m_iPixelFormat != GRAY )
+  if( d->m_iPixelFormat != GRAY )
   {
-    Pel* pInputPelR = m_pppcInputPel[COLOR_R][0];
-    Pel* pInputPelG = m_pppcInputPel[COLOR_G][0];
-    Pel* pInputPelB = m_pppcInputPel[COLOR_B][0];
-    for( UInt i = 0; i < m_uiHeight * m_uiWidth; i++ )
+    Pel* pInputPelR = d->m_pppcInputPel[COLOR_R][0];
+    Pel* pInputPelG = d->m_pppcInputPel[COLOR_G][0];
+    Pel* pInputPelB = d->m_pppcInputPel[COLOR_B][0];
+    for( UInt i = 0; i < d->m_uiHeight * d->m_uiWidth; i++ )
     {
       *pInputPelB++ = *pCvPel++;
       *pInputPelG++ = *pCvPel++;
@@ -1014,8 +1123,8 @@ Void PlaYUVerFrame::fromCvMat( cv::Mat* pcCvFrame )
   }
   else
   {
-    Pel* pPel = m_pppcInputPel[LUMA][0];
-    for( UInt i = 0; i < m_uiWidth * m_uiHeight; i++ )
+    Pel* pPel = d->m_pppcInputPel[LUMA][0];
+    for( UInt i = 0; i < d->m_uiWidth * d->m_uiHeight; i++ )
     {
       *pPel++ = *pCvPel++;
     }
@@ -1161,11 +1270,11 @@ Double PlaYUVerFrame::getSSIM( PlaYUVerFrame* Org, Int component )
   Double dSSIM = 1;
   if( component == LUMA )
   {
-    dSSIM = compute_ssim( m_pppcInputPel[component], Org->getPelBufferYUV()[component], m_uiWidth, m_uiHeight, 8, 8, 255, 8 );
+    dSSIM = compute_ssim( d->m_pppcInputPel[component], Org->getPelBufferYUV()[component], d->m_uiWidth, d->m_uiHeight, 8, 8, 255, 8 );
   }
   else
   {
-    dSSIM = compute_ssim( m_pppcInputPel[component], Org->getPelBufferYUV()[component], getChromaWidth(), getChromaHeight(), 4, 4, 255, 8 );
+    dSSIM = compute_ssim( d->m_pppcInputPel[component], Org->getPelBufferYUV()[component], getChromaWidth(), getChromaHeight(), 4, 4, 255, 8 );
   }
   return dSSIM;
 }

@@ -39,8 +39,6 @@ namespace cv
 class Mat;
 }
 
-namespace plaYUVer
-{
 
 struct PlaYUVerPixFmtDescriptor;
 
@@ -338,7 +336,5 @@ private:
 
   Void FrametoRGB8Pixfc();
 };
-
-}  // NAMESPACE
 
 #endif // __PLAYUVERFRAME_H__

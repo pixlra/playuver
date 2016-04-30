@@ -27,8 +27,6 @@
 
 #include "lib/PlaYUVerDefs.h"
 
-namespace plaYUVer
-{
 
 // ====================================================================================================================
 // Qt compatibility redefinition
@@ -42,6 +40,6 @@ namespace plaYUVer
 #endif
 
 
-}  // NAMESPACE
+
 
 #endif // __PLAYUVERAPPDEFS_H__

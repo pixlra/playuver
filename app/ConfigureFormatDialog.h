@@ -37,8 +37,6 @@
 class QPixmap;
 class QColor;
 
-namespace plaYUVer
-{
 
 /**
  *
@@ -75,7 +73,5 @@ private:
   QSpinBox *m_spinBoxFrameRate;
 
 };
-
-}  // NAMESPACE
 
 #endif // __CONFIGUREFORMATDIALOG_H__

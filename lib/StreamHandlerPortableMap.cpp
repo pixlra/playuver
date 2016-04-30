@@ -30,8 +30,6 @@
 #include "PlaYUVerFramePixelFormats.h"
 #include "LibMemory.h"
 
-namespace plaYUVer
-{
 
 Bool StreamHandlerPortableMap::openHandler( std::string strFilename, Bool bInput )
 {
@@ -141,4 +139,4 @@ Bool StreamHandlerPortableMap::write( PlaYUVerFrame* pcFrame )
   return true;
 }
 
-}  // NAMESPACE
+

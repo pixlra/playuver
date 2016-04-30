@@ -29,8 +29,6 @@
 
 #include <cassert>
 
-namespace plaYUVer
-{
 
 class FrameMask: public PlaYUVerModuleIf
 {
@@ -51,8 +49,6 @@ public:
   Void destroy();
 
 };
-
-}  // NAMESPACE
 
 #endif // __FRAMEMASK_H__
 

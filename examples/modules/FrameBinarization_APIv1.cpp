@@ -24,8 +24,6 @@
 
 #include "FrameBinarization_APIv1.h"
 
-namespace plaYUVer
-{
 
 REGISTER_CLASS_MAKER( FrameBinarization )
 
@@ -71,5 +69,5 @@ Void FrameBinarization::destroy()
   m_pcBinFrame = NULL;
 }
 
-}  // NAMESPACE
+
 

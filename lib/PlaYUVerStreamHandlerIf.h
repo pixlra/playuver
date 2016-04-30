@@ -29,8 +29,6 @@
 #include "PlaYUVerStream.h"
 #include "PlaYUVerFrame.h"
 
-namespace plaYUVer
-{
 
 #define REGISTER_STREAM_HANDLER(X) \
   public: \
@@ -96,9 +94,6 @@ protected:
   std::string m_strFormatName;
   std::string m_strCodecName;
 };
-
-
-}  // NAMESPACE
 
 #endif // __PLAYUVERSTREAMHANDLERIF_H__
 

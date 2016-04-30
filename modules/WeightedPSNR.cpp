@@ -26,8 +26,6 @@
 #include <algorithm>
 #include <cmath>
 
-namespace plaYUVer
-{
 
 WeightedPSNR::WeightedPSNR()
 {
@@ -121,5 +119,5 @@ Void WeightedPSNR::destroy()
 
 }
 
-}  // NAMESPACE
+
 

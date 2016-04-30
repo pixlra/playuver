@@ -29,8 +29,6 @@
 #include "PlaYUVerFramePixelFormats.h"
 #include "LibMemory.h"
 
-namespace plaYUVer
-{
 
 Bool PlaYUVerRawHandler::openHandler( std::string strFilename, Bool bInput )
 {
@@ -96,4 +94,4 @@ Bool PlaYUVerRawHandler::write( PlaYUVerFrame* pcFrame )
   return true;
 }
 
-}  // NAMESPACE
+

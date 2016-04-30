@@ -36,8 +36,6 @@
 #include "GridManager.h"
 #include "lib/PlaYUVerFrame.h"
 
-namespace plaYUVer
-{
 
 class PlaYUVerStream;
 
@@ -207,7 +205,5 @@ private:
   Bool m_visibleZoomRect;
 
 };
-
-}  // NameSpace plaYUVer
 
 #endif // __VIEWAREA_H__

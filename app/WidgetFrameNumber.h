@@ -35,8 +35,6 @@
 #include <QtGui>
 #endif
 
-namespace plaYUVer
-{
 
 class WidgetFrameNumber: public QWidget
 {
@@ -50,7 +48,5 @@ private:
   QLabel *m_pcTotalFrameNumLabel;
 
 };
-
-}  // NAMESPACE
 
 #endif // __WIDGETFRAMENUMBER_H__

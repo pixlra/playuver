@@ -30,8 +30,6 @@
 #include "SubWindowAbstract.h"
 #include "PlaYUVerMdiSubWindow.h"
 
-namespace plaYUVer
-{
 
 SubWindowAbstract::SubWindowAbstract( QWidget * parent, UInt category ) :
         QWidget( parent ),
@@ -115,4 +113,4 @@ Void SubWindowAbstract::closeSubWindow()
     m_cSubWindow->close();
 }
 
-}  // NAMESPACE
+

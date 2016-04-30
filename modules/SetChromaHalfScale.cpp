@@ -24,8 +24,6 @@
 
 #include "SetChromaHalfScale.h"
 
-namespace plaYUVer
-{
 
 SetChromaHalfScale::SetChromaHalfScale()
 {
@@ -71,5 +69,5 @@ Void SetChromaHalfScale::destroy()
   m_pcProcessedFrame = NULL;
 }
 
-}  // NAMESPACE
+
 

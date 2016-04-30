@@ -51,8 +51,6 @@ extern "C"
 #include "PlaYUVerStream.h"
 #include "PlaYUVerStreamHandlerIf.h"
 
-namespace plaYUVer
-{
 
 class StreamHandlerLibav: public PlaYUVerStreamHandlerIf
 {
@@ -102,7 +100,5 @@ private:
 
   Bool decodeVideoPkt();
 };
-
-}  // NAMESPACE
 
 #endif // __LIBAVCONTEXTHANDLE_H__

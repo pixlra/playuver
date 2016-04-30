@@ -29,8 +29,6 @@
 #include <map>
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
-{
 
 #define REGISTER_MODULE(X) Register( "X", &(X::Create) );
 
@@ -66,13 +64,6 @@ public:
     return m_FactoryMap;
   }
 };
-
-//// typedef to make it easier to set up our factory
-//typedef PlaYUVerModuleIf *PlaYUVerModuleMaker();
-//// our global factory
-//extern std::map<std::string, PlaYUVerModuleMaker *, std::less<std::string> > PlaYUVerModuleFactory;
-
-}// NAMESPACE
 
 #endif // __PLAYUVERMODULESFACTORY_H__
 

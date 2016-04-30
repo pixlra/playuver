@@ -25,8 +25,6 @@
 #include "FrameDifference.h"
 #include <algorithm>
 
-namespace plaYUVer
-{
 
 FrameDifference::FrameDifference()
 {
@@ -105,5 +103,5 @@ Void FrameDifference::destroy()
   m_pcFrameDifference = NULL;
 }
 
-}  // NAMESPACE
+
 

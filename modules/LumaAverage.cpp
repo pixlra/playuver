@@ -24,9 +24,6 @@
 
 #include "LumaAverage.h"
 
-namespace plaYUVer
-{
-
 LumaAverage::LumaAverage()
 {
   /* Module Definition */
@@ -61,7 +58,4 @@ Void LumaAverage::destroy()
 {
 
 }
-
-}
-// NAMESPACE
 

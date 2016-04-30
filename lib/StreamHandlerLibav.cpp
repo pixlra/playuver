@@ -29,8 +29,6 @@
 #include "PlaYUVerFramePixelFormats.h"
 #include "LibMemory.h"
 
-namespace plaYUVer
-{
 
 std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedReadFormats()
 {
@@ -381,4 +379,4 @@ Bool StreamHandlerLibav::seek( UInt64 iFrameNum )
   return true;
 }
 
-}  // NAMESPACE
+

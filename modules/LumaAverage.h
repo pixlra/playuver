@@ -28,8 +28,6 @@
 
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
-{
 
 class LumaAverage: public PlaYUVerModuleIf
 {
@@ -46,8 +44,6 @@ public:
   Void destroy();
 
 };
-
-}  // NAMESPACE
 
 #endif // __LUMAAVERAGE_H__
 

@@ -31,8 +31,6 @@
 #endif
 #include "WidgetFrameNumber.h"
 
-namespace plaYUVer
-{
 
 WidgetFrameNumber::WidgetFrameNumber( QWidget *parent ) :
         QWidget( parent )
@@ -69,5 +67,5 @@ Void WidgetFrameNumber::clear()
   m_pcTotalFrameNumLabel->setText( "-" );
 }
 
-}  // NAMESPACE
+
 

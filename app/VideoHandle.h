@@ -42,8 +42,6 @@ class QLabel;
 class QSlider;
 class QElapsedTimer;
 
-namespace plaYUVer
-{
 
 class PlaYUVerSubWindowHandle;
 class SubWindowAbstract;
@@ -149,7 +147,5 @@ private Q_SLOTS:
   void toggleGrid( bool checked );
 
 };
-
-}   // NAMESPACE
 
 #endif // __VIDEOHANDLE_H__

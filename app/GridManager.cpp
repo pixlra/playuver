@@ -34,8 +34,6 @@
 
 #include "GridManager.h"
 
-namespace plaYUVer
-{
 
 ////////////////////////////////////////////////////////////////////////////////
 //                              Constructor
@@ -266,5 +264,3 @@ bool GridManager::isNear( const QPoint &pos )
 {
   return isNear( pos.x(), pos.y() );
 }
-
-}  // NameSpace plaYUVer

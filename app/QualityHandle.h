@@ -36,8 +36,6 @@
 #include "QFuture"
 #include "QualityMeasurementSidebar.h"
 
-namespace plaYUVer
-{
 
 class PlaYUVerSubWindowHandle;
 class VideoSubWindow;
@@ -93,7 +91,5 @@ private Q_SLOTS:
   void slotPlotQualitySingle();
   void slotPlotQualitySeveral();
 };
-
-}   // NAMESPACE
 
 #endif // __QUALITYMEASUREMENTSIDEBAR_H__

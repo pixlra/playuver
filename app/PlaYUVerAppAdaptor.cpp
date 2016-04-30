@@ -26,8 +26,6 @@
 #include "PlaYUVerAppAdaptor.h"
 #include "PlaYUVerApp.h"
 
-namespace plaYUVer
-{
 
 PlaYUVerAppAdaptor::PlaYUVerAppAdaptor( PlaYUVerApp *app ) :
         QDBusAbstractAdaptor( app ),
@@ -64,4 +62,4 @@ bool PlaYUVerAppAdaptor::loadFile( const QString& filename )
   return true;
 }
 
-}  // NAMESPACE
+

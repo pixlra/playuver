@@ -46,8 +46,6 @@
 
 #define SYNCHRONISED_ZOON 1
 
-namespace plaYUVer
-{
 
 PlaYUVerApp::PlaYUVerApp() :
         m_pcCurrentSubWindow( NULL ),
@@ -922,4 +920,4 @@ Void PlaYUVerApp::writeSettings()
   m_pcWindowHandle->writeSettings();
 }
 
-}  // NAMESPACE
+

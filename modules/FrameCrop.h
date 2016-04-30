@@ -27,8 +27,6 @@
 
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
-{
 
 class FrameCrop: public PlaYUVerModuleIf
 {
@@ -50,8 +48,6 @@ public:
   Void destroy();
 
 };
-
-}  // NAMESPACE
 
 #endif // __FRAMECROP_H__
 

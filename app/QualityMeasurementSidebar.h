@@ -37,8 +37,6 @@
 #include "lib/PlaYUVerFrame.h"
 #include "HistogramWidget.h"
 
-namespace plaYUVer
-{
 
 class PlaYUVerSubWindowHandle;
 class VideoSubWindow;
@@ -86,7 +84,5 @@ private Q_SLOTS:
   void slotQualityMetricChanged( int );
 
 };
-
-}   // NAMESPACE
 
 #endif // __QUALITYMEASUREMENTSIDEBAR_H__

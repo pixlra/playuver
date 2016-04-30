@@ -34,8 +34,6 @@
 #include "fvupdater.h"
 #endif
 
-using namespace plaYUVer;
-
 #if _WIN32
 #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif

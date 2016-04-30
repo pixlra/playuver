@@ -28,8 +28,6 @@
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerPixel.h"
 
-namespace plaYUVer
-{
 
 PlaYUVerPixel::PlaYUVerPixel()
 {
@@ -101,4 +99,4 @@ PlaYUVerPixel PlaYUVerPixel::ConvertPixel( ColorSpace eOutputSpace )
   return outPixel;
 }
 
-}  // NAMESPACE
+

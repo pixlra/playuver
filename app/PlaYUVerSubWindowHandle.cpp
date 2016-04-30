@@ -27,8 +27,6 @@
 #include "PlaYUVerMdiSubWindow.h"
 #include "SubWindowAbstract.h"
 
-namespace plaYUVer
-{
 
 class PlaYUVerMdiArea: public QMdiArea
 {
@@ -578,4 +576,4 @@ Void PlaYUVerSubWindowHandle::writeSettings()
   appSettings.setValue( "SubWindowManager/SubWindowMode", m_iWindowMode );
 }
 
-}  // NAMESPACE
+

@@ -26,8 +26,6 @@
 #include <algorithm>
 class be;
 
-namespace plaYUVer
-{
 
 FrameMask::FrameMask()
 {
@@ -134,5 +132,5 @@ Void FrameMask::destroy()
   m_pcFrameProcessed = NULL;
 }
 
-}  // NAMESPACE
+
 

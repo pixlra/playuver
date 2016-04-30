@@ -26,8 +26,6 @@
 
 #include "DisparityStereoVar.h"
 
-namespace plaYUVer
-{
 
 DisparityStereoVar::DisparityStereoVar()
 {
@@ -85,5 +83,5 @@ Void DisparityStereoVar::destroy()
   m_pcDisparityFrame = NULL;
 }
 
-}  // NAMESPACE
+
 

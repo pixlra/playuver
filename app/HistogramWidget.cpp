@@ -31,8 +31,6 @@
 #include <QtDebug>
 #include "HistogramWidget.h"
 
-namespace plaYUVer
-{
 
 class HistogramWorker: public QThread
 {
@@ -1100,5 +1098,5 @@ Void HistogramWidget::slotMaxValueChanged( int max )
   }
 }
 
-}  // NAMESPACE
+
 

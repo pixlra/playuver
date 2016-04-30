@@ -30,8 +30,6 @@
 #include "PlaYUVerCmdParser.h"
 #include "PlaYUVerFrame.h"
 
-namespace plaYUVer
-{
 
 PlaYUVerCmdParser::PlaYUVerCmdParser()
 {
@@ -139,4 +137,4 @@ Bool PlaYUVerCmdParser::checkListingOpts()
   return bRet;
 }
 
-}  // NAMESPACE
+

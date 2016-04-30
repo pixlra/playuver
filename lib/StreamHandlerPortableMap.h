@@ -33,8 +33,6 @@
 #include "PlaYUVerStream.h"
 #include "PlaYUVerStreamHandlerIf.h"
 
-namespace plaYUVer
-{
 
 class PlaYUVerFrame;
 
@@ -59,7 +57,5 @@ private:
   Int m_iMagicNumber;
   Int m_iMaxValue;
 };
-
-}  // NAMESPACE
 
 #endif // __STREAMHANDLERPORTABLEMAP_H__

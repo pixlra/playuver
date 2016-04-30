@@ -32,8 +32,6 @@
 #include <vector>
 #include "PlaYUVerDefs.h"
 
-namespace plaYUVer
-{
 
 #define CLAMP_YUV2RGB(X) X = X < 0 ? 0 : X > 255 ? 255 : X;
 #define YUV2RGB(  iY, iU, iV, iR, iG, iB ) \
@@ -142,7 +140,5 @@ private:
   Pel PixelComponents[MAX_NUMBER_COMPONENTS];
 
 };
-
-}  // NAMESPACE
 
 #endif // __PLAYUVERPIXEL_H__

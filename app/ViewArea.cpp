@@ -39,8 +39,6 @@
 #include "ViewArea.h"
 #include "GridManager.h"
 
-namespace plaYUVer
-{
 
 static const QColor selectionColor = Qt::cyan;
 static const QColor imageMaskColor = Qt::green;
@@ -1091,5 +1089,3 @@ Void ViewArea::updateMask( const QRect &rect )
     ;
   }
 }
-
-}  // NameSpace plaYUVer

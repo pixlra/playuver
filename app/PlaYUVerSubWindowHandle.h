@@ -33,8 +33,6 @@
 #include <QtGui>
 #endif
 
-namespace plaYUVer
-{
 
 class PlaYUVerApp;
 class SubWindowAbstract;
@@ -127,7 +125,5 @@ Q_SIGNALS:
   void windowActivated();
 
 };
-
-}  // NAMESPACE
 
 #endif // __PLAYUVERSUBWINDOWHANDLE_H__

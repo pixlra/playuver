@@ -27,8 +27,6 @@
 
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
-{
 
 class SetChromaHalfScale: public PlaYUVerModuleIf
 {
@@ -46,8 +44,6 @@ public:
   Void destroy();
 
 };
-
-}  // NAMESPACE
 
 #endif // __CHROMA128_H__
 

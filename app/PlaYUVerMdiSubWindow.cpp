@@ -26,8 +26,6 @@
 #include "PlaYUVerMdiSubWindow.h"
 #include "SubWindowAbstract.h"
 
-namespace plaYUVer
-{
 
 PlaYUVerMdiSubWindow::PlaYUVerMdiSubWindow( QWidget *parent ) :
         QMdiSubWindow( parent )
@@ -51,4 +49,4 @@ Void PlaYUVerMdiSubWindow::closeEvent( QCloseEvent *event )
   event->accept();
 }
 
-}  // NAMESPACE
+

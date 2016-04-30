@@ -28,8 +28,6 @@
 #include "lib/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
-namespace plaYUVer
-{
 
 PlaYUVerTools::PlaYUVerTools()
 {
@@ -502,4 +500,4 @@ Int PlaYUVerTools::ModuleOperation()
   return 0;
 }
 
-}  // NAMESPACE
+

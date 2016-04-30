@@ -30,8 +30,6 @@
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerPixel.h"
 
-namespace plaYUVer
-{
 
 #define CHROMA_RESAMPLING( X ) ( ( ( X + 1 ) >> 1 ) << 1 )
 
@@ -147,6 +145,6 @@ typedef struct PlaYUVerPixFmtDescriptor
 #define PLAYUVER_NUMBER_FORMATS 7
 extern PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PLAYUVER_NUMBER_FORMATS];
 
-}  // NAMESPACE
+
 
 #endif // __PLAYUVERFRAMEPIXELFORMATS_H__

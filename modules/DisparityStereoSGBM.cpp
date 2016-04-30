@@ -26,8 +26,6 @@
 
 #include "DisparityStereoSGBM.h"
 
-namespace plaYUVer
-{
 
 DisparityStereoSGBM::DisparityStereoSGBM()
 {
@@ -117,5 +115,5 @@ Void DisparityStereoSGBM::destroy()
   m_pcDisparityFrame = NULL;
 }
 
-}  // NAMESPACE
+
 

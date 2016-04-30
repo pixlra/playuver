@@ -27,8 +27,6 @@
 
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
-{
 
 class EightBitsSampling: public PlaYUVerModuleIf
 {
@@ -46,8 +44,6 @@ public:
   Void destroy();
 
 };
-
-}  // NAMESPACE
 
 #endif // __EIGHTBITSSAMPLING_H__
 

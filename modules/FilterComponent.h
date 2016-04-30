@@ -27,8 +27,6 @@
 
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
-{
 
 class FilterComponentModule: public PlaYUVerModuleIf
 {
@@ -82,8 +80,6 @@ public:
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
 };
-
-}  // NAMESPACE
 
 #endif // __FILTERFRAME_H__
 

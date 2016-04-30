@@ -34,8 +34,6 @@
 #include "QtConcurrent/qtconcurrentrun.h"
 #endif
 
-namespace plaYUVer
-{
 
 QualityHandle::QualityHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManager ) :
         m_pcParet( parent ),
@@ -330,5 +328,5 @@ Void QualityHandle::slotPlotQualitySeveral()
   }
 }
 
-}   // NAMESPACE
+ 
 

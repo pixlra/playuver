@@ -29,8 +29,6 @@
 #include "lib/PlaYUVerDefs.h"
 #include "lib/PlaYUVerCmdParser.h"
 
-namespace plaYUVer
-{
 
 class PlaYUVerStream;
 
@@ -92,7 +90,5 @@ private:
   Void listModuleHelp();
 
 };
-
-}  // NAMESPACE
 
 #endif // __PLAYUVERTOOLSCMDPARSER_H__

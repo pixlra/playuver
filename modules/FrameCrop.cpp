@@ -24,8 +24,6 @@
 
 #include "FrameCrop.h"
 
-namespace plaYUVer
-{
 
 FrameCrop::FrameCrop()
 {
@@ -77,5 +75,5 @@ Void FrameCrop::destroy()
   m_pcCropedFrame = NULL;
 }
 
-}  // NAMESPACE
+
 

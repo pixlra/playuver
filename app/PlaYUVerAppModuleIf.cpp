@@ -26,8 +26,6 @@
 #include "VideoSubWindow.h"
 #include "VideoSubWindow.h"
 
-namespace plaYUVer
-{
 
 PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module ) :
         m_bIsRunning( false ),
@@ -219,5 +217,5 @@ Void PlaYUVerAppModuleIf::destroy()
 
 }
 
-}  // NAMESPACE
+
 

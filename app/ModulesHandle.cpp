@@ -32,8 +32,6 @@
 #include "ModulesHandleOptDialog.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
-namespace plaYUVer
-{
 
 ModulesHandle::ModulesHandle( QWidget* parent, PlaYUVerSubWindowHandle *windowManager, VideoHandle *moduleVideo ) :
         QWidget( parent ),
@@ -594,5 +592,5 @@ Void ModulesHandle::customEvent( QEvent *event )
   }
 }
 
-}  // NAMESPACE
+
 

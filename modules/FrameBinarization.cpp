@@ -24,8 +24,6 @@
 
 #include "FrameBinarization.h"
 
-namespace plaYUVer
-{
 
 FrameBinarization::FrameBinarization()
 {
@@ -69,5 +67,5 @@ Void FrameBinarization::destroy()
   m_pcBinFrame = NULL;
 }
 
-}  // NAMESPACE
+
 

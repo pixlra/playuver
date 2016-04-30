@@ -29,8 +29,6 @@
 #include <string>
 #include <algorithm>
 
-namespace plaYUVer
-{
 
 // ====================================================================================================================
 // Basic type redefinition
@@ -134,6 +132,6 @@ inline std::string uppercase( const std::string& in )
   return out;
 }
 
-}  // NAMESPACE
+
 
 #endif // __PLAYUVERDEFS_H__

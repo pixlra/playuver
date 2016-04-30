@@ -37,8 +37,6 @@
 
 class QAction;
 
-namespace plaYUVer
-{
 
 //#define PLAYUVER_THREADED_MODULES
 
@@ -118,8 +116,6 @@ public:
 protected:
   virtual void run();
 };
-
-}  // NAMESPACE
 
 #endif // __PLAYUVERAPPMODULESIF_H__
 

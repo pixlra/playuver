@@ -41,8 +41,6 @@ class QColor;
 class QCheckBox;
 class QGroupBox;
 
-namespace plaYUVer
-{
 
 class PlaYUVerSubWindowHandle;
 class SubWindowAbstract;
@@ -90,7 +88,5 @@ private Q_SLOTS:
   void removeAllSubWindow();
 
 };
-
-}  // NAMESPACE
 
 #endif // __DIALOGSUBWINDOWSELECTOR_H__

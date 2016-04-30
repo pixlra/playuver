@@ -26,8 +26,6 @@
 #include <cstring>
 #include "FilterComponent.h"
 
-namespace plaYUVer
-{
 
 FilterComponentModule::FilterComponentModule()
 {
@@ -132,5 +130,5 @@ PlaYUVerFrame* FilterComponentChromaV::process( std::vector<PlaYUVerFrame*> apcF
   return filterComponent( apcFrameList[0], CHROMA_V );
 }
 
-}  // NAMESPACE
+
 

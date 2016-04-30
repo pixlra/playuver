@@ -31,8 +31,6 @@
 
 class QProgressBar;
 
-namespace plaYUVer
-{
 
 class ProgressBar: public QWidget
 {
@@ -48,7 +46,5 @@ private:
   UInt m_uiProgress;
   QProgressBar* m_pcProgressBar;
 };
-
-}  // NAMESPACE
 
 #endif // __PROGRESSBAR_H__

@@ -25,8 +25,6 @@
 #include "AbsoluteFrameDifference_APIv2.h"
 #include <cstdlib>
 
-namespace plaYUVer
-{
 
 REGISTER_CLASS_MAKER( AbsoluteFrameDifference )
 
@@ -80,5 +78,5 @@ Void AbsoluteFrameDifference::destroy()
   m_pcFrameDifference = NULL;
 }
 
-}  // NAMESPACE
+
 

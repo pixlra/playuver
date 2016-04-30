@@ -31,8 +31,6 @@
 #include "lib/PlaYUVerStream.h"
 #include "PlaYUVerToolsCmdParser.h"
 
-namespace plaYUVer
-{
 
 class PlaYUVerModuleIf;
 
@@ -82,7 +80,5 @@ private:
   PlaYUVerFrame* applyFrameModule();
   Int ModuleOperation();
 };
-
-}  // NAMESPACE
 
 #endif // __PLAYUVERTOOLS_H__

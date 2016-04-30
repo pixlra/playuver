@@ -32,8 +32,6 @@
 #include <QtDBus>
 #include <QtCore>
 
-namespace plaYUVer
-{
 
 #define PLAYUVER_DBUS_SESSION_NAME "org.pixlra.PlaYUVer.application"
 #define PLAYUVER_DBUS_PATH "/MainApplication"
@@ -80,8 +78,6 @@ public:
 private:
   PlaYUVerApp *m_app;
 };
-
-}  // NAMESPACE
 
 #endif // __PlaYUVerAppAdaptor_H__
 

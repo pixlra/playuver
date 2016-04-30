@@ -36,8 +36,6 @@ class QPoint;
 class QBitmap;
 class QPainter;
 
-namespace plaYUVer
-{
 
 /**
  *
@@ -101,7 +99,5 @@ private:
   Style m_eGridStyle;
   QPoint m_nearPos;
 };
-
-} // NameSpace plaYUVer
 
 #endif // __GRIDMANAGER_H__

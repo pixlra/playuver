@@ -29,8 +29,6 @@
 
 #include <cassert>
 
-namespace plaYUVer
-{
 
 class WeightedPSNR: public PlaYUVerModuleIf
 {
@@ -49,8 +47,6 @@ public:
   Void destroy();
 
 };
-
-}  // NAMESPACE
 
 #endif // __WEIGHTEDPSNR_H__
 

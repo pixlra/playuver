@@ -36,8 +36,6 @@
 #include "StreamHandlerOpenCV.h"
 #endif
 
-namespace plaYUVer
-{
 
 std::vector<std::string> PlaYUVerFrame::supportedColorSpacesListNames()
 {
@@ -1172,5 +1170,5 @@ Double PlaYUVerFrame::getSSIM( PlaYUVerFrame* Org, Int component )
   return dSSIM;
 }
 
-}  // NAMESPACE
+
 

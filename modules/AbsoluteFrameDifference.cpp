@@ -25,8 +25,6 @@
 #include "AbsoluteFrameDifference.h"
 #include <cstdlib>
 
-namespace plaYUVer
-{
 
 AbsoluteFrameDifference::AbsoluteFrameDifference()
 {
@@ -83,5 +81,5 @@ Void AbsoluteFrameDifference::destroy()
   m_pcFrameDifference = NULL;
 }
 
-}  // NAMESPACE
+
 

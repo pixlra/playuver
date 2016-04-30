@@ -24,8 +24,6 @@
 
 #include "EightBitsSampling.h"
 
-namespace plaYUVer
-{
 
 EightBitsSampling::EightBitsSampling()
 {
@@ -82,5 +80,5 @@ Void EightBitsSampling::destroy()
   m_pcSubSampledFrame = NULL;
 }
 
-}  // NAMESPACE
+
 

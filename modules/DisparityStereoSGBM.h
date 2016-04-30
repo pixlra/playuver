@@ -43,8 +43,6 @@
 
 #include <cassert>
 
-namespace plaYUVer
-{
 
 class DisparityStereoSGBM: public PlaYUVerModuleIf
 {
@@ -71,8 +69,6 @@ public:
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Void destroy();
 };
-
-}  // NAMESPACE
 
 #endif // __DISPARITYSTEREOSGBM_H__
 

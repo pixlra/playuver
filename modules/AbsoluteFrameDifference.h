@@ -29,8 +29,6 @@
 
 #include <cassert>
 
-namespace plaYUVer
-{
 
 class AbsoluteFrameDifference: public PlaYUVerModuleIf
 {
@@ -49,8 +47,6 @@ public:
   Void destroy();
 
 };
-
-}  // NAMESPACE
 
 #endif // __FRAMEDIFFERENCE_H__
 

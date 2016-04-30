@@ -26,8 +26,6 @@
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"
 
-namespace plaYUVer
-{
 
 ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
         QDialog( parent )
@@ -386,4 +384,4 @@ Void ConfigureFormatDialog::slotBitsChange( Int idx )
   }
 }
 
-}  // NAMESPACE
+

@@ -30,8 +30,6 @@
 #include <QMdiSubWindow>
 
 
-namespace plaYUVer
-{
 
 class PlaYUVerMdiSubWindow: public QMdiSubWindow
 {
@@ -47,8 +45,6 @@ protected:
   QSize sizeHint() const;
   void closeEvent( QCloseEvent *event );
 };
-
-}  // NAMESPACE
 
 #endif // __PLAYUVERMDISUBWINDOW_H__
 

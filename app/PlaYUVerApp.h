@@ -54,8 +54,6 @@ class QActionGroup;
 class QAction;
 class QSignalMapper;
 
-namespace plaYUVer
-{
 
 class PlaYUVerCmdParser;
 class PlaYUVerStream;
@@ -236,8 +234,6 @@ private:
 
   AboutDialog* m_pcAboutDialog;
 };
-
-}  // NAMESPACE
 
 #endif // __PLAYUVERAPP_H__
 

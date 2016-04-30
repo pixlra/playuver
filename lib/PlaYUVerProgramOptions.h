@@ -47,8 +47,6 @@
 #include <vector>
 #include "PlaYUVerDefs.h"
 
-namespace plaYUVer
-{
 
 struct Options;
 
@@ -380,7 +378,5 @@ public:
 private:
   Options& parent;
 };
-
-}  // NAMESPACE
 
 #endif // __PROGRAMOPTIONS_H__

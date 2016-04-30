@@ -27,8 +27,6 @@
 #include <QtDebug>
 #include "FramePropertiesDock.h"
 
-namespace plaYUVer
-{
 
 FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitch ) :
         QWidget( parent ),
@@ -617,5 +615,5 @@ Void FramePropertiesDock::slotUpdateIntervRange( Int range )
   maxInterv->blockSignals( false );
 }
 
-}   // NAMESPACE
+ 
 

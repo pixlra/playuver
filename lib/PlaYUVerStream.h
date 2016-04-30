@@ -32,8 +32,6 @@
 #include <cstdio>
 #include "PlaYUVerFrame.h"
 
-namespace plaYUVer
-{
 
 class LibOpenCVHandler;
 class PlaYUVerStreamHandlerIf;
@@ -165,7 +163,5 @@ private:
   UInt64 m_uiCurrFrameFileIdx;
 
 };
-
-}  // NAMESPACE
 
 #endif // __PLAYUVERSTREAM_H__

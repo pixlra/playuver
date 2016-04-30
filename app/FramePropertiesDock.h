@@ -37,8 +37,6 @@
 #include "lib/PlaYUVerFrame.h"
 #include "HistogramWidget.h"
 
-namespace plaYUVer
-{
 
 class FramePropertiesDock: public QWidget
 {
@@ -129,7 +127,5 @@ private Q_SLOTS:
   void slotUpdateIntervRange( int range );
 
 };
-
-}   // NAMESPACE
 
 #endif // __FRAMEPROPERTIESDOCK_H__

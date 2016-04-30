@@ -27,8 +27,6 @@
 #include "QualityMeasurementSidebar.h"
 #include "VideoSubWindow.h"
 
-namespace plaYUVer
-{
 
 QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerSubWindowHandle *windowManager ) :
         QWidget( parent ),
@@ -260,5 +258,5 @@ Void QualityMeasurementSidebar::slotQualityMetricChanged( Int idx )
   //updateQualityMetric( idx );
 }
 
-}   // NAMESPACE
+ 
 

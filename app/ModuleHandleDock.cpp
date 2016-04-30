@@ -27,8 +27,6 @@
 #include "PlaYUVerAppModuleIf.h"
 #include "ModulesHandle.h"
 
-namespace plaYUVer
-{
 
 ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf ) :
         QWidget( parent ),
@@ -90,5 +88,5 @@ QSize ModuleHandleDock::sizeHint() const
     return currSize;
 }
 
-}   // NAMESPACE
+ 
 

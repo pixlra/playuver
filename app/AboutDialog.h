@@ -28,8 +28,6 @@
 
 #include <QDialog>
 
-namespace plaYUVer
-{
 
 class AboutDialog : public QDialog
 {
@@ -38,7 +36,5 @@ class AboutDialog : public QDialog
 public:
 	AboutDialog(QWidget *parent = 0);
 };
-
-}  // NAMESPACE
 
 #endif // __ABOUTDIALOG_H__

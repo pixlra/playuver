@@ -48,8 +48,6 @@ class QHBoxLayout;
 class QFocusEvent;
 class QCloseEvent;
 
-namespace plaYUVer
-{
 
 class PlaYUVerMdiSubWindow;
 
@@ -174,8 +172,6 @@ public Q_SLOTS:
   void onDestroyed();
 
 };
-
-}  // NAMESPACE
 
 #endif // __SUBWINDOWABSTRACT_H__
 

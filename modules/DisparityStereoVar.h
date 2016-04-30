@@ -31,8 +31,6 @@
 
 #include <cassert>
 
-namespace plaYUVer
-{
 
 class DisparityStereoVar: public PlaYUVerModuleIf
 {
@@ -51,8 +49,6 @@ public:
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Void destroy();
 };
-
-}  // NAMESPACE
 
 #endif // __DISPARITYSTEREOVAR_H__
 

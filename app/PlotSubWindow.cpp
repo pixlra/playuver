@@ -25,8 +25,6 @@
 #include "PlotSubWindow.h"
 #include "qcustomplot.h"
 
-namespace plaYUVer
-{
 
 Void PlotSubWindow::definePlotColors()
 {
@@ -241,4 +239,4 @@ Void PlotSubWindow::addPlot( const QVector<Double> &arrayX, const QVector<Double
   m_iNumberPlots++;
 }
 
-}  // NAMESPACE
+

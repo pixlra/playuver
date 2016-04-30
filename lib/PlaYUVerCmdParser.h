@@ -25,8 +25,8 @@
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerProgramOptions.h"
 
-namespace plaYUVer
-{
+#ifndef __PLAYUVERCMDPARSER_H__
+#define __PLAYUVERCMDPARSER_H__
 
 class PlaYUVerCmdParser
 {
@@ -53,4 +53,4 @@ private:
   Void listModules();
 };
 
-}  // NAMESPACE
+#endif // __PLAYUVERCMDPARSER_H__

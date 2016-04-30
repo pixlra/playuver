@@ -38,8 +38,6 @@ namespace cv
   class VideoCapture;
 }
 
-namespace plaYUVer
-{
 
 class PlaYUVerFrame;
 
@@ -69,7 +67,5 @@ private:
   cv::VideoCapture* pcVideoCapture;
   cv::Mat* pcMat;
 };
-
-}  // NAMESPACE
 
 #endif // __STREAMHANDLEROPENCV_H__

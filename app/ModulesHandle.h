@@ -39,8 +39,6 @@
 #include "PlaYUVerAppDefs.h"
 #include "lib/PlaYUVerFrame.h"
 
-namespace plaYUVer
-{
 
 class VideoHandle;
 class PlaYUVerSubWindowHandle;
@@ -115,8 +113,6 @@ private Q_SLOTS:
   void destroyAllModulesIf();
 
 };
-
-}  // NAMESPACE
 
 #endif // __MODULESHANDLE_H__
 

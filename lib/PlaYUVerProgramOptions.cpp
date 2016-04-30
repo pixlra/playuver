@@ -48,8 +48,6 @@
 
 using namespace std;
 
-namespace plaYUVer
-{
 
 Options::Options( const std::string& name )
 {
@@ -491,5 +489,5 @@ Void Options::doHelp( ostream& out, unsigned columns )
   }
 }
 
-}  // NAMESPACE
+
 

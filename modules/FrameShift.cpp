@@ -24,8 +24,6 @@
 
 #include "FrameShift.h"
 
-namespace plaYUVer
-{
 
 FrameShift::FrameShift()
 {
@@ -146,5 +144,5 @@ Void FrameShift::destroy()
   m_pcProcessedFrame = NULL;
 }
 
-}  // NAMESPACE
+
 

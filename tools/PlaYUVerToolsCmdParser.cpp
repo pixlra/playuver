@@ -30,8 +30,6 @@
 #include "lib/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
-namespace plaYUVer
-{
 
 PlaYUVerToolsCmdParser::PlaYUVerToolsCmdParser()
 {
@@ -187,4 +185,4 @@ Void PlaYUVerToolsCmdParser::listModuleHelp()
   }
 }
 
-}  // NAMESPACE
+

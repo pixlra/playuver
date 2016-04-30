@@ -41,8 +41,6 @@
 #include <QElapsedTimer>
 #endif
 
-namespace plaYUVer
-{
 
 VideoHandle::VideoHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManager ) :
         m_pcParet( parent ),
@@ -776,5 +774,5 @@ Void VideoHandle::toggleGrid( Bool checked )
   }
 }
 
-}   // NAMESPACE
+ 
 

@@ -31,8 +31,6 @@
 #include "PlaYUVerModuleFactory.h"
 #include "ModulesListHeader.h"
 
-namespace plaYUVer
-{
 
 PlaYUVerModuleFactory::PlaYUVerModuleFactory()
 {
@@ -85,4 +83,4 @@ PlaYUVerModuleIf *PlaYUVerModuleFactory::CreateModule( const char* moduleName )
   return NULL;
 }
 
-}  // NAMESPACE
+

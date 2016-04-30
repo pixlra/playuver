@@ -38,8 +38,6 @@
 
 class QScrollArea;
 
-namespace plaYUVer
-{
 
 class VideoInformation;
 class VideoSubWindow;
@@ -263,10 +261,8 @@ public Q_SLOTS:
   void updatePixelValueStatusBar( const QPoint& pos );
 };
 
-}  // NAMESPACE
-
-Q_DECLARE_METATYPE( plaYUVer::PlaYUVerStreamInfo );
-Q_DECLARE_METATYPE( plaYUVer::PlaYUVerStreamInfoVector );
+Q_DECLARE_METATYPE( PlaYUVerStreamInfo );
+Q_DECLARE_METATYPE( PlaYUVerStreamInfoVector );
 
 #endif // __VIDEOSUBWINDOW_H__
 

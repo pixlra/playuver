@@ -31,8 +31,6 @@
 #include <QDialog>
 #include <QVector>
 
-namespace plaYUVer
-{
 
 class OpionConfiguration;
 
@@ -50,7 +48,5 @@ private:
   PlaYUVerAppModuleIf *m_pcCurrModuleIf;
   QVector<OpionConfiguration*> m_apcOptionList;
 };
-
-}  // NAMESPACE
 
 #endif // __MODULEHANDLEOPTDIALOG_H__

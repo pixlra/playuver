@@ -36,8 +36,6 @@
 #endif
 #include "PlaYUVerFramePixelFormats.h"
 
-namespace plaYUVer
-{
 
 /*
  **************************************************************
@@ -319,4 +317,4 @@ PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PLAYUVER_NUMBER_FORMATS
   RGB24,
   BGR24,
 };
-}  // NAMESPACE
+

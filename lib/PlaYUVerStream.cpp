@@ -39,8 +39,6 @@
 #include "StreamHandlerOpenCV.h"
 #endif
 
-namespace plaYUVer
-{
 
 std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
 {
@@ -605,4 +603,4 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
   return true;
 }
 
-}  // NAMESPACE
+

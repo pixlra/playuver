@@ -35,8 +35,6 @@
 #endif
 
 
-namespace plaYUVer
-{
 
 class PlaYUVerAppModuleIf;
 
@@ -63,7 +61,5 @@ public Q_SLOTS:
   void visibilityChangedSlot( bool );
 
 };
-
-}   // NAMESPACE
 
 #endif // __MODULEHANDLEDOCK_H__

@@ -27,8 +27,6 @@
 
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
-{
 
 class FrameBinarization: public PlaYUVerModuleIf
 {
@@ -47,8 +45,6 @@ public:
   Void destroy();
 
 };
-
-}  // NAMESPACE
 
 #endif // __FRAMEBINARIZATION_H__
 

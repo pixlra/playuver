@@ -31,8 +31,6 @@
 #include <QDialog>
 #include <QVector>
 
-namespace plaYUVer
-{
 
 /**
  *
@@ -48,7 +46,5 @@ private:
   QSpinBox* m_spinFrameNum;
   Int m_iSelectedFrameNum;
 };
-
-}  // NAMESPACE
 
 #endif // __MODULEHANDLEOPTDIALOG_H__

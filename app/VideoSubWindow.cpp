@@ -32,8 +32,6 @@
 #include "QtConcurrent/qtconcurrentrun.h"
 #endif
 
-namespace plaYUVer
-{
 
 /**
  * \brief Functions to control data stream from stream information
@@ -946,18 +944,3 @@ Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
     }
   }
 }
-
-//Void VideoSubWindow::closeEvent( QCloseEvent *event )
-//{
-//  Bool bAccept = m_bIsPlaying ? false : true;
-//  if( bAccept )
-//  {
-//    event->accept();
-//  }
-//  else
-//  {
-//    event->ignore();
-//  }
-//}
-
-}// NAMESPACE

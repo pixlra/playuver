@@ -30,8 +30,6 @@
 #include <QVBoxLayout>
 #include <QCheckBox>
 
-namespace plaYUVer
-{
 
 class OpionConfiguration: public QWidget
 {
@@ -147,4 +145,4 @@ Int ModulesHandleOptDialog::runConfiguration()
   return QDialog::Accepted;
 }
 
-}  // NAMESPACE
+

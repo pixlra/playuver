@@ -30,8 +30,6 @@
 #include <cstdlib>
 #include <cstring>
 
-namespace plaYUVer
-{
 
 typedef void Void;
 typedef char Char;
@@ -233,6 +231,6 @@ Void freeMem3ImageComponents( T*** array3D )
   }
 }
 
-}  // NAMESPACE
+
 
 #endif //  __LIBMEMORY_H__

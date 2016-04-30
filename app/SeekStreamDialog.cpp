@@ -30,8 +30,6 @@
 #include <QGridLayout>
 #include <QSpinBox>
 
-namespace plaYUVer
-{
 
 SeekStreamDialog::SeekStreamDialog( PlaYUVerStream *pcCurrStream, QWidget *parent ) :
         QDialog( parent, Qt::Dialog | Qt::WindowTitleHint ),
@@ -83,4 +81,4 @@ Int SeekStreamDialog::runDialog()
   return m_iSelectedFrameNum;
 }
 
-}  // NAMESPACE
+

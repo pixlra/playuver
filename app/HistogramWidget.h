@@ -34,8 +34,6 @@
 
 class QEvent;
 
-namespace plaYUVer
-{
 
 class HistogramWorker;
 class HistogramWidgetPrivate;
@@ -172,9 +170,7 @@ private:
   HistogramWidgetPrivate* d;
 };
 
-}
-  // NAMESPACE
 
-Q_DECLARE_OPERATORS_FOR_FLAGS( plaYUVer::HistogramWidget::HistogramOptions )
+Q_DECLARE_OPERATORS_FOR_FLAGS( HistogramWidget::HistogramOptions )
 
 #endif // __HISTOGRAMWIDGET_H__

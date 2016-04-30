@@ -36,8 +36,6 @@
 
 class QCustomPlot;
 
-namespace plaYUVer
-{
 
 class PlotSubWindow: public SubWindowAbstract
 {
@@ -99,8 +97,6 @@ public:
   Void addPlot( const QVector<Double> &arrayX, const QVector<Double> &arrayY, const QString& key = QString() );
 
 };
-
-}  // NAMESPACE
 
 #endif // __PLOTWINDOWHANDLE_H__
 

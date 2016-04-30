@@ -31,8 +31,6 @@
 
 using namespace cv;
 
-namespace plaYUVer
-{
 
 std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedReadFormats()
 {
@@ -155,4 +153,4 @@ Bool StreamHandlerOpenCV::write( PlaYUVerFrame* pcFrame )
   return bRet;
 }
 
-}  // NAMESPACE
+

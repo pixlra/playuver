@@ -29,8 +29,6 @@
 #include <QProgressBar>
 #include <QDesktopWidget>
 
-namespace plaYUVer
-{
 
 ProgressBar::ProgressBar( QWidget *parent, UInt maxValue ) :
         QWidget( parent ),
@@ -61,4 +59,4 @@ Void ProgressBar::incrementProgress( UInt increment )
   m_pcProgressBar->setValue( m_uiProgress );
   update();
 }
-}  // NAMESPACE
+

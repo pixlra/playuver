@@ -28,8 +28,6 @@
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerStreamHandlerIf.h"
 
-namespace plaYUVer
-{
 
 /**
  * \class PlaYUVerRawHandler
@@ -57,9 +55,6 @@ public:
 
 
 };
-
-
-}  // NAMESPACE
 
 #endif // __STREAMHANDLERRAW_H__
 

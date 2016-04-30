@@ -87,7 +87,7 @@ static int open_codec_context( int *stream_idx, AVFormatContext *m_cFmtCtx, enum
   return 0;
 }
 
-Bool StreamHandlerLibav::openHandler( std::string strFilename, Bool bInput )
+Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 {
   const char* filename = strFilename.c_str();
 

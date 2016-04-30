@@ -71,16 +71,16 @@ private:
   Bool m_bShowVersion;
   Bool m_bQuiet;
 
-  std::vector<std::string> m_apcInputs;
-  std::vector<std::string> m_strResolution;
-  std::vector<std::string> m_strPelFmt;
+  std::vector<String> m_apcInputs;
+  std::vector<String> m_strResolution;
+  std::vector<String> m_strPelFmt;
   std::vector<UInt> m_uiBitsPerPixel;
-  std::vector<std::string> m_strEndianness;
-  std::string m_strOutput;
+  std::vector<String> m_strEndianness;
+  String m_strOutput;
   Int64 m_iFrames;
 
-  std::string m_strQualityMetric;
-  std::string m_strModule;
+  String m_strQualityMetric;
+  String m_strModule;
 
   Bool m_bListPelFmts;
   Bool m_bListQuality;

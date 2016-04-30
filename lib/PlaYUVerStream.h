@@ -38,7 +38,7 @@ class PlaYUVerStreamHandlerIf;
 
 typedef struct
 {
-  std::string shortName;
+  String shortName;
   UInt uiWidth;
   UInt uiHeight;
 } PlaYUVerStdResolution;
@@ -48,8 +48,8 @@ typedef PlaYUVerStreamHandlerIf* (*CreateStreamHandlerFn)( void );
 
 typedef struct
 {
-  std::string formatName;
-  std::string formatExt;
+  String formatName;
+  String formatExt;
   CreateStreamHandlerFn formatFct;
 } PlaYUVerSupportedFormat;
 
@@ -84,7 +84,7 @@ public:
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
 
-  static CreateStreamHandlerFn findStreamHandler( std::string strFilename, bool bRead );
+  static CreateStreamHandlerFn findStreamHandler( String strFilename, bool bRead );
 
   static std::vector<PlaYUVerStdResolution> stdResolutionSizes();
 
@@ -100,15 +100,15 @@ public:
     END_OF_SEQ,
   };
 
-  std::string getFormatName();
-  std::string getCodecName();
+  String getFormatName();
+  String getCodecName();
 
-  Bool open( std::string filename, std::string resolution, std::string input_format, UInt bitsPel, Int endianness, UInt frame_rate,  Bool bInput = true );
-  Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput = true );
+  Bool open( String filename, String resolution, String input_format, UInt bitsPel, Int endianness, UInt frame_rate,  Bool bInput = true );
+  Bool open( String filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput = true );
   Bool reload();
   Void close();
 
-  std::string getFileName();
+  String getFileName();
   UInt getFrameNum();
   UInt getWidth() const;
   UInt getHeight() const;
@@ -123,8 +123,8 @@ public:
   Void writeFrame();
   Void writeFrame( PlaYUVerFrame *pcFrame );
 
-  Bool saveFrame( const std::string& filename );
-  static Bool saveFrame( const std::string& filename, PlaYUVerFrame *saveFrame );
+  Bool saveFrame( const String& filename );
+  static Bool saveFrame( const String& filename, PlaYUVerFrame *saveFrame );
 
   Bool setNextFrame();
   PlaYUVerFrame* getCurrFrame();
@@ -149,7 +149,7 @@ private:
   PlaYUVerStreamHandlerIf* m_pcHandler;
 
   Bool m_bIsInput;
-  std::string m_cFilename;
+  String m_cFilename;
   UInt64 m_uiTotalFrameNum;
   Int64 m_iCurrFrameNum;
 

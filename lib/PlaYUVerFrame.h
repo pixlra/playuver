@@ -87,16 +87,16 @@ public:
    * of PlaYUVerFrame
    * @return vector of strings with pixel formats names
    */
-  static std::vector<std::string> supportedColorSpacesListNames();
+  static std::vector<String> supportedColorSpacesListNames();
 
   /**
    * Function that handles the supported pixel formats
    * of PlaYUVerFrame
    * @return vector of strings with pixel formats names
    */
-  static std::vector<std::string> supportedPixelFormatListNames();
-  static std::vector<std::string> supportedPixelFormatListNames( Int colorSpace );
-  static Int findPixelFormat( std::string name );
+  static std::vector<String> supportedPixelFormatListNames();
+  static std::vector<String> supportedPixelFormatListNames( Int colorSpace );
+  static Int findPixelFormat( String name );
 
   /**
    * Get number of bytes per frame of a specific
@@ -221,7 +221,7 @@ public:
 
   Bool haveSameFmt( PlaYUVerFrame* other, UInt match = MATCH_ALL ) const;
 
-  std::string getPelFmtName();
+  String getPelFmtName();
 
   /**
    * Histogram
@@ -271,9 +271,9 @@ public:
     NUMBER_METRICS,
   };
 
-  static std::vector<std::string> supportedQualityMetricsList()
+  static std::vector<String> supportedQualityMetricsList()
   {
-    std::vector<std::string> metrics;
+    std::vector<String> metrics;
     metrics.push_back( "PSNR" );
     metrics.push_back( "MSE" );
     metrics.push_back( "SSIM" );
@@ -293,7 +293,7 @@ private:
 
   //! Struct with the pixel format description.
   PlaYUVerPixFmtDescriptor* m_pcPelFormat;
-  std::string m_cPelFmtName;
+  String m_cPelFmtName;
 
   UInt m_uiWidth;  //!< Width of the frame
   UInt m_uiHeight;  //!< Height of the frame

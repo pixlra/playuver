@@ -165,7 +165,7 @@ Void PlaYUVerToolsCmdParser::listModules()
 
 Void PlaYUVerToolsCmdParser::listModuleHelp()
 {
-  std::string moduleName = m_strModule;
+  String moduleName = m_strModule;
   PlaYUVerModuleIf* pcCurrModuleIf = NULL;
 
   PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();

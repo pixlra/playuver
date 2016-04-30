@@ -99,9 +99,9 @@ std::vector<PlaYUVerStdResolution> PlaYUVerStream::stdResolutionSizes()
 }
 
 
-CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( std::string strFilename, bool bRead )
+CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( String strFilename, bool bRead )
 {
-  std::string currExt = strFilename.substr( strFilename.find_last_of( "." ) + 1 );
+  String currExt = strFilename.substr( strFilename.find_last_of( "." ) + 1 );
   currExt = lowercase( currExt );
 
   std::vector<PlaYUVerSupportedFormat> supportedFmts;
@@ -119,7 +119,7 @@ CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( std::string strFilename
     {
       return supportedFmts[i].formatFct;
     }
-    else if( strFilename.find( supportedFmts[i].formatExt ) != std::string::npos )
+    else if( strFilename.find( supportedFmts[i].formatExt ) != String::npos )
     {
       return supportedFmts[i].formatFct;
     }
@@ -150,16 +150,16 @@ PlaYUVerStream::~PlaYUVerStream()
   close();
 }
 
-std::string PlaYUVerStream::getFormatName()
+String PlaYUVerStream::getFormatName()
 {
   return !m_pcHandler ? "" : m_pcHandler->getFormatName();
 }
-std::string PlaYUVerStream::getCodecName()
+String PlaYUVerStream::getCodecName()
 {
   return !m_pcHandler ? "" : m_pcHandler->getCodecName();
 }
 
-Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::string input_format_name, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput )
+Bool PlaYUVerStream::open( String filename, String resolution, String input_format_name, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput )
 {
   UInt width;
   UInt height;
@@ -184,7 +184,7 @@ Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::st
   return open( filename, width, height, input_format, bitsPel, endianness, frame_rate, bInput );
 }
 
-Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput )
+Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput )
 {
   if( m_bInit )
   {
@@ -331,7 +331,7 @@ Void PlaYUVerStream::close()
   m_bInit = false;
 }
 
-std::string PlaYUVerStream::getFileName()
+String PlaYUVerStream::getFileName()
 {
   return m_cFilename;
 }
@@ -488,12 +488,12 @@ Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
   return;
 }
 
-Bool PlaYUVerStream::saveFrame( const std::string& filename )
+Bool PlaYUVerStream::saveFrame( const String& filename )
 {
   return saveFrame( filename, m_pcCurrFrame );
 }
 
-Bool PlaYUVerStream::saveFrame( const std::string& filename, PlaYUVerFrame *saveFrame )
+Bool PlaYUVerStream::saveFrame( const String& filename, PlaYUVerFrame *saveFrame )
 {
   PlaYUVerStream auxSaveStream;
   if( !auxSaveStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(), saveFrame->getPelFormat(), saveFrame->getBitsPel(), saveFrame->getEndianness(), 1, false ) )

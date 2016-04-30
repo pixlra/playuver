@@ -55,7 +55,7 @@ public:
   {
   }
 
-  Bool openHandler( std::string strFilename, Bool bInput );
+  Bool openHandler( String strFilename, Bool bInput );
   Void closeHandler();
   Bool configureBuffer( PlaYUVerFrame* pcFrame );
   UInt64 calculateFrameNumber();

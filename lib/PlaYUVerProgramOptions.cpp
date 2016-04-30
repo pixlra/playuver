@@ -49,7 +49,7 @@
 using namespace std;
 
 
-Options::Options( const std::string& name )
+Options::Options( const String& name )
 {
   m_cOptionGroupName = name;
   m_bAllowUnkonw = true;
@@ -63,12 +63,12 @@ Options::~Options()
   }
 }
 
-OptionBase* Options::operator[]( const std::string& optName )
+OptionBase* Options::operator[]( const String& optName )
 {
   return getOption( optName );
 }
 
-OptionBase* Options::getOption( const std::string& optName )
+OptionBase* Options::getOption( const String& optName )
 {
   Options::OptionMap::iterator opt_it;
   opt_it = opt_short_map.find( optName );
@@ -92,7 +92,7 @@ OptionBase* Options::getOption( const std::string& optName )
   return NULL;
 }
 
-Bool Options::hasOpt( const std::string& optName )
+Bool Options::hasOpt( const String& optName )
 {
   return getOption( optName )->count() > 0 ? true : false;
 }
@@ -347,7 +347,7 @@ list<const char*> Options::scanArgv( unsigned argc, const char* argv[] )
   return non_option_arguments;
 }
 
-Void Options::scanArgs( std::vector<std::string> args_array)
+Void Options::scanArgs( std::vector<String> args_array)
 {
   for( unsigned i = 0; i < args_array.size(); i++ )
   {

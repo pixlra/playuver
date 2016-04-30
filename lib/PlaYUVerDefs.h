@@ -49,6 +49,8 @@ typedef float Float;
 typedef unsigned char UInt8;
 typedef unsigned int UInt16;
 
+typedef std::string String;
+
 // ====================================================================================================================
 // 64-bit integer type
 // ====================================================================================================================
@@ -118,16 +120,16 @@ enum RGBcomponent
 };
 
 
-inline std::string lowercase( const std::string& in )
+inline String lowercase( const String& in )
 {
-  std::string out;
+  String out;
   transform( in.begin(), in.end(), std::back_inserter( out ), tolower );
   return out;
 }
 
-inline std::string uppercase( const std::string& in )
+inline String uppercase( const String& in )
 {
-  std::string out;
+  String out;
   transform( in.begin(), in.end(), std::back_inserter( out ), toupper );
   return out;
 }

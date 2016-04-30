@@ -443,7 +443,7 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
   {
     bGuessed = false;
     // Guess pixel format
-    QVector<std::string> formats_list = QVector<std::string>::fromStdVector( PlaYUVerFrame::supportedPixelFormatListNames() );
+    QVector<String> formats_list = QVector<String>::fromStdVector( PlaYUVerFrame::supportedPixelFormatListNames() );
     for( Int i = 0; i < formats_list.size(); i++ )
     {
       if( FilenameShort.contains( formats_list.at( i ).c_str(), Qt::CaseInsensitive ) )

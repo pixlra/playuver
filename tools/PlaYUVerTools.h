@@ -70,7 +70,7 @@ private:
   FpProcess m_fpProcess;
 
   Int64 m_iFrameNum;
-  std::vector<std::string> m_pcOutputFileNames;
+  std::vector<String> m_pcOutputFileNames;
   Int SaveOperation();
 
   Int m_uiQualityMetric;

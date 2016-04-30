@@ -37,18 +37,18 @@
 #endif
 
 
-std::vector<std::string> PlaYUVerFrame::supportedColorSpacesListNames()
+std::vector<String> PlaYUVerFrame::supportedColorSpacesListNames()
 {
-  std::vector<std::string> colorSpaceList;
+  std::vector<String> colorSpaceList;
   colorSpaceList.push_back( "YUV" );
   colorSpaceList.push_back( "RGB" );
   colorSpaceList.push_back( "GRAY" );
   return colorSpaceList;
 }
 
-std::vector<std::string> PlaYUVerFrame::supportedPixelFormatListNames()
+std::vector<String> PlaYUVerFrame::supportedPixelFormatListNames()
 {
-  std::vector<std::string> formatsList;
+  std::vector<String> formatsList;
   Int numberFormats = PLAYUVER_NUMBER_FORMATS;
   for( Int i = 0; i < numberFormats; i++ )
   {
@@ -57,9 +57,9 @@ std::vector<std::string> PlaYUVerFrame::supportedPixelFormatListNames()
   return formatsList;
 }
 
-std::vector<std::string> PlaYUVerFrame::supportedPixelFormatListNames( Int colorSpace )
+std::vector<String> PlaYUVerFrame::supportedPixelFormatListNames( Int colorSpace )
 {
-  std::vector<std::string> formatsList;
+  std::vector<String> formatsList;
   Int numberFormats = PLAYUVER_NUMBER_FORMATS;
   for( Int i = 0; i < numberFormats; i++ )
   {
@@ -69,7 +69,7 @@ std::vector<std::string> PlaYUVerFrame::supportedPixelFormatListNames( Int color
   return formatsList;
 }
 
-Int PlaYUVerFrame::findPixelFormat( std::string name )
+Int PlaYUVerFrame::findPixelFormat( String name )
 {
   for( Int i = 0; i < PLAYUVER_NUMBER_FORMATS; i++ )
   {
@@ -257,7 +257,7 @@ Bool PlaYUVerFrame::haveSameFmt( PlaYUVerFrame* other, UInt match ) const
   return bRet;
 }
 
-std::string PlaYUVerFrame::getPelFmtName()
+String PlaYUVerFrame::getPelFmtName()
 {
   return m_pcPelFormat->name;
 }

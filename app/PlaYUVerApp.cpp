@@ -97,9 +97,9 @@ Bool PlaYUVerApp::parseArgs( Int argc, Char *argv[] )
   m_pcCmdParser = new PlaYUVerCmdParser();
   m_pcCmdParser->config( argc, argv );
 
-  std::vector<std::string> m_apcInputs;
-  std::string strResolution( "" );
-  std::string strPelFmt( "" );
+  std::vector<String> m_apcInputs;
+  String strResolution( "" );
+  String strPelFmt( "" );
 
   m_pcCmdParser->Opts().addOptions()/**/
   ( "input,i", m_apcInputs, "input file" ) /**/

@@ -52,7 +52,7 @@ struct Options;
 
 struct ParseFailure: public std::exception
 {
-  ParseFailure( std::string arg0, std::string val0 ) throw() :
+  ParseFailure( String arg0, String val0 ) throw() :
           arg( arg0 ),
           val( val0 )
   {
@@ -62,8 +62,8 @@ struct ParseFailure: public std::exception
   {
   }
 
-  std::string arg;
-  std::string val;
+  String arg;
+  String val;
 
   const char* what() const throw()
   {
@@ -76,7 +76,7 @@ struct ParseFailure: public std::exception
  * information should be stored in a derived class. */
 struct OptionBase
 {
-  OptionBase( const std::string& name, const std::string& desc ) :
+  OptionBase( const String& name, const String& desc ) :
           arg_count( 0 ),
           opt_string( name ),
           opt_desc( desc )
@@ -88,7 +88,7 @@ struct OptionBase
   }
 
   /* parse argument arg, to obtain a value for the option */
-  virtual void parse( const std::string& arg ) = 0;
+  virtual void parse( const String& arg ) = 0;
   /* set the argument to the default value */
   //virtual void setDefault() = 0;
   int count()
@@ -101,15 +101,15 @@ struct OptionBase
   }
 
   int arg_count;
-  std::string opt_string;
-  std::string opt_desc;
+  String opt_string;
+  String opt_desc;
   Bool is_binary;
 };
 
 /** Type specific option storage */
 struct FlagOpt: public OptionBase
 {
-  FlagOpt( const std::string& name, Bool default_val, const std::string& desc ) :
+  FlagOpt( const String& name, Bool default_val, const String& desc ) :
           OptionBase( name, desc ),
           opt_storage( false ),
           opt_default_val( default_val )
@@ -117,7 +117,7 @@ struct FlagOpt: public OptionBase
     is_binary = true;
   }
 
-  void parse( const std::string& arg )
+  void parse( const String& arg )
   {
     opt_storage = true;
     arg_count++;
@@ -135,14 +135,14 @@ struct FlagOpt: public OptionBase
 template<typename T>
 struct StandardOpt: public OptionBase
 {
-  StandardOpt( const std::string& name, T& storage, const std::string& desc ) :
+  StandardOpt( const String& name, T& storage, const String& desc ) :
           OptionBase( name, desc ),
           opt_storage( storage )
   {
     is_binary = false;
   }
 
-  void parse( const std::string& arg );
+  void parse( const String& arg );
 
 //  void setDefault()
 //  {
@@ -154,7 +154,7 @@ struct StandardOpt: public OptionBase
 
 /* Generic parsing */
 template<typename T>
-inline void StandardOpt<T>::parse( const std::string& arg )
+inline void StandardOpt<T>::parse( const String& arg )
 {
   std::istringstream arg_ss( arg, std::istringstream::in );
   arg_ss.exceptions( std::ios::failbit );
@@ -170,7 +170,7 @@ inline void StandardOpt<T>::parse( const std::string& arg )
 }
 
 template<>
-inline void StandardOpt< std::vector<UInt> >::parse( const std::string& arg )
+inline void StandardOpt< std::vector<UInt> >::parse( const String& arg )
 {
   UInt aux_opt_storage;
   std::istringstream arg_ss( arg, std::istringstream::in );
@@ -188,7 +188,7 @@ inline void StandardOpt< std::vector<UInt> >::parse( const std::string& arg )
 }
 
 template<>
-inline void StandardOpt< std::vector<Int> >::parse( const std::string& arg )
+inline void StandardOpt< std::vector<Int> >::parse( const String& arg )
 {
   Int aux_opt_storage;
   std::istringstream arg_ss( arg, std::istringstream::in );
@@ -207,7 +207,7 @@ inline void StandardOpt< std::vector<Int> >::parse( const std::string& arg )
 
 /* string parsing is specialized */
 template<>
-inline void StandardOpt<std::string>::parse( const std::string& arg )
+inline void StandardOpt<String>::parse( const String& arg )
 {
   opt_storage = arg;
   arg_count++;
@@ -215,7 +215,7 @@ inline void StandardOpt<std::string>::parse( const std::string& arg )
 
 /* string vector parsing is specialized */
 template<>
-inline void StandardOpt<std::vector<std::string> >::parse( const std::string& arg )
+inline void StandardOpt<std::vector<String> >::parse( const String& arg )
 {
   opt_storage.push_back( arg );
   arg_count++;
@@ -224,9 +224,9 @@ inline void StandardOpt<std::vector<std::string> >::parse( const std::string& ar
 /** Option class for argument handling using a user provided function */
 struct OptionFunc: public OptionBase
 {
-  typedef Void (Func)( Options&, const std::string& );
+  typedef Void (Func)( Options&, const String& );
 
-  OptionFunc( const std::string& name, Options& parent_, Func *func_, const std::string& desc ) :
+  OptionFunc( const String& name, Options& parent_, Func *func_, const String& desc ) :
           OptionBase( name, desc ),
           parent( parent_ ),
           func( func_ )
@@ -234,7 +234,7 @@ struct OptionFunc: public OptionBase
     is_binary = false;
   }
 
-  void parse( const std::string& arg )
+  void parse( const String& arg )
   {
     func( parent, arg );
     arg_count++;
@@ -247,7 +247,7 @@ struct OptionFunc: public OptionBase
 
 private:
   Options& parent;
-  void (*func)( Options&, const std::string& );
+  void (*func)( Options&, const String& );
 };
 
 class OptionSpecific;
@@ -267,49 +267,49 @@ public:
       if( opt )
         delete opt;
     }
-    std::list<std::string> opt_long;
-    std::list<std::string> opt_short;
+    std::list<String> opt_long;
+    std::list<String> opt_short;
     OptionBase* opt;
   };
   typedef std::list<Option*> OptionsList;
 
-  Options( const std::string& name = "" );
+  Options( const String& name = "" );
   ~Options();
 
   std::list<const char*> scanArgv( unsigned argc, const char* argv[] );
-  Void scanArgs( std::vector<std::string> args_array);
+  Void scanArgs( std::vector<String> args_array);
   Void doHelp( std::ostream& out, unsigned columns = 80 );
 
   OptionSpecific addOptions();
   Void setDefaults();
 
-  OptionBase* operator[]( const std::string& optName );
-  OptionBase* getOption( const std::string& optName );
+  OptionBase* operator[]( const String& optName );
+  OptionBase* getOption( const String& optName );
 
   OptionsList& getOptionList()
   {
     return opt_list;
   }
 
-  Bool hasOpt( const std::string& optName );
+  Bool hasOpt( const String& optName );
 
   void addOption( OptionBase *opt );
 
 private:
 
-  typedef std::map<std::string, OptionsList> OptionMap;
+  typedef std::map<String, OptionsList> OptionMap;
   OptionMap opt_long_map;
   OptionMap opt_short_map;
 
   OptionsList opt_list;
 
-  std::string m_cOptionGroupName;
+  String m_cOptionGroupName;
   Bool m_bAllowUnkonw;
 
-  Bool storePair( Bool allow_long, Bool allow_short, const std::string& name, const std::string& value );
-  Bool storePair( const std::string& name, const std::string& value );
+  Bool storePair( Bool allow_long, Bool allow_short, const String& name, const String& value );
+  Bool storePair( const String& name, const String& value );
   UInt parseLONG( unsigned argc, const char* argv[] );
-  UInt parseLONG( std::string arg );
+  UInt parseLONG( String arg );
   unsigned parseSHORT( unsigned argc, const char* argv[] );
 };
 
@@ -330,7 +330,7 @@ public:
    */
   template<typename T>
   OptionSpecific&
-  operator()( const std::string& name, T& storage, const std::string& desc )
+  operator()( const String& name, T& storage, const String& desc )
   {
     parent.addOption( new StandardOpt<T>( name, storage, desc ) );
     return *this;
@@ -343,7 +343,7 @@ public:
    *   with desc as an optional help description
    */
   OptionSpecific&
-  operator()( const std::string& name, const std::string& desc )
+  operator()( const String& name, const String& desc )
   {
     parent.addOption( new FlagOpt( name, false, desc ) );
     return *this;
@@ -356,7 +356,7 @@ public:
    *   with desc as an optional help description
    */
   OptionSpecific&
-  operator()( const std::string& name, Bool default_val, const std::string& desc )
+  operator()( const String& name, Bool default_val, const String& desc )
   {
     parent.addOption( new FlagOpt( name, default_val, desc ) );
     return *this;
@@ -370,7 +370,7 @@ public:
    * handle evaluating the option's value.
    */
   OptionSpecific&
-  operator()( const std::string& name, OptionFunc::Func *func, const std::string& desc )
+  operator()( const String& name, OptionFunc::Func *func, const String& desc )
   {
     parent.addOption( new OptionFunc( name, parent, func, desc ) );
     return *this;

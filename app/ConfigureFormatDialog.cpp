@@ -271,7 +271,7 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWi
   Int sampling = 0;
   if( rInputFormat >= 0 )
   {
-    std::string pelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[rInputFormat];
+    String pelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[rInputFormat];
     for( UInt j = 0; j < PlaYUVerFrame::supportedColorSpacesListNames().size(); j++ )
     {
       for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames( j ).size(); i++ )
@@ -314,7 +314,7 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWi
   rHeight = m_spinBoxheight->value();
   colorSpace = m_comboBoxColorSpace->currentIndex();
   sampling = m_comboBoxPixelFormat->currentIndex();
-  std::string pelFmtName = PlaYUVerFrame::supportedPixelFormatListNames( colorSpace )[sampling];
+  String pelFmtName = PlaYUVerFrame::supportedPixelFormatListNames( colorSpace )[sampling];
   for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
   {
     if( pelFmtName == PlaYUVerFrame::supportedPixelFormatListNames()[i] )

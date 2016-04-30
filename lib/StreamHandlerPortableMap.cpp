@@ -31,7 +31,7 @@
 #include "LibMemory.h"
 
 
-Bool StreamHandlerPortableMap::openHandler( std::string strFilename, Bool bInput )
+Bool StreamHandlerPortableMap::openHandler( String strFilename, Bool bInput )
 {
   m_bIsInput = bInput;
   m_pFile = NULL;

@@ -29,7 +29,8 @@
 #include "PlaYUVerFramePixelFormats.h"
 #include "LibMemory.h"
 
-using namespace cv;
+using cv::Mat;
+using cv::VideoCapture;
 
 
 std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedReadFormats()
@@ -56,7 +57,7 @@ StreamHandlerOpenCV::StreamHandlerOpenCV()
   pcVideoCapture = NULL;
 }
 
-Bool StreamHandlerOpenCV::openHandler( std::string strFilename, Bool bInput )
+Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
 {
   m_cFilename = strFilename;
   if( bInput )
@@ -66,7 +67,7 @@ Bool StreamHandlerOpenCV::openHandler( std::string strFilename, Bool bInput )
     /*
      * Special filename to handle webcam input
      */
-    if( m_cFilename.find( "/dev/video" ) != std::string::npos )
+    if( m_cFilename.find( "/dev/video" ) != String::npos )
     {
       m_strFormatName = "DEV";
       m_strCodecName = "Raw Video";

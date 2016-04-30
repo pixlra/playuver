@@ -30,7 +30,7 @@
 #include "LibMemory.h"
 
 
-Bool PlaYUVerRawHandler::openHandler( std::string strFilename, Bool bInput )
+Bool PlaYUVerRawHandler::openHandler( String strFilename, Bool bInput )
 {
   m_bIsInput = bInput;
   m_pFile = NULL;

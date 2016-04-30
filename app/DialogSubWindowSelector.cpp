@@ -136,9 +136,6 @@ Void DialogSubWindowSelector::updateSubWindowList()
     if( !m_apcSelectedSubWindowList.contains( m_apcSubWindowList.at( i ) ) )
       m_pcGroupCheckBox->layout()->addWidget( m_apcWindowsListCheckBox.at( i ) );
   }
-
-//  qDebug( ) << "Selected windows: "
-//            << m_apcSelectedSubWindowList.size();
 }
 
 Void DialogSubWindowSelector::selectSubWindow( SubWindowAbstract * subWindow )
@@ -147,7 +144,6 @@ Void DialogSubWindowSelector::selectSubWindow( SubWindowAbstract * subWindow )
   if( iIdx >= 0 )
   {
     m_apcWindowsListCheckBox.at( iIdx )->setChecked( true );
-    //m_apcSelectedSubWindowList.append( m_apcSubWindowList.at( iIdx ) );
   }
 }
 

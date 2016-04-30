@@ -62,10 +62,10 @@ Int PlaYUVerTools::openInputs()
    */
   if( m_cCmdLineHandler.Opts().hasOpt( "input" ) )
   {
-    std::vector<std::string> inputFileNames = m_cCmdLineHandler.m_apcInputs;
+    std::vector<String> inputFileNames = m_cCmdLineHandler.m_apcInputs;
 
-    std::string resolutionString( "" );
-    std::string fmtString( "yuv420p" );
+    String resolutionString( "" );
+    String fmtString( "yuv420p" );
     UInt uiBitPerPixel = 8;
     UInt uiEndianness = 0;
 
@@ -184,7 +184,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
    */
   if( m_cCmdLineHandler.Opts().hasOpt( "quality" ) )
   {
-    std::string qualityMetric = m_cCmdLineHandler.m_strQualityMetric;
+    String qualityMetric = m_cCmdLineHandler.m_strQualityMetric;
     if( m_apcInputStreams.size() < 2 )
     {
       m_cCmdLineHandler.log( LOG_ERROR, "Invalid number of inputs! " );
@@ -212,7 +212,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
    */
   if( m_cCmdLineHandler.Opts().hasOpt( "module" ) )
   {
-    std::string moduleName = m_cCmdLineHandler.m_strModule;
+    String moduleName = m_cCmdLineHandler.m_strModule;
 
     PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
     PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
@@ -263,7 +263,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
     if( m_pcCurrModuleIf->m_iModuleType == FRAME_PROCESSING_MODULE )
     {
       // Check outputs
-      std::vector<std::string> outputFileNames;
+      std::vector<String> outputFileNames;
       if( m_cCmdLineHandler.Opts().hasOpt( "output" ) )
         outputFileNames.push_back( m_cCmdLineHandler.m_strOutput );
 
@@ -341,7 +341,7 @@ Int PlaYUVerTools::QualityOperation()
   Double adAverageQuality[MAX_NUMBER_INPUTS - 1][MAX_NUMBER_COMPONENTS];
   Double dQuality;
 
-  std::string metric_fmt = " ";
+  String metric_fmt = " ";
   switch( m_uiQualityMetric )
   {
   case PlaYUVerFrame::PSNR_METRIC:

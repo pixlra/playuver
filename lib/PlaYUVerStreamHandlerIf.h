@@ -58,7 +58,7 @@ public:
   {
   }
 
-  virtual Bool openHandler( std::string strFilename, Bool bInput ) = 0;
+  virtual Bool openHandler( String strFilename, Bool bInput ) = 0;
   virtual Void closeHandler() = 0;
   virtual Bool configureBuffer( PlaYUVerFrame* pcFrame ) = 0;
   virtual UInt64 calculateFrameNumber() = 0;
@@ -70,18 +70,18 @@ public:
   {
     m_uiNBytesPerFrame = uiNBytes;
   }
-  std::string getFormatName()
+  String getFormatName()
   {
     return m_strFormatName;
   }
-  std::string getCodecName()
+  String getCodecName()
   {
     return m_strCodecName;
   }
 
 protected:
   Bool m_bIsInput;
-  std::string m_cFilename;
+  String m_cFilename;
   UInt m_uiWidth;
   UInt m_uiHeight;
   Int m_iPixelFormat;
@@ -91,8 +91,8 @@ protected:
 
   Byte* m_pStreamBuffer;
   UInt64 m_uiNBytesPerFrame;
-  std::string m_strFormatName;
-  std::string m_strCodecName;
+  String m_strFormatName;
+  String m_strCodecName;
 };
 
 #endif // __PLAYUVERSTREAMHANDLERIF_H__

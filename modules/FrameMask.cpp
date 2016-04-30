@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -60,7 +60,7 @@ Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
       return false;
     }
   }
-  
+
   m_iWeight = m_iWeight > 100 || m_iWeight < 0  ? 5 : m_iWeight;
   m_iWeight = m_iWeight > 10 ? m_iWeight / 10 : m_iWeight;
 

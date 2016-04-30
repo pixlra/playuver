@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -72,7 +72,7 @@ void GridManager::drawGrid( QPixmap &image, const QRect& area, QPainter *painter
   case IntersectionCross:
   {
     painter->setPen( mainPen );
-    // Draw crosses or dots on intersections 
+    // Draw crosses or dots on intersections
     for( int x = offsetx; x <= area.right(); x += hSpacing )
     {
       if( x >= imageWidth )
@@ -99,14 +99,14 @@ void GridManager::drawGrid( QPixmap &image, const QRect& area, QPainter *painter
   }
   case Dashed:
   {
-    // Change pen to the dashed line 
+    // Change pen to the dashed line
     mainPen.setStyle( Qt::DashLine );
   }
   default:  // Solid:
   {
     painter->setPen( mainPen );
 
-    // Draw vertical line        
+    // Draw vertical line
     for( int x = offsetx; x <= area.right(); x += hSpacing )
     {
       if( x >= imageWidth )
@@ -114,8 +114,8 @@ void GridManager::drawGrid( QPixmap &image, const QRect& area, QPainter *painter
 
       if( x >= area.x() )
       {
-        // Always draw the full line otherwise the line stippling 
-        // varies with the location of view area and we get glitchy 
+        // Always draw the full line otherwise the line stippling
+        // varies with the location of view area and we get glitchy
         // patterns.
         painter->drawLine( x, 0, x, imageHeight - 1 );
       }
@@ -222,8 +222,8 @@ bool GridManager::isNear( int x, int y )
     return false;
   }
 
-  // We go to consider an area with ray equal 25% of the distance between 
-  // spaces of the gride. In this in case, we have one rectangle centered 
+  // We go to consider an area with ray equal 25% of the distance between
+  // spaces of the gride. In this in case, we have one rectangle centered
   // in 25% of this distance.
 
   rectWidth = 2 * 0.25 * hSpacing;

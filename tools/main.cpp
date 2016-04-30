@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
  *
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *

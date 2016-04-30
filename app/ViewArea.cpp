@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -360,7 +360,7 @@ Void ViewArea::initZoomWinRect()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                            Geometry Updates 
+//                            Geometry Updates
 ////////////////////////////////////////////////////////////////////////////////
 Void ViewArea::updateSize()
 {
@@ -402,7 +402,7 @@ Void ViewArea::updateOffset()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                              Resize Event  
+//                              Resize Event
 ////////////////////////////////////////////////////////////////////////////////
 Void ViewArea::resizeEvent( QResizeEvent *event )
 {
@@ -447,18 +447,18 @@ Void ViewArea::paintEvent( QPaintEvent *event )
   if( m_bGridVisible )
   {
     // Do we need to draw the whole grid?
-    // To know that, we need to perform a transformation of the rectangle 
+    // To know that, we need to perform a transformation of the rectangle
     // area that the paInter needs to update - transform the windows
-    // coordinates (origin at the top-left corner of the widget), to the 
-    // relatives coordinates of the image at it's original size (origin at 
-    // the top-left corner of the image).        
+    // coordinates (origin at the top-left corner of the widget), to the
+    // relatives coordinates of the image at it's original size (origin at
+    // the top-left corner of the image).
     QRect vr = windowToView( winRect );
 
-    // Now we have the (to update) rectangle area on a coordinates system 
-    // that has it's origin at the top-left corner of the image. That 
+    // Now we have the (to update) rectangle area on a coordinates system
+    // that has it's origin at the top-left corner of the image. That
     // is, is referenced to the not scaled image.
     // To know what image area we need to update, just Intersects the
-    // rectangle area with the image area. 
+    // rectangle area with the image area.
     vr &= QRect( 0, 0, m_pixmap.width(), m_pixmap.height() );
 
     // Set up for the grid drawer.
@@ -647,7 +647,7 @@ Void ViewArea::paintEvent( QPaintEvent *event )
       myPath.addRect( sr );  //m_selectedArea
       paInter.drawPath( myPath );
 
-      // 2) Draw the selection rectangle   
+      // 2) Draw the selection rectangle
       paInter.setBrush( Qt::NoBrush );
       paInter.setPen( Qt::darkCyan );
 //             paInter.drawRect( sr/*m_selectedArea*/ );
@@ -721,7 +721,7 @@ Void ViewArea::paintEvent( QPaintEvent *event )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                              Mouse Events  
+//                              Mouse Events
 ////////////////////////////////////////////////////////////////////////////////
 Void ViewArea::wheelEvent( QWheelEvent *event )
 {
@@ -765,7 +765,7 @@ Void ViewArea::mousePressEvent( QMouseEvent *event )
 
       m_lastWindowPos = event->pos();
     }
-    // Is the mouse over the image? If yes, save the mouse position; 
+    // Is the mouse over the image? If yes, save the mouse position;
     // otherwise, QPoint( -1, -1 ) indicates an invalid position.
     if( isPosValid( vpos ) )
     {
@@ -804,7 +804,7 @@ Void ViewArea::mousePressEvent( QMouseEvent *event )
       m_blockTrackEnable = false;
     }
 
-    // Block selection 
+    // Block selection
 //    m_selectedArea = m_grid.rectContains( m_lastPos );
 
     QRect updateRect = viewToWindow( m_selectedArea );

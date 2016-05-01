@@ -23,10 +23,11 @@ set( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLA
 OPTION( PLAYUVER_BUILD_APP      "Build GUI Application"                 ON  )
 OPTION( PLAYUVER_BUILD_TOOLS    "Build Command Line Application"        ON  )
 OPTION( PLAYUVER_BUILD_EXAMPLES "Build Examples"                        OFF )
+OPTION( PLAYUVER_BUILD_DOC      "Build Documentation"                   OFF )
 OPTION( USE_SSE                 "Build with SSE support"                OFF )
 OPTION( USE_FERVOR              "Add Fervor support"                    OFF )
 OPTION( USE_WERROR              "Warnings as errors"                    OFF )
-OPTION( USE_STATIC              "Use static libs"                       ON  )
+OPTION( USE_STATIC              "Use static libs"                       OFF )
 OPTION( USE_QT4                 "Build with Qt4"                        OFF )
 OPTION( USE_QTDBUS              "Build with QtDBus"                     ON  )
 OPTION( USE_DYNLOAD             "Use dynamic load of modules"           ON  )
@@ -83,6 +84,14 @@ SET( CMAKE_CXX_FLAGS "" )
 ######################################################################################
 # Dependencies
 ######################################################################################
+
+
+OPTION( USE_OPENCV "Add OpenCV support" ON )
+find_package(Doxygen)
+IF(DOXYGEN_FOUND)
+  SET( PLAYUVER_BUILD_DOC ON )
+ENDIF(DOXYGEN_FOUND)
+SET_PACKAGE_PROPERTIES(Doxygen PROPERTIES URL "http://www.doxygen.org/" DESCRIPTION "Doxygen" TYPE OPTIONAL)
 
 OPTION( USE_OPENCV "Add OpenCV support" ON )
 IF( USE_OPENCV )
@@ -141,6 +150,14 @@ ENDIF()
 IF( ${PLAYUVER_BUILD_APP} )
   ADD_SUBDIRECTORY( app )
 ENDIF()
+
+# add a target to generate API documentation with Doxygen
+# IF(PLAYUVER_BUILD_DOC)
+#   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+#   add_custom_target(doc   ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+#     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#     COMMENT "Generating API documentation with Doxygen" VERBATIM )
+# ENDIF(PLAYUVER_BUILD_DOC)
 
 
 ######################################################################################

@@ -23,12 +23,14 @@
  */
 
 #include "ModulesHandleOptDialog.h"
-#include "lib/PlaYUVerProgramOptions.h"
+
 #include <QWidget>
 #include <QLabel>
 #include <QVector>
 #include <QVBoxLayout>
 #include <QCheckBox>
+
+#include "lib/PlaYUVerOptions.h"
 
 
 class OpionConfiguration: public QWidget

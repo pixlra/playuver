@@ -32,7 +32,7 @@
  */
 
 /**
- * \file     ProgramOptions.cpp
+ * \file     PlaYUVerOptions.cpp
  * \brief    Input args handler
  */
 

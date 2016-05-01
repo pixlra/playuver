@@ -32,7 +32,7 @@
  */
 
 /**
- * \file     ProgramOptions.h
+ * \file     PlaYUVerOptions.h
  * \brief    Input args handler
  */
 

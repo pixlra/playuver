@@ -23,7 +23,7 @@
  */
 
 #include "PlaYUVerDefs.h"
-#include "PlaYUVerProgramOptions.h"
+#include "PlaYUVerOptions.h"
 
 #ifndef __PLAYUVERCMDPARSER_H__
 #define __PLAYUVERCMDPARSER_H__

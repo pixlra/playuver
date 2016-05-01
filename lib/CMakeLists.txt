@@ -6,17 +6,16 @@ INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
 
 set(PlaYUVer_Lib_SRCS
     # Frame
-    PlaYUVerFrame.cpp
     PlaYUVerPixel.cpp
+    PlaYUVerFrame.cpp
     PlaYUVerFramePixelFormats.cpp
-    # PlaYUVerFrameStats.cpp
     # Stream
     PlaYUVerStream.cpp
     StreamHandlerRaw.cpp
     StreamHandlerPortableMap.cpp
     # Command Parser
+    PlaYUVerOptions.cpp
     PlaYUVerCmdParser.cpp
-    PlaYUVerProgramOptions.cpp
 )
 
 IF( USE_FFMPEG )
@@ -30,9 +29,10 @@ ENDIF()
 
 set(PlaYUVer_Lib_HEADERS
     PlaYUVerDefs.h
-    PlaYUVerProgramOptions.h
+    PlaYUVerPixel.h
     PlaYUVerFrame.h
     PlaYUVerStream.h
+    PlaYUVerOptions.h
     PlaYUVerModuleIf.h
 )
 

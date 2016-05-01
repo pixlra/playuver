@@ -36,46 +36,273 @@
  * \brief    Input args handler
  */
 
+#include "config.h"
+#include "PlaYUVerOptions.h"
+
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <cstring>
+#include <cstdarg>
 #include <list>
 #include <map>
 #include <algorithm>
-#include "PlaYUVerProgramOptions.h"
+
+#include "lib/PlaYUVerModuleIf.h"
+#include "modules/PlaYUVerModuleFactory.h"
+
 
 using namespace std;
 
 
-Options::Options( const String& name )
+struct ParseFailure: public std::exception
+{
+  String arg;
+  String val;
+  ParseFailure( String arg0, String val0 ) throw() :
+    arg( arg0 ),
+    val( val0 ) { }
+  ~ParseFailure() throw() { }
+  const char* what() const throw()
+  {
+    return "Option Parse Failure";
+  }
+};
+
+
+/** OptionBase: Virtual base class for storing information relating to a
+ * specific option This base class describes common elements.  Type specific
+ * information should be stored in a derived class. */
+class OptionBase
+{
+public:
+  OptionBase( const String& name, const String& desc ) :
+    arg_count( 0 ),
+    opt_string( name ),
+    opt_desc( desc )
+  {
+  }
+
+  virtual ~OptionBase()
+  {
+  }
+
+  /* parse argument arg, to obtain a value for the option */
+  virtual void parse( const String& arg ) = 0;
+  /* set the argument to the default value */
+  //virtual void setDefault() = 0;
+  int count()
+  {
+    return arg_count;
+  }
+  Bool isBinary()
+  {
+    return is_binary;
+  }
+
+  int arg_count;
+  String opt_string;
+  String opt_desc;
+  Bool is_binary;
+};
+
+/** Type specific option storage */
+class BoolOption: public OptionBase
+{
+public:
+  BoolOption( const String& name, Bool default_val, const String& desc ) :
+    OptionBase( name, desc ),
+    opt_storage( false ),
+    opt_default_val( default_val )
+  {
+    is_binary = true;
+  }
+
+  void parse( const String& arg )
+  {
+    opt_storage = true;
+    arg_count++;
+  }
+
+  void setDefault()
+  {
+    opt_storage = opt_default_val;
+  }
+  Bool opt_storage;
+  Bool opt_default_val;
+};
+
+/** Type specific option storage */
+template<typename T>
+class StandardOption: public OptionBase
+{
+public:
+  StandardOption( const String& name, T& storage, const String& desc ) :
+    OptionBase( name, desc ),
+    opt_storage( storage )
+  {
+    is_binary = false;
+  }
+
+  void parse( const String& arg );
+  T& opt_storage;
+};
+
+/* Generic parsing */
+template<typename T>
+inline void StandardOption<T>::parse( const String& arg )
+{
+  std::istringstream arg_ss( arg, std::istringstream::in );
+  arg_ss.exceptions( std::ios::failbit );
+  try
+  {
+    arg_ss >> opt_storage;
+  }
+  catch( ... )
+  {
+    throw ParseFailure( opt_string, arg );
+  }
+  arg_count++;
+}
+
+template<>
+inline void StandardOption< std::vector<UInt> >::parse( const String& arg )
+{
+  UInt aux_opt_storage;
+  std::istringstream arg_ss( arg, std::istringstream::in );
+  arg_ss.exceptions( std::ios::failbit );
+  try
+  {
+    arg_ss >> aux_opt_storage;
+    opt_storage.push_back( aux_opt_storage );
+  }
+  catch( ... )
+  {
+    throw ParseFailure( opt_string, arg );
+  }
+  arg_count++;
+}
+
+template<>
+inline void StandardOption< std::vector<Int> >::parse( const String& arg )
+{
+  Int aux_opt_storage;
+  std::istringstream arg_ss( arg, std::istringstream::in );
+  arg_ss.exceptions( std::ios::failbit );
+  try
+  {
+    arg_ss >> aux_opt_storage;
+    opt_storage.push_back( aux_opt_storage );
+  }
+  catch( ... )
+  {
+    throw ParseFailure( opt_string, arg );
+  }
+  arg_count++;
+}
+
+/* string parsing is specialized */
+template<>
+inline void StandardOption<String>::parse( const String& arg )
+{
+  opt_storage = arg;
+  arg_count++;
+}
+
+/* string vector parsing is specialized */
+template<>
+inline void StandardOption<std::vector<String> >::parse( const String& arg )
+{
+  opt_storage.push_back( arg );
+  arg_count++;
+}
+
+/** Option class for argument handling using a user provided function */
+struct FunctionOption: public OptionBase
+{
+public:
+  typedef Void( Func )( PlaYUVerOptions&, const String& );
+
+  FunctionOption( const String& name, PlaYUVerOptions& parent_, Func *func_, const String& desc ) :
+    OptionBase( name, desc ),
+    parent( parent_ ),
+    func( func_ )
+  {
+    is_binary = false;
+  }
+
+  void parse( const String& arg )
+  {
+    func( parent, arg );
+    arg_count++;
+  }
+
+  void setDefault()
+  {
+    return;
+  }
+
+private:
+  PlaYUVerOptions& parent;
+  void ( *func )( PlaYUVerOptions&, const String& );
+};
+
+struct PlaYUVerOptions::Option
+{
+  Option() :
+    opt( 0 )
+  {
+  }
+  ~Option()
+  {
+    if( opt )
+      delete opt;
+  }
+  std::list<String> opt_long;
+  std::list<String> opt_short;
+  OptionBase* opt;
+};
+
+PlaYUVerOptions::PlaYUVerOptions( const String& name )
 {
   m_cOptionGroupName = name;
   m_bAllowUnkonw = true;
+
+  /**
+   * Add default options
+   */
+  addOptions()/**/
+  ( "help", "produce help message" )/**/
+  ( "version", "show version and exit" )/**/
+  ( "pel_fmts", "list pixel formats" ) /**/
+  ( "quality_metrics", "list supported quality metrics" )/**/
+  ( "module_list", "list supported modules" ) /**/
+  ( "module_list_full", "detailed list supported modules" );
 }
 
-Options::~Options()
+PlaYUVerOptions::~PlaYUVerOptions()
 {
-  for( Options::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
+  for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
   {
     delete *it;
   }
 }
 
-OptionBase* Options::operator[]( const String& optName )
+OptionBase* PlaYUVerOptions::operator[]( const String& optName )
 {
   return getOption( optName );
 }
 
-OptionBase* Options::getOption( const String& optName )
+OptionBase* PlaYUVerOptions::getOption( const String& optName )
 {
-  Options::OptionMap::iterator opt_it;
+  PlaYUVerOptions::OptionMap::iterator opt_it;
   opt_it = opt_short_map.find( optName );
   if( opt_it != opt_short_map.end() )
   {
     OptionsList opt_list = ( *opt_it ).second;
-    for( Options::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
+    for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
     {
       return ( *it )->opt;
     }
@@ -84,7 +311,7 @@ OptionBase* Options::getOption( const String& optName )
   if( opt_it != opt_long_map.end() )
   {
     OptionsList opt_list = ( *opt_it ).second;
-    for( Options::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
+    for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
     {
       return ( *it )->opt;
     }
@@ -92,12 +319,17 @@ OptionBase* Options::getOption( const String& optName )
   return NULL;
 }
 
-Bool Options::hasOpt( const String& optName )
+Bool PlaYUVerOptions::hasOpt( const String& optName )
 {
   return getOption( optName )->count() > 0 ? true : false;
 }
 
-void Options::addOption( OptionBase *opt )
+OptionSpecific PlaYUVerOptions::addOptions()
+{
+  return OptionSpecific( *this );
+}
+
+void PlaYUVerOptions::addOption( OptionBase *opt )
 {
   Option* names = new Option();
   names->opt = opt;
@@ -130,35 +362,81 @@ void Options::addOption( OptionBase *opt )
 }
 
 /* Helper method to initiate adding options to Options */
-OptionSpecific Options::addOptions()
+
+/**
+ * Add option described by name to the parent Options list,
+ *   with storage for the option's value
+ *   with default_val as the default value
+ *   with desc as an optional help description
+ */
+template<typename T>
+OptionSpecific& OptionSpecific::operator()( const String& name, T& storage, const String& desc )
 {
-  return OptionSpecific( *this );
+  parent.addOption( new StandardOption<T>( name, storage, desc ) );
+  return *this;
 }
+
+/**
+ * Add option described by name to the parent Options list,
+ *   with storage for the option's value
+ *   with default_val as the default value
+ *   with desc as an optional help description
+ */
+OptionSpecific& OptionSpecific::operator()( const String& name, const String& desc )
+{
+  parent.addOption( new BoolOption( name, false, desc ) );
+  return *this;
+}
+
+/**
+ * Add option described by name to the parent Options list,
+ *   with storage for the option's value
+ *   with default_val as the default value
+ *   with desc as an optional help description
+ */
+OptionSpecific& OptionSpecific::operator()( const String& name, Bool default_val, const String& desc )
+{
+  parent.addOption( new BoolOption( name, default_val, desc ) );
+  return *this;
+}
+
+/**
+ * Add option described by name to the parent Options list,
+ *   with desc as an optional help description
+ * instead of storing the value somewhere, a function of type
+ * FunctionOption::Func is called.  It is upto this function to correctly
+ * handle evaluating the option's value.
+ */
+// OptionSpecific& OptionSpecific::operator()( const String& name, FunctionOption::Func *func, const String& desc )
+// {
+//   parent.addOption( new FunctionOption( name, parent, func, desc ) );
+//   return *this;
+// }
 
 /* for all options in opts, set their storage to their specified
  * default value */
-Void Options::setDefaults()
+Void PlaYUVerOptions::setDefaults()
 {
-//  for( Options::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
+//  for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
 //  {
 //    ( *it )->opt->setDefault();
 //  }
 }
 
-static void setOptions( Options::OptionsList& opt_list, const string& value )
+static void setOptions( PlaYUVerOptions::OptionsList& opt_list, const string& value )
 {
   /* multiple options may be registered for the same name:
    *   allow each to parse value */
-  for( Options::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
+  for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
   {
     ( *it )->opt->parse( value );
   }
 }
 
-Bool Options::storePair( Bool allow_long, Bool allow_short, const string& name, const string& value )
+Bool PlaYUVerOptions::storePair( Bool allow_long, Bool allow_short, const string& name, const string& value )
 {
   bool found = false;
-  Options::OptionMap::iterator opt_it;
+  PlaYUVerOptions::OptionMap::iterator opt_it;
   if( allow_long )
   {
     opt_it = opt_long_map.find( name );
@@ -197,7 +475,7 @@ Bool Options::storePair( Bool allow_long, Bool allow_short, const string& name, 
   return true;
 }
 
-Bool Options::storePair( const string& name, const string& value )
+Bool PlaYUVerOptions::storePair( const string& name, const string& value )
 {
   return storePair( true, true, name, value );
 }
@@ -205,7 +483,7 @@ Bool Options::storePair( const string& name, const string& value )
 /**
  * returns number of extra arguments consumed
  */
-UInt Options::parseLONG( unsigned argc, const char* argv[] )
+UInt PlaYUVerOptions::parseLONG( unsigned argc, const char* argv[] )
 {
   /* gnu style long options can take the forms:
    *  --option=arg
@@ -225,8 +503,8 @@ UInt Options::parseLONG( unsigned argc, const char* argv[] )
     /* commented out, to return to true GNU style processing
      * where longopts have to include an =, otherwise they are
      * booleans */
-    if (argc == 1)
-    return 0; /* run out of argv for argument */
+    if( argc == 1 )
+      return 0; /* run out of argv for argument */
     extra_argc_consumed = 1;
 #endif
     if( !storePair( true, false, option, "1" ) )
@@ -246,7 +524,7 @@ UInt Options::parseLONG( unsigned argc, const char* argv[] )
 /**
  * returns number of extra arguments consumed
  */
-UInt Options::parseLONG( string arg )
+UInt PlaYUVerOptions::parseLONG( string arg )
 {
   /* gnu style long options can take the forms:
    *  --option=arg
@@ -275,7 +553,7 @@ UInt Options::parseLONG( string arg )
   return extra_argc_consumed;
 }
 
-unsigned Options::parseSHORT( unsigned argc, const char* argv[] )
+unsigned PlaYUVerOptions::parseSHORT( unsigned argc, const char* argv[] )
 {
   /* short options can take the forms:
    *  --option arg
@@ -301,7 +579,33 @@ unsigned Options::parseSHORT( unsigned argc, const char* argv[] )
   return 1;
 }
 
-list<const char*> Options::scanArgv( unsigned argc, const char* argv[] )
+Bool PlaYUVerOptions::parse( Int argc, Char *argv[] )
+{
+  try
+  {
+    m_aUnhandledArgs = scanArgv( argc, ( const Char** )argv );
+
+    if( checkListingOpts() )
+    {
+      return false;
+    }
+  }
+  catch( std::exception& e )
+  {
+    std::cerr << "error: "
+              << e.what()
+              << "\n";
+    return false;
+  }
+  catch( ... )
+  {
+    std::cerr << "Exception of unknown type!\n";
+  }
+  return true;
+}
+
+
+list<const char*> PlaYUVerOptions::scanArgv( unsigned argc, const char* argv[] )
 {
   /* a list for anything that didn't get handled as an option */
   list<const char*> non_option_arguments;
@@ -325,7 +629,7 @@ list<const char*> Options::scanArgv( unsigned argc, const char* argv[] )
     {
       /* handle short (single dash) options */
 #if 0
-      i += parsePOSIX(opts, argc - i, &argv[i]);
+      i += parsePOSIX( opts, argc - i, &argv[i] );
 #else
       i += parseSHORT( argc - i, &argv[i] );
 #endif
@@ -347,7 +651,7 @@ list<const char*> Options::scanArgv( unsigned argc, const char* argv[] )
   return non_option_arguments;
 }
 
-Void Options::scanArgs( std::vector<String> args_array)
+Void PlaYUVerOptions::scanArgs( std::vector<String> args_array )
 {
   for( unsigned i = 0; i < args_array.size(); i++ )
   {
@@ -362,7 +666,7 @@ static const char spaces[41] = "                                        ";
  * using the formatting: "-x, --long",
  * if a short/long option isn't specified, it is not printed
  */
-static void doHelpOpt( ostream& out, const Options::Option& entry, unsigned pad_short = 0 )
+static void doHelpOpt( ostream& out, const PlaYUVerOptions::Option& entry, unsigned pad_short = 0 )
 {
   pad_short = min( pad_short, 8u );
 
@@ -391,12 +695,12 @@ static void doHelpOpt( ostream& out, const Options::Option& entry, unsigned pad_
 }
 
 /* format the help text */
-Void Options::doHelp( ostream& out, unsigned columns )
+Void PlaYUVerOptions::doHelp( ostream& out, unsigned columns )
 {
   const unsigned pad_short = 3;
   /* first pass: work out the longest option name */
   unsigned max_width = 0;
-  for( Options::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
+  for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
   {
     ostringstream line( ios_base::out );
     doHelpOpt( line, **it, pad_short );
@@ -411,7 +715,7 @@ Void Options::doHelp( ostream& out, unsigned columns )
    *  - if the option text is longer than opt_width, place the help
    *    text at opt_width on the next line.
    */
-  for( Options::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
+  for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
   {
     ostringstream line( ios_base::out );
     line << "  ";
@@ -486,6 +790,98 @@ Void Options::doHelp( ostream& out, unsigned columns )
 
     cout << line.str()
          << endl;
+  }
+}
+
+Bool PlaYUVerOptions::checkListingOpts()
+{
+  Bool bRet = false;
+
+  if( hasOpt( "version" ) )
+  {
+    std::cout << "PlaYUVer version "
+              << PLAYUVER_VERSION_STRING
+              << "\n";
+    bRet |= true;
+  }
+  if( hasOpt( "pel_fmts" ) )
+  {
+    printf( "PlaYUVer supported pixel formats: \n" );
+    for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
+    {
+      printf( "   %s\n", PlaYUVerFrame::supportedPixelFormatListNames()[i].c_str() );
+    }
+    bRet |= true;
+  }
+  if( hasOpt( "quality_metrics" ) )
+  {
+    printf( "PlaYUVer supported quality metrics: \n" );
+    for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
+    {
+      printf( "   %s\n", PlaYUVerFrame::supportedQualityMetricsList()[i].c_str() );
+    }
+    bRet |= true;
+  }
+  if( hasOpt( "module_list" ) || hasOpt( "module_list_full" ) )
+  {
+    listModules();
+    bRet |= true;
+  }
+  return bRet;
+}
+
+Void PlaYUVerOptions::listModules()
+{
+  Bool bDetailed = false;
+
+  if( hasOpt( "module_list_full" ) )
+    bDetailed = true;
+
+  PlaYUVerModuleIf* pcCurrModuleIf;
+  PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
+  PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
+
+  printf( "PlaYUVer available modules: \n" );
+  printf( "   [Internal Name]               " );
+  if( bDetailed )
+  {
+    printf( "   [Full Name]                             " );
+    printf( "   [Type]        " );
+    printf( "   [Description]" );
+  }
+  printf( " \n" );
+
+  Char ModuleNameString[40];
+
+  for( UInt i = 0; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ )
+  {
+    printf( "   " );
+    printf( "%-30s", it->first );
+    if( bDetailed )
+    {
+      ModuleNameString[0] = '\0';
+      pcCurrModuleIf = it->second();
+
+      if( pcCurrModuleIf->m_pchModuleCategory )
+      {
+        strcat( ModuleNameString, pcCurrModuleIf->m_pchModuleCategory );
+        strcat( ModuleNameString, "/" );
+      }
+      strcat( ModuleNameString, pcCurrModuleIf->m_pchModuleName );
+      printf( "   %-40s", ModuleNameString );
+      switch( pcCurrModuleIf->m_iModuleType )
+      {
+      case FRAME_PROCESSING_MODULE:
+        printf( "   Processing    " );
+        break;
+      case FRAME_MEASUREMENT_MODULE:
+        printf( "   Measurement   " );
+        break;
+      }
+      printf( "   %s", pcCurrModuleIf->m_pchModuleTooltip );
+      pcCurrModuleIf->Delete();
+    }
+    printf( "\n" );
   }
 }
 

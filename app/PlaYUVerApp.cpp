@@ -34,7 +34,7 @@
 #ifdef USE_FERVOR
 #include "fvupdater.h"
 #endif
-#include "lib/PlaYUVerCmdParser.h"
+#include "lib/PlaYUVerOptions.h"
 #include "PlaYUVerSubWindowHandle.h"
 #include "AboutDialog.h"
 #include "SubWindowAbstract.h"

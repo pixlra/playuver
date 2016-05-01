@@ -157,13 +157,22 @@ public:
   UInt getNumberChannels() const;
 
   /**
-   * Get width/height of the frame or the entire
-   * number of pixels
+   * Get width of the frame
    * @param channel/component
    * @return number of pixels
    */
   UInt getWidth( Int channel = 0 ) const;
+  /**
+   * Get height of the frame
+   * @param channel/component
+   * @return number of pixels
+   */
   UInt getHeight( Int channel = 0 ) const;
+  /**
+   * Get number of pixels of the frame
+   * @param channel/component
+   * @return number of pixels
+   */
   UInt getPixels( Int channel = 0 ) const;
 
   UInt8 getChromaWidthRatio() const;

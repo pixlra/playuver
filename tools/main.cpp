@@ -25,7 +25,7 @@
 
 #include "PlaYUVerTools.h"
 
-int main( int argc, char *argv[] )
+int main( int argc, Char *argv[] )
 {
   Int iRet = 0;
   PlaYUVerTools PlaYUVerToolsApp;

@@ -94,37 +94,36 @@ PlaYUVerApp::PlaYUVerApp() :
 Bool PlaYUVerApp::parseArgs( Int argc, Char *argv[] )
 {
   Bool bRet = false;
-  m_pcCmdParser = new PlaYUVerCmdParser();
-  m_pcCmdParser->config( argc, argv );
+  PlaYUVerOptions pcCmdParser;
 
   std::vector<String> m_apcInputs;
   String strResolution( "" );
   String strPelFmt( "" );
 
-  m_pcCmdParser->Opts().addOptions()/**/
+  pcCmdParser.addOptions()/**/
   ( "input,i", m_apcInputs, "input file" ) /**/
   ( "size,s", strResolution, "size (WxH)" ) /**/
   ( "pel_fmt", strPelFmt, "pixel format" );
 
-  if( !m_pcCmdParser->parse() )
+  if( !pcCmdParser.parse( argc, argv ) )
   {
     bRet |= true;
   }
 
-  if( m_pcCmdParser->Opts()["help"]->count() )
+  if( pcCmdParser.hasOpt("help") )
   {
     printf( "Usage: %s [options] input_file[s]\n", argv[0] );
-    m_pcCmdParser->Opts().doHelp( std::cout );
+    pcCmdParser.doHelp( std::cout );
     bRet |= true;
   }
-  if( m_pcCmdParser->Opts()["input"]->count() )
+  if( pcCmdParser.hasOpt("input") )
   {
     for( UInt i = 1; i < m_apcInputs.size(); i++ )
     {
       loadFile( QString::fromStdString( m_apcInputs[i] ) );
     }
   }
-  std::list<const Char*>& argv_unhandled = m_pcCmdParser->getNoArgs();
+  std::list<const Char*>& argv_unhandled = pcCmdParser.getUnhandledArgs();
   for( std::list<const Char*>::const_iterator it = argv_unhandled.begin(); it != argv_unhandled.end(); it++ )
   {
     loadFile( QString::fromStdString( *it ) );

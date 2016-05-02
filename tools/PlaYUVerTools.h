@@ -36,7 +36,7 @@ class PlaYUVerModuleIf;
 
 #define MAX_NUMBER_INPUTS 10
 
-class PlaYUVerTools
+class PlaYUVerTools: public PlaYUVerToolsCmdParser
 {
 public:
   PlaYUVerTools();
@@ -47,7 +47,6 @@ public:
   Int Close();
 
 private:
-  PlaYUVerToolsCmdParser m_cCmdLineHandler;
   Bool m_bVerbose;
 
   UInt m_uiOperation;

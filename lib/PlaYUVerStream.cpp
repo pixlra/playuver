@@ -196,14 +196,14 @@ Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_f
   m_pfctCreateHandler = PlaYUVerStream::findStreamHandler( filename, m_bIsInput );
   if( !m_pfctCreateHandler )
   {
-    throw "[PlaYUVerStream] Invalid handler";
+    throw PlaYUVerFailure("PlaYUVerStream", "Invalid handler");
   }
 
   m_pcHandler = m_pfctCreateHandler();
 
   if( !m_pcHandler )
   {
-    throw "[PlaYUVerStream] Cannot create handler";
+    throw PlaYUVerFailure("PlaYUVerStream", "Cannot create handler");
   }
 
   m_cFilename = filename;
@@ -220,7 +220,7 @@ Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_f
   if( !m_pcHandler->openHandler( m_cFilename, m_bIsInput ) )
   {
     close();
-    throw "[PlaYUVerStream] Cannot open file";
+    throw PlaYUVerFailure("PlaYUVerStream", "Cannot open file " + m_cFilename );
     return m_bInit;
   }
 
@@ -228,7 +228,7 @@ Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_f
   if( m_pcHandler->m_uiWidth <= 0 || m_pcHandler->m_uiHeight <= 0 || m_pcHandler->m_iPixelFormat < 0 )
   {
     close();
-    throw "[PlaYUVerStream] Incorrect configuration";
+    throw PlaYUVerFailure("PlaYUVerStream", "Incorrect configuration");
     return m_bInit;
   }
 
@@ -244,7 +244,7 @@ Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_f
     catch( const char *msg )
     {
       close();
-      throw "[PlaYUVerStream] Cannot allocated frame buffer";
+      throw PlaYUVerFailure("PlaYUVerStream", "Cannot allocated frame buffer");
       return m_bInit;
     }
   }
@@ -261,14 +261,14 @@ Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_f
   if( m_bIsInput && m_uiTotalFrameNum <= 0 )
   {
     close();
-    throw "[PlaYUVerStream] Incorrect configuration: less than one frame";
+    throw PlaYUVerFailure("PlaYUVerStream", "Incorrect configuration: less than one frame");
     return m_bInit;
   }
 
   if( !m_pcHandler->configureBuffer( m_pcCurrFrame ) )
   {
     close();
-    throw "[PlaYUVerStream] Cannot allocated memory";
+    throw PlaYUVerFailure("PlaYUVerStream", "Cannot allocated memory");
     return m_bInit;
   }
 
@@ -286,7 +286,7 @@ Bool PlaYUVerStream::reload()
   m_pcHandler->closeHandler();
   if( !m_pcHandler->openHandler( m_cFilename, m_bIsInput ) )
   {
-    throw "[PlaYUVerStream] Cannot open file using FFmpeg libs";
+    throw PlaYUVerFailure("PlaYUVerStream", "Cannot open file");
   }
   m_pcHandler->setBytesPerFrame( m_pcCurrFrame->getBytesPerFrame() );
   m_uiTotalFrameNum = m_pcHandler->calculateFrameNumber();
@@ -466,7 +466,7 @@ Void PlaYUVerStream::readFrame()
 
   if( !m_pcHandler->read( m_pcNextFrame ) )
   {
-    throw "[PlaYUVerStream] Cannot read file";
+    throw PlaYUVerFailure("PlaYUVerStream", "Cannot read file");
     return;
   }
 
@@ -483,7 +483,7 @@ Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
 {
   if( !m_pcHandler->write( pcFrame ) )
   {
-    throw "[PlaYUVerStream] Cannot write into the file";
+    throw PlaYUVerFailure("PlaYUVerStream", "Cannot write into the file");
   }
   return;
 }
@@ -588,7 +588,7 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 
   if( !m_pcHandler->seek( new_frame_num ) )
   {
-    throw "[PlaYUVerStream] Cannot write into the file";
+    throw PlaYUVerFailure("PlaYUVerStream", "Cannot write into the file");
   }
 
   m_uiCurrFrameFileIdx = new_frame_num;

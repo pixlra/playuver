@@ -34,7 +34,6 @@ class PlaYUVerStream;
 
 class PlaYUVerToolsCmdParser
 {
-  friend class PlaYUVerTools;
 public:
   PlaYUVerToolsCmdParser();
   ~PlaYUVerToolsCmdParser();
@@ -65,7 +64,7 @@ public:
     return m_cOptions;
   }
 
-private:
+protected:
   PlaYUVerOptions m_cOptions;
   UInt m_uiLogLevel;
 

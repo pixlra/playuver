@@ -55,7 +55,7 @@ class QAction;
 class QSignalMapper;
 
 
-class PlaYUVerCmdParser;
+class PlaYUVerOptions;
 class PlaYUVerStream;
 class PlaYUVerSubWindowHandle;
 class VideoHandle;
@@ -118,7 +118,7 @@ private Q_SLOTS:
 private:
 
   PlaYUVerAppAdaptor* m_pDBusAdaptor;
-  PlaYUVerCmdParser* m_pcCmdParser;
+  PlaYUVerOptions* m_pcCmdParser;
   /**
    * Save the current subwindow for every category
    */

@@ -36,6 +36,8 @@ PlaYUVerToolsCmdParser::PlaYUVerToolsCmdParser()
   m_uiLogLevel = 0;
   m_bQuiet = false;
   m_iFrames = -1;
+
+  m_cOptions.addDefaultOptions();
 }
 
 PlaYUVerToolsCmdParser::~PlaYUVerToolsCmdParser()
@@ -90,12 +92,6 @@ Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char *argv[] )
   {
     printf( "Usage: %s modules/quality/save [options] -input=input_file [--output=output_file]\n", argv[0] );
     m_cOptions.doHelp( std::cout );
-    iRet = 1;
-  }
-
-  if( m_cOptions.hasOpt("module_list") || m_cOptions.hasOpt("module_list_full") )
-  {
-    m_cOptions.listModules();
     iRet = 1;
   }
   return iRet;

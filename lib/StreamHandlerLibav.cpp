@@ -216,7 +216,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   }
   if( m_iPixelFormat == PlaYUVerFrame::NO_FMT )
   {
-    throw "Cannot open file using FFmpeg libs - unsupported pixel format";
+    throw PlaYUVerFailure("Cannot open file using FFmpeg libs - unsupported pixel format");
     return false;
   }
 

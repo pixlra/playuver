@@ -216,13 +216,13 @@ Void PlaYUVerFramePrivate::init( UInt width, UInt height, Int pel_format, Int bi
   m_iEndianness = endianness;
   if( m_uiBitsPel > 8 && m_iEndianness == -1 )
   {
-    throw "Invalid endianness type for Bits per Pixel greater than 8";
+    throw PlaYUVerFailure( "PlaYUVerFrame", "Invalid endianness type for Bits per Pixel greater than 8" );
   }
   m_uiHalfPelValue = 1 << ( m_uiBitsPel - 1 );
 
   if( m_uiWidth == 0 || m_uiHeight == 0 || m_iPixelFormat == -1 || bitsPixel > 16 )
   {
-    throw "Cannot create a PlYUVerFrame of this type";
+    throw PlaYUVerFailure( "PlaYUVerFrame", "Cannot create a PlYUVerFrame of this type" );
   }
 
   m_pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[pel_format] );
@@ -1090,14 +1090,14 @@ Void PlaYUVerFrame::fromCvMat( cv::Mat* pcCvFrame )
     {
       switch( pcCvFrame->channels() )
       {
-        case 1:
-          d->m_iPixelFormat = findPixelFormat( "GRAY" );
-          break;
-        case 3:
-          d->m_iPixelFormat = findPixelFormat( "BGR24" );
-          break;
-        default:
-          return;
+      case 1:
+        d->m_iPixelFormat = findPixelFormat( "GRAY" );
+        break;
+      case 3:
+        d->m_iPixelFormat = findPixelFormat( "BGR24" );
+        break;
+      default:
+        return;
       }
     }
     d->init( pcCvFrame->cols, pcCvFrame->rows, d->m_iPixelFormat, 8, -1 );

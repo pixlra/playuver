@@ -86,11 +86,11 @@ ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget *parent, PlaYUVerAppModu
   resize( 400, 10 );
   setWindowTitle( "Select module parameters" );
 
-  const Options::OptionsList& moduleOptions = m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.getOptionList();
+  const PlaYUVerOptions::OptionsList& moduleOptions = m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.getOptionList();
 
   QVBoxLayout* optionsLayout = new QVBoxLayout;
   OpionConfiguration* pcOption;
-  for( Options::OptionsList::const_iterator it = moduleOptions.begin(); it != moduleOptions.end(); ++it )
+  for( PlaYUVerOptions::OptionsList::const_iterator it = moduleOptions.begin(); it != moduleOptions.end(); ++it )
   {
     pcOption = new OpionConfiguration( ( *it )->opt );
     m_apcOptionList.append( pcOption );
@@ -142,7 +142,7 @@ Int ModulesHandleOptDialog::runConfiguration()
   }
   if( argsArray.size() > 0 )
   {
-    m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.scanArgs( argsArray );
+    m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.parse( argsArray );
   }
   return QDialog::Accepted;
 }

@@ -103,8 +103,8 @@ public:
   String getFormatName();
   String getCodecName();
 
-  Bool open( String filename, String resolution, String input_format, UInt bitsPel, Int endianness, UInt frame_rate,  Bool bInput = true );
-  Bool open( String filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput = true );
+  Bool open( String filename, String resolution, String input_format, UInt bitsPel, Int endianness, UInt frame_rate,  Bool bInput );
+  Bool open( String filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput );
   Bool reload();
   Void close();
 

@@ -27,14 +27,13 @@
 
 #include "config.h"
 #include "lib/PlaYUVerDefs.h"
-#include "lib/PlaYUVerCmdParser.h"
+#include "lib/PlaYUVerOptions.h"
 
 
 class PlaYUVerStream;
 
-class PlaYUVerToolsCmdParser: public PlaYUVerCmdParser
+class PlaYUVerToolsCmdParser
 {
-  friend class PlaYUVerTools;
 public:
   PlaYUVerToolsCmdParser();
   ~PlaYUVerToolsCmdParser();
@@ -60,8 +59,13 @@ public:
 
   Int parseToolsArgs( Int argc, Char *argv[] );
 
-private:
-  Options m_cParserOptions;
+  PlaYUVerOptions& Opts()
+  {
+    return m_cOptions;
+  }
+
+protected:
+  PlaYUVerOptions m_cOptions;
   UInt m_uiLogLevel;
 
   /**

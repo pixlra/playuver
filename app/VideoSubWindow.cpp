@@ -328,7 +328,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
 
   try
   {
-    m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate );
+    m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate, true );
   }
   catch( const char *msg )
   {
@@ -336,7 +336,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
     {
       return false;
     }
-    m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate );
+    m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate, true );
   }
 
   m_sStreamInfo.m_cFilename = cFilename;
@@ -367,7 +367,7 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
   }
 
   if( !m_pCurrStream->open( streamInfo->m_cFilename.toStdString(), streamInfo->m_uiWidth, streamInfo->m_uiHeight, streamInfo->m_iPelFormat,
-    streamInfo->m_uiBitsPelPixel, streamInfo->m_iEndianness, streamInfo->m_uiFrameRate ) )
+    streamInfo->m_uiBitsPelPixel, streamInfo->m_iEndianness, streamInfo->m_uiFrameRate, true) )
   {
     return false;
   }

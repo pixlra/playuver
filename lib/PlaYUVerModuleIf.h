@@ -101,7 +101,7 @@ public:
   enum Module_NumberOfFrames m_uiNumberOfFrames;
   UInt m_uiModuleRequirements;
 
-  Options m_cModuleOptions;
+  PlaYUVerOptions m_cModuleOptions;
 
   PlaYUVerModuleIf()
   {

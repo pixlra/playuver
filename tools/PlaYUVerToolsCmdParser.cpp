@@ -36,6 +36,8 @@ PlaYUVerToolsCmdParser::PlaYUVerToolsCmdParser()
   m_uiLogLevel = 0;
   m_bQuiet = false;
   m_iFrames = -1;
+
+  m_cOptions.addDefaultOptions();
 }
 
 PlaYUVerToolsCmdParser::~PlaYUVerToolsCmdParser()
@@ -58,26 +60,20 @@ Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char *argv[] )
 {
   Int iRet = 0;
 
-  Opts().addOptions()/**/
-  ( "quiet,q", m_bQuiet, "disable verbose" );
-
-  Opts().addOptions()/**/
+  m_cOptions.addOptions()/**/
+  ( "quiet,q", m_bQuiet, "disable verbose" )
   ( "input,i", m_apcInputs, "input file" ) /**/
-  //( "input,i", m_strInput, "input file" ) /**/
   ( "output,o", m_strOutput, "output file" ) /**/
   ( "size,s", m_strResolution, "size (WxH)" ) /**/
   ( "pel_fmt,p", m_strPelFmt, "pixel format" ) /**/
   ( "bits_pel", m_uiBitsPerPixel, "bits per pixel" ) /**/
   ( "endianness", m_strEndianness, "File endianness (big, little)" ) /**/
-  ( "frames,f", m_iFrames, "number of frames to parse" );
-
-  Opts().addOptions()/**/
+  ( "frames,f", m_iFrames, "number of frames to parse" )/**/
   ( "quality", m_strQualityMetric, "select a quality metric" ) /**/
   ( "module", m_strModule, "select a module (use internal name)" ) /**/
   ( "save", "save a specific frame" );
 
-  config( argc, argv );
-  if( !parse() )
+  if( !m_cOptions.parse( argc, argv ) )
   {
     iRet = 1;
   }
@@ -87,80 +83,18 @@ Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char *argv[] )
     m_uiLogLevel = LOG_RESULT;
   }
 
-  if( Opts().hasOpt("module") && Opts().hasOpt("help") )
+  if( m_cOptions.hasOpt("module") && m_cOptions.hasOpt("help") )
   {
     listModuleHelp();
     iRet = 1;
   }
-  else if( Opts().hasOpt("help") )
+  else if( m_cOptions.hasOpt("help") )
   {
     printf( "Usage: %s modules/quality/save [options] -input=input_file [--output=output_file]\n", argv[0] );
-    Opts().doHelp( std::cout );
-    iRet = 1;
-  }
-
-  if( Opts().hasOpt("module_list") || Opts().hasOpt("module_list_full") )
-  {
-    listModules();
+    m_cOptions.doHelp( std::cout );
     iRet = 1;
   }
   return iRet;
-}
-
-Void PlaYUVerToolsCmdParser::listModules()
-{
-  Bool bDetailed = false;
-
-  if( Opts().hasOpt("module_list_full") )
-    bDetailed = true;
-
-  PlaYUVerModuleIf* pcCurrModuleIf;
-  PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
-  PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
-
-  printf( "PlaYUVer available modules: \n" );
-  //printf( "                                           " );
-  printf( "   [Internal Name]               " );
-  if( bDetailed )
-  {
-    printf( "   [Full Name]                             " );
-    printf( "   [Type]        " );
-    printf( "   [Description]" );
-  }
-  printf( " \n" );
-
-  Char ModuleNameString[40];
-
-  for( UInt i = 0; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ )
-  {
-    printf( "   " );
-    printf( "%-30s", it->first );
-    if( bDetailed )
-    {
-      ModuleNameString[0] = '\0';
-      pcCurrModuleIf = it->second();
-
-      if( pcCurrModuleIf->m_pchModuleCategory )
-      {
-        strcat( ModuleNameString, pcCurrModuleIf->m_pchModuleCategory );
-        strcat( ModuleNameString, "/" );
-      }
-      strcat( ModuleNameString, pcCurrModuleIf->m_pchModuleName );
-      printf( "   %-40s", ModuleNameString );
-      switch( pcCurrModuleIf->m_iModuleType )
-      {
-      case FRAME_PROCESSING_MODULE:
-        printf( "   Processing    " );
-        break;
-      case FRAME_MEASUREMENT_MODULE:
-        printf( "   Measurement   " );
-        break;
-      }
-      printf( "   %s", pcCurrModuleIf->m_pchModuleTooltip );
-      pcCurrModuleIf->Delete();
-    }
-    printf( "\n" );
-  }
 }
 
 Void PlaYUVerToolsCmdParser::listModuleHelp()

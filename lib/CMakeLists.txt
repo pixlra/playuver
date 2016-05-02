@@ -15,7 +15,7 @@ set(PlaYUVer_Lib_SRCS
     StreamHandlerPortableMap.cpp
     # Command Parser
     PlaYUVerOptions.cpp
-    PlaYUVerCmdParser.cpp
+#     PlaYUVerCmdParser.cpp
 )
 
 IF( USE_FFMPEG )

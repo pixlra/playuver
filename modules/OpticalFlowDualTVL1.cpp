@@ -95,9 +95,9 @@ PlaYUVerFrame* OpticalFlowDualTVL1::process( std::vector<PlaYUVerFrame*> apcFram
   }
 
   Scalar vectorColor( 255,0,0,0 );
-  for( int y = 0; y < flow.rows; y+=m_iStep )
+  for( int y = m_iStep / 2; y < flow.rows; y += m_iStep )
   {
-    for( int x = 0; x < flow.cols; x+=m_iStep )
+    for( int x = m_iStep / 2; x < flow.cols; x += m_iStep )
     {
       Point p = Point( x,y );
       Point2f u = flow( y, x );

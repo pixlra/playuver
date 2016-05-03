@@ -65,7 +65,6 @@ public:
 
 private:
   cv::VideoCapture* pcVideoCapture;
-  cv::Mat* pcMat;
 };
 
 #endif // __STREAMHANDLEROPENCV_H__

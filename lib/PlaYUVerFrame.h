@@ -232,8 +232,8 @@ public:
   /**
    * Interface with OpenCV lib
    */
-  cv::Mat* getCvMat( Bool convertToGray = false );
-  Void fromCvMat( cv::Mat* );
+  Bool toMat( cv::Mat& cvMat, Bool convertToGray = false );
+  Bool fromMat( cv::Mat& cvMat );
 
   /**
    * @defgroup PlaYUVerLib_QualityMetrics Quality Metrics Interface

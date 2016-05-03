@@ -1039,16 +1039,17 @@ Double PlaYUVerFrame::getMaximum( Int channel )
  **************************************************************
  */
 
-cv::Mat* PlaYUVerFrame::getCvMat( Bool convertToGray )
+Bool PlaYUVerFrame::toMat( cv::Mat& cvMat, Bool convertToGray )
 {
+  Bool bRet = false;
 #ifdef USE_OPENCV
   if( convertToGray && !( d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_YUV || d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY ) )
   {
-    return NULL;
+    return bRet;
   }
   Int cvType = CV_MAKETYPE( CV_8U, convertToGray ? 1 : d->m_pcPelFormat->numberChannels );
-  cv::Mat *pcCvFrame = new cv::Mat( d->m_uiHeight, d->m_uiWidth, cvType );
-  UChar* pCvPel = pcCvFrame->data;
+  cvMat.create( d->m_uiHeight, d->m_uiWidth, cvType );
+  UChar* pCvPel = cvMat.data;
   if( !convertToGray && ( d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_YUV || d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_RGB ) )
   {
     fillRGBBuffer();
@@ -1060,6 +1061,7 @@ cv::Mat* PlaYUVerFrame::getCvMat( Bool convertToGray )
       *pCvPel++ = *pARGB++;
       pARGB++;
     }
+    bRet = true;
   }
   else if( convertToGray || d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY )
   {
@@ -1068,27 +1070,25 @@ cv::Mat* PlaYUVerFrame::getCvMat( Bool convertToGray )
     {
       *pCvPel++ = *pPel++;
     }
+    bRet = true;
   }
   else
   {
-    if( pcCvFrame )
-      delete pcCvFrame;
-    pcCvFrame = NULL;
+    return false;
   }
-  return pcCvFrame;
-#else
-  return NULL;
 #endif
+  return bRet;
 }
 
-Void PlaYUVerFrame::fromCvMat( cv::Mat* pcCvFrame )
+Bool PlaYUVerFrame::fromMat( cv::Mat& cvMat )
 {
+  Bool bRet = false;
 #ifdef USE_OPENCV
   if( !d->m_bInit )
   {
     if( d->m_iPixelFormat == NO_FMT )
     {
-      switch( pcCvFrame->channels() )
+      switch( cvMat.channels() )
       {
       case 1:
         d->m_iPixelFormat = findPixelFormat( "GRAY" );
@@ -1097,16 +1097,16 @@ Void PlaYUVerFrame::fromCvMat( cv::Mat* pcCvFrame )
         d->m_iPixelFormat = findPixelFormat( "BGR24" );
         break;
       default:
-        return;
+        return false;
       }
     }
-    d->init( pcCvFrame->cols, pcCvFrame->rows, d->m_iPixelFormat, 8, -1 );
+    d->init( cvMat.cols, cvMat.rows, d->m_iPixelFormat, 8, -1 );
   }
 
   d->m_bHasRGBPel = false;
   d->m_bHasHistogram = false;
 
-  UChar* pCvPel = pcCvFrame->data;
+  UChar* pCvPel = cvMat.data;
   if( d->m_iPixelFormat != GRAY )
   {
     Pel* pInputPelR = d->m_pppcInputPel[COLOR_R][0];
@@ -1117,9 +1117,8 @@ Void PlaYUVerFrame::fromCvMat( cv::Mat* pcCvFrame )
       *pInputPelB++ = *pCvPel++;
       *pInputPelG++ = *pCvPel++;
       *pInputPelR++ = *pCvPel++;
-
-
     }
+    bRet = true;
   }
   else
   {
@@ -1128,8 +1127,10 @@ Void PlaYUVerFrame::fromCvMat( cv::Mat* pcCvFrame )
     {
       *pPel++ = *pCvPel++;
     }
+    bRet = true;
   }
 #endif
+  return bRet;
 }
 
 /*

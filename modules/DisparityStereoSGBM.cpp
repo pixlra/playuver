@@ -91,20 +91,19 @@ PlaYUVerFrame* DisparityStereoSGBM::process( std::vector<PlaYUVerFrame*> apcFram
 {
   PlaYUVerFrame* InputLeft = apcFrameList[0];
   PlaYUVerFrame* InputRight = apcFrameList[1];
-
-  cv::Mat* leftImage = InputLeft->getCvMat( true );
-  cv::Mat* rightImage = InputRight->getCvMat( true );
+  cv::Mat leftImage, rightImage;
+  if( !InputLeft->toMat( leftImage, true ) || !InputRight->toMat( rightImage, true ) )
+  {
+    return m_pcDisparityFrame;
+  }
   cv::Mat disparityImage, disparityImage8;
-
 #if( CV_MAJOR_VERSION == 3)
-  m_cStereoMatch->compute( *leftImage, *rightImage, disparityImage );
+  m_cStereoMatch->compute( leftImage, rightImage, disparityImage );
 #else
-  m_cStereoMatch( *leftImage, *rightImage, disparityImage );
+  m_cStereoMatch( leftImage, rightImage, disparityImage );
 #endif
-
   disparityImage.convertTo( disparityImage8, CV_8U );
-
-  m_pcDisparityFrame->fromCvMat( &disparityImage8 );
+  m_pcDisparityFrame->fromMat( disparityImage8 );
   return m_pcDisparityFrame;
 }
 

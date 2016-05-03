@@ -63,7 +63,7 @@ Bool OpticalFlowDualTVL1::create( std::vector<PlaYUVerFrame*> apcFrameList )
   return true;
 }
 
-inline bool isFlowCorrect( Point2f u )
+static inline bool isFlowCorrect( Point2f u )
 {
   return !cvIsNaN( u.x ) && !cvIsNaN( u.y ) && fabs( u.x ) < 1e9 && fabs( u.y ) < 1e9;
 }

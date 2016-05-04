@@ -101,14 +101,14 @@ Void OpticalFlowDualTVL1::drawFlow()
 
 Void OpticalFlowDualTVL1::compensateFlow()
 {
-  for( Int c = 0; c < m_pcOutputFrame->getNumberChannels(); c++ )
+  for( UInt c = 0; c < m_pcOutputFrame->getNumberChannels(); c++ )
   {
     Pel** pPelPrev = m_pcFramePrev->getPelBufferYUV()[c];
     Pel* pPelOut = m_pcOutputFrame->getPelBufferYUV()[c][0];
 
-    for( int y = 0; y < m_pcOutputFrame->getHeight( c ); y++ )
+    for( UInt y = 0; y < m_pcOutputFrame->getHeight( c ); y++ )
     {
-      for( int x = 0; x < m_pcOutputFrame->getWidth( c ); x++ )
+      for( UInt x = 0; x < m_pcOutputFrame->getWidth( c ); x++ )
       {
         Point2f u = m_cvFlow( y, x );
         Point p( x + u.x, y + u.y);

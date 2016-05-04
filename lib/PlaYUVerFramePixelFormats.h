@@ -33,26 +33,6 @@
 
 #define CHROMARATIO( SIZE, RATIO ) ( RATIO > 1 ? ( ( SIZE + 1 ) / RATIO ) : SIZE )
 
-inline Int pelRed( UInt rgb )             // get red part of RGB
-{
-  return ( ( rgb >> 16 ) & 0xff );
-}
-
-inline Int pelGreen( UInt rgb )           // get green part of RGB
-{
-  return ( ( rgb >> 8 ) & 0xff );
-}
-
-inline Int pelBlue( UInt rgb )            // get blue part of RGB
-{
-  return ( rgb & 0xff );
-}
-
-inline Int pelAlpha( UInt rgb )           // get alpha part of RGBA
-{
-  return rgb >> 24;
-}
-
 #define PEL_RGB( r, g, b ) \
     ( 0xffu << 24 ) | ( ( r & 0xff ) << 16 ) | ( ( g & 0xff ) << 8 ) | ( b & 0xff )
 
@@ -130,7 +110,6 @@ typedef struct PlaYUVerPixFmtDescriptor
 
 #define MAX_NUMBER_PLANES 3
 
-#define PLAYUVER_NUMBER_FORMATS 3
 extern const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[];
 
 #endif // __PLAYUVERFRAMEPIXELFORMATS_H__

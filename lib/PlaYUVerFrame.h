@@ -47,7 +47,7 @@ class PlaYUVerFrame
 {
 public:
 
-  /** ColorSpace Enum (deprecated)
+  /** ColorSpace Enum
    * List of supported pixel formats - do not change order
    */
   enum PixelFormats
@@ -60,7 +60,7 @@ public:
     GRAY,
     RGB24,
     BGR24,
-    NUMBER_FORMATS
+    NUMBER_PEL_FORMATS
   };
 
   /** Format match opts
@@ -249,15 +249,7 @@ public:
     NUMBER_METRICS,
   };
 
-  static std::vector<String> supportedQualityMetricsList()
-  {
-    std::vector<String> metrics;
-    metrics.push_back( "PSNR" );
-    metrics.push_back( "MSE" );
-    metrics.push_back( "SSIM" );
-    return metrics;
-  }
-
+  static std::vector<String> supportedQualityMetricsList();
   Double getQuality( Int Metric, PlaYUVerFrame* Org, Int component );
   Double getMSE( PlaYUVerFrame* Org, Int component );
   Double getPSNR( PlaYUVerFrame* Org, Int component );

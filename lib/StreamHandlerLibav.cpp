@@ -204,7 +204,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   m_uiHeight = m_cCodecCtx->height;
 
   m_iPixelFormat = PlaYUVerFrame::NO_FMT;
-  for( Int i = 0; i < PLAYUVER_NUMBER_FORMATS; i++ )
+  for( Int i = 0; i < PlaYUVerFrame::NUMBER_PEL_FORMATS; i++ )
   {
     if( g_PlaYUVerPixFmtDescriptorsList[i].ffmpegPelFormat == pix_fmt )
     {

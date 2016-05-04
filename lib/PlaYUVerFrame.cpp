@@ -39,18 +39,17 @@
  */
 std::vector<String> PlaYUVerFrame::supportedColorSpacesListNames()
 {
-  std::vector<String> colorSpaceList;
-  colorSpaceList.push_back( "YUV" );
-  colorSpaceList.push_back( "RGB" );
-  colorSpaceList.push_back( "GRAY" );
-  return colorSpaceList;
+  return std::vector<String>{
+    "YUV",
+    "RGB",
+    "GRAY",
+  };
 }
 
 std::vector<String> PlaYUVerFrame::supportedPixelFormatListNames()
 {
   std::vector<String> formatsList;
-  Int numberFormats = PLAYUVER_NUMBER_FORMATS;
-  for( Int i = 0; i < numberFormats; i++ )
+  for( Int i = 0; i < NUMBER_PEL_FORMATS; i++ )
   {
     formatsList.push_back( g_PlaYUVerPixFmtDescriptorsList[i].name );
   }
@@ -60,8 +59,7 @@ std::vector<String> PlaYUVerFrame::supportedPixelFormatListNames()
 std::vector<String> PlaYUVerFrame::supportedPixelFormatListNames( Int colorSpace )
 {
   std::vector<String> formatsList;
-  Int numberFormats = PLAYUVER_NUMBER_FORMATS;
-  for( Int i = 0; i < numberFormats; i++ )
+  for( Int i = 0; i < NUMBER_PEL_FORMATS; i++ )
   {
     if( g_PlaYUVerPixFmtDescriptorsList[i].colorSpace == colorSpace )
       formatsList.push_back( g_PlaYUVerPixFmtDescriptorsList[i].name );
@@ -71,7 +69,7 @@ std::vector<String> PlaYUVerFrame::supportedPixelFormatListNames( Int colorSpace
 
 Int PlaYUVerFrame::findPixelFormat( String name )
 {
-  for( Int i = 0; i < PLAYUVER_NUMBER_FORMATS; i++ )
+  for( Int i = 0; i < NUMBER_PEL_FORMATS; i++ )
   {
     if( g_PlaYUVerPixFmtDescriptorsList[i].name == name )
       return i;
@@ -1136,6 +1134,15 @@ Bool PlaYUVerFrame::fromMat( cv::Mat& cvMat )
  * Quality Related Function API
  **************************************************************
  */
+
+std::vector<String> PlaYUVerFrame::supportedQualityMetricsList()
+{
+  return std::vector<String> {
+    "PSNR",
+    "MSE",
+    "SSIM",
+  };
+}
 
 Double PlaYUVerFrame::getQuality( Int Metric, PlaYUVerFrame* Org, Int component )
 {

@@ -117,8 +117,13 @@ IF( WIN32 )
 ENDIF()
 
 ######################################################################################
-# Target App
+# Configure targets
 ######################################################################################
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+    ADD_DEFINITIONS(-std=gnu++0x)
+endif()
+
 IF (NOT CMAKE_BUILD_TYPE )
     MESSAGE(STATUS "No build type selected, default to Release")
     SET(CMAKE_BUILD_TYPE "Release")

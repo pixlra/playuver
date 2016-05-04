@@ -199,7 +199,7 @@ Void fillARGB32bufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height, UI
 }
 #endif
 
-const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NUMBER_FORMATS] =
+const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NUMBER_PEL_FORMATS] =
 {
     {
         "YUV420p",

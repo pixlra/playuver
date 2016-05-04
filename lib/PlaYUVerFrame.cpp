@@ -94,7 +94,7 @@ struct PlaYUVerFramePrivate
   Bool m_bInit;
 
   //! Struct with the pixel format description.
-  PlaYUVerPixFmtDescriptor* m_pcPelFormat;
+  const PlaYUVerPixFmtDescriptor* m_pcPelFormat;
   String m_cPelFmtName;
 
   UInt m_uiWidth;  //!< Width of the frame
@@ -145,7 +145,7 @@ PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, Bool bCopy ) :
 PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt areaWidth, UInt areaHeight ) :
         d( new PlaYUVerFramePrivate )
 {
-  PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[other->getPelFormat()] );
+  const PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[other->getPelFormat()] );
   if( pcPelFormat->log2ChromaWidth )
   {
     if( posX % ( 1 << pcPelFormat->log2ChromaWidth ) )
@@ -391,7 +391,7 @@ UInt64 PlaYUVerFrame::getBytesPerFrame()
 
 UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel )
 {
-  PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[iPixelFormat] );
+  const PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[iPixelFormat] );
   UInt bytesPerPixel = ( bitsPixel - 1 ) / 8 + 1;
   UInt64 numberBytes = uiWidth * uiHeight;
   if( pcPelFormat->numberChannels > 1 )

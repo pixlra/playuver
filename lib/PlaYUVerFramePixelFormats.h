@@ -75,16 +75,6 @@ typedef struct PlaYUVerComponentDescriptor
    */
   UInt16 offset_plus1;
 
-  /**
-   * Number of least significant bits that must be shifted away
-   * to get the value.
-   */
-  UInt16 shift;
-
-  /**
-   * Number of bits in the component minus 1.
-   */
-  UInt16 depth_minus1;
 } PlaYUVerComponentDescriptor;
 
 /**
@@ -140,7 +130,7 @@ typedef struct PlaYUVerPixFmtDescriptor
 
 #define MAX_NUMBER_PLANES 3
 
-#define PLAYUVER_NUMBER_FORMATS 7
-extern PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PLAYUVER_NUMBER_FORMATS];
+#define PLAYUVER_NUMBER_FORMATS 3
+extern const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[];
 
 #endif // __PLAYUVERFRAMEPIXELFORMATS_H__

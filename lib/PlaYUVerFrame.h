@@ -59,7 +59,7 @@ public:
     YUYV422,
     GRAY,
     RGB24,
-    BRG24,
+    BGR24,
     NUMBER_FORMATS
   };
 

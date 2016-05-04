@@ -32,8 +32,6 @@ using cv::Ptr;
 using cv::Point;
 using cv::Point2f;
 
-
-
 OpticalFlowDualTVL1::OpticalFlowDualTVL1()
 {
   /* Module Definition */
@@ -79,7 +77,6 @@ PlaYUVerFrame* OpticalFlowDualTVL1::process( std::vector<PlaYUVerFrame*> apcFram
   Mat_<Point2f> flow;
   m_cTvl1->calc( cvMatPrev, cvMatAfter, flow );
 
-
   // determine motion range:
   Double maxrad = 1;
 
@@ -94,17 +91,17 @@ PlaYUVerFrame* OpticalFlowDualTVL1::process( std::vector<PlaYUVerFrame*> apcFram
     }
   }
 
-  Scalar vectorColor( 255,0,0,0 );
+  Scalar vectorColor( 255, 0, 0, 0 );
   for( int y = m_iStep / 2; y < flow.rows; y += m_iStep )
   {
     for( int x = m_iStep / 2; x < flow.cols; x += m_iStep )
     {
-      Point p = Point( x,y );
+      Point p = Point( x, y );
       Point2f u = flow( y, x );
       Point ui( u.x, u.y );
 
       if( isFlowCorrect( u ) )
-        arrowedLine( cvMatAfter, p, p+ui, vectorColor );
+        arrowedLine( cvMatAfter, p, p + ui, vectorColor );
     }
   }
 
@@ -118,6 +115,4 @@ Void OpticalFlowDualTVL1::destroy()
     delete m_pcOutputFrame;
   m_pcOutputFrame = NULL;
 }
-
-
 

@@ -36,7 +36,6 @@
 #include "GridManager.h"
 #include "lib/PlaYUVerFrame.h"
 
-
 class PlaYUVerStream;
 
 /**
@@ -124,7 +123,7 @@ public Q_SLOTS:
 //  Void setNormalSelectionTool();
 //  Void setBlockSelectionTool();
   void setSnapToGrid( bool enable );
-//  void setSelectedArea( QRect &rect );
+  //  void setSelectedArea( QRect &rect );
 
 protected:
   Void paintEvent( QPaintEvent *event );

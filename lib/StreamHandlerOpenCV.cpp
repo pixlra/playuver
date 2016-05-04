@@ -31,7 +31,6 @@
 using cv::Mat;
 using cv::VideoCapture;
 
-
 std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
@@ -68,13 +67,13 @@ Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
       m_strFormatName = "DEV";
       m_strCodecName = "Raw Video";
       pcVideoCapture = new VideoCapture( 0 );
-      m_uiWidth =  pcVideoCapture->get( CV_CAP_PROP_FRAME_WIDTH );
+      m_uiWidth = pcVideoCapture->get( CV_CAP_PROP_FRAME_WIDTH );
       m_uiHeight = pcVideoCapture->get( CV_CAP_PROP_FRAME_HEIGHT );
       m_dFrameRate = 25;
     }
     else
     {
-      m_strCodecName = m_strFormatName = uppercase (strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
+      m_strCodecName = m_strFormatName = uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
       Mat cvMat = cv::imread( m_cFilename );
       m_uiWidth = cvMat.cols;
       m_uiHeight = cvMat.rows;
@@ -145,5 +144,4 @@ Bool StreamHandlerOpenCV::write( PlaYUVerFrame* pcFrame )
   }
   return bRet;
 }
-
 

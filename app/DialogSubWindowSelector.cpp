@@ -28,7 +28,6 @@
 #include "DialogSubWindowSelector.h"
 #include "VideoSubWindow.h"
 
-
 DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWindowHandle *windowManager, UInt uiCategory, Int minWindowsSelected,
     Int maxWindowsSelected ) :
         QDialog( parent ),

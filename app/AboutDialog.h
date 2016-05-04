@@ -28,13 +28,12 @@
 
 #include <QDialog>
 
-
-class AboutDialog : public QDialog
+class AboutDialog: public QDialog
 {
-	Q_OBJECT
+Q_OBJECT
 
 public:
-	AboutDialog(QWidget *parent = 0);
+  AboutDialog( QWidget *parent = 0 );
 };
 
 #endif // __ABOUTDIALOG_H__

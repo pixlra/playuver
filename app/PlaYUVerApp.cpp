@@ -46,7 +46,6 @@
 
 #define SYNCHRONISED_ZOON 1
 
-
 PlaYUVerApp::PlaYUVerApp() :
         m_pcCurrentSubWindow( NULL ),
         m_pcCurrentVideoSubWindow( NULL ),
@@ -110,13 +109,13 @@ Bool PlaYUVerApp::parseArgs( Int argc, Char *argv[] )
     bRet |= true;
   }
 
-  if( pcCmdParser.hasOpt("help") )
+  if( pcCmdParser.hasOpt( "help" ) )
   {
     printf( "Usage: %s [options] input_file[s]\n", argv[0] );
     pcCmdParser.doHelp( std::cout );
     bRet |= true;
   }
-  if( pcCmdParser.hasOpt("input") )
+  if( pcCmdParser.hasOpt( "input" ) )
   {
     for( UInt i = 1; i < m_apcInputs.size(); i++ )
     {
@@ -175,7 +174,7 @@ Void PlaYUVerApp::closeEvent( QCloseEvent *event )
     }
     break;
   case QMessageBox::No:
-  default:
+    default:
     event->ignore();
   }
 }
@@ -380,10 +379,11 @@ Void PlaYUVerApp::reload()
 Void PlaYUVerApp::reloadAll()
 {
   UInt windowCategoryOrder[] =
-  {
-    SubWindowAbstract::VIDEO_STREAM_SUBWINDOW,
-    SubWindowAbstract::MODULE_SUBWINDOW,
-    SubWindowAbstract::MODULE_SUBWINDOW };
+      {
+          SubWindowAbstract::VIDEO_STREAM_SUBWINDOW,
+          SubWindowAbstract::MODULE_SUBWINDOW,
+          SubWindowAbstract::MODULE_SUBWINDOW,
+      };
 
   for( UInt c = 0; c < 3; c++ )
   {
@@ -918,5 +918,4 @@ Void PlaYUVerApp::writeSettings()
   m_appModuleExtensions->writeSettings();
   m_pcWindowHandle->writeSettings();
 }
-
 

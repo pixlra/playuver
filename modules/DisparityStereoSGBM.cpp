@@ -26,7 +26,6 @@
 
 #include "DisparityStereoSGBM.h"
 
-
 DisparityStereoSGBM::DisparityStereoSGBM()
 {
   /* Module Definition */
@@ -113,6 +112,4 @@ Void DisparityStereoSGBM::destroy()
     delete m_pcDisparityFrame;
   m_pcDisparityFrame = NULL;
 }
-
-
 

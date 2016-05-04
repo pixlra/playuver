@@ -29,10 +29,9 @@
 
 #include <cassert>
 
-
 class FrameMask: public PlaYUVerModuleIf
 {
-  REGISTER_CLASS_FACTORY( FrameMask )
+REGISTER_CLASS_FACTORY( FrameMask )
 
 private:
   Int m_iWeight;
@@ -51,7 +50,4 @@ public:
 };
 
 #endif // __FRAMEMASK_H__
-
-
-
 

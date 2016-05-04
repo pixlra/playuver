@@ -41,7 +41,6 @@ class QColor;
 class QCheckBox;
 class QGroupBox;
 
-
 class PlaYUVerSubWindowHandle;
 class SubWindowAbstract;
 

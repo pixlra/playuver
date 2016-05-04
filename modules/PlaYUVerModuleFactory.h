@@ -29,7 +29,6 @@
 #include <map>
 #include "lib/PlaYUVerModuleIf.h"
 
-
 #define REGISTER_MODULE(X) Register( "X", &(X::Create) );
 
 typedef PlaYUVerModuleIf* (*CreateModuleFn)( void );
@@ -46,7 +45,7 @@ private:
   }
 
   PlaYUVerModuleFactoryMap m_FactoryMap;
-public:
+  public:
   ~PlaYUVerModuleFactory();
 
   static PlaYUVerModuleFactory *Get()

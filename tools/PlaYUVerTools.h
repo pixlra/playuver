@@ -31,7 +31,6 @@
 #include "lib/PlaYUVerStream.h"
 #include "PlaYUVerToolsCmdParser.h"
 
-
 class PlaYUVerModuleIf;
 
 #define MAX_NUMBER_INPUTS 10
@@ -65,7 +64,7 @@ private:
 
   Int openInputs();
 
-  typedef Int (PlaYUVerTools::*FpProcess) ();
+  typedef Int (PlaYUVerTools::*FpProcess)();
   FpProcess m_fpProcess;
 
   Int64 m_iFrameNum;

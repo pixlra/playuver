@@ -31,7 +31,6 @@
 
 class QProgressBar;
 
-
 class ProgressBar: public QWidget
 {
 Q_OBJECT

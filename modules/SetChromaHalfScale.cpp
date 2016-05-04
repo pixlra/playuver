@@ -24,7 +24,6 @@
 
 #include "SetChromaHalfScale.h"
 
-
 SetChromaHalfScale::SetChromaHalfScale()
 {
   /* Module Definition */
@@ -68,6 +67,4 @@ Void SetChromaHalfScale::destroy()
     delete m_pcProcessedFrame;
   m_pcProcessedFrame = NULL;
 }
-
-
 

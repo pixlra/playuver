@@ -31,7 +31,6 @@
 #include "PlaYUVerModuleFactory.h"
 #include "ModulesListHeader.h"
 
-
 PlaYUVerModuleFactory::PlaYUVerModuleFactory()
 {
   REGISTER_ALL_MODULES
@@ -54,7 +53,7 @@ Bool PlaYUVerModuleFactory::RegisterDl( const char* dlName )
   if( pHndl == NULL )
   {
     std::cerr << dlerror()
-              << std::endl;
+    << std::endl;
     return false;
   }
   CreateModuleFn pfnCreate = ( CreateModuleFn )dlsym( pHndl, "Maker" );
@@ -82,5 +81,4 @@ PlaYUVerModuleIf *PlaYUVerModuleFactory::CreateModule( const char* moduleName )
   }
   return NULL;
 }
-
 

@@ -25,7 +25,6 @@
 #ifndef __WIDGETFRAMENUMBER_H__
 #define __WIDGETFRAMENUMBER_H__
 
-
 #include "config.h"
 #include "PlaYUVerAppDefs.h"
 #include <QtCore>
@@ -35,7 +34,6 @@
 #include <QtGui>
 #endif
 
-
 class WidgetFrameNumber: public QWidget
 {
 public:
@@ -43,7 +41,7 @@ public:
   Void setCurrFrameNum( Int number );
   Void setTotalFrameNum( Int number );
   Void clear();
-private:
+  private:
   QLabel *m_pcCurrFrameNumLabel;
   QLabel *m_pcTotalFrameNumLabel;
 

@@ -41,7 +41,6 @@
 #include <QElapsedTimer>
 #endif
 
-
 VideoHandle::VideoHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManager ) :
         m_pcParet( parent ),
         m_pcMainWindowManager( windowManager )
@@ -773,6 +772,4 @@ Void VideoHandle::toggleGrid( Bool checked )
     qobject_cast<VideoSubWindow*>( subWindowList.at( i ) )->getViewArea()->setGridVisible( checked );
   }
 }
-
- 
 

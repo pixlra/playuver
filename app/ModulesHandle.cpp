@@ -32,7 +32,6 @@
 #include "ModulesHandleOptDialog.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
-
 ModulesHandle::ModulesHandle( QWidget* parent, PlaYUVerSubWindowHandle *windowManager, VideoHandle *moduleVideo ) :
         QWidget( parent ),
         m_pcParent( parent ),
@@ -592,6 +591,4 @@ Void ModulesHandle::customEvent( QEvent *event )
     eventData->m_pcModule->show();
   }
 }
-
-
 

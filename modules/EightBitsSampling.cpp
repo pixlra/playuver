@@ -24,7 +24,6 @@
 
 #include "EightBitsSampling.h"
 
-
 EightBitsSampling::EightBitsSampling()
 {
   /* Module Definition */
@@ -79,6 +78,4 @@ Void EightBitsSampling::destroy()
     delete m_pcSubSampledFrame;
   m_pcSubSampledFrame = NULL;
 }
-
-
 

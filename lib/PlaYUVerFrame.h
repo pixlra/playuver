@@ -33,7 +33,6 @@ namespace cv
 class Mat;
 }
 
-
 struct PlaYUVerPixFmtDescriptor;
 struct PlaYUVerFramePrivate;
 

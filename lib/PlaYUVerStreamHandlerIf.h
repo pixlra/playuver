@@ -29,7 +29,6 @@
 #include "PlaYUVerStream.h"
 #include "PlaYUVerFrame.h"
 
-
 #define REGISTER_STREAM_HANDLER(X) \
   public: \
     static PlaYUVerStreamHandlerIf* Create() { return new X(); } \
@@ -43,7 +42,7 @@
 class PlaYUVerStreamHandlerIf
 {
   friend class PlaYUVerStream;
-public:
+  public:
   PlaYUVerStreamHandlerIf()
   {
     m_bIsInput = true;

@@ -31,10 +31,9 @@
 #include <vector>
 #include "PlaYUVerDefs.h"
 
-
 static inline Void YuvToRgb( const Int &iY, const Int &iU, const Int &iV, Int &iR, Int &iG, Int &iB )
 {
-  iR = iY + ( ( 1436 * ( iV - 128) ) >> 10 );
+  iR = iY + ( ( 1436 * ( iV - 128 ) ) >> 10 );
   iG = iY - ( ( 352 * ( iU - 128 ) + 731 * ( iV - 128 ) ) >> 10 );
   iB = iY + ( ( 1812 * ( iU - 128 ) ) >> 10 );
   iR = iR < 0 ? 0 : iR > 255 ? 255 : iR;
@@ -50,10 +49,10 @@ static inline Void rgbToYuv( const Int& iR, const Int& iG, const Int& iB, Int &i
 }
 
 /**
-  * \class    PlaYUVerPixel
-  * \ingroup  PlaYUVerLib PlaYUVerLib_Frame
-  * \brief    Pixel handling class
-  */
+ * \class    PlaYUVerPixel
+ * \ingroup  PlaYUVerLib PlaYUVerLib_Frame
+ * \brief    Pixel handling class
+ */
 class PlaYUVerPixel
 {
 public:
@@ -61,11 +60,11 @@ public:
   static const UInt MAX_NUMBER_COMPONENTS = 5;
 
   /** ColorSpace list
-  * List of supported color spaces
-  */
+   * List of supported color spaces
+   */
   enum ColorSpace
   {
-    COLOR_INVALID = -1, //!< Invalid
+    COLOR_INVALID = -1,  //!< Invalid
     COLOR_YUV = 0,      //!< YUV
     COLOR_RGB = 1,      //!< RGB
     COLOR_GRAY = 2,     //!< Grayscale
@@ -75,7 +74,7 @@ public:
 
   PlaYUVerPixel();
   PlaYUVerPixel( const Int& ColorSpace );
-  PlaYUVerPixel( const Int& ColorSpace, const Pel& c0, const Pel& c1, const  Pel& c2 );
+  PlaYUVerPixel( const Int& ColorSpace, const Pel& c0, const Pel& c1, const Pel& c2 );
   ~PlaYUVerPixel();
 
   Int ColorSpaceType();
@@ -96,12 +95,12 @@ public:
   Pel& G();
   Pel& B();
 
-  Pel operator[] ( const Int& channel ) const;
-  Pel& operator[] ( const Int& channel );
+  Pel operator[]( const Int& channel ) const;
+  Pel& operator[]( const Int& channel );
 
-  PlaYUVerPixel operator+ ( const PlaYUVerPixel& );
-  PlaYUVerPixel operator- ( const PlaYUVerPixel& );
-  PlaYUVerPixel operator* ( const Double& );
+  PlaYUVerPixel operator+( const PlaYUVerPixel& );
+  PlaYUVerPixel operator-( const PlaYUVerPixel& );
+  PlaYUVerPixel operator*( const Double& );
 
   /**
    * Convert a Pixel to a new color space

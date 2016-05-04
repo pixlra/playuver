@@ -27,14 +27,13 @@
 
 #include "lib/PlaYUVerModuleIf.h"
 
-
 class SetChromaHalfScale: public PlaYUVerModuleIf
 {
 REGISTER_CLASS_FACTORY( SetChromaHalfScale )
 
 private:
   PlaYUVerFrame* m_pcProcessedFrame;
-public:
+  public:
   SetChromaHalfScale();
   virtual ~SetChromaHalfScale()
   {

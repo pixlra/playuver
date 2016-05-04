@@ -29,7 +29,6 @@
 #include "lib/PlaYUVerDefs.h"
 #include "lib/PlaYUVerOptions.h"
 
-
 class PlaYUVerStream;
 
 class PlaYUVerToolsCmdParser

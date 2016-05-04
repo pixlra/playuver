@@ -32,7 +32,6 @@
 #include "QtConcurrent/qtconcurrentrun.h"
 #endif
 
-
 /**
  * \brief Functions to control data stream from stream information
  */
@@ -96,7 +95,7 @@ private:
   QFont m_cTopLeftTextFont;
   QFont m_cCenterTextFont;
   Bool m_bBusyWindow;
-public:
+  public:
   VideoInformation( QWidget *parent ) :
           QWidget( parent ),
           m_bBusyWindow( false )
@@ -259,7 +258,7 @@ QSize VideoSubWindow::sizeHint() const
 }
 
 QSize VideoSubWindow::sizeHint( const QSize & maxSize ) const
-{
+    {
   QSize isize;
   if( m_pcCurrFrame )
     isize = QSize( m_pcCurrFrame->getWidth() + 50, m_pcCurrFrame->getHeight() + 50 );
@@ -320,7 +319,8 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
 
   if( guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
   {
-    if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate ) == QDialog::Rejected )
+    if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate )
+        == QDialog::Rejected )
     {
       return false;
     }
@@ -332,7 +332,8 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   }
   catch( const char *msg )
   {
-    if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate ) == QDialog::Rejected )
+    if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate )
+        == QDialog::Rejected )
     {
       return false;
     }
@@ -367,7 +368,7 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
   }
 
   if( !m_pCurrStream->open( streamInfo->m_cFilename.toStdString(), streamInfo->m_uiWidth, streamInfo->m_uiHeight, streamInfo->m_iPelFormat,
-    streamInfo->m_uiBitsPelPixel, streamInfo->m_iEndianness, streamInfo->m_uiFrameRate, true) )
+      streamInfo->m_uiBitsPelPixel, streamInfo->m_iEndianness, streamInfo->m_uiFrameRate, true ) )
   {
     return false;
   }
@@ -621,7 +622,7 @@ Void VideoSubWindow::refreshFrameOperation()
   if( m_pcCurrentDisplayModule )
   {
     m_bWindowBusy = true;
-    m_pcCurrentDisplayModule->apply( m_bIsPlaying, !m_bIsPlaying && m_apcCurrentModule.size()  );
+    m_pcCurrentDisplayModule->apply( m_bIsPlaying, !m_bIsPlaying && m_apcCurrentModule.size() );
     bSetFrame = false;
   }
   if( bSetFrame )
@@ -643,7 +644,7 @@ Void VideoSubWindow::refreshFrame( Bool bThreaded )
     m_cRefreshResult = QtConcurrent::run( this, &VideoSubWindow::refreshFrameOperation );
   }
   else
-#endif
+  #endif
   {
     refreshFrameOperation();
   }

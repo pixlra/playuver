@@ -28,21 +28,24 @@
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerStreamHandlerIf.h"
 
-
 /**
  * \class StreamHandlerRaw
  * \brief    Class to handle raw video format
  */
 class StreamHandlerRaw: public PlaYUVerStreamHandlerIf
 {
-  REGISTER_STREAM_HANDLER( StreamHandlerRaw )
+REGISTER_STREAM_HANDLER( StreamHandlerRaw )
 
 private:
   FILE* m_pFile; /**< The input file pointer >*/
 
 public:
-  StreamHandlerRaw() {}
-  ~StreamHandlerRaw() {}
+  StreamHandlerRaw()
+  {
+  }
+  ~StreamHandlerRaw()
+  {
+  }
 
   Bool openHandler( String strFilename, Bool bInput );
   Void closeHandler();
@@ -51,7 +54,6 @@ public:
   Bool seek( UInt64 iFrameNum );
   Bool read( PlaYUVerFrame* pcFrame );
   Bool write( PlaYUVerFrame* pcFrame );
-
 
 };
 

@@ -43,7 +43,6 @@
 
 #include <cassert>
 
-
 class DisparityStereoSGBM: public PlaYUVerModuleIf
 {
 REGISTER_CLASS_FACTORY( DisparityStereoSGBM )
@@ -53,9 +52,9 @@ private:
   Bool m_bUseHH;
   Int m_uiNumberOfDisparities;
   UInt m_uiBlockSize;
-#if( CV_MAJOR_VERSION == 3)
+  #if( CV_MAJOR_VERSION == 3)
   cv::Ptr<cv::StereoSGBM> m_cStereoMatch;
-#else
+  #else
   cv::StereoSGBM m_cStereoMatch;
 #endif
 

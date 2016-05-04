@@ -25,7 +25,6 @@
 #include "AbsoluteFrameDifference_APIv2.h"
 #include <cstdlib>
 
-
 REGISTER_CLASS_MAKER( AbsoluteFrameDifference )
 
 AbsoluteFrameDifference::AbsoluteFrameDifference()
@@ -77,6 +76,4 @@ Void AbsoluteFrameDifference::destroy()
     delete m_pcFrameDifference;
   m_pcFrameDifference = NULL;
 }
-
-
 

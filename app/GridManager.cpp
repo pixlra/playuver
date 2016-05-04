@@ -34,7 +34,6 @@
 
 #include "GridManager.h"
 
-
 ////////////////////////////////////////////////////////////////////////////////
 //                              Constructor
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,8 +66,8 @@ void GridManager::drawGrid( QPixmap &image, const QRect& area, QPainter *painter
   switch( style )
   {
   case IntersectionDot:
-  case IntersectionCross:
-  {
+    case IntersectionCross:
+    {
     painter->setPen( mainPen );
     // Draw crosses or dots on intersections
     for( int x = offsetx; x <= area.right(); x += hSpacing )
@@ -96,7 +95,7 @@ void GridManager::drawGrid( QPixmap &image, const QRect& area, QPainter *painter
     break;
   }
   case Dashed:
-  {
+    {
     // Change pen to the dashed line
     mainPen.setStyle( Qt::DashLine );
   }
@@ -136,12 +135,12 @@ void GridManager::drawGrid( QPixmap &image, const QRect& area, QPainter *painter
 
 ////////////////////////////////////////////////////////////////////////////////
 QRect GridManager::rectContains( const QPoint &pos ) const
-{
+    {
   return rectContains( pos.x(), pos.y() );
 }
 
 QRect GridManager::rectContains( int x, int y ) const
-{
+    {
   QRect rect;
   QPoint pos;
   int multiPosX;

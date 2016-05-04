@@ -27,7 +27,6 @@
 #include "PlaYUVerAppModuleIf.h"
 #include "ModulesHandle.h"
 
-
 ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf ) :
         QWidget( parent ),
         m_pcCurrModuleIf( moduleIf )
@@ -87,6 +86,4 @@ QSize ModuleHandleDock::sizeHint() const
   else
     return currSize;
 }
-
- 
 

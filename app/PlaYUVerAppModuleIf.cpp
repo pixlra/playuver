@@ -26,7 +26,6 @@
 #include "VideoSubWindow.h"
 #include "VideoSubWindow.h"
 
-
 PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module ) :
         m_bIsRunning( false ),
         m_pcModuleAction( action ),
@@ -141,7 +140,7 @@ Void PlaYUVerAppModuleIf::run()
 #ifdef PLAYUVER_THREADED_MODULES
   EventData *eventData = new EventData( true, this );
   if( parent() )
-    QCoreApplication::postEvent( parent(), eventData );
+  QCoreApplication::postEvent( parent(), eventData );
 #endif
   return;
 }
@@ -216,6 +215,4 @@ Void PlaYUVerAppModuleIf::destroy()
   }
 
 }
-
-
 

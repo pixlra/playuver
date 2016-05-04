@@ -48,7 +48,6 @@ class QHBoxLayout;
 class QFocusEvent;
 class QCloseEvent;
 
-
 class PlaYUVerMdiSubWindow;
 
 class SubWindowAbstract: public QWidget
@@ -70,10 +69,9 @@ public:
     VIDEO_STREAM_SUBWINDOW = 2,
     MODULE_SUBWINDOW = 4,
     PLOT_SUBWINDOW = 8,
-  }; Q_DECLARE_FLAGS( SubWindowCategories, SubWindowCategory )
+  };Q_DECLARE_FLAGS( SubWindowCategories, SubWindowCategory )
 
-
-  SubWindowAbstract( QWidget *, UInt );
+SubWindowAbstract  ( QWidget *, UInt );
   ~SubWindowAbstract();
 
   /**
@@ -152,7 +150,7 @@ protected:
 
   Void setWidget( QWidget* widget );
 
-Q_SIGNALS:
+  Q_SIGNALS:
   /**
    * Notify that zoom factor was changed by internal event (e.g. by mouse wheel)
    */

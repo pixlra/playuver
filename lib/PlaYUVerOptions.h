@@ -48,7 +48,6 @@
 
 #include "PlaYUVerDefs.h"
 
-
 /** OptionBase: Virtual base class for storing information relating to a
  * specific option This base class describes common elements.
  * Type specific information should be stored in a derived class.
@@ -57,12 +56,15 @@ class OptionBase
 {
 public:
   OptionBase( const String& name, const String& desc ) :
-    arg_count( 0 ),
-    opt_string( name ),
-    opt_desc( desc )
-  { }
+          arg_count( 0 ),
+          opt_string( name ),
+          opt_desc( desc )
+  {
+  }
 
-  virtual ~OptionBase() {}
+  virtual ~OptionBase()
+  {
+  }
 
   /* parse argument arg, to obtain a value for the option */
   virtual void parse( const String& arg ) = 0;
@@ -81,7 +83,6 @@ public:
   Bool is_binary;
 };
 
-
 class PlaYUVerOptions
 {
 public:
@@ -89,7 +90,7 @@ public:
   struct Option
   {
     Option() :
-      opt( 0 )
+            opt( 0 )
     {
     }
     ~Option()
@@ -101,7 +102,6 @@ public:
     std::list<String> opt_short;
     OptionBase* opt;
   };
-
 
   typedef std::list<Option*> OptionsList;
 
@@ -151,7 +151,6 @@ public:
   PlaYUVerOptions&
   operator()( const String& name, T& storage, const String& desc );
 
-
   /**
    * Add option described by name to the parent Options list,
    *   with desc as an optional help description
@@ -161,7 +160,6 @@ public:
    */
 //   PlaYUVerOptions&
 //   operator()( const String& name, OptionFunc::Func *func, const String& desc );
-
 
   Bool checkListingOpts();
   Void listModules();
@@ -185,6 +183,5 @@ private:
   std::list<const char*> scanArgv( UInt argc, Char* argv[] );
 
 };
-
 
 #endif // __PROGRAMOPTIONS_H__

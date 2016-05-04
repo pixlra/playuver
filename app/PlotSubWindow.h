@@ -36,7 +36,6 @@
 
 class QCustomPlot;
 
-
 class PlotSubWindow: public SubWindowAbstract
 {
 Q_OBJECT

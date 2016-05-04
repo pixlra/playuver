@@ -31,7 +31,6 @@
 #endif
 #include "WidgetFrameNumber.h"
 
-
 WidgetFrameNumber::WidgetFrameNumber( QWidget *parent ) :
         QWidget( parent )
 {
@@ -66,6 +65,4 @@ Void WidgetFrameNumber::clear()
   m_pcCurrFrameNumLabel->setText( "-" );
   m_pcTotalFrameNumLabel->setText( "-" );
 }
-
-
 

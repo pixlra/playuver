@@ -27,14 +27,13 @@
 
 #include "lib/PlaYUVerModuleIf.h"
 
-
 class EightBitsSampling: public PlaYUVerModuleIf
 {
 REGISTER_CLASS_FACTORY( EightBitsSampling )
 
 private:
   PlaYUVerFrame* m_pcSubSampledFrame;
-public:
+  public:
   EightBitsSampling();
   virtual ~EightBitsSampling()
   {

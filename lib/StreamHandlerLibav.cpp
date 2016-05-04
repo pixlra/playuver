@@ -28,7 +28,6 @@
 #include "PlaYUVerFramePixelFormats.h"
 #include "LibMemory.h"
 
-
 std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
@@ -152,7 +151,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
     getMem1D( &m_pchFrameBuffer, m_uiFrameBufferSize );
   }
 
-  m_strFormatName = uppercase (strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
+  m_strFormatName = uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
   const char *name = avcodec_get_name( m_cCodecCtx->codec_id );
 //   sprintf( m_acCodecName, "%s", name );
   m_strCodecName = name;
@@ -215,7 +214,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   }
   if( m_iPixelFormat == PlaYUVerFrame::NO_FMT )
   {
-    throw PlaYUVerFailure("Cannot open file using FFmpeg libs - unsupported pixel format");
+    throw PlaYUVerFailure( "Cannot open file using FFmpeg libs - unsupported pixel format" );
     return false;
   }
 
@@ -272,7 +271,6 @@ Bool StreamHandlerLibav::configureBuffer( PlaYUVerFrame* pcFrame )
 {
   return getMem1D<Byte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
 }
-
 
 UInt64 StreamHandlerLibav::calculateFrameNumber()
 {
@@ -355,7 +353,7 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
 //     av_image_copy_to_buffer( m_pchFrameBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, m_cCodecCtx->pix_fmt, m_cCodecCtx->width,
 //                              m_cCodecCtx->height, 1 );
     av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, m_cCodecCtx->pix_fmt, m_cCodecCtx->width,
-                             m_cCodecCtx->height, 1 );
+        m_cCodecCtx->height, 1 );
     if( orig_pkt.size )
       av_free_packet( &orig_pkt );
 
@@ -377,5 +375,4 @@ Bool StreamHandlerLibav::seek( UInt64 iFrameNum )
   av_seek_frame( m_cFmtCtx, m_iStreamIdx, iFrameNum, AVSEEK_FLAG_FRAME );
   return true;
 }
-
 

@@ -30,7 +30,6 @@
 #include <vector>
 #include <algorithm>
 
-
 // ====================================================================================================================
 // Basic type redefinition
 // ====================================================================================================================
@@ -92,7 +91,6 @@ typedef UChar Byte;
 // Macro functions
 // ====================================================================================================================
 
-
 // ====================================================================================================================
 // PlaYUVer definitions
 // ====================================================================================================================
@@ -120,7 +118,6 @@ enum RGBcomponent
   COLOR_A,
 };
 
-
 inline String lowercase( const String& in )
 {
   String out;
@@ -140,17 +137,22 @@ struct PlaYUVerFailure: public std::exception
   String m_class_name;
   String m_error_msg;
   PlaYUVerFailure( String error_msg ) throw() :
-    m_error_msg( error_msg ) { }
+          m_error_msg( error_msg )
+  {
+  }
   PlaYUVerFailure( String class_name, String error_msg ) throw() :
-    m_class_name( class_name ),
-    m_error_msg( error_msg ) { }
-  ~PlaYUVerFailure() throw() { }
+          m_class_name( class_name ),
+          m_error_msg( error_msg )
+  {
+  }
+  ~PlaYUVerFailure() throw()
+  {
+  }
   const Char* what() const throw()
   {
     String* msg = new String( "[" + m_class_name + "] " + m_error_msg );
     return msg->c_str();
   }
 };
-
 
 #endif // __PLAYUVERDEFS_H__

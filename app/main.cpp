@@ -45,7 +45,7 @@ int main( int argc, char *argv[] )
 
   QApplication application( argc, argv );
   QApplication::setApplicationName( "PlaYUVer" );
-  QApplication::setApplicationVersion( PLAYUVER_VERSION_STRING );
+  QApplication::setApplicationVersion (PLAYUVER_VERSION_STRING);
   QApplication::setOrganizationName( "PixLRA" );
 
 #ifdef USE_QTDBUS
@@ -90,32 +90,33 @@ int main( int argc, char *argv[] )
       QStringList tokens;
 
       // open given files...
-      foreach(const QString & file, filenameList){
-      QDBusMessage m = QDBusMessage::createMethodCall(PLAYUVER_DBUS_SESSION_NAME,
-          QStringLiteral(PLAYUVER_DBUS_PATH), QStringLiteral(PLAYUVER_DBUS_SESSION_NAME), QStringLiteral("loadFile"));
-
-      QList<QVariant> dbusargs;
-      dbusargs.append( file );
-      m.setArguments(dbusargs);
-
-      QDBusMessage res = QDBusConnection::sessionBus().call(m);
-      if (res.type() == QDBusMessage::ReplyMessage)
+      foreach(const QString & file, filenameList)
       {
-        if (res.arguments().count() == 1)
+        QDBusMessage m = QDBusMessage::createMethodCall(PLAYUVER_DBUS_SESSION_NAME,
+            QStringLiteral(PLAYUVER_DBUS_PATH), QStringLiteral(PLAYUVER_DBUS_SESSION_NAME), QStringLiteral("loadFile"));
+
+        QList<QVariant> dbusargs;
+        dbusargs.append( file );
+        m.setArguments(dbusargs);
+
+        QDBusMessage res = QDBusConnection::sessionBus().call(m);
+        if (res.type() == QDBusMessage::ReplyMessage)
         {
-          QVariant v = res.arguments()[0];
-          if (v.isValid())
+          if (res.arguments().count() == 1)
           {
-            QString s = v.toString();
-            if ((!s.isEmpty()) && (s != QStringLiteral("ERROR")))
+            QVariant v = res.arguments()[0];
+            if (v.isValid())
             {
-              tokens << s;
+              QString s = v.toString();
+              if ((!s.isEmpty()) && (s != QStringLiteral("ERROR")))
+              {
+                tokens << s;
+              }
             }
           }
         }
       }
-    }
-    // this will wait until exiting is emitted by the used instance, if wanted...
+      // this will wait until exiting is emitted by the used instance, if wanted...
       return needToBlock ? application.exec() : 0;
     }
   }

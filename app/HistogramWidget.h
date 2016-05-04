@@ -34,7 +34,6 @@
 
 class QEvent;
 
-
 class HistogramWorker;
 class HistogramWidgetPrivate;
 
@@ -169,7 +168,6 @@ private:
 private:
   HistogramWidgetPrivate* d;
 };
-
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( HistogramWidget::HistogramOptions )
 

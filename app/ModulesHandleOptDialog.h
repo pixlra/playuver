@@ -31,7 +31,6 @@
 #include <QDialog>
 #include <QVector>
 
-
 class OpionConfiguration;
 
 /**
@@ -44,7 +43,7 @@ Q_OBJECT
 public:
   ModulesHandleOptDialog( QWidget *parent, PlaYUVerAppModuleIf *pcCurrModuleIf );
   Int runConfiguration();
-private:
+  private:
   PlaYUVerAppModuleIf *m_pcCurrModuleIf;
   QVector<OpionConfiguration*> m_apcOptionList;
 };

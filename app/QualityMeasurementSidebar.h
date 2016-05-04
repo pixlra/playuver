@@ -37,14 +37,13 @@
 #include "lib/PlaYUVerFrame.h"
 #include "HistogramWidget.h"
 
-
 class PlaYUVerSubWindowHandle;
 class VideoSubWindow;
 
 class QualityMeasurementSidebar: public QWidget
 {
 Q_OBJECT
-public:
+  public:
   QualityMeasurementSidebar( QWidget*, PlaYUVerSubWindowHandle * );
   ~QualityMeasurementSidebar();
 

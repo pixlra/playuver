@@ -39,7 +39,6 @@
 #include "PlaYUVerMdiSubWindow.h"
 #include "SubWindowAbstract.h"
 
-
 class PlaYUVerMdiArea: public QMdiArea
 {
 public:
@@ -304,7 +303,7 @@ SubWindowAbstract* PlaYUVerSubWindowHandle::activeSubWindow() const
 }
 
 QList<SubWindowAbstract*> PlaYUVerSubWindowHandle::findSubWindow( const UInt uiCategory ) const
-{
+    {
   QList<SubWindowAbstract*> apcSubWindowList;
   if( uiCategory == 0 )
   {
@@ -322,7 +321,7 @@ QList<SubWindowAbstract*> PlaYUVerSubWindowHandle::findSubWindow( const UInt uiC
 }
 
 QList<SubWindowAbstract*> PlaYUVerSubWindowHandle::findSubWindow( const QString &windowName, const UInt uiCategory ) const
-{
+    {
   QList<SubWindowAbstract*> subWindowList = findSubWindow( uiCategory );
   QList<SubWindowAbstract*> apcSubWindowList;
   if( !windowName.isEmpty() )
@@ -337,7 +336,7 @@ QList<SubWindowAbstract*> PlaYUVerSubWindowHandle::findSubWindow( const QString 
 }
 
 SubWindowAbstract* PlaYUVerSubWindowHandle::findSubWindow( const SubWindowAbstract* subWindow ) const
-{
+    {
   QList<SubWindowAbstract*> subWindowList = findSubWindow();
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
@@ -587,5 +586,4 @@ Void PlaYUVerSubWindowHandle::writeSettings()
   appSettings.setValue( "SubWindowManager/LastMdiSize", m_cMdiModeWindowSize );
   appSettings.setValue( "SubWindowManager/SubWindowMode", m_iWindowMode );
 }
-
 

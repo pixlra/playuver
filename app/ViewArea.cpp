@@ -39,7 +39,6 @@
 #include "ViewArea.h"
 #include "GridManager.h"
 
-
 static const QColor selectionColor = Qt::cyan;
 static const QColor imageMaskColor = Qt::green;
 static const QColor eraserColor = Qt::red;
@@ -686,7 +685,7 @@ Void ViewArea::paintEvent( QPaintEvent *event )
       switch( tool() )
       {
       case MaskTool:
-      {
+        {
         if( m_maskColor.isValid() )
           color = m_maskColor;
         else
@@ -695,7 +694,7 @@ Void ViewArea::paintEvent( QPaintEvent *event )
         break;
       }
       case EraserTool:
-      {
+        {
         color = eraserColor;
         break;
       }
@@ -999,7 +998,7 @@ Void ViewArea::mouseReleaseEvent( QMouseEvent *event )
 ////////////////////////////////////////////////////////////////////////////////
 
 Bool ViewArea::isPosValid( const QPoint &pos ) const
-{
+    {
 
   if( pos.x() < 0 || pos.y() < 0 || pos.x() >= m_pixmap.width() || pos.y() >= m_pixmap.height() )
     return false;
@@ -1010,7 +1009,7 @@ Bool ViewArea::isPosValid( const QPoint &pos ) const
 ////////////////////////////////////////////////////////////////////////////////
 
 QPoint ViewArea::windowToView( const QPoint& pt ) const
-{
+    {
   QPoint p;
   p.setX( static_cast<Int>( ( pt.x() - m_xOffset ) / m_dZoomFactor ) );
   p.setY( static_cast<Int>( ( pt.y() - m_yOffset ) / m_dZoomFactor ) );
@@ -1019,7 +1018,7 @@ QPoint ViewArea::windowToView( const QPoint& pt ) const
 }
 
 QRect ViewArea::windowToView( const QRect& rc ) const
-{
+    {
   QRect r;
 
   r.setTopLeft( windowToView( rc.topLeft() ) );
@@ -1032,7 +1031,7 @@ QRect ViewArea::windowToView( const QRect& rc ) const
 }
 
 QPoint ViewArea::viewToWindow( const QPoint& pt ) const
-{
+    {
   QPoint p;
 
   p.setX( static_cast<Int>( pt.x() * m_dZoomFactor + m_xOffset ) );
@@ -1042,7 +1041,7 @@ QPoint ViewArea::viewToWindow( const QPoint& pt ) const
 }
 
 QRect ViewArea::viewToWindow( const QRect& rc ) const
-{
+    {
   QRect r;
 
   r.setTopLeft( viewToWindow( rc.topLeft() ) );
@@ -1066,7 +1065,7 @@ Void ViewArea::updateMask( const QRect &rect )
   switch( tool() )
   {
   case MaskTool:
-  {
+    {
     // Add rect to the mask
     QPainter paInter( &m_mask );
     paInter.setBrush( Qt::color1 );
@@ -1076,7 +1075,7 @@ Void ViewArea::updateMask( const QRect &rect )
     break;
   }
   case EraserTool:
-  {
+    {
     // Clears rect area in the mask
     QPainter paInter( &m_mask );
     paInter.setBrush( Qt::color0 );

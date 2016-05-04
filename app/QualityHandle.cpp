@@ -34,7 +34,6 @@
 #include "QtConcurrent/qtconcurrentrun.h"
 #endif
 
-
 QualityHandle::QualityHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManager ) :
         m_pcParet( parent ),
         m_pcMainWindowManager( windowManager )
@@ -327,6 +326,4 @@ Void QualityHandle::slotPlotQualitySeveral()
     }
   }
 }
-
- 
 

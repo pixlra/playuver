@@ -29,7 +29,6 @@
 
 #include <cassert>
 
-
 class WeightedPSNR: public PlaYUVerModuleIf
 {
 REGISTER_CLASS_FACTORY( WeightedPSNR )

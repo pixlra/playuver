@@ -26,7 +26,6 @@
 #include <algorithm>
 class be;
 
-
 FrameMask::FrameMask()
 {
   /* Module Definition */
@@ -53,13 +52,13 @@ Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
   for( UInt i = 1; i < apcFrameList.size(); i++ )
   {
     if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE_IGNORE_GRAY |
-                                       PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
+        PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
     {
       return false;
     }
   }
 
-  m_iWeight = m_iWeight > 100 || m_iWeight < 0  ? 5 : m_iWeight;
+  m_iWeight = m_iWeight > 100 || m_iWeight < 0 ? 5 : m_iWeight;
   m_iWeight = m_iWeight > 10 ? m_iWeight / 10 : m_iWeight;
 
   Int iPelFmt = 0;
@@ -109,7 +108,7 @@ PlaYUVerFrame* FrameMask::process( std::vector<PlaYUVerFrame*> apcFrameList )
 
 Bool FrameMask::keyPressed( enum Module_Key_Supported value )
 {
-  if( value == MODULE_KEY_UP && m_iWeight < 10)
+  if( value == MODULE_KEY_UP && m_iWeight < 10 )
   {
     m_iWeight += 1;
     return true;
@@ -122,7 +121,6 @@ Bool FrameMask::keyPressed( enum Module_Key_Supported value )
   return false;
 }
 
-
 Void FrameMask::destroy()
 {
   if( m_pcFrameProcessed )
@@ -131,6 +129,4 @@ Void FrameMask::destroy()
   }
   m_pcFrameProcessed = NULL;
 }
-
-
 

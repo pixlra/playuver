@@ -17,13 +17,11 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 /**
  * \file     AboutDialog.cpp
  * \brief    About Dialog
  *           Based on the work of Glad Deschrijver <glad.deschrijver@gmail.com> in KTikZ project
  */
-
 
 #include "AboutDialog.h"
 #include <QApplication>
@@ -32,27 +30,25 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 
-
-AboutDialog::AboutDialog(QWidget *parent)
-    : QDialog(parent)
+AboutDialog::AboutDialog( QWidget *parent ) :
+        QDialog( parent )
 {
-  QPixmap logo = QPixmap(":/images/playuver-backgroud-logo.png").scaled( QSize( 350,350), Qt::KeepAspectRatio );
-	QLabel *pixmapLabel = new QLabel;
-	pixmapLabel->setPixmap( logo );
+  QPixmap logo = QPixmap( ":/images/playuver-backgroud-logo.png" ).scaled( QSize( 350, 350 ), Qt::KeepAspectRatio );
+  QLabel *pixmapLabel = new QLabel;
+  pixmapLabel->setPixmap( logo );
 
+  QLabel *label = new QLabel( QString( "<h1>%1 Version %2</h1><p>%3</p><p>%4</p>" )
+      .arg( QApplication::applicationName() )
+      .arg( QApplication::applicationVersion() )
+      .arg( tr( "Enhanced open-source Qt-based raw video player" ) )
+      .arg( tr( "Copyright © 2014–2015 Luis Lucas and Joao Carreira" ) ) );
+  label->setWordWrap( true );
 
-	QLabel *label = new QLabel(QString("<h1>%1 Version %2</h1><p>%3</p><p>%4</p>")
-	    .arg(QApplication::applicationName())
-	    .arg(QApplication::applicationVersion())
-	    .arg(tr("Enhanced open-source Qt-based raw video player"))
-	    .arg(tr("Copyright © 2014–2015 Luis Lucas and Joao Carreira")));
-	label->setWordWrap(true);
-
-	QWidget *topWidget = new QWidget;
-	QVBoxLayout *topLayout = new QVBoxLayout;
-	topLayout->addWidget(pixmapLabel);
-	topLayout->addWidget(label);
-	topWidget->setLayout(topLayout);
+  QWidget *topWidget = new QWidget;
+  QVBoxLayout *topLayout = new QVBoxLayout;
+  topLayout->addWidget( pixmapLabel );
+  topLayout->addWidget( label );
+  topWidget->setLayout( topLayout );
 
 //	QTextEdit *textEdit = new QTextEdit(tr("<p>This program is free "
 //	    "software; you can redistribute it and/or modify it under the "
@@ -64,17 +60,16 @@ AboutDialog::AboutDialog(QWidget *parent)
 //	    "warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  "
 //	    "See the GNU General Public License for more details.</p>"));
 //	textEdit->setReadOnly(true);
-	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
-	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
 
-	QVBoxLayout *mainLayout = new QVBoxLayout(this);
-	mainLayout->addWidget(topWidget);
-	//mainLayout->addWidget(textEdit);
-	mainLayout->addWidget(buttonBox);
-	mainLayout->setSpacing(10);
-	buttonBox->setFocus();
+  QVBoxLayout *mainLayout = new QVBoxLayout( this );
+  mainLayout->addWidget( topWidget );
+  //mainLayout->addWidget(textEdit);
+  mainLayout->addWidget( buttonBox );
+  mainLayout->setSpacing( 10 );
+  buttonBox->setFocus();
 
-	setWindowTitle(tr("About %1").arg(QApplication::applicationName()));
+  setWindowTitle( tr( "About %1" ).arg( QApplication::applicationName() ) );
 }
-
 

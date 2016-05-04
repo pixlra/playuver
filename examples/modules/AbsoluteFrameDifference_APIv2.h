@@ -29,7 +29,6 @@
 
 #include <cassert>
 
-
 class AbsoluteFrameDifference: public PlaYUVerModuleIf
 {
 REGISTER_CLASS_FACTORY( AbsoluteFrameDifference )

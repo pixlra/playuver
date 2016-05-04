@@ -30,7 +30,6 @@
 #include <QGridLayout>
 #include <QSpinBox>
 
-
 SeekStreamDialog::SeekStreamDialog( PlaYUVerStream *pcCurrStream, QWidget *parent ) :
         QDialog( parent, Qt::Dialog | Qt::WindowTitleHint ),
         m_iSelectedFrameNum()
@@ -80,5 +79,4 @@ Int SeekStreamDialog::runDialog()
   m_iSelectedFrameNum = m_spinFrameNum->value();
   return m_iSelectedFrameNum;
 }
-
 

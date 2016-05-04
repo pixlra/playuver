@@ -38,7 +38,6 @@
 
 class QScrollArea;
 
-
 class VideoInformation;
 class VideoSubWindow;
 class PlaYUVerAppModuleIf;

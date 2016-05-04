@@ -32,16 +32,19 @@
 #include "PlaYUVerStream.h"
 #include "PlaYUVerStreamHandlerIf.h"
 
-
 class PlaYUVerFrame;
 
 class StreamHandlerPortableMap: public PlaYUVerStreamHandlerIf
 {
-  REGISTER_STREAM_HANDLER( StreamHandlerPortableMap )
+REGISTER_STREAM_HANDLER( StreamHandlerPortableMap )
 
 public:
-  StreamHandlerPortableMap() {}
-  ~StreamHandlerPortableMap() {}
+  StreamHandlerPortableMap()
+  {
+  }
+  ~StreamHandlerPortableMap()
+  {
+  }
 
   Bool openHandler( String strFilename, Bool bInput );
   Void closeHandler();

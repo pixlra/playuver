@@ -27,7 +27,6 @@
 #include "QualityMeasurementSidebar.h"
 #include "VideoSubWindow.h"
 
-
 QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerSubWindowHandle *windowManager ) :
         QWidget( parent ),
         m_pcMainWindowManager( windowManager ),
@@ -257,6 +256,4 @@ Void QualityMeasurementSidebar::slotQualityMetricChanged( Int idx )
   emit signalQualityMetricChanged( idx );
   //updateQualityMetric( idx );
 }
-
- 
 

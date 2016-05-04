@@ -27,7 +27,6 @@
 
 #include "lib/PlaYUVerModuleIf.h"
 
-
 class FrameShift: public PlaYUVerModuleIf
 {
 REGISTER_CLASS_FACTORY( FrameShift )
@@ -36,12 +35,12 @@ private:
   PlaYUVerFrame* m_pcProcessedFrame;
   Int m_iShiftHor;
   Int m_iShiftVer;
-public:
+  public:
   FrameShift();
   virtual ~FrameShift()
   {
   }
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList);
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Bool keyPressed( enum Module_Key_Supported value );
   Void destroy();

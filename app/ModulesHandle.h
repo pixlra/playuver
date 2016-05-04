@@ -39,7 +39,6 @@
 #include "PlaYUVerAppDefs.h"
 #include "lib/PlaYUVerFrame.h"
 
-
 class VideoHandle;
 class PlaYUVerSubWindowHandle;
 class PlaYUVerAppModuleIf;
@@ -48,7 +47,7 @@ class SubWindowHandle;
 class ModulesHandle: public QWidget
 {
 Q_OBJECT
-public:
+  public:
   ModulesHandle( QWidget*, PlaYUVerSubWindowHandle*, VideoHandle* );
   ~ModulesHandle();
 
@@ -62,7 +61,7 @@ public:
   Void writeSettings();
 
   static Void destroyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
-  static Void applyModuleIf( QList<PlaYUVerAppModuleIf*> pcCurrModuleIfList,  Bool isPlaying = false, Bool disableThreads = false );
+  static Void applyModuleIf( QList<PlaYUVerAppModuleIf*> pcCurrModuleIfList, Bool isPlaying = false, Bool disableThreads = false );
 
 private:
   QWidget* m_pcParent;

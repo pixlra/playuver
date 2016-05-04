@@ -28,7 +28,6 @@
 #include "lib/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
-
 PlaYUVerTools::PlaYUVerTools()
 {
   m_bVerbose = true;
@@ -53,7 +52,6 @@ PlaYUVerTools::~PlaYUVerTools()
 }
 
 #define GET_PARAM( X , i ) X[X.size() > i ? i : X.size() - 1]
-
 
 Int PlaYUVerTools::openInputs()
 {
@@ -86,7 +84,7 @@ Int PlaYUVerTools::openInputs()
       }
       if( Opts().hasOpt( "endianness" ) )
       {
-        if( GET_PARAM( m_strEndianness, i ) == "big" )
+        if( GET_PARAM( m_strEndianness, i )== "big" )
         {
           uiEndianness = 0;
         }
@@ -279,7 +277,8 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
           pcModFrame = applyFrameModule();
         }
         PlaYUVerStream* pcModStream = new PlaYUVerStream;
-        if( !pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(), pcModFrame->getPelFormat(), pcModFrame->getBitsPel(), pcModFrame->getEndianness(), 1, false ) )
+        if( !pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(), pcModFrame->getPelFormat(), pcModFrame->getBitsPel(),
+            pcModFrame->getEndianness(), 1, false ) )
         {
           delete pcModStream;
           pcModStream = NULL;
@@ -499,5 +498,4 @@ Int PlaYUVerTools::ModuleOperation()
 
   return 0;
 }
-
 

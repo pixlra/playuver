@@ -26,7 +26,6 @@
 
 #include "DisparityStereoVar.h"
 
-
 DisparityStereoVar::DisparityStereoVar()
 {
   /* Module Definition */
@@ -82,6 +81,4 @@ Void DisparityStereoVar::destroy()
     delete m_pcDisparityFrame;
   m_pcDisparityFrame = NULL;
 }
-
-
 

@@ -42,7 +42,6 @@ class QLabel;
 class QSlider;
 class QElapsedTimer;
 
-
 class PlaYUVerSubWindowHandle;
 class SubWindowAbstract;
 class VideoSubWindow;
@@ -52,7 +51,7 @@ class WidgetFrameNumber;
 class VideoHandle: public QWidget
 {
 Q_OBJECT
-public:
+  public:
   VideoHandle( QWidget*, PlaYUVerSubWindowHandle * );
   ~VideoHandle();
 

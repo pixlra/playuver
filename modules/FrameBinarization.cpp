@@ -24,7 +24,6 @@
 
 #include "FrameBinarization.h"
 
-
 FrameBinarization::FrameBinarization()
 {
   /* Module Definition */
@@ -66,6 +65,4 @@ Void FrameBinarization::destroy()
     delete m_pcBinFrame;
   m_pcBinFrame = NULL;
 }
-
-
 

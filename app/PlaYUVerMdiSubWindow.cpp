@@ -26,7 +26,6 @@
 #include "PlaYUVerMdiSubWindow.h"
 #include "SubWindowAbstract.h"
 
-
 PlaYUVerMdiSubWindow::PlaYUVerMdiSubWindow( QWidget *parent ) :
         QMdiSubWindow( parent )
 {
@@ -48,5 +47,4 @@ Void PlaYUVerMdiSubWindow::closeEvent( QCloseEvent *event )
   emit aboutToClose( this );
   event->accept();
 }
-
 

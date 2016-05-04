@@ -22,16 +22,14 @@
  * \brief    Luma frame average
  */
 
-
 #ifndef __LUMAAVERAGE_H__
 #define __LUMAAVERAGE_H__
 
 #include "lib/PlaYUVerModuleIf.h"
 
-
 class LumaAverage: public PlaYUVerModuleIf
 {
-  REGISTER_CLASS_FACTORY( LumaAverage )
+REGISTER_CLASS_FACTORY( LumaAverage )
 
 private:
 public:

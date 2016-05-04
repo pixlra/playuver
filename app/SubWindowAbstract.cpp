@@ -30,7 +30,6 @@
 #include "SubWindowAbstract.h"
 #include "PlaYUVerMdiSubWindow.h"
 
-
 SubWindowAbstract::SubWindowAbstract( QWidget * parent, UInt category ) :
         QWidget( parent ),
         m_cSubWindow( NULL )
@@ -38,7 +37,7 @@ SubWindowAbstract::SubWindowAbstract( QWidget * parent, UInt category ) :
   setParent( parent );
   setVisible( false );
   //setFocusPolicy( Qt::WheelFocus );
-  setFocusPolicy(Qt::StrongFocus);
+  setFocusPolicy( Qt::StrongFocus );
   setAttribute( Qt::WA_DeleteOnClose );
   setBackgroundRole( QPalette::Background );
 
@@ -91,7 +90,7 @@ QSize SubWindowAbstract::sizeHint() const
 }
 
 QSize SubWindowAbstract::sizeHint( const QSize & ) const
-{
+    {
   return QSize();
 }
 
@@ -112,5 +111,4 @@ Void SubWindowAbstract::closeSubWindow()
   if( m_cSubWindow )
     m_cSubWindow->close();
 }
-
 

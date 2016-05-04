@@ -37,11 +37,10 @@
 #include "lib/PlaYUVerFrame.h"
 #include "HistogramWidget.h"
 
-
 class FramePropertiesDock: public QWidget
 {
 Q_OBJECT
-public:
+  public:
   FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitch );
   ~FramePropertiesDock();
 
@@ -75,7 +74,6 @@ private:
   Int m_iLastFrameType;
 
   Bool* m_pbIsPlaying;
-
 
   QComboBox *channelCB;
   QComboBox *colorsCB;

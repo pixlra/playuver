@@ -30,7 +30,6 @@
 #include <cstdlib>
 #include <cstring>
 
-
 typedef void Void;
 typedef char Char;
 typedef int Int;
@@ -230,7 +229,5 @@ Void freeMem3ImageComponents( T*** array3D )
     freeMem2D<T*>( array3D );
   }
 }
-
-
 
 #endif //  __LIBMEMORY_H__

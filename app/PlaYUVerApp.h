@@ -54,7 +54,6 @@ class QActionGroup;
 class QAction;
 class QSignalMapper;
 
-
 class PlaYUVerOptions;
 class PlaYUVerStream;
 class PlaYUVerSubWindowHandle;

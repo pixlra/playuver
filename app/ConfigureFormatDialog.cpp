@@ -181,7 +181,6 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   pixelGridLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ), 1, 1 );
   pixelGridLayout->addWidget( m_comboBoxPixelFormat, 1, 2 );
 
-
   QLabel* bitsPerPelLabel = new QLabel();
   bitsPerPelLabel->setFont( normalFont );
   bitsPerPelLabel->setText( "Pixel bit depth" );
@@ -205,13 +204,13 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   m_comboBoxEndianness->setFont( normalFont );
   m_comboBoxEndianness->setSizePolicy( sizePolicy );
   m_comboBoxEndianness->clear();
-  m_comboBoxEndianness->addItem( QStringLiteral("Big Endian") );
-  m_comboBoxEndianness->addItem( QStringLiteral("Little Endian") );
+  m_comboBoxEndianness->addItem( QStringLiteral( "Big Endian" ) );
+  m_comboBoxEndianness->addItem( QStringLiteral( "Little Endian" ) );
   endiannessLayout->addWidget( endiannessLabel );
   endiannessLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
   endiannessLayout->addWidget( m_comboBoxEndianness );
   m_widgetEndianness = new QWidget();
-  m_widgetEndianness->setContentsMargins( 0,0,0,0 );
+  m_widgetEndianness->setContentsMargins( 0, 0, 0, 0 );
   m_widgetEndianness->setLayout( endiannessLayout );
   m_widgetEndianness->setVisible( true );
 
@@ -231,7 +230,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   framerateFormatLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
   framerateFormatLayout->addWidget( m_spinBoxFrameRate );
   QWidget* framerateWidget = new QWidget();
-  framerateWidget->setContentsMargins( 0,0,0,0 );
+  framerateWidget->setContentsMargins( 0, 0, 0, 0 );
   framerateWidget->setLayout( framerateFormatLayout );
 
   /*
@@ -267,7 +266,8 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
 }
 
-Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, Int& rEndianess, UInt& rFrameRate )
+Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, Int& rEndianess,
+    UInt& rFrameRate )
 {
   // Set default values
   //setWindowTitle( "Configure resolution for " + Filename );
@@ -391,5 +391,4 @@ Void ConfigureFormatDialog::slotBitsChange( Int idx )
     m_widgetEndianness->setVisible( false );
   }
 }
-
 

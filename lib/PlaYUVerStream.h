@@ -37,7 +37,6 @@ typedef struct
   UInt uiHeight;
 } PlaYUVerStdResolution;
 
-
 typedef PlaYUVerStreamHandlerIf* (*CreateStreamHandlerFn)( void );
 
 typedef struct
@@ -54,7 +53,7 @@ typedef struct
 #define END_REGIST_PLAYUVER_SUPPORTED_FMT \
         return formatsList;
 
-        #define REGIST_PLAYUVER_SUPPORTED_FMT( handler, name, ext ) \
+#define REGIST_PLAYUVER_SUPPORTED_FMT( handler, name, ext ) \
         formatElem.formatName = name; \
         formatElem.formatExt = lowercase( ext ); \
         formatElem.formatFct = handler; \
@@ -65,7 +64,6 @@ typedef struct
     std::vector<PlaYUVerSupportedFormat> new_fmts = class_name::supported##fct##Formats(); \
     formatsList.insert( formatsList.end(), new_fmts.begin(), new_fmts.end() ); \
   }
-
 
 /**
  * \class PlaYUVerStream
@@ -98,7 +96,7 @@ public:
   String getFormatName();
   String getCodecName();
 
-  Bool open( String filename, String resolution, String input_format, UInt bitsPel, Int endianness, UInt frame_rate,  Bool bInput );
+  Bool open( String filename, String resolution, String input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput );
   Bool open( String filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput );
   Bool reload();
   Void close();
@@ -133,7 +131,6 @@ public:
   {
     return m_bInit;
   }
-
 
   Void getDuration( Int* duration_array );
 

@@ -31,7 +31,6 @@
 #include <QtDebug>
 #include "HistogramWidget.h"
 
-
 class HistogramWorker: public QThread
 {
 private:
@@ -97,17 +96,18 @@ public:
 };
 
 const QBrush g_eColorPallet[][3] =
-{
-  {
-    Qt::darkGray,  // Luma
-    Qt::blue,  // Cb
-    Qt::red,  // Cr
-  },
-  {
-    Qt::red,  // Channel Red
-    Qt::green,  // Channel Green
-    Qt::blue,  // Channel Blue
-  }, };
+    {
+        {
+            Qt::darkGray,  // Luma
+            Qt::blue,  // Cb
+            Qt::red,  // Cr
+        },
+        {
+            Qt::red,  // Channel Red
+            Qt::green,  // Channel Green
+            Qt::blue,  // Channel Blue
+        },
+    };
 
 class HistogramWidgetPrivate
 {
@@ -1098,6 +1098,4 @@ Void HistogramWidget::slotMaxValueChanged( int max )
     update();
   }
 }
-
-
 

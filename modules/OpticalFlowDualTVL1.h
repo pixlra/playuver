@@ -29,7 +29,6 @@
 
 #include "lib/PlaYUVerModuleIf.h"
 
-
 class OpticalFlowDualTVL1: public PlaYUVerModuleIf
 {
 REGISTER_CLASS_FACTORY( OpticalFlowDualTVL1 )

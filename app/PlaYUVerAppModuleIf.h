@@ -37,16 +37,15 @@
 
 class QAction;
 
-
 //#define PLAYUVER_THREADED_MODULES
 
 class VideoSubWindow;
 
 class PlaYUVerAppModuleIf
-#ifdef PLAYUVER_THREADED_MODULES
+    #ifdef PLAYUVER_THREADED_MODULES
     : public QThread
 #else
-: public QObject
+    : public QObject
 #endif
 {
   friend class ModulesHandle;
@@ -113,7 +112,7 @@ public:
   Bool apply( Bool isPlaying = false, Bool disableThreads = false );
   Void show();
   Void destroy();
-protected:
+  protected:
   virtual void run();
 };
 

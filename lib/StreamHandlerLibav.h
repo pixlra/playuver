@@ -49,18 +49,15 @@ extern "C"
 #include "PlaYUVerStream.h"
 #include "PlaYUVerStreamHandlerIf.h"
 
-
 struct AVFormatContext;
 struct AVCodecContext;
 struct AVStream;
 struct AVStream;
 struct AVPacket;
 
-
-
 class StreamHandlerLibav: public PlaYUVerStreamHandlerIf
 {
-  REGISTER_STREAM_HANDLER( StreamHandlerLibav )
+REGISTER_STREAM_HANDLER( StreamHandlerLibav )
 
 public:
 

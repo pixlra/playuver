@@ -29,7 +29,6 @@
 #include <QProgressBar>
 #include <QDesktopWidget>
 
-
 ProgressBar::ProgressBar( QWidget *parent, UInt maxValue ) :
         QWidget( parent ),
         m_uiTotalProgress( maxValue ),

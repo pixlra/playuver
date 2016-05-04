@@ -27,7 +27,6 @@
 
 #include "lib/PlaYUVerModuleIf.h"
 
-
 class FrameBinarization: public PlaYUVerModuleIf
 {
 REGISTER_CLASS_FACTORY( FrameBinarization )
@@ -35,7 +34,7 @@ REGISTER_CLASS_FACTORY( FrameBinarization )
 private:
   PlaYUVerFrame* m_pcBinFrame;
   UInt m_uiThreshold;
-public:
+  public:
   FrameBinarization();
   virtual ~FrameBinarization()
   {

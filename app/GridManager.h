@@ -36,7 +36,6 @@ class QPoint;
 class QBitmap;
 class QPainter;
 
-
 /**
  *
  */
@@ -46,7 +45,10 @@ public:
 
   enum Style
   {
-    IntersectionDot = 0, IntersectionCross, Dashed, Solid
+    IntersectionDot = 0,
+    IntersectionCross,
+    Dashed,
+    Solid
   };
 
   GridManager();

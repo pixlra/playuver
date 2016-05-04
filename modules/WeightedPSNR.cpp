@@ -26,7 +26,6 @@
 #include <algorithm>
 #include <cmath>
 
-
 WeightedPSNR::WeightedPSNR()
 {
   /* Module Definition */
@@ -103,7 +102,6 @@ Double measureWMSE( Int component, PlaYUVerFrame* Org, PlaYUVerFrame* Rec, PlaYU
   return ssd / Double( count );
 }
 
-
 Double WeightedPSNR::measure( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   Double dPSNR = 100;
@@ -118,6 +116,4 @@ Void WeightedPSNR::destroy()
 {
 
 }
-
-
 

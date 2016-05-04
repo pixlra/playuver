@@ -36,14 +36,13 @@
 #include "QFuture"
 #include "QualityMeasurementSidebar.h"
 
-
 class PlaYUVerSubWindowHandle;
 class VideoSubWindow;
 
 class QualityHandle: public QWidget
 {
 Q_OBJECT
-public:
+  public:
   QualityHandle( QWidget*, PlaYUVerSubWindowHandle * );
   ~QualityHandle();
 

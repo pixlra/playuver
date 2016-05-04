@@ -27,7 +27,6 @@
 
 #include "lib/PlaYUVerModuleIf.h"
 
-
 class FrameCrop: public PlaYUVerModuleIf
 {
 REGISTER_CLASS_FACTORY( FrameCrop )
@@ -38,7 +37,7 @@ private:
   UInt m_uiYPosition;
   Int m_iXSize;
   Int m_iYSize;
-public:
+  public:
   FrameCrop();
   virtual ~FrameCrop()
   {

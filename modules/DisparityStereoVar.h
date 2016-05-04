@@ -31,15 +31,14 @@
 
 #include <cassert>
 
-
 class DisparityStereoVar: public PlaYUVerModuleIf
 {
-  REGISTER_CLASS_FACTORY( DisparityStereoVar )
+REGISTER_CLASS_FACTORY( DisparityStereoVar )
 
 private:
   PlaYUVerFrame* m_pcDisparityFrame;
   cv::StereoVar m_cStereoVar;
-public:
+  public:
   DisparityStereoVar();
   virtual ~DisparityStereoVar()
   {

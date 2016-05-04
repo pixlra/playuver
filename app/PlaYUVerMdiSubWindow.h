@@ -29,8 +29,6 @@
 #include "PlaYUVerAppDefs.h"
 #include <QMdiSubWindow>
 
-
-
 class PlaYUVerMdiSubWindow: public QMdiSubWindow
 {
 Q_OBJECT

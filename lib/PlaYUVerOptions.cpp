@@ -60,22 +60,25 @@ struct ParseFailure: public std::exception
   String arg;
   String val;
   ParseFailure( String arg0, String val0 ) throw() :
-    arg( arg0 ),
-    val( val0 ) { }
-  ~ParseFailure() throw() { }
+          arg( arg0 ),
+          val( val0 )
+  {
+  }
+  ~ParseFailure() throw()
+  {
+  }
   const Char* what() const throw()
   {
     return "Option Parse Failure";
   }
 };
 
-
 /** Type specific option storage */
 class BoolOption: public OptionBase
 {
 public:
   BoolOption( const String& name, const String& desc ) :
-    OptionBase( name, desc )
+          OptionBase( name, desc )
   {
     is_binary = true;
   }
@@ -92,8 +95,8 @@ class StandardOption: public OptionBase
 {
 public:
   StandardOption( const String& name, T& storage, const String& desc ) :
-    OptionBase( name, desc ),
-    opt_storage( storage )
+          OptionBase( name, desc ),
+          opt_storage( storage )
   {
     is_binary = false;
   }
@@ -124,7 +127,7 @@ inline void StandardOption<T>::parse( const String& arg )
 }
 
 template<>
-inline void StandardOption< std::vector<UInt> >::parse( const String& arg )
+inline void StandardOption<std::vector<UInt> >::parse( const String& arg )
 {
   UInt aux_opt_storage;
   std::istringstream arg_ss( arg, std::istringstream::in );
@@ -142,7 +145,7 @@ inline void StandardOption< std::vector<UInt> >::parse( const String& arg )
 }
 
 template<>
-inline void StandardOption< std::vector<Int> >::parse( const String& arg )
+inline void StandardOption<std::vector<Int> >::parse( const String& arg )
 {
   Int aux_opt_storage;
   std::istringstream arg_ss( arg, std::istringstream::in );
@@ -179,12 +182,12 @@ inline void StandardOption<std::vector<String> >::parse( const String& arg )
 struct FunctionOption: public OptionBase
 {
 public:
-  typedef Void( Func )( PlaYUVerOptions&, const String& );
+  typedef Void (Func)( PlaYUVerOptions&, const String& );
 
   FunctionOption( const String& name, PlaYUVerOptions& parent_, Func *func_, const String& desc ) :
-    OptionBase( name, desc ),
-    parent( parent_ ),
-    func( func_ )
+          OptionBase( name, desc ),
+          parent( parent_ ),
+          func( func_ )
   {
     is_binary = false;
   }
@@ -197,7 +200,7 @@ public:
 
 private:
   PlaYUVerOptions& parent;
-  void ( *func )( PlaYUVerOptions&, const String& );
+  void (*func)( PlaYUVerOptions&, const String& );
 };
 
 /* Helper method to initiate adding options to Options */
@@ -247,7 +250,6 @@ template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, std::
 //   addOption( new FunctionOption( name, parent, func, desc ) );
 //   return *this;
 // }
-
 PlaYUVerOptions::PlaYUVerOptions( const String& name )
 {
   m_cOptionGroupName = name;
@@ -308,7 +310,6 @@ Void PlaYUVerOptions::addDefaultOptions()
   ( "module_list_full", "detailed list supported modules" );
 }
 
-
 PlaYUVerOptions& PlaYUVerOptions::addOptions()
 {
   return *this;
@@ -345,8 +346,6 @@ void PlaYUVerOptions::addOption( OptionBase *opt )
   }
   opt_list.push_back( names );
 }
-
-
 
 static void setOptions( PlaYUVerOptions::OptionsList& opt_list, const string& value )
 {
@@ -429,7 +428,7 @@ UInt PlaYUVerOptions::parseLONG( UInt argc, Char* argv[] )
      * where longopts have to include an =, otherwise they are
      * booleans */
     if( argc == 1 )
-      return 0; /* run out of argv for argument */
+    return 0; /* run out of argv for argument */
     extra_argc_consumed = 1;
 #endif
     if( !storePair( true, false, option, "1" ) )
@@ -528,7 +527,6 @@ Bool PlaYUVerOptions::parse( UInt argc, Char *argv[] )
   }
   return true;
 }
-
 
 list<const Char*> PlaYUVerOptions::scanArgv( UInt argc, Char *argv[] )
 {
@@ -725,8 +723,8 @@ Bool PlaYUVerOptions::checkListingOpts()
   if( hasOpt( "version" ) )
   {
     std::cout << "PlaYUVer version "
-              << PLAYUVER_VERSION_STRING
-              << "\n";
+        << PLAYUVER_VERSION_STRING
+        << "\n";
     bRet |= true;
   }
   if( hasOpt( "pel_fmts" ) )
@@ -809,6 +807,4 @@ Void PlaYUVerOptions::listModules()
     printf( "\n" );
   }
 }
-
-
 

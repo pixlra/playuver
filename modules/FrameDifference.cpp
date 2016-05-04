@@ -25,7 +25,6 @@
 #include "FrameDifference.h"
 #include <algorithm>
 
-
 FrameDifference::FrameDifference()
 {
   /* Module Definition */
@@ -102,6 +101,4 @@ Void FrameDifference::destroy()
     delete m_pcFrameDifference;
   m_pcFrameDifference = NULL;
 }
-
-
 

@@ -34,14 +34,12 @@
 #include <QWidget>
 #endif
 
-
-
 class PlaYUVerAppModuleIf;
 
 class ModuleHandleDock: public QWidget
 {
-Q_OBJECT
-public:
+  Q_OBJECT
+  public:
   ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf );
   ~ModuleHandleDock();
 

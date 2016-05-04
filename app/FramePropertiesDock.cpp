@@ -27,7 +27,6 @@
 #include <QtDebug>
 #include "FramePropertiesDock.h"
 
-
 FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitch ) :
         QWidget( parent ),
         m_pbIsPlaying( pbMainPlaySwitch )
@@ -614,6 +613,4 @@ Void FramePropertiesDock::slotUpdateIntervRange( Int range )
   maxInterv->setMaximum( range );
   maxInterv->blockSignals( false );
 }
-
- 
 

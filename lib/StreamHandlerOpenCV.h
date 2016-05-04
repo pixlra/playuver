@@ -34,15 +34,14 @@
 
 namespace cv
 {
-  class VideoCapture;
+class VideoCapture;
 }
-
 
 class PlaYUVerFrame;
 
 class StreamHandlerOpenCV: public PlaYUVerStreamHandlerIf
 {
-  REGISTER_STREAM_HANDLER( StreamHandlerOpenCV )
+REGISTER_STREAM_HANDLER( StreamHandlerOpenCV )
 
 public:
 

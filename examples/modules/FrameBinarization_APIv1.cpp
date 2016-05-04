@@ -24,7 +24,6 @@
 
 #include "FrameBinarization_APIv1.h"
 
-
 REGISTER_CLASS_MAKER( FrameBinarization )
 
 FrameBinarization::FrameBinarization()
@@ -68,6 +67,4 @@ Void FrameBinarization::destroy()
     delete m_pcBinFrame;
   m_pcBinFrame = NULL;
 }
-
-
 

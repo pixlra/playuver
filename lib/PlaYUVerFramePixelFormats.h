@@ -143,6 +143,4 @@ typedef struct PlaYUVerPixFmtDescriptor
 #define PLAYUVER_NUMBER_FORMATS 7
 extern PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PLAYUVER_NUMBER_FORMATS];
 
-
-
 #endif // __PLAYUVERFRAMEPIXELFORMATS_H__

@@ -30,7 +30,6 @@
 #include "lib/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
-
 PlaYUVerToolsCmdParser::PlaYUVerToolsCmdParser()
 {
   m_uiLogLevel = 0;
@@ -83,12 +82,12 @@ Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char *argv[] )
     m_uiLogLevel = LOG_RESULT;
   }
 
-  if( m_cOptions.hasOpt("module") && m_cOptions.hasOpt("help") )
+  if( m_cOptions.hasOpt( "module" ) && m_cOptions.hasOpt( "help" ) )
   {
     listModuleHelp();
     iRet = 1;
   }
-  else if( m_cOptions.hasOpt("help") )
+  else if( m_cOptions.hasOpt( "help" ) )
   {
     printf( "Usage: %s modules/quality/save [options] -input=input_file [--output=output_file]\n", argv[0] );
     m_cOptions.doHelp( std::cout );
@@ -118,5 +117,4 @@ Void PlaYUVerToolsCmdParser::listModuleHelp()
     pcCurrModuleIf->m_cModuleOptions.doHelp( std::cout );
   }
 }
-
 

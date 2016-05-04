@@ -24,7 +24,6 @@
 
 #include "FrameShift.h"
 
-
 FrameShift::FrameShift()
 {
   /* Module Definition */
@@ -93,7 +92,6 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
   yStartIn = iShiftVerChroma >= 0 ? 0 : -iShiftVerChroma;
   yEndOut = iShiftVerChroma >= 0 ? m_pcProcessedFrame->getChromaHeight() : m_pcProcessedFrame->getChromaHeight() + iShiftVerChroma;
 
-
   for( UInt c = 1; c < m_pcProcessedFrame->getNumberChannels(); c++ )
   {
     for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ )
@@ -143,6 +141,4 @@ Void FrameShift::destroy()
     delete m_pcProcessedFrame;
   m_pcProcessedFrame = NULL;
 }
-
-
 

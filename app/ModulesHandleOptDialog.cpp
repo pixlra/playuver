@@ -32,7 +32,6 @@
 
 #include "lib/PlaYUVerOptions.h"
 
-
 class OpionConfiguration: public QWidget
 {
 public:
@@ -146,5 +145,4 @@ Int ModulesHandleOptDialog::runConfiguration()
   }
   return QDialog::Accepted;
 }
-
 

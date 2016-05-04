@@ -25,7 +25,6 @@
 #include "AbsoluteFrameDifference.h"
 #include <cstdlib>
 
-
 AbsoluteFrameDifference::AbsoluteFrameDifference()
 {
   /* Module Definition */
@@ -48,7 +47,7 @@ Bool AbsoluteFrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
   _BASIC_MODULE_API_2_CHECK_
 
   for( UInt i = 1; i < apcFrameList.size(); i++ )
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
       return false;
 
   m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
@@ -80,6 +79,4 @@ Void AbsoluteFrameDifference::destroy()
     delete m_pcFrameDifference;
   m_pcFrameDifference = NULL;
 }
-
-
 

@@ -28,7 +28,6 @@
 #include "PlaYUVerFramePixelFormats.h"
 #include "LibMemory.h"
 
-
 Bool StreamHandlerRaw::openHandler( String strFilename, Bool bInput )
 {
   m_bIsInput = bInput;
@@ -54,7 +53,6 @@ Bool StreamHandlerRaw::configureBuffer( PlaYUVerFrame* pcFrame )
   return getMem1D<Byte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
 }
 
-
 UInt64 StreamHandlerRaw::calculateFrameNumber()
 {
   if( !m_pFile || m_uiNBytesPerFrame == 0 )
@@ -77,7 +75,7 @@ Bool StreamHandlerRaw::seek( UInt64 iFrameNum )
 
 Bool StreamHandlerRaw::read( PlaYUVerFrame* pcFrame )
 {
-  UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
+  UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof(Byte), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
   pcFrame->frameFromBuffer( m_pStreamBuffer );
@@ -87,10 +85,9 @@ Bool StreamHandlerRaw::read( PlaYUVerFrame* pcFrame )
 Bool StreamHandlerRaw::write( PlaYUVerFrame* pcFrame )
 {
   pcFrame->frameToBuffer( m_pStreamBuffer );
-  UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
+  UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof(Byte), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
   return true;
 }
-
 

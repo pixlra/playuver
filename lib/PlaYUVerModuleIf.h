@@ -40,7 +40,6 @@
 #include "PlaYUVerOptions.h"
 #include <vector>
 
-
 #define REGISTER_CLASS_MAKER(X) \
   extern "C" PlaYUVerModuleIf* Maker() { return new X; }
 
@@ -114,7 +113,6 @@ enum Module_Key_Supported
   MODULE_KEY_UP,
   MODULE_KEY_DOWN,
 };
-
 
 /**
  * \class    PlaYUVerModuleIf

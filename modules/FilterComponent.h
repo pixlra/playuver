@@ -27,12 +27,11 @@
 
 #include "lib/PlaYUVerModuleIf.h"
 
-
 class FilterComponentModule: public PlaYUVerModuleIf
 {
 private:
   PlaYUVerFrame* m_pcFilteredFrame;
-public:
+  public:
   FilterComponentModule();
   virtual ~FilterComponentModule()
   {
@@ -48,7 +47,7 @@ public:
 class FilterComponentLuma: public FilterComponentModule
 {
 REGISTER_CLASS_FACTORY( FilterComponentLuma )
-public:
+  public:
   FilterComponentLuma();
   virtual ~FilterComponentLuma()
   {
@@ -60,7 +59,7 @@ public:
 class FilterComponentChromaU: public FilterComponentModule
 {
 REGISTER_CLASS_FACTORY( FilterComponentChromaU )
-public:
+  public:
   FilterComponentChromaU();
   virtual ~FilterComponentChromaU()
   {
@@ -72,7 +71,7 @@ public:
 class FilterComponentChromaV: public FilterComponentModule
 {
 REGISTER_CLASS_FACTORY( FilterComponentChromaV )
-public:
+  public:
   FilterComponentChromaV();
   virtual ~FilterComponentChromaV()
   {

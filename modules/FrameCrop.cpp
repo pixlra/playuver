@@ -24,7 +24,6 @@
 
 #include "FrameCrop.h"
 
-
 FrameCrop::FrameCrop()
 {
   /* Module Definition */
@@ -74,6 +73,4 @@ Void FrameCrop::destroy()
     delete m_pcCropedFrame;
   m_pcCropedFrame = NULL;
 }
-
-
 

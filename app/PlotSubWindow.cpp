@@ -25,7 +25,6 @@
 #include "PlotSubWindow.h"
 #include "qcustomplot.h"
 
-
 Void PlotSubWindow::definePlotColors()
 {
   m_arrayColorList.append( Qt::blue );
@@ -175,7 +174,7 @@ QSize PlotSubWindow::sizeHint() const
 }
 
 QSize PlotSubWindow::sizeHint( const QSize & maxSize ) const
-{
+    {
   return maxSize * 2 / 3;
 }
 
@@ -238,5 +237,4 @@ Void PlotSubWindow::addPlot( const QVector<Double> &arrayX, const QVector<Double
 
   m_iNumberPlots++;
 }
-
 

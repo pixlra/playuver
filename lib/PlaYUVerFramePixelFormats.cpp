@@ -202,13 +202,13 @@ Void fillARGB32bufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height, UI
 const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NUMBER_FORMATS] =
 {
     {
-        name: "YUV420p",
-        colorSpace: PlaYUVerPixel::COLOR_YUV,
-        numberChannels: 3,
-        numberPlanes: 3,
-        log2ChromaWidth: 1,
-        log2ChromaHeight: 1,
-        ffmpegPelFormat: ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV420P ),
+        "YUV420p",
+        PlaYUVerPixel::COLOR_YUV,
+        3,
+        3,
+        1,
+        1,
+        ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV420P ),
         {
             { 0, 0, 1 },  /* Y */
             { 1, 0, 1 },  /* U */
@@ -216,13 +216,13 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         },
     },
     {
-        name: "YUV422p",
-        colorSpace: PlaYUVerPixel::COLOR_YUV,
-        numberChannels: 3,
-        numberPlanes: 3,
-        log2ChromaWidth: 1,
-        log2ChromaHeight: 0,
-        ffmpegPelFormat: ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV422P ),
+        "YUV422p",
+        PlaYUVerPixel::COLOR_YUV,
+        3,
+        3,
+        1,
+        0,
+        ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV422P ),
         {
             { 0, 0, 1 },  /* Y */
             { 1, 0, 1 },  /* U */
@@ -230,13 +230,13 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         },
     },
     {
-        name: "YUV444p",
-        colorSpace: PlaYUVerPixel::COLOR_YUV,
-        numberChannels: 3,
-        numberPlanes: 3,
-        log2ChromaWidth: 0,
-        log2ChromaHeight: 0,
-        ffmpegPelFormat: ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV444P ),
+        "YUV444p",
+        PlaYUVerPixel::COLOR_YUV,
+        3,
+        3,
+        0,
+        0,
+        ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV444P ),
         {
             { 0, 0, 1 },  /* Y */
             { 1, 0, 1 },  /* U */
@@ -244,13 +244,13 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         },
     },
     {
-        name: "YUYV422",
-        colorSpace: PlaYUVerPixel::COLOR_YUV,
-        numberChannels: 3,
-        numberPlanes: 1,
-        log2ChromaWidth: 1,
-        log2ChromaHeight: 0,
-        ffmpegPelFormat: ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUYV422 ),
+        "YUYV422",
+        PlaYUVerPixel::COLOR_YUV,
+        3,
+        1,
+        1,
+        0,
+        ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUYV422 ),
         {
             { 0, 1, 1 },  /* Y */
             { 0, 3, 2 },  /* U */
@@ -258,23 +258,23 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         },
     },
     {
-        name: "GRAY",
-        colorSpace: PlaYUVerPixel::COLOR_GRAY,
-        numberChannels: 1,
-        numberPlanes: 1,
-        log2ChromaWidth: 0,
-        log2ChromaHeight: 0,
-        ffmpegPelFormat: ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_GRAY8 ),
+        "GRAY",
+        PlaYUVerPixel::COLOR_GRAY,
+        1,
+        1,
+        0,
+        0,
+        ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_GRAY8 ),
         { { 0, 0, 1 } },  /* Y */
     },
     {
-        name: "RGB24",
-        colorSpace: PlaYUVerPixel::COLOR_RGB,
-        numberChannels: 3,
-        numberPlanes: 1,
-        log2ChromaWidth: 0,
-        log2ChromaHeight: 0,
-        ffmpegPelFormat: ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_RGB24 ),
+        "RGB24",
+        PlaYUVerPixel::COLOR_RGB,
+        3,
+        1,
+        0,
+        0,
+        ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_RGB24 ),
         {
             { 0, 2, 1 },  /* R */
             { 0, 2, 2 },  /* G */
@@ -282,13 +282,13 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         },
     },
     {
-        name: "BGR24",
-        colorSpace: PlaYUVerPixel::COLOR_RGB,
-        numberChannels: 3,
-        numberPlanes: 1,
-        log2ChromaWidth: 0,
-        log2ChromaHeight: 0,
-        ffmpegPelFormat: ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_BGR24 ),
+        "BGR24",
+        PlaYUVerPixel::COLOR_RGB,
+        3,
+        1,
+        0,
+        0,
+        ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_BGR24 ),
         {
             { 0, 2, 3}, /* R */
             { 0, 2, 2}, /* G */

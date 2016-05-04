@@ -55,6 +55,7 @@ class PlaYUVerAppModuleIf
 private:
 
   Bool m_bIsRunning;
+  Bool m_bSuccess;
 
   QAction* m_pcModuleAction;
   PlaYUVerModuleIf* m_pcModule;
@@ -74,7 +75,7 @@ public:
   class EventData: public QEvent
   {
   public:
-    EventData( bool success = false, PlaYUVerAppModuleIf* module = NULL ) :
+    EventData( bool success, PlaYUVerAppModuleIf* module ) :
             QEvent( QEvent::User )
     {
       m_bSuccess = success;

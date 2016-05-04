@@ -103,7 +103,7 @@ Bool PlaYUVerAppModuleIf::apply( Bool isPlaying, Bool disableThreads )
 Void PlaYUVerAppModuleIf::run()
 {
   m_bIsRunning = true;
-
+  m_bSuccess = false;
   std::vector<PlaYUVerFrame*> apcFrameList;
   for( UInt i = 0; i < m_pcModule->m_uiNumberOfFrames; i++ )
   {
@@ -136,9 +136,10 @@ Void PlaYUVerAppModuleIf::run()
   {
     return;
   }
+  m_bSuccess = true;
   m_bIsRunning = false;
 #ifdef PLAYUVER_THREADED_MODULES
-  EventData *eventData = new EventData( true, this );
+  EventData *eventData = new EventData( m_bSuccess, this );
   if( parent() )
   QCoreApplication::postEvent( parent(), eventData );
 #endif

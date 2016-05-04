@@ -27,6 +27,7 @@
 #define __PLAYUVERDEFS_H__
 
 #include <string>
+#include <vector>
 #include <algorithm>
 
 

@@ -33,7 +33,7 @@
 
 /**
  * \file     PlaYUVerOptions.h
- * \brief    Input args handler
+ * \brief    Options handler
  */
 
 #ifndef __PROGRAMOPTIONS_H__

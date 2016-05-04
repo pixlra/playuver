@@ -19,7 +19,6 @@
 
 /**
  * \file     PlaYUVerFramePixelFormats.h
- * \ingroup  PlaYUVerLib
  * \brief    Handling the pixel formats definition
  */
 
@@ -27,9 +26,8 @@
 #define __PLAYUVERFRAMEPIXELFORMATS_H__
 
 #include "PlaYUVerDefs.h"
-#include "PlaYUVerFrame.h"
 #include "PlaYUVerPixel.h"
-
+#include "PlaYUVerFrame.h"
 
 #define CHROMA_RESAMPLING( X ) ( ( ( X + 1 ) >> 1 ) << 1 )
 

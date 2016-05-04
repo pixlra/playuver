@@ -19,7 +19,6 @@
 
 /**
  * \file     StreamHandlerRaw.cpp
- * \ingroup  PlaYUVerLib
  * \brief    Interface for raw (yuv) streams
  */
 
@@ -30,7 +29,7 @@
 #include "LibMemory.h"
 
 
-Bool PlaYUVerRawHandler::openHandler( String strFilename, Bool bInput )
+Bool StreamHandlerRaw::openHandler( String strFilename, Bool bInput )
 {
   m_bIsInput = bInput;
   m_pFile = NULL;
@@ -44,19 +43,19 @@ Bool PlaYUVerRawHandler::openHandler( String strFilename, Bool bInput )
   return true;
 }
 
-Void PlaYUVerRawHandler::closeHandler()
+Void StreamHandlerRaw::closeHandler()
 {
   if( m_pFile )
     fclose( m_pFile );
 }
 
-Bool PlaYUVerRawHandler::configureBuffer( PlaYUVerFrame* pcFrame )
+Bool StreamHandlerRaw::configureBuffer( PlaYUVerFrame* pcFrame )
 {
   return getMem1D<Byte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
 }
 
 
-UInt64 PlaYUVerRawHandler::calculateFrameNumber()
+UInt64 StreamHandlerRaw::calculateFrameNumber()
 {
   if( !m_pFile || m_uiNBytesPerFrame == 0 )
     return 0;
@@ -66,7 +65,7 @@ UInt64 PlaYUVerRawHandler::calculateFrameNumber()
   return ( fileSize / m_uiNBytesPerFrame );
 }
 
-Bool PlaYUVerRawHandler::seek( UInt64 iFrameNum )
+Bool StreamHandlerRaw::seek( UInt64 iFrameNum )
 {
   if( m_bIsInput && m_pFile )
   {
@@ -76,7 +75,7 @@ Bool PlaYUVerRawHandler::seek( UInt64 iFrameNum )
   return false;
 }
 
-Bool PlaYUVerRawHandler::read( PlaYUVerFrame* pcFrame )
+Bool StreamHandlerRaw::read( PlaYUVerFrame* pcFrame )
 {
   UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
@@ -85,7 +84,7 @@ Bool PlaYUVerRawHandler::read( PlaYUVerFrame* pcFrame )
   return true;
 }
 
-Bool PlaYUVerRawHandler::write( PlaYUVerFrame* pcFrame )
+Bool StreamHandlerRaw::write( PlaYUVerFrame* pcFrame )
 {
   pcFrame->frameToBuffer( m_pStreamBuffer );
   UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );

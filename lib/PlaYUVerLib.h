@@ -19,7 +19,6 @@
 
 /**
  * \file     PlaYUVerLib.h
- * \ingroup  PlaYUVerLib
  * \brief    Inlcude all modules of PlaYUVer Lib
  */
 
@@ -40,14 +39,14 @@
  * This guaratees that the top-level applications does not need to worry
  * about dealig with different stream formats as well as different pixel formats
  *
- * @defgroup PlaYUVerLib_Stream PlaYUVer Stream
- * @{
- *  Describe PlaYUVerStream
- * @}
- *
  * @defgroup PlaYUVerLib_Frame PlaYUVer Frame
  * @{
  *  Describe PlaYUVerFrame
+ * @}
+ *
+ * @defgroup PlaYUVerLib_Stream PlaYUVer Stream
+ * @{
+ *  Describe PlaYUVerStream
  * @}
  *
  * @}

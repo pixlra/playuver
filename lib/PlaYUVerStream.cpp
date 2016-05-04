@@ -19,19 +19,18 @@
 
 /**
  * \file     PlaYUVerStream.cpp
- * \ingroup  PlaYUVerLib
  * \brief    Input stream handling
  */
 
 #include "config.h"
-#include <cstdio>
-#include <vector>
-#include "LibMemory.h"
 #include "PlaYUVerStream.h"
+
+#include <cstdio>
+
+#include "LibMemory.h"
 #include "PlaYUVerStreamHandlerIf.h"
 #include "StreamHandlerRaw.h"
 #include "StreamHandlerPortableMap.h"
-
 #ifdef USE_FFMPEG
 #include "StreamHandlerLibav.h"
 #endif
@@ -43,8 +42,8 @@
 std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( &PlaYUVerRawHandler::Create, "Raw Video", "yuv" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &PlaYUVerRawHandler::Create, "Raw Video", "gray" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Video", "yuv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Video", "gray" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable PixMap ", "ppm" );
@@ -60,7 +59,7 @@ std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
 std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedWriteFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( &PlaYUVerRawHandler::Create, "Raw Video", "yuv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Video", "yuv" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
 #ifdef USE_FFMPEG
@@ -124,7 +123,7 @@ CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( String strFilename, boo
       return supportedFmts[i].formatFct;
     }
   }
-  return &PlaYUVerRawHandler::Create;
+  return &StreamHandlerRaw::Create;
 }
 
 PlaYUVerStream::PlaYUVerStream()

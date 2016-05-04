@@ -19,22 +19,24 @@
 
 /**
  * \file     PlaYUVerFramePixelFormats.cpp
- * \ingroup  PlaYUVerLib
  * \brief    Handling the pixel formats definition
  */
 
 #include "config.h"
-#include <cstdio>
-#include "LibMemory.h"
+#include "PlaYUVerFramePixelFormats.h"
+// #include <cstdio>
+
 #ifdef USE_SSE
 #include <emmintrin.h>
 #include <smmintrin.h>
 #include <limits.h>
 #endif
+
+#include "LibMemory.h"
 #ifdef USE_FFMPEG
 #include "StreamHandlerLibav.h"
 #endif
-#include "PlaYUVerFramePixelFormats.h"
+
 
 
 /*

@@ -19,7 +19,6 @@
 
 /**
  * \file     StreamHandlerLibav.h
- * \ingroup  PlaYUVerLib
  * \brief    Interface with libav libs
  */
 
@@ -43,13 +42,20 @@ extern "C"
 #include <libavutil/avutil.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/samplefmt.h>
-//#include <libavutil/timestamp.h>
 #include <libavformat/avformat.h>
 }
 
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerStream.h"
 #include "PlaYUVerStreamHandlerIf.h"
+
+
+struct AVFormatContext;
+struct AVCodecContext;
+struct AVStream;
+struct AVStream;
+struct AVPacket;
+
 
 
 class StreamHandlerLibav: public PlaYUVerStreamHandlerIf
@@ -85,7 +91,6 @@ public:
   UInt64 m_uiFrameBufferSize;
 
 private:
-
   AVFormatContext* m_cFmtCtx;
   AVCodecContext* m_cCodecCtx;
   AVStream* m_cStream;

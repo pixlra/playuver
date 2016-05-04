@@ -19,8 +19,7 @@
 
 /**
  * \file     StreamHandlerPortableMap.cpp
- * \ingroup  PlaYUVerLib
- * \brief    Interface with opencv lib
+ * \brief    Handling portable pixmap formats
  */
 
 #include <cstdio>

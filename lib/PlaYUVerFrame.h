@@ -19,20 +19,14 @@
 
 /**
  * \file     PlaYUVerFrame.h
- * \ingroup  PlaYUVerLib
  * \brief    Video Frame handling
  */
 
 #ifndef __PLAYUVERFRAME_H__
 #define __PLAYUVERFRAME_H__
 
-#include <iostream>
-#include <cstdio>
-#include <cassert>
-#include <vector>
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerPixel.h"
-
 
 namespace cv
 {
@@ -51,7 +45,6 @@ struct PlaYUVerFramePrivate;
  * \brief    Frame handling class
  */
 class PlaYUVerFrame
-//: public PlaYUVerFrameStats
 {
 public:
 
@@ -133,8 +126,6 @@ public:
 
   ~PlaYUVerFrame();
 
-  Void clear();
-
   Bool haveSameFmt( PlaYUVerFrame* other, UInt match = MATCH_ALL ) const;
 
   /**
@@ -144,11 +135,13 @@ public:
   Int getPelFormat() const;
 
   /**
+   * Get pixel format information
    * @return pixel format name
    */
   String getPelFmtName();
 
   /**
+   * Get color space information
    * @return get color space index
    * @
    */
@@ -198,6 +191,11 @@ public:
    */
   static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel );
 
+  /**
+   * Reset frame pixels to zero
+   */
+  Void clear();
+
   Pel*** getPelBufferYUV() const;
   Pel*** getPelBufferYUV();
   UChar* getRGBBuffer() const;
@@ -236,16 +234,13 @@ public:
   Bool fromMat( cv::Mat& cvMat );
 
   /**
-   * @defgroup PlaYUVerLib_QualityMetrics Quality Metrics Interface
+   * \ingroup  PlaYUVerLib_Frame
+   * @defgroup PlaYUVerLib_Frame_QualityMetrics Quality Metrics Interface
    * @{
-   * \ingroup PlaYUVerLib
    * Quality metrics interface
    *
-   * @}
    */
 
-  //! @ingroup PlaYUVerLib_QualityMetrics
-  //! @{
   enum QualityMetrics
   {
     NO_METRIC = -1,
@@ -269,7 +264,7 @@ public:
   Double getPSNR( PlaYUVerFrame* Org, Int component );
   Double getSSIM( PlaYUVerFrame* Org, Int component );
 
-  //! @}
+  /** @} */
 
 private:
   PlaYUVerFramePrivate* d;

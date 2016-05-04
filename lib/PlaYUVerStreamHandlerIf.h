@@ -37,7 +37,7 @@
 
 /**
  * \class PlaYUVerStreamHandlerIf
- * \ingroup  PlaYUVerLib PlaYUVerLib_Stream
+ * \ingroup  PlaYUVerLib_Stream
  * \brief    Abstract class for stream handling
  */
 class PlaYUVerStreamHandlerIf

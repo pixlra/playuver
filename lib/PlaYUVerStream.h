@@ -19,7 +19,6 @@
 
 /**
  * \file     PlaYUVerStream.h
- * \ingroup  PlaYUVerLib
  * \brief    Input stream handling
  */
 
@@ -27,13 +26,8 @@
 #define __PLAYUVERSTREAM_H__
 
 #include "PlaYUVerDefs.h"
-#include <iostream>
-#include <fstream>
-#include <cstdio>
 #include "PlaYUVerFrame.h"
 
-
-class LibOpenCVHandler;
 class PlaYUVerStreamHandlerIf;
 
 typedef struct
@@ -76,6 +70,7 @@ typedef struct
 /**
  * \class PlaYUVerStream
  * \ingroup  PlaYUVerLib PlaYUVerLib_Stream
+ * \brief  Stream handling class
  */
 class PlaYUVerStream
 {

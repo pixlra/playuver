@@ -19,7 +19,6 @@
 
 /**
  * \file     StreamHandlerLibav.cpp
- * \ingroup  PlaYUVerLib
  * \brief    Interface with libav libs
  */
 

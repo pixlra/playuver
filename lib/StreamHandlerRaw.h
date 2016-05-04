@@ -30,20 +30,19 @@
 
 
 /**
- * \class PlaYUVerRawHandler
- * \ingroup  PlaYUVerLib PlaYUVerLib_Stream
+ * \class StreamHandlerRaw
  * \brief    Class to handle raw video format
  */
-class PlaYUVerRawHandler: public PlaYUVerStreamHandlerIf
+class StreamHandlerRaw: public PlaYUVerStreamHandlerIf
 {
-  REGISTER_STREAM_HANDLER( PlaYUVerRawHandler )
+  REGISTER_STREAM_HANDLER( StreamHandlerRaw )
 
 private:
   FILE* m_pFile; /**< The input file pointer >*/
 
 public:
-  PlaYUVerRawHandler() {}
-  ~PlaYUVerRawHandler() {}
+  StreamHandlerRaw() {}
+  ~StreamHandlerRaw() {}
 
   Bool openHandler( String strFilename, Bool bInput );
   Void closeHandler();

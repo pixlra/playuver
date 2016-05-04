@@ -19,23 +19,19 @@
 
 /**
  * \file     PlaYUVerFrame.cpp
- * \ingroup  PlaYUVerLib
  * \brief    Video Frame handling
  */
 
 #include "config.h"
-#include <cstdio>
-#include <cmath>
-#include "LibMemory.h"
 #include "PlaYUVerFrame.h"
-#include "PlaYUVerFramePixelFormats.h"
-#ifdef USE_FFMPEG
-#include "StreamHandlerLibav.h"
-#endif
+
+#include <cmath>
 #ifdef USE_OPENCV
-#include "StreamHandlerOpenCV.h"
+#include <opencv2/core.hpp>
 #endif
 
+#include "LibMemory.h"
+#include "PlaYUVerFramePixelFormats.h"
 
 /*! \brief Supported formats
  *

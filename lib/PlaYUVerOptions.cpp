@@ -33,7 +33,7 @@
 
 /**
  * \file     PlaYUVerOptions.cpp
- * \brief    Input args handler
+ * \brief    Options handler
  */
 
 #include "config.h"

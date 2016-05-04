@@ -19,11 +19,21 @@
 
 /**
  * \file     PlaYUVerModuleIf.h
+ * \ingroup  PlaYUVerLib_Modules
  * \brief    PlaYUVer modules interface
  */
 
 #ifndef __PLAYUVERMODULESIF_H__
 #define __PLAYUVERMODULESIF_H__
+
+/**
+ * \ingroup  PlaYUVerLib
+ * @defgroup PlaYUVerLib_Modules PlaYUVer Modules
+ * @{
+ * PlaYUVerLib supports the creation of independent
+ * frame processing modules
+ * @}
+ */
 
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerFrame.h"
@@ -46,31 +56,48 @@ for( UInt i = 0; i < apcFrameList.size(); i++ ) \
   if( !apcFrameList[i] ) \
     return false;
 
-enum  // Module API
+/** Module_API_Version Enum
+ * \ingroup PlaYUVerLib_Modules
+ * Version of the modules API required
+ * @see m_iModuleAPI
+ */
+enum Module_API_Version
 {
   MODULE_API_1,
   MODULE_API_2,
 };
 
-enum  // Module type
+/** Module_Type Enum
+ * \ingroup PlaYUVerLib_Modules
+ * Type of module
+ * @see m_iModuleType
+ */
+enum Module_Type
 {
   FRAME_PROCESSING_MODULE,
   FRAME_MEASUREMENT_MODULE,
 };
 
-#define APPLY_WHILE_PLAYING true
 #define MAX_NUMBER_FRAMES 3
 
+/** Module_NumberOfFrames Enum
+ * \ingroup PlaYUVerLib_Modules
+ * Number of frames requires by a module
+ * @see m_uiNumberOfFrames
+ */
 enum Module_NumberOfFrames
 {
   MODULE_REQUIRES_ONE_FRAME = 1,
   MODULE_REQUIRES_TWO_FRAMES,
   MODULE_REQUIRES_THREE_FRAMES,
-  MODULE_REQUIRES_FOUR_FRAMES,
-  MODULE_REQUIRES_FIVE_FRAMES,
-  MODULE_REQUIRES_SIX_FRAMES,
+  MODULE_REQUIRES_MAX_FRAMES = 255,
 };
 
+/** Module_Features Enum
+ * \ingroup PlaYUVerLib_Modules
+ * Features/Requirements of a module
+ * @see m_uiModuleRequirements
+ */
 enum Module_Features
 {
   MODULE_REQUIRES_NOTHING = 0,
@@ -89,6 +116,11 @@ enum Module_Key_Supported
 };
 
 
+/**
+ * \class    PlaYUVerModuleIf
+ * \ingroup  PlaYUVerLib PlaYUVerLib_Modules
+ * \brief    Abstract class for modules
+ */
 class PlaYUVerModuleIf
 {
 public:
@@ -98,7 +130,10 @@ public:
   const Char* m_pchModuleCategory;
   const Char* m_pchModuleName;
   const Char* m_pchModuleTooltip;
+
+  //! Number of frames
   enum Module_NumberOfFrames m_uiNumberOfFrames;
+  //! Features/Requirements
   UInt m_uiModuleRequirements;
 
   PlaYUVerOptions m_cModuleOptions;

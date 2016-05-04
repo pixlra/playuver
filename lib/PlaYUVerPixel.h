@@ -19,7 +19,6 @@
 
 /**
  * \file     PlaYUVerPixel.h
- * \ingroup  PlaYUVerLib
  * \brief    Pixel handling
  */
 

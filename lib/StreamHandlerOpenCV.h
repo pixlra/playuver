@@ -19,7 +19,6 @@
 
 /**
  * \file     StreamHandlerOpenCV.h
- * \ingroup  PlaYUVerLib
  * \brief    Interface with opencv lib
  */
 

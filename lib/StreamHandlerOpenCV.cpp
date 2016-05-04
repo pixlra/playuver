@@ -19,7 +19,6 @@
 
 /**
  * \file     StreamHandlerOpenCV.cpp
- * \ingroup  PlaYUVerLib
  * \brief    Interface with opencv lib
  */
 

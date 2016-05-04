@@ -36,7 +36,13 @@ REGISTER_CLASS_FACTORY( OpticalFlowDualTVL1 )
 private:
   Int m_iStep;
   cv::Ptr<cv::DenseOpticalFlow> m_cTvl1;
+  cv::Mat_<cv::Point2f> m_cvFlow;
+  PlaYUVerFrame* m_pcFramePrev;
+  PlaYUVerFrame* m_pcFrameAfter;
   PlaYUVerFrame* m_pcOutputFrame;
+
+  Void drawFlow();
+  Void compensateFlow();
 
 public:
   OpticalFlowDualTVL1();

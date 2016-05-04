@@ -35,13 +35,12 @@ using cv::Point2f;
 OpticalFlowDualTVL1::OpticalFlowDualTVL1()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;                              // Use API version 2 (recommended).
-  // See this example for details on the functions prototype
-  m_iModuleType = FRAME_PROCESSING_MODULE;                  // Apply module to the frames or to the whole sequence.
-  m_pchModuleCategory = "Measurements";                     // Category (sub-menu)
-  m_pchModuleName = "OpticalFlowDualTVL1";                  // Name
-  m_pchModuleTooltip = "Measure optical flow";              // Description
-  m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;          // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
+  m_iModuleAPI = MODULE_API_2;
+  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_pchModuleCategory = "Measurements";
+  m_pchModuleName = "OpticalFlowDualTVL1";
+  m_pchModuleTooltip = "Measure optical flow";
+  m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
   m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW;
   m_pcOutputFrame = NULL;
 }
@@ -66,50 +65,79 @@ static inline bool isFlowCorrect( Point2f u )
   return !cvIsNaN( u.x ) && !cvIsNaN( u.y ) && fabs( u.x ) < 1e9 && fabs( u.y ) < 1e9;
 }
 
+Void OpticalFlowDualTVL1::drawFlow()
+{
+  Mat cvMatAfter;
+  m_pcFrameAfter->toMat( cvMatAfter, true );
+  Scalar vectorColor( 255, 0, 0, 0 );
+  for( int y = m_iStep / 2; y < m_cvFlow.rows; y += m_iStep )
+  {
+    for( int x = m_iStep / 2; x < m_cvFlow.cols; x += m_iStep )
+    {
+
+      Point2f u( 0, 0 );
+      Double count = 0;
+      for( int i = ( -m_iStep / 2 ); i < ( m_iStep / 2 ); i++ )
+      {
+        for( int j = ( -m_iStep / 2 ); j < ( m_iStep / 2 ); j++ )
+        {
+          if( isFlowCorrect( u ) )
+          {
+            u = u + m_cvFlow( y, x );
+            count++;
+          }
+        }
+      }
+      if( count > 0 )
+      {
+        Point p = Point( x, y );
+        Point ui( u.x / count, u.y / count );
+        arrowedLine( cvMatAfter, p, p + ui, vectorColor );
+      }
+    }
+  }
+  m_pcOutputFrame->fromMat( cvMatAfter );
+}
+
+Void OpticalFlowDualTVL1::compensateFlow()
+{
+  for( Int c = 0; c < m_pcOutputFrame->getNumberChannels(); c++ )
+  {
+    Pel** pPelPrev = m_pcFramePrev->getPelBufferYUV()[c];
+    Pel* pPelOut = m_pcOutputFrame->getPelBufferYUV()[c][0];
+
+    for( int y = 0; y < m_pcOutputFrame->getHeight( c ); y++ )
+    {
+      for( int x = 0; x < m_pcOutputFrame->getWidth( c ); x++ )
+      {
+        Point2f u = m_cvFlow( y, x );
+        Point p( x + u.x, y + u.y);
+        *pPelOut = pPelPrev[p.y][p.x];
+        pPelOut++;
+      }
+    }
+  }
+}
+
 PlaYUVerFrame* OpticalFlowDualTVL1::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
+  m_pcFramePrev = apcFrameList[0];
+  m_pcFrameAfter = apcFrameList[1];
+
   Mat cvMatPrev, cvMatAfter;
-  if( !apcFrameList[0]->toMat( cvMatPrev, true ) || !apcFrameList[1]->toMat( cvMatAfter, true ) )
+  if( !m_pcFramePrev->toMat( cvMatPrev, true ) || !m_pcFrameAfter->toMat( cvMatAfter, true ) )
   {
     return m_pcOutputFrame;
   }
 
-  Mat_<Point2f> flow;
-  m_cTvl1->calc( cvMatPrev, cvMatAfter, flow );
+  m_cTvl1->calc( cvMatPrev, cvMatAfter, m_cvFlow );
+  compensateFlow();
 
-  // determine motion range:
-  Double maxrad = 1;
-
-  for( int y = 0; y < flow.rows; y++ )
-  {
-    for( int x = 0; x < flow.cols; x++ )
-    {
-      Point2f u = flow( y, x );
-      if( !isFlowCorrect( u ) )
-        continue;
-      maxrad = cv::max( maxrad, sqrt( u.x * u.x + u.y * u.y ) );
-    }
-  }
-
-  Scalar vectorColor( 255, 0, 0, 0 );
-  for( int y = m_iStep / 2; y < flow.rows; y += m_iStep )
-  {
-    for( int x = m_iStep / 2; x < flow.cols; x += m_iStep )
-    {
-      Point p = Point( x, y );
-      Point2f u = flow( y, x );
-      Point ui( u.x, u.y );
-
-      if( isFlowCorrect( u ) )
-        arrowedLine( cvMatAfter, p, p + ui, vectorColor );
-    }
-  }
-
-  m_pcOutputFrame->fromMat( cvMatAfter );
   return m_pcOutputFrame;
 }
 
-Void OpticalFlowDualTVL1::destroy()
+Void
+OpticalFlowDualTVL1::destroy()
 {
   if( m_pcOutputFrame )
     delete m_pcOutputFrame;

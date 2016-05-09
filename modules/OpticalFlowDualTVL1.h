@@ -34,6 +34,7 @@ class OpticalFlowDualTVL1: public PlaYUVerModuleIf
 REGISTER_CLASS_FACTORY( OpticalFlowDualTVL1 )
 
 private:
+  Bool m_bShowReconstruction;
   Int m_iStep;
   cv::Ptr<cv::DenseOpticalFlow> m_cTvl1;
   cv::Mat_<cv::Point2f> m_cvFlow;

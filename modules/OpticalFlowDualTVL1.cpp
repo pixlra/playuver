@@ -41,8 +41,14 @@ OpticalFlowDualTVL1::OpticalFlowDualTVL1()
   m_pchModuleName = "OpticalFlowDualTVL1";
   m_pchModuleTooltip = "Measure optical flow";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
-  m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW;
+  m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
+
+  m_cModuleOptions.addOptions()/**/
+  ( "Show reconstruction", m_bShowReconstruction, "Show reconstructed frame instead of MVs [false]" );
+
+  m_bShowReconstruction = false;
   m_pcOutputFrame = NULL;
+
 }
 
 Bool OpticalFlowDualTVL1::create( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -121,8 +127,8 @@ Void OpticalFlowDualTVL1::compensateFlow()
 
 PlaYUVerFrame* OpticalFlowDualTVL1::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  m_pcFramePrev = apcFrameList[0];
-  m_pcFrameAfter = apcFrameList[1];
+  m_pcFrameAfter = apcFrameList[0];
+  m_pcFramePrev = apcFrameList[1];
 
   Mat cvMatPrev, cvMatAfter;
   if( !m_pcFramePrev->toMat( cvMatPrev, true ) || !m_pcFrameAfter->toMat( cvMatAfter, true ) )
@@ -131,6 +137,7 @@ PlaYUVerFrame* OpticalFlowDualTVL1::process( std::vector<PlaYUVerFrame*> apcFram
   }
 
   m_cTvl1->calc( cvMatPrev, cvMatAfter, m_cvFlow );
+//   drawFlow();
   compensateFlow();
 
   return m_pcOutputFrame;

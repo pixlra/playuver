@@ -237,7 +237,7 @@ Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_f
       m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight, m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel,
           m_pcHandler->m_iEndianness );
     }
-    catch( const char *msg )
+    catch( PlaYUVerFailure& e )
     {
       close();
       throw PlaYUVerFailure( "PlaYUVerStream", "Cannot allocated frame buffer" );
@@ -308,6 +308,7 @@ Void PlaYUVerStream::close()
     return;
 
   m_pcHandler->closeHandler();
+  m_pcHandler->Delete();
 
   if( m_ppcFrameBuffer )
   {

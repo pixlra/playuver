@@ -57,6 +57,8 @@ class PlaYUVerStreamHandlerIf
   {
   }
 
+  virtual void Delete() = 0;
+
   virtual Bool openHandler( String strFilename, Bool bInput ) = 0;
   virtual Void closeHandler() = 0;
   virtual Bool configureBuffer( PlaYUVerFrame* pcFrame ) = 0;

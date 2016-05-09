@@ -330,7 +330,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   {
     m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate, true );
   }
-  catch( const char *msg )
+  catch( ... )
   {
     if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate )
         == QDialog::Rejected )

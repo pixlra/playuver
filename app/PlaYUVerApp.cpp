@@ -239,10 +239,10 @@ Void PlaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       videoSubWindow->close();
     }
   }
-  catch( const char *msg )
+  catch( PlaYUVerFailure& e )
   {
     videoSubWindow->close();
-    QString warningMsg = "Cannot open file " + QFileInfo( fileName ).fileName() + " with the following error: \n" + msg;
+    QString warningMsg = "Cannot open file " + QFileInfo( fileName ).fileName() + " with the following error: \n" + e.what();
     QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
     printMessage( warningMsg, LOG_ERROR );
   }
@@ -329,10 +329,10 @@ Void PlaYUVerApp::save()
       {
         saveWindow->save( fileName );
       }
-      catch( const char *msg )
+      catch( PlaYUVerFailure& e )
       {
         QApplication::restoreOverrideCursor();
-        QString warningMsg = "Cannot save file " + QFileInfo( fileName ).fileName() + " with the following error: \n" + msg;
+        QString warningMsg = "Cannot save file " + QFileInfo( fileName ).fileName() + " with the following error: \n" + e.what();
         QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
         printMessage( warningMsg, LOG_ERROR );
         return;
@@ -353,9 +353,9 @@ Void PlaYUVerApp::format()
         addStreamInfoToRecentList( pcVideoSubWindow->getStreamInfo() );
       }
     }
-    catch( const char *msg )
+    catch( PlaYUVerFailure& e )
     {
-      QString warningMsg = "Cannot change format of " + QFileInfo( pcVideoSubWindow->getCurrentFileName() ).fileName() + " with the following error: \n" + msg;
+      QString warningMsg = "Cannot change format of " + QFileInfo( pcVideoSubWindow->getCurrentFileName() ).fileName() + " with the following error: \n" + e.what();
       QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
       printMessage( warningMsg, LOG_ERROR );
       qDebug( ) << warningMsg;

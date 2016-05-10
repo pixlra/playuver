@@ -54,13 +54,13 @@ ENDIF()
 file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "// This files add the header files of each module\n"
 
                                                             "#ifndef __MODULESLISTHEADER_H__\n#define __MODULESLISTHEADER_H__\n" )
-foreach(module ${MODULES_LIST_FILES} )
+foreach(module ${MODULES_LIST_FILES})
   file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#include \"${module}.h\"\n")
-endforeach(module_Name)
+endforeach(module ${MODULES_LIST_FILES})
 file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#define REGISTER_ALL_MODULES \\\n" )
-foreach(module ${MODULES_LIST_NAME} )
+foreach(module ${MODULES_LIST_NAME})
   file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "Register( \"${module}\", &(${module}::Create) ); \\\n")
-endforeach(module_Name)
+endforeach(module ${MODULES_LIST_NAME})
 file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "\n#endif // __MODULESLISTHEADER_H__\n" )
 
 INCLUDE_DIRECTORIES( ${OpenCV_INCLUDE_DIRS} )

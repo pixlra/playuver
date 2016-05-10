@@ -30,6 +30,7 @@
 #include <QMdiArea>
 #include <QMenu>
 #include <QPainter>
+#include <QSettings>
 #include <QSignalMapper>
 #include <QStyle>
 

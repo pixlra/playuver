@@ -22,9 +22,13 @@
  * \brief    Main definition of the PlaYUVerTools APp
  */
 
+#include "PlaYUVerTools.h"
+
 #include <cstring>
 #include <climits>
-#include "PlaYUVerTools.h"
+
+#include "lib/PlaYUVerPixel.h"
+#include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
@@ -337,7 +341,7 @@ Int PlaYUVerTools::QualityOperation()
   const char *pchQualityMetricName = PlaYUVerFrame::supportedQualityMetricsList()[m_uiQualityMetric].c_str();
   PlaYUVerFrame* apcCurrFrame[MAX_NUMBER_INPUTS];
   Bool abEOF[MAX_NUMBER_INPUTS];
-  Double adAverageQuality[MAX_NUMBER_INPUTS - 1][m_uiNumberOfComponents];
+  Double adAverageQuality[MAX_NUMBER_INPUTS - 1][PlaYUVerPixel::MAX_NUMBER_COMPONENTS];
   Double dQuality;
 
   String metric_fmt = " ";

@@ -18,12 +18,21 @@
  */
 
 /**
- * \file     OpticalFlowDualTVL1.cpp
- * \brief    Absolute Frame Difference module
+ * \file     OpticalFlow.cpp
+ * \brief    Modules to measure optical flow
  */
 
-#include "OpticalFlowDualTVL1.h"
+// Own
+#include "OpticalFlow.h"
+
+// System
 #include <cstdlib>
+
+// Opencv
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/video.hpp>
+#include <opencv2/optflow.hpp>
 
 using cv::Scalar;
 using cv::Mat;
@@ -32,14 +41,13 @@ using cv::Ptr;
 using cv::Point;
 using cv::Point2f;
 
-OpticalFlowDualTVL1::OpticalFlowDualTVL1()
+
+OpticalFlowModule::OpticalFlowModule()
 {
   /* Module Definition */
   m_iModuleAPI = MODULE_API_2;
   m_iModuleType = FRAME_PROCESSING_MODULE;
-  m_pchModuleCategory = "Measurements";
-  m_pchModuleName = "OpticalFlowDualTVL1";
-  m_pchModuleTooltip = "Measure optical flow";
+  m_pchModuleCategory = "OpticalFlow";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
   m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
 
@@ -51,7 +59,7 @@ OpticalFlowDualTVL1::OpticalFlowDualTVL1()
 
 }
 
-Bool OpticalFlowDualTVL1::create( std::vector<PlaYUVerFrame*> apcFrameList )
+Bool OpticalFlowModule::commonCreate( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
 
@@ -60,7 +68,6 @@ Bool OpticalFlowDualTVL1::create( std::vector<PlaYUVerFrame*> apcFrameList )
       return false;
 
   m_iStep = 16;
-  m_cTvl1 = cv::createOptFlow_DualTVL1();
   m_pcOutputFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
 
   return true;
@@ -71,7 +78,7 @@ static inline bool isFlowCorrect( Point2f u )
   return !cvIsNaN( u.x ) && !cvIsNaN( u.y ) && fabs( u.x ) < 1e9 && fabs( u.y ) < 1e9;
 }
 
-Void OpticalFlowDualTVL1::drawFlow()
+Void OpticalFlowModule::drawFlow()
 {
   Mat cvMatAfter;
   m_pcFrameAfter->toMat( cvMatAfter, true );
@@ -105,7 +112,7 @@ Void OpticalFlowDualTVL1::drawFlow()
   m_pcOutputFrame->fromMat( cvMatAfter );
 }
 
-Void OpticalFlowDualTVL1::compensateFlow()
+Void OpticalFlowModule::compensateFlow()
 {
   for( UInt c = 0; c < m_pcOutputFrame->getNumberChannels(); c++ )
   {
@@ -125,7 +132,7 @@ Void OpticalFlowDualTVL1::compensateFlow()
   }
 }
 
-PlaYUVerFrame* OpticalFlowDualTVL1::process( std::vector<PlaYUVerFrame*> apcFrameList )
+PlaYUVerFrame* OpticalFlowModule::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   m_pcFrameAfter = apcFrameList[0];
   m_pcFramePrev = apcFrameList[1];
@@ -136,18 +143,75 @@ PlaYUVerFrame* OpticalFlowDualTVL1::process( std::vector<PlaYUVerFrame*> apcFram
     return m_pcOutputFrame;
   }
 
-  m_cTvl1->calc( cvMatPrev, cvMatAfter, m_cvFlow );
-//   drawFlow();
-  compensateFlow();
+  m_cOpticalFlow->calc( cvMatAfter, cvMatPrev, m_cvFlow );
+  if( m_bShowReconstruction )
+    compensateFlow();
+  else
+    drawFlow();
 
   return m_pcOutputFrame;
 }
 
-Void
-OpticalFlowDualTVL1::destroy()
+Void OpticalFlowModule::destroy()
 {
   if( m_pcOutputFrame )
     delete m_pcOutputFrame;
   m_pcOutputFrame = NULL;
+//   if( m_cOpticalFlow )
+//     delete m_cOpticalFlow;
+
 }
+
+OpticalFlowDualTVL1::OpticalFlowDualTVL1()
+{
+  /* Module Definition */
+  m_pchModuleName = "OpticalFlowDualTVL1";
+  m_pchModuleTooltip = "Measure optical flow using DualTVL1 method";
+
+}
+
+Bool OpticalFlowDualTVL1::create( std::vector<PlaYUVerFrame*> apcFrameList )
+{
+  Bool bRet = commonCreate( apcFrameList );
+  if( !bRet )
+    return bRet;
+  m_cOpticalFlow = cv::createOptFlow_DualTVL1();
+  return bRet;
+}
+
+OpticalFlowSparseToDense::OpticalFlowSparseToDense()
+{
+  /* Module Definition */
+  m_pchModuleName = "OpticalFlowSparseToDense";
+  m_pchModuleTooltip = "Measure optical flow using SparseToDense method";
+
+}
+
+Bool OpticalFlowSparseToDense::create( std::vector<PlaYUVerFrame*> apcFrameList )
+{
+  Bool bRet = commonCreate( apcFrameList );
+  if( !bRet )
+    return bRet;
+  m_cOpticalFlow = cv::optflow::createOptFlow_SparseToDense();
+  return bRet;
+}
+
+OpticalFlowFarneback::OpticalFlowFarneback()
+{
+  /* Module Definition */
+  m_pchModuleName = "OpticalFlowFarneback";
+  m_pchModuleTooltip = "Measure optical flow using Farneback method";
+
+}
+
+Bool OpticalFlowFarneback::create( std::vector<PlaYUVerFrame*> apcFrameList )
+{
+  Bool bRet = commonCreate( apcFrameList );
+  if( !bRet )
+    return bRet;
+  m_cOpticalFlow = cv::optflow::createOptFlow_Farneback();
+  return bRet;
+}
+
+
 

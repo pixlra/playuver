@@ -18,43 +18,75 @@
  */
 
 /**
- * \file     OpticalFlowDualTVL1.h
- * \brief    Absolute Frame Difference module
+ * \file     OpticalFlow.h
+ * \brief    Modules to measure optical flow
  */
 
 #ifndef __OPTICALFLOWDUALTVL1_H__
 #define __OPTICALFLOWDUALTVL1_H__
 
-#include <opencv2/opencv.hpp>
+// OpenCV
+#include <opencv2/core.hpp>
+#include <opencv2/video.hpp>
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-class OpticalFlowDualTVL1: public PlaYUVerModuleIf
+class OpticalFlowModule: public PlaYUVerModuleIf
 {
-REGISTER_CLASS_FACTORY( OpticalFlowDualTVL1 )
-
-private:
+protected:
   Bool m_bShowReconstruction;
   Int m_iStep;
-  cv::Ptr<cv::DenseOpticalFlow> m_cTvl1;
+  cv::Ptr<cv::DenseOpticalFlow> m_cOpticalFlow;
   cv::Mat_<cv::Point2f> m_cvFlow;
   PlaYUVerFrame* m_pcFramePrev;
   PlaYUVerFrame* m_pcFrameAfter;
   PlaYUVerFrame* m_pcOutputFrame;
-
   Void drawFlow();
   Void compensateFlow();
+  Bool commonCreate( std::vector<PlaYUVerFrame*> apcFrameList );
+public:
+  OpticalFlowModule();
+  virtual ~OpticalFlowModule()
+  {
+  }
+  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
+  Void destroy();
+};
 
+
+class OpticalFlowDualTVL1: public OpticalFlowModule
+{
+  REGISTER_CLASS_FACTORY( OpticalFlowDualTVL1 )
 public:
   OpticalFlowDualTVL1();
   virtual ~OpticalFlowDualTVL1()
   {
   }
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
-  Void destroy();
-
 };
 
-#endif // __OPTICALFLOWDUALTVL1_H__
+class OpticalFlowSparseToDense: public OpticalFlowModule
+{
+  REGISTER_CLASS_FACTORY( OpticalFlowSparseToDense )
+public:
+  OpticalFlowSparseToDense();
+  virtual ~OpticalFlowSparseToDense()
+  {
+  }
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+};
+
+class OpticalFlowFarneback: public OpticalFlowModule
+{
+  REGISTER_CLASS_FACTORY( OpticalFlowFarneback )
+public:
+  OpticalFlowFarneback();
+  virtual ~OpticalFlowFarneback()
+  {
+  }
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+};
+
+#endif // __OPTICALFLOW_H__
 

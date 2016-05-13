@@ -26,8 +26,8 @@
 #define __OPTICALFLOWDUALTVL1_H__
 
 // OpenCV
-#include <opencv2/core.hpp>
-#include <opencv2/video.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/video/video.hpp>
 
 // PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"

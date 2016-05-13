@@ -27,7 +27,7 @@
 
 #include <cmath>
 #ifdef USE_OPENCV
-#include <opencv2/core.hpp>
+#include <opencv2/core/core.hpp>
 #endif
 
 #include "LibMemory.h"

@@ -116,6 +116,7 @@ IF( WIN32 )
   SET( USE_STATIC ON )
   INCLUDE( cmake/Win32.cmake )
 ENDIF()
+INCLUDE( cmake/ModulesFct.cmake )
 
 ######################################################################################
 # Configure targets

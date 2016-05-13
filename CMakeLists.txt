@@ -85,13 +85,11 @@ SET( CMAKE_CXX_FLAGS "" )
 # Dependencies
 ######################################################################################
 
-
-OPTION( USE_OPENCV "Add OpenCV support" ON )
-find_package(Doxygen)
-IF(DOXYGEN_FOUND)
-  SET( PLAYUVER_BUILD_DOC ON )
-ENDIF(DOXYGEN_FOUND)
-SET_PACKAGE_PROPERTIES(Doxygen PROPERTIES URL "http://www.doxygen.org/" DESCRIPTION "Doxygen" TYPE OPTIONAL)
+# find_package(Doxygen)
+# IF(DOXYGEN_FOUND)
+#   SET( PLAYUVER_BUILD_DOC ON )
+# ENDIF(DOXYGEN_FOUND)
+# SET_PACKAGE_PROPERTIES(Doxygen PROPERTIES URL "http://www.doxygen.org/" DESCRIPTION "Doxygen" TYPE OPTIONAL)
 
 OPTION( USE_OPENCV "Add OpenCV support" ON )
 SET( OPENCV_OPTFLOW_FOUND OFF )

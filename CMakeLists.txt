@@ -5,6 +5,13 @@
 cmake_minimum_required( VERSION 2.8.9 )
 
 ######################################################################################
+# CMake  functions
+######################################################################################
+SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
+INCLUDE( cmake/ModulesFct.cmake )
+INCLUDE(FeatureSummary)
+
+######################################################################################
 # Project Definition
 ######################################################################################
 
@@ -20,27 +27,31 @@ set( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLA
 # Variables
 ######################################################################################
 
-OPTION( PLAYUVER_BUILD_APP      "Build GUI Application"                 ON  )
-OPTION( PLAYUVER_BUILD_TOOLS    "Build Command Line Application"        ON  )
-OPTION( PLAYUVER_BUILD_EXAMPLES "Build Examples"                        OFF )
-OPTION( PLAYUVER_BUILD_DOC      "Build Documentation"                   OFF )
-OPTION( USE_SSE                 "Build with SSE support"                OFF )
+OPTION( BUILD_APP               "Build GUI Application"                 ON  )
+OPTION( BUILD_TOOLS             "Build Command Line Application"        ON  )
+OPTION( BUILD_EXAMPLES          "Build Examples"                        OFF )
+OPTION( BUILD_DOC               "Build Documentation"                   OFF )
+
 OPTION( USE_FERVOR              "Add Fervor support"                    OFF )
+
+OPTION( USE_DYNLOAD             "Use dynamic load of modules"           ON  )
+OPTION( USE_SSE                 "Build with SSE support"                OFF )
 OPTION( USE_WERROR              "Warnings as errors"                    OFF )
 OPTION( USE_STATIC              "Use static libs"                       OFF )
-OPTION( USE_QT4                 "Build with Qt4"                        OFF )
-OPTION( USE_QTDBUS              "Build with QtDBus"                     ON  )
-OPTION( USE_DYNLOAD             "Use dynamic load of modules"           ON  )
+
+
+######################################################################################
+# Release configuration
+######################################################################################
+
 # To be switched on when releasing.
 OPTION(RELEASE_BUILD "Remove Git revision from program version (use for stable releases)" ON)
-
-
 
 # Get current version.
 set(PLAYUVER_VERSION_STRING "${PLAYUVER_VERSION}")
 if(NOT RELEASE_BUILD AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
   # Probably a Git workspace; determine the revision.
-  find_package(Git QUIET)
+  FIND_PACKAGE(Git QUIET)
   if(GIT_FOUND)
     exec_program(${GIT_EXECUTABLE}
       ${CMAKE_CURRENT_SOURCE_DIR}
@@ -68,6 +79,45 @@ CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/PlaYUVerUpdate.xml.in ${CMAKE_CURREN
 
 
 ######################################################################################
+# Dependencies
+######################################################################################
+
+IF( BUILD_DOC )
+  FIND_PACKAGE(Doxygen)
+  SET( BUILD_DOC ${Doxygen_FOUND} )
+ENDIF()
+SET_PACKAGE_PROPERTIES(Doxygen PROPERTIES URL "http://www.doxygen.org/" DESCRIPTION "Doxygen" TYPE OPTIONAL)
+
+OPTION( USE_OPENCV "Add OpenCV support" ON )
+SET( OPENCV_OPTFLOW_FOUND OFF )
+IF( USE_OPENCV )
+  FIND_PACKAGE( OpenCV REQUIRED core highgui video )
+  LIST(APPEND OPENCV_MODULES core highgui video )
+  SET(USE_OPENCV ${OpenCV_FOUND})
+  ## Check
+#   LIST(FIND OpenCV_LIB_COMPONENTS opencv_optflow OpenCV_optflow_FOUND)
+ENDIF()
+SET_PACKAGE_PROPERTIES(OpenCV PROPERTIES URL "http://opencv.willowgarage.com" DESCRIPTION "OpenCV library support in PlaYUVerFrame" TYPE OPTIONAL)
+
+OPTION( USE_FFMPEG "Add FFMPEG support" ON )
+IF( USE_FFMPEG )
+  FIND_PACKAGE( FFmpeg )
+  SET(USE_FFMPEG ${FFMPEG_FOUND})
+ENDIF()
+SET_PACKAGE_PROPERTIES(FFmpeg PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "Libav library support in PlaYUVerStream" TYPE OPTIONAL)
+
+ADD_FEATURE_INFO(DynLoad    USE_DYNLOAD   "Support for dynamic module load" )
+ADD_FEATURE_INFO(SSE        USE_SSE       "SSE instructions support" )
+ADD_FEATURE_INFO(WErrors    USE_WERROR    "Warnings as errors" )
+
+
+IF( WIN32 )
+  SET( USE_STATIC ON )
+  INCLUDE( cmake/Win32.cmake )
+ENDIF()
+
+
+######################################################################################
 # CMake Defin1itions
 ######################################################################################
 
@@ -80,43 +130,6 @@ IF(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")
   SET_PROPERTY( CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES} )
 ENDIF()
 SET( CMAKE_CXX_FLAGS "" )
-
-######################################################################################
-# Dependencies
-######################################################################################
-
-# find_package(Doxygen)
-# IF(DOXYGEN_FOUND)
-#   SET( PLAYUVER_BUILD_DOC ON )
-# ENDIF(DOXYGEN_FOUND)
-# SET_PACKAGE_PROPERTIES(Doxygen PROPERTIES URL "http://www.doxygen.org/" DESCRIPTION "Doxygen" TYPE OPTIONAL)
-
-OPTION( USE_OPENCV "Add OpenCV support" ON )
-SET( OPENCV_OPTFLOW_FOUND OFF )
-IF( USE_OPENCV )
-  FIND_PACKAGE( OpenCV )
-  SET(USE_OPENCV ${OpenCV_FOUND})
-  ## Check
-  LIST(FIND OpenCV_LIB_COMPONENTS opencv_optflow OpenCV_optflow_FOUND)
-ENDIF()
-SET_PACKAGE_PROPERTIES(OpenCV PROPERTIES URL "http://opencv.willowgarage.com" DESCRIPTION "OpenCV library support in PlaYUVerFrame" TYPE OPTIONAL)
-
-OPTION( USE_FFMPEG "Add FFMPEG support" ON )
-IF( USE_FFMPEG )
-  FIND_PACKAGE( FFmpeg )
-  SET(USE_FFMPEG ${FFMPEG_FOUND})
-ENDIF()
-SET_PACKAGE_PROPERTIES(FFmpeg PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "Libav library support in PlaYUVerStream" TYPE OPTIONAL)
-
-ADD_FEATURE_INFO(SSE USE_SSE "SSE instructions support"  )
-ADD_FEATURE_INFO(WErrors USE_WERROR "Warnings as errors"  )
-
-
-IF( WIN32 )
-  SET( USE_STATIC ON )
-  INCLUDE( cmake/Win32.cmake )
-ENDIF()
-INCLUDE( cmake/ModulesFct.cmake )
 
 ######################################################################################
 # Configure targets
@@ -141,8 +154,8 @@ SET( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g" )
 SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2" )
 
 
-ADD_FEATURE_INFO(PlaYUVerApp     PLAYUVER_BUILD_APP    "Build Graphical Interface")
-ADD_FEATURE_INFO(PlaYUVerTools   PLAYUVER_BUILD_TOOLS  "Build Command line tool"  )
+ADD_FEATURE_INFO(PlaYUVerApp     BUILD_APP    "Build Graphical Interface")
+ADD_FEATURE_INFO(PlaYUVerTools   BUILD_TOOLS  "Build Command line tool"  )
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
@@ -150,21 +163,21 @@ CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_D
 ADD_SUBDIRECTORY( lib )
 ADD_SUBDIRECTORY( modules )
 
-IF( ${PLAYUVER_BUILD_TOOLS} )
+IF( ${BUILD_TOOLS} )
   ADD_SUBDIRECTORY( tools )
 ENDIF()
 
-IF( ${PLAYUVER_BUILD_APP} )
+IF( ${BUILD_APP} )
   ADD_SUBDIRECTORY( app )
 ENDIF()
 
 # add a target to generate API documentation with Doxygen
-# IF(PLAYUVER_BUILD_DOC)
+# IF(BUILD_DOC)
 #   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
 #   add_custom_target(doc   ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
 #     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 #     COMMENT "Generating API documentation with Doxygen" VERBATIM )
-# ENDIF(PLAYUVER_BUILD_DOC)
+# ENDIF(BUILD_DOC)
 
 
 ######################################################################################

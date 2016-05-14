@@ -26,19 +26,20 @@ ADD_MODULE( EightBitsSampling "EightBitsSampling" )
 ADD_MODULE( FrameCrop "FrameCrop" )
 ADD_MODULE( LumaAverage "LumaAverage" )
 ADD_MODULE( WeightedPSNR "WeightedPSNR" )
-IF( OpenCV_optflow_FOUND )
-  ADD_MODULE_OPENCV( OpticalFlowDualTVL1 "OpticalFlow" 3.1.0 )
-  ADD_MODULE_OPENCV( OpticalFlowSparseToDense "OpticalFlow" 3.1.0 )
-  ADD_MODULE_OPENCV( OpticalFlowFarneback "OpticalFlow" 3.1.0 )
-ELSE()
-  ADD_MODULE_OPENCV( OpticalFlowDualTVL1 "OpticalFlowDualTVL1" 2.4.13.0 )
-ENDIF()
-ADD_MODULE_OPENCV( DisparityStereoBM "DisparityStereoBM" 2.4.8 )
-ADD_MODULE_OPENCV( DisparityStereoSGBM "DisparityStereoSGBM" 2.4.8 )
-# ADD_MODULE_OPENCV( DisparityStereoVar "DisparityStereoVar" )
+
+ADD_MODULE_USE_OPENCV( MeasureOpticalFlowDualTVL1 "MeasureOpticalFlowDualTVL1" VERSION 2.4.13.0 MODULES video )
+
+ADD_MODULE_USE_OPENCV( OpticalFlowDualTVL1 "OpticalFlow" VERSION  3.1.0 MODULES optflow )
+ADD_MODULE_USE_OPENCV( OpticalFlowSparseToDense "OpticalFlow" VERSION  3.1.0 MODULES optflow )
+ADD_MODULE_USE_OPENCV( OpticalFlowFarneback "OpticalFlow" VERSION 3.1.0 MODULES video optflow )
+
+ADD_MODULE_USE_OPENCV( DisparityStereoBM "DisparityStereoBM" VERSION 2.4.13.0 MODULES calib3d )
+ADD_MODULE_USE_OPENCV( DisparityStereoSGBM "DisparityStereoSGBM" VERSION 2.4.13.0 MODULES calib3d )
+
 
 
 CREATE_MODULE_MACROS()
 INCLUDE_DIRECTORIES( ${OpenCV_INCLUDE_DIRS} )
 ADD_LIBRARY( PlaYUVerModules ${plaYUver_Mod_SRCS} )
+FIND_PACKAGE( OpenCV COMPONENTS ${OPENCV_MODULES} )
 TARGET_LINK_LIBRARIES( PlaYUVerModules PlaYUVerLib  ${OpenCV_LIBRARIES} -ldl )

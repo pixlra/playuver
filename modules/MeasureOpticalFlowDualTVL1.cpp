@@ -18,11 +18,11 @@
  */
 
 /**
- * \file     OpticalFlowDualTVL1.cpp
+ * \file     MeasureOpticalFlowDualTVL1.cpp
  * \brief    Absolute Frame Difference module
  */
 
-#include "OpticalFlowDualTVL1.h"
+#include "MeasureOpticalFlowDualTVL1.h"
 #include <cstdlib>
 
 using cv::Scalar;
@@ -32,13 +32,13 @@ using cv::Ptr;
 using cv::Point;
 using cv::Point2f;
 
-OpticalFlowDualTVL1::OpticalFlowDualTVL1()
+MeasureOpticalFlowDualTVL1::MeasureOpticalFlowDualTVL1()
 {
   /* Module Definition */
   m_iModuleAPI = MODULE_API_2;
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Measurements";
-  m_pchModuleName = "OpticalFlowDualTVL1";
+  m_pchModuleName = "MeasureOpticalFlowDualTVL1";
   m_pchModuleTooltip = "Measure optical flow";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
   m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
@@ -51,7 +51,7 @@ OpticalFlowDualTVL1::OpticalFlowDualTVL1()
 
 }
 
-Bool OpticalFlowDualTVL1::create( std::vector<PlaYUVerFrame*> apcFrameList )
+Bool MeasureOpticalFlowDualTVL1::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
 
@@ -71,7 +71,7 @@ static inline bool isFlowCorrect( Point2f u )
   return !cvIsNaN( u.x ) && !cvIsNaN( u.y ) && fabs( u.x ) < 1e9 && fabs( u.y ) < 1e9;
 }
 
-Void OpticalFlowDualTVL1::drawFlow()
+Void MeasureOpticalFlowDualTVL1::drawFlow()
 {
   Mat cvMatAfter;
   m_pcFrameAfter->toMat( cvMatAfter, true );
@@ -105,7 +105,7 @@ Void OpticalFlowDualTVL1::drawFlow()
   m_pcOutputFrame->fromMat( cvMatAfter );
 }
 
-Void OpticalFlowDualTVL1::compensateFlow()
+Void MeasureOpticalFlowDualTVL1::compensateFlow()
 {
   for( UInt c = 0; c < m_pcOutputFrame->getNumberChannels(); c++ )
   {
@@ -125,7 +125,7 @@ Void OpticalFlowDualTVL1::compensateFlow()
   }
 }
 
-PlaYUVerFrame* OpticalFlowDualTVL1::process( std::vector<PlaYUVerFrame*> apcFrameList )
+PlaYUVerFrame* MeasureOpticalFlowDualTVL1::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   m_pcFrameAfter = apcFrameList[0];
   m_pcFramePrev = apcFrameList[1];
@@ -146,7 +146,7 @@ PlaYUVerFrame* OpticalFlowDualTVL1::process( std::vector<PlaYUVerFrame*> apcFram
 }
 
 Void
-OpticalFlowDualTVL1::destroy()
+MeasureOpticalFlowDualTVL1::destroy()
 {
   if( m_pcOutputFrame )
     delete m_pcOutputFrame;

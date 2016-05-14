@@ -18,21 +18,21 @@
  */
 
 /**
- * \file     OpticalFlowDualTVL1.h
+ * \file     MeasureOpticalFlowDualTVL1.h
  * \brief    Absolute Frame Difference module
  */
 
-#ifndef __OPTICALFLOWDUALTVL1_H__
-#define __OPTICALFLOWDUALTVL1_H__
+#ifndef __MeasureOpticalFlowDualTVL1_H__
+#define __MeasureOpticalFlowDualTVL1_H__
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/video/video.hpp>
 
 #include "lib/PlaYUVerModuleIf.h"
 
-class OpticalFlowDualTVL1: public PlaYUVerModuleIf
+class MeasureOpticalFlowDualTVL1: public PlaYUVerModuleIf
 {
-REGISTER_CLASS_FACTORY( OpticalFlowDualTVL1 )
+REGISTER_CLASS_FACTORY( MeasureOpticalFlowDualTVL1 )
 
 private:
   Bool m_bShowReconstruction;
@@ -47,8 +47,8 @@ private:
   Void compensateFlow();
 
 public:
-  OpticalFlowDualTVL1();
-  virtual ~OpticalFlowDualTVL1()
+  MeasureOpticalFlowDualTVL1();
+  virtual ~MeasureOpticalFlowDualTVL1()
   {
   }
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
@@ -57,5 +57,5 @@ public:
 
 };
 
-#endif // __OPTICALFLOWDUALTVL1_H__
+#endif // __MeasureOpticalFlowDualTVL1_H__
 

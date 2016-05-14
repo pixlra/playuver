@@ -91,11 +91,9 @@ SET_PACKAGE_PROPERTIES(Doxygen PROPERTIES URL "http://www.doxygen.org/" DESCRIPT
 OPTION( USE_OPENCV "Add OpenCV support" ON )
 SET( OPENCV_OPTFLOW_FOUND OFF )
 IF( USE_OPENCV )
-  FIND_PACKAGE( OpenCV REQUIRED core highgui video )
+  FIND_PACKAGE( OpenCV COMPONENTS core highgui video )
   LIST(APPEND OPENCV_MODULES core highgui video )
   SET(USE_OPENCV ${OpenCV_FOUND})
-  ## Check
-#   LIST(FIND OpenCV_LIB_COMPONENTS opencv_optflow OpenCV_optflow_FOUND)
 ENDIF()
 SET_PACKAGE_PROPERTIES(OpenCV PROPERTIES URL "http://opencv.willowgarage.com" DESCRIPTION "OpenCV library support in PlaYUVerFrame" TYPE OPTIONAL)
 

@@ -89,7 +89,7 @@ public:
    */
   static std::vector<String> supportedPixelFormatListNames();
   static std::vector<String> supportedPixelFormatListNames( Int colorSpace );
-  static Int findPixelFormat( String name );
+  static Int findPixelFormat( const String& name );
 
   /**
    * Creates a new frame using the following configuration
@@ -100,15 +100,15 @@ public:
    *
    * @note this function might misbehave if the pixel format enum is not correct
    */
-  PlaYUVerFrame( UInt width, UInt height, Int pelFormat = 0, Int bitsPixel = 8, Int endianness = -1 );
+  PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel = 8, Int endianness = -1 );
 
   /**
-   * Creates and new frame with the configuration of an
-   * existing one and copy its contents
+   * Copy contructor
    *
    * @param other existing frame to copy from
    */
-  PlaYUVerFrame( PlaYUVerFrame *other, Bool copy = true );
+  PlaYUVerFrame( const PlaYUVerFrame& other );
+  PlaYUVerFrame( const PlaYUVerFrame *other );
 
   /**
    * Creates and new frame with the configuration of an
@@ -121,11 +121,13 @@ public:
    * @param areaWidth crop width
    * @param areaHeight crop height
    */
-  PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt areaWidth, UInt areaHeight );
+  PlaYUVerFrame( const PlaYUVerFrame& other, UInt x, UInt y, UInt width, UInt height );
+  PlaYUVerFrame( const PlaYUVerFrame* other, UInt x, UInt y, UInt width, UInt height );
 
   ~PlaYUVerFrame();
 
-  Bool haveSameFmt( PlaYUVerFrame* other, UInt match = MATCH_ALL ) const;
+  Bool haveSameFmt( const PlaYUVerFrame& other, UInt match = MATCH_ALL ) const;
+  Bool haveSameFmt( const PlaYUVerFrame* other, UInt match = MATCH_ALL ) const;
 
   /**
    * Get pixel format information
@@ -205,8 +207,10 @@ public:
   PlaYUVerPixel getPixelValue( Int xPos, Int yPos, PlaYUVerPixel::ColorSpace eColorSpace );
   Void setPixelValue( Int xPos, Int yPos, PlaYUVerPixel pixel );
 
-  Void copyFrom( PlaYUVerFrame* );
-  Void copyFrom( PlaYUVerFrame*, UInt, UInt );
+  Void copyFrom( const PlaYUVerFrame& );
+  Void copyFrom( const PlaYUVerFrame* );
+  Void copyFrom( const PlaYUVerFrame&, UInt, UInt );
+  Void copyFrom( const PlaYUVerFrame*, UInt, UInt );
 
   Void frameFromBuffer( Byte*, UInt64 );
   Void frameFromBuffer( Byte* );

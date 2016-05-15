@@ -67,7 +67,7 @@ std::vector<String> PlaYUVerFrame::supportedPixelFormatListNames( Int colorSpace
   return formatsList;
 }
 
-Int PlaYUVerFrame::findPixelFormat( String name )
+Int PlaYUVerFrame::findPixelFormat( const String& name )
 {
   for( Int i = 0; i < NUMBER_PEL_FORMATS; i++ )
   {
@@ -75,94 +75,6 @@ Int PlaYUVerFrame::findPixelFormat( String name )
       return i;
   }
   return -1;
-}
-
-struct PlaYUVerFramePrivate
-{
-  /**
-   * Common constructor function of a frame
-   *
-   * @param width width of the frame
-   * @param height height of the frame
-   * @param pel_format pixel format index (always use PixelFormats enum)
-   *
-   */
-  Void init( UInt width, UInt height, Int pel_format, Int bitsPixel, Int endianness );
-
-  Bool m_bInit;
-
-  //! Struct with the pixel format description.
-  const PlaYUVerPixFmtDescriptor* m_pcPelFormat;
-  String m_cPelFmtName;
-
-  UInt m_uiWidth;  //!< Width of the frame
-  UInt m_uiHeight;  //!< Height of the frame
-  Int m_iPixelFormat;  //!< Pixel format number (it follows the list of supported pixel formats)
-  Int m_iNumberChannels;  //!< Number of channels
-  UInt m_uiBitsPel;  //!< Bits per pixel/channel
-  Int m_iEndianness;  //!< Endiannes of bytes
-  UInt m_uiHalfPelValue;  //!< Bits per pixel/channel
-
-  Pel*** m_pppcInputPel;
-
-  Bool m_bHasRGBPel;  //!< Flag indicating that the ARGB buffer was computed
-  UChar* m_pcARGB32;  //!< Buffer with the ARGB pixels used in Qt libs
-
-  /** The histogram data.*/
-  UInt* m_puiHistogram;
-
-  /** If the image is RGB and calcLuma is true, we have 1 more channel */
-  UInt m_uiHistoChannels;
-
-  /** Numbers of histogram segments depending of image bytes depth*/
-  UInt m_uiHistoSegments;
-
-  /** Used to stop thread during calculations.*/
-  Bool m_bRunningFlag;
-
-  Bool m_bHasHistogram;
-};
-
-/*! \brief Constructors
- *
- *  Constructors and init functions
- */
-PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel, Int endianness ) :
-        d( new PlaYUVerFramePrivate )
-{
-  d->init( width, height, pelFormat, bitsPixel, endianness );
-}
-
-PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, Bool bCopy ) :
-        d( new PlaYUVerFramePrivate )
-{
-  d->init( other->getWidth(), other->getHeight(), other->getPelFormat(), other->getBitsPel(), other->getEndianness() );
-  copyFrom( other );
-}
-
-PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt areaWidth, UInt areaHeight ) :
-        d( new PlaYUVerFramePrivate )
-{
-  const PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[other->getPelFormat()] );
-  if( pcPelFormat->log2ChromaWidth )
-  {
-    if( posX % ( 1 << pcPelFormat->log2ChromaWidth ) )
-      posX--;
-    if( ( posX + areaWidth ) % ( 1 << pcPelFormat->log2ChromaWidth ) )
-      areaWidth++;
-  }
-
-  if( pcPelFormat->log2ChromaHeight )
-  {
-    if( posY % ( 1 << pcPelFormat->log2ChromaHeight ) )
-      posY--;
-
-    if( ( posY + areaHeight ) % ( 1 << pcPelFormat->log2ChromaHeight ) )
-      areaHeight++;
-  }
-
-  d->init( areaWidth, areaHeight, other->getPelFormat(), other->getBitsPel(), other->getEndianness() );
-  copyFrom( other, posX, posY );
 }
 
 static Int getImgMemory( Pel**** array3D, Int dim1, Int dim2, Int log2ChromaHeight, Int log2ChromaWidth )
@@ -175,7 +87,7 @@ static Int getImgMemory( Pel**** array3D, Int dim1, Int dim2, Int log2ChromaHeig
   total_mem_size += getMem2D<Pel*>( array3D, dim0, dim1 );
 
   if( ( ( *array3D )[0][0] = ( Pel* )xCallocMem( mem_size, sizeof(Pel) ) ) == NULL )
-    printf( "getMem3DImageComponents: array1D" );
+    printf( "getImgMemory: array1D" );
 
   total_mem_size += mem_size * sizeof(Pel);
 
@@ -210,55 +122,179 @@ Void freeImgMemory( Pel*** array3D )
   }
 }
 
-
-Void PlaYUVerFramePrivate::init( UInt width, UInt height, Int pel_format, Int bitsPixel, Int endianness )
+struct PlaYUVerFramePrivate
 {
-  m_bInit = false;
-  m_pppcInputPel = NULL;
-  m_pcARGB32 = NULL;
-  m_uiWidth = width;
-  m_uiHeight = height;
-  m_iPixelFormat = pel_format;
-  m_iNumberChannels = 3;
-  m_uiBitsPel = bitsPixel > 8 ? bitsPixel : 8;
-  m_iEndianness = endianness;
-  if( m_uiBitsPel > 8 && m_iEndianness == -1 )
+  Bool m_bInit;
+
+  //! Struct with the pixel format description.
+  const PlaYUVerPixFmtDescriptor* m_pcPelFormat;
+  String m_cPelFmtName;
+
+  UInt m_uiWidth;  //!< Width of the frame
+  UInt m_uiHeight;  //!< Height of the frame
+  Int m_iPixelFormat;  //!< Pixel format number (it follows the list of supported pixel formats)
+  Int m_iNumberChannels;  //!< Number of channels
+  UInt m_uiBitsPel;  //!< Bits per pixel/channel
+  Int m_iEndianness;  //!< Endiannes of bytes
+  UInt m_uiHalfPelValue;  //!< Bits per pixel/channel
+
+  Pel*** m_pppcInputPel;
+
+  Bool m_bHasRGBPel;  //!< Flag indicating that the ARGB buffer was computed
+  UChar* m_pcARGB32;  //!< Buffer with the ARGB pixels used in Qt libs
+
+  /** The histogram data.*/
+  UInt* m_puiHistogram;
+
+  /** If the image is RGB and calcLuma is true, we have 1 more channel */
+  UInt m_uiHistoChannels;
+
+  /** Numbers of histogram segments depending of image bytes depth*/
+  UInt m_uiHistoSegments;
+
+  /** Used to stop thread during calculations.*/
+  Bool m_bRunningFlag;
+
+  Bool m_bHasHistogram;
+
+  /**
+   * Common constructor function of a frame
+   *
+   * @param width width of the frame
+   * @param height height of the frame
+   * @param pel_format pixel format index (always use PixelFormats enum)
+   *
+   */
+  Void init( UInt width, UInt height, Int pel_format, Int bitsPixel, Int endianness )
   {
-    throw PlaYUVerFailure( "PlaYUVerFrame", "Invalid endianness type for Bits per Pixel greater than 8" );
-  }
-  m_uiHalfPelValue = 1 << ( m_uiBitsPel - 1 );
+    m_bInit = false;
+    m_pppcInputPel = NULL;
+    m_pcARGB32 = NULL;
+    m_uiWidth = width;
+    m_uiHeight = height;
+    m_iPixelFormat = pel_format;
+    m_iNumberChannels = 3;
+    m_uiBitsPel = bitsPixel > 8 ? bitsPixel : 8;
+    m_iEndianness = endianness;
+    if( m_uiBitsPel > 8 && m_iEndianness == -1 )
+    {
+      throw PlaYUVerFailure( "PlaYUVerFrame", "Invalid endianness type for Bits per Pixel greater than 8" );
+    }
+    m_uiHalfPelValue = 1 << ( m_uiBitsPel - 1 );
 
-  if( m_uiWidth == 0 || m_uiHeight == 0 || m_iPixelFormat == -1 || bitsPixel > 16 )
+    if( m_uiWidth == 0 || m_uiHeight == 0 || m_iPixelFormat == -1 || bitsPixel > 16 )
+    {
+      throw PlaYUVerFailure( "PlaYUVerFrame", "Cannot create a PlYUVerFrame of this type" );
+    }
+
+    m_pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[pel_format] );
+
+    m_bHasRGBPel = false;
+    if( m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY )
+    {
+      getImgMemory( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 1 );
+    }
+    else
+    {
+      getImgMemory( &m_pppcInputPel, m_uiHeight, m_uiWidth, m_pcPelFormat->log2ChromaHeight, m_pcPelFormat->log2ChromaWidth );
+    }
+    getMem1D( &m_pcARGB32, m_uiHeight * m_uiWidth * 4 );
+
+    m_puiHistogram = NULL;
+    m_bHasHistogram = false;
+
+    m_uiHistoSegments = 1 << m_uiBitsPel;
+
+    if( m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_RGB || m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_ARGB )
+      m_uiHistoChannels = m_pcPelFormat->numberChannels + 1;
+    else
+      m_uiHistoChannels = m_pcPelFormat->numberChannels;
+
+    m_cPelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[m_iPixelFormat].c_str();
+
+    m_bInit = true;
+  }
+};
+
+/*!
+ * \brief Constructors
+ */
+
+PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel, Int endianness ) :
+        d( new PlaYUVerFramePrivate )
+{
+  d->init( width, height, pelFormat, bitsPixel, endianness );
+}
+
+PlaYUVerFrame::PlaYUVerFrame( const PlaYUVerFrame& other ) :
+d( new PlaYUVerFramePrivate )
+{
+  d->init( other.getWidth(), other.getHeight(), other.getPelFormat(), other.getBitsPel(), other.getEndianness() );
+  copyFrom( &other );
+}
+
+
+PlaYUVerFrame::PlaYUVerFrame( const PlaYUVerFrame *other ) :
+  d( new PlaYUVerFramePrivate )
+{
+  if( other )
   {
-    throw PlaYUVerFailure( "PlaYUVerFrame", "Cannot create a PlYUVerFrame of this type" );
+    d->init( other->getWidth(), other->getHeight(), other->getPelFormat(), other->getBitsPel(), other->getEndianness() );
+    copyFrom( other );
   }
+}
 
-  m_pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[pel_format] );
-
-  m_bHasRGBPel = false;
-  if( m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY )
+PlaYUVerFrame::PlaYUVerFrame( const PlaYUVerFrame& other, UInt x, UInt y, UInt width, UInt height ) :
+  d( new PlaYUVerFramePrivate )
+{
+  const PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[other.getPelFormat()] );
+  if( pcPelFormat->log2ChromaWidth )
   {
-    getImgMemory( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 1 );
+    if( x % ( 1 << pcPelFormat->log2ChromaWidth ) )
+      x--;
+    if( ( x + width ) % ( 1 << pcPelFormat->log2ChromaWidth ) )
+      width++;
   }
-  else
+
+  if( pcPelFormat->log2ChromaHeight )
   {
-    getImgMemory( &m_pppcInputPel, m_uiHeight, m_uiWidth, m_pcPelFormat->log2ChromaHeight, m_pcPelFormat->log2ChromaWidth );
+    if( y % ( 1 << pcPelFormat->log2ChromaHeight ) )
+      y--;
+
+    if( ( y + height ) % ( 1 << pcPelFormat->log2ChromaHeight ) )
+      height++;
   }
-  getMem1D( &m_pcARGB32, m_uiHeight * m_uiWidth * 4 );
 
-  m_puiHistogram = NULL;
-  m_bHasHistogram = false;
+  d->init( width, height, other.getPelFormat(), other.getBitsPel(), other.getEndianness() );
+  copyFrom( other, x, y );
+}
 
-  m_uiHistoSegments = 1 << m_uiBitsPel;
+PlaYUVerFrame::PlaYUVerFrame( const PlaYUVerFrame *other, UInt posX, UInt posY, UInt areaWidth, UInt areaHeight ) :
+  d( new PlaYUVerFramePrivate )
+{
+  if( !other )
+    return;
 
-  if( m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_RGB || m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_ARGB )
-    m_uiHistoChannels = m_pcPelFormat->numberChannels + 1;
-  else
-    m_uiHistoChannels = m_pcPelFormat->numberChannels;
+  const PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[other->getPelFormat()] );
+  if( pcPelFormat->log2ChromaWidth )
+  {
+    if( posX % ( 1 << pcPelFormat->log2ChromaWidth ) )
+      posX--;
+    if( ( posX + areaWidth ) % ( 1 << pcPelFormat->log2ChromaWidth ) )
+      areaWidth++;
+  }
 
-  m_cPelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[m_iPixelFormat].c_str();
+  if( pcPelFormat->log2ChromaHeight )
+  {
+    if( posY % ( 1 << pcPelFormat->log2ChromaHeight ) )
+      posY--;
 
-  m_bInit = true;
+    if( ( posY + areaHeight ) % ( 1 << pcPelFormat->log2ChromaHeight ) )
+      areaHeight++;
+  }
+
+  d->init( areaWidth, areaHeight, other->getPelFormat(), other->getBitsPel(), other->getEndianness() );
+  copyFrom( other, posX, posY );
 }
 
 PlaYUVerFrame::~PlaYUVerFrame()
@@ -281,25 +317,28 @@ PlaYUVerFrame::~PlaYUVerFrame()
   delete d;
 }
 
-Bool PlaYUVerFrame::haveSameFmt( PlaYUVerFrame* other, UInt match ) const
-    {
+Bool PlaYUVerFrame::haveSameFmt( const PlaYUVerFrame& other, UInt match ) const
+{
   Bool bRet = true;
+  if( match & MATCH_COLOR_SPACE )
+    bRet &= ( getColorSpace() == other.getColorSpace() );
+  if( match & MATCH_RESOLUTION )
+    bRet &= ( getWidth() == other.getWidth() ) && ( getHeight() == other.getHeight() );
+  if( match & MATCH_PEL_FMT )
+    bRet &= ( getPelFormat() == other.getPelFormat() );
+  if( match & MATCH_BITS )
+    bRet &= ( getBitsPel() == other.getBitsPel() );
+  if( match & MATCH_COLOR_SPACE_IGNORE_GRAY )
+    bRet &= ( getColorSpace() == PlaYUVerPixel::COLOR_GRAY || getColorSpace() == other.getColorSpace() );
+  return bRet;
+}
+
+Bool PlaYUVerFrame::haveSameFmt( const PlaYUVerFrame* other, UInt match ) const
+    {
+  Bool bRet = false;
   if( other )
   {
-    if( match & MATCH_COLOR_SPACE )
-      bRet &= ( getColorSpace() == other->getColorSpace() );
-    if( match & MATCH_RESOLUTION )
-      bRet &= ( getWidth() == other->getWidth() ) && ( getHeight() == other->getHeight() );
-    if( match & MATCH_PEL_FMT )
-      bRet &= ( getPelFormat() == other->getPelFormat() );
-    if( match & MATCH_BITS )
-      bRet &= ( getBitsPel() == other->getBitsPel() );
-    if( match & MATCH_COLOR_SPACE_IGNORE_GRAY )
-      bRet &= ( getColorSpace() == PlaYUVerPixel::COLOR_GRAY || getColorSpace() == other->getColorSpace() );
-  }
-  else
-  {
-    bRet = false;
+    bRet = haveSameFmt( *other, match );
   }
   return bRet;
 }
@@ -477,21 +516,26 @@ Void PlaYUVerFrame::setPixelValue( Int xPos, Int yPos, PlaYUVerPixel pixel )
   d->m_bHasRGBPel = false;
 }
 
-Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame )
+Void PlaYUVerFrame::copyFrom( const PlaYUVerFrame& other )
 {
-  if( haveSameFmt( input_frame, MATCH_ALL ) )
-//   if( d->m_iPixelFormat != input_frame->getPelFormat() && d->m_uiWidth == input_frame->getWidth() && d->m_uiHeight == input_frame->getHeight() )
+  if( haveSameFmt( other, MATCH_ALL ) )
     return;
   d->m_bHasRGBPel = false;
   d->m_bHasHistogram = false;
-  memcpy( *d->m_pppcInputPel[LUMA], input_frame->getPelBufferYUV()[LUMA][0], getBytesPerFrame() * sizeof(Pel) );
+  memcpy( *d->m_pppcInputPel[LUMA], other.getPelBufferYUV()[LUMA][0], getBytesPerFrame() * sizeof(Pel) );
 }
 
-Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
+Void PlaYUVerFrame::copyFrom( const PlaYUVerFrame* other )
 {
-  if( d->m_iPixelFormat != input_frame->getPelFormat() )
+  if( other )
+    copyFrom( *other );
+}
+
+Void PlaYUVerFrame::copyFrom( const PlaYUVerFrame& other, UInt xPos, UInt yPos )
+{
+  if( haveSameFmt( other, MATCH_ALL ) )
     return;
-  Pel ***pInput = input_frame->getPelBufferYUV();
+  Pel ***pInput = other.getPelBufferYUV();
   for( UInt ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
   {
     Int ratioH = ch > 0 ? d->m_pcPelFormat->log2ChromaWidth : 0;
@@ -503,6 +547,13 @@ Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame, UInt xPos, UInt yPos )
   }
   d->m_bHasRGBPel = false;
   d->m_bHasHistogram = false;
+}
+
+
+Void PlaYUVerFrame::copyFrom( const PlaYUVerFrame* other, UInt x, UInt y )
+{
+  if( other )
+    copyFrom( *other, x, y );
 }
 
 Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, UInt64 uiBuffSize )

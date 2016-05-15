@@ -1,7 +1,7 @@
 #!/usr/bin/env xdg-open
 [Desktop Entry]
 Type=Application
-Name=plaYUVer
+Name=PlaYUVer
 Exec=playuver %U
 Icon=playuver
 Terminal=false

@@ -320,7 +320,7 @@ Void PlaYUVerApp::save()
            << formatsList
            << tr( "All Files (*)" );
 
-    QString fileName = QFileDialog::getSaveFileName( this, tr( "Open File" ), QString(), filter.join( ";;" ) );
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );
 
     if( !fileName.isEmpty() )
     {

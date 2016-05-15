@@ -18,23 +18,23 @@
  */
 
 /**
- * \file     AbsoluteFrameDifference_APIv2.cpp
- * \brief    Absolute Frame Difference module
+ * \file     AbsoluteFrameDifferenceExample.cpp
+ * \brief    Absolute Frame Difference module example
  */
 
-#include "AbsoluteFrameDifference_APIv2.h"
+#include "AbsoluteFrameDifferenceExample.h"
 #include <cstdlib>
 
-REGISTER_CLASS_MAKER( AbsoluteFrameDifference )
+REGISTER_CLASS_MAKER( AbsoluteFrameDifferenceExample )
 
-AbsoluteFrameDifference::AbsoluteFrameDifference()
+AbsoluteFrameDifferenceExample::AbsoluteFrameDifferenceExample()
 {
   /* Module Definition */
   m_iModuleAPI = MODULE_API_2;                              // Use API version 2 (recommended).
                                                             // See this example for details on the functions prototype
   m_iModuleType = FRAME_PROCESSING_MODULE;                  // Apply module to the frames or to the whole sequence.
   m_pchModuleCategory = "Measurements";                     // Category (sub-menu)
-  m_pchModuleName = "AbsoluteFrameDifference";              // Name
+  m_pchModuleName = "AbsoluteFrameDifferenceExampleExample";       // Name
   m_pchModuleTooltip = "Measure the absolute difference "   // Description
           "between two images (Y plane), e. g., abs( Y1 - Y2 )";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;          // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
@@ -44,14 +44,19 @@ AbsoluteFrameDifference::AbsoluteFrameDifference()
 
 }
 
-Bool AbsoluteFrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
+Bool AbsoluteFrameDifferenceExample::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
-  m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+
+  for( UInt i = 1; i < apcFrameList.size(); i++ )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
+      return false;
+
+    m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
   return true;
 }
 
-PlaYUVerFrame* AbsoluteFrameDifference::process( std::vector<PlaYUVerFrame*> apcFrameList )
+PlaYUVerFrame* AbsoluteFrameDifferenceExample::process( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   PlaYUVerFrame* Input1 = apcFrameList[0];
   PlaYUVerFrame* Input2 = apcFrameList[1];
@@ -67,10 +72,10 @@ PlaYUVerFrame* AbsoluteFrameDifference::process( std::vector<PlaYUVerFrame*> apc
       aux_pel_2 = *pInput2PelYUV++;
       *pOutputPelYUV++ = abs( aux_pel_1 - aux_pel_2 );
     }
-  return m_pcFrameDifference;
+    return m_pcFrameDifference;
 }
 
-Void AbsoluteFrameDifference::destroy()
+Void AbsoluteFrameDifferenceExample::destroy()
 {
   if( m_pcFrameDifference )
     delete m_pcFrameDifference;

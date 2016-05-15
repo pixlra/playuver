@@ -18,27 +18,27 @@
  */
 
 /**
- * \file     AbsoluteFrameDifference_APIv2.h
+ * \file     AbsoluteFrameDifferenceExampleExample.h
  * \brief    Absolute Frame Difference module
  */
 
-#ifndef __ABSOLUTEFRAMEDIFFERENCE_H__
-#define __ABSOLUTEFRAMEDIFFERENCE_H__
+#ifndef __ABSOLUTEFRAMEDIFFERENCEEXAMPLE_H__
+#define __ABSOLUTEFRAMEDIFFERENCEEXAMPLE_H__
 
 #include "PlaYUVerModuleIf.h"
 
 #include <cassert>
 
-class AbsoluteFrameDifference: public PlaYUVerModuleIf
+class AbsoluteFrameDifferenceExample: public PlaYUVerModuleIf
 {
-REGISTER_CLASS_FACTORY( AbsoluteFrameDifference )
+REGISTER_CLASS_FACTORY( AbsoluteFrameDifferenceExample )
 
 private:
   PlaYUVerFrame* m_pcFrameDifference;
 
 public:
-  AbsoluteFrameDifference();
-  virtual ~AbsoluteFrameDifference()
+  AbsoluteFrameDifferenceExample();
+  virtual ~AbsoluteFrameDifferenceExample()
   {
   }
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
@@ -47,5 +47,5 @@ public:
 
 };
 
-#endif // __FRAMEDIFFERENCE_H__
+#endif // __ABSOLUTEFRAMEDIFFERENCEEXAMPLE_H__
 

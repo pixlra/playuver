@@ -169,6 +169,10 @@ IF( ${BUILD_APP} )
   ADD_SUBDIRECTORY( app )
 ENDIF()
 
+IF( ${BUILD_EXAMPLES} )
+  ADD_SUBDIRECTORY( examples )
+ENDIF()
+
 # add a target to generate API documentation with Doxygen
 # IF(BUILD_DOC)
 #   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)

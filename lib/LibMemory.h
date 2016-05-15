@@ -218,16 +218,4 @@ Void freeMem5D( T***** array5D )
   }
 }
 
-template<typename T>
-Void freeMem3ImageComponents( T*** array3D )
-{
-  if( array3D )
-  {
-    if( **array3D )
-      xFreeMem( **array3D );
-
-    freeMem2D<T*>( array3D );
-  }
-}
-
 #endif //  __LIBMEMORY_H__

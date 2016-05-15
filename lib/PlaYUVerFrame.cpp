@@ -165,7 +165,7 @@ PlaYUVerFrame::PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt a
   copyFrom( other, posX, posY );
 }
 
-static Int getMem3ImageComponents( Pel**** array3D, Int dim1, Int dim2, Int log2ChromaHeight, Int log2ChromaWidth )
+static Int getImgMemory( Pel**** array3D, Int dim1, Int dim2, Int log2ChromaHeight, Int log2ChromaWidth )
 {
   Int dim0 = 3;
   Int i;
@@ -199,6 +199,18 @@ static Int getMem3ImageComponents( Pel**** array3D, Int dim1, Int dim2, Int log2
   return total_mem_size;
 }
 
+Void freeImgMemory( Pel*** array3D )
+{
+  if( array3D )
+  {
+    if( **array3D )
+      xFreeMem( **array3D );
+
+    freeMem2D( array3D );
+  }
+}
+
+
 Void PlaYUVerFramePrivate::init( UInt width, UInt height, Int pel_format, Int bitsPixel, Int endianness )
 {
   m_bInit = false;
@@ -226,11 +238,11 @@ Void PlaYUVerFramePrivate::init( UInt width, UInt height, Int pel_format, Int bi
   m_bHasRGBPel = false;
   if( m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY )
   {
-    getMem3ImageComponents( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 1 );
+    getImgMemory( &m_pppcInputPel, m_uiHeight, m_uiWidth, 1, 1 );
   }
   else
   {
-    getMem3ImageComponents( &m_pppcInputPel, m_uiHeight, m_uiWidth, m_pcPelFormat->log2ChromaHeight, m_pcPelFormat->log2ChromaWidth );
+    getImgMemory( &m_pppcInputPel, m_uiHeight, m_uiWidth, m_pcPelFormat->log2ChromaHeight, m_pcPelFormat->log2ChromaWidth );
   }
   getMem1D( &m_pcARGB32, m_uiHeight * m_uiWidth * 4 );
 
@@ -259,7 +271,7 @@ PlaYUVerFrame::~PlaYUVerFrame()
   d->m_bHasHistogram = false;
 
   if( d->m_pppcInputPel )
-    freeMem3ImageComponents<Pel>( d->m_pppcInputPel );
+    freeImgMemory( d->m_pppcInputPel );
   d->m_pppcInputPel = NULL;
 
   if( d->m_pcARGB32 )
@@ -267,24 +279,6 @@ PlaYUVerFrame::~PlaYUVerFrame()
   d->m_pcARGB32 = NULL;
 
   delete d;
-}
-
-Void PlaYUVerFrame::clear()
-{
-  Pel* pPel;
-  Pel uiValue = 128;
-  Int ratioH, ratioW;
-  UInt i;
-  for( UInt ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
-  {
-    ratioW = ch > 0 ? d->m_pcPelFormat->log2ChromaWidth : 0;
-    ratioH = ch > 0 ? d->m_pcPelFormat->log2ChromaHeight : 0;
-    pPel = d->m_pppcInputPel[ch][0];
-    for( i = 0; i < CHROMASHIFT( d->m_uiHeight, ratioH ) * CHROMASHIFT( d->m_uiWidth, ratioW ); i++ )
-    {
-      *pPel++ = uiValue;
-    }
-  }
 }
 
 Bool PlaYUVerFrame::haveSameFmt( PlaYUVerFrame* other, UInt match ) const
@@ -400,6 +394,24 @@ UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelF
   return numberBytes * bytesPerPixel;
 }
 
+Void PlaYUVerFrame::clear()
+{
+  Pel* pPel;
+  Pel uiValue = 128;
+  Int ratioH, ratioW;
+  UInt i;
+  for( UInt ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
+  {
+    ratioW = ch > 0 ? d->m_pcPelFormat->log2ChromaWidth : 0;
+    ratioH = ch > 0 ? d->m_pcPelFormat->log2ChromaHeight : 0;
+    pPel = d->m_pppcInputPel[ch][0];
+    for( i = 0; i < CHROMASHIFT( d->m_uiHeight, ratioH ) * CHROMASHIFT( d->m_uiWidth, ratioW ); i++ )
+    {
+      *pPel++ = uiValue;
+    }
+  }
+}
+
 Pel*** PlaYUVerFrame::getPelBufferYUV() const
 {
   return d->m_pppcInputPel;
@@ -467,7 +479,8 @@ Void PlaYUVerFrame::setPixelValue( Int xPos, Int yPos, PlaYUVerPixel pixel )
 
 Void PlaYUVerFrame::copyFrom( PlaYUVerFrame* input_frame )
 {
-  if( d->m_iPixelFormat != input_frame->getPelFormat() && d->m_uiWidth == input_frame->getWidth() && d->m_uiHeight == input_frame->getHeight() )
+  if( haveSameFmt( input_frame, MATCH_ALL ) )
+//   if( d->m_iPixelFormat != input_frame->getPelFormat() && d->m_uiWidth == input_frame->getWidth() && d->m_uiHeight == input_frame->getHeight() )
     return;
   d->m_bHasRGBPel = false;
   d->m_bHasHistogram = false;

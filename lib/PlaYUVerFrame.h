@@ -190,6 +190,7 @@ public:
    */
   static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel );
 
+
   /**
    * Reset frame pixels to zero
    */

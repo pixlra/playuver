@@ -27,7 +27,6 @@
 
 #include <QDialog>
 #include <QVector>
-#include <QString>
 
 #include "PlaYUVerAppDefs.h"
 
@@ -35,6 +34,7 @@ class QComboBox;
 class QHBoxLayout;
 class QLabel;
 class QSpinBox;
+class QString;
 class QWidget;
 
 /**
@@ -47,7 +47,7 @@ Q_OBJECT
 public:
 
   ConfigureFormatDialog( QWidget *parent = 0 );
-  Int runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, Int& rEndianess, UInt& rFrameRate );
+  Int runConfigureFormatDialog( const QString& Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, Int& rEndianess, UInt& rFrameRate );
 
 private Q_SLOTS:
   void slotStandardResolutionSelected( int );

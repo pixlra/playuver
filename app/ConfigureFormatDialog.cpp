@@ -29,6 +29,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSpinBox>
+#include <QString>
 #include <QWidget>
 
 #include "lib/PlaYUVerFrame.h"
@@ -266,7 +267,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
 }
 
-Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, Int& rEndianess,
+Int ConfigureFormatDialog::runConfigureFormatDialog( const QString& Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, Int& rEndianess,
     UInt& rFrameRate )
 {
   // Set default values

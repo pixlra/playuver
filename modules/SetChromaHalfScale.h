@@ -19,12 +19,13 @@
 
 /**
  * \file     SetChromaHalfScale.h
- * \brief    Binarize frame module
+ * \brief    Set chrome value to half scale (gray)
  */
 
-#ifndef __CHROMA128_H__
-#define __CHROMA128_H__
+#ifndef _SETCHROMAHALFSCALE_H_
+#define _SETCHROMAHALFSCALE_H_
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
 class SetChromaHalfScale: public PlaYUVerModuleIf
@@ -44,5 +45,5 @@ private:
 
 };
 
-#endif // __CHROMA128_H__
+#endif // _SETCHROMAHALFSCALE_H_
 

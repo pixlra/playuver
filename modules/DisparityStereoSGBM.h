@@ -37,11 +37,12 @@
 #ifndef __DISPARITYSTEREOSGBM_H__
 #define __DISPARITYSTEREOSGBM_H__
 
-#include <iostream>
-#include "lib/PlaYUVerModuleIf.h"
+// OpenCV
 #include <opencv2/opencv.hpp>
 
-#include <cassert>
+// PlaYUVerLib
+#include "lib/PlaYUVerModuleIf.h"
+
 
 class DisparityStereoSGBM: public PlaYUVerModuleIf
 {

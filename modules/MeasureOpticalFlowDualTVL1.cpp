@@ -23,7 +23,6 @@
  */
 
 #include "MeasureOpticalFlowDualTVL1.h"
-#include <cstdlib>
 
 using cv::Scalar;
 using cv::Mat;

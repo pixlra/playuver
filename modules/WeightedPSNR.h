@@ -25,9 +25,8 @@
 #ifndef __WEIGHTEDPSNR_H__
 #define __WEIGHTEDPSNR_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
-
-#include <cassert>
 
 class WeightedPSNR: public PlaYUVerModuleIf
 {

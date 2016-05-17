@@ -25,9 +25,9 @@
 #ifndef __FRAMEMASK_H__
 #define __FRAMEMASK_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-#include <cassert>
 
 class FrameMask: public PlaYUVerModuleIf
 {

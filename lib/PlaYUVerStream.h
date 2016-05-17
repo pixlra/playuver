@@ -26,8 +26,8 @@
 #define __PLAYUVERSTREAM_H__
 
 #include "PlaYUVerDefs.h"
-#include "PlaYUVerFrame.h"
 
+class PlaYUVerFrame;
 class PlaYUVerStreamHandlerIf;
 
 typedef struct

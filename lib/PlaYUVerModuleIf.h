@@ -38,7 +38,6 @@
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerOptions.h"
-#include <vector>
 
 #define REGISTER_CLASS_MAKER(X) \
   extern "C" PlaYUVerModuleIf* Maker() { return new X; }

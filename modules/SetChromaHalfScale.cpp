@@ -19,7 +19,7 @@
 
 /**
  * \file     SetChromaHalfScale.cpp
- * \brief    Binarize frame module
+ * \brief    Set chrome value to half scale (gray)
  */
 
 #include "SetChromaHalfScale.h"

@@ -24,6 +24,7 @@
 
 #include "LumaAverage.h"
 
+
 LumaAverage::LumaAverage()
 {
   /* Module Definition */

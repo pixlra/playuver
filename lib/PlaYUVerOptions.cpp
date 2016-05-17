@@ -39,16 +39,8 @@
 #include "config.h"
 #include "PlaYUVerOptions.h"
 
-#include <stdlib.h>
-#include <iostream>
-#include <fstream>
 #include <sstream>
-#include <string>
 #include <cstring>
-#include <cstdarg>
-#include <list>
-#include <map>
-#include <algorithm>
 
 #include "lib/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"

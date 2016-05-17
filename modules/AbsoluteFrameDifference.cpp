@@ -23,7 +23,7 @@
  */
 
 #include "AbsoluteFrameDifference.h"
-#include <cstdlib>
+
 
 AbsoluteFrameDifference::AbsoluteFrameDifference()
 {

@@ -25,11 +25,7 @@
 #ifndef __STREAMHANDLERPORTABLEMAP_H__
 #define __STREAMHANDLERPORTABLEMAP_H__
 
-#include <inttypes.h>
-#include <vector>
-#include <string>
 #include "PlaYUVerDefs.h"
-#include "PlaYUVerStream.h"
 #include "PlaYUVerStreamHandlerIf.h"
 
 class PlaYUVerFrame;

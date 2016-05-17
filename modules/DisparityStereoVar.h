@@ -25,11 +25,12 @@
 #ifndef __DISPARITYSTEREOVAR_H__
 #define __DISPARITYSTEREOVAR_H__
 
-#include <iostream>
-#include "PlaYUVerModuleIf.h"
+// OpenCV
 #include <opencv2/opencv.hpp>
 
-#include <cassert>
+// PlaYUVerLib
+#include "PlaYUVerModuleIf.h"
+
 
 class DisparityStereoVar: public PlaYUVerModuleIf
 {

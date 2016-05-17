@@ -23,7 +23,7 @@
  */
 
 #include "FrameDifference.h"
-#include <algorithm>
+
 
 FrameDifference::FrameDifference()
 {

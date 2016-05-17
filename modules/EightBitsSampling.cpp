@@ -24,6 +24,7 @@
 
 #include "EightBitsSampling.h"
 
+
 EightBitsSampling::EightBitsSampling()
 {
   /* Module Definition */

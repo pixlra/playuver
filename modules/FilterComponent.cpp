@@ -22,9 +22,9 @@
  * \brief    Filter component frame module
  */
 
-#include <cstdio>
-#include <cstring>
 #include "FilterComponent.h"
+
+#include <cstring>
 
 FilterComponentModule::FilterComponentModule()
 {

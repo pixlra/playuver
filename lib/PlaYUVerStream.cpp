@@ -22,12 +22,16 @@
  * \brief    Input stream handling
  */
 
+// Self
 #include "config.h"
 #include "PlaYUVerStream.h"
 
+// System
 #include <cstdio>
 
+// Own
 #include "LibMemory.h"
+#include "PlaYUVerFrame.h"
 #include "PlaYUVerStreamHandlerIf.h"
 #include "StreamHandlerRaw.h"
 #include "StreamHandlerPortableMap.h"
@@ -37,6 +41,7 @@
 #ifdef USE_OPENCV
 #include "StreamHandlerOpenCV.h"
 #endif
+
 
 std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
 {

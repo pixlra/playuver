@@ -24,6 +24,7 @@
 
 #include "FrameCrop.h"
 
+
 FrameCrop::FrameCrop()
 {
   /* Module Definition */

@@ -25,7 +25,9 @@
 #ifndef __EIGHTBITSSAMPLING_H__
 #define __EIGHTBITSSAMPLING_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
+
 
 class EightBitsSampling: public PlaYUVerModuleIf
 {

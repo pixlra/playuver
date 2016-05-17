@@ -23,8 +23,6 @@
  */
 
 #include "WeightedPSNR.h"
-#include <algorithm>
-#include <cmath>
 
 WeightedPSNR::WeightedPSNR()
 {

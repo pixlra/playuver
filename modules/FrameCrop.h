@@ -25,7 +25,9 @@
 #ifndef __FRAMECROP_H__
 #define __FRAMECROP_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
+
 
 class FrameCrop: public PlaYUVerModuleIf
 {

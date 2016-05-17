@@ -25,8 +25,9 @@
 #ifndef __PLAYUVERMODULESFACTORY_H__
 #define __PLAYUVERMODULESFACTORY_H__
 
-#include <functional>
 #include <map>
+
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
 #define REGISTER_MODULE(X) Register( "X", &(X::Create) );

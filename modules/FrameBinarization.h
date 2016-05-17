@@ -25,7 +25,9 @@
 #ifndef __FRAMEBINARIZATION_H__
 #define __FRAMEBINARIZATION_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
+
 
 class FrameBinarization: public PlaYUVerModuleIf
 {

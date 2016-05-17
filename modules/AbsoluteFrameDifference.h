@@ -25,9 +25,9 @@
 #ifndef __ABSOLUTEFRAMEDIFFERENCE_H__
 #define __ABSOLUTEFRAMEDIFFERENCE_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-#include <cassert>
 
 class AbsoluteFrameDifference: public PlaYUVerModuleIf
 {

@@ -22,8 +22,14 @@
  * \brief    Interface with opencv lib
  */
 
-#include <cstdio>
+// Self
 #include "StreamHandlerOpenCV.h"
+
+// System
+#include <cstdio>
+#include <opencv2/opencv.hpp>
+
+// Own
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"
 #include "LibMemory.h"

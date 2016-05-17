@@ -32,6 +32,7 @@
 // PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
+
 class OpticalFlowModule: public PlaYUVerModuleIf
 {
 protected:
@@ -76,6 +77,7 @@ public:
   }
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
 };
+
 
 class OpticalFlowFarneback: public OpticalFlowModule
 {

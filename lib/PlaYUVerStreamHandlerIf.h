@@ -27,7 +27,8 @@
 
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerStream.h"
-#include "PlaYUVerFrame.h"
+
+class PlaYUVerFrame;
 
 #define REGISTER_STREAM_HANDLER(X) \
   public: \

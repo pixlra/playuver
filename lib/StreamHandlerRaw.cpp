@@ -22,11 +22,14 @@
  * \brief    Interface for raw (yuv) streams
  */
 
-#include <cstdio>
 #include "StreamHandlerRaw.h"
+
+#include <cstdio>
+
+#include "LibMemory.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"
-#include "LibMemory.h"
+
 
 Bool StreamHandlerRaw::openHandler( String strFilename, Bool bInput )
 {

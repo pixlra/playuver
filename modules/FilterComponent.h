@@ -25,7 +25,9 @@
 #ifndef __FILTERCOMPONENT_H__
 #define __FILTERCOMPONENT_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
+
 
 class FilterComponentModule: public PlaYUVerModuleIf
 {

@@ -24,6 +24,7 @@
 
 #include "FrameBinarization.h"
 
+
 FrameBinarization::FrameBinarization()
 {
   /* Module Definition */

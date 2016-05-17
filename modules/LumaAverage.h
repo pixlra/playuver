@@ -25,7 +25,9 @@
 #ifndef __LUMAAVERAGE_H__
 #define __LUMAAVERAGE_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
+
 
 class LumaAverage: public PlaYUVerModuleIf
 {

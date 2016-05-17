@@ -39,12 +39,8 @@
 #ifndef __PROGRAMOPTIONS_H__
 #define __PROGRAMOPTIONS_H__
 
-#include <iostream>
-#include <sstream>
-#include <string>
 #include <list>
 #include <map>
-#include <vector>
 
 #include "PlaYUVerDefs.h"
 

@@ -23,8 +23,7 @@
  */
 
 #include "FrameMask.h"
-#include <algorithm>
-class be;
+
 
 FrameMask::FrameMask()
 {

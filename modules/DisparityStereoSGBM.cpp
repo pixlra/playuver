@@ -22,8 +22,6 @@
  * \brief    Measure the disparity between two images using the SGBM method (OpenCV)
  */
 
-#include <cstdio>
-
 #include "DisparityStereoSGBM.h"
 
 DisparityStereoSGBM::DisparityStereoSGBM()

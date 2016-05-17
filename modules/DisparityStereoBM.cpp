@@ -22,8 +22,6 @@
  * \brief    Measure the disparity between two images using the Stereo Var method (OpenCV)
  */
 
-#include <cstdio>
-
 #include "DisparityStereoBM.h"
 
 DisparityStereoBM::DisparityStereoBM()

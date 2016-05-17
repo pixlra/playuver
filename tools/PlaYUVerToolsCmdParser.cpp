@@ -22,13 +22,16 @@
  * \brief    Handle for command line
  */
 
+#include "PlaYUVerToolsCmdParser.h"
+
 #include <cstring>
 #include <cstdarg>
-#include "PlaYUVerToolsCmdParser.h"
+
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"
 #include "lib/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
+
 
 PlaYUVerToolsCmdParser::PlaYUVerToolsCmdParser()
 {

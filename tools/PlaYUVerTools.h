@@ -25,13 +25,15 @@
 #ifndef __PLAYUVERTOOLS_H__
 #define __PLAYUVERTOOLS_H__
 
-#include "config.h"
 #include "lib/PlaYUVerDefs.h"
 #include "lib/PlaYUVerFrame.h"
-#include "lib/PlaYUVerStream.h"
+
 #include "PlaYUVerToolsCmdParser.h"
 
+class PlaYUVerFrame;
+class PlaYUVerStream;
 class PlaYUVerModuleIf;
+
 
 #define MAX_NUMBER_INPUTS 10
 

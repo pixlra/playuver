@@ -22,6 +22,7 @@
  * \brief    Main definition of the PlaYUVerTools APp
  */
 
+#include "config.h"
 #include "PlaYUVerTools.h"
 
 #include <cstring>
@@ -29,6 +30,7 @@
 
 #include "lib/PlaYUVerPixel.h"
 #include "lib/PlaYUVerFrame.h"
+#include "lib/PlaYUVerStream.h"
 #include "lib/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
@@ -115,19 +117,17 @@ Int PlaYUVerTools::openInputs()
     }
   }
 
-  m_uiNumberOfFrames = MAX_UINT;
+  m_uiNumberOfFrames = UINT_MAX;
   if( Opts().hasOpt( "frames" ) )
   {
     m_uiNumberOfFrames = m_iFrames;
   }
 
-  m_uiNumberOfComponents = MAX_UINT;
+  m_uiNumberOfComponents = UINT_MAX;
   for( UInt i = 0; i < m_apcInputStreams.size(); i++ )
   {
-    if( m_apcInputStreams[i]->getFrameNum() < m_uiNumberOfFrames )
-      m_uiNumberOfFrames = m_apcInputStreams[i]->getFrameNum();
-    if( m_apcInputStreams[i]->getCurrFrame()->getNumberChannels() < m_uiNumberOfComponents )
-      m_uiNumberOfComponents = m_apcInputStreams[i]->getCurrFrame()->getNumberChannels();
+    m_uiNumberOfFrames = std::min( m_uiNumberOfFrames, m_apcInputStreams[i]->getFrameNum() );
+    m_uiNumberOfComponents = std::min( m_uiNumberOfComponents, m_apcInputStreams[i]->getCurrFrame()->getNumberChannels() );
   }
 
   return 0;

@@ -576,6 +576,7 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff )
   Int endByte = bytesPixel;
   Int incByte = 1;
   Int b;
+  Int maxval = pow(2, d->m_uiBitsPel) - 1;
 
   if( d->m_iEndianness == 0 )
   {
@@ -608,6 +609,10 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff )
       {
         *pPel += *pTmpBuff << ( b * 8 );
         pTmpBuff++;
+        // Check max value and bound it to "maxval" to prevent segfault when calculating histogram
+        if(*pPel > maxval)
+          *pPel = 0;
+        // -----
       }
       pPel++;
       pTmpBuff += step;

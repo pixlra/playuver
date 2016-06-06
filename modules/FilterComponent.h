@@ -42,7 +42,7 @@ private:
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList ) = 0;
   Void destroy();
 
-  Bool createFilter( UInt uiWidth, UInt uiHeight, UInt bitsPixel );
+  Bool createFilter( UInt uiWidth, UInt uiHeight, UInt bitsPixel, UInt uiEndianness );
   PlaYUVerFrame* filterComponent( PlaYUVerFrame* InputFrame, Int Component );
 };
 

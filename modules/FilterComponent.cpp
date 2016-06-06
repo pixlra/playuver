@@ -31,10 +31,10 @@ FilterComponentModule::FilterComponentModule()
   m_pcFilteredFrame = NULL;
 }
 
-Bool FilterComponentModule::createFilter( UInt uiWidth, UInt uiHeight, UInt bitsPixel )
+Bool FilterComponentModule::createFilter( UInt uiWidth, UInt uiHeight, UInt bitsPixel, UInt uiEndianness )
 {
   m_pcFilteredFrame = NULL;
-  m_pcFilteredFrame = new PlaYUVerFrame( uiWidth, uiHeight, PlaYUVerFrame::GRAY, bitsPixel );
+  m_pcFilteredFrame = new PlaYUVerFrame( uiWidth, uiHeight, PlaYUVerFrame::GRAY, bitsPixel, uiEndianness );
   return true;
 }
 
@@ -69,7 +69,8 @@ FilterComponentLuma::FilterComponentLuma()
 
 Bool FilterComponentLuma::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  return createFilter( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), apcFrameList[0]->getBitsPel() );
+  return createFilter( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), apcFrameList[0]->getBitsPel(),
+      apcFrameList[0]->getEndianness() );
 }
 
 PlaYUVerFrame* FilterComponentLuma::process( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -93,7 +94,8 @@ Bool FilterComponentChromaU::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   if( apcFrameList[0]->getNumberChannels() > 1 )
   {
-    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(), apcFrameList[0]->getBitsPel() );
+    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(), apcFrameList[0]->getBitsPel(),
+        apcFrameList[0]->getEndianness() );
   }
   return false;
 }
@@ -119,7 +121,8 @@ Bool FilterComponentChromaV::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   if( apcFrameList[0]->getNumberChannels() > 1 )
   {
-    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(), apcFrameList[0]->getBitsPel() );
+    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(), apcFrameList[0]->getBitsPel(),
+        apcFrameList[0]->getEndianness() );
   }
   return false;
 }

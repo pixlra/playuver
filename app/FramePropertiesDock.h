@@ -90,19 +90,15 @@ private:
   QSpinBox *minInterv;
   QSpinBox *maxInterv;
 
-  QLabel *colorsLabel;
-  QLabel *labelMeanValue;
   QLabel *labelPixelsValue;
-  QLabel *labelStdDevValue;
   QLabel *labelCountValue;
+  QLabel *labelRangeValue;
+  QLabel *labelMeanValue;
+  QLabel *labelStdDevValue;
   QLabel *labelMedianValue;
   QLabel *labelPercentileValue;
-  QLabel *formatValueLabel;
-  QLabel *sizeValueLabel;
-  QLabel *colorSpaceValueLabel;
-  QLabel *colorModeValueLabel;
-  QLabel *depthValueLabel;
-  QLabel *alphaValueLabel;
+
+  QLabel *colorsLabel;
 
   QRect m_cSelectionArea;
 

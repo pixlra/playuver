@@ -901,6 +901,66 @@ Int getRealHistoChannel( Int colorSpace, Int channel )
   return histoChannel;
 }
 
+UInt PlaYUVerFrame::getMin( Int channel )
+{
+  UInt value;
+  Int histoChannel;
+  Int indexStart;
+
+  if( !d->m_bHasHistogram )
+  {
+    return 0;
+  }
+
+  histoChannel = getRealHistoChannel( getColorSpace(), channel );
+
+  if( histoChannel == -1 )
+  {
+    return 0;
+  }
+
+  indexStart = histoChannel * d->m_uiHistoSegments;
+
+  for( value = 0; value <= d->m_uiHistoSegments; value++ )
+  {
+    if( d->m_puiHistogram[indexStart + value] > 0)
+    {
+      break;
+    }
+  }
+  return value;
+}
+
+UInt PlaYUVerFrame::getMax( Int channel )
+{
+  Int value;
+  Int histoChannel;
+  Int indexStart;
+
+  if( !d->m_bHasHistogram )
+  {
+    return 0;
+  }
+
+  histoChannel = getRealHistoChannel( getColorSpace(), channel );
+
+  if( histoChannel == -1 )
+  {
+    return 0;
+  }
+
+  indexStart = histoChannel * d->m_uiHistoSegments;
+
+  for( value = d->m_uiHistoSegments - 1; value >= 0; value-- )
+  {
+    if( d->m_puiHistogram[indexStart + value] > 0)
+    {
+      break;
+    }
+  }
+  return value;
+}
+
 UInt PlaYUVerFrame::getCount( Int channel, UInt start, UInt end )
 {
   UInt i;

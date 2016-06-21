@@ -143,8 +143,8 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
 
   // -------------------------------------------------------------
 
-  QLabel *rangeLabel = new QLabel( tr( "Range:" ) );
-  rangeLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+  QLabel *rangeSelectionLabel = new QLabel( tr( "Range:" ) );
+  rangeSelectionLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
 
   minInterv = new QSpinBox;
   minInterv->setRange( 0, 255 );
@@ -161,7 +161,7 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
       " of the histogram selection." ) );
 
   QHBoxLayout *rangeLayout = new QHBoxLayout;
-  rangeLayout->addWidget( rangeLabel );
+  rangeLayout->addWidget( rangeSelectionLabel );
   rangeLayout->addWidget( minInterv );
   rangeLayout->addWidget( maxInterv );
 
@@ -178,6 +178,11 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
   countLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
   labelCountValue = new QLabel;
   labelCountValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+
+  QLabel *rangeLabel = new QLabel( tr( "Range:" ) );
+  rangeLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+  labelRangeValue = new QLabel;
+  labelRangeValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
   QLabel *meanLabel = new QLabel( tr( "Mean:" ) );
   meanLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
@@ -199,17 +204,20 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
   labelPercentileValue = new QLabel;
   labelPercentileValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
+  Int gridRow = 0;
   QGridLayout *statisticsLayout = new QGridLayout;
-  statisticsLayout->addWidget( pixelsLabel, 0, 0 );
-  statisticsLayout->addWidget( labelPixelsValue, 0, 1 );
-  statisticsLayout->addWidget( countLabel, 1, 0 );
-  statisticsLayout->addWidget( labelCountValue, 1, 1 );
-  statisticsLayout->addWidget( meanLabel, 2, 0 );
-  statisticsLayout->addWidget( labelMeanValue, 2, 1 );
-  statisticsLayout->addWidget( stdDevLabel, 3, 0 );
-  statisticsLayout->addWidget( labelStdDevValue, 3, 1 );
-  statisticsLayout->addWidget( medianLabel, 4, 0 );
-  statisticsLayout->addWidget( labelMedianValue, 4, 1 );
+  statisticsLayout->addWidget( pixelsLabel, gridRow, 0 );
+  statisticsLayout->addWidget( labelPixelsValue, gridRow++, 1 );
+  statisticsLayout->addWidget( countLabel, gridRow, 0 );
+  statisticsLayout->addWidget( labelCountValue, gridRow++, 1 );
+  statisticsLayout->addWidget( rangeLabel, gridRow, 0 );
+  statisticsLayout->addWidget( labelRangeValue, gridRow++, 1 );
+  statisticsLayout->addWidget( meanLabel, gridRow, 0 );
+  statisticsLayout->addWidget( labelMeanValue, gridRow++, 1 );
+  statisticsLayout->addWidget( stdDevLabel, gridRow, 0 );
+  statisticsLayout->addWidget( labelStdDevValue, gridRow++, 1 );
+  statisticsLayout->addWidget( medianLabel, gridRow, 0 );
+  statisticsLayout->addWidget( labelMedianValue, gridRow++, 1 );
 //  statisticsLayout->addWidget( percentileLabel, 5, 0 );
 //  statisticsLayout->addWidget( labelPercentileValue, 5, 1 );
 
@@ -437,6 +445,10 @@ Void FramePropertiesDock::updateStatistiques()
 
   if( frame )
   {
+
+    QString rangeText = "[" + QString::number( frame->getMin( channel ) ) + ":" +  QString::number( frame->getMax( channel ) ) + "]";
+    labelRangeValue->setText( rangeText );
+
     double mean = frame->getMean( channel, min, max );
     labelMeanValue->setText( value.setNum( mean, 'f', 1 ) );
 

@@ -27,6 +27,8 @@
 #define __PLAYUVERDEFS_H__
 
 #include <algorithm>
+#include <string>
+#include <vector>
 
 // ====================================================================================================================
 // Basic type redefinition

@@ -210,5 +210,20 @@ Bool OpticalFlowFarneback::create( std::vector<PlaYUVerFrame*> apcFrameList )
   return bRet;
 }
 
+OpticalDeepFlow::OpticalDeepFlow()
+{
+  /* Module Definition */
+  m_pchModuleName = "OpticalDeepFlow";
+  m_pchModuleTooltip = "Measure optical flow using Farneback method";
 
+}
+
+Bool OpticalDeepFlow::create( std::vector<PlaYUVerFrame*> apcFrameList )
+{
+  Bool bRet = commonCreate( apcFrameList );
+  if( !bRet )
+    return bRet;
+  m_cOpticalFlow = cv::optflow::createOptFlow_DeepFlow();
+  return bRet;
+}
 

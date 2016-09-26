@@ -90,5 +90,17 @@ public:
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
 };
 
+class OpticalDeepFlow: public OpticalFlowModule
+{
+  REGISTER_CLASS_FACTORY( OpticalDeepFlow )
+public:
+  OpticalDeepFlow();
+  virtual ~OpticalDeepFlow()
+  {
+  }
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+};
+
+
 #endif // __OPTICALFLOW_H__
 

@@ -29,6 +29,7 @@
 #include <QVector>
 
 #include "PlaYUVerAppDefs.h"
+#include "lib/PlaYUVerStream.h"
 
 class QComboBox;
 class QHBoxLayout;
@@ -36,6 +37,10 @@ class QLabel;
 class QSpinBox;
 class QString;
 class QWidget;
+
+typedef QVector<PlaYUVerStdResolution> PlaYUVerStdResolutionVector;
+QDataStream& operator<<( QDataStream& out, const PlaYUVerStdResolutionVector& array );
+QDataStream& operator>>( QDataStream& in, PlaYUVerStdResolutionVector& array );
 
 /**
  *
@@ -49,6 +54,9 @@ public:
   ConfigureFormatDialog( QWidget *parent = 0 );
   Int runConfigureFormatDialog( const QString& Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, Int& rEndianess, UInt& rFrameRate );
 
+  Void readSettings();
+  Void writeSettings();
+
 private Q_SLOTS:
   void slotStandardResolutionSelected( int );
   void slotResolutionChange();
@@ -58,6 +66,7 @@ private Q_SLOTS:
 private:
   QStringList standardResolutionNames;
   QVector<QSize> standardResolutionSizes;
+  PlaYUVerStdResolutionVector aRCustomFileFormats;
 
   QLabel* m_labelFilename;
   QComboBox *m_comboBoxStandardResolution;
@@ -72,5 +81,8 @@ private:
   QSpinBox *m_spinBoxFrameRate;
 
 };
+
+Q_DECLARE_METATYPE( PlaYUVerStdResolution );
+Q_DECLARE_METATYPE( PlaYUVerStdResolutionVector );
 
 #endif // __CONFIGUREFORMATDIALOG_H__

@@ -29,16 +29,47 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QSettings>
 #include <QSpinBox>
 #include <QString>
 #include <QWidget>
 
 #include "lib/PlaYUVerFrame.h"
-#include "lib/PlaYUVerStream.h"
 
 #include "ConfigureFormatDialog.h"
 
 #define MAX_SUPPORTED_RESOLUTION 9999
+
+QDataStream& operator<<( QDataStream& out, const PlaYUVerStdResolutionVector& array )
+{
+  PlaYUVerStdResolution d;
+  out << array.size();
+  for( Int i = 0; i < array.size(); i++ )
+  {
+    d = array.at( i );
+    out << QString::fromStdString( d.shortName )
+        << d.uiWidth
+        << d.uiHeight;
+  }
+  return out;
+}
+
+QDataStream& operator>>( QDataStream& in, PlaYUVerStdResolutionVector& array )
+{
+  PlaYUVerStdResolution d;
+  QString auxName;
+  Int array_size;
+  in >> array_size;
+  for( Int i = 0; i < array_size; i++ )
+  {
+    in >> auxName;
+    d.shortName = auxName.toStdString();
+    in >> d.uiWidth;
+    in >> d.uiHeight;
+    array.append( d );
+  }
+  return in;
+}
 
 class AddCustomFormat: public QDialog
 {
@@ -113,6 +144,17 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 {
   QString Name;
   UInt uiWidth, uiHeight;
+
+  readSettings();
+  for( UInt i = 0; i < aRCustomFileFormats.size(); i++ )
+  {
+    Name = QString::fromStdString( aRCustomFileFormats[i].shortName );
+    uiWidth = aRCustomFileFormats[i].uiWidth;
+    uiHeight = aRCustomFileFormats[i].uiHeight;
+    standardResolutionNames.append( QString( "%1 (%2x%3)" ).arg( Name ).arg( uiWidth ).arg( uiHeight ) );
+    standardResolutionSizes.append( QSize( uiWidth, uiHeight ) );
+  }
+
   std::vector<PlaYUVerStdResolution> listPlaYUVerStdResolution = PlaYUVerStream::stdResolutionSizes();
   for( UInt i = 0; i < listPlaYUVerStdResolution.size(); i++ )
   {
@@ -391,6 +433,7 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( const QString& Filename, UI
   }
   if( exec() == QDialog::Rejected )
   {
+    writeSettings();
     return QDialog::Rejected;
   }
   rWidth = m_spinBoxWidth->value();
@@ -409,6 +452,7 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( const QString& Filename, UI
   rBits = m_spinBoxBits->value();
   rEndianess = m_comboBoxEndianness->currentIndex();
   rFrameRate = m_spinBoxFrameRate->value();
+  writeSettings();
   return QDialog::Accepted;
 }
 
@@ -418,12 +462,13 @@ void ConfigureFormatDialog::slotStandardResolutionSelected( Int idx )
   {
     AddCustomFormat* pcCustomFmtDialog = new AddCustomFormat;
     PlaYUVerStdResolution customResolution = pcCustomFmtDialog->runDialog();
+    aRCustomFileFormats.append( customResolution );
     if( customResolution.shortName != "" )
     {
       QString name = QString::fromStdString( customResolution.shortName );
       name.append( QString( " (%2x%3)" ).arg( customResolution.uiWidth ).arg( customResolution.uiHeight ) );
-      standardResolutionNames.append( name );
-      standardResolutionSizes.append( QSize( customResolution.uiWidth, customResolution.uiHeight ) );
+      standardResolutionNames.insert( 0, name );
+      standardResolutionSizes.insert( 0, QSize( customResolution.uiWidth, customResolution.uiHeight ) );
 
       m_comboBoxStandardResolution->blockSignals( true );
       m_comboBoxStandardResolution->insertItem( 0, name );
@@ -484,3 +529,18 @@ Void ConfigureFormatDialog::slotBitsChange( Int idx )
   }
 }
 
+Void ConfigureFormatDialog::readSettings()
+{
+  QSettings appSettings;
+  QVariant value = appSettings.value( "ConfigureFormatDialog/CustomFormats" );
+  aRCustomFileFormats = value.value<PlaYUVerStdResolutionVector>();
+
+}
+
+Void ConfigureFormatDialog::writeSettings()
+{
+  QSettings appSettings;
+  QVariant var;
+  var.setValue<PlaYUVerStdResolutionVector>( aRCustomFileFormats );
+  appSettings.setValue( "ConfigureFormatDialog/CustomFormats", var );
+}

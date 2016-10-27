@@ -27,6 +27,7 @@
 #include "PlaYUVerAppDefs.h"
 #include "PlaYUVerApp.h"
 #include "VideoSubWindow.h"
+#include "ConfigureFormatDialog.h"
 #ifdef USE_QTDBUS
 #include "PlaYUVerAppAdaptor.h"
 #endif
@@ -42,6 +43,8 @@ int main( int argc, char *argv[] )
 {
   qRegisterMetaType<PlaYUVerStreamInfoVector>();
   qRegisterMetaTypeStreamOperators<PlaYUVerStreamInfoVector>();
+  qRegisterMetaType<PlaYUVerStdResolutionVector>();
+  qRegisterMetaTypeStreamOperators<PlaYUVerStdResolutionVector>();
 
   QApplication application( argc, argv );
   QApplication::setApplicationName( "PlaYUVer" );

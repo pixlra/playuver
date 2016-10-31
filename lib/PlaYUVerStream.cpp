@@ -48,6 +48,7 @@ std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Video", "yuv" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Video", "gray" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Video", "rgb" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable PixMap ", "ppm" );

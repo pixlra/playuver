@@ -477,8 +477,8 @@ void ConfigureFormatDialog::slotStandardResolutionSelected( Int idx )
 
       m_comboBoxStandardResolution->blockSignals( true );
       m_comboBoxStandardResolution->insertItem( 0, name );
-      m_comboBoxStandardResolution->setCurrentIndex( 0 );
       m_comboBoxStandardResolution->blockSignals( false );
+      m_comboBoxStandardResolution->setCurrentIndex( 0 );
     }
   }
   if( idx >= 0 )

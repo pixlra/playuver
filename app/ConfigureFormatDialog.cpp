@@ -33,12 +33,13 @@
 #include <QSpinBox>
 #include <QString>
 #include <QWidget>
+#include <QDebug>
 
 #include "lib/PlaYUVerFrame.h"
 
 #include "ConfigureFormatDialog.h"
 
-#define MAX_SUPPORTED_RESOLUTION 9999
+#define MAX_SUPPORTED_RESOLUTION 99999
 
 QDataStream& operator<<( QDataStream& out, const PlaYUVerStdResolutionVector& array )
 {
@@ -423,19 +424,23 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( const QString& Filename, UI
     m_widgetEndianness->setVisible( false );
   }
   m_spinBoxFrameRate->setValue( rFrameRate );
-  for( Int i = 0; i < standardResolutionSizes.size(); i++ )
+
+  for( Int i = 0; i < standardResolutionSizes.size() - 1; i++ )
   {
     if( standardResolutionSizes.at( i ) == QSize( rWidth, rHeight ) )
     {
       m_comboBoxStandardResolution->setCurrentIndex( i );
+      qDebug() << "ola";
       break;
     }
   }
+
   if( exec() == QDialog::Rejected )
   {
     writeSettings();
     return QDialog::Rejected;
   }
+
   rWidth = m_spinBoxWidth->value();
   rHeight = m_spinBoxheight->value();
   colorSpace = m_comboBoxColorSpace->currentIndex();

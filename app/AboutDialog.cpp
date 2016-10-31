@@ -23,6 +23,8 @@
  *           Based on the work of Glad Deschrijver <glad.deschrijver@gmail.com> in KTikZ project
  */
 
+#include <config.h>
+
 #include "AboutDialog.h"
 #include <QApplication>
 #include <QDialogButtonBox>
@@ -30,24 +32,46 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 
+#define TAB_FROM_SPACES "&nbsp;&nbsp;&nbsp;"
+
 AboutDialog::AboutDialog( QWidget *parent ) :
         QDialog( parent )
 {
-  QPixmap logo = QPixmap( ":/images/playuver-backgroud-logo.png" ).scaled( QSize( 350, 350 ), Qt::KeepAspectRatio );
+  QPixmap logo = QPixmap( ":/images/playuver-backgroud-logo.png" ).scaled( QSize( 500, 350 ), Qt::KeepAspectRatio );
   QLabel *pixmapLabel = new QLabel;
   pixmapLabel->setPixmap( logo );
 
-  QLabel *label = new QLabel( QString( "<h1>%1 Version %2</h1><p>%3</p><p>%4</p>" )
+  QLabel *label = new QLabel( QString( "<h1 style='text-align:center'>%1 Version %2</h1><h2>%3</h2>" )
       .arg( QApplication::applicationName() )
       .arg( QApplication::applicationVersion() )
-      .arg( tr( "Enhanced open-source Qt-based raw video player" ) )
-      .arg( tr( "Copyright © 2014–2015 Luis Lucas and Joao Carreira" ) ) );
+      .arg( tr( "Enhanced open-source Qt-based raw video player" ) ) );
   label->setWordWrap( true );
+
+
+  QString featuresList = QStringLiteral( "<p><b>Features:</b><ul>" );
+
+#ifdef USE_QTDBUS
+  featuresList.append( QStringLiteral( "<li>Support for Qt DBus messages" ) );
+#endif
+#ifdef USE_FFMPEG
+  featuresList.append( QStringLiteral( "<li>Support for FFmpeg" ) );
+#endif
+#ifdef USE_OPENCV
+  featuresList.append( QStringLiteral( "<li>Support for OpenCV" ) );
+#endif
+  featuresList.append( QStringLiteral( "</ul></p>" ) );
+
+  QLabel *labelFeatures = new QLabel( featuresList );
+
+
+  QLabel *labelCopyright = new QLabel( QStringLiteral( "Copyright © 2014–2015 Luis Lucas and Joao Carreira" ) );
 
   QWidget *topWidget = new QWidget;
   QVBoxLayout *topLayout = new QVBoxLayout;
   topLayout->addWidget( pixmapLabel );
   topLayout->addWidget( label );
+  topLayout->addWidget( labelFeatures );
+  topLayout->addWidget( labelCopyright );
   topWidget->setLayout( topLayout );
 
 //	QTextEdit *textEdit = new QTextEdit(tr("<p>This program is free "

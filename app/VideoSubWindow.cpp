@@ -317,7 +317,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
     m_pCurrStream = new PlaYUVerStream;
   }
 
-  if( guessFormat( cFilename, Width, Height, InputFormat, FrameRate ) || bForceDialog )
+  if( guessFormat( cFilename, Width, Height, InputFormat, BitsPel ) || bForceDialog )
   {
     if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate )
         == QDialog::Rejected )
@@ -428,7 +428,7 @@ Void VideoSubWindow::updateVideoWindowInfo()
   }
 }
 
-Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate )
+Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPixel )
 {
   std::vector<PlaYUVerStdResolution> stdResList = PlaYUVerStream::stdResolutionSizes();
   Bool bGuessed = true;
@@ -470,8 +470,9 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
         rWidth = stdResList[iMatch].uiWidth;
         rHeight = stdResList[iMatch].uiHeight;
       }
-      // Guess resolution - match %dx%d
+
 #if( QT_VERSION_PLAYUVER == 5 )
+      // Guess resolution - match %dx%d
       QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*" ).match( FilenameShort );
       if( resolutionMatch.hasMatch() )
       {
@@ -485,6 +486,19 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
             rWidth = resolutionArgs.at( 0 ).toUInt();
             rHeight = resolutionArgs.at( 1 ).toUInt();
           }
+        }
+      }
+      // Guess bits per pixel - match %dbpp
+      QRegularExpressionMatch BppMatch = QRegularExpression( "_\\d*bpp" ).match( FilenameShort );
+      if( BppMatch.hasMatch() )
+      {
+        QString matchString = BppMatch.captured( 0 );
+        matchString.remove( "_" );
+        matchString.remove( "bpp" );
+        rBitsPerPixel = matchString.toUInt();
+        if( !( rBitsPerPixel > 0 && rBitsPerPixel < 16 ) )
+        {
+          rBitsPerPixel = -1;
         }
       }
 #endif

@@ -103,7 +103,7 @@ private:
 
   Void refreshFrameOperation();
 
-  static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rFrameRate );
+  static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPixel );
 
   /**
    * Private zoom function to handle

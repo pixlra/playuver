@@ -268,7 +268,21 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         { { 0, 0, 1 } },  /* Y */
     },
     {
-        "RGB24",
+      "RGBp",
+      PlaYUVerPixel::COLOR_RGB,
+      3,
+      3,
+      0,
+      0,
+      ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_RGB24 ),
+      {
+        { 0, 0, 1 },  /* R */
+        { 1, 0, 1 },  /* G */
+        { 2, 0, 1 },  /* B */
+      },
+    },
+    {
+        "RGB",
         PlaYUVerPixel::COLOR_RGB,
         3,
         1,
@@ -282,7 +296,7 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         },
     },
     {
-        "BGR24",
+        "BGR",
         PlaYUVerPixel::COLOR_RGB,
         3,
         1,
@@ -290,9 +304,9 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         0,
         ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_BGR24 ),
         {
-            { 0, 2, 3}, /* R */
-            { 0, 2, 2}, /* G */
-            { 0, 2, 1}, /* B */
+            { 0, 2, 3}, /* B */
+            { 0, 2, 2}, /* R */
+            { 0, 2, 1}, /* G */
         },
     }
 };

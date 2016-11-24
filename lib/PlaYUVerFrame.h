@@ -58,6 +58,7 @@ public:
     YUV422p,
     YUYV422,
     GRAY,
+    RGBp,
     RGB24,
     BGR24,
     NUMBER_PEL_FORMATS

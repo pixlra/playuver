@@ -440,7 +440,7 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
   {
     return false;
   }
-  if( !fileExtension.compare( "yuv" ) || !fileExtension.compare( "gray" ) || !fileExtension.compare( "gray" ) )
+  if( !fileExtension.compare( "yuv" ) || !fileExtension.compare( "rgb" ) || !fileExtension.compare( "gray" ) )
   {
     bGuessed = false;
     // Guess pixel format

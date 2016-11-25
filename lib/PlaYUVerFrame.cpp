@@ -1327,7 +1327,7 @@ Double PlaYUVerFrame::getMSE( PlaYUVerFrame* Org, Int component )
 
 Double PlaYUVerFrame::getPSNR( PlaYUVerFrame* Org, Int component )
 {
-  UInt uiMaxValue = ( 1 << Org->getBitsPel() );
+  UInt uiMaxValue = ( 1 << Org->getBitsPel() - 1 );
   Double uiMaxValueSquare = uiMaxValue * uiMaxValue;
   Double dPSNR = 100;
   Double dMSE = getMSE( Org, component );

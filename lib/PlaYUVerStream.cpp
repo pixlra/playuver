@@ -164,8 +164,8 @@ String PlaYUVerStream::getCodecName()
 
 Bool PlaYUVerStream::open( String filename, String resolution, String input_format_name, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput )
 {
-  UInt width;
-  UInt height;
+  UInt width = 0;
+  UInt height = 0;
   Int input_format = -1;
 
   if( resolution.size() > 0 )
@@ -575,7 +575,7 @@ Bool PlaYUVerStream::seekInputRelative( Bool bIsFoward )
 
 Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 {
-  if( !m_bInit || new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum || ( Int64 )new_frame_num == m_iCurrFrameNum )
+  if( !m_bInit  || new_frame_num >= m_uiTotalFrameNum || ( Int64 )new_frame_num == m_iCurrFrameNum )
     return false;
 
   m_iCurrFrameNum = new_frame_num - 1;

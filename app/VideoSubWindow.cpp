@@ -507,15 +507,12 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
     // Guess resolution by file size
     if( rWidth == 0 && rHeight == 0 )
     {
-      Char *filename_char = new char[filename.length() + 1];
-      memcpy( filename_char, filename.toUtf8().constData(), filename.length() + 1 * sizeof(char) );
-      FILE* pF = fopen( filename_char, "rb" );
+      FILE* pF = fopen( filename.toStdString().c_str(), "rb" );
       if( pF )
       {
         fseek( pF, 0, SEEK_END );
         UInt64 uiFileSize = ftell( pF );
         fclose( pF );
-        delete[] filename_char;
 
         Int count = 0, module, frame_bytes, match;
         for( UInt i = 0; i < stdResList.size(); i++ )

@@ -103,7 +103,7 @@ private:
 
   Void refreshFrameOperation();
 
-  static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPixel );
+  static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPixel, Int& rEndianness );
 
   /**
    * Private zoom function to handle
@@ -160,6 +160,11 @@ public:
   }
 
   PlaYUVerStream* getInputStream()
+  {
+    return m_pCurrStream;
+  }
+
+  PlaYUVerStream* getCurrStream()
   {
     return m_pCurrStream;
   }

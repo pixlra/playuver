@@ -115,6 +115,13 @@ enum RGBcomponent
   COLOR_A,
 };
 
+enum Endianness
+{
+  PLAYUVER_BIG_ENDIAN = 0,
+  PLAYUVER_LITTLE_ENDIAN = 1,
+};
+
+
 inline String lowercase( const String& in )
 {
   String out;

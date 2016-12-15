@@ -428,7 +428,7 @@ Void VideoSubWindow::updateVideoWindowInfo()
   }
 }
 
-Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPixel )
+Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPixel, Int& rEndianness )
 {
   std::vector<PlaYUVerStdResolution> stdResList = PlaYUVerStream::stdResolutionSizes();
   Bool bGuessed = true;
@@ -488,19 +488,6 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
           }
         }
       }
-      // Guess bits per pixel - match %dbpp
-      QRegularExpressionMatch BppMatch = QRegularExpression( "_\\d*bpp" ).match( FilenameShort );
-      if( BppMatch.hasMatch() )
-      {
-        QString matchString = BppMatch.captured( 0 );
-        matchString.remove( "_" );
-        matchString.remove( "bpp" );
-        rBitsPerPixel = matchString.toUInt();
-        if( !( rBitsPerPixel > 0 && rBitsPerPixel < 16 ) )
-        {
-          rBitsPerPixel = -1;
-        }
-      }
 #endif
     }
 
@@ -531,6 +518,35 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
           rHeight = stdResList[match].uiHeight;
           bGuessedByFilesize = true;
         }
+      }
+    }
+
+    // Guess bits per pixel - match %dbpp
+#if( QT_VERSION_PLAYUVER == 5 )
+    QRegularExpressionMatch BppMatch = QRegularExpression( "_\\d*bpp" ).match( FilenameShort );
+    if( BppMatch.hasMatch() )
+    {
+      QString matchString = BppMatch.captured( 0 );
+      matchString.remove( "_" );
+      matchString.remove( "bpp" );
+      rBitsPerPixel = matchString.toUInt();
+      if( !( rBitsPerPixel > 0 && rBitsPerPixel < 16 ) )
+      {
+        rBitsPerPixel = -1;
+      }
+    }
+#endif
+
+    // Guess Endianness
+    if( rEndianness == -1 )
+    {
+      if( FilenameShort.contains( QStringLiteral( "be" ), Qt::CaseInsensitive ) )
+      {
+        rEndianness = PLAYUVER_BIG_ENDIAN;
+      }
+      if( FilenameShort.contains( QStringLiteral( "le" ), Qt::CaseInsensitive ) )
+      {
+        rEndianness = PLAYUVER_LITTLE_ENDIAN;
       }
     }
 

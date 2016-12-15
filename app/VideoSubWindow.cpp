@@ -306,7 +306,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
 {
   ConfigureFormatDialog formatDialog( this );
   UInt Width = 0, Height = 0, BitsPel = 8, FrameRate = 30;
-  Int Endianness = 0;
+  Int Endianness = PLAYUVER_BIG_ENDIAN;
   Int InputFormat = PlaYUVerFrame::YUV420p;
 
   if( m_pCurrStream )
@@ -317,7 +317,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
     m_pCurrStream = new PlaYUVerStream;
   }
 
-  if( guessFormat( cFilename, Width, Height, InputFormat, BitsPel ) || bForceDialog )
+  if( guessFormat( cFilename, Width, Height, InputFormat, BitsPel, Endianness ) || bForceDialog )
   {
     if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate )
         == QDialog::Rejected )

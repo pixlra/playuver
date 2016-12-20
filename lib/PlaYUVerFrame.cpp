@@ -1322,7 +1322,7 @@ Double PlaYUVerFrame::getMSE( PlaYUVerFrame* Org, Int component )
   {
     return 0.0;
   }
-  return ssd / ( Org->getWidth() * Org->getHeight() );
+  return ssd / Double( numberOfPixels );
 }
 
 Double PlaYUVerFrame::getPSNR( PlaYUVerFrame* Org, Int component )

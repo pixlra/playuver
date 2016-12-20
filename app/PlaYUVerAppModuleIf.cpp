@@ -38,7 +38,7 @@ PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaY
         m_dMeasurementResult( 0 )
 {
   setParent( parent );
-  for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
+  for( Int i = 0; i < MODULE_REQUIRES_MAX_NUM_FRAMES; i++ )
   {
     m_pcSubWindow[i] = NULL;
   }
@@ -194,7 +194,7 @@ Void PlaYUVerAppModuleIf::destroy()
     m_pcDisplaySubWindow->closeSubWindow();
   m_pcDisplaySubWindow = NULL;
 
-  for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
+  for( Int i = 0; i < MODULE_REQUIRES_MAX_NUM_FRAMES; i++ )
   {
     if( m_pcSubWindow[i] )
     {

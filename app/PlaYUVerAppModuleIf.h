@@ -60,7 +60,7 @@ private:
   QAction* m_pcModuleAction;
   PlaYUVerModuleIf* m_pcModule;
 
-  VideoSubWindow* m_pcSubWindow[MAX_NUMBER_FRAMES];
+  VideoSubWindow* m_pcSubWindow[MODULE_REQUIRES_MAX_NUM_FRAMES];
 
   VideoSubWindow* m_pcDisplaySubWindow;
 
@@ -93,7 +93,7 @@ public:
   QList<VideoSubWindow*> getSubWindowList()
   {
     QList<VideoSubWindow*> arraySubWindows;
-    for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
+    for( Int i = 0; i < MODULE_REQUIRES_MAX_NUM_FRAMES; i++ )
       if( m_pcSubWindow[i] )
         arraySubWindows.append( m_pcSubWindow[i] );
     return arraySubWindows;

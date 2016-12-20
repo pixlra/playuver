@@ -279,10 +279,17 @@ Void ModulesHandle::activateModule()
   Int numberOfFrames = pcCurrAppModuleIf->m_pcModule->m_uiNumberOfFrames;
   if( numberOfFrames > MODULE_REQUIRES_ONE_FRAME )  // Show dialog to select sub windows
   {
-    DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMainWindowManager, SubWindowAbstract::VIDEO_SUBWINDOW, numberOfFrames, numberOfFrames );
+    Int minNumFrames = numberOfFrames;
+    Int maxNumFrames = numberOfFrames;
+    if( numberOfFrames == MODULE_REQUIRES_SEVERAL_FRAMES )
+    {
+      minNumFrames = 0;
+      maxNumFrames = 255;
+    }
+    DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMainWindowManager, SubWindowAbstract::VIDEO_SUBWINDOW, minNumFrames, maxNumFrames );
     QList<SubWindowAbstract*> windowsList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
 
-    if( windowsList.size() <= numberOfFrames )
+    if( windowsList.size() == minNumFrames &&  windowsList.size() == maxNumFrames  )
     {
       for( Int i = 0; i < windowsList.size(); i++ )
       {
@@ -291,7 +298,7 @@ Void ModulesHandle::activateModule()
     }
     else
     {
-      if( windowsList.size() <= numberOfFrames )
+      if( windowsList.size() <= minNumFrames )
       {
         for( Int i = 0; i < windowsList.size(); i++ )
         {
@@ -400,7 +407,7 @@ Void ModulesHandle::activateModule()
   {
     if( pcCurrAppModuleIf->m_pcDisplaySubWindow )
       pcCurrAppModuleIf->m_pcDisplaySubWindow->enableModule( pcCurrAppModuleIf );
-    for( Int i = 0; i < numberOfFrames; i++ )
+    for( Int i = 0; i < videoSubWindowList.size(); i++ )
     {
       pcCurrAppModuleIf->m_pcSubWindow[i]->associateModule( pcCurrAppModuleIf );
     }
@@ -411,7 +418,7 @@ Void ModulesHandle::activateModule()
   if( pcCurrAppModuleIf->m_pcModule->m_iModuleAPI == MODULE_API_2 )
   {
     std::vector<PlaYUVerFrame*> apcFrameList;
-    for( UInt i = 0; i < pcCurrAppModuleIf->m_pcModule->m_uiNumberOfFrames; i++ )
+    for( UInt i = 0; i < videoSubWindowList.size(); i++ )
     {
       apcFrameList.push_back( pcCurrAppModuleIf->m_pcSubWindow[i]->getCurrFrame() );
     }

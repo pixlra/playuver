@@ -76,8 +76,6 @@ enum Module_Type
   FRAME_MEASUREMENT_MODULE,
 };
 
-#define MAX_NUMBER_FRAMES 3
-
 /** Module_NumberOfFrames Enum
  * \ingroup PlaYUVerLib_Modules
  * Number of frames requires by a module
@@ -88,7 +86,11 @@ enum Module_NumberOfFrames
   MODULE_REQUIRES_ONE_FRAME = 1,
   MODULE_REQUIRES_TWO_FRAMES,
   MODULE_REQUIRES_THREE_FRAMES,
-  MODULE_REQUIRES_MAX_FRAMES = 255,
+  MODULE_REQUIRES_FOUR_FRAMES,
+  MODULE_REQUIRES_FIVE_FRAMES,
+  MODULE_REQUIRES_SIX_FRAMES,
+  MODULE_REQUIRES_SEVERAL_FRAMES = 255,
+  MODULE_REQUIRES_MAX_NUM_FRAMES,
 };
 
 /** Module_Features Enum

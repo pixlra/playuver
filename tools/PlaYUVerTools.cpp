@@ -281,9 +281,13 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
           pcModFrame = applyFrameModule();
         }
         PlaYUVerStream* pcModStream = new PlaYUVerStream;
-        if( !pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(), pcModFrame->getPelFormat(), pcModFrame->getBitsPel(),
-            pcModFrame->getEndianness(), 1, false ) )
+        try
         {
+          pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(), pcModFrame->getPelFormat(), pcModFrame->getBitsPel(), pcModFrame->getEndianness(), 1, false );
+        }
+        catch( const char *msg )
+        {
+          log( LOG_ERROR, "Cannot open input stream %s with the following error %s!\n", outputFileNames[0].c_str(), msg );
           delete pcModStream;
           pcModStream = NULL;
           return 2;

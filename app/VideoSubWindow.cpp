@@ -538,16 +538,13 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
 #endif
 
     // Guess Endianness
-    if( rEndianness == -1 )
+    if( FilenameShort.contains( QStringLiteral( "be" ), Qt::CaseInsensitive ) )
     {
-      if( FilenameShort.contains( QStringLiteral( "be" ), Qt::CaseInsensitive ) )
-      {
-        rEndianness = PLAYUVER_BIG_ENDIAN;
-      }
-      if( FilenameShort.contains( QStringLiteral( "le" ), Qt::CaseInsensitive ) )
-      {
-        rEndianness = PLAYUVER_LITTLE_ENDIAN;
-      }
+      rEndianness = PLAYUVER_BIG_ENDIAN;
+    }
+    if( FilenameShort.contains( QStringLiteral( "le" ), Qt::CaseInsensitive ) )
+    {
+      rEndianness = PLAYUVER_LITTLE_ENDIAN;
     }
 
     if( rWidth > 0 && rHeight > 0 && rInputFormat >= 0 )

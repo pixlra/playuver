@@ -135,7 +135,7 @@ struct PlaYUVerFramePrivate
   Int m_iPixelFormat;  //!< Pixel format number (it follows the list of supported pixel formats)
   Int m_iNumberChannels;  //!< Number of channels
   UInt m_uiBitsPel;  //!< Bits per pixel/channel
-  Int m_iEndianness;  //!< Endiannes of bytes
+//   Int m_iEndianness;  //!< Endiannes of bytes
   UInt m_uiHalfPelValue;  //!< Bits per pixel/channel
 
   Pel*** m_pppcInputPel;
@@ -165,7 +165,7 @@ struct PlaYUVerFramePrivate
    * @param pel_format pixel format index (always use PixelFormats enum)
    *
    */
-  Void init( UInt width, UInt height, Int pel_format, Int bitsPixel, Int endianness )
+  Void init( UInt width, UInt height, Int pel_format, Int bitsPixel )
   {
     m_bInit = false;
     m_pppcInputPel = NULL;
@@ -175,11 +175,6 @@ struct PlaYUVerFramePrivate
     m_iPixelFormat = pel_format;
     m_iNumberChannels = 3;
     m_uiBitsPel = bitsPixel > 8 ? bitsPixel : 8;
-    m_iEndianness = endianness;
-    if( m_uiBitsPel > 8 && m_iEndianness == -1 )
-    {
-      throw PlaYUVerFailure( "PlaYUVerFrame", "Invalid endianness type for Bits per Pixel greater than 8" );
-    }
     m_uiHalfPelValue = 1 << ( m_uiBitsPel - 1 );
 
     if( m_uiWidth == 0 || m_uiHeight == 0 || m_iPixelFormat == -1 || bitsPixel > 16 )
@@ -220,16 +215,16 @@ struct PlaYUVerFramePrivate
  * \brief Constructors
  */
 
-PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel, Int endianness ) :
+PlaYUVerFrame::PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel ) :
         d( new PlaYUVerFramePrivate )
 {
-  d->init( width, height, pelFormat, bitsPixel, endianness );
+  d->init( width, height, pelFormat, bitsPixel );
 }
 
 PlaYUVerFrame::PlaYUVerFrame( const PlaYUVerFrame& other ) :
 d( new PlaYUVerFramePrivate )
 {
-  d->init( other.getWidth(), other.getHeight(), other.getPelFormat(), other.getBitsPel(), other.getEndianness() );
+  d->init( other.getWidth(), other.getHeight(), other.getPelFormat(), other.getBitsPel() );
   copyFrom( &other );
 }
 
@@ -239,7 +234,7 @@ PlaYUVerFrame::PlaYUVerFrame( const PlaYUVerFrame *other ) :
 {
   if( other )
   {
-    d->init( other->getWidth(), other->getHeight(), other->getPelFormat(), other->getBitsPel(), other->getEndianness() );
+    d->init( other->getWidth(), other->getHeight(), other->getPelFormat(), other->getBitsPel() );
     copyFrom( other );
   }
 }
@@ -265,7 +260,7 @@ PlaYUVerFrame::PlaYUVerFrame( const PlaYUVerFrame& other, UInt x, UInt y, UInt w
       height++;
   }
 
-  d->init( width, height, other.getPelFormat(), other.getBitsPel(), other.getEndianness() );
+  d->init( width, height, other.getPelFormat(), other.getBitsPel() );
   copyFrom( other, x, y );
 }
 
@@ -293,7 +288,7 @@ PlaYUVerFrame::PlaYUVerFrame( const PlaYUVerFrame *other, UInt posX, UInt posY, 
       areaHeight++;
   }
 
-  d->init( areaWidth, areaHeight, other->getPelFormat(), other->getBitsPel(), other->getEndianness() );
+  d->init( areaWidth, areaHeight, other->getPelFormat(), other->getBitsPel() );
   copyFrom( other, posX, posY );
 }
 
@@ -409,10 +404,6 @@ UInt PlaYUVerFrame::getChromaLength() const
 UInt PlaYUVerFrame::getBitsPel() const
 {
   return d->m_uiBitsPel;
-}
-Int PlaYUVerFrame::getEndianness() const
-{
-  return d->m_iEndianness;
 }
 
 UInt64 PlaYUVerFrame::getBytesPerFrame()
@@ -556,15 +547,15 @@ Void PlaYUVerFrame::copyFrom( const PlaYUVerFrame* other, UInt x, UInt y )
     copyFrom( *other, x, y );
 }
 
-Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, UInt64 uiBuffSize )
+Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, Int iEndianness, UInt64 uiBuffSize )
 {
   if( uiBuffSize != getBytesPerFrame() )
     return;
 
-  frameFromBuffer( Buff );
+  frameFromBuffer( Buff, iEndianness );
 }
 
-Void PlaYUVerFrame::frameFromBuffer( Byte *Buff )
+Void PlaYUVerFrame::frameFromBuffer( Byte *Buff, Int iEndianness )
 {
   Byte* ppBuff[MAX_NUMBER_PLANES];
   Byte* pTmpBuff;
@@ -578,7 +569,7 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff )
   Int b;
   Int maxval = pow(2, d->m_uiBitsPel) - 1;
 
-  if( d->m_iEndianness == 0 )
+  if( iEndianness == 0 )
   {
     startByte = bytesPixel - 1;
     endByte = -1;
@@ -622,7 +613,7 @@ Void PlaYUVerFrame::frameFromBuffer( Byte *Buff )
   d->m_bHasHistogram = false;
 }
 
-Void PlaYUVerFrame::frameToBuffer( Byte *output_buffer )
+Void PlaYUVerFrame::frameToBuffer( Byte *output_buffer, Int iEndianness )
 {
   UInt bytesPixel = ( d->m_uiBitsPel - 1 ) / 8 + 1;
   Byte* ppBuff[MAX_NUMBER_PLANES];
@@ -635,7 +626,7 @@ Void PlaYUVerFrame::frameToBuffer( Byte *output_buffer )
   Int incByte = 1;
   Int b;
 
-  if( d->m_iEndianness == 0 )
+  if( iEndianness == 0 )
   {
     startByte = bytesPixel - 1;
     endByte = -1;
@@ -1225,7 +1216,7 @@ Bool PlaYUVerFrame::fromMat( cv::Mat& cvMat )
         return false;
       }
     }
-    d->init( cvMat.cols, cvMat.rows, d->m_iPixelFormat, 8, -1 );
+    d->init( cvMat.cols, cvMat.rows, d->m_iPixelFormat, 8 );
   }
 
   d->m_bHasRGBPel = false;

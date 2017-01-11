@@ -105,6 +105,7 @@ public:
   UInt getFrameNum();
   UInt getWidth() const;
   UInt getHeight() const;
+  Int getEndianess() const;
   Int getCurrFrameNum();
   Double getFrameRate();
   Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, UInt& rFrameRate );

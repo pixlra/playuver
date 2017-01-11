@@ -240,8 +240,7 @@ Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_f
   {
     try
     {
-      m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight, m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel,
-          m_pcHandler->m_iEndianness );
+      m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight, m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel );
     }
     catch( PlaYUVerFailure& e )
     {
@@ -348,6 +347,10 @@ UInt PlaYUVerStream::getWidth() const
 UInt PlaYUVerStream::getHeight() const
 {
   return m_pcHandler->m_uiHeight;
+}
+Int PlaYUVerStream::getEndianess() const
+{
+  return m_pcHandler->m_iEndianness;
 }
 Double PlaYUVerStream::getFrameRate()
 {
@@ -498,7 +501,7 @@ Bool PlaYUVerStream::saveFrame( const String& filename, PlaYUVerFrame *saveFrame
 {
   PlaYUVerStream auxSaveStream;
   if( !auxSaveStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(), saveFrame->getPelFormat(), saveFrame->getBitsPel(),
-      saveFrame->getEndianness(), 1, false ) )
+      PLAYUVER_LITTLE_ENDIAN, 1, false ) )
   {
     return false;
   }

@@ -81,13 +81,13 @@ Bool StreamHandlerRaw::read( PlaYUVerFrame* pcFrame )
   UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof(Byte), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
-  pcFrame->frameFromBuffer( m_pStreamBuffer );
+  pcFrame->frameFromBuffer( m_pStreamBuffer, m_iEndianness );
   return true;
 }
 
 Bool StreamHandlerRaw::write( PlaYUVerFrame* pcFrame )
 {
-  pcFrame->frameToBuffer( m_pStreamBuffer );
+  pcFrame->frameToBuffer( m_pStreamBuffer, m_iEndianness );
   UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof(Byte), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;

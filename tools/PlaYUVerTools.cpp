@@ -283,7 +283,7 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
         PlaYUVerStream* pcModStream = new PlaYUVerStream;
         try
         {
-          pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(), pcModFrame->getPelFormat(), pcModFrame->getBitsPel(), pcModFrame->getEndianness(), 1, false );
+          pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(), pcModFrame->getPelFormat(), pcModFrame->getBitsPel(), PLAYUVER_LITTLE_ENDIAN, 1, false );
         }
         catch( const char *msg )
         {

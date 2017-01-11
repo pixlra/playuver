@@ -101,7 +101,7 @@ public:
    *
    * @note this function might misbehave if the pixel format enum is not correct
    */
-  PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel = 8, Int endianness = -1 );
+  PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel = 8 );
 
   /**
    * Copy contructor
@@ -178,7 +178,6 @@ public:
   UInt getChromaSize() const;
 
   UInt getBitsPel() const;
-  Int getEndianness() const;
 
   /**
    * Get number of bytes per frame of an existing frame
@@ -213,9 +212,9 @@ public:
   Void copyFrom( const PlaYUVerFrame&, UInt, UInt );
   Void copyFrom( const PlaYUVerFrame*, UInt, UInt );
 
-  Void frameFromBuffer( Byte*, UInt64 );
-  Void frameFromBuffer( Byte* );
-  Void frameToBuffer( Byte* );
+  Void frameFromBuffer( Byte*, Int, UInt64 );
+  Void frameFromBuffer( Byte*, Int );
+  Void frameToBuffer( Byte*, Int );
 
   Void fillRGBBuffer();
 

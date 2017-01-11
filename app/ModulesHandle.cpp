@@ -501,7 +501,7 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
     if( !pcCurrModuleIf->m_pcModuleStream )
     {
       UInt Width = 0, Height = 0, FrameRate = 30;
-      Int BitsPixel, Endianness, InputFormat = -1;
+      Int BitsPixel, InputFormat = -1;
 
       QString supported = tr( "Supported Files (" );
       QStringList formatsList;
@@ -531,11 +531,10 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
       Height = pcCurrModuleIf->m_pcProcessedFrame->getHeight();
       InputFormat = pcCurrModuleIf->m_pcProcessedFrame->getPelFormat();
       BitsPixel = pcCurrModuleIf->m_pcProcessedFrame->getBitsPel();
-      Endianness = pcCurrModuleIf->m_pcProcessedFrame->getEndianness();
       FrameRate = pcCurrModuleIf->m_pcSubWindow[0]->getInputStream()->getFrameRate();
 
       pcCurrModuleIf->m_pcModuleStream = new PlaYUVerStream;
-      if( !pcCurrModuleIf->m_pcModuleStream->open( fileName.toStdString(), Width, Height, InputFormat, BitsPixel, Endianness, FrameRate, false ) )
+      if( !pcCurrModuleIf->m_pcModuleStream->open( fileName.toStdString(), Width, Height, InputFormat, BitsPixel, PLAYUVER_LITTLE_ENDIAN, FrameRate, false ) )
       {
         delete pcCurrModuleIf->m_pcModuleStream;
         pcCurrModuleIf->m_pcModuleStream = NULL;

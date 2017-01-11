@@ -120,7 +120,7 @@ Bool StreamHandlerPortableMap::read( PlaYUVerFrame* pcFrame )
   UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof(Byte), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
-  pcFrame->frameFromBuffer( m_pStreamBuffer );
+  pcFrame->frameFromBuffer( m_pStreamBuffer, PLAYUVER_BIG_ENDIAN );
   return true;
 }
 
@@ -132,7 +132,7 @@ Bool StreamHandlerPortableMap::write( PlaYUVerFrame* pcFrame )
   {
     fprintf( m_pFile, "%d\n", m_iMaxValue );
   }
-  pcFrame->frameToBuffer( m_pStreamBuffer );
+  pcFrame->frameToBuffer( m_pStreamBuffer, PLAYUVER_BIG_ENDIAN );
   UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof(Byte), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;

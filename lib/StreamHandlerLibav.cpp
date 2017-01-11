@@ -358,7 +358,7 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
     if( orig_pkt.size )
       av_free_packet( &orig_pkt );
 
-    pcFrame->frameFromBuffer( m_pStreamBuffer );
+    pcFrame->frameFromBuffer( m_pStreamBuffer, m_iEndianness );
 
     return true;
   }

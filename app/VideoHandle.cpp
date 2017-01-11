@@ -319,8 +319,19 @@ Void VideoHandle::update()
     if( pcFrame )
     {
       resolution.append( QString( " %1 bpp" ).arg( pcFrame->getBitsPel() ) );
-      m_pcResolutionLabel->setText( resolution );
     }
+    if( pcStream && pcFrame->getBitsPel() > 8 )
+    {
+      if( pcStream->getEndianess() == PLAYUVER_BIG_ENDIAN )
+      {
+        resolution.append( QStringLiteral( " (BE)" ) );
+      }
+      else
+      {
+        resolution.append( QStringLiteral( " (LE)" ) );
+      }
+    }
+    m_pcResolutionLabel->setText( resolution );
 
     m_pcFramePropertiesSideBar->setFrame( pcFrame );
 

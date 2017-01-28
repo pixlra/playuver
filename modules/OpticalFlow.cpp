@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -38,7 +38,6 @@ using cv::Ptr;
 using cv::Point;
 using cv::Point2f;
 
-
 OpticalFlowModule::OpticalFlowModule()
 {
   /* Module Definition */
@@ -48,12 +47,11 @@ OpticalFlowModule::OpticalFlowModule()
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
   m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
 
-  m_cModuleOptions.addOptions()/**/
-  ( "Show reconstruction", m_bShowReconstruction, "Show reconstructed frame instead of MVs [false]" );
+  m_cModuleOptions.addOptions() /**/
+      ( "Show reconstruction", m_bShowReconstruction, "Show reconstructed frame instead of MVs [false]" );
 
   m_bShowReconstruction = false;
   m_pcOutputFrame = NULL;
-
 }
 
 Bool OpticalFlowModule::commonCreate( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -61,7 +59,9 @@ Bool OpticalFlowModule::commonCreate( std::vector<PlaYUVerFrame*> apcFrameList )
   _BASIC_MODULE_API_2_CHECK_
 
   for( UInt i = 1; i < apcFrameList.size(); i++ )
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE |
+                                                            PlaYUVerFrame::MATCH_RESOLUTION |
+                                                            PlaYUVerFrame::MATCH_BITS ) )
       return false;
 
   m_iStep = 16;
@@ -84,7 +84,6 @@ Void OpticalFlowModule::drawFlow()
   {
     for( int x = m_iStep / 2; x < m_cvFlow.cols; x += m_iStep )
     {
-
       Point2f u( 0, 0 );
       Double count = 0;
       for( int i = ( -m_iStep / 2 ); i < ( m_iStep / 2 ); i++ )
@@ -121,7 +120,7 @@ Void OpticalFlowModule::compensateFlow()
       for( UInt x = 0; x < m_pcOutputFrame->getWidth( c ); x++ )
       {
         Point2f u = m_cvFlow( y, x );
-        Point p( x + u.x, y + u.y);
+        Point p( x + u.x, y + u.y );
         *pPelOut = pPelPrev[p.y][p.x];
         pPelOut++;
       }
@@ -154,9 +153,8 @@ Void OpticalFlowModule::destroy()
   if( m_pcOutputFrame )
     delete m_pcOutputFrame;
   m_pcOutputFrame = NULL;
-//   if( m_cOpticalFlow )
-//     delete m_cOpticalFlow;
-
+  //   if( m_cOpticalFlow )
+  //     delete m_cOpticalFlow;
 }
 
 OpticalFlowDualTVL1::OpticalFlowDualTVL1()
@@ -164,7 +162,6 @@ OpticalFlowDualTVL1::OpticalFlowDualTVL1()
   /* Module Definition */
   m_pchModuleName = "OpticalFlowDualTVL1";
   m_pchModuleTooltip = "Measure optical flow using DualTVL1 method";
-
 }
 
 Bool OpticalFlowDualTVL1::create( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -181,7 +178,6 @@ OpticalFlowSparseToDense::OpticalFlowSparseToDense()
   /* Module Definition */
   m_pchModuleName = "OpticalFlowSparseToDense";
   m_pchModuleTooltip = "Measure optical flow using SparseToDense method";
-
 }
 
 Bool OpticalFlowSparseToDense::create( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -198,7 +194,6 @@ OpticalFlowFarneback::OpticalFlowFarneback()
   /* Module Definition */
   m_pchModuleName = "OpticalFlowFarneback";
   m_pchModuleTooltip = "Measure optical flow using Farneback method";
-
 }
 
 Bool OpticalFlowFarneback::create( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -215,7 +210,6 @@ OpticalDeepFlow::OpticalDeepFlow()
   /* Module Definition */
   m_pchModuleName = "OpticalDeepFlow";
   m_pchModuleTooltip = "Measure optical flow using Farneback method";
-
 }
 
 Bool OpticalDeepFlow::create( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -226,4 +220,3 @@ Bool OpticalDeepFlow::create( std::vector<PlaYUVerFrame*> apcFrameList )
   m_cOpticalFlow = cv::optflow::createOptFlow_DeepFlow();
   return bRet;
 }
-

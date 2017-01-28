@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -40,7 +40,7 @@ using cv::VideoCapture;
 std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-//   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Device", "/dev/" );
+  //   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Device", "/dev/" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
@@ -149,4 +149,3 @@ Bool StreamHandlerOpenCV::write( PlaYUVerFrame* pcFrame )
   }
   return bRet;
 }
-

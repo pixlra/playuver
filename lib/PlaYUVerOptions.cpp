@@ -47,48 +47,30 @@
 
 using namespace std;
 
-struct ParseFailure: public std::exception
+struct ParseFailure : public std::exception
 {
   String arg;
   String val;
-  ParseFailure( String arg0, String val0 ) throw() :
-          arg( arg0 ),
-          val( val0 )
-  {
-  }
-  ~ParseFailure() throw()
-  {
-  }
-  const Char* what() const throw()
-  {
-    return "Option Parse Failure";
-  }
+  ParseFailure( String arg0, String val0 ) throw() : arg( arg0 ), val( val0 ) {}
+  ~ParseFailure() throw() {}
+  const Char* what() const throw() { return "Option Parse Failure"; }
 };
 
 /** Type specific option storage */
-class BoolOption: public OptionBase
+class BoolOption : public OptionBase
 {
-public:
-  BoolOption( const String& name, const String& desc ) :
-          OptionBase( name, desc )
-  {
-    is_binary = true;
-  }
-
-  void parse( const String& arg )
-  {
-    arg_count++;
-  }
+ public:
+  BoolOption( const String& name, const String& desc ) : OptionBase( name, desc ) { is_binary = true; }
+  void parse( const String& arg ) { arg_count++; }
 };
 
 /** Type specific option storage */
-template<typename T>
-class StandardOption: public OptionBase
+template <typename T>
+class StandardOption : public OptionBase
 {
-public:
-  StandardOption( const String& name, T& storage, const String& desc ) :
-          OptionBase( name, desc ),
-          opt_storage( storage )
+ public:
+  StandardOption( const String& name, T& storage, const String& desc )
+      : OptionBase( name, desc ), opt_storage( storage )
   {
     is_binary = false;
   }
@@ -99,7 +81,7 @@ public:
 };
 
 /* Generic parsing */
-template<typename T>
+template <typename T>
 inline void StandardOption<T>::parse( const String& arg )
 {
   if( !is_binary )
@@ -118,7 +100,7 @@ inline void StandardOption<T>::parse( const String& arg )
   arg_count++;
 }
 
-template<>
+template <>
 inline void StandardOption<std::vector<UInt> >::parse( const String& arg )
 {
   UInt aux_opt_storage;
@@ -136,7 +118,7 @@ inline void StandardOption<std::vector<UInt> >::parse( const String& arg )
   arg_count++;
 }
 
-template<>
+template <>
 inline void StandardOption<std::vector<Int> >::parse( const String& arg )
 {
   Int aux_opt_storage;
@@ -155,7 +137,7 @@ inline void StandardOption<std::vector<Int> >::parse( const String& arg )
 }
 
 /* string parsing is specialized */
-template<>
+template <>
 inline void StandardOption<String>::parse( const String& arg )
 {
   opt_storage = arg;
@@ -163,7 +145,7 @@ inline void StandardOption<String>::parse( const String& arg )
 }
 
 /* string vector parsing is specialized */
-template<>
+template <>
 inline void StandardOption<std::vector<String> >::parse( const String& arg )
 {
   opt_storage.push_back( arg );
@@ -171,15 +153,13 @@ inline void StandardOption<std::vector<String> >::parse( const String& arg )
 }
 
 /** Option class for argument handling using a user provided function */
-struct FunctionOption: public OptionBase
+struct FunctionOption : public OptionBase
 {
-public:
-  typedef Void (Func)( PlaYUVerOptions&, const String& );
+ public:
+  typedef Void( Func )( PlaYUVerOptions&, const String& );
 
-  FunctionOption( const String& name, PlaYUVerOptions& parent_, Func *func_, const String& desc ) :
-          OptionBase( name, desc ),
-          parent( parent_ ),
-          func( func_ )
+  FunctionOption( const String& name, PlaYUVerOptions& parent_, Func* func_, const String& desc )
+      : OptionBase( name, desc ), parent( parent_ ), func( func_ )
   {
     is_binary = false;
   }
@@ -190,9 +170,9 @@ public:
     arg_count++;
   }
 
-private:
+ private:
   PlaYUVerOptions& parent;
-  void (*func)( PlaYUVerOptions&, const String& );
+  void ( *func )( PlaYUVerOptions&, const String& );
 };
 
 /* Helper method to initiate adding options to Options */
@@ -214,7 +194,7 @@ PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, const String& 
  *   with storage for the option's value
  *   with desc as an optional help description
  */
-template<typename T>
+template <typename T>
 PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, T& storage, const String& desc )
 {
   addOption( new StandardOption<T>( name, storage, desc ) );
@@ -226,9 +206,15 @@ template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, UInt&
 template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, Int& storage, const String& desc );
 template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, Int64& storage, const String& desc );
 template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, String& storage, const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, std::vector<UInt>& storage, const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, std::vector<Int>& storage, const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, std::vector<String>& storage, const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
+                                                       std::vector<UInt>& storage,
+                                                       const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
+                                                       std::vector<Int>& storage,
+                                                       const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
+                                                       std::vector<String>& storage,
+                                                       const String& desc );
 
 /**
  * Add option described by name to the parent Options list,
@@ -293,13 +279,13 @@ Bool PlaYUVerOptions::hasOpt( const String& optName )
 
 Void PlaYUVerOptions::addDefaultOptions()
 {
-  addOptions()/**/
-  ( "help,h", "produce help message" )/**/
-  ( "version", "show version and exit" )/**/
-  ( "pel_fmts", "list pixel formats" ) /**/
-  ( "quality_metrics", "list supported quality metrics" )/**/
-  ( "module_list", "list supported modules" ) /**/
-  ( "module_list_full", "detailed list supported modules" );
+  addOptions()                                                /**/
+      ( "help,h", "produce help message" )                    /**/
+      ( "version", "show version and exit" )                  /**/
+      ( "pel_fmts", "list pixel formats" )                    /**/
+      ( "quality_metrics", "list supported quality metrics" ) /**/
+      ( "module_list", "list supported modules" )             /**/
+      ( "module_list_full", "detailed list supported modules" );
 }
 
 PlaYUVerOptions& PlaYUVerOptions::addOptions()
@@ -307,7 +293,7 @@ PlaYUVerOptions& PlaYUVerOptions::addOptions()
   return *this;
 }
 
-void PlaYUVerOptions::addOption( OptionBase *opt )
+void PlaYUVerOptions::addOption( OptionBase* opt )
 {
   Option* names = new Option();
   names->opt = opt;
@@ -377,12 +363,7 @@ Bool PlaYUVerOptions::storePair( Bool allow_long, Bool allow_short, const string
     if( !m_bAllowUnkonw )
     {
       /* not found */
-      cerr << "Unknown option: `"
-           << name
-           << "' (value:`"
-           << value
-           << "')"
-           << endl;
+      cerr << "Unknown option: `" << name << "' (value:`" << value << "')" << endl;
     }
     return false;
   }
@@ -413,8 +394,8 @@ UInt PlaYUVerOptions::parseLONG( UInt argc, Char* argv[] )
   UInt extra_argc_consumed = 0;
   if( arg_opt_sep == string::npos )
   {
-    /* no argument found => argument in argv[1] (maybe) */
-    /* xxx, need to handle case where option isn't required */
+/* no argument found => argument in argv[1] (maybe) */
+/* xxx, need to handle case where option isn't required */
 #if 0
     /* commented out, to return to true GNU style processing
      * where longopts have to include an =, otherwise they are
@@ -484,10 +465,7 @@ UInt PlaYUVerOptions::parseSHORT( UInt argc, Char* argv[] )
   /* xxx, need to handle case where option isn't required */
   if( argc == 1 )
   {
-    cerr << "Not processing option without argument `"
-         << option
-         << "'"
-         << endl;
+    cerr << "Not processing option without argument `" << option << "'" << endl;
     return 0; /* run out of argv for argument */
   }
   storePair( false, true, option, string( argv[1] ) );
@@ -495,7 +473,7 @@ UInt PlaYUVerOptions::parseSHORT( UInt argc, Char* argv[] )
   return 1;
 }
 
-Bool PlaYUVerOptions::parse( UInt argc, Char *argv[] )
+Bool PlaYUVerOptions::parse( UInt argc, Char* argv[] )
 {
   try
   {
@@ -508,9 +486,7 @@ Bool PlaYUVerOptions::parse( UInt argc, Char *argv[] )
   }
   catch( std::exception& e )
   {
-    std::cerr << "error: "
-              << e.what()
-              << "\n";
+    std::cerr << "error: " << e.what() << "\n";
     return false;
   }
   catch( ... )
@@ -520,7 +496,7 @@ Bool PlaYUVerOptions::parse( UInt argc, Char *argv[] )
   return true;
 }
 
-list<const Char*> PlaYUVerOptions::scanArgv( UInt argc, Char *argv[] )
+list<const Char*> PlaYUVerOptions::scanArgv( UInt argc, Char* argv[] )
 {
   /* a list for anything that didn't get handled as an option */
   list<const Char*> non_option_arguments;
@@ -542,7 +518,7 @@ list<const Char*> PlaYUVerOptions::scanArgv( UInt argc, Char *argv[] )
 
     if( argv[i][1] != '-' )
     {
-      /* handle short (single dash) options */
+/* handle short (single dash) options */
 #if 0
       i += parsePOSIX( opts, argc - i, &argv[i] );
 #else
@@ -587,9 +563,8 @@ static void doHelpOpt( ostream& out, const PlaYUVerOptions::Option& entry, UInt 
 
   if( !entry.opt_short.empty() )
   {
-    UInt pad = max( ( int )pad_short - ( int )entry.opt_short.front().size(), 0 );
-    out << "-"
-        << entry.opt_short.front();
+    UInt pad = max( (int)pad_short - (int)entry.opt_short.front().size(), 0 );
+    out << "-" << entry.opt_short.front();
     if( !entry.opt_long.empty() )
     {
       out << ", ";
@@ -604,8 +579,7 @@ static void doHelpOpt( ostream& out, const PlaYUVerOptions::Option& entry, UInt 
 
   if( !entry.opt_long.empty() )
   {
-    out << "--"
-        << entry.opt_long.front();
+    out << "--" << entry.opt_long.front();
   }
 }
 
@@ -619,7 +593,7 @@ Void PlaYUVerOptions::doHelp( ostream& out, UInt columns )
   {
     ostringstream line( ios_base::out );
     doHelpOpt( line, **it, pad_short );
-    max_width = max( max_width, ( UInt )line.tellp() );
+    max_width = max( max_width, (UInt)line.tellp() );
   }
 
   UInt opt_width = min( max_width + 2, 28u + pad_short ) + 2;
@@ -640,8 +614,7 @@ Void PlaYUVerOptions::doHelp( ostream& out, UInt columns )
     if( opt_desc.empty() )
     {
       /* no help text: output option, skip further processing */
-      cout << line.str()
-           << endl;
+      cout << line.str() << endl;
       continue;
     }
     size_t currlength = size_t( line.tellp() );
@@ -703,8 +676,7 @@ Void PlaYUVerOptions::doHelp( ostream& out, UInt columns )
       line << endl;
     }
 
-    cout << line.str()
-         << endl;
+    cout << line.str() << endl;
   }
 }
 
@@ -714,9 +686,7 @@ Bool PlaYUVerOptions::checkListingOpts()
 
   if( hasOpt( "version" ) )
   {
-    std::cout << "PlaYUVer version "
-        << PLAYUVER_VERSION_STRING
-        << "\n";
+    std::cout << "PlaYUVer version " << PLAYUVER_VERSION_STRING << "\n";
     bRet |= true;
   }
   if( hasOpt( "pel_fmts" ) )
@@ -786,12 +756,12 @@ Void PlaYUVerOptions::listModules()
       printf( "   %-40s", ModuleNameString );
       switch( pcCurrModuleIf->m_iModuleType )
       {
-      case FRAME_PROCESSING_MODULE:
-        printf( "   Processing    " );
-        break;
-      case FRAME_MEASUREMENT_MODULE:
-        printf( "   Measurement   " );
-        break;
+        case FRAME_PROCESSING_MODULE:
+          printf( "   Processing    " );
+          break;
+        case FRAME_MEASUREMENT_MODULE:
+          printf( "   Measurement   " );
+          break;
       }
       printf( "   %s", pcCurrModuleIf->m_pchModuleTooltip );
       pcCurrModuleIf->Delete();
@@ -799,4 +769,3 @@ Void PlaYUVerOptions::listModules()
     printf( "\n" );
   }
 }
-

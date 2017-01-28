@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -42,7 +42,7 @@ class QAction;
 class VideoSubWindow;
 
 class PlaYUVerAppModuleIf
-    #ifdef PLAYUVER_THREADED_MODULES
+#ifdef PLAYUVER_THREADED_MODULES
     : public QThread
 #else
     : public QObject
@@ -52,8 +52,7 @@ class PlaYUVerAppModuleIf
   friend class ModuleHandleDock;
   friend class ModulesHandleOptDialog;
 
-private:
-
+ private:
   Bool m_bIsRunning;
   Bool m_bSuccess;
 
@@ -71,12 +70,11 @@ private:
   PlaYUVerFrame* m_pcProcessedFrame;
   Double m_dMeasurementResult;
 
-public:
-  class EventData: public QEvent
+ public:
+  class EventData : public QEvent
   {
-  public:
-    EventData( bool success, PlaYUVerAppModuleIf* module ) :
-            QEvent( QEvent::User )
+   public:
+    EventData( bool success, PlaYUVerAppModuleIf* module ) : QEvent( QEvent::User )
     {
       m_bSuccess = success;
       m_pcModule = module;
@@ -86,10 +84,7 @@ public:
   };
 
   PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module );
-  virtual ~PlaYUVerAppModuleIf()
-  {
-  }
-
+  virtual ~PlaYUVerAppModuleIf() {}
   QList<VideoSubWindow*> getSubWindowList()
   {
     QList<VideoSubWindow*> arraySubWindows;
@@ -99,23 +94,15 @@ public:
     return arraySubWindows;
   }
 
-  PlaYUVerModuleIf* getModule()
-  {
-    return m_pcModule;
-  }
-
-  UInt getModuleRequirements()
-  {
-    return m_pcModule->m_uiModuleRequirements;
-  }
-
+  PlaYUVerModuleIf* getModule() { return m_pcModule; }
+  UInt getModuleRequirements() { return m_pcModule->m_uiModuleRequirements; }
   Void update();
   Bool apply( Bool isPlaying = false, Bool disableThreads = false );
   Void show();
   Void destroy();
-  protected:
+
+ protected:
   virtual void run();
 };
 
-#endif // __PLAYUVERAPPMODULESIF_H__
-
+#endif  // __PLAYUVERAPPMODULESIF_H__

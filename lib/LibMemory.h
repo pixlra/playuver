@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -37,8 +37,8 @@ typedef size_t SizeT;
 
 #ifdef _MSC_VER
 typedef __int64 Int64;
-#if _MSC_VER <= 1200 // MS VC6
-typedef __int64 UInt64;   // MS VC6 does not support unsigned __int64 to double conversion
+#if _MSC_VER <= 1200     // MS VC6
+typedef __int64 UInt64;  // MS VC6 does not support unsigned __int64 to double conversion
 #else
 typedef unsigned __int64 UInt64;
 #endif
@@ -47,19 +47,19 @@ typedef long long Int64;
 typedef unsigned long long UInt64;
 #endif
 
-#define DATA_ALIGN                  1                                                                 ///< use 32-bit aligned malloc/free
-#if     DATA_ALIGN && _WIN32 && ( _MSC_VER > 1300 )
-#define xMalloc( len )              _aligned_malloc( len, 32 )
-#define xFreeMem( ptr )             _aligned_free  ( ptr )
+#define DATA_ALIGN 1  ///< use 32-bit aligned malloc/free
+#if DATA_ALIGN && _WIN32 && ( _MSC_VER > 1300 )
+#define xMalloc( len ) _aligned_malloc( len, 32 )
+#define xFreeMem( ptr ) _aligned_free( ptr )
 #else
-#define xMalloc(  len )             malloc    ( len )
-#define xFreeMem( ptr )             free      ( ptr )
+#define xMalloc( len ) malloc( len )
+#define xFreeMem( ptr ) free( ptr )
 #endif
-#define xMemSet( type, len, ptr )   memset    ( ptr, 0, (len)*sizeof(type) )
+#define xMemSet( type, len, ptr ) memset( ptr, 0, ( len ) * sizeof( type ) )
 
 static inline Void* xMallocMem( SizeT nitems )
 {
-  Void *d;
+  Void* d;
   if( ( d = xMalloc( nitems ) ) == NULL )
   {
     printf( "malloc failed.\n" );
@@ -71,42 +71,42 @@ static inline Void* xMallocMem( SizeT nitems )
 static inline Void* xCallocMem( SizeT nitems, SizeT size )
 {
   size_t padded_size = nitems * size;
-  Void *d = xMallocMem( padded_size );
-  memset( d, 0, ( int )padded_size );
+  Void* d = xMallocMem( padded_size );
+  memset( d, 0, (int)padded_size );
   return d;
 }
 
-template<typename T>
-Int getMem1D( T **array1D, Int dim0 )
+template <typename T>
+Int getMem1D( T** array1D, Int dim0 )
 {
-  if( ( *array1D = ( T* )xCallocMem( dim0, sizeof(T) ) ) == NULL )
+  if( ( *array1D = (T*)xCallocMem( dim0, sizeof( T ) ) ) == NULL )
     return 0;
 
-  return ( sizeof(T*) + dim0 * sizeof(T) );
+  return ( sizeof( T* ) + dim0 * sizeof( T ) );
 }
 
-template<typename T>
+template <typename T>
 Int getMem2D( T*** array2D, Int dim0, Int dim1 )
 {
   Int i;
 
-  if( ( *array2D = ( T** )xMallocMem( dim0 * sizeof(T*) ) ) == NULL )
+  if( ( *array2D = (T**)xMallocMem( dim0 * sizeof( T* ) ) ) == NULL )
     printf( "get_mem2Dint: array2D" );
-  if( ( *( *array2D ) = ( T* )xCallocMem( dim0 * dim1, sizeof(T) ) ) == NULL )
+  if( ( *( *array2D ) = (T*)xCallocMem( dim0 * dim1, sizeof( T ) ) ) == NULL )
     printf( "get_mem2Dint: array2D" );
 
   for( i = 1; i < dim0; i++ )
     ( *array2D )[i] = ( *array2D )[i - 1] + dim1;
 
-  return dim0 * ( sizeof(T*) + dim1 * sizeof(T) );
+  return dim0 * ( sizeof( T* ) + dim1 * sizeof( T ) );
 }
 
-template<typename T>
+template <typename T>
 Int getMem3D( T**** array3D, Int dim0, Int dim1, Int dim2 )
 {
-  Int i, mem_size = dim0 * sizeof(T**);
+  Int i, mem_size = dim0 * sizeof( T ** );
 
-  if( ( ( *array3D ) = ( T*** )xMallocMem( dim0 * sizeof(T**) ) ) == NULL )
+  if( ( ( *array3D ) = (T***)xMallocMem( dim0 * sizeof( T** ) ) ) == NULL )
     printf( "get_mem3Dint: array3D" );
 
   mem_size += getMem2D( *array3D, dim0 * dim1, dim2 );
@@ -117,12 +117,12 @@ Int getMem3D( T**** array3D, Int dim0, Int dim1, Int dim2 )
   return mem_size;
 }
 
-template<typename T>
+template <typename T>
 Int getMem4D( T***** array4D, Int dim0, Int dim1, Int dim2, Int dim3 )
 {
-  int i, mem_size = dim0 * sizeof(int***);
+  int i, mem_size = dim0 * sizeof( int *** );
 
-  if( ( ( *array4D ) = ( T**** )xMallocMem( dim0 * sizeof(T***) ) ) == NULL )
+  if( ( ( *array4D ) = (T****)xMallocMem( dim0 * sizeof( T*** ) ) ) == NULL )
     printf( "get_mem4Dint: array4D" );
 
   mem_size += getMem3D( *array4D, dim0 * dim1, dim2, dim3 );
@@ -133,12 +133,12 @@ Int getMem4D( T***** array4D, Int dim0, Int dim1, Int dim2, Int dim3 )
   return mem_size;
 }
 
-template<typename T>
+template <typename T>
 Int getMem5D( T****** array5D, Int dim0, Int dim1, Int dim2, Int dim3, Int dim4 )
 {
-  int i, mem_size = dim0 * sizeof(T****);
+  int i, mem_size = dim0 * sizeof( T **** );
 
-  if( ( ( *array5D ) = ( T***** )xMallocMem( dim0 * sizeof(T****) ) ) == NULL )
+  if( ( ( *array5D ) = (T*****)xMallocMem( dim0 * sizeof( T**** ) ) ) == NULL )
     printf( "get_mem5Dint: array5D" );
 
   mem_size += getMem4D( *array5D, dim0 * dim1, dim2, dim3, dim4 );
@@ -149,8 +149,8 @@ Int getMem5D( T****** array5D, Int dim0, Int dim1, Int dim2, Int dim3, Int dim4 
   return mem_size;
 }
 
-template<typename T>
-Void freeMem1D( T *array1D )
+template <typename T>
+Void freeMem1D( T* array1D )
 {
   if( array1D )
   {
@@ -158,7 +158,7 @@ Void freeMem1D( T *array1D )
   }
 }
 
-template<typename T>
+template <typename T>
 Void freeMem2D( T** array2D )
 {
   if( array2D )
@@ -176,7 +176,7 @@ Void freeMem2D( T** array2D )
   }
 }
 
-template<typename T>
+template <typename T>
 Void freeMem3D( T*** array3D )
 {
   if( array3D )
@@ -190,7 +190,7 @@ Void freeMem3D( T*** array3D )
   }
 }
 
-template<typename T>
+template <typename T>
 Void freeMem4D( T**** array4D )
 {
   if( array4D )
@@ -204,7 +204,7 @@ Void freeMem4D( T**** array4D )
   }
 }
 
-template<typename T>
+template <typename T>
 Void freeMem5D( T***** array5D )
 {
   if( array5D )
@@ -218,4 +218,4 @@ Void freeMem5D( T***** array5D )
   }
 }
 
-#endif //  __LIBMEMORY_H__
+#endif  //  __LIBMEMORY_H__

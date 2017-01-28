@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -42,7 +42,6 @@
 #include "StreamHandlerOpenCV.h"
 #endif
 
-
 std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
@@ -78,12 +77,11 @@ std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedWriteFormats()
 
 std::vector<PlaYUVerStdResolution> PlaYUVerStream::stdResolutionSizes()
 {
-
-#define REGIST_PLAYUVER_STANDARD_RESOLUTION( name, width, height) \
-    stdResElement.shortName = name; \
-    stdResElement.uiWidth = width; \
-    stdResElement.uiHeight = height; \
-    stdResList.push_back( stdResElement );
+#define REGIST_PLAYUVER_STANDARD_RESOLUTION( name, width, height ) \
+  stdResElement.shortName = name;                                  \
+  stdResElement.uiWidth = width;                                   \
+  stdResElement.uiHeight = height;                                 \
+  stdResList.push_back( stdResElement );
 
   std::vector<PlaYUVerStdResolution> stdResList;
   PlaYUVerStdResolution stdResElement;
@@ -122,10 +120,10 @@ CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( String strFilename, boo
     {
       return supportedFmts[i].formatFct;
     }
-//     else if( strFilename.find( supportedFmts[i].formatExt ) != String::npos )
-//     {
-//       return supportedFmts[i].formatFct;
-//     }
+    //     else if( strFilename.find( supportedFmts[i].formatExt ) != String::npos )
+    //     {
+    //       return supportedFmts[i].formatFct;
+    //     }
   }
   return &StreamHandlerRaw::Create;
 }
@@ -162,7 +160,13 @@ String PlaYUVerStream::getCodecName()
   return !m_pcHandler ? "" : m_pcHandler->getCodecName();
 }
 
-Bool PlaYUVerStream::open( String filename, String resolution, String input_format_name, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput )
+Bool PlaYUVerStream::open( String filename,
+                           String resolution,
+                           String input_format_name,
+                           UInt bitsPel,
+                           Int endianness,
+                           UInt frame_rate,
+                           Bool bInput )
 {
   UInt width = 0;
   UInt height = 0;
@@ -187,7 +191,14 @@ Bool PlaYUVerStream::open( String filename, String resolution, String input_form
   return open( filename, width, height, input_format, bitsPel, endianness, frame_rate, bInput );
 }
 
-Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput )
+Bool PlaYUVerStream::open( String filename,
+                           UInt width,
+                           UInt height,
+                           Int input_format,
+                           UInt bitsPel,
+                           Int endianness,
+                           UInt frame_rate,
+                           Bool bInput )
 {
   if( m_bInit )
   {
@@ -240,7 +251,8 @@ Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_f
   {
     try
     {
-      m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight, m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel );
+      m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight,
+                                               m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel );
     }
     catch( PlaYUVerFailure& e )
     {
@@ -292,8 +304,8 @@ Bool PlaYUVerStream::reload()
   m_pcHandler->setBytesPerFrame( m_pcCurrFrame->getBytesPerFrame() );
   m_uiTotalFrameNum = m_pcHandler->calculateFrameNumber();
 
-  if( m_pcHandler->m_uiWidth <= 0 || m_pcHandler->m_uiHeight <= 0
-      || m_pcHandler->m_iPixelFormat < 0 || m_pcHandler->m_uiBitsPerPixel == 0 || m_uiTotalFrameNum < 1 )
+  if( m_pcHandler->m_uiWidth <= 0 || m_pcHandler->m_uiHeight <= 0 || m_pcHandler->m_iPixelFormat < 0 ||
+      m_pcHandler->m_uiBitsPerPixel == 0 || m_uiTotalFrameNum < 1 )
   {
     return false;
   }
@@ -362,7 +374,12 @@ Int PlaYUVerStream::getCurrFrameNum()
   return m_iCurrFrameNum;
 }
 
-Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, UInt& rFrameRate )
+Void PlaYUVerStream::getFormat( UInt& rWidth,
+                                UInt& rHeight,
+                                Int& rInputFormat,
+                                UInt& rBitsPerPel,
+                                Int& rEndianness,
+                                UInt& rFrameRate )
 {
   if( m_bInit )
   {
@@ -404,7 +421,8 @@ Void PlaYUVerStream::loadAll()
   getMem1D<PlaYUVerFrame*>( &m_ppcFrameBuffer, m_uiFrameBufferSize );
   for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
   {
-    m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight, m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel );
+    m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight,
+                                             m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel );
     if( !m_ppcFrameBuffer[i] )
     {
       close();
@@ -428,25 +446,25 @@ Void PlaYUVerStream::loadAll()
 
 Void PlaYUVerStream::getDuration( Int* duration_array )
 {
-//   Int hours, mins, secs = 0;
-// #ifdef USE_FFMPEG
-//   if( m_iStreamHandler == FFMPEG )
-//   {
-//     secs = m_cLibAvContext->getStreamDuration();
-//   }
-//   else
-// #endif
-//   if( m_iStreamHandler == YUV_IO )
-//   {
-//     secs = m_uiTotalFrameNum / m_dFrameRate;
-//   }
-//   mins = secs / 60;
-//   secs %= 60;
-//   hours = mins / 60;
-//   mins %= 60;
-//   *duration_array++ = hours;
-//   *duration_array++ = mins;
-//   *duration_array++ = secs;
+  //   Int hours, mins, secs = 0;
+  // #ifdef USE_FFMPEG
+  //   if( m_iStreamHandler == FFMPEG )
+  //   {
+  //     secs = m_cLibAvContext->getStreamDuration();
+  //   }
+  //   else
+  // #endif
+  //   if( m_iStreamHandler == YUV_IO )
+  //   {
+  //     secs = m_uiTotalFrameNum / m_dFrameRate;
+  //   }
+  //   mins = secs / 60;
+  //   secs %= 60;
+  //   hours = mins / 60;
+  //   mins %= 60;
+  //   *duration_array++ = hours;
+  //   *duration_array++ = mins;
+  //   *duration_array++ = secs;
 }
 
 Void PlaYUVerStream::readFrameFillRGBBuffer()
@@ -483,7 +501,7 @@ Void PlaYUVerStream::writeFrame()
   writeFrame( m_pcCurrFrame );
 }
 
-Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
+Void PlaYUVerStream::writeFrame( PlaYUVerFrame* pcFrame )
 {
   if( !m_pcHandler->write( pcFrame ) )
   {
@@ -497,11 +515,11 @@ Bool PlaYUVerStream::saveFrame( const String& filename )
   return saveFrame( filename, m_pcCurrFrame );
 }
 
-Bool PlaYUVerStream::saveFrame( const String& filename, PlaYUVerFrame *saveFrame )
+Bool PlaYUVerStream::saveFrame( const String& filename, PlaYUVerFrame* saveFrame )
 {
   PlaYUVerStream auxSaveStream;
-  if( !auxSaveStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(), saveFrame->getPelFormat(), saveFrame->getBitsPel(),
-      PLAYUVER_LITTLE_ENDIAN, 1, false ) )
+  if( !auxSaveStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(), saveFrame->getPelFormat(),
+                           saveFrame->getBitsPel(), PLAYUVER_LITTLE_ENDIAN, 1, false ) )
   {
     return false;
   }
@@ -538,7 +556,7 @@ Bool PlaYUVerStream::setNextFrame()
   return bEndOfSeq;
 }
 
-PlaYUVerFrame* PlaYUVerStream::getCurrFrame( PlaYUVerFrame *pyuv_image )
+PlaYUVerFrame* PlaYUVerStream::getCurrFrame( PlaYUVerFrame* pyuv_image )
 {
   if( pyuv_image == NULL )
     pyuv_image = new PlaYUVerFrame( m_pcCurrFrame );
@@ -578,7 +596,7 @@ Bool PlaYUVerStream::seekInputRelative( Bool bIsFoward )
 
 Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 {
-  if( !m_bInit  || new_frame_num >= m_uiTotalFrameNum || ( Int64 )new_frame_num == m_iCurrFrameNum )
+  if( !m_bInit || new_frame_num >= m_uiTotalFrameNum || (Int64)new_frame_num == m_iCurrFrameNum )
     return false;
 
   m_iCurrFrameNum = new_frame_num - 1;
@@ -607,4 +625,3 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
     readFrame();
   return true;
 }
-

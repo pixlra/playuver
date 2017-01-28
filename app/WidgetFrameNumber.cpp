@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -31,8 +31,7 @@
 #endif
 #include "WidgetFrameNumber.h"
 
-WidgetFrameNumber::WidgetFrameNumber( QWidget *parent ) :
-        QWidget( parent )
+WidgetFrameNumber::WidgetFrameNumber( QWidget* parent ) : QWidget( parent )
 {
   QHBoxLayout* mainlayout = new QHBoxLayout;
   m_pcCurrFrameNumLabel = new QLabel;
@@ -40,7 +39,7 @@ WidgetFrameNumber::WidgetFrameNumber( QWidget *parent ) :
   m_pcCurrFrameNumLabel->setSizePolicy( QSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed ) );
   m_pcCurrFrameNumLabel->setMinimumWidth( 25 );
   m_pcCurrFrameNumLabel->setAlignment( Qt::AlignRight );
-  QLabel *forwardslash = new QLabel;
+  QLabel* forwardslash = new QLabel;
   forwardslash->setText( "/" );
   m_pcTotalFrameNumLabel = new QLabel;
   m_pcTotalFrameNumLabel->setText( "-" );
@@ -65,4 +64,3 @@ Void WidgetFrameNumber::clear()
   m_pcCurrFrameNumLabel->setText( "-" );
   m_pcTotalFrameNumLabel->setText( "-" );
 }
-

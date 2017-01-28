@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -42,12 +42,11 @@ MeasureOpticalFlowDualTVL1::MeasureOpticalFlowDualTVL1()
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
   m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
 
-  m_cModuleOptions.addOptions()/**/
-  ( "Show reconstruction", m_bShowReconstruction, "Show reconstructed frame instead of MVs [false]" );
+  m_cModuleOptions.addOptions() /**/
+      ( "Show reconstruction", m_bShowReconstruction, "Show reconstructed frame instead of MVs [false]" );
 
   m_bShowReconstruction = false;
   m_pcOutputFrame = NULL;
-
 }
 
 Bool MeasureOpticalFlowDualTVL1::create( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -55,7 +54,9 @@ Bool MeasureOpticalFlowDualTVL1::create( std::vector<PlaYUVerFrame*> apcFrameLis
   _BASIC_MODULE_API_2_CHECK_
 
   for( UInt i = 1; i < apcFrameList.size(); i++ )
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE |
+                                                            PlaYUVerFrame::MATCH_RESOLUTION |
+                                                            PlaYUVerFrame::MATCH_BITS ) )
       return false;
 
   m_iStep = 16;
@@ -79,7 +80,6 @@ Void MeasureOpticalFlowDualTVL1::drawFlow()
   {
     for( int x = m_iStep / 2; x < m_cvFlow.cols; x += m_iStep )
     {
-
       Point2f u( 0, 0 );
       Double count = 0;
       for( int i = ( -m_iStep / 2 ); i < ( m_iStep / 2 ); i++ )
@@ -116,7 +116,7 @@ Void MeasureOpticalFlowDualTVL1::compensateFlow()
       for( UInt x = 0; x < m_pcOutputFrame->getWidth( c ); x++ )
       {
         Point2f u = m_cvFlow( y, x );
-        Point p( x + u.x, y + u.y);
+        Point p( x + u.x, y + u.y );
         *pPelOut = pPelPrev[p.y][p.x];
         pPelOut++;
       }
@@ -144,11 +144,9 @@ PlaYUVerFrame* MeasureOpticalFlowDualTVL1::process( std::vector<PlaYUVerFrame*> 
   return m_pcOutputFrame;
 }
 
-Void
-MeasureOpticalFlowDualTVL1::destroy()
+Void MeasureOpticalFlowDualTVL1::destroy()
 {
   if( m_pcOutputFrame )
     delete m_pcOutputFrame;
   m_pcOutputFrame = NULL;
 }
-

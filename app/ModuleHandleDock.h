@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -36,10 +36,10 @@
 
 class PlaYUVerAppModuleIf;
 
-class ModuleHandleDock: public QWidget
+class ModuleHandleDock : public QWidget
 {
   Q_OBJECT
-  public:
+ public:
   ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf );
   ~ModuleHandleDock();
 
@@ -47,17 +47,15 @@ class ModuleHandleDock: public QWidget
 
   QSize sizeHint() const;
 
-private:
-
+ private:
   PlaYUVerAppModuleIf* m_pcCurrModuleIf;
 
   Bool m_bIsVisible;
   QLabel* labelModulueValueLabel;
   QLabel* labelModulueReturnValue;
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void visibilityChangedSlot( bool );
-
 };
 
-#endif // __MODULEHANDLEDOCK_H__
+#endif  // __MODULEHANDLEDOCK_H__

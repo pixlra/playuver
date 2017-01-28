@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -30,11 +30,10 @@
 
 class PlaYUVerFrame;
 
-#define REGISTER_STREAM_HANDLER(X) \
-  public: \
-    static PlaYUVerStreamHandlerIf* Create() { return new X(); } \
-    void Delete() { delete this; }
-
+#define REGISTER_STREAM_HANDLER( X )                           \
+ public:                                                       \
+  static PlaYUVerStreamHandlerIf* Create() { return new X(); } \
+  void Delete() { delete this; }
 /**
  * \class PlaYUVerStreamHandlerIf
  * \ingroup  PlaYUVerLib_Stream
@@ -43,7 +42,8 @@ class PlaYUVerFrame;
 class PlaYUVerStreamHandlerIf
 {
   friend class PlaYUVerStream;
-  public:
+
+ public:
   PlaYUVerStreamHandlerIf()
   {
     m_bIsInput = true;
@@ -54,10 +54,7 @@ class PlaYUVerStreamHandlerIf
     m_iEndianness = -1;
     m_dFrameRate = 30;
   }
-  virtual ~PlaYUVerStreamHandlerIf()
-  {
-  }
-
+  virtual ~PlaYUVerStreamHandlerIf() {}
   virtual void Delete() = 0;
 
   virtual Bool openHandler( String strFilename, Bool bInput ) = 0;
@@ -68,20 +65,10 @@ class PlaYUVerStreamHandlerIf
   virtual Bool read( PlaYUVerFrame* pcFrame ) = 0;
   virtual Bool write( PlaYUVerFrame* pcFrame ) = 0;
 
-  Void setBytesPerFrame( UInt64 uiNBytes )
-  {
-    m_uiNBytesPerFrame = uiNBytes;
-  }
-  String getFormatName()
-  {
-    return m_strFormatName;
-  }
-  String getCodecName()
-  {
-    return m_strCodecName;
-  }
-
-protected:
+  Void setBytesPerFrame( UInt64 uiNBytes ) { m_uiNBytesPerFrame = uiNBytes; }
+  String getFormatName() { return m_strFormatName; }
+  String getCodecName() { return m_strCodecName; }
+ protected:
   Bool m_bIsInput;
   String m_cFilename;
   UInt m_uiWidth;
@@ -97,5 +84,4 @@ protected:
   String m_strCodecName;
 };
 
-#endif // __PLAYUVERSTREAMHANDLERIF_H__
-
+#endif  // __PLAYUVERSTREAMHANDLERIF_H__

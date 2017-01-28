@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -31,19 +31,19 @@
 
 class QProgressBar;
 
-class ProgressBar: public QWidget
+class ProgressBar : public QWidget
 {
-Q_OBJECT
+  Q_OBJECT
 
-public:
-  ProgressBar( QWidget *parent, UInt maxValue );
+ public:
+  ProgressBar( QWidget* parent, UInt maxValue );
 
   Void incrementProgress( UInt );
 
-private:
+ private:
   UInt m_uiTotalProgress;
   UInt m_uiProgress;
   QProgressBar* m_pcProgressBar;
 };
 
-#endif // __PROGRESSBAR_H__
+#endif  // __PROGRESSBAR_H__

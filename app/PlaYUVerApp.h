@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -65,23 +65,23 @@ class VideoSubWindow;
 class SubWindowAbstract;
 class AboutDialog;
 
-class PlaYUVerApp: public QMainWindow
+class PlaYUVerApp : public QMainWindow
 {
-Q_OBJECT
+  Q_OBJECT
 
-public:
+ public:
   PlaYUVerApp();
-  Bool parseArgs( Int argc, Char *argv[] );
+  Bool parseArgs( Int argc, Char* argv[] );
   Void loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo = NULL );
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void printMessage( const QString& msg );
   void printMessage( const QString& msg, UInt logLevel );
 
-protected:
-  Void closeEvent( QCloseEvent *event );
+ protected:
+  Void closeEvent( QCloseEvent* event );
 
-private Q_SLOTS:
+ private Q_SLOTS:
 
   void about();
 
@@ -108,14 +108,13 @@ private Q_SLOTS:
   void zoomToFit();
   void zoomToFitAll();
 
-  void dragEnterEvent( QDragEnterEvent *event );
-  void dropEvent( QDropEvent *event );
+  void dragEnterEvent( QDragEnterEvent* event );
+  void dropEvent( QDropEvent* event );
 
   void update();
   void updateZoomFactorSBox();
 
-private:
-
+ private:
   PlaYUVerAppAdaptor* m_pDBusAdaptor;
   PlaYUVerOptions* m_pcCmdParser;
   /**
@@ -126,7 +125,8 @@ private:
 
   QString m_cLastOpenPath;
 
-  static VideoSubWindow* findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager, const QString& fileName );
+  static VideoSubWindow* findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager,
+                                                   const QString& fileName );
 
   Void updateMenus();
 
@@ -143,10 +143,10 @@ private:
   Void readSettings();
   Void writeSettings();
 
-  QDoubleSpinBox *m_pcZoomFactorSBox;
+  QDoubleSpinBox* m_pcZoomFactorSBox;
 
-  QSignalMapper *mapperZoom;
-  QSignalMapper *mapperWindow;
+  QSignalMapper* mapperZoom;
+  QSignalMapper* mapperWindow;
 
   /**
    * App modules
@@ -156,7 +156,7 @@ private:
    */
   VideoHandle* m_appModuleVideo;
   QualityHandle* m_appModuleQuality;
-  ModulesHandle *m_appModuleExtensions;
+  ModulesHandle* m_appModuleExtensions;
   PlaYUVerSubWindowHandle* m_pcWindowHandle;
 
   /**
@@ -234,5 +234,4 @@ private:
   AboutDialog* m_pcAboutDialog;
 };
 
-#endif // __PLAYUVERAPP_H__
-
+#endif  // __PLAYUVERAPP_H__

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -31,12 +31,11 @@
 // PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-
-class MeasureOpticalFlowDualTVL1: public PlaYUVerModuleIf
+class MeasureOpticalFlowDualTVL1 : public PlaYUVerModuleIf
 {
-REGISTER_CLASS_FACTORY( MeasureOpticalFlowDualTVL1 )
+  REGISTER_CLASS_FACTORY( MeasureOpticalFlowDualTVL1 )
 
-private:
+ private:
   Bool m_bShowReconstruction;
   Int m_iStep;
   cv::Ptr<cv::DenseOpticalFlow> m_cTvl1;
@@ -48,16 +47,12 @@ private:
   Void drawFlow();
   Void compensateFlow();
 
-public:
+ public:
   MeasureOpticalFlowDualTVL1();
-  virtual ~MeasureOpticalFlowDualTVL1()
-  {
-  }
+  virtual ~MeasureOpticalFlowDualTVL1() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Void destroy();
-
 };
 
-#endif // __MeasureOpticalFlowDualTVL1_H__
-
+#endif  // __MeasureOpticalFlowDualTVL1_H__

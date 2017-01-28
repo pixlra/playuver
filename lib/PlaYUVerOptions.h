@@ -50,29 +50,13 @@
  */
 class OptionBase
 {
-public:
-  OptionBase( const String& name, const String& desc ) :
-          arg_count( 0 ),
-          opt_string( name ),
-          opt_desc( desc )
-  {
-  }
-
-  virtual ~OptionBase()
-  {
-  }
-
+ public:
+  OptionBase( const String& name, const String& desc ) : arg_count( 0 ), opt_string( name ), opt_desc( desc ) {}
+  virtual ~OptionBase() {}
   /* parse argument arg, to obtain a value for the option */
   virtual void parse( const String& arg ) = 0;
-  Int count()
-  {
-    return arg_count;
-  }
-  Bool isBinary()
-  {
-    return is_binary;
-  }
-
+  Int count() { return arg_count; }
+  Bool isBinary() { return is_binary; }
   int arg_count;
   String opt_string;
   String opt_desc;
@@ -81,14 +65,10 @@ public:
 
 class PlaYUVerOptions
 {
-public:
-
+ public:
   struct Option
   {
-    Option() :
-            opt( 0 )
-    {
-    }
+    Option() : opt( 0 ) {}
     ~Option()
     {
       if( opt )
@@ -104,14 +84,10 @@ public:
   PlaYUVerOptions( const String& name = "" );
   ~PlaYUVerOptions();
 
-  Bool parse( UInt argc, Char *argv[] );
+  Bool parse( UInt argc, Char* argv[] );
   Void parse( std::vector<String> args_array );
 
-  std::list<const Char*>& getUnhandledArgs()
-  {
-    return m_aUnhandledArgs;
-  }
-
+  std::list<const Char*>& getUnhandledArgs() { return m_aUnhandledArgs; }
   Void doHelp( std::ostream& out, unsigned columns = 80 );
 
   OptionBase* operator[]( const String& optName );
@@ -119,14 +95,10 @@ public:
 
   Bool hasOpt( const String& optName );
 
-  OptionsList getOptionList()
-  {
-    return opt_list;
-  }
-
+  OptionsList getOptionList() { return opt_list; }
   Void addDefaultOptions();
   PlaYUVerOptions& addOptions();
-  void addOption( OptionBase *opt );
+  void addOption( OptionBase* opt );
 
   /**
    * Add option described by name to the parent Options list,
@@ -134,8 +106,7 @@ public:
    *   with default_val as the default value
    *   with desc as an optional help description
    */
-  PlaYUVerOptions&
-  operator()( const String& name, const String& desc );
+  PlaYUVerOptions& operator()( const String& name, const String& desc );
 
   /**
    * Add option described by name to the parent Options list,
@@ -143,9 +114,8 @@ public:
    *   with default_val as the default value
    *   with desc as an optional help description
    */
-  template<typename T>
-  PlaYUVerOptions&
-  operator()( const String& name, T& storage, const String& desc );
+  template <typename T>
+  PlaYUVerOptions& operator()( const String& name, T& storage, const String& desc );
 
   /**
    * Add option described by name to the parent Options list,
@@ -154,13 +124,13 @@ public:
    * OptionFunc::Func is called.  It is upto this function to correctly
    * handle evaluating the option's value.
    */
-//   PlaYUVerOptions&
-//   operator()( const String& name, OptionFunc::Func *func, const String& desc );
+  //   PlaYUVerOptions&
+  //   operator()( const String& name, OptionFunc::Func *func, const String& desc );
 
   Bool checkListingOpts();
   Void listModules();
 
-private:
+ private:
   typedef std::map<String, OptionsList> OptionMap;
   OptionMap opt_long_map;
   OptionMap opt_short_map;
@@ -177,7 +147,6 @@ private:
   UInt parseLONG( String arg );
   UInt parseSHORT( UInt argc, Char* argv[] );
   std::list<const char*> scanArgv( UInt argc, Char* argv[] );
-
 };
 
-#endif // __PROGRAMOPTIONS_H__
+#endif  // __PROGRAMOPTIONS_H__

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -34,16 +34,17 @@
 /**
  *
  */
-class SeekStreamDialog: public QDialog
+class SeekStreamDialog : public QDialog
 {
-Q_OBJECT
+  Q_OBJECT
 
-public:
-  SeekStreamDialog( PlaYUVerStream *pcCurrStream, QWidget *parent = 0 );
+ public:
+  SeekStreamDialog( PlaYUVerStream* pcCurrStream, QWidget* parent = 0 );
   Int runDialog();
-  private:
+
+ private:
   QSpinBox* m_spinFrameNum;
   Int m_iSelectedFrameNum;
 };
 
-#endif // __MODULEHANDLEOPTDIALOG_H__
+#endif  // __MODULEHANDLEOPTDIALOG_H__

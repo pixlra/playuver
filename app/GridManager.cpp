@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -47,10 +47,10 @@ GridManager::GridManager()
 ////////////////////////////////////////////////////////////////////////////////
 //                              Grid Drawer
 ////////////////////////////////////////////////////////////////////////////////
-void GridManager::drawGrid( QPixmap &image, const QRect& area, QPainter *painter )
+void GridManager::drawGrid( QPixmap& image, const QRect& area, QPainter* painter )
 {
-  int offsetx = 0;                // Grid offset doesn't applies to SCODE
-  int offsety = 0;                // project for now...
+  int offsetx = 0;  // Grid offset doesn't applies to SCODE
+  int offsety = 0;  // project for now...
 
   int imageWidth = image.width();
   int imageHeight = image.height();
@@ -65,82 +65,82 @@ void GridManager::drawGrid( QPixmap &image, const QRect& area, QPainter *painter
   style = Solid;
   switch( style )
   {
-  case IntersectionDot:
+    case IntersectionDot:
     case IntersectionCross:
     {
-    painter->setPen( mainPen );
-    // Draw crosses or dots on intersections
-    for( int x = offsetx; x <= area.right(); x += hSpacing )
-    {
-      if( x >= imageWidth )
-        break;
+      painter->setPen( mainPen );
+      // Draw crosses or dots on intersections
+      for( int x = offsetx; x <= area.right(); x += hSpacing )
+      {
+        if( x >= imageWidth )
+          break;
 
+        for( int y = offsety; y <= area.bottom(); y += vSpacing )
+        {
+          if( y >= imageHeight )
+            break;
+
+          if( x >= area.x() && y >= area.y() )
+          {
+            if( style == IntersectionDot )
+              painter->drawPoint( x, y );  // Dot
+            else
+            {                                           // Crosses:
+              painter->drawLine( x, y - 1, x, y + 1 );  // Ver.line
+              painter->drawLine( x - 1, y, x + 1, y );  // Hor.line
+            }
+          }
+        }
+      }
+      break;
+    }
+    case Dashed:
+    {
+      // Change pen to the dashed line
+      mainPen.setStyle( Qt::DashLine );
+    }
+    default:  // Solid:
+    {
+      painter->setPen( mainPen );
+
+      // Draw vertical line
+      for( int x = offsetx; x <= area.right(); x += hSpacing )
+      {
+        if( x >= imageWidth )
+          break;
+
+        if( x >= area.x() )
+        {
+          // Always draw the full line otherwise the line stippling
+          // varies with the location of view area and we get glitchy
+          // patterns.
+          painter->drawLine( x, 0, x, imageHeight - 1 );
+        }
+      }
+      // Draw horizontal line
       for( int y = offsety; y <= area.bottom(); y += vSpacing )
       {
         if( y >= imageHeight )
           break;
 
-        if( x >= area.x() && y >= area.y() )
+        if( y >= area.y() )
         {
-          if( style == IntersectionDot )
-            painter->drawPoint( x, y );             // Dot
-          else
-          {                                           // Crosses:
-            painter->drawLine( x, y - 1, x, y + 1 );    // Ver.line
-            painter->drawLine( x - 1, y, x + 1, y );    // Hor.line
-          }
+          painter->drawLine( 0, y, imageWidth - 1, y );
         }
       }
+      break;
     }
-    break;
-  }
-  case Dashed:
-    {
-    // Change pen to the dashed line
-    mainPen.setStyle( Qt::DashLine );
-  }
-  default:  // Solid:
-  {
-    painter->setPen( mainPen );
-
-    // Draw vertical line
-    for( int x = offsetx; x <= area.right(); x += hSpacing )
-    {
-      if( x >= imageWidth )
-        break;
-
-      if( x >= area.x() )
-      {
-        // Always draw the full line otherwise the line stippling
-        // varies with the location of view area and we get glitchy
-        // patterns.
-        painter->drawLine( x, 0, x, imageHeight - 1 );
-      }
-    }
-    // Draw horizontal line
-    for( int y = offsety; y <= area.bottom(); y += vSpacing )
-    {
-      if( y >= imageHeight )
-        break;
-
-      if( y >= area.y() )
-      {
-        painter->drawLine( 0, y, imageWidth - 1, y );
-      }
-    }
-    break;
-  }
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-QRect GridManager::rectContains( const QPoint &pos ) const
-    {
+QRect GridManager::rectContains( const QPoint& pos ) const
+{
   return rectContains( pos.x(), pos.y() );
 }
 
 QRect GridManager::rectContains( int x, int y ) const
-    {
+{
   QRect rect;
   QPoint pos;
   int multiPosX;
@@ -242,8 +242,8 @@ bool GridManager::isNear( int x, int y )
   {
     for( int i = 0; i < 2; i++ )
     {
-      gx = ( int )( multiPosX * hSpacing + i * hSpacing );
-      gy = ( int )( multiPosY * vSpacing + j * vSpacing );
+      gx = (int)( multiPosX * hSpacing + i * hSpacing );
+      gy = (int)( multiPosY * vSpacing + j * vSpacing );
       gridPoint.setX( gx );
       gridPoint.setY( gy );
       rect.moveCenter( gridPoint );
@@ -259,7 +259,7 @@ bool GridManager::isNear( int x, int y )
   return false;
 }
 
-bool GridManager::isNear( const QPoint &pos )
+bool GridManager::isNear( const QPoint& pos )
 {
   return isNear( pos.x(), pos.y() );
 }

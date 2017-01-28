@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,6 @@
 
 #include "FrameMask.h"
 
-
 FrameMask::FrameMask()
 {
   /* Module Definition */
@@ -36,8 +35,8 @@ FrameMask::FrameMask()
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
   m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS | MODULE_USES_KEYS;
 
-  m_cModuleOptions.addOptions()/**/
-  ( "MaskWeigth", m_iWeight, "Influence of the mask [60%]" );
+  m_cModuleOptions.addOptions() /**/
+      ( "MaskWeigth", m_iWeight, "Influence of the mask [60%]" );
 
   m_iWeight = 6;
 
@@ -51,7 +50,8 @@ Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
   for( UInt i = 1; i < apcFrameList.size(); i++ )
   {
     if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE_IGNORE_GRAY |
-        PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
+                                                            PlaYUVerFrame::MATCH_RESOLUTION |
+                                                            PlaYUVerFrame::MATCH_BITS ) )
     {
       return false;
     }
@@ -68,18 +68,19 @@ Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
   }
   switch( iColorSpace )
   {
-  case PlaYUVerPixel::COLOR_GRAY:
-    iPelFmt = PlaYUVerFrame::GRAY;
-    break;
-  case PlaYUVerPixel::COLOR_YUV:
-    iPelFmt = PlaYUVerFrame::YUV444p;
-    break;
-  case PlaYUVerPixel::COLOR_RGB:
-    iPelFmt = PlaYUVerFrame::RGB24;
-    break;
+    case PlaYUVerPixel::COLOR_GRAY:
+      iPelFmt = PlaYUVerFrame::GRAY;
+      break;
+    case PlaYUVerPixel::COLOR_YUV:
+      iPelFmt = PlaYUVerFrame::YUV444p;
+      break;
+    case PlaYUVerPixel::COLOR_RGB:
+      iPelFmt = PlaYUVerFrame::RGB24;
+      break;
   }
 
-  m_pcFrameProcessed = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), iPelFmt, apcFrameList[0]->getBitsPel() );
+  m_pcFrameProcessed = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), iPelFmt,
+                                          apcFrameList[0]->getBitsPel() );
   return true;
 }
 
@@ -128,4 +129,3 @@ Void FrameMask::destroy()
   }
   m_pcFrameProcessed = NULL;
 }
-

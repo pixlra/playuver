@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -32,21 +32,16 @@
  * \class StreamHandlerRaw
  * \brief    Class to handle raw video format
  */
-class StreamHandlerRaw: public PlaYUVerStreamHandlerIf
+class StreamHandlerRaw : public PlaYUVerStreamHandlerIf
 {
-REGISTER_STREAM_HANDLER( StreamHandlerRaw )
+  REGISTER_STREAM_HANDLER( StreamHandlerRaw )
 
-private:
+ private:
   FILE* m_pFile; /**< The input file pointer >*/
 
-public:
-  StreamHandlerRaw()
-  {
-  }
-  ~StreamHandlerRaw()
-  {
-  }
-
+ public:
+  StreamHandlerRaw() {}
+  ~StreamHandlerRaw() {}
   Bool openHandler( String strFilename, Bool bInput );
   Void closeHandler();
   Bool configureBuffer( PlaYUVerFrame* pcFrame );
@@ -54,8 +49,6 @@ public:
   Bool seek( UInt64 iFrameNum );
   Bool read( PlaYUVerFrame* pcFrame );
   Bool write( PlaYUVerFrame* pcFrame );
-
 };
 
-#endif // __STREAMHANDLERRAW_H__
-
+#endif  // __STREAMHANDLERRAW_H__

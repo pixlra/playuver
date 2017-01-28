@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -36,11 +36,10 @@ WeightedPSNR::WeightedPSNR()
   m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS;
   m_uiNumberOfFrames = MODULE_REQUIRES_THREE_FRAMES;
 
-  m_cModuleOptions.addOptions()/**/
-  ( "Component", m_uiComponent, "Select the component to compute quality [0]" );
+  m_cModuleOptions.addOptions() /**/
+      ( "Component", m_uiComponent, "Select the component to compute quality [0]" );
 
   m_uiComponent = 0;
-
 }
 
 Bool WeightedPSNR::create( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -113,6 +112,4 @@ Double WeightedPSNR::measure( std::vector<PlaYUVerFrame*> apcFrameList )
 
 Void WeightedPSNR::destroy()
 {
-
 }
-

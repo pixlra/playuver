@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -41,8 +41,7 @@ class QPainter;
  */
 class GridManager
 {
-public:
-
+ public:
   enum Style
   {
     IntersectionDot = 0,
@@ -53,7 +52,7 @@ public:
 
   GridManager();
 
-  void drawGrid( QPixmap &image, const QRect& area, QPainter *painter );
+  void drawGrid( QPixmap& image, const QRect& area, QPainter* painter );
 
   /**
    * @returns a QRect defined by the grid that contains the point (x, y).
@@ -64,7 +63,7 @@ public:
    * This is an overloaded member function, provided for convenience.
    * @returns a QRect defined by the grid that contains the QPoint pos.
    */
-  QRect rectContains( const QPoint &pos ) const;
+  QRect rectContains( const QPoint& pos ) const;
 
   /**
    * @returns @c true if the point (x, y) is over a grid crossing, otherwise
@@ -84,7 +83,7 @@ public:
    * returns @c false.
    * @see @p nearPos()
    */
-  bool isNear( const QPoint &pos );
+  bool isNear( const QPoint& pos );
 
   /**
    * @returns the grid crossing position that is near the point (x,y). If
@@ -93,8 +92,7 @@ public:
    */
   QPoint nearPos( int x = -1, int y = -1 );
 
-private:
-
+ private:
   UInt m_uiHSpace;
   UInt m_uiVSpace;
   QColor m_cGridColor;
@@ -102,4 +100,4 @@ private:
   QPoint m_nearPos;
 };
 
-#endif // __GRIDMANAGER_H__
+#endif  // __GRIDMANAGER_H__

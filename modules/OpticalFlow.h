@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -32,10 +32,9 @@
 // PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-
-class OpticalFlowModule: public PlaYUVerModuleIf
+class OpticalFlowModule : public PlaYUVerModuleIf
 {
-protected:
+ protected:
   Bool m_bShowReconstruction;
   Int m_iStep;
   cv::Ptr<cv::DenseOpticalFlow> m_cOpticalFlow;
@@ -46,61 +45,48 @@ protected:
   Void drawFlow();
   Void compensateFlow();
   Bool commonCreate( std::vector<PlaYUVerFrame*> apcFrameList );
-public:
+
+ public:
   OpticalFlowModule();
-  virtual ~OpticalFlowModule()
-  {
-  }
+  virtual ~OpticalFlowModule() {}
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Void destroy();
 };
 
-
-class OpticalFlowDualTVL1: public OpticalFlowModule
+class OpticalFlowDualTVL1 : public OpticalFlowModule
 {
   REGISTER_CLASS_FACTORY( OpticalFlowDualTVL1 )
-public:
+ public:
   OpticalFlowDualTVL1();
-  virtual ~OpticalFlowDualTVL1()
-  {
-  }
+  virtual ~OpticalFlowDualTVL1() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
 };
 
-class OpticalFlowSparseToDense: public OpticalFlowModule
+class OpticalFlowSparseToDense : public OpticalFlowModule
 {
   REGISTER_CLASS_FACTORY( OpticalFlowSparseToDense )
-public:
+ public:
   OpticalFlowSparseToDense();
-  virtual ~OpticalFlowSparseToDense()
-  {
-  }
+  virtual ~OpticalFlowSparseToDense() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
 };
 
-
-class OpticalFlowFarneback: public OpticalFlowModule
+class OpticalFlowFarneback : public OpticalFlowModule
 {
   REGISTER_CLASS_FACTORY( OpticalFlowFarneback )
-public:
+ public:
   OpticalFlowFarneback();
-  virtual ~OpticalFlowFarneback()
-  {
-  }
+  virtual ~OpticalFlowFarneback() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
 };
 
-class OpticalDeepFlow: public OpticalFlowModule
+class OpticalDeepFlow : public OpticalFlowModule
 {
   REGISTER_CLASS_FACTORY( OpticalDeepFlow )
-public:
+ public:
   OpticalDeepFlow();
-  virtual ~OpticalDeepFlow()
-  {
-  }
+  virtual ~OpticalDeepFlow() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
 };
 
-
-#endif // __OPTICALFLOW_H__
-
+#endif  // __OPTICALFLOW_H__

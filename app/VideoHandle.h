@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -48,11 +48,11 @@ class VideoSubWindow;
 class FramePropertiesDock;
 class WidgetFrameNumber;
 
-class VideoHandle: public QWidget
+class VideoHandle : public QWidget
 {
-Q_OBJECT
-  public:
-  VideoHandle( QWidget*, PlaYUVerSubWindowHandle * );
+  Q_OBJECT
+ public:
+  VideoHandle( QWidget*, PlaYUVerSubWindowHandle* );
   ~VideoHandle();
 
   Void createActions();
@@ -70,7 +70,7 @@ Q_OBJECT
 
   Void openSubWindow( VideoSubWindow* subWindow );
 
-private:
+ private:
   QWidget* m_pcParet;
   PlaYUVerSubWindowHandle* m_pcMainWindowManager;
   enum
@@ -97,8 +97,8 @@ private:
   WidgetFrameNumber* m_pcFrameNumInfo;
 
   // Tools Actions;
-  QActionGroup *actionGroupTools;
-  QSignalMapper *m_mapperTools;
+  QActionGroup* actionGroupTools;
+  QSignalMapper* m_mapperTools;
   UInt m_uiViewTool;
 
   QMenu* m_pcMenuVideo;
@@ -114,7 +114,7 @@ private:
   VideoSubWindow* m_pcCurrentVideoSubWindow;
   QVector<VideoSubWindow*> m_acPlayingSubWindows;
 
-  QTimer *m_pcPlayingTimer;
+  QTimer* m_pcPlayingTimer;
   Bool m_bIsPlaying;
 
 #if( _CONTROL_PLAYING_TIME_ == 1 )
@@ -126,10 +126,10 @@ private:
   UInt64 getMaxFrameNumber();
   Void setTimerStatus();
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void changed();
 
-private Q_SLOTS:
+ private Q_SLOTS:
   void update();
   void updateSelectionArea( QRect area );
   void closeSubWindow( SubWindowAbstract* subWindow );
@@ -144,7 +144,6 @@ private Q_SLOTS:
   void videoSelectionButtonEvent();
   void setTool( int tool );
   void toggleGrid( bool checked );
-
 };
 
-#endif // __VIDEOHANDLE_H__
+#endif  // __VIDEOHANDLE_H__

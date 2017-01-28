@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -33,8 +33,7 @@
 
 #define CHROMARATIO( SIZE, RATIO ) ( RATIO > 1 ? ( ( SIZE + 1 ) / RATIO ) : SIZE )
 
-#define PEL_RGB( r, g, b ) \
-    ( 0xffu << 24 ) | ( ( r & 0xff ) << 16 ) | ( ( g & 0xff ) << 8 ) | ( b & 0xff )
+#define PEL_RGB( r, g, b ) ( 0xffu << 24 ) | ( ( r & 0xff ) << 16 ) | ( ( g & 0xff ) << 8 ) | ( b & 0xff )
 
 typedef struct PlaYUVerComponentDescriptor
 {
@@ -68,7 +67,7 @@ typedef struct PlaYUVerComponentDescriptor
  */
 typedef struct PlaYUVerPixFmtDescriptor
 {
-  const char *name;
+  const char* name;
 
   Int colorSpace;
 
@@ -112,4 +111,4 @@ typedef struct PlaYUVerPixFmtDescriptor
 
 extern const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[];
 
-#endif // __PLAYUVERFRAMEPIXELFORMATS_H__
+#endif  // __PLAYUVERFRAMEPIXELFORMATS_H__

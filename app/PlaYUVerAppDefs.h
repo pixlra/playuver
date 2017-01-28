@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -35,7 +35,7 @@
 // fallback, return a temporary QString
 // source code is assumed to be encoded in UTF-8
 
-# define QStringLiteral(str) QString::fromUtf8("" str "", sizeof(str) - 1)
+#define QStringLiteral( str ) QString::fromUtf8( "" str "", sizeof( str ) - 1 )
 #endif
 
-#endif // __PLAYUVERAPPDEFS_H__
+#endif  // __PLAYUVERAPPDEFS_H__

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -56,4 +56,4 @@
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerStream.h"
 
-#endif // __PLAYUVERLIB_H_
+#endif  // __PLAYUVERLIB_H_

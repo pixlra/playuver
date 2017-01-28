@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -30,15 +30,14 @@
 #include <string>
 
 #ifndef __PRI64_PREFIX
-#define __PRI64_PREFIX  "l"
+#define __PRI64_PREFIX "l"
 #endif
 
 #ifndef PRId64
-#define PRId64   __PRI64_PREFIX "d"
+#define PRId64 __PRI64_PREFIX "d"
 #endif
 
-extern "C"
-{
+extern "C" {
 #include <libavutil/avutil.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/samplefmt.h>
@@ -55,22 +54,16 @@ struct AVStream;
 struct AVStream;
 struct AVPacket;
 
-class StreamHandlerLibav: public PlaYUVerStreamHandlerIf
+class StreamHandlerLibav : public PlaYUVerStreamHandlerIf
 {
-REGISTER_STREAM_HANDLER( StreamHandlerLibav )
+  REGISTER_STREAM_HANDLER( StreamHandlerLibav )
 
-public:
-
+ public:
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
 
-  StreamHandlerLibav()
-  {
-  }
-  ~StreamHandlerLibav()
-  {
-  }
-
+  StreamHandlerLibav() {}
+  ~StreamHandlerLibav() {}
   Bool openHandler( String strFilename, Bool bInput );
   Void closeHandler();
   Bool configureBuffer( PlaYUVerFrame* pcFrame );
@@ -79,15 +72,11 @@ public:
   Bool read( PlaYUVerFrame* pcFrame );
   Bool write( PlaYUVerFrame* pcFrame );
 
-  UInt getStreamDuration()
-  {
-    return m_uiSecs;
-  }
-
+  UInt getStreamDuration() { return m_uiSecs; }
   UChar* m_pchFrameBuffer;
   UInt64 m_uiFrameBufferSize;
 
-private:
+ private:
   AVFormatContext* m_cFmtCtx;
   AVCodecContext* m_cCodecCtx;
   AVStream* m_cStream;
@@ -103,4 +92,4 @@ private:
   Bool decodeVideoPkt();
 };
 
-#endif // __LIBAVCONTEXTHANDLE_H__
+#endif  // __LIBAVCONTEXTHANDLE_H__

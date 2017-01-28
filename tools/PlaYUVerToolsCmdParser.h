@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -31,15 +31,11 @@
 
 class PlaYUVerToolsCmdParser
 {
-public:
+ public:
   PlaYUVerToolsCmdParser();
   ~PlaYUVerToolsCmdParser();
 
-  Void setLogLevel( enum LOG_LEVEL level )
-  {
-    m_uiLogLevel = level;
-  }
-
+  Void setLogLevel( enum LOG_LEVEL level ) { m_uiLogLevel = level; }
   /**
    * Send the specified message to the log if the level is higher than or equal
    * to the current LogLevel. By default, all logging messages are sent to
@@ -52,16 +48,12 @@ public:
    *
    * @note this function might not be safe in C++ (try to upgrade it)
    */
-  Void log( UInt level, const char *fmt, ... );
+  Void log( UInt level, const char* fmt, ... );
 
-  Int parseToolsArgs( Int argc, Char *argv[] );
+  Int parseToolsArgs( Int argc, Char* argv[] );
 
-  PlaYUVerOptions& Opts()
-  {
-    return m_cOptions;
-  }
-
-protected:
+  PlaYUVerOptions& Opts() { return m_cOptions; }
+ protected:
   PlaYUVerOptions m_cOptions;
   UInt m_uiLogLevel;
 
@@ -89,7 +81,6 @@ protected:
 
   Void listModules();
   Void listModuleHelp();
-
 };
 
-#endif // __PLAYUVERTOOLSCMDPARSER_H__
+#endif  // __PLAYUVERTOOLSCMDPARSER_H__

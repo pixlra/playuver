@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -30,20 +30,18 @@
 #include "SubWindowAbstract.h"
 #include "PlaYUVerMdiSubWindow.h"
 
-SubWindowAbstract::SubWindowAbstract( QWidget * parent, UInt category ) :
-        QWidget( parent ),
-        m_cSubWindow( NULL )
+SubWindowAbstract::SubWindowAbstract( QWidget* parent, UInt category ) : QWidget( parent ), m_cSubWindow( NULL )
 {
   setParent( parent );
   setVisible( false );
-  //setFocusPolicy( Qt::WheelFocus );
+  // setFocusPolicy( Qt::WheelFocus );
   setFocusPolicy( Qt::StrongFocus );
   setAttribute( Qt::WA_DeleteOnClose );
   setBackgroundRole( QPalette::Background );
 
   setWindowIcon( QIcon( ":/images/playuver.png" ) );
 
-  //setWidgetResizable( true );
+  // setWidgetResizable( true );
   m_pcLayout = NULL;
   m_uiCategory = category;
   m_cWindowName = QString( " " );
@@ -58,7 +56,7 @@ SubWindowAbstract::~SubWindowAbstract()
 
 Void SubWindowAbstract::setWidget( QWidget* widget )
 {
-  QGridLayout *layout = new QGridLayout( this );
+  QGridLayout* layout = new QGridLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( widget, 0, 0 );
 }
@@ -89,17 +87,17 @@ QSize SubWindowAbstract::sizeHint() const
   return QSize();
 }
 
-QSize SubWindowAbstract::sizeHint( const QSize & ) const
-    {
+QSize SubWindowAbstract::sizeHint( const QSize& ) const
+{
   return QSize();
 }
 
-Void SubWindowAbstract::focusInEvent( QFocusEvent * event )
+Void SubWindowAbstract::focusInEvent( QFocusEvent* event )
 {
   emit aboutToActivate( this );
 }
 
-Void SubWindowAbstract::closeEvent( QCloseEvent *event )
+Void SubWindowAbstract::closeEvent( QCloseEvent* event )
 {
   emit aboutToClose( this );
   event->accept();
@@ -111,4 +109,3 @@ Void SubWindowAbstract::closeSubWindow()
   if( m_cSubWindow )
     m_cSubWindow->close();
 }
-

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -34,20 +34,19 @@ class PlaYUVerFrame;
 class PlaYUVerStream;
 class PlaYUVerModuleIf;
 
-
 #define MAX_NUMBER_INPUTS 10
 
-class PlaYUVerTools: public PlaYUVerToolsCmdParser
+class PlaYUVerTools : public PlaYUVerToolsCmdParser
 {
-public:
+ public:
   PlaYUVerTools();
   ~PlaYUVerTools();
 
-  Int Open( Int argc, Char *argv[] );
+  Int Open( Int argc, Char* argv[] );
   Int Process();
   Int Close();
 
-private:
+ private:
   Bool m_bVerbose;
 
   UInt m_uiOperation;
@@ -66,7 +65,7 @@ private:
 
   Int openInputs();
 
-  typedef Int (PlaYUVerTools::*FpProcess)();
+  typedef Int ( PlaYUVerTools::*FpProcess )();
   FpProcess m_fpProcess;
 
   Int64 m_iFrameNum;
@@ -81,4 +80,4 @@ private:
   Int ModuleOperation();
 };
 
-#endif // __PLAYUVERTOOLS_H__
+#endif  // __PLAYUVERTOOLS_H__

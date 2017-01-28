@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -35,12 +35,12 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedReadFormats()
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Joint Photographic Experts Group", "jpg" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows Bitmap", "bmp" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Tagged Image File Format", "tiff" );
-//   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Audio video interleaved", "avi" );
-//   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows media video", "wmv" );
-//   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "MPEG4", "mp4" );
-//   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Matroska Multimedia Container", "mkv" );
-//   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "H.264 streams", "h264" );
-//   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "HEVC streams", "hevc" );
+  //   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Audio video interleaved", "avi" );
+  //   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows media video", "wmv" );
+  //   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "MPEG4", "mp4" );
+  //   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Matroska Multimedia Container", "mkv" );
+  //   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "H.264 streams", "h264" );
+  //   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "HEVC streams", "hevc" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
@@ -50,12 +50,12 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedWriteFormats()
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
-static int open_codec_context( int *stream_idx, AVFormatContext *m_cFmtCtx, enum AVMediaType type )
+static int open_codec_context( int* stream_idx, AVFormatContext* m_cFmtCtx, enum AVMediaType type )
 {
   int ret;
-  AVStream *st;
-  AVCodecContext *dec_ctx = NULL;
-  AVCodec *dec = NULL;
+  AVStream* st;
+  AVCodecContext* dec_ctx = NULL;
+  AVCodec* dec = NULL;
 
   ret = av_find_best_stream( m_cFmtCtx, type, -1, -1, NULL, 0 );
   if( ret < 0 )
@@ -93,43 +93,43 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   m_cFmtCtx = NULL;
   m_cCodecCtx = NULL;
   m_cStream = NULL;
-//  video_dst_data[0] = NULL;
-//  video_dst_data[1] = NULL;
-//  video_dst_data[2] = NULL;
-//  video_dst_data[3] = NULL;
+  //  video_dst_data[0] = NULL;
+  //  video_dst_data[1] = NULL;
+  //  video_dst_data[2] = NULL;
+  //  video_dst_data[3] = NULL;
   m_iStreamIdx = -1;
   m_cFrame = NULL;
   m_bHasStream = false;
 
-  AVDictionary *format_opts = NULL;
+  AVDictionary* format_opts = NULL;
 
   /* register all formats and codecs */
   av_register_all();
 
-//   if( width > 0 && height > 0 )
-//   {
-//     Char aux_string[10];
-//     sprintf( aux_string, "%dx%d", width, height );
-//     av_dict_set( &format_opts, "video_size", aux_string, 0 );
-//   }
+  //   if( width > 0 && height > 0 )
+  //   {
+  //     Char aux_string[10];
+  //     sprintf( aux_string, "%dx%d", width, height );
+  //     av_dict_set( &format_opts, "video_size", aux_string, 0 );
+  //   }
 
-//   Int ffmpeg_pel_format = g_PlaYUVerPixFmtDescriptorsList[pixel_format].ffmpegPelFormat;
-//   if( ffmpeg_pel_format >= 0 )
-//   {
-//     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AVPixelFormat( ffmpeg_pel_format ) ), 0 );
-//   }
+  //   Int ffmpeg_pel_format = g_PlaYUVerPixFmtDescriptorsList[pixel_format].ffmpegPelFormat;
+  //   if( ffmpeg_pel_format >= 0 )
+  //   {
+  //     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AVPixelFormat( ffmpeg_pel_format ) ), 0 );
+  //   }
 
   /* open input file, and allocate format context */
   if( avformat_open_input( &m_cFmtCtx, filename, NULL, &format_opts ) < 0 )
   {
-    //qDebug( ) << " Could not open source file %s !!!" << filename << endl;
+    // qDebug( ) << " Could not open source file %s !!!" << filename << endl;
     return false;
   }
 
   /* retrieve stream information */
   if( avformat_find_stream_info( m_cFmtCtx, NULL ) < 0 )
   {
-    //qDebug( ) << " Could not find stream information !!!" << endl;
+    // qDebug( ) << " Could not find stream information !!!" << endl;
     return false;
   }
 
@@ -138,23 +138,24 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
     m_cStream = m_cFmtCtx->streams[m_iStreamIdx];
     m_cCodecCtx = m_cStream->codec;
 
-//    /* allocate image where the decoded image will be put */
-//    ret = av_image_alloc( video_dst_data, video_dst_linesize, m_cCodecCtx->width, m_cCodecCtx->height, m_cCodecCtx->pix_fmt, 1 );
-//    if( ret < 0 )
-//    {
-//      //qDebug( ) << " Could not allocate raw video buffer !!!" << endl;
-//      closeAvFormat();
-//      return false;
-//    }
-//    video_dst_bufsize = ret;
+    //    /* allocate image where the decoded image will be put */
+    //    ret = av_image_alloc( video_dst_data, video_dst_linesize, m_cCodecCtx->width, m_cCodecCtx->height,
+    //    m_cCodecCtx->pix_fmt, 1 );
+    //    if( ret < 0 )
+    //    {
+    //      //qDebug( ) << " Could not allocate raw video buffer !!!" << endl;
+    //      closeAvFormat();
+    //      return false;
+    //    }
+    //    video_dst_bufsize = ret;
 
     m_uiFrameBufferSize = av_image_get_buffer_size( m_cCodecCtx->pix_fmt, m_cCodecCtx->width, m_cCodecCtx->height, 1 );
     getMem1D( &m_pchFrameBuffer, m_uiFrameBufferSize );
   }
 
   m_strFormatName = uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
-  const char *name = avcodec_get_name( m_cCodecCtx->codec_id );
-//   sprintf( m_acCodecName, "%s", name );
+  const char* name = avcodec_get_name( m_cCodecCtx->codec_id );
+  //   sprintf( m_acCodecName, "%s", name );
   m_strCodecName = name;
 
   Double fr = 30;
@@ -181,24 +182,24 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
    */
   switch( pix_fmt )
   {
-  case AV_PIX_FMT_YUVJ420P:
-    pix_fmt = AV_PIX_FMT_YUV420P;
-    break;
-  case AV_PIX_FMT_YUVJ422P:
-    pix_fmt = AV_PIX_FMT_YUV422P;
-    break;
-  case AV_PIX_FMT_YUVJ444P:
-    pix_fmt = AV_PIX_FMT_YUV444P;
-    break;
-  case AV_PIX_FMT_GRAY16LE:
-    m_uiBitsPerPixel = 16;
-    m_iEndianness = 1;
-    pix_fmt = AV_PIX_FMT_GRAY8;
-    break;
-  case AV_PIX_FMT_GRAY16BE:
-    m_uiBitsPerPixel = 16;
-    m_iEndianness = 0;
-    pix_fmt = AV_PIX_FMT_GRAY8;
+    case AV_PIX_FMT_YUVJ420P:
+      pix_fmt = AV_PIX_FMT_YUV420P;
+      break;
+    case AV_PIX_FMT_YUVJ422P:
+      pix_fmt = AV_PIX_FMT_YUV422P;
+      break;
+    case AV_PIX_FMT_YUVJ444P:
+      pix_fmt = AV_PIX_FMT_YUV444P;
+      break;
+    case AV_PIX_FMT_GRAY16LE:
+      m_uiBitsPerPixel = 16;
+      m_iEndianness = 1;
+      pix_fmt = AV_PIX_FMT_GRAY8;
+      break;
+    case AV_PIX_FMT_GRAY16BE:
+      m_uiBitsPerPixel = 16;
+      m_iEndianness = 0;
+      pix_fmt = AV_PIX_FMT_GRAY8;
   }
 
   m_uiWidth = m_cCodecCtx->width;
@@ -223,7 +224,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   av_dump_format( m_cFmtCtx, 0, filename, 0 );
   if( !m_cStream )
   {
-    //qDebug( ) << " Could not find audio or video stream in the input, aborting !!!" << endl;
+    // qDebug( ) << " Could not find audio or video stream in the input, aborting !!!" << endl;
     closeHandler();
     return false;
   }
@@ -265,7 +266,6 @@ Void StreamHandlerLibav::closeHandler()
 
   if( m_pStreamBuffer )
     freeMem1D( m_pStreamBuffer );
-
 }
 
 Bool StreamHandlerLibav::configureBuffer( PlaYUVerFrame* pcFrame )
@@ -276,11 +276,11 @@ Bool StreamHandlerLibav::configureBuffer( PlaYUVerFrame* pcFrame )
 UInt64 StreamHandlerLibav::calculateFrameNumber()
 {
   UInt64 num_frames;
-//   if( m_cStream->nb_frames )
-//    {                                            *
-//    num_frames = m_cStream->nb_frames;
-//   }
-//   else
+  //   if( m_cStream->nb_frames )
+  //    {                                            *
+  //    num_frames = m_cStream->nb_frames;
+  //   }
+  //   else
   if( m_cFmtCtx->duration != AV_NOPTS_VALUE )
   {
     Int64 duration = m_cFmtCtx->duration + 5000;
@@ -334,8 +334,7 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
       bGotFrame |= decodeVideoPkt();
       if( bGotFrame )
         break;
-    }
-    while( pkt.size > 0 );
+    } while( pkt.size > 0 );
 
     if( bGotFrame )
     {
@@ -351,10 +350,11 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
 
   if( bGotFrame )
   {
-//     av_image_copy_to_buffer( m_pchFrameBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, m_cCodecCtx->pix_fmt, m_cCodecCtx->width,
-//                              m_cCodecCtx->height, 1 );
-    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, m_cCodecCtx->pix_fmt, m_cCodecCtx->width,
-        m_cCodecCtx->height, 1 );
+    //     av_image_copy_to_buffer( m_pchFrameBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize,
+    //     m_cCodecCtx->pix_fmt, m_cCodecCtx->width,
+    //                              m_cCodecCtx->height, 1 );
+    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize,
+                             m_cCodecCtx->pix_fmt, m_cCodecCtx->width, m_cCodecCtx->height, 1 );
     if( orig_pkt.size )
       av_free_packet( &orig_pkt );
 
@@ -376,4 +376,3 @@ Bool StreamHandlerLibav::seek( UInt64 iFrameNum )
   av_seek_frame( m_cFmtCtx, m_iStreamIdx, iFrameNum, AVSEEK_FLAG_FRAME );
   return true;
 }
-

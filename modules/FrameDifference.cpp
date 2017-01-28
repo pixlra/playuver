@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,6 @@
 
 #include "FrameDifference.h"
 
-
 FrameDifference::FrameDifference()
 {
   /* Module Definition */
@@ -36,8 +35,8 @@ FrameDifference::FrameDifference()
   m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
 
-  m_cModuleOptions.addOptions()/**/
-  ( "Bits per pixel", m_uiBitsPixel, "Bits per pixel (use zero to avoid scaling) [0]" );
+  m_cModuleOptions.addOptions() /**/
+      ( "Bits per pixel", m_uiBitsPixel, "Bits per pixel (use zero to avoid scaling) [0]" );
 
   m_uiBitsPixel = 0;
 
@@ -51,7 +50,8 @@ Bool FrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
   UInt uiMaxBitsPixel = 0;
   for( UInt i = 0; i < apcFrameList.size(); i++ )
   {
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION ) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0],
+                                       PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION ) )
       return false;
     if( apcFrameList[i]->getBitsPel() > uiMaxBitsPixel )
     {
@@ -67,7 +67,8 @@ Bool FrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
   m_iDiffBitShift = ( uiMaxBitsPixel + 1 ) - m_uiBitsPixel;
   m_iMaxDiffValue = ( 1 << ( m_uiBitsPixel - 1 ) );
 
-  m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY, m_uiBitsPixel );
+  m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
+                                           PlaYUVerFrame::GRAY, m_uiBitsPixel );
   return true;
 }
 
@@ -101,4 +102,3 @@ Void FrameDifference::destroy()
     delete m_pcFrameDifference;
   m_pcFrameDifference = NULL;
 }
-

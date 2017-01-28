@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -35,13 +35,13 @@ SetChromaHalfScale::SetChromaHalfScale()
   m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
 
   m_pcProcessedFrame = NULL;
-
 }
 
 Void SetChromaHalfScale::create( PlaYUVerFrame* frame )
 {
   m_pcProcessedFrame = NULL;
-  m_pcProcessedFrame = new PlaYUVerFrame( frame->getWidth(), frame->getHeight(), frame->getPelFormat(), frame->getBitsPel() );
+  m_pcProcessedFrame =
+      new PlaYUVerFrame( frame->getWidth(), frame->getHeight(), frame->getPelFormat(), frame->getBitsPel() );
 }
 
 PlaYUVerFrame* SetChromaHalfScale::process( PlaYUVerFrame* frame )
@@ -67,4 +67,3 @@ Void SetChromaHalfScale::destroy()
     delete m_pcProcessedFrame;
   m_pcProcessedFrame = NULL;
 }
-

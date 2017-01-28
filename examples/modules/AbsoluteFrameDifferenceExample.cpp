@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -30,18 +30,18 @@ REGISTER_CLASS_MAKER( AbsoluteFrameDifferenceExample )
 AbsoluteFrameDifferenceExample::AbsoluteFrameDifferenceExample()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;                              // Use API version 2 (recommended).
-                                                            // See this example for details on the functions prototype
-  m_iModuleType = FRAME_PROCESSING_MODULE;                  // Apply module to the frames or to the whole sequence.
-  m_pchModuleCategory = "Measurements";                     // Category (sub-menu)
-  m_pchModuleName = "AbsoluteFrameDifferenceExampleExample";       // Name
-  m_pchModuleTooltip = "Measure the absolute difference "   // Description
-          "between two images (Y plane), e. g., abs( Y1 - Y2 )";
-  m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;          // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
-  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;      // Module requirements (check PlaYUVerModulesIf.h).
-                                                            // Several requirements should be "or" between each others.
+  m_iModuleAPI = MODULE_API_2;                                // Use API version 2 (recommended).
+                                                              // See this example for details on the functions prototype
+  m_iModuleType = FRAME_PROCESSING_MODULE;                    // Apply module to the frames or to the whole sequence.
+  m_pchModuleCategory = "Measurements";                       // Category (sub-menu)
+  m_pchModuleName = "AbsoluteFrameDifferenceExampleExample";  // Name
+  m_pchModuleTooltip =
+      "Measure the absolute difference "  // Description
+      "between two images (Y plane), e. g., abs( Y1 - Y2 )";
+  m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;  // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
+  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;  // Module requirements (check PlaYUVerModulesIf.h).
+                                                        // Several requirements should be "or" between each others.
   m_pcFrameDifference = NULL;
-
 }
 
 Bool AbsoluteFrameDifferenceExample::create( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -49,10 +49,13 @@ Bool AbsoluteFrameDifferenceExample::create( std::vector<PlaYUVerFrame*> apcFram
   _BASIC_MODULE_API_2_CHECK_
 
   for( UInt i = 1; i < apcFrameList.size(); i++ )
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE |
+                                                            PlaYUVerFrame::MATCH_RESOLUTION |
+                                                            PlaYUVerFrame::MATCH_BITS ) )
       return false;
 
-    m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+  m_pcFrameDifference =
+      new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
   return true;
 }
 
@@ -72,7 +75,7 @@ PlaYUVerFrame* AbsoluteFrameDifferenceExample::process( std::vector<PlaYUVerFram
       aux_pel_2 = *pInput2PelYUV++;
       *pOutputPelYUV++ = abs( aux_pel_1 - aux_pel_2 );
     }
-    return m_pcFrameDifference;
+  return m_pcFrameDifference;
 }
 
 Void AbsoluteFrameDifferenceExample::destroy()
@@ -81,4 +84,3 @@ Void AbsoluteFrameDifferenceExample::destroy()
     delete m_pcFrameDifference;
   m_pcFrameDifference = NULL;
 }
-

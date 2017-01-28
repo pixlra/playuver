@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -28,12 +28,12 @@
 
 #include <QDialog>
 
-class AboutDialog: public QDialog
+class AboutDialog : public QDialog
 {
-Q_OBJECT
+  Q_OBJECT
 
-public:
-  AboutDialog( QWidget *parent = 0 );
+ public:
+  AboutDialog( QWidget* parent = 0 );
 };
 
-#endif // __ABOUTDIALOG_H__
+#endif  // __ABOUTDIALOG_H__

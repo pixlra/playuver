@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -39,20 +39,18 @@
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerOptions.h"
 
-#define REGISTER_CLASS_MAKER(X) \
+#define REGISTER_CLASS_MAKER( X ) \
   extern "C" PlaYUVerModuleIf* Maker() { return new X; }
-
-#define REGISTER_CLASS_FACTORY(X) \
-public: \
+#define REGISTER_CLASS_FACTORY( X )                     \
+ public:                                                \
   static PlaYUVerModuleIf* Create() { return new X(); } \
   void Delete() { delete this; }
-
-#define _BASIC_MODULE_API_2_CHECK_ \
-if( apcFrameList.size() != m_uiNumberOfFrames ) \
-  return false; \
-for( UInt i = 0; i < apcFrameList.size(); i++ ) \
-  if( !apcFrameList[i] ) \
-    return false;
+#define _BASIC_MODULE_API_2_CHECK_                \
+  if( apcFrameList.size() != m_uiNumberOfFrames ) \
+    return false;                                 \
+  for( UInt i = 0; i < apcFrameList.size(); i++ ) \
+    if( !apcFrameList[i] )                        \
+      return false;
 
 /** Module_API_Version Enum
  * \ingroup PlaYUVerLib_Modules
@@ -122,8 +120,7 @@ enum Module_Key_Supported
  */
 class PlaYUVerModuleIf
 {
-public:
-
+ public:
   Int m_iModuleAPI;
   Int m_iModuleType;
   const Char* m_pchModuleCategory;
@@ -142,50 +139,23 @@ public:
     m_iModuleAPI = MODULE_API_1;
     m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
   }
-  virtual ~PlaYUVerModuleIf()
-  {
-  }
-
+  virtual ~PlaYUVerModuleIf() {}
   virtual void Delete() = 0;
   virtual Void destroy() = 0;
 
   /**
    * Module API version 1
    */
-  virtual Void create( PlaYUVerFrame* )
-  {
-  }
-  virtual PlaYUVerFrame* process( PlaYUVerFrame* )
-  {
-    return NULL;
-  }
-  virtual Double measure( PlaYUVerFrame* )
-  {
-    return 0;
-  }
-
+  virtual Void create( PlaYUVerFrame* ) {}
+  virtual PlaYUVerFrame* process( PlaYUVerFrame* ) { return NULL; }
+  virtual Double measure( PlaYUVerFrame* ) { return 0; }
   /**
    * Module API version 2
    */
-  virtual Bool create( std::vector<PlaYUVerFrame*> apcFrameList )
-  {
-    return false;
-  }
-  virtual PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> )
-  {
-    return NULL;
-  }
-  virtual Double measure( std::vector<PlaYUVerFrame*> )
-  {
-    return 0;
-  }
-
-  virtual Bool keyPressed( enum Module_Key_Supported )
-  {
-    return false;
-  }
-
+  virtual Bool create( std::vector<PlaYUVerFrame*> apcFrameList ) { return false; }
+  virtual PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> ) { return NULL; }
+  virtual Double measure( std::vector<PlaYUVerFrame*> ) { return 0; }
+  virtual Bool keyPressed( enum Module_Key_Supported ) { return false; }
 };
 
-#endif // __PLAYUVERMODULESIF_H__
-
+#endif  // __PLAYUVERMODULESIF_H__

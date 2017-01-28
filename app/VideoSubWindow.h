@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -59,12 +59,11 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& d );
 QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& d );
 Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename );
 
-class VideoSubWindow: public SubWindowAbstract
+class VideoSubWindow : public SubWindowAbstract
 {
-Q_OBJECT
+  Q_OBJECT
 
-private:
-
+ private:
   Bool m_bWindowBusy;
 
   QScrollArea* m_pcScrollArea;
@@ -88,7 +87,7 @@ private:
 
   VideoSubWindow* m_pcReferenceSubWindow;
 
-  //QString m_cWindowShortName;
+  // QString m_cWindowShortName;
   QString m_cCurrFileName;
 
   Bool m_bIsPlaying;
@@ -103,24 +102,29 @@ private:
 
   Void refreshFrameOperation();
 
-  static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPixel, Int& rEndianness );
+  static Bool guessFormat( QString filename,
+                           UInt& rWidth,
+                           UInt& rHeight,
+                           Int& rInputFormat,
+                           UInt& rBitsPerPixel,
+                           Int& rEndianness );
 
   /**
    * Private zoom function to handle
    * zoom to fit
    */
-  Void scaleView( const QSize & size, QPoint center = QPoint() );
+  Void scaleView( const QSize& size, QPoint center = QPoint() );
   Void updateVideoWindowInfo();
 
   QSize getScrollSize();
 
-public:
+ public:
   enum VideoSubWindowCategories
   {
     VIDEO_STREAM_SUBWINDOW = SubWindowAbstract::VIDEO_STREAM_SUBWINDOW,
     MODULE_SUBWINDOW = SubWindowAbstract::MODULE_SUBWINDOW,
   };
-  VideoSubWindow( enum VideoSubWindowCategories category, QWidget * parent = 0 );
+  VideoSubWindow( enum VideoSubWindowCategories category, QWidget* parent = 0 );
   ~VideoSubWindow();
 
   Bool loadFile( QString cFilename, Bool bForceDialog = false );
@@ -136,49 +140,19 @@ public:
   Bool playEvent();
   Void stop();
 
-  Bool isPlaying()
-  {
-    return m_bIsPlaying;
-  }
-
+  Bool isPlaying() { return m_bIsPlaying; }
   Void seekAbsoluteEvent( UInt new_frame_num );
   Void seekRelativeEvent( Bool bIsFoward );
 
   Void setCurrFrame( PlaYUVerFrame* pcCurrFrame );
 
-  QScrollArea* getScroll()
-  {
-    return m_pcScrollArea;
-  }
-  PlaYUVerStreamInfo getStreamInfo()
-  {
-    return m_sStreamInfo;
-  }
-  QString getStreamInformation()
-  {
-    return m_cStreamInformation;
-  }
-
-  PlaYUVerStream* getInputStream()
-  {
-    return m_pCurrStream;
-  }
-
-  PlaYUVerStream* getCurrStream()
-  {
-    return m_pCurrStream;
-  }
-
-  PlaYUVerFrame* getCurrFrame()
-  {
-    return m_pcCurrFrame;
-  }
-
-  ViewArea* getViewArea()
-  {
-    return m_cViewArea;
-  }
-
+  QScrollArea* getScroll() { return m_pcScrollArea; }
+  PlaYUVerStreamInfo getStreamInfo() { return m_sStreamInfo; }
+  QString getStreamInformation() { return m_cStreamInformation; }
+  PlaYUVerStream* getInputStream() { return m_pCurrStream; }
+  PlaYUVerStream* getCurrStream() { return m_pCurrStream; }
+  PlaYUVerFrame* getCurrFrame() { return m_pcCurrFrame; }
+  ViewArea* getViewArea() { return m_cViewArea; }
   Void setRefSubWindow( VideoSubWindow* subWindow )
   {
     m_pcReferenceSubWindow = NULL;
@@ -187,11 +161,7 @@ public:
         m_pcReferenceSubWindow = subWindow;
   }
 
-  VideoSubWindow* getRefSubWindow()
-  {
-    return m_pcReferenceSubWindow;
-  }
-
+  VideoSubWindow* getRefSubWindow() { return m_pcReferenceSubWindow; }
   /**
    * Functions to enable a module in the
    * current SubWindow
@@ -200,11 +170,7 @@ public:
   Void disableModule( PlaYUVerAppModuleIf* pcModule = NULL );
   Void associateModule( PlaYUVerAppModuleIf* pcModule );
 
-  PlaYUVerAppModuleIf* getDisplayModule()
-  {
-    return m_pcCurrentDisplayModule;
-  }
-
+  PlaYUVerAppModuleIf* getDisplayModule() { return m_pcCurrentDisplayModule; }
   QList<PlaYUVerAppModuleIf*> getModuleArray()
   {
     QList<PlaYUVerAppModuleIf*> apcModulesArray;
@@ -222,40 +188,24 @@ public:
   Void scaleView( Double scale, QPoint center = QPoint() );
   Void zoomToFactor( Double factor, QPoint center = QPoint() );
 
-  Double getScaleFactor()
-  {
-    return m_cViewArea->getZoomFactor();
-  }
-
+  Double getScaleFactor() { return m_cViewArea->getZoomFactor(); }
   /**
    * Size related functions
    */
   QSize sizeHint() const;
-  QSize sizeHint( const QSize & ) const;
+  QSize sizeHint( const QSize& ) const;
 
-  QString getCurrentFileName()
-  {
-    return m_cFilename;
-  }
-
-  Bool getIsModule()
-  {
-    return getCategory() | SubWindowAbstract::MODULE_SUBWINDOW;
-  }
-
-  Void clearWindowBusy()
-  {
-    m_bWindowBusy = false;
-  }
-
+  QString getCurrentFileName() { return m_cFilename; }
+  Bool getIsModule() { return getCategory() | SubWindowAbstract::MODULE_SUBWINDOW; }
+  Void clearWindowBusy() { m_bWindowBusy = false; }
   Void setFillWindow( Bool bFlag );
 
-protected:
+ protected:
   Void keyPressEvent( QKeyEvent* event );
   Void resizeEvent( QResizeEvent* event );
-  //void closeEvent( QCloseEvent *event );
+  // void closeEvent( QCloseEvent *event );
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void updateWindowOnTimeout();
   void adjustScrollBarByScale( double scale, QPoint center );
   void adjustScrollBarByOffset( QPoint Offset );
@@ -268,5 +218,4 @@ public Q_SLOTS:
 Q_DECLARE_METATYPE( PlaYUVerStreamInfo );
 Q_DECLARE_METATYPE( PlaYUVerStreamInfoVector );
 
-#endif // __VIDEOSUBWINDOW_H__
-
+#endif  // __VIDEOSUBWINDOW_H__

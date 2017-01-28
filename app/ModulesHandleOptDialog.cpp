@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -32,9 +32,9 @@
 
 #include "lib/PlaYUVerOptions.h"
 
-class OpionConfiguration: public QWidget
+class OpionConfiguration : public QWidget
 {
-public:
+ public:
   OpionConfiguration( OptionBase* option )
   {
     m_pcChecked = NULL;
@@ -67,20 +67,16 @@ public:
     }
     return m_pcValue->text();
   }
-  const String& getName()
-  {
-    return m_cName;
-  }
-private:
+  const String& getName() { return m_cName; }
+ private:
   QLineEdit* m_pcValue;
   QCheckBox* m_pcChecked;
   QLabel* m_pcDescription;
   String m_cName;
 };
 
-ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget *parent, PlaYUVerAppModuleIf *pcCurrModuleIf ) :
-        QDialog( parent ),
-        m_pcCurrModuleIf( pcCurrModuleIf )
+ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget* parent, PlaYUVerAppModuleIf* pcCurrModuleIf )
+    : QDialog( parent ), m_pcCurrModuleIf( pcCurrModuleIf )
 {
   resize( 400, 10 );
   setWindowTitle( "Select module parameters" );
@@ -145,4 +141,3 @@ Int ModulesHandleOptDialog::runConfiguration()
   }
   return QDialog::Accepted;
 }
-

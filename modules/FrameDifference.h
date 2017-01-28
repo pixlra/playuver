@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -28,27 +28,22 @@
 // PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-
-class FrameDifference: public PlaYUVerModuleIf
+class FrameDifference : public PlaYUVerModuleIf
 {
-REGISTER_CLASS_FACTORY( FrameDifference )
+  REGISTER_CLASS_FACTORY( FrameDifference )
 
-private:
+ private:
   UInt m_uiBitsPixel;
   Int m_iDiffBitShift;
   Int m_iMaxDiffValue;
   PlaYUVerFrame* m_pcFrameDifference;
 
-public:
+ public:
   FrameDifference();
-  virtual ~FrameDifference()
-  {
-  }
+  virtual ~FrameDifference() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Void destroy();
-
 };
 
-#endif // __FRAMEDIFFERENCE_H__
-
+#endif  // __FRAMEDIFFERENCE_H__

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -58,8 +58,8 @@ typedef std::string String;
 #ifdef _MSC_VER
 typedef __int64 Int64;
 
-#if _MSC_VER <= 1200 // MS VC6
-typedef __int64 UInt64;   // MS VC6 does not support unsigned __int64 to double conversion
+#if _MSC_VER <= 1200     // MS VC6
+typedef __int64 UInt64;  // MS VC6 does not support unsigned __int64 to double conversion
 #else
 typedef unsigned __int64 UInt64;
 #endif
@@ -75,7 +75,7 @@ typedef unsigned long long UInt64;
 // Type definition
 // ====================================================================================================================
 
-typedef UShort Pel;        ///< 16-bit pixel type
+typedef UShort Pel;  ///< 16-bit pixel type
 typedef UChar Byte;
 
 // ====================================================================================================================
@@ -86,7 +86,6 @@ typedef UChar Byte;
 // #define MAX_INT                     2147483647  ///< max. value of signed 32-bit integer
 // #define MAX_INT64                   0x7FFFFFFFFFFFFFFFLL  ///< max. value of signed 64-bit integer
 // #define MAX_DOUBLE                  1.7e+308    ///< max. value of double-type value
-
 
 // ====================================================================================================================
 // PlaYUVer definitions
@@ -121,7 +120,6 @@ enum Endianness
   PLAYUVER_LITTLE_ENDIAN = 1,
 };
 
-
 inline String lowercase( const String& in )
 {
   String out;
@@ -136,22 +134,15 @@ inline String uppercase( const String& in )
   return out;
 }
 
-struct PlaYUVerFailure: public std::exception
+struct PlaYUVerFailure : public std::exception
 {
   String m_class_name;
   String m_error_msg;
-  PlaYUVerFailure( String error_msg ) throw() :
-          m_error_msg( error_msg )
+  PlaYUVerFailure( String error_msg ) throw() : m_error_msg( error_msg ) {}
+  PlaYUVerFailure( String class_name, String error_msg ) throw() : m_class_name( class_name ), m_error_msg( error_msg )
   {
   }
-  PlaYUVerFailure( String class_name, String error_msg ) throw() :
-          m_class_name( class_name ),
-          m_error_msg( error_msg )
-  {
-  }
-  ~PlaYUVerFailure() throw()
-  {
-  }
+  ~PlaYUVerFailure() throw() {}
   const Char* what() const throw()
   {
     String* msg = new String( "[" + m_class_name + "] " + m_error_msg );
@@ -159,4 +150,4 @@ struct PlaYUVerFailure: public std::exception
   }
 };
 
-#endif // __PLAYUVERDEFS_H__
+#endif  // __PLAYUVERDEFS_H__

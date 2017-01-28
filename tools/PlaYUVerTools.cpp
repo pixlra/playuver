@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -57,7 +57,7 @@ PlaYUVerTools::~PlaYUVerTools()
   }
 }
 
-#define GET_PARAM( X , i ) X[X.size() > i ? i : X.size() - 1]
+#define GET_PARAM( X, i ) X[X.size() > i ? i : X.size() - 1]
 
 Int PlaYUVerTools::openInputs()
 {
@@ -90,7 +90,7 @@ Int PlaYUVerTools::openInputs()
       }
       if( Opts().hasOpt( "endianness" ) )
       {
-        if( GET_PARAM( m_strEndianness, i )== "big" )
+        if( GET_PARAM( m_strEndianness, i ) == "big" )
         {
           uiEndianness = 0;
         }
@@ -109,9 +109,10 @@ Int PlaYUVerTools::openInputs()
         }
         m_apcInputStreams.push_back( pcStream );
       }
-      catch( const char *msg )
+      catch( const char* msg )
       {
-        log( LOG_ERROR, "Cannot open input stream %s with the following error: \n%s\n", inputFileNames[i].c_str(), msg );
+        log( LOG_ERROR, "Cannot open input stream %s with the following error: \n%s\n", inputFileNames[i].c_str(),
+             msg );
         return 2;
       }
     }
@@ -127,13 +128,14 @@ Int PlaYUVerTools::openInputs()
   for( UInt i = 0; i < m_apcInputStreams.size(); i++ )
   {
     m_uiNumberOfFrames = std::min( m_uiNumberOfFrames, m_apcInputStreams[i]->getFrameNum() );
-    m_uiNumberOfComponents = std::min( m_uiNumberOfComponents, m_apcInputStreams[i]->getCurrFrame()->getNumberChannels() );
+    m_uiNumberOfComponents =
+        std::min( m_uiNumberOfComponents, m_apcInputStreams[i]->getCurrFrame()->getNumberChannels() );
   }
 
   return 0;
 }
 
-Int PlaYUVerTools::Open( Int argc, Char *argv[] )
+Int PlaYUVerTools::Open( Int argc, Char* argv[] )
 {
   Int iRet = 0;
 
@@ -283,11 +285,13 @@ Int PlaYUVerTools::Open( Int argc, Char *argv[] )
         PlaYUVerStream* pcModStream = new PlaYUVerStream;
         try
         {
-          pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(), pcModFrame->getPelFormat(), pcModFrame->getBitsPel(), PLAYUVER_LITTLE_ENDIAN, 1, false );
+          pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(),
+                             pcModFrame->getPelFormat(), pcModFrame->getBitsPel(), PLAYUVER_LITTLE_ENDIAN, 1, false );
         }
-        catch( const char *msg )
+        catch( const char* msg )
         {
-          log( LOG_ERROR, "Cannot open input stream %s with the following error %s!\n", outputFileNames[0].c_str(), msg );
+          log( LOG_ERROR, "Cannot open input stream %s with the following error %s!\n", outputFileNames[0].c_str(),
+               msg );
           delete pcModStream;
           pcModStream = NULL;
           return 2;
@@ -321,7 +325,7 @@ Int PlaYUVerTools::Process()
 
 Int PlaYUVerTools::Close()
 {
-// Finish
+  // Finish
   return 0;
 }
 
@@ -342,7 +346,7 @@ Int PlaYUVerTools::SaveOperation()
 
 Int PlaYUVerTools::QualityOperation()
 {
-  const char *pchQualityMetricName = PlaYUVerFrame::supportedQualityMetricsList()[m_uiQualityMetric].c_str();
+  const char* pchQualityMetricName = PlaYUVerFrame::supportedQualityMetricsList()[m_uiQualityMetric].c_str();
   PlaYUVerFrame* apcCurrFrame[MAX_NUMBER_INPUTS];
   Bool abEOF[MAX_NUMBER_INPUTS];
   Double adAverageQuality[MAX_NUMBER_INPUTS - 1][PlaYUVerPixel::MAX_NUMBER_COMPONENTS];
@@ -351,20 +355,20 @@ Int PlaYUVerTools::QualityOperation()
   String metric_fmt = " ";
   switch( m_uiQualityMetric )
   {
-  case PlaYUVerFrame::PSNR_METRIC:
-    //"PSNR_0_0"
-    metric_fmt += " %6.3f ";
-    break;
-  case PlaYUVerFrame::SSIM_METRIC:
-    //"SSIM_0_0"
-    metric_fmt += " %6.4f ";
-    break;
-  case PlaYUVerFrame::MSE_METRIC:
-    //"MSE_0_0"
-    metric_fmt += "%7.2f";
-    break;
-  default:
-    metric_fmt += " %6.3f ";
+    case PlaYUVerFrame::PSNR_METRIC:
+      //"PSNR_0_0"
+      metric_fmt += " %6.3f ";
+      break;
+    case PlaYUVerFrame::SSIM_METRIC:
+      //"SSIM_0_0"
+      metric_fmt += " %6.4f ";
+      break;
+    case PlaYUVerFrame::MSE_METRIC:
+      //"MSE_0_0"
+      metric_fmt += "%7.2f";
+      break;
+    default:
+      metric_fmt += " %6.3f ";
   }
   metric_fmt += " ";
 
@@ -443,7 +447,8 @@ PlaYUVerFrame* PlaYUVerTools::applyFrameModule()
 Int PlaYUVerTools::ModuleOperation()
 {
   std::vector<PlaYUVerFrame*> apcFrameList;
-  log( LOG_INFO, "  Applying Module %s/%s ...\n", m_pcCurrModuleIf->m_pchModuleCategory, m_pcCurrModuleIf->m_pchModuleName );
+  log( LOG_INFO, "  Applying Module %s/%s ...\n", m_pcCurrModuleIf->m_pchModuleCategory,
+       m_pcCurrModuleIf->m_pchModuleName );
 
   PlaYUVerFrame* pcProcessedFrame = NULL;
   Double dMeasurementResult = 0.0;
@@ -486,7 +491,8 @@ Int PlaYUVerTools::ModuleOperation()
       }
       log( LOG_INFO, "   %3d", frame );
       log( LOG_RESULT, "  %8.3f \n", dMeasurementResult );
-      dAveragedMeasurementResult = ( dAveragedMeasurementResult * Double( frame ) + dMeasurementResult ) / Double( frame + 1 );
+      dAveragedMeasurementResult =
+          ( dAveragedMeasurementResult * Double( frame ) + dMeasurementResult ) / Double( frame + 1 );
     }
 
     for( UInt s = 0; s < m_apcInputStreams.size(); s++ )
@@ -506,4 +512,3 @@ Int PlaYUVerTools::ModuleOperation()
 
   return 0;
 }
-

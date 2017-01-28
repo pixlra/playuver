@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -117,7 +117,7 @@ Bool StreamHandlerPortableMap::seek( UInt64 iFrameNum )
 
 Bool StreamHandlerPortableMap::read( PlaYUVerFrame* pcFrame )
 {
-  UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof(Byte), m_uiNBytesPerFrame, m_pFile );
+  UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
   pcFrame->frameFromBuffer( m_pStreamBuffer, PLAYUVER_BIG_ENDIAN );
@@ -133,9 +133,8 @@ Bool StreamHandlerPortableMap::write( PlaYUVerFrame* pcFrame )
     fprintf( m_pFile, "%d\n", m_iMaxValue );
   }
   pcFrame->frameToBuffer( m_pStreamBuffer, PLAYUVER_BIG_ENDIAN );
-  UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof(Byte), m_uiNBytesPerFrame, m_pFile );
+  UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
   return true;
 }
-

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -28,26 +28,21 @@
 // PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-
-class FrameMask: public PlaYUVerModuleIf
+class FrameMask : public PlaYUVerModuleIf
 {
-REGISTER_CLASS_FACTORY( FrameMask )
+  REGISTER_CLASS_FACTORY( FrameMask )
 
-private:
+ private:
   Int m_iWeight;
   PlaYUVerFrame* m_pcFrameProcessed;
 
-public:
+ public:
   FrameMask();
-  virtual ~FrameMask()
-  {
-  }
+  virtual ~FrameMask() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Bool keyPressed( enum Module_Key_Supported value );
   Void destroy();
-
 };
 
-#endif // __FRAMEMASK_H__
-
+#endif  // __FRAMEMASK_H__

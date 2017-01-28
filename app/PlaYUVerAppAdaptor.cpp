@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -26,12 +26,11 @@
 #include "PlaYUVerAppAdaptor.h"
 #include "PlaYUVerApp.h"
 
-PlaYUVerAppAdaptor::PlaYUVerAppAdaptor( PlaYUVerApp *app ) :
-        QDBusAbstractAdaptor( app ),
-        m_app( app )
+PlaYUVerAppAdaptor::PlaYUVerAppAdaptor( PlaYUVerApp* app ) : QDBusAbstractAdaptor( app ), m_app( app )
 {
   // application dbus interface
-  QDBusConnection::sessionBus().registerObject( QStringLiteral( PLAYUVER_DBUS_PATH ), this, QDBusConnection::ExportAllSlots );
+  QDBusConnection::sessionBus().registerObject( QStringLiteral( PLAYUVER_DBUS_PATH ), this,
+                                                QDBusConnection::ExportAllSlots );
 }
 
 PlaYUVerAppAdaptor::~PlaYUVerAppAdaptor()
@@ -46,12 +45,11 @@ void PlaYUVerAppAdaptor::activate()
     return;
   }
   m_app->raise();
-
 }
 
 QString PlaYUVerAppAdaptor::activeSession()
 {
-  //return m_app->sessionManager()->activeSession()->name();
+  // return m_app->sessionManager()->activeSession()->name();
   return QString( "PlaYUVer" );
 }
 
@@ -60,4 +58,3 @@ bool PlaYUVerAppAdaptor::loadFile( const QString& filename )
   m_app->loadFile( filename );
   return true;
 }
-

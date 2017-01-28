@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -35,24 +35,24 @@ DisparityStereoBM::DisparityStereoBM()
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
   m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
 
-  m_cModuleOptions.addOptions()/**/
-  ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [9]" );
+  m_cModuleOptions.addOptions() /**/
+      ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [9]" );
 
   m_pcDisparityFrame = NULL;
   m_uiBlockSize = 9;
-
 }
 
 Bool DisparityStereoBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
-  m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+  m_pcDisparityFrame =
+      new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
   if( ( m_uiBlockSize % 2 ) == 0 )
   {
     m_uiBlockSize++;
   }
   m_uiNumberOfDisparities = ( ( apcFrameList[0]->getWidth() / 8 ) + 15 ) & -16;
-#if( CV_MAJOR_VERSION == 2)
+#if( CV_MAJOR_VERSION == 2 )
   m_cStereoBM.state->preFilterCap = 31;
   m_cStereoBM.state->SADWindowSize = 9;
   m_cStereoBM.state->minDisparity = 0;
@@ -89,7 +89,7 @@ PlaYUVerFrame* DisparityStereoBM::process( std::vector<PlaYUVerFrame*> apcFrameL
   }
   cv::Mat disparityImage, disparityImage8;
 
-#if( CV_MAJOR_VERSION == 2)
+#if( CV_MAJOR_VERSION == 2 )
   m_cStereoBM( leftImage, rightImage, disparityImage );
 #else
   m_cStereoBM->compute( leftImage, rightImage, disparityImage );
@@ -107,4 +107,3 @@ Void DisparityStereoBM::destroy()
     delete m_pcDisparityFrame;
   m_pcDisparityFrame = NULL;
 }
-

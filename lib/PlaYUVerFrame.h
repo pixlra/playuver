@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -36,7 +36,7 @@ class Mat;
 struct PlaYUVerPixFmtDescriptor;
 struct PlaYUVerFramePrivate;
 
-#define CHROMASHIFT( SIZE, SHIFT ) UInt( -( ( - ( Int( SIZE ) ) ) >> ( SHIFT ) ) )
+#define CHROMASHIFT( SIZE, SHIFT ) UInt( -( ( -( Int( SIZE ) ) ) >> ( SHIFT ) ) )
 
 /**
  * \class    PlaYUVerFrame
@@ -45,8 +45,7 @@ struct PlaYUVerFramePrivate;
  */
 class PlaYUVerFrame
 {
-public:
-
+ public:
   /** ColorSpace Enum
    * List of supported pixel formats - do not change order
    */
@@ -109,7 +108,7 @@ public:
    * @param other existing frame to copy from
    */
   PlaYUVerFrame( const PlaYUVerFrame& other );
-  PlaYUVerFrame( const PlaYUVerFrame *other );
+  PlaYUVerFrame( const PlaYUVerFrame* other );
 
   /**
    * Creates and new frame with the configuration of an
@@ -192,7 +191,6 @@ public:
    */
   static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel );
 
-
   /**
    * Reset frame pixels to zero
    */
@@ -265,8 +263,8 @@ public:
 
   /** @} */
 
-private:
+ private:
   PlaYUVerFramePrivate* d;
 };
 
-#endif // __PLAYUVERFRAME_H__
+#endif  // __PLAYUVERFRAME_H__

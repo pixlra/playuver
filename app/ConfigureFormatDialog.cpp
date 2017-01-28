@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -48,9 +48,7 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStdResolutionVector& ar
   for( Int i = 0; i < array.size(); i++ )
   {
     d = array.at( i );
-    out << QString::fromStdString( d.shortName )
-        << d.uiWidth
-        << d.uiHeight;
+    out << QString::fromStdString( d.shortName ) << d.uiWidth << d.uiHeight;
   }
   return out;
 }
@@ -72,13 +70,11 @@ QDataStream& operator>>( QDataStream& in, PlaYUVerStdResolutionVector& array )
   return in;
 }
 
-class AddCustomFormat: public QDialog
+class AddCustomFormat : public QDialog
 {
-public:
-  AddCustomFormat( QWidget *parent = NULL ) :
-          QDialog( parent, Qt::Dialog | Qt::WindowTitleHint )
+ public:
+  AddCustomFormat( QWidget* parent = NULL ) : QDialog( parent, Qt::Dialog | Qt::WindowTitleHint )
   {
-
     setWindowModality( Qt::ApplicationModal );
     setWindowTitle( "Add custom resolution" );
 
@@ -134,14 +130,13 @@ public:
     return stdResolution;
   }
 
-private:
+ private:
   QLineEdit* m_lineEdtName;
   QSpinBox* m_spinWidth;
   QSpinBox* m_spinHeight;
 };
 
-ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
-        QDialog( parent )
+ConfigureFormatDialog::ConfigureFormatDialog( QWidget* parent ) : QDialog( parent )
 {
   QString Name;
   UInt uiWidth, uiHeight;
@@ -369,11 +364,12 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
   MainLayout->addWidget( dialogButtonOkCancel );
 
-  connect( m_comboBoxStandardResolution, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotStandardResolutionSelected(int) ) );
-  connect( m_spinBoxWidth, SIGNAL( valueChanged(int) ), this, SLOT( slotResolutionChange() ) );
-  connect( m_spinBoxheight, SIGNAL( valueChanged(int) ), this, SLOT( slotResolutionChange() ) );
-  connect( m_comboBoxColorSpace, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotColorSpaceChange(int) ) );
-  connect( m_spinBoxBits, SIGNAL( valueChanged(int) ), this, SLOT( slotBitsChange(int) ) );
+  connect( m_comboBoxStandardResolution, SIGNAL( currentIndexChanged( int ) ), this,
+           SLOT( slotStandardResolutionSelected( int ) ) );
+  connect( m_spinBoxWidth, SIGNAL( valueChanged( int ) ), this, SLOT( slotResolutionChange() ) );
+  connect( m_spinBoxheight, SIGNAL( valueChanged( int ) ), this, SLOT( slotResolutionChange() ) );
+  connect( m_comboBoxColorSpace, SIGNAL( currentIndexChanged( int ) ), this, SLOT( slotColorSpaceChange( int ) ) );
+  connect( m_spinBoxBits, SIGNAL( valueChanged( int ) ), this, SLOT( slotBitsChange( int ) ) );
 
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
@@ -381,14 +377,18 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   m_comboBoxColorSpace->setCurrentIndex( 0 );
 
   setFixedSize( MainLayout->sizeHint() );
-
 }
 
-Int ConfigureFormatDialog::runConfigureFormatDialog( const QString& Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, Int& rEndianess,
-    UInt& rFrameRate )
+Int ConfigureFormatDialog::runConfigureFormatDialog( const QString& Filename,
+                                                     UInt& rWidth,
+                                                     UInt& rHeight,
+                                                     Int& rInputFormat,
+                                                     UInt& rBits,
+                                                     Int& rEndianess,
+                                                     UInt& rFrameRate )
 {
   // Set default values
-  //setWindowTitle( "Configure resolution for " + Filename );
+  // setWindowTitle( "Configure resolution for " + Filename );
   m_labelFilename->setText( QFileInfo( Filename ).fileName() );
   m_spinBoxWidth->setValue( rWidth );
   m_spinBoxheight->setValue( rHeight );
@@ -539,7 +539,6 @@ Void ConfigureFormatDialog::readSettings()
   QSettings appSettings;
   QVariant value = appSettings.value( "ConfigureFormatDialog/CustomFormats" );
   aRCustomFileFormats = value.value<PlaYUVerStdResolutionVector>();
-
 }
 
 Void ConfigureFormatDialog::writeSettings()

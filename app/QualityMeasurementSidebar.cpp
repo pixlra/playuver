@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -27,21 +27,18 @@
 #include "QualityMeasurementSidebar.h"
 #include "VideoSubWindow.h"
 
-QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerSubWindowHandle *windowManager ) :
-        QWidget( parent ),
-        m_pcMainWindowManager( windowManager ),
-        m_pcCurrentVideoSubWindow( NULL )
+QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerSubWindowHandle* windowManager )
+    : QWidget( parent ), m_pcMainWindowManager( windowManager ), m_pcCurrentVideoSubWindow( NULL )
 {
-
   // Side bar area -----------------------------------------------------
 
-  QLabel *MetricLabel = new QLabel( tr( "Metric:" ) );
+  QLabel* MetricLabel = new QLabel( tr( "Metric:" ) );
   MetricLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
 
-  QLabel *RefLabel = new QLabel( tr( "Ref:" ) );
+  QLabel* RefLabel = new QLabel( tr( "Ref:" ) );
   RefLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
 
-  QLabel *RecLabel = new QLabel( tr( "Rec:" ) );
+  QLabel* RecLabel = new QLabel( tr( "Rec:" ) );
   RecLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
 
   m_comboBoxMetric = new QComboBox;
@@ -58,7 +55,7 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerS
   m_comboBoxRef->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
   updateSubWindowList();
 
-  QGridLayout *mainLayout = new QGridLayout;
+  QGridLayout* mainLayout = new QGridLayout;
   mainLayout->addWidget( MetricLabel, 0, 0, Qt::AlignLeft );
   mainLayout->addWidget( m_comboBoxMetric, 0, 1, Qt::AlignLeft );
   mainLayout->addItem( spaceQuality, 0, 2, Qt::AlignRight );
@@ -80,7 +77,7 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerS
   m_ppcLabelQualityValue[CHROMA_V] = new QLabel;
   m_ppcLabelQualityValue[CHROMA_V]->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
-  QGridLayout *qualityResultsLayout = new QGridLayout;
+  QGridLayout* qualityResultsLayout = new QGridLayout;
   qualityResultsLayout->addWidget( m_ppcLabelQualityLabel[LUMA], 0, 0 );
   qualityResultsLayout->addWidget( m_ppcLabelQualityValue[LUMA], 0, 1 );
   qualityResultsLayout->addWidget( m_ppcLabelQualityLabel[CHROMA_U], 1, 0 );
@@ -88,25 +85,24 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerS
   qualityResultsLayout->addWidget( m_ppcLabelQualityLabel[CHROMA_V], 2, 0 );
   qualityResultsLayout->addWidget( m_ppcLabelQualityValue[CHROMA_V], 2, 1 );
 
-  //QGroupBox *statisticsGroup = new QGroupBox( tr( "Quality" ) );
-  QGroupBox *statisticsGroup = new QGroupBox;
+  // QGroupBox *statisticsGroup = new QGroupBox( tr( "Quality" ) );
+  QGroupBox* statisticsGroup = new QGroupBox;
   statisticsGroup->setLayout( qualityResultsLayout );
-  statisticsGroup->setWhatsThis( tr( "<p>Here you can see the quality results calculated for the "
-      "selected windows." ) );
+  statisticsGroup->setWhatsThis(
+      tr( "<p>Here you can see the quality results calculated for the "
+          "selected windows." ) );
 
   mainLayout->addWidget( statisticsGroup, 4, 0, 3, 3 );
 
   mainLayout->setRowStretch( 8, 10 );
   setLayout( mainLayout );
 
-  connect( m_comboBoxRef, SIGNAL( activated(int) ), this, SLOT( slotReferenceChanged(int) ) );
-  connect( m_comboBoxMetric, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotQualityMetricChanged(int) ) );
-
+  connect( m_comboBoxRef, SIGNAL( activated( int ) ), this, SLOT( slotReferenceChanged( int ) ) );
+  connect( m_comboBoxMetric, SIGNAL( currentIndexChanged( int ) ), this, SLOT( slotQualityMetricChanged( int ) ) );
 }
 
 QualityMeasurementSidebar::~QualityMeasurementSidebar()
 {
-
 }
 
 QSize QualityMeasurementSidebar::sizeHint() const
@@ -163,10 +159,10 @@ Void QualityMeasurementSidebar::updateSubWindowList()
       m_comboBoxRef->setCurrentIndex( index );
     }
   }
-//  m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToContents );
+  //  m_comboBoxRef->setSizeAdjustPolicy( QComboBox::AdjustToContents );
 }
 
-Void QualityMeasurementSidebar::updateCurrentWindow( VideoSubWindow *subWindow )
+Void QualityMeasurementSidebar::updateCurrentWindow( VideoSubWindow* subWindow )
 {
   m_pcCurrentVideoSubWindow = subWindow;
   if( m_pcCurrentVideoSubWindow )
@@ -216,7 +212,6 @@ Void QualityMeasurementSidebar::updateSidebarData()
   {
     m_ppcLabelQualityValue[component]->setText( zeroValue );
   }
-
 }
 
 Void QualityMeasurementSidebar::updateQualityMetric( Int idx )
@@ -233,7 +228,7 @@ Void QualityMeasurementSidebar::slotReferenceChanged( Int index )
 {
   if( index > -1 && m_pcCurrentVideoSubWindow )
   {
-    VideoSubWindow *pcRefSubWindow = m_pcVideoWindowList.at( index );
+    VideoSubWindow* pcRefSubWindow = m_pcVideoWindowList.at( index );
     if( pcRefSubWindow )
     {
       if( m_pcCurrentVideoSubWindow->getCurrFrame()->haveSameFmt( pcRefSubWindow->getCurrFrame() ) )
@@ -254,6 +249,5 @@ Void QualityMeasurementSidebar::slotReferenceChanged( Int index )
 Void QualityMeasurementSidebar::slotQualityMetricChanged( Int idx )
 {
   emit signalQualityMetricChanged( idx );
-  //updateQualityMetric( idx );
+  // updateQualityMetric( idx );
 }
-

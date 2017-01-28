@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -29,23 +29,19 @@
 
 #include <cassert>
 
-class AbsoluteFrameDifferenceExample: public PlaYUVerModuleIf
+class AbsoluteFrameDifferenceExample : public PlaYUVerModuleIf
 {
-REGISTER_CLASS_FACTORY( AbsoluteFrameDifferenceExample )
+  REGISTER_CLASS_FACTORY( AbsoluteFrameDifferenceExample )
 
-private:
+ private:
   PlaYUVerFrame* m_pcFrameDifference;
 
-public:
+ public:
   AbsoluteFrameDifferenceExample();
-  virtual ~AbsoluteFrameDifferenceExample()
-  {
-  }
+  virtual ~AbsoluteFrameDifferenceExample() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Void destroy();
-
 };
 
-#endif // __ABSOLUTEFRAMEDIFFERENCEEXAMPLE_H__
-
+#endif  // __ABSOLUTEFRAMEDIFFERENCEEXAMPLE_H__

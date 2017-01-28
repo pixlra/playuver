@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -28,17 +28,17 @@
 InterFrameVariance::InterFrameVariance()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;                              // Use API version 2 (recommended).
+  m_iModuleAPI = MODULE_API_2;  // Use API version 2 (recommended).
   // See this example for details on the functions prototype
-  m_iModuleType = FRAME_PROCESSING_MODULE;                  // Apply module to the frames or to the whole sequence.
-  m_pchModuleCategory = "Measurements";                     // Category (sub-menu)
-  m_pchModuleName = "InterFrameVariance";                   // Name
+  m_iModuleType = FRAME_PROCESSING_MODULE;  // Apply module to the frames or to the whole sequence.
+  m_pchModuleCategory = "Measurements";     // Category (sub-menu)
+  m_pchModuleName = "InterFrameVariance";   // Name
   m_pchModuleTooltip = "Measure the variance across several frames";
-  m_uiNumberOfFrames = MODULE_REQUIRES_SEVERAL_FRAMES;      // Number of Frames required (This module allows a variable number of inputs)
-  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;      // Module requirements (check PlaYUVerModulesIf.h).
+  m_uiNumberOfFrames =
+      MODULE_REQUIRES_SEVERAL_FRAMES;  // Number of Frames required (This module allows a variable number of inputs)
+  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;  // Module requirements (check PlaYUVerModulesIf.h).
   // Several requirements should be "or" between each others.
   m_pcFrameVariance = NULL;
-
 }
 
 Bool InterFrameVariance::create( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -48,10 +48,13 @@ Bool InterFrameVariance::create( std::vector<PlaYUVerFrame*> apcFrameList )
   _BASIC_MODULE_API_2_CHECK_
 
   for( UInt i = 1; i < apcFrameList.size(); i++ )
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE |
+                                                            PlaYUVerFrame::MATCH_RESOLUTION |
+                                                            PlaYUVerFrame::MATCH_BITS ) )
       return false;
 
-  m_pcFrameVariance = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY, 8 );
+  m_pcFrameVariance =
+      new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY, 8 );
   getMem2D( &m_pVariance, apcFrameList[0]->getHeight(), apcFrameList[0]->getWidth() );
 
   return true;
@@ -82,19 +85,18 @@ PlaYUVerFrame* InterFrameVariance::process( std::vector<PlaYUVerFrame*> apcFrame
         v = *pInput[i]++;
         sum += v;
         m_pVariance[y][x] += v * v;
-
       }
-      //Final result of the variance for one block
+      // Final result of the variance for one block
       m_pVariance[y][x] -= Double( sum * sum ) / Double( numFrames );
-      m_pVariance[y][x] /=  Double( numFrames );
+      m_pVariance[y][x] /= Double( numFrames );
       if( m_pVariance[y][x] > maxVariance )
-        maxVariance =  m_pVariance[y][x];
+        maxVariance = m_pVariance[y][x];
     }
 
   for( UInt y = 0; y < m_pcFrameVariance->getHeight(); y++ )
     for( UInt x = 0; x < m_pcFrameVariance->getWidth(); x++ )
     {
-      *pOutputPelYUV++ =  m_pVariance[y][x] * 255 / maxVariance;
+      *pOutputPelYUV++ = m_pVariance[y][x] * 255 / maxVariance;
     }
   return m_pcFrameVariance;
 }
@@ -108,4 +110,3 @@ Void InterFrameVariance::destroy()
     delete m_pcFrameVariance;
   m_pcFrameVariance = NULL;
 }
-

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -199,8 +199,7 @@ Void fillARGB32bufferYUV420p( Pel*** in, UChar* out, UInt width, UInt height, UI
 }
 #endif
 
-const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NUMBER_PEL_FORMATS] =
-{
+const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NUMBER_PEL_FORMATS] = {
     {
         "YUV420p",
         PlaYUVerPixel::COLOR_YUV,
@@ -210,9 +209,9 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         1,
         ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV420P ),
         {
-            { 0, 0, 1 },  /* Y */
-            { 1, 0, 1 },  /* U */
-            { 2, 0, 1 },  /* V */
+            {0, 0, 1}, /* Y */
+            {1, 0, 1}, /* U */
+            {2, 0, 1}, /* V */
         },
     },
     {
@@ -224,9 +223,9 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         0,
         ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV422P ),
         {
-            { 0, 0, 1 },  /* Y */
-            { 1, 0, 1 },  /* U */
-            { 2, 0, 1 },  /* V */
+            {0, 0, 1}, /* Y */
+            {1, 0, 1}, /* U */
+            {2, 0, 1}, /* V */
         },
     },
     {
@@ -238,9 +237,9 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         0,
         ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUV444P ),
         {
-            { 0, 0, 1 },  /* Y */
-            { 1, 0, 1 },  /* U */
-            { 2, 0, 1 },  /* V */
+            {0, 0, 1}, /* Y */
+            {1, 0, 1}, /* U */
+            {2, 0, 1}, /* V */
         },
     },
     {
@@ -252,9 +251,9 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         0,
         ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_YUYV422 ),
         {
-            { 0, 1, 1 },  /* Y */
-            { 0, 3, 2 },  /* U */
-            { 0, 3, 4 },  /* V */
+            {0, 1, 1}, /* Y */
+            {0, 3, 2}, /* U */
+            {0, 3, 4}, /* V */
         },
     },
     {
@@ -265,21 +264,21 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         0,
         0,
         ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_GRAY8 ),
-        { { 0, 0, 1 } },  /* Y */
+        {{0, 0, 1}}, /* Y */
     },
     {
-      "RGBp",
-      PlaYUVerPixel::COLOR_RGB,
-      3,
-      3,
-      0,
-      0,
-      ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_RGB24 ),
-      {
-        { 0, 0, 1 },  /* R */
-        { 1, 0, 1 },  /* G */
-        { 2, 0, 1 },  /* B */
-      },
+        "RGBp",
+        PlaYUVerPixel::COLOR_RGB,
+        3,
+        3,
+        0,
+        0,
+        ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_RGB24 ),
+        {
+            {0, 0, 1}, /* R */
+            {1, 0, 1}, /* G */
+            {2, 0, 1}, /* B */
+        },
     },
     {
         "RGB",
@@ -290,9 +289,9 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         0,
         ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_RGB24 ),
         {
-            { 0, 2, 1 },  /* R */
-            { 0, 2, 2 },  /* G */
-            { 0, 2, 3 },  /* B */
+            {0, 2, 1}, /* R */
+            {0, 2, 2}, /* G */
+            {0, 2, 3}, /* B */
         },
     },
     {
@@ -304,10 +303,8 @@ const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PlaYUVerFrame::NU
         0,
         ADD_FFMPEG_PEL_FMT( AV_PIX_FMT_BGR24 ),
         {
-            { 0, 2, 3}, /* B */
-            { 0, 2, 2}, /* R */
-            { 0, 2, 1}, /* G */
+            {0, 2, 3}, /* B */
+            {0, 2, 2}, /* R */
+            {0, 2, 1}, /* G */
         },
-    }
-};
-
+    }};

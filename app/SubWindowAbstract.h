@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -50,18 +50,18 @@ class QCloseEvent;
 
 class PlaYUVerMdiSubWindow;
 
-class SubWindowAbstract: public QWidget
+class SubWindowAbstract : public QWidget
 {
-Q_OBJECT
+  Q_OBJECT
 
-private:
+ private:
   QHBoxLayout* m_pcLayout;
   UInt m_uiCategory;
   QString m_cWindowName;
 
   PlaYUVerMdiSubWindow* m_cSubWindow;
 
-public:
+ public:
   enum SubWindowCategory
   {
     SUBWINDOW = 0,
@@ -69,9 +69,10 @@ public:
     VIDEO_STREAM_SUBWINDOW = 2,
     MODULE_SUBWINDOW = 4,
     PLOT_SUBWINDOW = 8,
-  };Q_DECLARE_FLAGS( SubWindowCategories, SubWindowCategory )
+  };
+  Q_DECLARE_FLAGS( SubWindowCategories, SubWindowCategory )
 
-SubWindowAbstract  ( QWidget *, UInt );
+  SubWindowAbstract( QWidget*, UInt );
   ~SubWindowAbstract();
 
   /**
@@ -104,7 +105,7 @@ SubWindowAbstract  ( QWidget *, UInt );
    * Size related functions
    */
   virtual QSize sizeHint() const;
-  virtual QSize sizeHint( const QSize & ) const;
+  virtual QSize sizeHint( const QSize& ) const;
 
   /**
    * Window name
@@ -121,36 +122,24 @@ SubWindowAbstract  ( QWidget *, UInt );
    * @note This function should be used with enum SubWindowCategories
    *        with an & operation and it may belong to several categories
    */
-  UInt getCategory()
-  {
-    return m_uiCategory;
-  }
-
+  UInt getCategory() { return m_uiCategory; }
   /**
    * Check category of the SubWindow
    * @param checkCateory SubWindow category to check against;
    *        it should be enum SubWindowCategories type
    * @return true when SubWindow belong to checkCateory
    */
-  Bool checkCategory( UInt checkCateory )
-  {
-    return m_uiCategory & checkCateory;
-  }
-
-  Void setSubWindow( PlaYUVerMdiSubWindow* subWindow )
-  {
-    m_cSubWindow = subWindow;
-  }
-
+  Bool checkCategory( UInt checkCateory ) { return m_uiCategory & checkCateory; }
+  Void setSubWindow( PlaYUVerMdiSubWindow* subWindow ) { m_cSubWindow = subWindow; }
   Void closeSubWindow();
 
-protected:
+ protected:
   void focusInEvent( QFocusEvent* event );
   void closeEvent( QCloseEvent* event );
 
   Void setWidget( QWidget* widget );
 
-  Q_SIGNALS:
+ Q_SIGNALS:
   /**
    * Notify that zoom factor was changed by internal event (e.g. by mouse wheel)
    */
@@ -167,10 +156,8 @@ protected:
   void aboutToActivate( SubWindowAbstract* );
   void aboutToClose( SubWindowAbstract* );
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void onDestroyed();
-
 };
 
-#endif // __SUBWINDOWABSTRACT_H__
-
+#endif  // __SUBWINDOWABSTRACT_H__

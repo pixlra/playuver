@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -26,8 +26,7 @@
 #include "PlaYUVerMdiSubWindow.h"
 #include "SubWindowAbstract.h"
 
-PlaYUVerMdiSubWindow::PlaYUVerMdiSubWindow( QWidget *parent ) :
-        QMdiSubWindow( parent )
+PlaYUVerMdiSubWindow::PlaYUVerMdiSubWindow( QWidget* parent ) : QMdiSubWindow( parent )
 {
   setAttribute( Qt::WA_DeleteOnClose );
   setBackgroundRole( QPalette::Background );
@@ -42,9 +41,8 @@ QSize PlaYUVerMdiSubWindow::sizeHint() const
   return sizeHint;
 }
 
-Void PlaYUVerMdiSubWindow::closeEvent( QCloseEvent *event )
+Void PlaYUVerMdiSubWindow::closeEvent( QCloseEvent* event )
 {
   emit aboutToClose( this );
   event->accept();
 }
-

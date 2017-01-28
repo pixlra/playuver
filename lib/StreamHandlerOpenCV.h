@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,7 +25,6 @@
 #ifndef __STREAMHANDLEROPENCV_H__
 #define __STREAMHANDLEROPENCV_H__
 
-
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerStreamHandlerIf.h"
 
@@ -36,20 +35,16 @@ class VideoCapture;
 
 class PlaYUVerFrame;
 
-class StreamHandlerOpenCV: public PlaYUVerStreamHandlerIf
+class StreamHandlerOpenCV : public PlaYUVerStreamHandlerIf
 {
-REGISTER_STREAM_HANDLER( StreamHandlerOpenCV )
+  REGISTER_STREAM_HANDLER( StreamHandlerOpenCV )
 
-public:
-
+ public:
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
 
   StreamHandlerOpenCV();
-  ~StreamHandlerOpenCV()
-  {
-  }
-
+  ~StreamHandlerOpenCV() {}
   Bool openHandler( String strFilename, Bool bInput );
   Void closeHandler();
   Bool configureBuffer( PlaYUVerFrame* pcFrame );
@@ -58,8 +53,8 @@ public:
   Bool read( PlaYUVerFrame* pcFrame );
   Bool write( PlaYUVerFrame* pcFrame );
 
-private:
+ private:
   cv::VideoCapture* pcVideoCapture;
 };
 
-#endif // __STREAMHANDLEROPENCV_H__
+#endif  // __STREAMHANDLEROPENCV_H__

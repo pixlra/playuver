@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -27,9 +27,8 @@
 #include "PlaYUVerAppModuleIf.h"
 #include "ModulesHandle.h"
 
-ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf ) :
-        QWidget( parent ),
-        m_pcCurrModuleIf( moduleIf )
+ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf )
+    : QWidget( parent ), m_pcCurrModuleIf( moduleIf )
 {
   // ----------------- Dock definition -----------------
 
@@ -42,7 +41,7 @@ ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* module
   labelModulueReturnValue = new QLabel;
   labelModulueReturnValue->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
 
-  QGridLayout *modulesPropertiesLayout = new QGridLayout;
+  QGridLayout* modulesPropertiesLayout = new QGridLayout;
   Int layout_line = 0;
   modulesPropertiesLayout->addWidget( labelModulueValueLabel, layout_line, 0 );
   modulesPropertiesLayout->addWidget( labelModulueReturnValue, layout_line, 1 );
@@ -52,12 +51,10 @@ ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* module
   setLayout( modulesPropertiesLayout );
 
   setEnabled( true );
-
 }
 
 ModuleHandleDock::~ModuleHandleDock()
 {
-
 }
 
 Void ModuleHandleDock::setModulueReturnValue( Double value )
@@ -86,4 +83,3 @@ QSize ModuleHandleDock::sizeHint() const
   else
     return currSize;
 }
-

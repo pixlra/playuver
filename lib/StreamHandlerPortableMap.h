@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -30,18 +30,13 @@
 
 class PlaYUVerFrame;
 
-class StreamHandlerPortableMap: public PlaYUVerStreamHandlerIf
+class StreamHandlerPortableMap : public PlaYUVerStreamHandlerIf
 {
-REGISTER_STREAM_HANDLER( StreamHandlerPortableMap )
+  REGISTER_STREAM_HANDLER( StreamHandlerPortableMap )
 
-public:
-  StreamHandlerPortableMap()
-  {
-  }
-  ~StreamHandlerPortableMap()
-  {
-  }
-
+ public:
+  StreamHandlerPortableMap() {}
+  ~StreamHandlerPortableMap() {}
   Bool openHandler( String strFilename, Bool bInput );
   Void closeHandler();
   Bool configureBuffer( PlaYUVerFrame* pcFrame );
@@ -50,10 +45,10 @@ public:
   Bool read( PlaYUVerFrame* pcFrame );
   Bool write( PlaYUVerFrame* pcFrame );
 
-private:
+ private:
   FILE* m_pFile; /**< The input file pointer >*/
   Int m_iMagicNumber;
   Int m_iMaxValue;
 };
 
-#endif // __STREAMHANDLERPORTABLEMAP_H__
+#endif  // __STREAMHANDLERPORTABLEMAP_H__

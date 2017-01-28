@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -27,8 +27,7 @@
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerPixel.h"
 
-PlaYUVerPixel::PlaYUVerPixel() :
-        m_iColorSpace( COLOR_INVALID )
+PlaYUVerPixel::PlaYUVerPixel() : m_iColorSpace( COLOR_INVALID )
 {
   m_iColorSpace = COLOR_INVALID;
   PixelComponents[0] = 0;
@@ -108,7 +107,7 @@ Pel& PlaYUVerPixel::B()
 }
 
 Pel PlaYUVerPixel::operator[]( const Int& channel ) const
-    {
+{
   return PixelComponents[channel];
 }
 Pel& PlaYUVerPixel::operator[]( const Int& channel )
@@ -158,4 +157,3 @@ PlaYUVerPixel PlaYUVerPixel::ConvertPixel( ColorSpace eOutputSpace )
   }
   return outPixel;
 }
-

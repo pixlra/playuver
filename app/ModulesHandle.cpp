@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -32,11 +32,8 @@
 #include "ModulesHandleOptDialog.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
-ModulesHandle::ModulesHandle( QWidget* parent, PlaYUVerSubWindowHandle *windowManager, VideoHandle *moduleVideo ) :
-        QWidget( parent ),
-        m_pcParent( parent ),
-        m_pcMainWindowManager( windowManager ),
-        m_appModuleVideo( moduleVideo )
+ModulesHandle::ModulesHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManager, VideoHandle* moduleVideo )
+    : QWidget( parent ), m_pcParent( parent ), m_pcMainWindowManager( windowManager ), m_appModuleVideo( moduleVideo )
 {
   setParent( m_pcParent );
 }
@@ -50,7 +47,7 @@ Void ModulesHandle::createActions()
   m_arrayActions.resize( MODULES_TOTAL_ACT );
 
   m_pcActionMapper = new QSignalMapper( this );
-  connect( m_pcActionMapper, SIGNAL( mapped(int) ), this, SLOT( processOpt(int) ) );
+  connect( m_pcActionMapper, SIGNAL( mapped( int ) ), this, SLOT( processOpt( int ) ) );
 
   //  m_arrayActions[FORCE_PLAYING_REFRESH_ACT] = new QAction( "Refresh while playing", parent() );
   //  m_arrayActions[FORCE_PLAYING_REFRESH_ACT]->setStatusTip( "Force module refreshing while playing" );
@@ -77,9 +74,9 @@ Void ModulesHandle::createActions()
   connect( m_arrayActions[DISABLE_ALL_ACT], SIGNAL( triggered() ), this, SLOT( destroyAllModulesIf() ) );
 
   m_arrayActions[FORCE_NEW_WINDOW_ACT] = new QAction( "Use New Window", parent() );
-  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setStatusTip( "Show module result in a new window. Some modules already force this feature" );
+  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setStatusTip(
+      "Show module result in a new window. Some modules already force this feature" );
   m_arrayActions[FORCE_NEW_WINDOW_ACT]->setCheckable( true );
-
 }
 
 QMenu* ModulesHandle::createMenu()
@@ -155,7 +152,7 @@ Void ModulesHandle::buildMenu()
 
 Void ModulesHandle::updateMenus()
 {
-  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
+  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
   Bool hasSubWindow = pcSubWindow ? true : false;
   QAction* currModuleAction;
 
@@ -209,7 +206,7 @@ Void ModulesHandle::writeSettings()
 
 Void ModulesHandle::processOpt( Int index )
 {
-  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
+  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
   if( pcSubWindow )
   {
     PlaYUVerAppModuleIf* pcCurrentModule = pcSubWindow->getDisplayModule();
@@ -218,16 +215,16 @@ Void ModulesHandle::processOpt( Int index )
       PlaYUVerAppModuleIf* pcCurrModule = pcCurrentModule;
       switch( index )
       {
-      case INVALID_OPT:
-        break;
-      case SWAP_FRAMES_ACT:
-        swapModulesWindowsIf( pcCurrModule );
-        break;
-      case APPLY_ALL_ACT:
-        applyAllModuleIf( pcCurrModule );
-        break;
-      default:
-        Q_ASSERT( 0 );
+        case INVALID_OPT:
+          break;
+        case SWAP_FRAMES_ACT:
+          swapModulesWindowsIf( pcCurrModule );
+          break;
+        case APPLY_ALL_ACT:
+          applyAllModuleIf( pcCurrModule );
+          break;
+        default:
+          Q_ASSERT( 0 );
       }
     }
     emit changed();
@@ -241,10 +238,9 @@ Void ModulesHandle::loadExternalModule()
   QStringList formatsList;
   formatsList << "Shared Libraries (*.so)";
   QStringList filter;
-  filter << supported
-         << formatsList
-         << tr( "All Files (*)" );
-  QStringList fileNames = QFileDialog::getOpenFileNames( m_pcParent, tr( "Open File" ), QString(), filter.join( ";;" ) );
+  filter << supported << formatsList << tr( "All Files (*)" );
+  QStringList fileNames =
+      QFileDialog::getOpenFileNames( m_pcParent, tr( "Open File" ), QString(), filter.join( ";;" ) );
 
   for( Int i = 0; i < fileNames.size(); i++ )
   {
@@ -256,11 +252,11 @@ Void ModulesHandle::loadExternalModule()
 
 Void ModulesHandle::activateModule()
 {
-  QAction *pcAction = qobject_cast<QAction *>( sender() );
+  QAction* pcAction = qobject_cast<QAction*>( sender() );
   Qt::KeyboardModifiers keyModifiers = QApplication::keyboardModifiers();
   Bool bTmpForceNewWindow = false;
 
-  VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
+  VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
   if( !pcVideoSubWindow )
   {
     return;
@@ -272,7 +268,8 @@ Void ModulesHandle::activateModule()
   }
 
   QString ModuleIfName = pcAction->data().toString();
-  PlaYUVerModuleIf* pcCurrModuleIf = PlaYUVerModuleFactory::Get()->CreateModule( ModuleIfName.toLocal8Bit().constData() );
+  PlaYUVerModuleIf* pcCurrModuleIf =
+      PlaYUVerModuleFactory::Get()->CreateModule( ModuleIfName.toLocal8Bit().constData() );
   PlaYUVerAppModuleIf* pcCurrAppModuleIf = new PlaYUVerAppModuleIf( this, pcAction, pcCurrModuleIf );
 
   QList<VideoSubWindow*> videoSubWindowList;
@@ -286,10 +283,11 @@ Void ModulesHandle::activateModule()
       minNumFrames = 0;
       maxNumFrames = 255;
     }
-    DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMainWindowManager, SubWindowAbstract::VIDEO_SUBWINDOW, minNumFrames, maxNumFrames );
+    DialogSubWindowSelector dialogWindowsSelection( m_pcParent, m_pcMainWindowManager,
+                                                    SubWindowAbstract::VIDEO_SUBWINDOW, minNumFrames, maxNumFrames );
     QList<SubWindowAbstract*> windowsList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
 
-    if( windowsList.size() == minNumFrames &&  windowsList.size() == maxNumFrames  )
+    if( windowsList.size() == minNumFrames && windowsList.size() == maxNumFrames )
     {
       for( Int i = 0; i < windowsList.size(); i++ )
       {
@@ -311,7 +309,7 @@ Void ModulesHandle::activateModule()
       }
       if( dialogWindowsSelection.exec() == QDialog::Accepted )
       {
-        VideoSubWindow *videoSubWindow;
+        VideoSubWindow* videoSubWindow;
         QList<SubWindowAbstract*> subWindowList = dialogWindowsSelection.getSelectedWindows();
         for( Int i = 0; i < subWindowList.size(); i++ )
         {
@@ -342,7 +340,8 @@ Void ModulesHandle::activateModule()
 
   if( videoSubWindowList.size() == 0 )
   {
-    qobject_cast<PlaYUVerApp*>( m_pcParent )->printMessage( "Error! There is no windows to apply the module", LOG_ERROR );
+    qobject_cast<PlaYUVerApp*>( m_pcParent )
+        ->printMessage( "Error! There is no windows to apply the module", LOG_ERROR );
     destroyModuleIf( pcCurrAppModuleIf );
     return;
   }
@@ -370,16 +369,19 @@ Void ModulesHandle::activateModule()
   VideoSubWindow* pcModuleSubWindow = NULL;
   if( pcCurrAppModuleIf->m_pcModule->m_iModuleType == FRAME_PROCESSING_MODULE )
   {
-    if( ( pcCurrAppModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
+    if( ( pcCurrAppModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) ||
+        bShowModulesNewWindow )
     {
       pcModuleSubWindow = new VideoSubWindow( VideoSubWindow::MODULE_SUBWINDOW );
       windowName.append( QStringLiteral( "Module " ) );
       windowName.append( pcCurrAppModuleIf->m_pcModule->m_pchModuleName );
 
-      connect( pcModuleSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo, SLOT( updateSelectionArea( QRect ) ) );
+      connect( pcModuleSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo,
+               SLOT( updateSelectionArea( QRect ) ) );
       connect( pcModuleSubWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo,
-          SLOT( zoomToFactorAll( double, QPoint ) ) );
-      connect( pcModuleSubWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo, SLOT( moveAllScrollBars( const QPoint ) ) );
+               SLOT( zoomToFactorAll( double, QPoint ) ) );
+      connect( pcModuleSubWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo,
+               SLOT( moveAllScrollBars( const QPoint ) ) );
 
       pcCurrAppModuleIf->m_pcDisplaySubWindow = pcModuleSubWindow;
     }
@@ -395,7 +397,8 @@ Void ModulesHandle::activateModule()
     pcCurrAppModuleIf->m_pcDockWidget->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable );
     pcCurrAppModuleIf->m_pcDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
     pcCurrAppModuleIf->m_pcDockWidget->setWidget( pcCurrAppModuleIf->m_pcModuleDock );
-    qobject_cast<QMainWindow*>( m_pcParent )->addDockWidget( Qt::RightDockWidgetArea, pcCurrAppModuleIf->m_pcDockWidget );
+    qobject_cast<QMainWindow*>( m_pcParent )
+        ->addDockWidget( Qt::RightDockWidgetArea, pcCurrAppModuleIf->m_pcDockWidget );
   }
 
   // Associate module with subwindows
@@ -459,7 +462,7 @@ Void ModulesHandle::activateModule()
   emit changed();
 }
 
-Void ModulesHandle::destroyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
+Void ModulesHandle::destroyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf )
 {
   if( pcCurrModuleIf )
   {
@@ -469,7 +472,7 @@ Void ModulesHandle::destroyModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
 
 Void ModulesHandle::destroyWindowModules()
 {
-  VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow *>( m_pcMainWindowManager->activeSubWindow() );
+  VideoSubWindow* pcVideoSubWindow = qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
   if( pcVideoSubWindow )
   {
     pcVideoSubWindow->disableModule();
@@ -494,7 +497,7 @@ Void ModulesHandle::applyModuleIf( QList<PlaYUVerAppModuleIf*> pcCurrModuleIfLis
   }
 }
 
-Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
+Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf )
 {
   if( pcCurrModuleIf )
   {
@@ -521,9 +524,7 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
       supported.append( " )" );
 
       QStringList filter;
-      filter << supported
-             << formatsList
-             << tr( "All Files (*)" );
+      filter << supported << formatsList << tr( "All Files (*)" );
 
       QString fileName = QFileDialog::getSaveFileName( m_pcParent, tr( "Open File" ), QString(), filter.join( ";;" ) );
 
@@ -534,7 +535,8 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
       FrameRate = pcCurrModuleIf->m_pcSubWindow[0]->getInputStream()->getFrameRate();
 
       pcCurrModuleIf->m_pcModuleStream = new PlaYUVerStream;
-      if( !pcCurrModuleIf->m_pcModuleStream->open( fileName.toStdString(), Width, Height, InputFormat, BitsPixel, PLAYUVER_LITTLE_ENDIAN, FrameRate, false ) )
+      if( !pcCurrModuleIf->m_pcModuleStream->open( fileName.toStdString(), Width, Height, InputFormat, BitsPixel,
+                                                   PLAYUVER_LITTLE_ENDIAN, FrameRate, false ) )
       {
         delete pcCurrModuleIf->m_pcModuleStream;
         pcCurrModuleIf->m_pcModuleStream = NULL;
@@ -574,7 +576,7 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   }
 }
 
-Void ModulesHandle::swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
+Void ModulesHandle::swapModulesWindowsIf( PlaYUVerAppModuleIf* pcCurrModuleIf )
 {
   if( pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames == MODULE_REQUIRES_TWO_FRAMES )
   {
@@ -585,16 +587,15 @@ Void ModulesHandle::swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf )
   }
 }
 
-Void ModulesHandle::customEvent( QEvent *event )
+Void ModulesHandle::customEvent( QEvent* event )
 {
   if( !event )
   {
     return;
   }
-  PlaYUVerAppModuleIf::EventData *eventData = ( PlaYUVerAppModuleIf::EventData* )event;
+  PlaYUVerAppModuleIf::EventData* eventData = (PlaYUVerAppModuleIf::EventData*)event;
   if( eventData->m_bSuccess )
   {
     eventData->m_pcModule->show();
   }
 }
-

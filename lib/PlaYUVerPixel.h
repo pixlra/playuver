@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -31,7 +31,7 @@
 #include <vector>
 #include "PlaYUVerDefs.h"
 
-static inline Void YuvToRgb( const Int &iY, const Int &iU, const Int &iV, Int &iR, Int &iG, Int &iB )
+static inline Void YuvToRgb( const Int& iY, const Int& iU, const Int& iV, Int& iR, Int& iG, Int& iB )
 {
   iR = iY + ( ( 1436 * ( iV - 128 ) ) >> 10 );
   iG = iY - ( ( 352 * ( iU - 128 ) + 731 * ( iV - 128 ) ) >> 10 );
@@ -41,7 +41,7 @@ static inline Void YuvToRgb( const Int &iY, const Int &iU, const Int &iV, Int &i
   iB = iB < 0 ? 0 : iB > 255 ? 255 : iB;
 }
 
-static inline Void rgbToYuv( const Int& iR, const Int& iG, const Int& iB, Int &iY, Int &iU, Int &iV )
+static inline Void rgbToYuv( const Int& iR, const Int& iG, const Int& iB, Int& iY, Int& iU, Int& iV )
 {
   iY = ( 299 * iR + 587 * iG + 114 * iB + 500 ) / 1000;
   iU = ( 1000 * ( iB - iY ) + 226816 ) / 1772;
@@ -55,8 +55,7 @@ static inline Void rgbToYuv( const Int& iR, const Int& iG, const Int& iB, Int &i
  */
 class PlaYUVerPixel
 {
-public:
-
+ public:
   static const UInt MAX_NUMBER_COMPONENTS = 5;
 
   /** ColorSpace list
@@ -65,11 +64,11 @@ public:
   enum ColorSpace
   {
     COLOR_INVALID = -1,  //!< Invalid
-    COLOR_YUV = 0,      //!< YUV
-    COLOR_RGB = 1,      //!< RGB
-    COLOR_GRAY = 2,     //!< Grayscale
-    COLOR_ARGB = 3,     //!< RGB + Alpha
-    COLOR_MAX = 255,    //!< Accouunt for future formats
+    COLOR_YUV = 0,       //!< YUV
+    COLOR_RGB = 1,       //!< RGB
+    COLOR_GRAY = 2,      //!< Grayscale
+    COLOR_ARGB = 3,      //!< RGB + Alpha
+    COLOR_MAX = 255,     //!< Accouunt for future formats
   };
 
   PlaYUVerPixel();
@@ -110,9 +109,9 @@ public:
    */
   PlaYUVerPixel ConvertPixel( ColorSpace eOutputSpace );
 
-private:
+ private:
   Int m_iColorSpace;
   Pel PixelComponents[MAX_NUMBER_COMPONENTS];
 };
 
-#endif // __PLAYUVERPIXEL_H__
+#endif  // __PLAYUVERPIXEL_H__

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -24,18 +24,17 @@
 
 #include "LumaAverage.h"
 
-
 LumaAverage::LumaAverage()
 {
   /* Module Definition */
-  m_iModuleType = FRAME_MEASUREMENT_MODULE;                       // Apply module to the frames or to the whole sequence.
-                                                                  // Currently only support for frame
-  m_pchModuleCategory = "Measurements";                           // Category (sub-menu)
-  m_pchModuleName = "LumaAverage";                                // Name
-  m_pchModuleTooltip = "Measure the average of luma component";   // Description
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;                 // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
-  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;               // Module requirements (check PlaYUVerModulesIf.h).
-                                                                  // Several requirements should be "or" between each others.
+  m_iModuleType = FRAME_MEASUREMENT_MODULE;                      // Apply module to the frames or to the whole sequence.
+                                                                 // Currently only support for frame
+  m_pchModuleCategory = "Measurements";                          // Category (sub-menu)
+  m_pchModuleName = "LumaAverage";                               // Name
+  m_pchModuleTooltip = "Measure the average of luma component";  // Description
+  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;    // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
+  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;  // Module requirements (check PlaYUVerModulesIf.h).
+                                                     // Several requirements should be "or" between each others.
 }
 
 Void LumaAverage::create( PlaYUVerFrame* frame )
@@ -57,6 +56,4 @@ Double LumaAverage::measure( PlaYUVerFrame* frame )
 
 Void LumaAverage::destroy()
 {
-
 }
-

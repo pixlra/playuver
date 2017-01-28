@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -31,31 +31,26 @@
 // PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-
-class DisparityStereoBM: public PlaYUVerModuleIf
+class DisparityStereoBM : public PlaYUVerModuleIf
 {
-REGISTER_CLASS_FACTORY( DisparityStereoBM )
+  REGISTER_CLASS_FACTORY( DisparityStereoBM )
 
-private:
+ private:
   PlaYUVerFrame* m_pcDisparityFrame;
   Int m_uiNumberOfDisparities;
   UInt m_uiBlockSize;
-  #if( CV_MAJOR_VERSION == 2)
+#if( CV_MAJOR_VERSION == 2 )
   cv::StereoBM m_cStereoBM;
 #else
   cv::Ptr<cv::StereoBM> m_cStereoBM;
-  #endif
+#endif
 
-public:
+ public:
   DisparityStereoBM();
-  virtual ~DisparityStereoBM()
-  {
-  }
-
+  virtual ~DisparityStereoBM() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Void destroy();
 };
 
-#endif // __DISPARITYSTEREOBM_H__
-
+#endif  // __DISPARITYSTEREOBM_H__

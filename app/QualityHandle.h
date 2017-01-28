@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -39,11 +39,11 @@
 class PlaYUVerSubWindowHandle;
 class VideoSubWindow;
 
-class QualityHandle: public QWidget
+class QualityHandle : public QWidget
 {
-Q_OBJECT
-  public:
-  QualityHandle( QWidget*, PlaYUVerSubWindowHandle * );
+  Q_OBJECT
+ public:
+  QualityHandle( QWidget*, PlaYUVerSubWindowHandle* );
   ~QualityHandle();
 
   Void createActions();
@@ -56,7 +56,7 @@ Q_OBJECT
 
   Void update( VideoSubWindow* currSubWindow );
 
-private:
+ private:
   QWidget* m_pcParet;
   PlaYUVerSubWindowHandle* m_pcMainWindowManager;
 
@@ -81,14 +81,14 @@ private:
   QFuture<Void> m_cMeasurementResult;
   Void measureQuality( QVector<VideoSubWindow*> apcWindowList );
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void changed();
 
-private Q_SLOTS:
+ private Q_SLOTS:
   void slotQualityMetricChanged( int );
   void slotSelectCurrentAsReference();
   void slotPlotQualitySingle();
   void slotPlotQualitySeveral();
 };
 
-#endif // __QUALITYMEASUREMENTSIDEBAR_H__
+#endif  // __QUALITYMEASUREMENTSIDEBAR_H__

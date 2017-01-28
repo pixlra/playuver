@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -32,7 +32,6 @@
 #include "lib/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
-
 PlaYUVerToolsCmdParser::PlaYUVerToolsCmdParser()
 {
   m_uiLogLevel = 0;
@@ -44,10 +43,9 @@ PlaYUVerToolsCmdParser::PlaYUVerToolsCmdParser()
 
 PlaYUVerToolsCmdParser::~PlaYUVerToolsCmdParser()
 {
-
 }
 
-Void PlaYUVerToolsCmdParser::log( UInt level, const char *fmt, ... )
+Void PlaYUVerToolsCmdParser::log( UInt level, const char* fmt, ... )
 {
   if( level >= m_uiLogLevel )
   {
@@ -58,22 +56,21 @@ Void PlaYUVerToolsCmdParser::log( UInt level, const char *fmt, ... )
   }
 }
 
-Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char *argv[] )
+Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char* argv[] )
 {
   Int iRet = 0;
 
-  m_cOptions.addOptions()/**/
-  ( "quiet,q", m_bQuiet, "disable verbose" )
-  ( "input,i", m_apcInputs, "input file" ) /**/
-  ( "output,o", m_strOutput, "output file" ) /**/
-  ( "size,s", m_strResolution, "size (WxH)" ) /**/
-  ( "pel_fmt,p", m_strPelFmt, "pixel format" ) /**/
-  ( "bits_pel", m_uiBitsPerPixel, "bits per pixel" ) /**/
-  ( "endianness", m_strEndianness, "File endianness (big, little)" ) /**/
-  ( "frames,f", m_iFrames, "number of frames to parse" )/**/
-  ( "quality", m_strQualityMetric, "select a quality metric" ) /**/
-  ( "module", m_strModule, "select a module (use internal name)" ) /**/
-  ( "save", "save a specific frame" );
+  m_cOptions.addOptions()                                                                /**/
+      ( "quiet,q", m_bQuiet, "disable verbose" )( "input,i", m_apcInputs, "input file" ) /**/
+      ( "output,o", m_strOutput, "output file" )                                         /**/
+      ( "size,s", m_strResolution, "size (WxH)" )                                        /**/
+      ( "pel_fmt,p", m_strPelFmt, "pixel format" )                                       /**/
+      ( "bits_pel", m_uiBitsPerPixel, "bits per pixel" )                                 /**/
+      ( "endianness", m_strEndianness, "File endianness (big, little)" )                 /**/
+      ( "frames,f", m_iFrames, "number of frames to parse" )                             /**/
+      ( "quality", m_strQualityMetric, "select a quality metric" )                       /**/
+      ( "module", m_strModule, "select a module (use internal name)" )                   /**/
+      ( "save", "save a specific frame" );
 
   if( !m_cOptions.parse( argc, argv ) )
   {
@@ -120,4 +117,3 @@ Void PlaYUVerToolsCmdParser::listModuleHelp()
     pcCurrModuleIf->m_cModuleOptions.doHelp( std::cout );
   }
 }
-

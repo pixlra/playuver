@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -36,16 +36,17 @@ class OpionConfiguration;
 /**
  *
  */
-class ModulesHandleOptDialog: public QDialog
+class ModulesHandleOptDialog : public QDialog
 {
-Q_OBJECT
+  Q_OBJECT
 
-public:
-  ModulesHandleOptDialog( QWidget *parent, PlaYUVerAppModuleIf *pcCurrModuleIf );
+ public:
+  ModulesHandleOptDialog( QWidget* parent, PlaYUVerAppModuleIf* pcCurrModuleIf );
   Int runConfiguration();
-  private:
-  PlaYUVerAppModuleIf *m_pcCurrModuleIf;
+
+ private:
+  PlaYUVerAppModuleIf* m_pcCurrModuleIf;
   QVector<OpionConfiguration*> m_apcOptionList;
 };
 
-#endif // __MODULEHANDLEOPTDIALOG_H__
+#endif  // __MODULEHANDLEOPTDIALOG_H__

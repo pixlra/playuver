@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2016  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -29,7 +29,6 @@
 #include "LibMemory.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"
-
 
 Bool StreamHandlerRaw::openHandler( String strFilename, Bool bInput )
 {
@@ -78,7 +77,7 @@ Bool StreamHandlerRaw::seek( UInt64 iFrameNum )
 
 Bool StreamHandlerRaw::read( PlaYUVerFrame* pcFrame )
 {
-  UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof(Byte), m_uiNBytesPerFrame, m_pFile );
+  UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
   pcFrame->frameFromBuffer( m_pStreamBuffer, m_iEndianness );
@@ -88,9 +87,8 @@ Bool StreamHandlerRaw::read( PlaYUVerFrame* pcFrame )
 Bool StreamHandlerRaw::write( PlaYUVerFrame* pcFrame )
 {
   pcFrame->frameToBuffer( m_pStreamBuffer, m_iEndianness );
-  UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof(Byte), m_uiNBytesPerFrame, m_pFile );
+  UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
   return true;
 }
-

@@ -183,6 +183,59 @@ Int PlaYUVerTools::Open( Int argc, Char* argv[] )
     log( LOG_INFO, "PlaYUVer Save Frame\n" );
   }
 
+  if( Opts().hasOpt( "rate-reduction" ) )
+  {
+    if( m_apcInputStreams.size() == 0 )
+    {
+      log( LOG_ERROR, "Invalid number of input streams! " );
+      return 2;
+    }
+    Int64 currFrames = 0;
+    Int64 numberOfFrames = LONG_MAX;
+    for( UInt i = 0; i < m_apcInputStreams.size(); i++ )
+    {
+      currFrames = m_apcInputStreams[i]->getFrameNum();
+      if( currFrames < numberOfFrames )
+        numberOfFrames = currFrames;
+    }
+    if( m_iRateReductionFactor <= 0 )
+    {
+      log( LOG_ERROR, "Invalid frame rate reduction value!" );
+      return 2;
+    }
+
+    if( Opts().hasOpt( "output" ) )
+      m_pcOutputFileNames.push_back( m_strOutput );
+
+    PlaYUVerFrame* pcInputFrame = m_apcInputStreams[0]->getCurrFrame();
+    PlaYUVerStream* pcOutputStream = new PlaYUVerStream;
+    try
+    {
+      pcOutputStream->open( m_pcOutputFileNames[0], pcInputFrame->getWidth(), pcInputFrame->getHeight(),
+                            pcInputFrame->getPelFormat(), pcInputFrame->getBitsPel(), PLAYUVER_LITTLE_ENDIAN, 1,
+                            false );
+    }
+    catch( const char* msg )
+    {
+      log( LOG_ERROR, "Cannot open input stream %s with the following error %s!\n", m_pcOutputFileNames[0].c_str(),
+           msg );
+      delete pcOutputStream;
+      pcOutputStream = NULL;
+      return 2;
+    }
+    m_apcOutputStreams.push_back( pcOutputStream );
+
+    if( m_apcOutputStreams.size() != m_apcInputStreams.size() )
+    {
+      log( LOG_ERROR, "Invalid number of outputs! Each input must have an output filename. " );
+      return 2;
+    }
+
+    m_uiOperation = RATE_REDUCTION_OPERATION;
+    m_fpProcess = &PlaYUVerTools::RateReductionOperation;
+    log( LOG_INFO, "PlaYUVer Frame Rate Reduction\n" );
+  }
+
   /**
    * Check Quality operation
    */
@@ -340,6 +393,27 @@ Int PlaYUVerTools::SaveOperation()
       return 2;
     }
     m_apcInputStreams[s]->saveFrame( m_pcOutputFileNames[s] );
+  }
+  return 0;
+}
+
+Int PlaYUVerTools::RateReductionOperation()
+{
+  Bool abEOF;
+  log( LOG_INFO, "\n Reducing frame rate by a factor of %d ... ", m_iRateReductionFactor );
+  for( UInt frame = 0; frame < m_uiNumberOfFrames; frame++ )
+  {
+    log( LOG_INFO, "\n Reading frame %d ... ", frame );
+    if( ( frame % m_iRateReductionFactor ) == 0 )
+    {
+      log( LOG_INFO, "Writing", frame );
+      m_apcOutputStreams[0]->writeFrame( m_apcInputStreams[0]->getCurrFrame() );
+    }
+    abEOF = m_apcInputStreams[0]->setNextFrame();
+    if( !abEOF )
+    {
+      m_apcInputStreams[0]->readFrame();
+    }
   }
   return 0;
 }

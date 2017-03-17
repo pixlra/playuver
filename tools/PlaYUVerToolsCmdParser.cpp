@@ -70,7 +70,8 @@ Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char* argv[] )
       ( "frames,f", m_iFrames, "number of frames to parse" )                             /**/
       ( "quality", m_strQualityMetric, "select a quality metric" )                       /**/
       ( "module", m_strModule, "select a module (use internal name)" )                   /**/
-      ( "save", "save a specific frame" );
+      ( "save", "save a specific frame" )                                                /**/
+      ( "rate-reduction", m_iRateReductionFactor, "reduce the frame rate" );             /**/
 
   if( !m_cOptions.parse( argc, argv ) )
   {

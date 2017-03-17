@@ -54,6 +54,7 @@ class PlaYUVerTools : public PlaYUVerToolsCmdParser
   {
     INVALID_OPERATION,
     SAVE_OPERATION,
+    RATE_REDUCTION_OPERATION,
     QUALITY_OPERATION,
     MODULE_OPERATION,
   };
@@ -71,6 +72,8 @@ class PlaYUVerTools : public PlaYUVerToolsCmdParser
   Int64 m_iFrameNum;
   std::vector<String> m_pcOutputFileNames;
   Int SaveOperation();
+
+  Int RateReductionOperation();
 
   Int m_uiQualityMetric;
   Int QualityOperation();

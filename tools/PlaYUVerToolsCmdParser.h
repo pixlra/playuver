@@ -72,6 +72,7 @@ class PlaYUVerToolsCmdParser
   String m_strOutput;
   Int64 m_iFrames;
 
+  Int m_iRateReductionFactor;
   String m_strQualityMetric;
   String m_strModule;
 

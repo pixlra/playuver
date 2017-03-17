@@ -1,4 +1,4 @@
-PlaYUVer - Enhanced raw video player
+PlaYUVer - Enhanced Raw Video Player
 ========
 
 

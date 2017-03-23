@@ -97,9 +97,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
     return false;
   }
 
-  AVMediaType mediaType;
-
-  int stream_idx = av_find_best_stream( m_cFmtCtx, mediaType, -1, -1, NULL, 0 );
+  int stream_idx = av_find_best_stream( m_cFmtCtx, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0 );
   if( stream_idx < 0 )
   {
     return false;
@@ -116,7 +114,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   AVCodec* dec = avcodec_find_decoder( codec_param->codec_id );
   if( !dec )
   {
-    printf( "Failed to find %s codec\n", av_get_media_type_string( mediaType ) );
+    printf( "Failed to find %s codec\n", av_get_media_type_string( AVMEDIA_TYPE_VIDEO ) );
     return false;
   }
 
@@ -124,7 +122,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 
   if( avcodec_open2( m_cCodedCtx, dec, NULL ) < 0 )
   {
-    printf( "Failed to open %s codec\n", av_get_media_type_string( mediaType ) );
+    printf( "Failed to open %s codec\n", av_get_media_type_string( AVMEDIA_TYPE_VIDEO ) );
     return false;
   }
 

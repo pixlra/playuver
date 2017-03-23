@@ -65,7 +65,7 @@ AboutDialog::AboutDialog( QWidget* parent ) : QDialog( parent )
   QLabel* labelFeatures = new QLabel( featuresList );
 
   QLabel* labelCopyright =
-      new QLabel( QStringLiteral( "Copyright © 2014–2015 Luis Lucas and Joao Carreira" ) );
+      new QLabel( QStringLiteral( "Copyright © 2014–2017 Luis Lucas and Joao Carreira" ) );
 
   QWidget* topWidget = new QWidget;
   QVBoxLayout* topLayout = new QVBoxLayout;

@@ -37,12 +37,12 @@
 #ifndef __SUBWINDOWABSTRACT_H__
 #define __SUBWINDOWABSTRACT_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
-#include <QWidget>
-#include <QString>
+#include "config.h"
 #include <QPoint>
 #include <QSize>
+#include <QString>
+#include <QWidget>
 
 class QHBoxLayout;
 class QFocusEvent;
@@ -89,7 +89,8 @@ class SubWindowAbstract : public QWidget
    */
   virtual Void zoomToFit() = 0;
   /**
-   * Scale the image (zoomed in or out) to speficied absolute zoom value (1.0 = original size).
+   * Scale the image (zoomed in or out) to speficied absolute zoom value (1.0 =
+   * original size).
    */
   virtual Void zoomToFactor( Double factor, QPoint center = QPoint() ) = 0;
   /**
@@ -145,7 +146,8 @@ class SubWindowAbstract : public QWidget
    */
   void zoomFactorChanged_SWindow( const double, const QPoint );
   /**
-   * Notify that scrollbar position was changed by internal event (e.g. by mouse panning )
+   * Notify that scrollbar position was changed by internal event (e.g. by mouse
+   * panning )
    */
   void scrollBarMoved_SWindow( const QPoint );
   /**

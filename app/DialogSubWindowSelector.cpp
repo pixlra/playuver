@@ -22,22 +22,22 @@
  * \brief    Dialog box to select sub windows
  */
 
+#include "DialogSubWindowSelector.h"
+#include "PlaYUVerSubWindowHandle.h"
+#include "VideoSubWindow.h"
 #include <QCheckBox>
 #include <QGroupBox>
-#include "PlaYUVerSubWindowHandle.h"
-#include "DialogSubWindowSelector.h"
-#include "VideoSubWindow.h"
 
 DialogSubWindowSelector::DialogSubWindowSelector( QWidget* parent,
                                                   PlaYUVerSubWindowHandle* windowManager,
                                                   UInt uiCategory,
                                                   Int minWindowsSelected,
                                                   Int maxWindowsSelected )
-    : QDialog( parent ),
-      m_uiCategory( uiCategory ),
-      m_iMinSelectedWindows( minWindowsSelected ),
-      m_iMaxSlectedWindows( maxWindowsSelected ),
-      m_pcMainWindowManager( windowManager )
+    : QDialog( parent )
+    , m_uiCategory( uiCategory )
+    , m_iMinSelectedWindows( minWindowsSelected )
+    , m_iMaxSlectedWindows( maxWindowsSelected )
+    , m_pcMainWindowManager( windowManager )
 {
   QSize windowSize( 350, 80 );
   resize( windowSize );

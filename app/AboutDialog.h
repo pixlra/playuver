@@ -20,7 +20,8 @@
 /**
  * \file     AboutDialog.h
  * \brief    About Dialog
- *           Based on the work of Glad Deschrijver <glad.deschrijver@gmail.com> in KTikZ project
+ *           Based on the work of Glad Deschrijver <glad.deschrijver@gmail.com>
+ * in KTikZ project
  */
 
 #ifndef __ABOUTDIALOG_H__

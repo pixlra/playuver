@@ -26,16 +26,18 @@
 #include "VideoSubWindow.h"
 #include "VideoSubWindow.h"
 
-PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module )
-    : m_bIsRunning( false ),
-      m_pcModuleAction( action ),
-      m_pcModule( module ),
-      m_pcDisplaySubWindow( NULL ),
-      m_pcDockWidget( NULL ),
-      m_pcModuleDock( NULL ),
-      m_pcModuleStream( NULL ),
-      m_pcProcessedFrame( NULL ),
-      m_dMeasurementResult( 0 )
+PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent,
+                                          QAction* action,
+                                          PlaYUVerModuleIf* module )
+    : m_bIsRunning( false )
+    , m_pcModuleAction( action )
+    , m_pcModule( module )
+    , m_pcDisplaySubWindow( NULL )
+    , m_pcDockWidget( NULL )
+    , m_pcModuleDock( NULL )
+    , m_pcModuleStream( NULL )
+    , m_pcProcessedFrame( NULL )
+    , m_dMeasurementResult( 0 )
 {
   setParent( parent );
   for( Int i = 0; i < MODULE_REQUIRES_MAX_NUM_FRAMES; i++ )

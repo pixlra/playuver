@@ -22,12 +22,12 @@
  * \brief    Handling portable pixmap formats
  */
 
-#include <cstdio>
-#include <cmath>
 #include "StreamHandlerPortableMap.h"
+#include "LibMemory.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"
-#include "LibMemory.h"
+#include <cmath>
+#include <cstdio>
 
 Bool StreamHandlerPortableMap::openHandler( String strFilename, Bool bInput )
 {
@@ -62,7 +62,8 @@ Bool StreamHandlerPortableMap::openHandler( String strFilename, Bool bInput )
         ;
       sscanf( line, "%d", &m_iMaxValue );
       m_uiBitsPerPixel = log( m_iMaxValue + 1 ) / log( 2 );
-      m_iPixelFormat = m_iMagicNumber == 2 || m_iMagicNumber == 5 ? PlaYUVerFrame::GRAY : PlaYUVerFrame::RGB24;
+      m_iPixelFormat =
+          m_iMagicNumber == 2 || m_iMagicNumber == 5 ? PlaYUVerFrame::GRAY : PlaYUVerFrame::RGB24;
     }
   }
   else

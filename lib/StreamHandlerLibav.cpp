@@ -22,17 +22,18 @@
  * \brief    Interface with libav libs
  */
 
-#include <cstdio>
 #include "StreamHandlerLibav.h"
+#include "LibMemory.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"
-#include "LibMemory.h"
+#include <cstdio>
 
 std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Portable Network Graphics", "png" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Joint Photographic Experts Group", "jpg" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Joint Photographic Experts Group",
+                                 "jpg" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows Bitmap", "bmp" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Tagged Image File Format", "tiff" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Audio video interleaved", "avi" );
@@ -77,10 +78,12 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   //     av_dict_set( &format_opts, "video_size", aux_string, 0 );
   //   }
 
-  //   Int ffmpeg_pel_format = g_PlaYUVerPixFmtDescriptorsList[pixel_format].ffmpegPelFormat;
+  //   Int ffmpeg_pel_format =
+  //   g_PlaYUVerPixFmtDescriptorsList[pixel_format].ffmpegPelFormat;
   //   if( ffmpeg_pel_format >= 0 )
   //   {
-  //     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name( AVPixelFormat( ffmpeg_pel_format ) ), 0 );
+  //     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name(
+  //     AVPixelFormat( ffmpeg_pel_format ) ), 0 );
   //   }
 
   /* open input file, and allocate format context */
@@ -200,7 +203,8 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   av_dump_format( m_cFmtCtx, 0, filename, 0 );
   if( !m_cStream )
   {
-    // qDebug( ) << " Could not find audio or video stream in the input, aborting !!!" << endl;
+    // qDebug( ) << " Could not find audio or video stream in the input,
+    // aborting !!!" << endl;
     closeHandler();
     return false;
   }

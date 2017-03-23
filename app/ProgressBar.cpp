@@ -24,10 +24,10 @@
 
 #include "ProgressBar.h"
 #include <QApplication>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QProgressBar>
 #include <QDesktopWidget>
+#include <QLabel>
+#include <QProgressBar>
+#include <QVBoxLayout>
 
 ProgressBar::ProgressBar( QWidget* parent, UInt maxValue )
     : QWidget( parent ), m_uiTotalProgress( maxValue ), m_uiProgress( 0 )

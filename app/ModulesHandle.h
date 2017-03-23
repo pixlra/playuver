@@ -26,8 +26,8 @@
 
 #include "config.h"
 
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 
 #include <QtCore>
 #if( QT_VERSION_PLAYUVER == 5 )
@@ -35,8 +35,8 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
-#include "PlaYUVerAppModuleIf.h"
 #include "PlaYUVerAppDefs.h"
+#include "PlaYUVerAppModuleIf.h"
 #include "lib/PlaYUVerFrame.h"
 
 class VideoHandle;

@@ -25,8 +25,8 @@
 #ifndef __WIDGETFRAMENUMBER_H__
 #define __WIDGETFRAMENUMBER_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
+#include "config.h"
 #include <QtCore>
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>

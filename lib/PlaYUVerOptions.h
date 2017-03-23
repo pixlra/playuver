@@ -51,7 +51,10 @@
 class OptionBase
 {
  public:
-  OptionBase( const String& name, const String& desc ) : arg_count( 0 ), opt_string( name ), opt_desc( desc ) {}
+  OptionBase( const String& name, const String& desc )
+      : arg_count( 0 ), opt_string( name ), opt_desc( desc )
+  {
+  }
   virtual ~OptionBase() {}
   /* parse argument arg, to obtain a value for the option */
   virtual void parse( const String& arg ) = 0;
@@ -125,7 +128,8 @@ class PlaYUVerOptions
    * handle evaluating the option's value.
    */
   //   PlaYUVerOptions&
-  //   operator()( const String& name, OptionFunc::Func *func, const String& desc );
+  //   operator()( const String& name, OptionFunc::Func *func, const String&
+  //   desc );
 
   Bool checkListingOpts();
   Void listModules();

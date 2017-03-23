@@ -26,11 +26,11 @@
 #ifndef __HISTOGRAMWIDGET_H__
 #define __HISTOGRAMWIDGET_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
-#include <QWidget>
-#include <QColor>
+#include "config.h"
 #include "lib/PlaYUVerFrame.h"
+#include <QColor>
+#include <QWidget>
 
 class QEvent;
 

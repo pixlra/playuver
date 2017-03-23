@@ -19,7 +19,8 @@
 
 /**
  * \file     DisparityStereoBM.h
- * \brief    Measure the disparity between two images using the Stereo Var method (OpenCV)
+ * \brief    Measure the disparity between two images using the Stereo Var
+ * method (OpenCV)
  */
 
 #ifndef __DISPARITYSTEREOBM_H__

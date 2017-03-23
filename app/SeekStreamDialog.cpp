@@ -24,11 +24,11 @@
 
 #include "SeekStreamDialog.h"
 #include "lib/PlaYUVerStream.h"
-#include <QWidget>
-#include <QLabel>
-#include <QVector>
 #include <QGridLayout>
+#include <QLabel>
 #include <QSpinBox>
+#include <QVector>
+#include <QWidget>
 
 SeekStreamDialog::SeekStreamDialog( PlaYUVerStream* pcCurrStream, QWidget* parent )
     : QDialog( parent, Qt::Dialog | Qt::WindowTitleHint ), m_iSelectedFrameNum()
@@ -57,7 +57,8 @@ SeekStreamDialog::SeekStreamDialog( PlaYUVerStream* pcCurrStream, QWidget* paren
   QVBoxLayout* verticalLayout = new QVBoxLayout;
   QHBoxLayout* horizontalLayout = new QHBoxLayout;
   horizontalLayout->addWidget( pcLabel );
-  horizontalLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  horizontalLayout->addItem(
+      new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
   horizontalLayout->addWidget( m_spinFrameNum );
   verticalLayout->addLayout( horizontalLayout );
   verticalLayout->addWidget( dialogButtonOkCancel, Qt::AlignRight );

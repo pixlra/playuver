@@ -25,16 +25,16 @@
 #ifndef __VIDEOSUBWINDOW_H__
 #define __VIDEOSUBWINDOW_H__
 
-#include "config.h"
-#include <QFuture>
-#include <QDataStream>
-#include <QVector>
-#include <QString>
-#include <QRect>
 #include "PlaYUVerAppDefs.h"
-#include "lib/PlaYUVerStream.h"
 #include "SubWindowAbstract.h"
 #include "ViewArea.h"
+#include "config.h"
+#include "lib/PlaYUVerStream.h"
+#include <QDataStream>
+#include <QFuture>
+#include <QRect>
+#include <QString>
+#include <QVector>
 
 class QScrollArea;
 

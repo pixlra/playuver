@@ -19,18 +19,26 @@
 
 /**
  * \file     DisparityStereoSGBM.h
- * \brief    Measure the disparity between two images using the SGBM method (OpenCV)
+ * \brief    Measure the disparity between two images using the SGBM method
+ * (OpenCV)
  *  The class implements the modified H. Hirschmuller algorithm
  *  that differs from the original one as follows:
- *  - By default, the algorithm is single-pass, which means that you consider only 5 directions
- *  instead of 8. Set mode=StereoSGBM::MODE_HH in createStereoSGBM to run the full variant of the
+ *  - By default, the algorithm is single-pass, which means that you consider
+ * only 5 directions
+ *  instead of 8. Set mode=StereoSGBM::MODE_HH in createStereoSGBM to run the
+ * full variant of the
  *  algorithm but beware that it may consume a lot of memory.
- *  - The algorithm matches blocks, not individual pixels. Though, setting blockSize=1 reduces the
+ *  - The algorithm matches blocks, not individual pixels. Though, setting
+ * blockSize=1 reduces the
  *  blocks to single pixels.
- *  - Mutual information cost function is not implemented. Instead, a simpler Birchfield-Tomasi
- *  sub-pixel metric from @cite BT98 is used. Though, the color images are supported as well.
- *  - Some pre- and post- processing steps from K. Konolige algorithm StereoBM are included, for
- *  example: pre-filtering (StereoBM::PREFILTER_XSOBEL type) and post-filtering (uniqueness
+ *  - Mutual information cost function is not implemented. Instead, a simpler
+ * Birchfield-Tomasi
+ *  sub-pixel metric from @cite BT98 is used. Though, the color images are
+ * supported as well.
+ *  - Some pre- and post- processing steps from K. Konolige algorithm StereoBM
+ * are included, for
+ *  example: pre-filtering (StereoBM::PREFILTER_XSOBEL type) and post-filtering
+ * (uniqueness
  *  check, quadratic interpolation and speckle filtering).
  */
 

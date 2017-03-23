@@ -25,8 +25,8 @@
 #ifndef __PLAYUVERMDISUBWINDOW_H__
 #define __PLAYUVERMDISUBWINDOW_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
+#include "config.h"
 #include <QMdiSubWindow>
 
 class PlaYUVerMdiSubWindow : public QMdiSubWindow

@@ -25,8 +25,8 @@
 #ifndef __DIALOGSUBWINDOWSELECTOR_H__
 #define __DIALOGSUBWINDOWSELECTOR_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
+#include "config.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )

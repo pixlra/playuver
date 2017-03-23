@@ -1,8 +1,7 @@
 ---
 Language:        Cpp
 # BasedOnStyle:  Chromium
-ColumnLimit:     80
-ColumnLimit:     140
+ColumnLimit:     100
 AccessModifierOffset: -1
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: false
@@ -37,8 +36,10 @@ BraceWrapping:
 BreakBeforeBinaryOperators: None
 #BreakBeforeBraces: Attach
 BreakBeforeBraces: Allman
+#BreakBeforeInheritanceComma: true
 BreakBeforeTernaryOperators: true
-BreakConstructorInitializersBeforeComma: false
+BreakConstructorInitializersBeforeComma: true
+BreakConstructorInitializersBeforeComma: true
 BreakAfterJavaFieldAnnotations: false
 BreakStringLiterals: true
 CommentPragmas:  '^ IWYU pragma:'

@@ -19,7 +19,8 @@
 
 /**
  * \file     DisparityStereoSGBM.cpp
- * \brief    Measure the disparity between two images using the SGBM method (OpenCV)
+ * \brief    Measure the disparity between two images using the SGBM method
+ * (OpenCV)
  */
 
 #include "DisparityStereoSGBM.h"
@@ -31,13 +32,16 @@ DisparityStereoSGBM::DisparityStereoSGBM()
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Stereo";
   m_pchModuleName = "Disparity-SGBM";
-  m_pchModuleTooltip = "Measure the disparity between two images using the Stereo SGBM method (OpenCV)";
+  m_pchModuleTooltip =
+      "Measure the disparity between two images using the "
+      "Stereo SGBM method (OpenCV)";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
-  m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
+  m_uiModuleRequirements =
+      MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions() /**/
-      ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [3]" )( "HHAlgorithm", m_bUseHH,
-                                                                               "Use HH algorithm [false]" );
+      ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [3]" )(
+          "HHAlgorithm", m_bUseHH, "Use HH algorithm [false]" );
 
   m_pcDisparityFrame = NULL;
   m_uiBlockSize = 3;
@@ -47,8 +51,8 @@ DisparityStereoSGBM::DisparityStereoSGBM()
 Bool DisparityStereoSGBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
-  m_pcDisparityFrame =
-      new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+  m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
+                                          PlaYUVerFrame::GRAY );
   if( ( m_uiBlockSize % 2 ) == 0 )
   {
     m_uiBlockSize++;
@@ -67,7 +71,8 @@ Bool DisparityStereoSGBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
   m_cStereoMatch->setSpeckleWindowSize( 100 );
   m_cStereoMatch->setSpeckleRange( 32 );
   m_cStereoMatch->setDisp12MaxDiff( 1 );
-  // m_cStereoMatch->setMode( alg == STEREO_HH ? StereoSGBM::MODE_HH : StereoSGBM::MODE_SGBM );
+  // m_cStereoMatch->setMode( alg == STEREO_HH ? StereoSGBM::MODE_HH :
+  // StereoSGBM::MODE_SGBM );
   m_cStereoMatch->setMode( m_bUseHH ? cv::StereoSGBM::MODE_HH : cv::StereoSGBM::MODE_SGBM );
 #else
   m_cStereoMatch.preFilterCap = 63;

@@ -36,11 +36,11 @@
  * \brief    Options handler
  */
 
-#include "config.h"
 #include "PlaYUVerOptions.h"
+#include "config.h"
 
-#include <sstream>
 #include <cstring>
+#include <sstream>
 
 #include "lib/PlaYUVerModuleIf.h"
 #include "modules/PlaYUVerModuleFactory.h"
@@ -60,7 +60,10 @@ struct ParseFailure : public std::exception
 class BoolOption : public OptionBase
 {
  public:
-  BoolOption( const String& name, const String& desc ) : OptionBase( name, desc ) { is_binary = true; }
+  BoolOption( const String& name, const String& desc ) : OptionBase( name, desc )
+  {
+    is_binary = true;
+  }
   void parse( const String& arg ) { arg_count++; }
 };
 
@@ -101,7 +104,7 @@ inline void StandardOption<T>::parse( const String& arg )
 }
 
 template <>
-inline void StandardOption<std::vector<UInt> >::parse( const String& arg )
+inline void StandardOption<std::vector<UInt>>::parse( const String& arg )
 {
   UInt aux_opt_storage;
   std::istringstream arg_ss( arg, std::istringstream::in );
@@ -119,7 +122,7 @@ inline void StandardOption<std::vector<UInt> >::parse( const String& arg )
 }
 
 template <>
-inline void StandardOption<std::vector<Int> >::parse( const String& arg )
+inline void StandardOption<std::vector<Int>>::parse( const String& arg )
 {
   Int aux_opt_storage;
   std::istringstream arg_ss( arg, std::istringstream::in );
@@ -146,7 +149,7 @@ inline void StandardOption<String>::parse( const String& arg )
 
 /* string vector parsing is specialized */
 template <>
-inline void StandardOption<std::vector<String> >::parse( const String& arg )
+inline void StandardOption<std::vector<String>>::parse( const String& arg )
 {
   opt_storage.push_back( arg );
   arg_count++;
@@ -201,11 +204,21 @@ PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, T& storage, co
   return *this;
 }
 
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, Bool& storage, const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, UInt& storage, const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, Int& storage, const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, Int64& storage, const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, String& storage, const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
+                                                       Bool& storage,
+                                                       const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
+                                                       UInt& storage,
+                                                       const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
+                                                       Int& storage,
+                                                       const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
+                                                       Int64& storage,
+                                                       const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
+                                                       String& storage,
+                                                       const String& desc );
 template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
                                                        std::vector<UInt>& storage,
                                                        const String& desc );
@@ -223,7 +236,8 @@ template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
  * FunctionOption::Func is called.  It is upto this function to correctly
  * handle evaluating the option's value.
  */
-// PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, FunctionOption::Func *func, const String& desc )
+// PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
+// FunctionOption::Func *func, const String& desc )
 // {
 //   addOption( new FunctionOption( name, parent, func, desc ) );
 //   return *this;
@@ -335,7 +349,10 @@ static void setOptions( PlaYUVerOptions::OptionsList& opt_list, const string& va
   }
 }
 
-Bool PlaYUVerOptions::storePair( Bool allow_long, Bool allow_short, const string& name, const string& value )
+Bool PlaYUVerOptions::storePair( Bool allow_long,
+                                 Bool allow_short,
+                                 const string& name,
+                                 const string& value )
 {
   bool found = false;
   PlaYUVerOptions::OptionMap::iterator opt_it;
@@ -646,7 +663,8 @@ Void PlaYUVerOptions::doHelp( ostream& out, UInt columns )
         line << opt_desc.substr( cur_pos );
         break;
       }
-      /* find a suitable point to split text (avoid spliting in middle of word) */
+      /* find a suitable point to split text (avoid spliting in middle of word)
+       */
       size_t split_pos = opt_desc.find_last_of( ' ', cur_pos + desc_width );
       if( split_pos != string::npos )
       {

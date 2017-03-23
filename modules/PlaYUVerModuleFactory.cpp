@@ -22,11 +22,11 @@
  * \brief    PlaYUVer modules factory
  */
 
-#include "config.h"
 #include "PlaYUVerModuleFactory.h"
+#include "config.h"
 
-#include <functional>
 #include <cstring>
+#include <functional>
 #ifdef USE_DYNLOAD
 #include <dlfcn.h>
 #endif

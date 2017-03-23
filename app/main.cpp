@@ -22,12 +22,12 @@
  * \brief    main file
  */
 
+#include "ConfigureFormatDialog.h"
+#include "PlaYUVerApp.h"
+#include "PlaYUVerAppDefs.h"
+#include "VideoSubWindow.h"
 #include "config.h"
 #include <QApplication>
-#include "PlaYUVerAppDefs.h"
-#include "PlaYUVerApp.h"
-#include "VideoSubWindow.h"
-#include "ConfigureFormatDialog.h"
 #ifdef USE_QTDBUS
 #include "PlaYUVerAppAdaptor.h"
 #endif
@@ -74,16 +74,17 @@ int main( int argc, char* argv[] )
     bool foundRunningService = false;
     if( !force_new )
     {
-      QDBusReply<bool> there = sessionBusInterface->isServiceRegistered( PLAYUVER_DBUS_SESSION_NAME );
+      QDBusReply<bool> there =
+          sessionBusInterface->isServiceRegistered( PLAYUVER_DBUS_SESSION_NAME );
       foundRunningService = there.isValid() && there.value();
     }
 
     if( foundRunningService )
     {
       // open given session
-      QDBusMessage m =
-          QDBusMessage::createMethodCall( PLAYUVER_DBUS_SESSION_NAME, QStringLiteral( PLAYUVER_DBUS_PATH ),
-                                          QStringLiteral( PLAYUVER_DBUS_SESSION_NAME ), QStringLiteral( "activate" ) );
+      QDBusMessage m = QDBusMessage::createMethodCall(
+          PLAYUVER_DBUS_SESSION_NAME, QStringLiteral( PLAYUVER_DBUS_PATH ),
+          QStringLiteral( PLAYUVER_DBUS_SESSION_NAME ), QStringLiteral( "activate" ) );
 
       QDBusConnection::sessionBus().call( m );
 
@@ -120,7 +121,8 @@ int main( int argc, char* argv[] )
           }
         }
       }
-      // this will wait until exiting is emitted by the used instance, if wanted...
+      // this will wait until exiting is emitted by the used instance, if
+      // wanted...
       return needToBlock ? application.exec() : 0;
     }
   }
@@ -138,8 +140,9 @@ int main( int argc, char* argv[] )
   }
 
 #ifdef USE_FERVOR
-  FvUpdater::sharedUpdater()->SetFeedURL( "http://192.168.96.201/share/PlaYUVerProject/PlaYUVerUpdate-" UPDATE_CHANNEL
-                                          ".xml" );
+  FvUpdater::sharedUpdater()->SetFeedURL(
+      "http://192.168.96.201/share/PlaYUVerProject/"
+      "PlaYUVerUpdate-" UPDATE_CHANNEL ".xml" );
   FvUpdater::sharedUpdater()->SetDependencies( "ALL" );
 #endif
 

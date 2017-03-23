@@ -29,8 +29,8 @@
 #include <QDBusInterface>
 #include <QDBusMessage>
 #include <QDBusReply>
-#include <QtDBus>
 #include <QtCore>
+#include <QtDBus>
 
 #define PLAYUVER_DBUS_SESSION_NAME "org.pixlra.PlaYUVer.application"
 #define PLAYUVER_DBUS_PATH "/MainApplication"
@@ -68,7 +68,8 @@ class PlaYUVerAppAdaptor : public QDBusAbstractAdaptor
  Q_SIGNALS:
   /**
    * Notify the world that this kate instance is exiting.
-   * All apps should stop using the dbus interface of this instance after this signal got emitted.
+   * All apps should stop using the dbus interface of this instance after this
+   * signal got emitted.
    */
   // void exiting();
   // void documentClosed(const QString &token);

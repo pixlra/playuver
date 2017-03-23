@@ -58,19 +58,25 @@ FilterComponentLuma::FilterComponentLuma()
 {
   /* Module Definition */
   m_iModuleAPI = MODULE_API_2;
-  m_iModuleType = FRAME_PROCESSING_MODULE;              // Apply module to the frames or to the whole sequence.
+  m_iModuleType = FRAME_PROCESSING_MODULE;              // Apply module to the frames or to
+                                                        // the whole sequence.
                                                         // Currently only support for frame
   m_pchModuleCategory = "FilterComponent";              // Category (sub-menu)
   m_pchModuleName = "Luma";                             // Name
   m_pchModuleTooltip = "Filter Y matrix of YUV frame";  // Description
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;    // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
-  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;  // Module requirements (check PlaYUVerModulesIf.h).
-                                                     // Several requirements should be "or" between each others.
+  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;       // Number of Frames required
+                                                        // (ONE_FRAME, TWO_FRAMES,
+                                                        // THREE_FRAMES)
+  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;     // Module requirements
+                                                        // (check
+                                                        // PlaYUVerModulesIf.h).
+  // Several requirements should be "or" between each others.
 }
 
 Bool FilterComponentLuma::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  return createFilter( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), apcFrameList[0]->getBitsPel() );
+  return createFilter( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
+                       apcFrameList[0]->getBitsPel() );
 }
 
 PlaYUVerFrame* FilterComponentLuma::process( std::vector<PlaYUVerFrame*> apcFrameList )

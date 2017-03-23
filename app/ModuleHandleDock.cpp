@@ -22,10 +22,10 @@
  * \brief    Module handle dock
  */
 
-#include <QtGui>
 #include "ModuleHandleDock.h"
-#include "PlaYUVerAppModuleIf.h"
 #include "ModulesHandle.h"
+#include "PlaYUVerAppModuleIf.h"
+#include <QtGui>
 
 ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf )
     : QWidget( parent ), m_pcCurrModuleIf( moduleIf )

@@ -25,13 +25,18 @@
 #ifndef __PLAYUVERPIXEL_H__
 #define __PLAYUVERPIXEL_H__
 
-#include <iostream>
-#include <cstdio>
-#include <cassert>
-#include <vector>
 #include "PlaYUVerDefs.h"
+#include <cassert>
+#include <cstdio>
+#include <iostream>
+#include <vector>
 
-static inline Void YuvToRgb( const Int& iY, const Int& iU, const Int& iV, Int& iR, Int& iG, Int& iB )
+static inline Void YuvToRgb( const Int& iY,
+                             const Int& iU,
+                             const Int& iV,
+                             Int& iR,
+                             Int& iG,
+                             Int& iB )
 {
   iR = iY + ( ( 1436 * ( iV - 128 ) ) >> 10 );
   iG = iY - ( ( 352 * ( iU - 128 ) + 731 * ( iV - 128 ) ) >> 10 );
@@ -41,7 +46,12 @@ static inline Void YuvToRgb( const Int& iY, const Int& iU, const Int& iV, Int& i
   iB = iB < 0 ? 0 : iB > 255 ? 255 : iB;
 }
 
-static inline Void rgbToYuv( const Int& iR, const Int& iG, const Int& iB, Int& iY, Int& iU, Int& iV )
+static inline Void rgbToYuv( const Int& iR,
+                             const Int& iG,
+                             const Int& iB,
+                             Int& iY,
+                             Int& iU,
+                             Int& iV )
 {
   iY = ( 299 * iR + 587 * iG + 114 * iB + 500 ) / 1000;
   iU = ( 1000 * ( iB - iY ) + 226816 ) / 1772;

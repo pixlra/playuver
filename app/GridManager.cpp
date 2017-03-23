@@ -24,13 +24,13 @@
  */
 
 #include <QBitmap>
+#include <QColor>
+#include <QDebug>
 #include <QPainter>
+#include <QPen>
+#include <QPoint>
 #include <QRect>
 #include <QRectF>
-#include <QPoint>
-#include <QColor>
-#include <QPen>
-#include <QDebug>
 
 #include "GridManager.h"
 

@@ -26,15 +26,15 @@
 #ifndef __VIEWAREA_H__
 #define __VIEWAREA_H__
 
-#include "config.h"
+#include "GridManager.h"
 #include "PlaYUVerAppDefs.h"
-#include <QWidget>
-#include <QPixmap>
+#include "config.h"
+#include "lib/PlaYUVerFrame.h"
 #include <QBitmap>
 #include <QColor>
+#include <QPixmap>
 #include <QTimer>
-#include "GridManager.h"
-#include "lib/PlaYUVerFrame.h"
+#include <QWidget>
 
 class PlaYUVerStream;
 
@@ -84,7 +84,8 @@ class ViewArea : public QWidget
   GridManager gridManager() const { return m_grid; }
   QColor maskColor() const { return m_maskColor; }
   Double getZoomFactor() { return m_dZoomFactor; }
-  // Scale function. Return used scale value (it may change when it touches the min or max zoom value)
+  // Scale function. Return used scale value (it may change when it touches the
+  // min or max zoom value)
   Double scaleZoomFactor( Double scale, QPoint center, QSize minimumSize );
 
  Q_SIGNALS:

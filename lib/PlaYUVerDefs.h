@@ -82,10 +82,14 @@ typedef UChar Byte;
 // Limits definition
 // ====================================================================================================================
 
-// #define MAX_UINT                    0xFFFFFFFFU ///< max. value of unsigned 32-bit integer
-// #define MAX_INT                     2147483647  ///< max. value of signed 32-bit integer
-// #define MAX_INT64                   0x7FFFFFFFFFFFFFFFLL  ///< max. value of signed 64-bit integer
-// #define MAX_DOUBLE                  1.7e+308    ///< max. value of double-type value
+// #define MAX_UINT                    0xFFFFFFFFU ///< max. value of unsigned
+// 32-bit integer
+// #define MAX_INT                     2147483647  ///< max. value of signed
+// 32-bit integer
+// #define MAX_INT64                   0x7FFFFFFFFFFFFFFFLL  ///< max. value of
+// signed 64-bit integer
+// #define MAX_DOUBLE                  1.7e+308    ///< max. value of
+// double-type value
 
 // ====================================================================================================================
 // PlaYUVer definitions
@@ -139,7 +143,8 @@ struct PlaYUVerFailure : public std::exception
   String m_class_name;
   String m_error_msg;
   PlaYUVerFailure( String error_msg ) throw() : m_error_msg( error_msg ) {}
-  PlaYUVerFailure( String class_name, String error_msg ) throw() : m_class_name( class_name ), m_error_msg( error_msg )
+  PlaYUVerFailure( String class_name, String error_msg ) throw()
+      : m_class_name( class_name ), m_error_msg( error_msg )
   {
   }
   ~PlaYUVerFailure() throw() {}

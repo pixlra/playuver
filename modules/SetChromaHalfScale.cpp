@@ -40,8 +40,8 @@ SetChromaHalfScale::SetChromaHalfScale()
 Void SetChromaHalfScale::create( PlaYUVerFrame* frame )
 {
   m_pcProcessedFrame = NULL;
-  m_pcProcessedFrame =
-      new PlaYUVerFrame( frame->getWidth(), frame->getHeight(), frame->getPelFormat(), frame->getBitsPel() );
+  m_pcProcessedFrame = new PlaYUVerFrame( frame->getWidth(), frame->getHeight(),
+                                          frame->getPelFormat(), frame->getBitsPel() );
 }
 
 PlaYUVerFrame* SetChromaHalfScale::process( PlaYUVerFrame* frame )

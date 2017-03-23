@@ -25,9 +25,9 @@
 #ifndef __PLAYUVERSUBWINDOWHANDLE_H__
 #define __PLAYUVERSUBWINDOWHANDLE_H__
 
+#include <QString>
 #include <QVector>
 #include <QWidget>
-#include <QString>
 
 #include "PlaYUVerAppDefs.h"
 

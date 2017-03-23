@@ -27,17 +27,22 @@
 AbsoluteFrameDifference::AbsoluteFrameDifference()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;                  // Use API version 2 (recommended).
-                                                // See this example for details on the functions prototype
-  m_iModuleType = FRAME_PROCESSING_MODULE;      // Apply module to the frames or to the whole sequence.
+  m_iModuleAPI = MODULE_API_2;  // Use API version 2 (recommended).
+  // See this example for details on the functions prototype
+  m_iModuleType = FRAME_PROCESSING_MODULE;      // Apply module to the frames or to
+                                                // the whole sequence.
   m_pchModuleCategory = "Measurements";         // Category (sub-menu)
   m_pchModuleName = "AbsoluteFrameDifference";  // Name
   m_pchModuleTooltip =
       "Measure the absolute difference "  // Description
       "between two images (Y plane), e. g., abs( Y1 - Y2 )";
-  m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;  // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
-  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;  // Module requirements (check PlaYUVerModulesIf.h).
-                                                        // Several requirements should be "or" between each others.
+  m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;      // Number of Frames required
+                                                        // (ONE_FRAME, TWO_FRAMES,
+                                                        // THREE_FRAMES)
+  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;  // Module requirements
+                                                        // (check
+                                                        // PlaYUVerModulesIf.h).
+  // Several requirements should be "or" between each others.
   m_pcFrameDifference = NULL;
 }
 
@@ -51,8 +56,8 @@ Bool AbsoluteFrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
                                                             PlaYUVerFrame::MATCH_BITS ) )
       return false;
 
-  m_pcFrameDifference =
-      new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+  m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(),
+                                           apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
   return true;
 }
 

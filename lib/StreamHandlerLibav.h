@@ -78,9 +78,11 @@ class StreamHandlerLibav : public PlaYUVerStreamHandlerIf
 
  private:
   AVFormatContext* m_cFmtCtx;
-  AVCodecContext* m_cCodecCtx;
   AVStream* m_cStream;
   Int m_iStreamIdx;
+
+  AVCodecContext* m_cCodedCtx;
+
   AVFrame* m_cFrame;
   AVPacket pkt;
 

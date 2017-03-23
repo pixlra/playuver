@@ -5,6 +5,8 @@
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
 
 set(PlaYUVer_Lib_SRCS
+    LibMemory.h
+    PlaYUVerLib.h
     # Frame
     PlaYUVerPixel.cpp
     PlaYUVerFrame.cpp
@@ -15,6 +17,8 @@ set(PlaYUVer_Lib_SRCS
     StreamHandlerPortableMap.cpp
     # Options Parser
     PlaYUVerOptions.cpp
+    # Modules
+    PlaYUVerModuleIf.h
 )
 
 IF( USE_FFMPEG )

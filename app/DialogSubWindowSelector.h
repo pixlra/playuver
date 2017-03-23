@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,8 +25,8 @@
 #ifndef __DIALOGSUBWINDOWSELECTOR_H__
 #define __DIALOGSUBWINDOWSELECTOR_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
+#include "config.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )
@@ -41,9 +41,6 @@ class QColor;
 class QCheckBox;
 class QGroupBox;
 
-namespace plaYUVer
-{
-
 class PlaYUVerSubWindowHandle;
 class SubWindowAbstract;
 
@@ -51,19 +48,20 @@ class SubWindowAbstract;
  * Class to define the dialog box to select sub windows
  * This class enable the selection of several group of windows
  */
-class DialogSubWindowSelector: public QDialog
+class DialogSubWindowSelector : public QDialog
 {
-Q_OBJECT
+  Q_OBJECT
 
-public:
-  DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWindowHandle *windowManager, UInt uiCategory, Int minWindowsSelected = 1, Int maxWindowsSelected = -1 );
+ public:
+  DialogSubWindowSelector( QWidget* parent,
+                           PlaYUVerSubWindowHandle* windowManager,
+                           UInt uiCategory,
+                           Int minWindowsSelected = 1,
+                           Int maxWindowsSelected = -1 );
 
   Void selectSubWindow( SubWindowAbstract* subWindow );
-  QList<SubWindowAbstract*> getSelectedWindows()
-  {
-    return m_apcSelectedSubWindowList;
-  }
-private:
+  QList<SubWindowAbstract*> getSelectedWindows() { return m_apcSelectedSubWindowList; }
+ private:
   UInt m_uiCategory;
   Int m_iMinSelectedWindows;
   Int m_iMaxSlectedWindows;
@@ -84,13 +82,10 @@ private:
   Void updateSubWindowList();
   Void update();
 
-private Q_SLOTS:
+ private Q_SLOTS:
   void toggleSubWindow( int );
   void addAllSubWindow();
   void removeAllSubWindow();
-
 };
 
-}  // NAMESPACE
-
-#endif // __DIALOGSUBWINDOWSELECTOR_H__
+#endif  // __DIALOGSUBWINDOWSELECTOR_H__

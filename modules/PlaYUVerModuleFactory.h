@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,33 +25,28 @@
 #ifndef __PLAYUVERMODULESFACTORY_H__
 #define __PLAYUVERMODULESFACTORY_H__
 
-#include <functional>
 #include <map>
+
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
-{
+#define REGISTER_MODULE( X ) Register( "X", &( X::Create ) );
 
-#define REGISTER_MODULE(X) Register( "X", &(X::Create) );
-
-typedef PlaYUVerModuleIf* (*CreateModuleFn)( void );
-typedef std::map<const char *, CreateModuleFn> PlaYUVerModuleFactoryMap;
+typedef PlaYUVerModuleIf* ( *CreateModuleFn )( void );
+typedef std::map<const char*, CreateModuleFn> PlaYUVerModuleFactoryMap;
 
 // Factory for creating instances of PlaYUVerModuleIf
 class PlaYUVerModuleFactory
 {
-private:
+ private:
   PlaYUVerModuleFactory();
-  PlaYUVerModuleFactory &operator=( const PlaYUVerModuleFactory & )
-  {
-    return *this;
-  }
-
+  PlaYUVerModuleFactory& operator=( const PlaYUVerModuleFactory& ) { return *this; }
   PlaYUVerModuleFactoryMap m_FactoryMap;
-public:
+
+ public:
   ~PlaYUVerModuleFactory();
 
-  static PlaYUVerModuleFactory *Get()
+  static PlaYUVerModuleFactory* Get()
   {
     static PlaYUVerModuleFactory instance;
     return &instance;
@@ -60,19 +55,8 @@ public:
   Void Register( const char* moduleName, CreateModuleFn pfnCreate );
   Bool RegisterDl( const char* dlName );
 
-  PlaYUVerModuleIf *CreateModule( const char *moduleName );
-  PlaYUVerModuleFactoryMap& getMap()
-  {
-    return m_FactoryMap;
-  }
+  PlaYUVerModuleIf* CreateModule( const char* moduleName );
+  PlaYUVerModuleFactoryMap& getMap() { return m_FactoryMap; }
 };
 
-//// typedef to make it easier to set up our factory
-//typedef PlaYUVerModuleIf *PlaYUVerModuleMaker();
-//// our global factory
-//extern std::map<std::string, PlaYUVerModuleMaker *, std::less<std::string> > PlaYUVerModuleFactory;
-
-}// NAMESPACE
-
-#endif // __PLAYUVERMODULESFACTORY_H__
-
+#endif  // __PLAYUVERMODULESFACTORY_H__

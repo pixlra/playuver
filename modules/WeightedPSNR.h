@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,32 +25,22 @@
 #ifndef __WEIGHTEDPSNR_H__
 #define __WEIGHTEDPSNR_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-#include <cassert>
-
-namespace plaYUVer
+class WeightedPSNR : public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( WeightedPSNR )
 
-class WeightedPSNR: public PlaYUVerModuleIf
-{
-REGISTER_CLASS_FACTORY( WeightedPSNR )
-
-private:
+ private:
   UInt m_uiComponent;
 
-public:
+ public:
   WeightedPSNR();
-  virtual ~WeightedPSNR()
-  {
-  }
+  virtual ~WeightedPSNR() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   Double measure( std::vector<PlaYUVerFrame*> apcFrameList );
   Void destroy();
-
 };
 
-}  // NAMESPACE
-
-#endif // __WEIGHTEDPSNR_H__
-
+#endif  // __WEIGHTEDPSNR_H__

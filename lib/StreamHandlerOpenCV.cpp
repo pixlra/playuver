@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -19,70 +19,72 @@
 
 /**
  * \file     StreamHandlerOpenCV.cpp
- * \ingroup  PlaYUVerLib
  * \brief    Interface with opencv lib
  */
 
-#include <cstdio>
+// Self
 #include "StreamHandlerOpenCV.h"
+
+// System
+#include <cstdio>
+#include <opencv2/opencv.hpp>
+
+// Own
+#include "LibMemory.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"
-#include "LibMemory.h"
 
-using namespace cv;
-
-namespace plaYUVer
-{
+using cv::Mat;
+using cv::VideoCapture;
 
 std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-//   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Portable Network Graphics", "png" );
-//   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Device", "/dev/" );
+  //   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Device",
+  //   "/dev/" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
 std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedWriteFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerOpenCV, Read );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Portable PixMap ", "ppm" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Joint Photographic Experts Group", "jpg" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Portable Network Graphics", "png" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Joint Photographic Experts Group",
+                                 "jpg" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Windows Bitmap", "bmp" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
 StreamHandlerOpenCV::StreamHandlerOpenCV()
 {
-  pcMat = NULL;
   pcVideoCapture = NULL;
 }
 
-Bool StreamHandlerOpenCV::openHandler( std::string strFilename, Bool bInput )
+Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
 {
   m_cFilename = strFilename;
   if( bInput )
   {
-
-
     /*
      * Special filename to handle webcam input
      */
-    if( m_cFilename.find( "/dev/video" ) != std::string::npos )
+    if( m_cFilename.find( "/dev/video" ) != String::npos )
     {
       m_strFormatName = "DEV";
       m_strCodecName = "Raw Video";
       pcVideoCapture = new VideoCapture( 0 );
-      m_uiWidth =  pcVideoCapture->get( CV_CAP_PROP_FRAME_WIDTH );
+      m_uiWidth = pcVideoCapture->get( CV_CAP_PROP_FRAME_WIDTH );
       m_uiHeight = pcVideoCapture->get( CV_CAP_PROP_FRAME_HEIGHT );
       m_dFrameRate = 25;
     }
     else
     {
-      m_strCodecName = m_strFormatName = uppercase (strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
-      pcMat = new Mat( cv::imread( m_cFilename ) );
-      m_uiWidth = pcMat->cols;
-      m_uiHeight = pcMat->rows;
+      m_strCodecName = m_strFormatName =
+          uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
+      Mat cvMat = cv::imread( m_cFilename );
+      m_uiWidth = cvMat.cols;
+      m_uiHeight = cvMat.rows;
       m_dFrameRate = 1;
     }
     m_uiBitsPerPixel = 8;
@@ -99,10 +101,6 @@ Void StreamHandlerOpenCV::closeHandler()
     pcVideoCapture->release();
     delete pcVideoCapture;
     pcVideoCapture = NULL;
-  }
-  if( pcMat )
-  {
-    delete pcMat;
   }
 }
 
@@ -133,12 +131,12 @@ Bool StreamHandlerOpenCV::read( PlaYUVerFrame* pcFrame )
     Mat cvMat;
     bRet = pcVideoCapture->read( cvMat );
     if( bRet )
-      pcFrame->fromCvMat( &cvMat );
+      bRet = pcFrame->fromMat( cvMat );
   }
-  if( pcMat )
+  else
   {
-    pcFrame->fromCvMat( pcMat );
-    bRet = true;
+    Mat cvMat = cv::imread( m_cFilename );
+    bRet = pcFrame->fromMat( cvMat );
   }
   return bRet;
 }
@@ -146,13 +144,11 @@ Bool StreamHandlerOpenCV::read( PlaYUVerFrame* pcFrame )
 Bool StreamHandlerOpenCV::write( PlaYUVerFrame* pcFrame )
 {
   Bool bRet = false;
-  cv::Mat* pcCvFrame = pcFrame->getCvMat();
-  if( pcCvFrame )
+  Mat cvFrame;
+  bRet = pcFrame->toMat( cvFrame );
+  if( bRet )
   {
-    bRet = cv::imwrite( m_cFilename, *pcCvFrame );
-    delete pcCvFrame;
+    bRet = cv::imwrite( m_cFilename, cvFrame );
   }
   return bRet;
 }
-
-}  // NAMESPACE

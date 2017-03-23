@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,9 +25,6 @@
 #include "PlotSubWindow.h"
 #include "qcustomplot.h"
 
-namespace plaYUVer
-{
-
 Void PlotSubWindow::definePlotColors()
 {
   m_arrayColorList.append( Qt::blue );
@@ -47,10 +44,9 @@ Void PlotSubWindow::definePlotColors()
   m_arrayColorList.append( Qt::darkYellow );
 }
 
-PlotSubWindow::PlotSubWindow( const QString& windowTitle, QWidget * parent ) :
-        SubWindowAbstract( parent, SubWindowAbstract::PLOT_SUBWINDOW )
+PlotSubWindow::PlotSubWindow( const QString& windowTitle, QWidget* parent )
+    : SubWindowAbstract( parent, SubWindowAbstract::PLOT_SUBWINDOW )
 {
-
   definePlotColors();
   m_iNumberPlots = 0;
   m_dScaleFactor = 1;
@@ -96,19 +92,23 @@ PlotSubWindow::PlotSubWindow( const QString& windowTitle, QWidget * parent ) :
   m_cPlotArea->xAxis2->setTickLabels( false );
   m_cPlotArea->yAxis2->setVisible( true );
   m_cPlotArea->yAxis2->setTickLabels( false );
-  // make left and bottom axes always transfer their ranges to right and top axes:
-  connect( m_cPlotArea->xAxis, SIGNAL( rangeChanged(QCPRange) ), m_cPlotArea->xAxis2, SLOT( setRange(QCPRange) ) );
-  connect( m_cPlotArea->yAxis, SIGNAL( rangeChanged(QCPRange) ), m_cPlotArea->yAxis2, SLOT( setRange(QCPRange) ) );
+  // make left and bottom axes always transfer their ranges to right and top
+  // axes:
+  connect( m_cPlotArea->xAxis, SIGNAL( rangeChanged( QCPRange ) ), m_cPlotArea->xAxis2,
+           SLOT( setRange( QCPRange ) ) );
+  connect( m_cPlotArea->yAxis, SIGNAL( rangeChanged( QCPRange ) ), m_cPlotArea->yAxis2,
+           SLOT( setRange( QCPRange ) ) );
 
-  QFont legendFont = font();  // start out with MainWindow's font..
+  QFont legendFont = font();     // start out with MainWindow's font..
   legendFont.setPointSize( 9 );  // and make a bit smaller for legend
   m_cPlotArea->legend->setFont( legendFont );
   m_cPlotArea->legend->setBrush( backgroundBrush );
   m_cPlotArea->legend->setTextColor( palette().text().color() );
-  m_cPlotArea->legend->setBorderPen( QPen( palette().brush( QPalette::Active, QPalette::Shadow ), 1 ) );
+  m_cPlotArea->legend->setBorderPen(
+      QPen( palette().brush( QPalette::Active, QPalette::Shadow ), 1 ) );
   m_cPlotArea->legend->setVisible( false );
 
-  m_cPlotArea->setInteractions( QCP::iRangeZoom | QCP::iRangeDrag );  //QCP::iSelectPlottables
+  m_cPlotArea->setInteractions( QCP::iRangeZoom | QCP::iRangeDrag );  // QCP::iSelectPlottables
 
   m_cPlotPen.setStyle( Qt::SolidLine );
   m_cPlotPen.setColor( Qt::black );
@@ -137,7 +137,6 @@ Void PlotSubWindow::zoomToFit()
 
 Void PlotSubWindow::zoomToFactor( Double factor, QPoint center )
 {
-
 }
 
 Void PlotSubWindow::scaleView( Double scale, QPoint center )
@@ -147,14 +146,16 @@ Void PlotSubWindow::scaleView( Double scale, QPoint center )
   scale += 1;
 
   m_dScaleFactor *= scale;
-//
-//  UInt aNewAxisRange[2][2];
-//  for( UInt axis = 0; axis < 2; axis++ )
-//    for( UInt dim = 0; dim < 2; dim++ )
-//      aNewAxisRange[axis][dim] = m_aAxisRange[axis][dim] / m_dScaleFactor;
-//
-//  m_cPlotArea->xAxis->setRange( aNewAxisRange[HORIZONTAL][0], aNewAxisRange[HORIZONTAL][1] );
-//  m_cPlotArea->yAxis->setRange( aNewAxisRange[VERTICAL][0], aNewAxisRange[VERTICAL][1] );
+  //
+  //  UInt aNewAxisRange[2][2];
+  //  for( UInt axis = 0; axis < 2; axis++ )
+  //    for( UInt dim = 0; dim < 2; dim++ )
+  //      aNewAxisRange[axis][dim] = m_aAxisRange[axis][dim] / m_dScaleFactor;
+  //
+  //  m_cPlotArea->xAxis->setRange( aNewAxisRange[HORIZONTAL][0],
+  //  aNewAxisRange[HORIZONTAL][1] );
+  //  m_cPlotArea->yAxis->setRange( aNewAxisRange[VERTICAL][0],
+  //  aNewAxisRange[VERTICAL][1] );
 
   m_cPlotArea->xAxis->scaleRange( scale, 0 );
   m_cPlotArea->yAxis->scaleRange( scale, 0 );
@@ -164,7 +165,7 @@ Void PlotSubWindow::scaleView( Double scale, QPoint center )
 QSize PlotSubWindow::sizeHint() const
 {
   QSize maxSize;
-  QWidget *p = parentWidget();
+  QWidget* p = parentWidget();
   if( p )
   {
     maxSize = p->size();
@@ -176,7 +177,7 @@ QSize PlotSubWindow::sizeHint() const
   return sizeHint( maxSize );
 }
 
-QSize PlotSubWindow::sizeHint( const QSize & maxSize ) const
+QSize PlotSubWindow::sizeHint( const QSize& maxSize ) const
 {
   return maxSize * 2 / 3;
 }
@@ -193,28 +194,32 @@ Void PlotSubWindow::setAxisRange( const QLine& axisLimits )
   setAxisRange( VERTICAL, axisLimits.y1(), axisLimits.y2() );
 }
 
-Void PlotSubWindow::setAxisRange( PlotSubWindow::Axis eAxis, const Int& axisStart, const Int& axisEnd )
+Void PlotSubWindow::setAxisRange( PlotSubWindow::Axis eAxis,
+                                  const Int& axisStart,
+                                  const Int& axisEnd )
 {
   if( eAxis == HORIZONTAL )
   {
     m_cPlotArea->xAxis->setRange( axisStart, axisEnd );
-    //horizontalScrollBar()->setRange( axisStart * 100, axisEnd * 100 );
+    // horizontalScrollBar()->setRange( axisStart * 100, axisEnd * 100 );
     m_aAxisRange[HORIZONTAL][0] = axisStart;
     m_aAxisRange[HORIZONTAL][1] = axisEnd;
   }
   if( eAxis == VERTICAL )
   {
     m_cPlotArea->yAxis->setRange( axisStart, axisEnd );
-    //verticalScrollBar()->setRange( axisStart * 100, axisEnd * 100 );
+    // verticalScrollBar()->setRange( axisStart * 100, axisEnd * 100 );
     m_aAxisRange[VERTICAL][0] = axisStart;
     m_aAxisRange[VERTICAL][1] = axisEnd;
   }
   m_cPlotArea->replot();
 }
 
-Void PlotSubWindow::addPlot( const QVector<Double> &arrayX, const QVector<Double> &arrayY, const QString& key )
+Void PlotSubWindow::addPlot( const QVector<Double>& arrayX,
+                             const QVector<Double>& arrayY,
+                             const QString& key )
 {
-  QCPGraph *newPlot = m_cPlotArea->addGraph();
+  QCPGraph* newPlot = m_cPlotArea->addGraph();
   QColor plotColor = m_arrayColorList.at( 0 );
   if( m_iNumberPlots < m_arrayColorList.size() )
   {
@@ -224,7 +229,8 @@ Void PlotSubWindow::addPlot( const QVector<Double> &arrayX, const QVector<Double
   newPlot->setPen( m_cPlotPen );  // line style
   // pass data points to graphs:
   newPlot->setData( arrayX, arrayY );
-  // let the ranges scale themselves so graph 0 fits perfectly in the visible area:
+  // let the ranges scale themselves so graph 0 fits perfectly in the visible
+  // area:
   newPlot->rescaleAxes( m_iNumberPlots > 1 ? true : false );
 
   if( !key.isEmpty() )
@@ -240,5 +246,3 @@ Void PlotSubWindow::addPlot( const QVector<Double> &arrayX, const QVector<Double
 
   m_iNumberPlots++;
 }
-
-}  // NAMESPACE

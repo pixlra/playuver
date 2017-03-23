@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 
 /**
  * \file     PlaYUVerLib.h
- * \ingroup  PlaYUVerLib
  * \brief    Inlcude all modules of PlaYUVer Lib
  */
 
@@ -40,14 +39,14 @@
  * This guaratees that the top-level applications does not need to worry
  * about dealig with different stream formats as well as different pixel formats
  *
- * @defgroup PlaYUVerLib_Stream PlaYUVer Stream
- * @{
- *  Describe PlaYUVerStream
- * @}
- *
  * @defgroup PlaYUVerLib_Frame PlaYUVer Frame
  * @{
  *  Describe PlaYUVerFrame
+ * @}
+ *
+ * @defgroup PlaYUVerLib_Stream PlaYUVer Stream
+ * @{
+ *  Describe PlaYUVerStream
  * @}
  *
  * @}
@@ -57,4 +56,4 @@
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerStream.h"
 
-#endif // __PLAYUVERLIB_H_
+#endif  // __PLAYUVERLIB_H_

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -19,47 +19,39 @@
 
 /**
  * \file     DisparityStereoBM.h
- * \brief    Measure the disparity between two images using the Stereo Var method (OpenCV)
+ * \brief    Measure the disparity between two images using the Stereo Var
+ * method (OpenCV)
  */
 
 #ifndef __DISPARITYSTEREOBM_H__
 #define __DISPARITYSTEREOBM_H__
 
-#include <iostream>
-#include "lib/PlaYUVerModuleIf.h"
+// OpenCV
 #include <opencv2/opencv.hpp>
 
-#include <cassert>
+// PlaYUVerLib
+#include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
+class DisparityStereoBM : public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( DisparityStereoBM )
 
-class DisparityStereoBM: public PlaYUVerModuleIf
-{
-REGISTER_CLASS_FACTORY( DisparityStereoBM )
-
-private:
+ private:
   PlaYUVerFrame* m_pcDisparityFrame;
   Int m_uiNumberOfDisparities;
   UInt m_uiBlockSize;
-#if( CV_MAJOR_VERSION == 2)
+#if( CV_MAJOR_VERSION == 2 )
   cv::StereoBM m_cStereoBM;
 #else
   cv::Ptr<cv::StereoBM> m_cStereoBM;
 #endif
 
-public:
+ public:
   DisparityStereoBM();
-  virtual ~DisparityStereoBM()
-  {
-  }
-
+  virtual ~DisparityStereoBM() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Void destroy();
 };
 
-}  // NAMESPACE
-
-#endif // __DISPARITYSTEREOBM_H__
-
+#endif  // __DISPARITYSTEREOBM_H__

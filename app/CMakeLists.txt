@@ -2,11 +2,11 @@
 ### CMakeLists for playuver app component
 ###
 
-# This is hard way - please fix
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/external )
 
-# ${CMAKE_CURRENT_SOURCE_DIR}/../modules
-#                      ${CMAKE_CURRENT_BINARY_DIR}/../modules
+OPTION( USE_QT4       "Build with Qt4"            OFF )
+OPTION( USE_QTDBUS    "Build with QtDBus"         ON  )
+OPTION( USE_FERVOR    "Add Fervor support"        OFF )
 
 #####################################################################################
 # Qt library
@@ -86,7 +86,7 @@ set(PlaYUVer_App_RCC
   resources/playuver.qrc
 )
 
-OPTION( USE_FERVOR "Add Fervor support" OFF )
+
 
 
 IF( USE_FERVOR )

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,20 +25,17 @@
 #ifndef __PLAYUVERAPPMODULESIF_H__
 #define __PLAYUVERAPPMODULESIF_H__
 
-#include "config.h"
-#include "PlaYUVerAppDefs.h"
-#include <iostream>
-#include <cstdio>
-#include <QVector>
-#include "lib/PlaYUVerFrame.h"
-#include "lib/PlaYUVerStream.h"
 #include "ModuleHandleDock.h"
+#include "PlaYUVerAppDefs.h"
+#include "config.h"
+#include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerModuleIf.h"
+#include "lib/PlaYUVerStream.h"
+#include <QVector>
+#include <cstdio>
+#include <iostream>
 
 class QAction;
-
-namespace plaYUVer
-{
 
 //#define PLAYUVER_THREADED_MODULES
 
@@ -48,21 +45,21 @@ class PlaYUVerAppModuleIf
 #ifdef PLAYUVER_THREADED_MODULES
     : public QThread
 #else
-: public QObject
+    : public QObject
 #endif
 {
   friend class ModulesHandle;
   friend class ModuleHandleDock;
   friend class ModulesHandleOptDialog;
 
-private:
-
+ private:
   Bool m_bIsRunning;
+  Bool m_bSuccess;
 
   QAction* m_pcModuleAction;
   PlaYUVerModuleIf* m_pcModule;
 
-  VideoSubWindow* m_pcSubWindow[MAX_NUMBER_FRAMES];
+  VideoSubWindow* m_pcSubWindow[MODULE_REQUIRES_MAX_NUM_FRAMES];
 
   VideoSubWindow* m_pcDisplaySubWindow;
 
@@ -73,12 +70,11 @@ private:
   PlaYUVerFrame* m_pcProcessedFrame;
   Double m_dMeasurementResult;
 
-public:
-  class EventData: public QEvent
+ public:
+  class EventData : public QEvent
   {
-  public:
-    EventData( bool success = false, PlaYUVerAppModuleIf* module = NULL ) :
-            QEvent( QEvent::User )
+   public:
+    EventData( bool success, PlaYUVerAppModuleIf* module ) : QEvent( QEvent::User )
     {
       m_bSuccess = success;
       m_pcModule = module;
@@ -88,38 +84,25 @@ public:
   };
 
   PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module );
-  virtual ~PlaYUVerAppModuleIf()
-  {
-  }
-
+  virtual ~PlaYUVerAppModuleIf() {}
   QList<VideoSubWindow*> getSubWindowList()
   {
     QList<VideoSubWindow*> arraySubWindows;
-    for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
+    for( Int i = 0; i < MODULE_REQUIRES_MAX_NUM_FRAMES; i++ )
       if( m_pcSubWindow[i] )
         arraySubWindows.append( m_pcSubWindow[i] );
     return arraySubWindows;
   }
 
-  PlaYUVerModuleIf* getModule()
-  {
-    return m_pcModule;
-  }
-
-  UInt getModuleRequirements()
-  {
-    return m_pcModule->m_uiModuleRequirements;
-  }
-
+  PlaYUVerModuleIf* getModule() { return m_pcModule; }
+  UInt getModuleRequirements() { return m_pcModule->m_uiModuleRequirements; }
   Void update();
   Bool apply( Bool isPlaying = false, Bool disableThreads = false );
   Void show();
   Void destroy();
-protected:
+
+ protected:
   virtual void run();
 };
 
-}  // NAMESPACE
-
-#endif // __PLAYUVERAPPMODULESIF_H__
-
+#endif  // __PLAYUVERAPPMODULESIF_H__

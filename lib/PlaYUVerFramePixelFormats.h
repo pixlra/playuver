@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 
 /**
  * \file     PlaYUVerFramePixelFormats.h
- * \ingroup  PlaYUVerLib
  * \brief    Handling the pixel formats definition
  */
 
@@ -30,35 +29,12 @@
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerPixel.h"
 
-namespace plaYUVer
-{
-
 #define CHROMA_RESAMPLING( X ) ( ( ( X + 1 ) >> 1 ) << 1 )
 
 #define CHROMARATIO( SIZE, RATIO ) ( RATIO > 1 ? ( ( SIZE + 1 ) / RATIO ) : SIZE )
 
-inline Int pelRed( UInt rgb )             // get red part of RGB
-{
-  return ( ( rgb >> 16 ) & 0xff );
-}
-
-inline Int pelGreen( UInt rgb )           // get green part of RGB
-{
-  return ( ( rgb >> 8 ) & 0xff );
-}
-
-inline Int pelBlue( UInt rgb )            // get blue part of RGB
-{
-  return ( rgb & 0xff );
-}
-
-inline Int pelAlpha( UInt rgb )           // get alpha part of RGBA
-{
-  return rgb >> 24;
-}
-
 #define PEL_RGB( r, g, b ) \
-    ( 0xffu << 24 ) | ( ( r & 0xff ) << 16 ) | ( ( g & 0xff ) << 8 ) | ( b & 0xff )
+  ( 0xffu << 24 ) | ( ( r & 0xff ) << 16 ) | ( ( g & 0xff ) << 8 ) | ( b & 0xff )
 
 typedef struct PlaYUVerComponentDescriptor
 {
@@ -79,16 +55,6 @@ typedef struct PlaYUVerComponentDescriptor
    */
   UInt16 offset_plus1;
 
-  /**
-   * Number of least significant bits that must be shifted away
-   * to get the value.
-   */
-  UInt16 shift;
-
-  /**
-   * Number of bits in the component minus 1.
-   */
-  UInt16 depth_minus1;
 } PlaYUVerComponentDescriptor;
 
 /**
@@ -102,7 +68,7 @@ typedef struct PlaYUVerComponentDescriptor
  */
 typedef struct PlaYUVerPixFmtDescriptor
 {
-  const char *name;
+  const char* name;
 
   Int colorSpace;
 
@@ -144,9 +110,6 @@ typedef struct PlaYUVerPixFmtDescriptor
 
 #define MAX_NUMBER_PLANES 3
 
-#define PLAYUVER_NUMBER_FORMATS 7
-extern PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[PLAYUVER_NUMBER_FORMATS];
+extern const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[];
 
-}  // NAMESPACE
-
-#endif // __PLAYUVERFRAMEPIXELFORMATS_H__
+#endif  // __PLAYUVERFRAMEPIXELFORMATS_H__

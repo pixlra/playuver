@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -18,39 +18,30 @@
  */
 
 /**
- * \file     PlaYUVerCmdParser.h
- * \brief    Command parser
+ * \file     InterFrameVariance.h
+ * \brief    Absolute Frame Difference module
  */
 
-#include "PlaYUVerDefs.h"
-#include "PlaYUVerProgramOptions.h"
+#ifndef __INTERFRAMEVARIANCE_H__
+#define __INTERFRAMEVARIANCE_H__
 
-namespace plaYUVer
+// PlaYUVerLib
+#include "lib/PlaYUVerModuleIf.h"
+
+class InterFrameVariance : public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( InterFrameVariance )
 
-class PlaYUVerCmdParser
-{
-public:
-  PlaYUVerCmdParser();
-  ~PlaYUVerCmdParser();
+ private:
+  PlaYUVerFrame* m_pcFrameVariance;
+  Double** m_pVariance;
 
-  Void config( Int argc, Char *argv[] )
-  {
-    m_iArgc = argc;
-    m_ppArgv = argv;
-  }
-  Bool parse();
-  Bool parse( Options& opts, Int argc, Char *argv[] );
-  std::list<const Char*>& getNoArgs();
-  Options& Opts();
-private:
-  Int m_iArgc;
-  Char** m_ppArgv;
-  Options m_cParserOptions;
-  std::list<const Char*> m_aUnhandledArgs;
-
-  Bool checkListingOpts();
-  Void listModules();
+ public:
+  InterFrameVariance();
+  virtual ~InterFrameVariance() {}
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
+  Void destroy();
 };
 
-}  // NAMESPACE
+#endif  // __INTERFRAMEVARIANCE_H__

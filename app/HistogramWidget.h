@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -26,30 +26,26 @@
 #ifndef __HISTOGRAMWIDGET_H__
 #define __HISTOGRAMWIDGET_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
-#include <QWidget>
-#include <QColor>
+#include "config.h"
 #include "lib/PlaYUVerFrame.h"
+#include <QColor>
+#include <QWidget>
 
 class QEvent;
-
-namespace plaYUVer
-{
 
 class HistogramWorker;
 class HistogramWidgetPrivate;
 
-class HistogramWidget: public QWidget
+class HistogramWidget : public QWidget
 {
-Q_OBJECT
+  Q_OBJECT
 
-public:
-
+ public:
   enum HistogramChannel
   {
     /** Luminance */
-    //LumaHistogram = 0,
+    // LumaHistogram = 0,
     /** Channels */
     FirstChannelHistogram = 0,
     SecondChannelHistogram,
@@ -96,10 +92,10 @@ public:
     ShowLumaChannel = 0x8,
     /** Set all the options */
     AllOptions = BlinkComputation | ShowStatistics | SelectMode | ShowLumaChannel
-  };Q_DECLARE_FLAGS( HistogramOptions, HistogramOption )
+  };
+  Q_DECLARE_FLAGS( HistogramOptions, HistogramOption )
 
-public  :
-
+ public:
   /**
    * Constructor without image data. Needed to use @p updateData() method
    * after to create instance.
@@ -107,7 +103,7 @@ public  :
    * @param height of the widget
    * @param parent the histogram widget parent
    */
-  HistogramWidget( Int width, Int height, QWidget *parent = 0 );
+  HistogramWidget( Int width, Int height, QWidget* parent = 0 );
 
   ~HistogramWidget();
 
@@ -115,7 +111,7 @@ public  :
   Void stopHistogramComputation();
 
   /** Update full image histogram data. */
-  Void updateData( PlaYUVerFrame *pcFrame, PlaYUVerFrame *pcFrameSelection );
+  Void updateData( PlaYUVerFrame* pcFrame, PlaYUVerFrame* pcFrameSelection );
 
   /** @see @p HistogramOption */
   Void setOptions( HistogramOptions options = AllOptions );
@@ -126,7 +122,7 @@ public  :
 
   Void reset();
 
-public:
+ public:
   /** Channel type to draw */
   Int m_channelType;
   /** Scale to use for drawing */
@@ -138,43 +134,40 @@ public:
 
   /** Full image */
   HistogramWorker* m_imageWorker;
-  //PlaYUVerFrameStats* m_imageHistogram;
+  // PlaYUVerFrameStats* m_imageHistogram;
   PlaYUVerFrame* m_fullImage;
   /** Histogram area selection */
   HistogramWorker* m_selectionWorker;
-  //PlaYUVerFrameStats* m_selectionHistogram;
+  // PlaYUVerFrameStats* m_selectionHistogram;
   PlaYUVerFrame* m_selectionImage;
 
-  Q_SIGNALS:
+ Q_SIGNALS:
   void signalIntervalChanged( int min, int max );
   void signalMaximumValueChanged( int );
   void signalHistogramComputationDone( int );
   void signalHistogramComputationFailed( void );
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void slotMinValueChanged( int min );
   void slotMaxValueChanged( int max );
 
-protected slots:
+ protected slots:
   void slotBlinkTimerDone( void );
 
-protected:
-  Void paintEvent( QPaintEvent * );
-  Void mousePressEvent( QMouseEvent * e );
-  Void mouseReleaseEvent( QMouseEvent * e );
-  Void mouseMoveEvent( QMouseEvent * e );
+ protected:
+  Void paintEvent( QPaintEvent* );
+  Void mousePressEvent( QMouseEvent* e );
+  Void mouseReleaseEvent( QMouseEvent* e );
+  Void mouseMoveEvent( QMouseEvent* e );
 
-private:
-  Void customEvent( QEvent *event );
+ private:
+  Void customEvent( QEvent* event );
   Void notifyValuesChanged();
 
-private:
+ private:
   HistogramWidgetPrivate* d;
 };
 
-}
-  // NAMESPACE
+Q_DECLARE_OPERATORS_FOR_FLAGS( HistogramWidget::HistogramOptions )
 
-Q_DECLARE_OPERATORS_FOR_FLAGS( plaYUVer::HistogramWidget::HistogramOptions )
-
-#endif // __HISTOGRAMWIDGET_H__
+#endif  // __HISTOGRAMWIDGET_H__

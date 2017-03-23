@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,33 +25,26 @@
 #ifndef __FRAMECROP_H__
 #define __FRAMECROP_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
+class FrameCrop : public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( FrameCrop )
 
-class FrameCrop: public PlaYUVerModuleIf
-{
-REGISTER_CLASS_FACTORY( FrameCrop )
-
-private:
+ private:
   PlaYUVerFrame* m_pcCropedFrame;
   UInt m_uiXPosition;
   UInt m_uiYPosition;
   Int m_iXSize;
   Int m_iYSize;
-public:
+
+ public:
   FrameCrop();
-  virtual ~FrameCrop()
-  {
-  }
+  virtual ~FrameCrop() {}
   Void create( PlaYUVerFrame* );
   PlaYUVerFrame* process( PlaYUVerFrame* );
   Void destroy();
-
 };
 
-}  // NAMESPACE
-
-#endif // __FRAMECROP_H__
-
+#endif  // __FRAMECROP_H__

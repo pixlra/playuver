@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,30 +25,23 @@
 #ifndef __PLAYUVERMDISUBWINDOW_H__
 #define __PLAYUVERMDISUBWINDOW_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
+#include "config.h"
 #include <QMdiSubWindow>
 
-
-namespace plaYUVer
+class PlaYUVerMdiSubWindow : public QMdiSubWindow
 {
+  Q_OBJECT
 
-class PlaYUVerMdiSubWindow: public QMdiSubWindow
-{
-Q_OBJECT
+ public:
+  PlaYUVerMdiSubWindow( QWidget* parent = 0 );
 
-public:
-  PlaYUVerMdiSubWindow( QWidget *parent = 0 );
-
-Q_SIGNALS:
+ Q_SIGNALS:
   void aboutToClose( PlaYUVerMdiSubWindow* );
 
-protected:
+ protected:
   QSize sizeHint() const;
-  void closeEvent( QCloseEvent *event );
+  void closeEvent( QCloseEvent* event );
 };
 
-}  // NAMESPACE
-
-#endif // __PLAYUVERMDISUBWINDOW_H__
-
+#endif  // __PLAYUVERMDISUBWINDOW_H__

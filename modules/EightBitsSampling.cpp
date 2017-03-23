@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -24,9 +24,6 @@
 
 #include "EightBitsSampling.h"
 
-namespace plaYUVer
-{
-
 EightBitsSampling::EightBitsSampling()
 {
   /* Module Definition */
@@ -46,7 +43,9 @@ Bool EightBitsSampling::create( std::vector<PlaYUVerFrame*> apcFrameList )
   if( apcFrameList[0]->getBitsPel() > 8 )
   {
     m_pcSubSampledFrame = NULL;
-    m_pcSubSampledFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), apcFrameList[0]->getPelFormat(), 8 );
+    m_pcSubSampledFrame =
+        new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
+                           apcFrameList[0]->getPelFormat(), 8 );
     return true;
   }
   return false;
@@ -81,6 +80,3 @@ Void EightBitsSampling::destroy()
     delete m_pcSubSampledFrame;
   m_pcSubSampledFrame = NULL;
 }
-
-}  // NAMESPACE
-

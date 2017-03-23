@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -22,11 +22,12 @@
  * \brief    main file
  */
 
+#include "ConfigureFormatDialog.h"
+#include "PlaYUVerApp.h"
+#include "PlaYUVerAppDefs.h"
+#include "VideoSubWindow.h"
 #include "config.h"
 #include <QApplication>
-#include "PlaYUVerAppDefs.h"
-#include "PlaYUVerApp.h"
-#include "VideoSubWindow.h"
 #ifdef USE_QTDBUS
 #include "PlaYUVerAppAdaptor.h"
 #endif
@@ -34,16 +35,16 @@
 #include "fvupdater.h"
 #endif
 
-using namespace plaYUVer;
-
 #if _WIN32
-#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#pragma comment( linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup" )
 #endif
 
-int main( int argc, char *argv[] )
+int main( int argc, char* argv[] )
 {
   qRegisterMetaType<PlaYUVerStreamInfoVector>();
   qRegisterMetaTypeStreamOperators<PlaYUVerStreamInfoVector>();
+  qRegisterMetaType<PlaYUVerStdResolutionVector>();
+  qRegisterMetaTypeStreamOperators<PlaYUVerStdResolutionVector>();
 
   QApplication application( argc, argv );
   QApplication::setApplicationName( "PlaYUVer" );
@@ -55,10 +56,9 @@ int main( int argc, char *argv[] )
    * use dbus, if available
    * allows for resuse of running Kate instances
    */
-  QDBusConnectionInterface * const sessionBusInterface = QDBusConnection::sessionBus().interface();
+  QDBusConnectionInterface* const sessionBusInterface = QDBusConnection::sessionBus().interface();
   if( sessionBusInterface )
   {
-
     Bool force_new = false;
     QStringList filenameList;
     for( Int i = 1; i < argc; i++ )
@@ -70,18 +70,20 @@ int main( int argc, char *argv[] )
       force_new = true;
     }
 
-    //check again if service is still running
+    // check again if service is still running
     bool foundRunningService = false;
     if( !force_new )
     {
-      QDBusReply<bool> there = sessionBusInterface->isServiceRegistered( PLAYUVER_DBUS_SESSION_NAME );
+      QDBusReply<bool> there =
+          sessionBusInterface->isServiceRegistered( PLAYUVER_DBUS_SESSION_NAME );
       foundRunningService = there.isValid() && there.value();
     }
 
     if( foundRunningService )
     {
       // open given session
-      QDBusMessage m = QDBusMessage::createMethodCall( PLAYUVER_DBUS_SESSION_NAME, QStringLiteral( PLAYUVER_DBUS_PATH ),
+      QDBusMessage m = QDBusMessage::createMethodCall(
+          PLAYUVER_DBUS_SESSION_NAME, QStringLiteral( PLAYUVER_DBUS_PATH ),
           QStringLiteral( PLAYUVER_DBUS_SESSION_NAME ), QStringLiteral( "activate" ) );
 
       QDBusConnection::sessionBus().call( m );
@@ -92,32 +94,35 @@ int main( int argc, char *argv[] )
       QStringList tokens;
 
       // open given files...
-      foreach(const QString & file, filenameList){
-      QDBusMessage m = QDBusMessage::createMethodCall(PLAYUVER_DBUS_SESSION_NAME,
-          QStringLiteral(PLAYUVER_DBUS_PATH), QStringLiteral(PLAYUVER_DBUS_SESSION_NAME), QStringLiteral("loadFile"));
-
-      QList<QVariant> dbusargs;
-      dbusargs.append( file );
-      m.setArguments(dbusargs);
-
-      QDBusMessage res = QDBusConnection::sessionBus().call(m);
-      if (res.type() == QDBusMessage::ReplyMessage)
+      foreach( const QString& file, filenameList )
       {
-        if (res.arguments().count() == 1)
+        QDBusMessage m = QDBusMessage::createMethodCall(
+            PLAYUVER_DBUS_SESSION_NAME, QStringLiteral( PLAYUVER_DBUS_PATH ),
+            QStringLiteral( PLAYUVER_DBUS_SESSION_NAME ), QStringLiteral( "loadFile" ) );
+
+        QList<QVariant> dbusargs;
+        dbusargs.append( file );
+        m.setArguments( dbusargs );
+
+        QDBusMessage res = QDBusConnection::sessionBus().call( m );
+        if( res.type() == QDBusMessage::ReplyMessage )
         {
-          QVariant v = res.arguments()[0];
-          if (v.isValid())
+          if( res.arguments().count() == 1 )
           {
-            QString s = v.toString();
-            if ((!s.isEmpty()) && (s != QStringLiteral("ERROR")))
+            QVariant v = res.arguments()[0];
+            if( v.isValid() )
             {
-              tokens << s;
+              QString s = v.toString();
+              if( ( !s.isEmpty() ) && ( s != QStringLiteral( "ERROR" ) ) )
+              {
+                tokens << s;
+              }
             }
           }
         }
       }
-    }
-    // this will wait until exiting is emitted by the used instance, if wanted...
+      // this will wait until exiting is emitted by the used instance, if
+      // wanted...
       return needToBlock ? application.exec() : 0;
     }
   }
@@ -135,7 +140,9 @@ int main( int argc, char *argv[] )
   }
 
 #ifdef USE_FERVOR
-  FvUpdater::sharedUpdater()->SetFeedURL( "http://192.168.96.201/share/PlaYUVerProject/PlaYUVerUpdate-" UPDATE_CHANNEL ".xml" );
+  FvUpdater::sharedUpdater()->SetFeedURL(
+      "http://192.168.96.201/share/PlaYUVerProject/"
+      "PlaYUVerUpdate-" UPDATE_CHANNEL ".xml" );
   FvUpdater::sharedUpdater()->SetDependencies( "ALL" );
 #endif
 

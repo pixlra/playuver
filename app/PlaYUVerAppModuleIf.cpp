@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -26,22 +26,21 @@
 #include "VideoSubWindow.h"
 #include "VideoSubWindow.h"
 
-namespace plaYUVer
-{
-
-PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module ) :
-        m_bIsRunning( false ),
-        m_pcModuleAction( action ),
-        m_pcModule( module ),
-        m_pcDisplaySubWindow( NULL ),
-        m_pcDockWidget( NULL ),
-        m_pcModuleDock( NULL ),
-        m_pcModuleStream( NULL ),
-        m_pcProcessedFrame( NULL ),
-        m_dMeasurementResult( 0 )
+PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent,
+                                          QAction* action,
+                                          PlaYUVerModuleIf* module )
+    : m_bIsRunning( false )
+    , m_pcModuleAction( action )
+    , m_pcModule( module )
+    , m_pcDisplaySubWindow( NULL )
+    , m_pcDockWidget( NULL )
+    , m_pcModuleDock( NULL )
+    , m_pcModuleStream( NULL )
+    , m_pcProcessedFrame( NULL )
+    , m_dMeasurementResult( 0 )
 {
   setParent( parent );
-  for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
+  for( Int i = 0; i < MODULE_REQUIRES_MAX_NUM_FRAMES; i++ )
   {
     m_pcSubWindow[i] = NULL;
   }
@@ -106,7 +105,7 @@ Bool PlaYUVerAppModuleIf::apply( Bool isPlaying, Bool disableThreads )
 Void PlaYUVerAppModuleIf::run()
 {
   m_bIsRunning = true;
-
+  m_bSuccess = false;
   std::vector<PlaYUVerFrame*> apcFrameList;
   for( UInt i = 0; i < m_pcModule->m_uiNumberOfFrames; i++ )
   {
@@ -139,9 +138,10 @@ Void PlaYUVerAppModuleIf::run()
   {
     return;
   }
+  m_bSuccess = true;
   m_bIsRunning = false;
 #ifdef PLAYUVER_THREADED_MODULES
-  EventData *eventData = new EventData( true, this );
+  EventData* eventData = new EventData( m_bSuccess, this );
   if( parent() )
     QCoreApplication::postEvent( parent(), eventData );
 #endif
@@ -152,23 +152,23 @@ Void PlaYUVerAppModuleIf::show()
 {
   switch( m_pcModule->m_iModuleType )
   {
-  case FRAME_PROCESSING_MODULE:
-    if( m_pcDisplaySubWindow )
-    {
-      m_pcDisplaySubWindow->setCurrFrame( m_pcProcessedFrame );
-      m_pcDisplaySubWindow->setFillWindow( false );
-      m_pcDisplaySubWindow->clearWindowBusy();
-    }
-    else
-    {
-      m_pcSubWindow[0]->setCurrFrame( m_pcProcessedFrame );
-      m_pcSubWindow[0]->setFillWindow( false );
-      m_pcSubWindow[0]->clearWindowBusy();
-    }
-    break;
-  case FRAME_MEASUREMENT_MODULE:
-    m_pcModuleDock->setModulueReturnValue( m_dMeasurementResult );
-    break;
+    case FRAME_PROCESSING_MODULE:
+      if( m_pcDisplaySubWindow )
+      {
+        m_pcDisplaySubWindow->setCurrFrame( m_pcProcessedFrame );
+        m_pcDisplaySubWindow->setFillWindow( false );
+        m_pcDisplaySubWindow->clearWindowBusy();
+      }
+      else
+      {
+        m_pcSubWindow[0]->setCurrFrame( m_pcProcessedFrame );
+        m_pcSubWindow[0]->setFillWindow( false );
+        m_pcSubWindow[0]->clearWindowBusy();
+      }
+      break;
+    case FRAME_MEASUREMENT_MODULE:
+      m_pcModuleDock->setModulueReturnValue( m_dMeasurementResult );
+      break;
   }
 }
 
@@ -196,7 +196,7 @@ Void PlaYUVerAppModuleIf::destroy()
     m_pcDisplaySubWindow->closeSubWindow();
   m_pcDisplaySubWindow = NULL;
 
-  for( Int i = 0; i < MAX_NUMBER_FRAMES; i++ )
+  for( Int i = 0; i < MODULE_REQUIRES_MAX_NUM_FRAMES; i++ )
   {
     if( m_pcSubWindow[i] )
     {
@@ -216,8 +216,4 @@ Void PlaYUVerAppModuleIf::destroy()
     m_pcModule->Delete();
     m_pcModule = NULL;
   }
-
 }
-
-}  // NAMESPACE
-

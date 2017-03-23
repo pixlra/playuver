@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,57 +25,68 @@
 #ifndef __CONFIGUREFORMATDIALOG_H__
 #define __CONFIGUREFORMATDIALOG_H__
 
-#include "config.h"
+#include <QDialog>
+#include <QVector>
+
 #include "PlaYUVerAppDefs.h"
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
-#include <QtCore>
+#include "lib/PlaYUVerStream.h"
 
-class QPixmap;
-class QColor;
+class QComboBox;
+class QHBoxLayout;
+class QLabel;
+class QSpinBox;
+class QString;
+class QWidget;
 
-namespace plaYUVer
-{
+typedef QVector<PlaYUVerStdResolution> PlaYUVerStdResolutionVector;
+QDataStream& operator<<( QDataStream& out, const PlaYUVerStdResolutionVector& array );
+QDataStream& operator>>( QDataStream& in, PlaYUVerStdResolutionVector& array );
 
 /**
  *
  */
-class ConfigureFormatDialog: public QDialog
+class ConfigureFormatDialog : public QDialog
 {
-Q_OBJECT
+  Q_OBJECT
 
-public:
+ public:
+  ConfigureFormatDialog( QWidget* parent = 0 );
+  Int runConfigureFormatDialog( const QString& Filename,
+                                UInt& rWidth,
+                                UInt& rHeight,
+                                Int& rInputFormat,
+                                UInt& rBits,
+                                Int& rEndianess,
+                                UInt& rFrameRate );
 
-  ConfigureFormatDialog( QWidget *parent = 0 );
-  Int runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, Int& rEndianess, UInt& rFrameRate );
+  Void readSettings();
+  Void writeSettings();
 
-private Q_SLOTS:
+ private Q_SLOTS:
   void slotStandardResolutionSelected( int );
   void slotResolutionChange();
   void slotColorSpaceChange( int );
   void slotBitsChange( int );
 
-private:
+ private:
   QStringList standardResolutionNames;
   QVector<QSize> standardResolutionSizes;
+  PlaYUVerStdResolutionVector aRCustomFileFormats;
 
   QLabel* m_labelFilename;
-  QComboBox *m_comboBoxStandardResolution;
-  QSpinBox *m_spinBoxWidth;
-  QSpinBox *m_spinBoxheight;
-  QComboBox *m_comboBoxColorSpace;
-  QComboBox *m_comboBoxPixelFormat;
-  QSpinBox *m_spinBoxBits;
+  QComboBox* m_comboBoxStandardResolution;
+  QSpinBox* m_spinBoxWidth;
+  QSpinBox* m_spinBoxheight;
+  QComboBox* m_comboBoxColorSpace;
+  QComboBox* m_comboBoxPixelFormat;
+  QSpinBox* m_spinBoxBits;
   QWidget* m_widgetEndianness;
   QComboBox* m_comboBoxEndianness;
   QHBoxLayout* framerateFormatLayout;
-  QSpinBox *m_spinBoxFrameRate;
-
+  QSpinBox* m_spinBoxFrameRate;
 };
 
-}  // NAMESPACE
+Q_DECLARE_METATYPE( PlaYUVerStdResolution );
+Q_DECLARE_METATYPE( PlaYUVerStdResolutionVector );
 
-#endif // __CONFIGUREFORMATDIALOG_H__
+#endif  // __CONFIGUREFORMATDIALOG_H__

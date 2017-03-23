@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -22,27 +22,150 @@
  * \brief    Dialog box to set the sequence resolution
  */
 
-#include "ConfigureFormatDialog.h"
+#include <QComboBox>
+#include <QDebug>
+#include <QDialogButtonBox>
+#include <QFileInfo>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QSettings>
+#include <QSpinBox>
+#include <QString>
+#include <QWidget>
+
 #include "lib/PlaYUVerFrame.h"
-#include "lib/PlaYUVerStream.h"
 
-namespace plaYUVer
+#include "ConfigureFormatDialog.h"
+
+#define MAX_SUPPORTED_RESOLUTION 99999
+
+QDataStream& operator<<( QDataStream& out, const PlaYUVerStdResolutionVector& array )
 {
+  PlaYUVerStdResolution d;
+  out << array.size();
+  for( Int i = 0; i < array.size(); i++ )
+  {
+    d = array.at( i );
+    out << QString::fromStdString( d.shortName ) << d.uiWidth << d.uiHeight;
+  }
+  return out;
+}
 
-ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
-        QDialog( parent )
+QDataStream& operator>>( QDataStream& in, PlaYUVerStdResolutionVector& array )
+{
+  PlaYUVerStdResolution d;
+  QString auxName;
+  Int array_size;
+  in >> array_size;
+  for( Int i = 0; i < array_size; i++ )
+  {
+    in >> auxName;
+    d.shortName = auxName.toStdString();
+    in >> d.uiWidth;
+    in >> d.uiHeight;
+    array.append( d );
+  }
+  return in;
+}
+
+class AddCustomFormat : public QDialog
+{
+ public:
+  AddCustomFormat( QWidget* parent = NULL ) : QDialog( parent, Qt::Dialog | Qt::WindowTitleHint )
+  {
+    setWindowModality( Qt::ApplicationModal );
+    setWindowTitle( "Add custom resolution" );
+
+    QLabel* nameLabel = new QLabel( "Name" );
+    m_lineEdtName = new QLineEdit();
+
+    QLabel* widthLabel = new QLabel( "Width" );
+    m_spinWidth = new QSpinBox;
+    m_spinWidth->setMinimumSize( 70, 5 );
+    m_spinWidth->setMaximumSize( 70, 30 );
+    m_spinWidth->setMinimum( 0 );
+    m_spinWidth->setMaximum( MAX_SUPPORTED_RESOLUTION );
+
+    QLabel* heightLabel = new QLabel( "Heigth" );
+    m_spinHeight = new QSpinBox;
+    m_spinHeight->setMinimumSize( 70, 5 );
+    m_spinHeight->setMaximumSize( 70, 30 );
+    m_spinHeight->setMinimum( 0 );
+    m_spinHeight->setMaximum( MAX_SUPPORTED_RESOLUTION );
+
+    QDialogButtonBox* dialogButtonOkCancel = new QDialogButtonBox();
+    dialogButtonOkCancel->setObjectName( QString::fromUtf8( "dialogButtonBox" ) );
+    dialogButtonOkCancel->setStandardButtons( QDialogButtonBox::Cancel | QDialogButtonBox::Ok );
+    dialogButtonOkCancel->setCenterButtons( false );
+
+    QGridLayout* mainLayout = new QGridLayout;
+    mainLayout->addWidget( nameLabel, 0, 0, 1, 1, Qt::AlignCenter );
+    mainLayout->addWidget( widthLabel, 0, 1, 1, 1, Qt::AlignCenter );
+    mainLayout->addWidget( heightLabel, 0, 2, 1, 1, Qt::AlignCenter );
+
+    mainLayout->addWidget( m_lineEdtName, 1, 0, 1, 1, Qt::AlignCenter );
+    mainLayout->addWidget( m_spinWidth, 1, 1, 1, 1, Qt::AlignCenter );
+    mainLayout->addWidget( m_spinHeight, 1, 2, 1, 1, Qt::AlignCenter );
+
+    mainLayout->addWidget( dialogButtonOkCancel, 2, 0, 1, 3, Qt::AlignRight );
+
+    setLayout( mainLayout );
+
+    connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
+    connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  }
+
+  PlaYUVerStdResolution runDialog()
+  {
+    PlaYUVerStdResolution stdResolution;
+    stdResolution.shortName = "";
+    if( exec() == QDialog::Accepted )
+    {
+      stdResolution.shortName = m_lineEdtName->text().toStdString();
+      stdResolution.uiWidth = m_spinWidth->value();
+      stdResolution.uiHeight = m_spinHeight->value();
+    }
+    return stdResolution;
+  }
+
+ private:
+  QLineEdit* m_lineEdtName;
+  QSpinBox* m_spinWidth;
+  QSpinBox* m_spinHeight;
+};
+
+ConfigureFormatDialog::ConfigureFormatDialog( QWidget* parent ) : QDialog( parent )
 {
   QString Name;
   UInt uiWidth, uiHeight;
-  std::vector<PlaYUVerStdResolution> listPlaYUVerStdResolution = PlaYUVerStream::stdResolutionSizes();
+
+  readSettings();
+  for( UInt i = 0; i < aRCustomFileFormats.size(); i++ )
+  {
+    Name = QString::fromStdString( aRCustomFileFormats[i].shortName );
+    uiWidth = aRCustomFileFormats[i].uiWidth;
+    uiHeight = aRCustomFileFormats[i].uiHeight;
+    standardResolutionNames.append(
+        QString( "%1 (%2x%3)" ).arg( Name ).arg( uiWidth ).arg( uiHeight ) );
+    standardResolutionSizes.append( QSize( uiWidth, uiHeight ) );
+  }
+
+  std::vector<PlaYUVerStdResolution> listPlaYUVerStdResolution =
+      PlaYUVerStream::stdResolutionSizes();
   for( UInt i = 0; i < listPlaYUVerStdResolution.size(); i++ )
   {
     Name = QString::fromStdString( listPlaYUVerStdResolution[i].shortName );
     uiWidth = listPlaYUVerStdResolution[i].uiWidth;
     uiHeight = listPlaYUVerStdResolution[i].uiHeight;
-    standardResolutionNames.append( QString( "%1 (%2x%3)" ).arg( Name ).arg( uiWidth ).arg( uiHeight ) );
+    standardResolutionNames.append(
+        QString( "%1 (%2x%3)" ).arg( Name ).arg( uiWidth ).arg( uiHeight ) );
     standardResolutionSizes.append( QSize( uiWidth, uiHeight ) );
   }
+
+  standardResolutionNames.append( QStringLiteral( "Custom..." ) );
+  standardResolutionSizes.append( QSize( 0, 0 ) );
 
   setObjectName( "ConfigureFormat" );
 
@@ -63,16 +186,17 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   normalFont.setBold( false );
   // menusFont.setPointSize( 12 );
 
-//  // headLayout
-//  QHBoxLayout* headLayout = new QHBoxLayout();
-//  QLabel* dialogTitleLabel = new QLabel();
-//  dialogTitleLabel->setFont( titleFont );
-//  dialogTitleLabel->setText( "Configure Resolution" );
-//  headLayout->addWidget( dialogTitleLabel );
-//  headLayout->addItem( new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-//
-//  MainLayout->addLayout( headLayout );
-//  MainLayout->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum ) );
+  //  // headLayout
+  //  QHBoxLayout* headLayout = new QHBoxLayout();
+  //  QLabel* dialogTitleLabel = new QLabel();
+  //  dialogTitleLabel->setFont( titleFont );
+  //  dialogTitleLabel->setText( "Configure Resolution" );
+  //  headLayout->addWidget( dialogTitleLabel );
+  //  headLayout->addItem( new QSpacerItem( 20, 20, QSizePolicy::Expanding,
+  //  QSizePolicy::Minimum ) );
+  //
+  //  MainLayout->addLayout( headLayout );
+  //  MainLayout->addItem( new QSpacerItem( 10, 20, QSizePolicy::Minimum ) );
 
   /*
    *  Filename layout
@@ -84,7 +208,8 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   m_labelFilename = new QLabel();
   m_labelFilename->setFont( titleFont );
   filenameLayout->addWidget( filenameLabel );
-  filenameLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  filenameLayout->addItem(
+      new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
   filenameLayout->addWidget( m_labelFilename );
   MainLayout->addLayout( filenameLayout );
 
@@ -114,14 +239,14 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   QLabel* widthLabel = new QLabel( "Width" );
   widthLabel->setFont( normalFont );
   m_spinBoxWidth = new QSpinBox();
-  m_spinBoxWidth->setRange( 0, 99999 );
+  m_spinBoxWidth->setRange( 0, MAX_SUPPORTED_RESOLUTION );
   m_spinBoxWidth->setValue( 0 );
   m_spinBoxWidth->setFont( normalFont );
 
   QLabel* heightLabel = new QLabel( "Height" );
   heightLabel->setFont( normalFont );
   m_spinBoxheight = new QSpinBox();
-  m_spinBoxheight->setRange( 0, 99999 );
+  m_spinBoxheight->setRange( 0, MAX_SUPPORTED_RESOLUTION );
   m_spinBoxheight->setValue( 0 );
   m_spinBoxheight->setFont( normalFont );
 
@@ -162,18 +287,20 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
 
   for( UInt i = 0; i < PlaYUVerFrame::supportedColorSpacesListNames().size(); i++ )
   {
-    m_comboBoxColorSpace->insertItem( i, PlaYUVerFrame::supportedColorSpacesListNames()[i].c_str() );
+    m_comboBoxColorSpace->insertItem( i,
+                                      PlaYUVerFrame::supportedColorSpacesListNames()[i].c_str() );
   }
   m_comboBoxColorSpace->setCurrentIndex( 1 );
 
   pixelGridLayout->addWidget( colorSpaceLabel, 0, 0 );
-  pixelGridLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ), 0, 1 );
+  pixelGridLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ),
+                            0, 1 );
   pixelGridLayout->addWidget( m_comboBoxColorSpace, 0, 2 );
 
   pixelGridLayout->addWidget( pixelFormatLabel, 1, 0 );
-  pixelGridLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ), 1, 1 );
+  pixelGridLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ),
+                            1, 1 );
   pixelGridLayout->addWidget( m_comboBoxPixelFormat, 1, 2 );
-
 
   QLabel* bitsPerPelLabel = new QLabel();
   bitsPerPelLabel->setFont( normalFont );
@@ -184,7 +311,8 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   m_spinBoxBits->setRange( 0, 16 );
   m_spinBoxBits->setValue( 8 );
   pixelGridLayout->addWidget( bitsPerPelLabel, 2, 0 );
-  pixelGridLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ), 2, 1 );
+  pixelGridLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ),
+                            2, 1 );
   pixelGridLayout->addWidget( m_spinBoxBits, 2, 2 );
 
   /*
@@ -198,13 +326,14 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   m_comboBoxEndianness->setFont( normalFont );
   m_comboBoxEndianness->setSizePolicy( sizePolicy );
   m_comboBoxEndianness->clear();
-  m_comboBoxEndianness->addItem( QStringLiteral("Big Endian") );
-  m_comboBoxEndianness->addItem( QStringLiteral("Little Endian") );
+  m_comboBoxEndianness->addItem( QStringLiteral( "Big Endian" ) );
+  m_comboBoxEndianness->addItem( QStringLiteral( "Little Endian" ) );
   endiannessLayout->addWidget( endiannessLabel );
-  endiannessLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  endiannessLayout->addItem(
+      new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
   endiannessLayout->addWidget( m_comboBoxEndianness );
   m_widgetEndianness = new QWidget();
-  m_widgetEndianness->setContentsMargins( 0,0,0,0 );
+  m_widgetEndianness->setContentsMargins( 0, 0, 0, 0 );
   m_widgetEndianness->setLayout( endiannessLayout );
   m_widgetEndianness->setVisible( true );
 
@@ -221,12 +350,12 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   m_spinBoxFrameRate->setRange( 0, 200 );
   m_spinBoxFrameRate->setValue( 30 );
   framerateFormatLayout->addWidget( framerateFormatLabel );
-  framerateFormatLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  framerateFormatLayout->addItem(
+      new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
   framerateFormatLayout->addWidget( m_spinBoxFrameRate );
   QWidget* framerateWidget = new QWidget();
-  framerateWidget->setContentsMargins( 0,0,0,0 );
+  framerateWidget->setContentsMargins( 0, 0, 0, 0 );
   framerateWidget->setLayout( framerateFormatLayout );
-
 
   /*
    *  Confirmation buttons
@@ -246,11 +375,13 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
   MainLayout->addWidget( dialogButtonOkCancel );
 
-  connect( m_comboBoxStandardResolution, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotStandardResolutionSelected(int) ) );
-  connect( m_spinBoxWidth, SIGNAL( valueChanged(int) ), this, SLOT( slotResolutionChange() ) );
-  connect( m_spinBoxheight, SIGNAL( valueChanged(int) ), this, SLOT( slotResolutionChange() ) );
-  connect( m_comboBoxColorSpace, SIGNAL( currentIndexChanged(int) ), this, SLOT( slotColorSpaceChange(int) ) );
-  connect( m_spinBoxBits, SIGNAL( valueChanged(int) ), this, SLOT( slotBitsChange(int) ) );
+  connect( m_comboBoxStandardResolution, SIGNAL( currentIndexChanged( int ) ), this,
+           SLOT( slotStandardResolutionSelected( int ) ) );
+  connect( m_spinBoxWidth, SIGNAL( valueChanged( int ) ), this, SLOT( slotResolutionChange() ) );
+  connect( m_spinBoxheight, SIGNAL( valueChanged( int ) ), this, SLOT( slotResolutionChange() ) );
+  connect( m_comboBoxColorSpace, SIGNAL( currentIndexChanged( int ) ), this,
+           SLOT( slotColorSpaceChange( int ) ) );
+  connect( m_spinBoxBits, SIGNAL( valueChanged( int ) ), this, SLOT( slotBitsChange( int ) ) );
 
   connect( dialogButtonOkCancel, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( dialogButtonOkCancel, SIGNAL( rejected() ), this, SLOT( reject() ) );
@@ -258,13 +389,18 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget *parent ) :
   m_comboBoxColorSpace->setCurrentIndex( 0 );
 
   setFixedSize( MainLayout->sizeHint() );
-
 }
 
-Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits, Int& rEndianess, UInt& rFrameRate )
+Int ConfigureFormatDialog::runConfigureFormatDialog( const QString& Filename,
+                                                     UInt& rWidth,
+                                                     UInt& rHeight,
+                                                     Int& rInputFormat,
+                                                     UInt& rBits,
+                                                     Int& rEndianess,
+                                                     UInt& rFrameRate )
 {
   // Set default values
-  //setWindowTitle( "Configure resolution for " + Filename );
+  // setWindowTitle( "Configure resolution for " + Filename );
   m_labelFilename->setText( QFileInfo( Filename ).fileName() );
   m_spinBoxWidth->setValue( rWidth );
   m_spinBoxheight->setValue( rHeight );
@@ -273,7 +409,7 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWi
   Int sampling = 0;
   if( rInputFormat >= 0 )
   {
-    std::string pelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[rInputFormat];
+    String pelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[rInputFormat];
     for( UInt j = 0; j < PlaYUVerFrame::supportedColorSpacesListNames().size(); j++ )
     {
       for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames( j ).size(); i++ )
@@ -300,23 +436,28 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWi
     m_widgetEndianness->setVisible( false );
   }
   m_spinBoxFrameRate->setValue( rFrameRate );
-  for( Int i = 0; i < standardResolutionSizes.size(); i++ )
+
+  for( Int i = 0; i < standardResolutionSizes.size() - 1; i++ )
   {
     if( standardResolutionSizes.at( i ) == QSize( rWidth, rHeight ) )
     {
       m_comboBoxStandardResolution->setCurrentIndex( i );
+      qDebug() << "ola";
       break;
     }
   }
+
   if( exec() == QDialog::Rejected )
   {
+    writeSettings();
     return QDialog::Rejected;
   }
+
   rWidth = m_spinBoxWidth->value();
   rHeight = m_spinBoxheight->value();
   colorSpace = m_comboBoxColorSpace->currentIndex();
   sampling = m_comboBoxPixelFormat->currentIndex();
-  std::string pelFmtName = PlaYUVerFrame::supportedPixelFormatListNames( colorSpace )[sampling];
+  String pelFmtName = PlaYUVerFrame::supportedPixelFormatListNames( colorSpace )[sampling];
   for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
   {
     if( pelFmtName == PlaYUVerFrame::supportedPixelFormatListNames()[i] )
@@ -328,11 +469,32 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( QString Filename, UInt& rWi
   rBits = m_spinBoxBits->value();
   rEndianess = m_comboBoxEndianness->currentIndex();
   rFrameRate = m_spinBoxFrameRate->value();
+  writeSettings();
   return QDialog::Accepted;
 }
 
 void ConfigureFormatDialog::slotStandardResolutionSelected( Int idx )
 {
+  if( idx == standardResolutionSizes.size() - 1 )
+  {
+    AddCustomFormat* pcCustomFmtDialog = new AddCustomFormat;
+    PlaYUVerStdResolution customResolution = pcCustomFmtDialog->runDialog();
+    aRCustomFileFormats.append( customResolution );
+    if( customResolution.shortName != "" )
+    {
+      QString name = QString::fromStdString( customResolution.shortName );
+      name.append(
+          QString( " (%2x%3)" ).arg( customResolution.uiWidth ).arg( customResolution.uiHeight ) );
+      standardResolutionNames.insert( 0, name );
+      standardResolutionSizes.insert(
+          0, QSize( customResolution.uiWidth, customResolution.uiHeight ) );
+
+      m_comboBoxStandardResolution->blockSignals( true );
+      m_comboBoxStandardResolution->insertItem( 0, name );
+      m_comboBoxStandardResolution->blockSignals( false );
+      m_comboBoxStandardResolution->setCurrentIndex( 0 );
+    }
+  }
   if( idx >= 0 )
   {
     QSize currSize = standardResolutionSizes.at( idx );
@@ -351,7 +513,8 @@ void ConfigureFormatDialog::slotResolutionChange()
   Int newIdx = -1;
   for( Int i = 0; i < standardResolutionSizes.size(); i++ )
   {
-    if( standardResolutionSizes.at( i ) == QSize( m_spinBoxWidth->value(), m_spinBoxheight->value() ) )
+    if( standardResolutionSizes.at( i ) ==
+        QSize( m_spinBoxWidth->value(), m_spinBoxheight->value() ) )
     {
       newIdx = i;
       break;
@@ -369,7 +532,8 @@ Void ConfigureFormatDialog::slotColorSpaceChange( Int idx )
   m_comboBoxPixelFormat->clear();
   for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames( idx ).size(); i++ )
   {
-    m_comboBoxPixelFormat->insertItem( i, PlaYUVerFrame::supportedPixelFormatListNames( idx )[i].c_str() );
+    m_comboBoxPixelFormat->insertItem(
+        i, PlaYUVerFrame::supportedPixelFormatListNames( idx )[i].c_str() );
   }
   m_comboBoxPixelFormat->setCurrentIndex( 0 );
 }
@@ -386,4 +550,17 @@ Void ConfigureFormatDialog::slotBitsChange( Int idx )
   }
 }
 
-}  // NAMESPACE
+Void ConfigureFormatDialog::readSettings()
+{
+  QSettings appSettings;
+  QVariant value = appSettings.value( "ConfigureFormatDialog/CustomFormats" );
+  aRCustomFileFormats = value.value<PlaYUVerStdResolutionVector>();
+}
+
+Void ConfigureFormatDialog::writeSettings()
+{
+  QSettings appSettings;
+  QVariant var;
+  var.setValue<PlaYUVerStdResolutionVector>( aRCustomFileFormats );
+  appSettings.setValue( "ConfigureFormatDialog/CustomFormats", var );
+}

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -37,35 +37,32 @@
 #ifndef __SUBWINDOWABSTRACT_H__
 #define __SUBWINDOWABSTRACT_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
-#include <QWidget>
-#include <QString>
+#include "config.h"
 #include <QPoint>
 #include <QSize>
+#include <QString>
+#include <QWidget>
 
 class QHBoxLayout;
 class QFocusEvent;
 class QCloseEvent;
 
-namespace plaYUVer
-{
-
 class PlaYUVerMdiSubWindow;
 
-class SubWindowAbstract: public QWidget
+class SubWindowAbstract : public QWidget
 {
-Q_OBJECT
+  Q_OBJECT
 
-private:
+ private:
   QHBoxLayout* m_pcLayout;
   UInt m_uiCategory;
   QString m_cWindowName;
 
   PlaYUVerMdiSubWindow* m_cSubWindow;
 
-public:
-  enum SubWindowCategories
+ public:
+  enum SubWindowCategory
   {
     SUBWINDOW = 0,
     VIDEO_SUBWINDOW = 1,
@@ -73,8 +70,9 @@ public:
     MODULE_SUBWINDOW = 4,
     PLOT_SUBWINDOW = 8,
   };
+  Q_DECLARE_FLAGS( SubWindowCategories, SubWindowCategory )
 
-  SubWindowAbstract( QWidget *, UInt );
+  SubWindowAbstract( QWidget*, UInt );
   ~SubWindowAbstract();
 
   /**
@@ -91,7 +89,8 @@ public:
    */
   virtual Void zoomToFit() = 0;
   /**
-   * Scale the image (zoomed in or out) to speficied absolute zoom value (1.0 = original size).
+   * Scale the image (zoomed in or out) to speficied absolute zoom value (1.0 =
+   * original size).
    */
   virtual Void zoomToFactor( Double factor, QPoint center = QPoint() ) = 0;
   /**
@@ -107,7 +106,7 @@ public:
    * Size related functions
    */
   virtual QSize sizeHint() const;
-  virtual QSize sizeHint( const QSize & ) const;
+  virtual QSize sizeHint( const QSize& ) const;
 
   /**
    * Window name
@@ -124,42 +123,31 @@ public:
    * @note This function should be used with enum SubWindowCategories
    *        with an & operation and it may belong to several categories
    */
-  UInt getCategory()
-  {
-    return m_uiCategory;
-  }
-
+  UInt getCategory() { return m_uiCategory; }
   /**
    * Check category of the SubWindow
    * @param checkCateory SubWindow category to check against;
    *        it should be enum SubWindowCategories type
    * @return true when SubWindow belong to checkCateory
    */
-  Bool checkCategory( UInt checkCateory )
-  {
-    return m_uiCategory & checkCateory;
-  }
-
-  Void setSubWindow( PlaYUVerMdiSubWindow* subWindow )
-  {
-    m_cSubWindow = subWindow;
-  }
-
+  Bool checkCategory( UInt checkCateory ) { return m_uiCategory & checkCateory; }
+  Void setSubWindow( PlaYUVerMdiSubWindow* subWindow ) { m_cSubWindow = subWindow; }
   Void closeSubWindow();
 
-protected:
+ protected:
   void focusInEvent( QFocusEvent* event );
   void closeEvent( QCloseEvent* event );
 
   Void setWidget( QWidget* widget );
 
-Q_SIGNALS:
+ Q_SIGNALS:
   /**
    * Notify that zoom factor was changed by internal event (e.g. by mouse wheel)
    */
   void zoomFactorChanged_SWindow( const double, const QPoint );
   /**
-   * Notify that scrollbar position was changed by internal event (e.g. by mouse panning )
+   * Notify that scrollbar position was changed by internal event (e.g. by mouse
+   * panning )
    */
   void scrollBarMoved_SWindow( const QPoint );
   /**
@@ -170,12 +158,8 @@ Q_SIGNALS:
   void aboutToActivate( SubWindowAbstract* );
   void aboutToClose( SubWindowAbstract* );
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void onDestroyed();
-
 };
 
-}  // NAMESPACE
-
-#endif // __SUBWINDOWABSTRACT_H__
-
+#endif  // __SUBWINDOWABSTRACT_H__

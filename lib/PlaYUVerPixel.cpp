@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -19,19 +19,15 @@
 
 /**
  * \file     PlaYUVerPixel.cpp
- * \ingroup  PlaYUVerLib
  * \brief    Pixel handling
  */
 
-#include <cstdio>
-#include <cmath>
-#include "PlaYUVerFrame.h"
 #include "PlaYUVerPixel.h"
+#include "PlaYUVerFrame.h"
+#include <cmath>
+#include <cstdio>
 
-namespace plaYUVer
-{
-
-PlaYUVerPixel::PlaYUVerPixel()
+PlaYUVerPixel::PlaYUVerPixel() : m_iColorSpace( COLOR_INVALID )
 {
   m_iColorSpace = COLOR_INVALID;
   PixelComponents[0] = 0;
@@ -40,7 +36,7 @@ PlaYUVerPixel::PlaYUVerPixel()
   PixelComponents[3] = 0;
 }
 
-PlaYUVerPixel::PlaYUVerPixel( Int ColorSpace )
+PlaYUVerPixel::PlaYUVerPixel( const Int& ColorSpace )
 {
   m_iColorSpace = ColorSpace == COLOR_GRAY ? COLOR_YUV : ColorSpace;
   PixelComponents[0] = 0;
@@ -49,7 +45,7 @@ PlaYUVerPixel::PlaYUVerPixel( Int ColorSpace )
   PixelComponents[3] = 0;
 }
 
-PlaYUVerPixel::PlaYUVerPixel( Int ColorSpace, Pel c0, Pel c1, Pel c2 )
+PlaYUVerPixel::PlaYUVerPixel( const Int& ColorSpace, const Pel& c0, const Pel& c1, const Pel& c2 )
 {
   m_iColorSpace = ColorSpace == COLOR_GRAY ? COLOR_YUV : ColorSpace;
   PixelComponents[0] = c0;
@@ -58,21 +54,82 @@ PlaYUVerPixel::PlaYUVerPixel( Int ColorSpace, Pel c0, Pel c1, Pel c2 )
   PixelComponents[3] = 0;
 }
 
-PlaYUVerPixel PlaYUVerPixel::operator+ ( const PlaYUVerPixel& in )
+PlaYUVerPixel::~PlaYUVerPixel()
+{
+}
+
+Int PlaYUVerPixel::ColorSpaceType()
+{
+  return m_iColorSpace;
+}
+
+Pel* PlaYUVerPixel::Components()
+{
+  return PixelComponents;
+}
+
+Pel PlaYUVerPixel::Y() const
+{
+  return PixelComponents[0];
+}
+Pel PlaYUVerPixel::Cb() const
+{
+  return PixelComponents[1];
+}
+Pel PlaYUVerPixel::Cr() const
+{
+  return PixelComponents[2];
+}
+
+Pel& PlaYUVerPixel::Y()
+{
+  return PixelComponents[0];
+}
+Pel& PlaYUVerPixel::Cb()
+{
+  return PixelComponents[1];
+}
+Pel& PlaYUVerPixel::Cr()
+{
+  return PixelComponents[2];
+}
+Pel& PlaYUVerPixel::R()
+{
+  return PixelComponents[0];
+}
+Pel& PlaYUVerPixel::G()
+{
+  return PixelComponents[1];
+}
+Pel& PlaYUVerPixel::B()
+{
+  return PixelComponents[2];
+}
+
+Pel PlaYUVerPixel::operator[]( const Int& channel ) const
+{
+  return PixelComponents[channel];
+}
+Pel& PlaYUVerPixel::operator[]( const Int& channel )
+{
+  return PixelComponents[channel];
+}
+
+PlaYUVerPixel PlaYUVerPixel::operator+( const PlaYUVerPixel& in )
 {
   PlaYUVerPixel out( m_iColorSpace, Y() + in.Y(), Cb() + in.Cb(), Cr() + in.Cr() );
   return out;
 }
 
-PlaYUVerPixel PlaYUVerPixel::operator- ( const PlaYUVerPixel& in )
+PlaYUVerPixel PlaYUVerPixel::operator-( const PlaYUVerPixel& in )
 {
   PlaYUVerPixel out( m_iColorSpace, Y() - in.Y(), Cb() - in.Cb(), Cr() - in.Cr() );
   return out;
 }
 
-PlaYUVerPixel PlaYUVerPixel::operator* ( const Double& d )
+PlaYUVerPixel PlaYUVerPixel::operator*( const Double& op )
 {
-  PlaYUVerPixel out( m_iColorSpace, Y() * d, Cb() * d, Cr() * d );
+  PlaYUVerPixel out( m_iColorSpace, Y() * op, Cb() * op, Cr() * op );
   return out;
 }
 
@@ -86,7 +143,7 @@ PlaYUVerPixel PlaYUVerPixel::ConvertPixel( ColorSpace eOutputSpace )
 
   if( eOutputSpace == COLOR_RGB )
   {
-    YUV2RGB( Y(), Cb(), Cr(), outA, outB, outC );
+    YuvToRgb( Y(), Cb(), Cr(), outA, outB, outC );
     outPixel.R() = outA;
     outPixel.G() = outB;
     outPixel.B() = outC;
@@ -100,5 +157,3 @@ PlaYUVerPixel PlaYUVerPixel::ConvertPixel( ColorSpace eOutputSpace )
   }
   return outPixel;
 }
-
-}  // NAMESPACE

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -23,11 +23,7 @@
  */
 
 #include "WeightedPSNR.h"
-#include <algorithm>
 #include <cmath>
-
-namespace plaYUVer
-{
 
 WeightedPSNR::WeightedPSNR()
 {
@@ -40,11 +36,10 @@ WeightedPSNR::WeightedPSNR()
   m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS;
   m_uiNumberOfFrames = MODULE_REQUIRES_THREE_FRAMES;
 
-  m_cModuleOptions.addOptions()/**/
-  ( "Component", m_uiComponent, "Select the component to compute quality [0]" );
+  m_cModuleOptions.addOptions() /**/
+      ( "Component", m_uiComponent, "Select the component to compute quality [0]" );
 
   m_uiComponent = 0;
-
 }
 
 Bool WeightedPSNR::create( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -62,7 +57,8 @@ Bool WeightedPSNR::create( std::vector<PlaYUVerFrame*> apcFrameList )
   }
   for( UInt i = 1; i < apcFrameList.size(); i++ )
   {
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[1], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_BITS ) )
+    if( !apcFrameList[i]->haveSameFmt(
+            apcFrameList[1], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_BITS ) )
       return false;
   }
   return true;
@@ -105,7 +101,6 @@ Double measureWMSE( Int component, PlaYUVerFrame* Org, PlaYUVerFrame* Rec, PlaYU
   return ssd / Double( count );
 }
 
-
 Double WeightedPSNR::measure( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   Double dPSNR = 100;
@@ -118,8 +113,4 @@ Double WeightedPSNR::measure( std::vector<PlaYUVerFrame*> apcFrameList )
 
 Void WeightedPSNR::destroy()
 {
-
 }
-
-}  // NAMESPACE
-

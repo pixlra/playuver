@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -24,9 +24,6 @@
 
 #include "FrameShift.h"
 
-namespace plaYUVer
-{
-
 FrameShift::FrameShift()
 {
   /* Module Definition */
@@ -38,9 +35,9 @@ FrameShift::FrameShift()
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
   m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS | MODULE_USES_KEYS;
 
-  m_cModuleOptions.addOptions()/**/
-  ( "ShiftHorizontal", m_iShiftHor, "Amount of pixels to shift in horizontal direction" )/**/
-  ( "ShiftVertical", m_iShiftVer, "Amount of pixels to shift in vertical direction" );
+  m_cModuleOptions.addOptions()                                                               /**/
+      ( "ShiftHorizontal", m_iShiftHor, "Amount of pixels to shift in horizontal direction" ) /**/
+      ( "ShiftVertical", m_iShiftVer, "Amount of pixels to shift in vertical direction" );
 
   m_pcProcessedFrame = NULL;
   m_iShiftHor = 0;
@@ -50,10 +47,7 @@ FrameShift::FrameShift()
 Bool FrameShift::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
-  m_pcProcessedFrame = new PlaYUVerFrame( apcFrameList[0], false );
-
-//  m_iShiftHor = ( ( m_iShiftHor + 1 ) >> 1 ) << 1;
-//  m_iShiftVer = ( ( m_iShiftVer + 1 ) >> 1 ) << 1;
+  m_pcProcessedFrame = new PlaYUVerFrame( apcFrameList[0] );
   return true;
 }
 
@@ -64,11 +58,13 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
 
   UInt xStartOut = m_iShiftHor >= 0 ? m_iShiftHor : 0;
   UInt xStartIn = m_iShiftHor >= 0 ? 0 : -m_iShiftHor;
-  UInt xEndOut = m_iShiftHor >= 0 ? m_pcProcessedFrame->getWidth() : m_pcProcessedFrame->getWidth() + m_iShiftHor;
+  UInt xEndOut = m_iShiftHor >= 0 ? m_pcProcessedFrame->getWidth()
+                                  : m_pcProcessedFrame->getWidth() + m_iShiftHor;
 
   UInt yStartOut = m_iShiftVer >= 0 ? m_iShiftVer : 0;
   UInt yStartIn = m_iShiftVer >= 0 ? 0 : -m_iShiftVer;
-  UInt yEndOut = m_iShiftVer >= 0 ? m_pcProcessedFrame->getHeight() : m_pcProcessedFrame->getHeight() + m_iShiftVer;
+  UInt yEndOut = m_iShiftVer >= 0 ? m_pcProcessedFrame->getHeight()
+                                  : m_pcProcessedFrame->getHeight() + m_iShiftVer;
 
   m_pcProcessedFrame->clear();
 
@@ -89,12 +85,13 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
 
   xStartOut = iShiftHorChroma >= 0 ? iShiftHorChroma : 0;
   xStartIn = iShiftHorChroma >= 0 ? 0 : -iShiftHorChroma;
-  xEndOut = iShiftHorChroma >= 0 ? m_pcProcessedFrame->getChromaWidth() : m_pcProcessedFrame->getChromaWidth() + iShiftHorChroma;
+  xEndOut = iShiftHorChroma >= 0 ? m_pcProcessedFrame->getChromaWidth()
+                                 : m_pcProcessedFrame->getChromaWidth() + iShiftHorChroma;
 
   yStartOut = iShiftVerChroma >= 0 ? iShiftVerChroma : 0;
   yStartIn = iShiftVerChroma >= 0 ? 0 : -iShiftVerChroma;
-  yEndOut = iShiftVerChroma >= 0 ? m_pcProcessedFrame->getChromaHeight() : m_pcProcessedFrame->getChromaHeight() + iShiftVerChroma;
-
+  yEndOut = iShiftVerChroma >= 0 ? m_pcProcessedFrame->getChromaHeight()
+                                 : m_pcProcessedFrame->getChromaHeight() + iShiftVerChroma;
 
   for( UInt c = 1; c < m_pcProcessedFrame->getNumberChannels(); c++ )
   {
@@ -135,7 +132,7 @@ Bool FrameShift::keyPressed( enum Module_Key_Supported value )
     m_iShiftVer += 1;
     return true;
   }
-  
+
   return false;
 }
 
@@ -145,6 +142,3 @@ Void FrameShift::destroy()
     delete m_pcProcessedFrame;
   m_pcProcessedFrame = NULL;
 }
-
-}  // NAMESPACE
-

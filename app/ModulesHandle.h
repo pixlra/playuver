@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -26,8 +26,8 @@
 
 #include "config.h"
 
-#include <iostream>
 #include <cstdio>
+#include <iostream>
 
 #include <QtCore>
 #if( QT_VERSION_PLAYUVER == 5 )
@@ -35,28 +35,25 @@
 #elif( QT_VERSION_PLAYUVER == 4 )
 #include <QtGui>
 #endif
-#include "PlaYUVerAppModuleIf.h"
 #include "PlaYUVerAppDefs.h"
+#include "PlaYUVerAppModuleIf.h"
 #include "lib/PlaYUVerFrame.h"
-
-namespace plaYUVer
-{
 
 class VideoHandle;
 class PlaYUVerSubWindowHandle;
 class PlaYUVerAppModuleIf;
 class SubWindowHandle;
 
-class ModulesHandle: public QWidget
+class ModulesHandle : public QWidget
 {
-Q_OBJECT
-public:
+  Q_OBJECT
+ public:
   ModulesHandle( QWidget*, PlaYUVerSubWindowHandle*, VideoHandle* );
   ~ModulesHandle();
 
   Void createActions();
   QMenu* createMenu();
-  //QDockWidget* createDock();
+  // QDockWidget* createDock();
   Void buildMenu();
   Void updateMenus();
 
@@ -64,9 +61,11 @@ public:
   Void writeSettings();
 
   static Void destroyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
-  static Void applyModuleIf( QList<PlaYUVerAppModuleIf*> pcCurrModuleIfList,  Bool isPlaying = false, Bool disableThreads = false );
+  static Void applyModuleIf( QList<PlaYUVerAppModuleIf*> pcCurrModuleIfList,
+                             Bool isPlaying = false,
+                             Bool disableThreads = false );
 
-private:
+ private:
   QWidget* m_pcParent;
   PlaYUVerSubWindowHandle* m_pcMainWindowManager;
   VideoHandle* m_appModuleVideo;
@@ -87,7 +86,7 @@ private:
   enum MODULES_ACTION_LIST
   {
     LOAD_EXTERNAL_ACT,
-    //FORCE_PLAYING_REFRESH_ACT,
+    // FORCE_PLAYING_REFRESH_ACT,
     APPLY_ALL_ACT,
     SWAP_FRAMES_ACT,
     DISABLE_ACT,
@@ -100,23 +99,19 @@ private:
 
   Void enableModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
   Void applyAllModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
-  Void swapModulesWindowsIf( PlaYUVerAppModuleIf *pcCurrModuleIf );
+  Void swapModulesWindowsIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
 
-  Void customEvent( QEvent *event );
+  Void customEvent( QEvent* event );
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void changed();
 
-private Q_SLOTS:
+ private Q_SLOTS:
   void loadExternalModule();
   void activateModule();
   void processOpt( int index );
   void destroyWindowModules();
   void destroyAllModulesIf();
-
 };
 
-}  // NAMESPACE
-
-#endif // __MODULESHANDLE_H__
-
+#endif  // __MODULESHANDLE_H__

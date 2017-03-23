@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -19,45 +19,33 @@
 
 /**
  * \file     StreamHandlerOpenCV.h
- * \ingroup  PlaYUVerLib
  * \brief    Interface with opencv lib
  */
 
 #ifndef __STREAMHANDLEROPENCV_H__
 #define __STREAMHANDLEROPENCV_H__
 
-#include <inttypes.h>
-#include <vector>
-#include <string>
-#include <opencv2/opencv.hpp>
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerStreamHandlerIf.h"
 
 namespace cv
 {
-  class VideoCapture;
+class VideoCapture;
 }
-
-namespace plaYUVer
-{
 
 class PlaYUVerFrame;
 
-class StreamHandlerOpenCV: public PlaYUVerStreamHandlerIf
+class StreamHandlerOpenCV : public PlaYUVerStreamHandlerIf
 {
   REGISTER_STREAM_HANDLER( StreamHandlerOpenCV )
 
-public:
-
+ public:
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
 
   StreamHandlerOpenCV();
-  ~StreamHandlerOpenCV()
-  {
-  }
-
-  Bool openHandler( std::string strFilename, Bool bInput );
+  ~StreamHandlerOpenCV() {}
+  Bool openHandler( String strFilename, Bool bInput );
   Void closeHandler();
   Bool configureBuffer( PlaYUVerFrame* pcFrame );
   UInt64 calculateFrameNumber();
@@ -65,11 +53,8 @@ public:
   Bool read( PlaYUVerFrame* pcFrame );
   Bool write( PlaYUVerFrame* pcFrame );
 
-private:
+ private:
   cv::VideoCapture* pcVideoCapture;
-  cv::Mat* pcMat;
 };
 
-}  // NAMESPACE
-
-#endif // __STREAMHANDLEROPENCV_H__
+#endif  // __STREAMHANDLEROPENCV_H__

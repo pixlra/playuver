@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,37 +25,38 @@
 #ifndef __PLAYUVERSUBWINDOWHANDLE_H__
 #define __PLAYUVERSUBWINDOWHANDLE_H__
 
-#include "config.h"
-#include "PlaYUVerAppDefs.h"
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
+#include <QString>
+#include <QVector>
+#include <QWidget>
 
-namespace plaYUVer
-{
+#include "PlaYUVerAppDefs.h"
+
+class QAction;
+class QActionGroup;
+class QHBoxLayout;
+class QMenu;
+class QSignalMapper;
 
 class PlaYUVerApp;
 class SubWindowAbstract;
 class PlaYUVerMdiArea;
 class PlaYUVerMdiSubWindow;
 
-class PlaYUVerSubWindowHandle: public QWidget
+class PlaYUVerSubWindowHandle : public QWidget
 {
-Q_OBJECT
+  Q_OBJECT
 
-public:
-  PlaYUVerSubWindowHandle( QWidget *parent );
+ public:
+  PlaYUVerSubWindowHandle( QWidget* parent );
 
   Void processLogMsg( const QString& msg );
 
-  Void addSubWindow( SubWindowAbstract *widget, Qt::WindowFlags flags = 0 );
+  Void addSubWindow( SubWindowAbstract* widget, Qt::WindowFlags flags = 0 );
 
-  SubWindowAbstract *activeSubWindow() const;
+  SubWindowAbstract* activeSubWindow() const;
 
   QList<SubWindowAbstract*> findSubWindow( const UInt uiCategory = 0 ) const;
-  QList<SubWindowAbstract*> findSubWindow( const QString &aName, const UInt uiCategory = 0 ) const;
+  QList<SubWindowAbstract*> findSubWindow( const QString& aName, const UInt uiCategory = 0 ) const;
   SubWindowAbstract* findSubWindow( const SubWindowAbstract* subWindow ) const;
 
   Void createActions();
@@ -70,7 +71,7 @@ public:
     MDISUBWINDOWMODE = 1,
   };
 
-private:
+ private:
   PlaYUVerApp* m_pcApp;
   Int m_iWindowMode;
   QList<SubWindowAbstract*> m_apcSubWindowList;
@@ -106,15 +107,15 @@ private:
   /**
    * Internal functions
    */
-  Void addMdiSubWindow( SubWindowAbstract *window );
+  Void addMdiSubWindow( SubWindowAbstract* window );
   Void resetWindowMode();
   Void removeSubWindow( Int windowIdx );
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void setWindowMode( int iWindowMode );
-  void updateActiveSubWindow( SubWindowAbstract *window = 0 );
-  void setActiveSubWindow( QWidget *window );
-  void removeSubWindow( SubWindowAbstract *window );
+  void updateActiveSubWindow( SubWindowAbstract* window = 0 );
+  void setActiveSubWindow( QWidget* window );
+  void removeSubWindow( SubWindowAbstract* window );
   void removeMdiSubWindow( PlaYUVerMdiSubWindow* window );
   void removeActiveSubWindow();
   void removeAllSubWindow();
@@ -122,12 +123,9 @@ public Q_SLOTS:
   void cascadeSubWindows();
   void updateMenu();
 
-Q_SIGNALS:
+ Q_SIGNALS:
   void changed();
   void windowActivated();
-
 };
 
-}  // NAMESPACE
-
-#endif // __PLAYUVERSUBWINDOWHANDLE_H__
+#endif  // __PLAYUVERSUBWINDOWHANDLE_H__

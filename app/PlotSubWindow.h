@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,8 +25,8 @@
 #ifndef __PLOTWINDOWHANDLE_H__
 #define __PLOTWINDOWHANDLE_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
+#include "config.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )
@@ -36,14 +36,11 @@
 
 class QCustomPlot;
 
-namespace plaYUVer
+class PlotSubWindow : public SubWindowAbstract
 {
+  Q_OBJECT
 
-class PlotSubWindow: public SubWindowAbstract
-{
-Q_OBJECT
-
-private:
+ private:
   QCustomPlot* m_cPlotArea;
 
   QVector<QColor> m_arrayColorList;
@@ -58,18 +55,13 @@ private:
   Double m_dScaleFactor;
   Int m_iNumberPlots;
 
-public:
-
-  PlotSubWindow( const QString& windowTitle, QWidget * parent = NULL );
+ public:
+  PlotSubWindow( const QString& windowTitle, QWidget* parent = NULL );
   ~PlotSubWindow();
 
   Void definePlotColors();
 
-  Void refreshSubWindow()
-  {
-
-  }
-
+  Void refreshSubWindow() {}
   /**
    * Virtual functions from SubWindowAbstract
    */
@@ -78,16 +70,12 @@ public:
   Void zoomToFactor( Double factor, QPoint center = QPoint() );
   Void scaleView( Double scale, QPoint center = QPoint() );
 
-  Double getScaleFactor()
-  {
-    return m_dScaleFactor;
-  }
-
+  Double getScaleFactor() { return m_dScaleFactor; }
   /**
    * Size related functions
    */
   QSize sizeHint() const;
-  QSize sizeHint( const QSize & ) const;
+  QSize sizeHint( const QSize& ) const;
 
   Void setAxisName( const QString& nameAxisX, const QString& nameAxisY );
 
@@ -96,11 +84,9 @@ public:
 
   Void setKey( const QString& key );
 
-  Void addPlot( const QVector<Double> &arrayX, const QVector<Double> &arrayY, const QString& key = QString() );
-
+  Void addPlot( const QVector<Double>& arrayX,
+                const QVector<Double>& arrayY,
+                const QString& key = QString() );
 };
 
-}  // NAMESPACE
-
-#endif // __PLOTWINDOWHANDLE_H__
-
+#endif  // __PLOTWINDOWHANDLE_H__

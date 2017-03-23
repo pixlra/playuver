@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -24,9 +24,6 @@
 
 #include "FrameBinarization_APIv1.h"
 
-namespace plaYUVer
-{
-
 REGISTER_CLASS_MAKER( FrameBinarization )
 
 FrameBinarization::FrameBinarization()
@@ -39,8 +36,8 @@ FrameBinarization::FrameBinarization()
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
   m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS;
 
-  m_cModuleOptions.addOptions()/**/
-  ( "threshold", m_uiThreshold, "Threshold level for binarization (0-255) [128]" );
+  m_cModuleOptions.addOptions() /**/
+      ( "threshold", m_uiThreshold, "Threshold level for binarization (0-255) [128]" );
 
   m_pcBinFrame = NULL;
   m_uiThreshold = 128;
@@ -70,6 +67,3 @@ Void FrameBinarization::destroy()
     delete m_pcBinFrame;
   m_pcBinFrame = NULL;
 }
-
-}  // NAMESPACE
-

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -24,18 +24,13 @@
 
 #include "ProgressBar.h"
 #include <QApplication>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QProgressBar>
 #include <QDesktopWidget>
+#include <QLabel>
+#include <QProgressBar>
+#include <QVBoxLayout>
 
-namespace plaYUVer
-{
-
-ProgressBar::ProgressBar( QWidget *parent, UInt maxValue ) :
-        QWidget( parent ),
-        m_uiTotalProgress( maxValue ),
-        m_uiProgress( 0 )
+ProgressBar::ProgressBar( QWidget* parent, UInt maxValue )
+    : QWidget( parent ), m_uiTotalProgress( maxValue ), m_uiProgress( 0 )
 {
   QVBoxLayout* mainLayout = new QVBoxLayout( this );
   m_pcProgressBar = new QProgressBar;
@@ -45,8 +40,8 @@ ProgressBar::ProgressBar( QWidget *parent, UInt maxValue ) :
   setLayout( mainLayout );
   setWindowTitle( QStringLiteral( "Progress" ) );
 
-//  QSize appSize = QApplication::desktop()->availableGeometry().size();
-//  QPoint appCenter = QApplication::desktop()->availableGeometry().center();
+  //  QSize appSize = QApplication::desktop()->availableGeometry().size();
+  //  QPoint appCenter = QApplication::desktop()->availableGeometry().center();
   QSize appSize = parent->size();
   QPoint appPos = parent->pos();
   QPoint appCenter = QPoint( appPos.x() + appSize.width() / 2, appPos.y() + appSize.height() / 2 );
@@ -61,4 +56,3 @@ Void ProgressBar::incrementProgress( UInt increment )
   m_pcProgressBar->setValue( m_uiProgress );
   update();
 }
-}  // NAMESPACE

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -26,30 +26,26 @@
 #ifndef __VIEWAREA_H__
 #define __VIEWAREA_H__
 
-#include "config.h"
+#include "GridManager.h"
 #include "PlaYUVerAppDefs.h"
-#include <QWidget>
-#include <QPixmap>
+#include "config.h"
+#include "lib/PlaYUVerFrame.h"
 #include <QBitmap>
 #include <QColor>
+#include <QPixmap>
 #include <QTimer>
-#include "GridManager.h"
-#include "lib/PlaYUVerFrame.h"
-
-namespace plaYUVer
-{
+#include <QWidget>
 
 class PlaYUVerStream;
 
 /**
  *
  */
-class ViewArea: public QWidget
+class ViewArea : public QWidget
 {
-Q_OBJECT
+  Q_OBJECT
 
-public:
-
+ public:
   enum ViewModes
   {
     NavigationView,
@@ -57,13 +53,13 @@ public:
     BlockSelectionView,
   };
 
-  ViewArea( QWidget *parent = 0 );
+  ViewArea( QWidget* parent = 0 );
 
   Void setImage( PlaYUVerFrame* pcFrame );
-  Void setImage( const QPixmap &pixmap );
+  Void setImage( const QPixmap& pixmap );
 
   Void setMode( Int mode );
-  Void setMaskColor( const QColor &color = QColor() );
+  Void setMaskColor( const QColor& color = QColor() );
 
   /**
    * Clears any contents.
@@ -82,65 +78,44 @@ public:
    */
   Void clearMask();
 
-  QPixmap image() const
-  {
-    return m_pixmap;
-  }
-  QBitmap mask() const
-  {
-    return m_mask;
-  }
-  QRect selectedArea() const
-  {
-    return m_selectedArea;
-  }
-  GridManager gridManager() const
-  {
-    return m_grid;
-  }
-
-  QColor maskColor() const
-  {
-    return m_maskColor;
-  }
-
-  Double getZoomFactor()
-  {
-    return m_dZoomFactor;
-  }
-
-  // Scale function. Return used scale value (it may change when it touches the min or max zoom value)
+  QPixmap image() const { return m_pixmap; }
+  QBitmap mask() const { return m_mask; }
+  QRect selectedArea() const { return m_selectedArea; }
+  GridManager gridManager() const { return m_grid; }
+  QColor maskColor() const { return m_maskColor; }
+  Double getZoomFactor() { return m_dZoomFactor; }
+  // Scale function. Return used scale value (it may change when it touches the
+  // min or max zoom value)
   Double scaleZoomFactor( Double scale, QPoint center, QSize minimumSize );
 
-Q_SIGNALS:
-  void selectionChanged( const QRect &rect );
-  void positionChanged( const QPoint &pos );
+ Q_SIGNALS:
+  void selectionChanged( const QRect& rect );
+  void positionChanged( const QPoint& pos );
   void scrollBarMoved( QPoint offset );
   void zoomFactorChanged_byWheel( const double factor, const QPoint center );
 
-public Q_SLOTS:
-//  Void setNormalMode();
-//  Void setMaskMode();
-//  Void setMaskTool();
-//  Void setEraserTool();
-//  Void setNormalSelectionTool();
-//  Void setBlockSelectionTool();
+ public Q_SLOTS:
+  //  Void setNormalMode();
+  //  Void setMaskMode();
+  //  Void setMaskTool();
+  //  Void setEraserTool();
+  //  Void setNormalSelectionTool();
+  //  Void setBlockSelectionTool();
   void setSnapToGrid( bool enable );
-//  void setSelectedArea( QRect &rect );
+  //  void setSelectedArea( QRect &rect );
 
-protected:
-  Void paintEvent( QPaintEvent *event );
-  Void resizeEvent( QResizeEvent * event );
-  Void mousePressEvent( QMouseEvent *event );
-  Void mouseMoveEvent( QMouseEvent *event );
-  Void mouseReleaseEvent( QMouseEvent *event );
-  Void wheelEvent( QWheelEvent *event );
+ protected:
+  Void paintEvent( QPaintEvent* event );
+  Void resizeEvent( QResizeEvent* event );
+  Void mousePressEvent( QMouseEvent* event );
+  Void mouseMoveEvent( QMouseEvent* event );
+  Void mouseReleaseEvent( QMouseEvent* event );
+  Void wheelEvent( QWheelEvent* event );
 
   Void updateSize();
   Void updateOffset();
 
-private:
-
+ private:
   enum ViewMode
   {
     NormalMode,
@@ -155,22 +130,14 @@ private:
     EraserTool
   };
 
-  ViewMode mode() const
-  {
-    return m_mode;
-  }
-
-  Tool tool() const
-  {
-    return m_eTool;
-  }
-
+  ViewMode mode() const { return m_mode; }
+  Tool tool() const { return m_eTool; }
   Void initZoomWinRect();
   Void startZoomWinTimer();
   Void setZoomFactor( Double );
 
-  Bool isPosValid( const QPoint &pos ) const;
-  Void updateMask( const QRect &rect );
+  Bool isPosValid( const QPoint& pos ) const;
+  Void updateMask( const QRect& rect );
 
   QPoint windowToView( const QPoint& pt ) const;
   QRect windowToView( const QRect& rc ) const;
@@ -178,7 +145,7 @@ private:
   QPoint viewToWindow( const QPoint& pt ) const;
   QRect viewToWindow( const QRect& rc ) const;
 
-  PlaYUVerFrame *m_pcCurrFrame;
+  PlaYUVerFrame* m_pcCurrFrame;
 
   Pel m_uiPixelHalfScale;
 
@@ -205,9 +172,6 @@ private:
   Bool m_snapToGrid;
   Bool m_cursorInGrid;
   Bool m_visibleZoomRect;
-
 };
 
-}  // NameSpace plaYUVer
-
-#endif // __VIEWAREA_H__
+#endif  // __VIEWAREA_H__

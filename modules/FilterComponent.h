@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,20 +25,17 @@
 #ifndef __FILTERCOMPONENT_H__
 #define __FILTERCOMPONENT_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
+class FilterComponentModule : public PlaYUVerModuleIf
 {
-
-class FilterComponentModule: public PlaYUVerModuleIf
-{
-private:
+ private:
   PlaYUVerFrame* m_pcFilteredFrame;
-public:
+
+ public:
   FilterComponentModule();
-  virtual ~FilterComponentModule()
-  {
-  }
+  virtual ~FilterComponentModule() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList ) = 0;
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList ) = 0;
   Void destroy();
@@ -47,43 +44,34 @@ public:
   PlaYUVerFrame* filterComponent( PlaYUVerFrame* InputFrame, Int Component );
 };
 
-class FilterComponentLuma: public FilterComponentModule
+class FilterComponentLuma : public FilterComponentModule
 {
-REGISTER_CLASS_FACTORY( FilterComponentLuma )
-public:
+  REGISTER_CLASS_FACTORY( FilterComponentLuma )
+ public:
   FilterComponentLuma();
-  virtual ~FilterComponentLuma()
-  {
-  }
+  virtual ~FilterComponentLuma() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
 };
 
-class FilterComponentChromaU: public FilterComponentModule
+class FilterComponentChromaU : public FilterComponentModule
 {
-REGISTER_CLASS_FACTORY( FilterComponentChromaU )
-public:
+  REGISTER_CLASS_FACTORY( FilterComponentChromaU )
+ public:
   FilterComponentChromaU();
-  virtual ~FilterComponentChromaU()
-  {
-  }
+  virtual ~FilterComponentChromaU() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
 };
 
-class FilterComponentChromaV: public FilterComponentModule
+class FilterComponentChromaV : public FilterComponentModule
 {
-REGISTER_CLASS_FACTORY( FilterComponentChromaV )
-public:
+  REGISTER_CLASS_FACTORY( FilterComponentChromaV )
+ public:
   FilterComponentChromaV();
-  virtual ~FilterComponentChromaV()
-  {
-  }
+  virtual ~FilterComponentChromaV() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
 };
 
-}  // NAMESPACE
-
-#endif // __FILTERFRAME_H__
-
+#endif  // __FILTERFRAME_H__

@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -20,7 +20,8 @@
 /**
  * \file     AboutDialog.h
  * \brief    About Dialog
- *           Based on the work of Glad Deschrijver <glad.deschrijver@gmail.com> in KTikZ project
+ *           Based on the work of Glad Deschrijver <glad.deschrijver@gmail.com>
+ * in KTikZ project
  */
 
 #ifndef __ABOUTDIALOG_H__
@@ -28,17 +29,12 @@
 
 #include <QDialog>
 
-namespace plaYUVer
-{
-
 class AboutDialog : public QDialog
 {
-	Q_OBJECT
+  Q_OBJECT
 
-public:
-	AboutDialog(QWidget *parent = 0);
+ public:
+  AboutDialog( QWidget* parent = 0 );
 };
 
-}  // NAMESPACE
-
-#endif // __ABOUTDIALOG_H__
+#endif  // __ABOUTDIALOG_H__

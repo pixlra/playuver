@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,30 +25,23 @@
 #ifndef __FRAMEBINARIZATION_H__
 #define __FRAMEBINARIZATION_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
+class FrameBinarization : public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( FrameBinarization )
 
-class FrameBinarization: public PlaYUVerModuleIf
-{
-REGISTER_CLASS_FACTORY( FrameBinarization )
-
-private:
+ private:
   PlaYUVerFrame* m_pcBinFrame;
   UInt m_uiThreshold;
-public:
+
+ public:
   FrameBinarization();
-  virtual ~FrameBinarization()
-  {
-  }
+  virtual ~FrameBinarization() {}
   Void create( PlaYUVerFrame* );
   PlaYUVerFrame* process( PlaYUVerFrame* );
   Void destroy();
-
 };
 
-}  // NAMESPACE
-
-#endif // __FRAMEBINARIZATION_H__
-
+#endif  // __FRAMEBINARIZATION_H__

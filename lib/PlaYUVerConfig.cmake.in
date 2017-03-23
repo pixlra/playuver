@@ -10,10 +10,6 @@
 #    include_directories(${PLAYUVER_INCLUDE_DIRS})
 #    target_link_libraries(MY_TARGET_NAME ${PLAYUVER_LINKER_LIBS})
 #
-#    Or you can search for specific PlaYUVer modules:
-#
-#    find_package(PlaYUVer REQUIRED Frame Stream)
-#
 #    If the module is found then PLAYUVER_<MODULE>_FOUND is set to TRUE.
 #
 #    This file will define the following variables:
@@ -47,16 +43,13 @@ LIST(APPEND PLAYUVER_INCLUDE_DIRS @CMAKE_INSTALL_PREFIX@/include )
 #  PlaYUVer dependencies:
 # ======================================================
 
-SET( PLAYUVER_HAS_OPENCV @USE_OPENCV@ )
-SET( PLAYUVER_HAS_FFMPEG @USE_FFMPEG@ )
-
-IF( PLAYUVER_HAS_FFMPEG )
+IF( @USE_OPENCV@ )
   LIST(APPEND PLAYUVER_INCLUDE_DIRS ${FFMPEG_INCLUDE_DIRS} )
   LIST(APPEND PLAYUVER_LINKER_LIBS @OpenCV_LIBRARIES@ )
 ENDIF()
 
 
-IF( PLAYUVER_HAS_OPENCV )
+IF( @USE_FFMPEG@ )
   LIST(APPEND PLAYUVER_INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS} )
   LIST(APPEND PLAYUVER_LINKER_LIBS @OpenCV_LIBRARIES@ )
 ENDIF()

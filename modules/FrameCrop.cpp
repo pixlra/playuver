@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -24,9 +24,6 @@
 
 #include "FrameCrop.h"
 
-namespace plaYUVer
-{
-
 FrameCrop::FrameCrop()
 {
   /* Module Definition */
@@ -37,11 +34,13 @@ FrameCrop::FrameCrop()
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
   m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS;
 
-  m_cModuleOptions.addOptions()/**/
-  ( "xPosition", m_uiXPosition, "X cordinate of the left-top corner of the crop region [0]" )/**/
-  ( "yPosition", m_uiYPosition, "Y cordinate of the left-top corner of the crop region [0]" )/**/
-  ( "width", m_iXSize, "Width of the crop region [-1]" )/**/
-  ( "height", m_iYSize, "Height of the crop region [-1]" );
+  m_cModuleOptions.addOptions() /**/
+      ( "xPosition", m_uiXPosition,
+        "X cordinate of the left-top corner of the crop region [0]" ) /**/
+      ( "yPosition", m_uiYPosition,
+        "Y cordinate of the left-top corner of the crop region [0]" ) /**/
+      ( "width", m_iXSize, "Width of the crop region [-1]" )          /**/
+      ( "height", m_iYSize, "Height of the crop region [-1]" );
 
   m_pcCropedFrame = NULL;
   m_uiXPosition = 0;
@@ -61,7 +60,8 @@ Void FrameCrop::create( PlaYUVerFrame* frame )
   {
     m_iYSize = frame->getHeight() - m_uiYPosition;
   }
-  m_pcCropedFrame = new PlaYUVerFrame( m_iXSize, m_iYSize, frame->getPelFormat(), frame->getBitsPel() );
+  m_pcCropedFrame =
+      new PlaYUVerFrame( m_iXSize, m_iYSize, frame->getPelFormat(), frame->getBitsPel() );
 }
 
 PlaYUVerFrame* FrameCrop::process( PlaYUVerFrame* frame )
@@ -76,6 +76,3 @@ Void FrameCrop::destroy()
     delete m_pcCropedFrame;
   m_pcCropedFrame = NULL;
 }
-
-}  // NAMESPACE
-

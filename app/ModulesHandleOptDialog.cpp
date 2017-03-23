@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -23,19 +23,18 @@
  */
 
 #include "ModulesHandleOptDialog.h"
-#include "lib/PlaYUVerProgramOptions.h"
-#include <QWidget>
-#include <QLabel>
-#include <QVector>
-#include <QVBoxLayout>
+
 #include <QCheckBox>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QVector>
+#include <QWidget>
 
-namespace plaYUVer
-{
+#include "lib/PlaYUVerOptions.h"
 
-class OpionConfiguration: public QWidget
+class OpionConfiguration : public QWidget
 {
-public:
+ public:
   OpionConfiguration( OptionBase* option )
   {
     m_pcChecked = NULL;
@@ -68,29 +67,28 @@ public:
     }
     return m_pcValue->text();
   }
-  const std::string& getName()
-  {
-    return m_cName;
-  }
-private:
+  const String& getName() { return m_cName; }
+ private:
   QLineEdit* m_pcValue;
   QCheckBox* m_pcChecked;
   QLabel* m_pcDescription;
-  std::string m_cName;
+  String m_cName;
 };
 
-ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget *parent, PlaYUVerAppModuleIf *pcCurrModuleIf ) :
-        QDialog( parent ),
-        m_pcCurrModuleIf( pcCurrModuleIf )
+ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget* parent,
+                                                PlaYUVerAppModuleIf* pcCurrModuleIf )
+    : QDialog( parent ), m_pcCurrModuleIf( pcCurrModuleIf )
 {
   resize( 400, 10 );
   setWindowTitle( "Select module parameters" );
 
-  const Options::OptionsList& moduleOptions = m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.getOptionList();
+  const PlaYUVerOptions::OptionsList& moduleOptions =
+      m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.getOptionList();
 
   QVBoxLayout* optionsLayout = new QVBoxLayout;
   OpionConfiguration* pcOption;
-  for( Options::OptionsList::const_iterator it = moduleOptions.begin(); it != moduleOptions.end(); ++it )
+  for( PlaYUVerOptions::OptionsList::const_iterator it = moduleOptions.begin();
+       it != moduleOptions.end(); ++it )
   {
     pcOption = new OpionConfiguration( ( *it )->opt );
     m_apcOptionList.append( pcOption );
@@ -120,8 +118,8 @@ Int ModulesHandleOptDialog::runConfiguration()
     return QDialog::Rejected;
   }
 
-  std::vector<std::string> argsArray;
-  std::string optionString;
+  std::vector<String> argsArray;
+  String optionString;
   QString valueString( "" );
 
   for( Int i = 0; i < m_apcOptionList.size(); i++ )
@@ -142,9 +140,7 @@ Int ModulesHandleOptDialog::runConfiguration()
   }
   if( argsArray.size() > 0 )
   {
-    m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.scanArgs( argsArray );
+    m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.parse( argsArray );
   }
   return QDialog::Accepted;
 }
-
-}  // NAMESPACE

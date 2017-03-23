@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 
 /**
  * \file     PlaYUVerStream.h
- * \ingroup  PlaYUVerLib
  * \brief    Input stream handling
  */
 
@@ -27,66 +26,56 @@
 #define __PLAYUVERSTREAM_H__
 
 #include "PlaYUVerDefs.h"
-#include <iostream>
-#include <fstream>
-#include <cstdio>
-#include "PlaYUVerFrame.h"
 
-namespace plaYUVer
-{
-
-class LibOpenCVHandler;
+class PlaYUVerFrame;
 class PlaYUVerStreamHandlerIf;
 
 typedef struct
 {
-  std::string shortName;
+  String shortName;
   UInt uiWidth;
   UInt uiHeight;
 } PlaYUVerStdResolution;
 
-
-typedef PlaYUVerStreamHandlerIf* (*CreateStreamHandlerFn)( void );
+typedef PlaYUVerStreamHandlerIf* ( *CreateStreamHandlerFn )( void );
 
 typedef struct
 {
-  std::string formatName;
-  std::string formatExt;
+  String formatName;
+  String formatExt;
   CreateStreamHandlerFn formatFct;
 } PlaYUVerSupportedFormat;
 
-#define INI_REGIST_PLAYUVER_SUPPORTED_FMT \
+#define INI_REGIST_PLAYUVER_SUPPORTED_FMT           \
   std::vector<PlaYUVerSupportedFormat> formatsList; \
   PlaYUVerSupportedFormat formatElem;
 
-#define END_REGIST_PLAYUVER_SUPPORTED_FMT \
-        return formatsList;
+#define END_REGIST_PLAYUVER_SUPPORTED_FMT return formatsList;
 
-        #define REGIST_PLAYUVER_SUPPORTED_FMT( handler, name, ext ) \
-        formatElem.formatName = name; \
-        formatElem.formatExt = lowercase( ext ); \
-        formatElem.formatFct = handler; \
-        formatsList.push_back( formatElem );
+#define REGIST_PLAYUVER_SUPPORTED_FMT( handler, name, ext ) \
+  formatElem.formatName = name;                             \
+  formatElem.formatExt = lowercase( ext );                  \
+  formatElem.formatFct = handler;                           \
+  formatsList.push_back( formatElem );
 
-#define APPEND_PLAYUVER_SUPPORTED_FMT( class_name, fct ) \
-  { \
+#define APPEND_PLAYUVER_SUPPORTED_FMT( class_name, fct )                                   \
+  {                                                                                        \
     std::vector<PlaYUVerSupportedFormat> new_fmts = class_name::supported##fct##Formats(); \
-    formatsList.insert( formatsList.end(), new_fmts.begin(), new_fmts.end() ); \
+    formatsList.insert( formatsList.end(), new_fmts.begin(), new_fmts.end() );             \
   }
-
 
 /**
  * \class PlaYUVerStream
  * \ingroup  PlaYUVerLib PlaYUVerLib_Stream
+ * \brief  Stream handling class
  */
 class PlaYUVerStream
 {
-public:
-
+ public:
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
 
-  static CreateStreamHandlerFn findStreamHandler( std::string strFilename, bool bRead );
+  static CreateStreamHandlerFn findStreamHandler( String strFilename, bool bRead );
 
   static std::vector<PlaYUVerStdResolution> stdResolutionSizes();
 
@@ -102,70 +91,80 @@ public:
     END_OF_SEQ,
   };
 
-  std::string getFormatName();
-  std::string getCodecName();
+  String getFormatName();
+  String getCodecName();
 
-  Bool open( std::string filename, std::string resolution, std::string input_format, UInt bitsPel, Int endianness, UInt frame_rate,  Bool bInput = true );
-  Bool open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput = true );
+  Bool open( String filename,
+             String resolution,
+             String input_format,
+             UInt bitsPel,
+             Int endianness,
+             UInt frame_rate,
+             Bool bInput );
+  Bool open( String filename,
+             UInt width,
+             UInt height,
+             Int input_format,
+             UInt bitsPel,
+             Int endianness,
+             UInt frame_rate,
+             Bool bInput );
   Bool reload();
   Void close();
 
-  std::string getFileName();
+  String getFileName();
   UInt getFrameNum();
   UInt getWidth() const;
   UInt getHeight() const;
+  Int getEndianess() const;
   Int getCurrFrameNum();
   Double getFrameRate();
-  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, UInt& rFrameRate );
+  Void getFormat( UInt& rWidth,
+                  UInt& rHeight,
+                  Int& rInputFormat,
+                  UInt& rBitsPerPel,
+                  Int& rEndianness,
+                  UInt& rFrameRate );
 
   Void loadAll();
 
   Void readFrame();
   Void readFrameFillRGBBuffer();
   Void writeFrame();
-  Void writeFrame( PlaYUVerFrame *pcFrame );
+  Void writeFrame( PlaYUVerFrame* pcFrame );
 
-  Bool saveFrame( const std::string& filename );
-  static Bool saveFrame( const std::string& filename, PlaYUVerFrame *saveFrame );
+  Bool saveFrame( const String& filename );
+  static Bool saveFrame( const String& filename, PlaYUVerFrame* saveFrame );
 
   Bool setNextFrame();
   PlaYUVerFrame* getCurrFrame();
-  PlaYUVerFrame* getCurrFrame( PlaYUVerFrame * );
+  PlaYUVerFrame* getCurrFrame( PlaYUVerFrame* );
   PlaYUVerFrame* getNextFrame();
 
   Bool seekInputRelative( Bool bIsFoward );
   Bool seekInput( UInt64 new_frame_num );
 
-  Bool isInit()
-  {
-    return m_bInit;
-  }
-
-
+  Bool isInit() { return m_bInit; }
   Void getDuration( Int* duration_array );
 
-private:
-
+ private:
   Bool m_bInit;
   CreateStreamHandlerFn m_pfctCreateHandler;
   PlaYUVerStreamHandlerIf* m_pcHandler;
 
   Bool m_bIsInput;
-  std::string m_cFilename;
+  String m_cFilename;
   UInt64 m_uiTotalFrameNum;
   Int64 m_iCurrFrameNum;
 
   Bool m_bLoadAll;
 
   UInt m_uiFrameBufferSize;
-  PlaYUVerFrame **m_ppcFrameBuffer;
-  PlaYUVerFrame *m_pcCurrFrame;
-  PlaYUVerFrame *m_pcNextFrame;
+  PlaYUVerFrame** m_ppcFrameBuffer;
+  PlaYUVerFrame* m_pcCurrFrame;
+  PlaYUVerFrame* m_pcNextFrame;
   UInt m_uiFrameBufferIndex;
   UInt64 m_uiCurrFrameFileIdx;
-
 };
 
-}  // NAMESPACE
-
-#endif // __PLAYUVERSTREAM_H__
+#endif  // __PLAYUVERSTREAM_H__

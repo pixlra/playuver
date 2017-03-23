@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -19,35 +19,28 @@
 
 /**
  * \file     SetChromaHalfScale.h
- * \brief    Binarize frame module
+ * \brief    Set chrome value to half scale (gray)
  */
 
-#ifndef __CHROMA128_H__
-#define __CHROMA128_H__
+#ifndef _SETCHROMAHALFSCALE_H_
+#define _SETCHROMAHALFSCALE_H_
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
+class SetChromaHalfScale : public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( SetChromaHalfScale )
 
-class SetChromaHalfScale: public PlaYUVerModuleIf
-{
-REGISTER_CLASS_FACTORY( SetChromaHalfScale )
-
-private:
+ private:
   PlaYUVerFrame* m_pcProcessedFrame;
-public:
+
+ public:
   SetChromaHalfScale();
-  virtual ~SetChromaHalfScale()
-  {
-  }
+  virtual ~SetChromaHalfScale() {}
   Void create( PlaYUVerFrame* );
   PlaYUVerFrame* process( PlaYUVerFrame* );
   Void destroy();
-
 };
 
-}  // NAMESPACE
-
-#endif // __CHROMA128_H__
-
+#endif  // _SETCHROMAHALFSCALE_H_

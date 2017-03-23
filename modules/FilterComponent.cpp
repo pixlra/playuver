@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -22,12 +22,9 @@
  * \brief    Filter component frame module
  */
 
-#include <cstdio>
-#include <cstring>
 #include "FilterComponent.h"
 
-namespace plaYUVer
-{
+#include <cstring>
 
 FilterComponentModule::FilterComponentModule()
 {
@@ -45,7 +42,8 @@ PlaYUVerFrame* FilterComponentModule::filterComponent( PlaYUVerFrame* InputFrame
 {
   Pel*** pppOutputPelYUV = m_pcFilteredFrame->getPelBufferYUV();
   Pel*** pppInputPelYUV = InputFrame->getPelBufferYUV();
-  memcpy( pppOutputPelYUV[LUMA][0], pppInputPelYUV[Component][0], m_pcFilteredFrame->getWidth() * m_pcFilteredFrame->getHeight() * sizeof(Pel) );
+  memcpy( pppOutputPelYUV[LUMA][0], pppInputPelYUV[Component][0],
+          m_pcFilteredFrame->getWidth() * m_pcFilteredFrame->getHeight() * sizeof( Pel ) );
   return m_pcFilteredFrame;
 }
 
@@ -60,19 +58,25 @@ FilterComponentLuma::FilterComponentLuma()
 {
   /* Module Definition */
   m_iModuleAPI = MODULE_API_2;
-  m_iModuleType = FRAME_PROCESSING_MODULE;              // Apply module to the frames or to the whole sequence.
+  m_iModuleType = FRAME_PROCESSING_MODULE;              // Apply module to the frames or to
+                                                        // the whole sequence.
                                                         // Currently only support for frame
   m_pchModuleCategory = "FilterComponent";              // Category (sub-menu)
   m_pchModuleName = "Luma";                             // Name
   m_pchModuleTooltip = "Filter Y matrix of YUV frame";  // Description
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;       // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
-  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;     // Module requirements (check PlaYUVerModulesIf.h).
-                                                        // Several requirements should be "or" between each others.
+  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;       // Number of Frames required
+                                                        // (ONE_FRAME, TWO_FRAMES,
+                                                        // THREE_FRAMES)
+  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;     // Module requirements
+                                                        // (check
+                                                        // PlaYUVerModulesIf.h).
+  // Several requirements should be "or" between each others.
 }
 
 Bool FilterComponentLuma::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
-  return createFilter( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), apcFrameList[0]->getBitsPel() );
+  return createFilter( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
+                       apcFrameList[0]->getBitsPel() );
 }
 
 PlaYUVerFrame* FilterComponentLuma::process( std::vector<PlaYUVerFrame*> apcFrameList )
@@ -96,7 +100,8 @@ Bool FilterComponentChromaU::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   if( apcFrameList[0]->getNumberChannels() > 1 )
   {
-    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(), apcFrameList[0]->getBitsPel() );
+    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(),
+                         apcFrameList[0]->getBitsPel() );
   }
   return false;
 }
@@ -122,7 +127,8 @@ Bool FilterComponentChromaV::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   if( apcFrameList[0]->getNumberChannels() > 1 )
   {
-    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(), apcFrameList[0]->getBitsPel() );
+    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(),
+                         apcFrameList[0]->getBitsPel() );
   }
   return false;
 }
@@ -131,6 +137,3 @@ PlaYUVerFrame* FilterComponentChromaV::process( std::vector<PlaYUVerFrame*> apcF
 {
   return filterComponent( apcFrameList[0], CHROMA_V );
 }
-
-}  // NAMESPACE
-

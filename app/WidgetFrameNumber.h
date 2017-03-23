@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,9 +25,8 @@
 #ifndef __WIDGETFRAMENUMBER_H__
 #define __WIDGETFRAMENUMBER_H__
 
-
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
+#include "config.h"
 #include <QtCore>
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
@@ -35,22 +34,17 @@
 #include <QtGui>
 #endif
 
-namespace plaYUVer
+class WidgetFrameNumber : public QWidget
 {
-
-class WidgetFrameNumber: public QWidget
-{
-public:
-  WidgetFrameNumber( QWidget *parent = 0 );
+ public:
+  WidgetFrameNumber( QWidget* parent = 0 );
   Void setCurrFrameNum( Int number );
   Void setTotalFrameNum( Int number );
   Void clear();
-private:
-  QLabel *m_pcCurrFrameNumLabel;
-  QLabel *m_pcTotalFrameNumLabel;
 
+ private:
+  QLabel* m_pcCurrFrameNumLabel;
+  QLabel* m_pcTotalFrameNumLabel;
 };
 
-}  // NAMESPACE
-
-#endif // __WIDGETFRAMENUMBER_H__
+#endif  // __WIDGETFRAMENUMBER_H__

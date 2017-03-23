@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
@@ -25,9 +25,7 @@
 
 #include "PlaYUVerTools.h"
 
-using namespace plaYUVer;
-
-int main( int argc, char *argv[] )
+int main( int argc, Char* argv[] )
 {
   Int iRet = 0;
   PlaYUVerTools PlaYUVerToolsApp;
@@ -54,5 +52,4 @@ int main( int argc, char *argv[] )
     printf( "Exiting with error \n" );
     return 1;
   }
-
 }

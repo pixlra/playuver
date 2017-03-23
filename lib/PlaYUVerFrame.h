@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -19,32 +19,24 @@
 
 /**
  * \file     PlaYUVerFrame.h
- * \ingroup  PlaYUVerLib
  * \brief    Video Frame handling
  */
 
 #ifndef __PLAYUVERFRAME_H__
 #define __PLAYUVERFRAME_H__
 
-#include <iostream>
-#include <cstdio>
-#include <cassert>
-#include <vector>
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerPixel.h"
-
 
 namespace cv
 {
 class Mat;
 }
 
-namespace plaYUVer
-{
-
 struct PlaYUVerPixFmtDescriptor;
+struct PlaYUVerFramePrivate;
 
-#define CHROMASHIFT( SIZE, SHIFT ) UInt( -( ( - ( Int( SIZE ) ) ) >> SHIFT ) )
+#define CHROMASHIFT( SIZE, SHIFT ) UInt( -( ( -( Int( SIZE ) ) ) >> ( SHIFT ) ) )
 
 /**
  * \class    PlaYUVerFrame
@@ -52,11 +44,9 @@ struct PlaYUVerPixFmtDescriptor;
  * \brief    Frame handling class
  */
 class PlaYUVerFrame
-//: public PlaYUVerFrameStats
 {
-public:
-
-  /** ColorSpace Enum (deprecated)
+ public:
+  /** ColorSpace Enum
    * List of supported pixel formats - do not change order
    */
   enum PixelFormats
@@ -67,9 +57,10 @@ public:
     YUV422p,
     YUYV422,
     GRAY,
+    RGBp,
     RGB24,
-    BRG24,
-    NUMBER_FORMATS
+    BGR24,
+    NUMBER_PEL_FORMATS
   };
 
   /** Format match opts
@@ -89,23 +80,16 @@ public:
    * of PlaYUVerFrame
    * @return vector of strings with pixel formats names
    */
-  static std::vector<std::string> supportedColorSpacesListNames();
+  static std::vector<String> supportedColorSpacesListNames();
 
   /**
    * Function that handles the supported pixel formats
    * of PlaYUVerFrame
    * @return vector of strings with pixel formats names
    */
-  static std::vector<std::string> supportedPixelFormatListNames();
-  static std::vector<std::string> supportedPixelFormatListNames( Int colorSpace );
-  static Int findPixelFormat( std::string name );
-
-  /**
-   * Get number of bytes per frame of a specific
-   * pixel format
-   * @return number of bytes per frame
-   */
-  static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel );
+  static std::vector<String> supportedPixelFormatListNames();
+  static std::vector<String> supportedPixelFormatListNames( Int colorSpace );
+  static Int findPixelFormat( const String& name );
 
   /**
    * Creates a new frame using the following configuration
@@ -116,15 +100,15 @@ public:
    *
    * @note this function might misbehave if the pixel format enum is not correct
    */
-  PlaYUVerFrame( UInt width, UInt height, Int pelFormat = 0, Int bitsPixel = 8, Int endianness = -1 );
+  PlaYUVerFrame( UInt width, UInt height, Int pelFormat, Int bitsPixel = 8 );
 
   /**
-   * Creates and new frame with the configuration of an
-   * existing one and copy its contents
+   * Copy contructor
    *
    * @param other existing frame to copy from
    */
-  PlaYUVerFrame( PlaYUVerFrame *other, Bool copy = true );
+  PlaYUVerFrame( const PlaYUVerFrame& other );
+  PlaYUVerFrame( const PlaYUVerFrame* other );
 
   /**
    * Creates and new frame with the configuration of an
@@ -137,70 +121,54 @@ public:
    * @param areaWidth crop width
    * @param areaHeight crop height
    */
-  PlaYUVerFrame( PlaYUVerFrame *other, UInt posX, UInt posY, UInt areaWidth, UInt areaHeight );
+  PlaYUVerFrame( const PlaYUVerFrame& other, UInt x, UInt y, UInt width, UInt height );
+  PlaYUVerFrame( const PlaYUVerFrame* other, UInt x, UInt y, UInt width, UInt height );
 
   ~PlaYUVerFrame();
 
-  Void clear();
-
-  UInt getWidth() const
-  {
-    return m_uiWidth;
-  }
-  UInt getHeight() const
-  {
-    return m_uiHeight;
-  }
-  Int getPelFormat() const
-  {
-    return m_iPixelFormat;
-  }
-  UInt getBitsPel() const
-  {
-    return m_uiBitsPel;
-  }
-  Int getEndianness() const
-  {
-    return m_iEndianness;
-  }
-  Pel*** getPelBufferYUV() const
-  {
-    return m_pppcInputPel;
-  }
-  Pel*** getPelBufferYUV()
-  {
-    m_bHasHistogram = false;
-    m_bHasRGBPel = false;
-    return m_pppcInputPel;
-  }
-
-  UChar* getRGBBuffer() const
-  {
-    if( m_bHasRGBPel )
-    {
-      return m_pcARGB32;
-    }
-    return NULL;
-  }
-  UChar* getRGBBuffer()
-  {
-    if( !m_bHasRGBPel )
-    {
-      fillRGBBuffer();
-    }
-    return m_pcARGB32;
-  }
+  Bool haveSameFmt( const PlaYUVerFrame& other, UInt match = MATCH_ALL ) const;
+  Bool haveSameFmt( const PlaYUVerFrame* other, UInt match = MATCH_ALL ) const;
 
   /**
-   * Get number of bytes per frame of an existing frame
-   * @return number of bytes per frame
+   * Get pixel format information
+   * @return pixel format index
    */
-  UInt64 getBytesPerFrame();
+  Int getPelFormat() const;
 
+  /**
+   * Get pixel format information
+   * @return pixel format name
+   */
+  String getPelFmtName();
+
+  /**
+   * Get color space information
+   * @return get color space index
+   * @
+   */
   Int getColorSpace() const;
+
   UInt getNumberChannels() const;
 
-  UInt getPixels() const;
+  /**
+   * Get width of the frame
+   * @param channel/component
+   * @return number of pixels
+   */
+  UInt getWidth( Int channel = 0 ) const;
+  /**
+   * Get height of the frame
+   * @param channel/component
+   * @return number of pixels
+   */
+  UInt getHeight( Int channel = 0 ) const;
+  /**
+   * Get number of pixels of the frame
+   * @param channel/component
+   * @return number of pixels
+   */
+  UInt getPixels( Int channel = 0 ) const;
+
   UInt8 getChromaWidthRatio() const;
   UInt8 getChromaHeightRatio() const;
   UInt getChromaWidth() const;
@@ -208,27 +176,53 @@ public:
   UInt getChromaLength() const;
   UInt getChromaSize() const;
 
+  UInt getBitsPel() const;
+
+  /**
+   * Get number of bytes per frame of an existing frame
+   * @return number of bytes per frame
+   */
+  UInt64 getBytesPerFrame();
+
+  /**
+   * Get number of bytes per frame of a specific
+   * pixel format
+   * @return number of bytes per frame
+   */
+  static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel );
+
+  /**
+   * Reset frame pixels to zero
+   */
+  Void clear();
+
+  Pel*** getPelBufferYUV() const;
+  Pel*** getPelBufferYUV();
+  UChar* getRGBBuffer() const;
+  UChar* getRGBBuffer();
+
   PlaYUVerPixel getPixelValue( Int xPos, Int yPos );
   PlaYUVerPixel getPixelValue( Int xPos, Int yPos, PlaYUVerPixel::ColorSpace eColorSpace );
   Void setPixelValue( Int xPos, Int yPos, PlaYUVerPixel pixel );
 
-  Void copyFrom( PlaYUVerFrame* );
-  Void copyFrom( PlaYUVerFrame*, UInt, UInt );
+  Void copyFrom( const PlaYUVerFrame& );
+  Void copyFrom( const PlaYUVerFrame* );
+  Void copyFrom( const PlaYUVerFrame&, UInt, UInt );
+  Void copyFrom( const PlaYUVerFrame*, UInt, UInt );
 
-  Void frameFromBuffer( Byte*, UInt64 );
-  Void frameFromBuffer( Byte* );
-  Void frameToBuffer( Byte* );
+  Void frameFromBuffer( Byte*, Int, UInt64 );
+  Void frameFromBuffer( Byte*, Int );
+  Void frameToBuffer( Byte*, Int );
 
   Void fillRGBBuffer();
-
-  Bool haveSameFmt( PlaYUVerFrame* other, UInt match = MATCH_ALL ) const;
-
-  std::string getPelFmtName();
 
   /**
    * Histogram
    */
   Void calcHistogram();
+
+  UInt getMin( Int channel );
+  UInt getMax( Int channel );
 
   UInt getCount( Int channel, UInt start, UInt end );
   Double getMean( Int channel, UInt start, UInt end );
@@ -238,32 +232,20 @@ public:
   Double getMaximum( Int channel );
   Int getHistogramSegment();
 
-  Void setRunningFlag( Bool bFlag )
-  {
-    m_bRunningFlag = bFlag;
-  }
-  Bool getHasHistogram()
-  {
-    return m_bHasHistogram;
-  }
-
   /**
    * Interface with OpenCV lib
    */
-  cv::Mat* getCvMat( Bool convertToGray = false );
-  Void fromCvMat( cv::Mat* );
+  Bool toMat( cv::Mat& cvMat, Bool convertToGray = false );
+  Bool fromMat( cv::Mat& cvMat );
 
   /**
-   * @defgroup PlaYUVerLib_QualityMetrics Quality Metrics Interface
+   * \ingroup  PlaYUVerLib_Frame
+   * @defgroup PlaYUVerLib_Frame_QualityMetrics Quality Metrics Interface
    * @{
-   * \ingroup PlaYUVerLib
    * Quality metrics interface
    *
-   * @}
    */
 
-  //! @ingroup PlaYUVerLib_QualityMetrics
-  //! @{
   enum QualityMetrics
   {
     NO_METRIC = -1,
@@ -273,72 +255,16 @@ public:
     NUMBER_METRICS,
   };
 
-  static std::vector<std::string> supportedQualityMetricsList()
-  {
-    std::vector<std::string> metrics;
-    metrics.push_back( "PSNR" );
-    metrics.push_back( "MSE" );
-    metrics.push_back( "SSIM" );
-    return metrics;
-  }
-
+  static std::vector<String> supportedQualityMetricsList();
   Double getQuality( Int Metric, PlaYUVerFrame* Org, Int component );
   Double getMSE( PlaYUVerFrame* Org, Int component );
   Double getPSNR( PlaYUVerFrame* Org, Int component );
   Double getSSIM( PlaYUVerFrame* Org, Int component );
 
-  //! @}
+  /** @} */
 
-private:
-
-  Bool m_bInit;
-
-  //! Struct with the pixel format description.
-  PlaYUVerPixFmtDescriptor* m_pcPelFormat;
-  std::string m_cPelFmtName;
-
-  UInt m_uiWidth;  //!< Width of the frame
-  UInt m_uiHeight;  //!< Height of the frame
-  Int m_iPixelFormat;  //!< Pixel format number (it follows the list of supported pixel formats)
-  Int m_iNumberChannels;  //!< Number of channels
-  UInt m_uiBitsPel;  //!< Bits per pixel/channel
-  Int m_iEndianness;  //!< Endiannes of bytes
-  UInt m_uiHalfPelValue;  //!< Bits per pixel/channel
-
-  Pel*** m_pppcInputPel;
-
-  Bool m_bHasRGBPel;  //!< Flag indicating that the ARGB buffer was computed
-  UChar* m_pcARGB32;  //!< Buffer with the ARGB pixels used in Qt libs
-
-  /** The histogram data.*/
-  UInt* m_puiHistogram;
-
-  /** If the image is RGB and calcLuma is true, we have 1 more channel */
-  UInt m_uiHistoChannels;
-
-  /** Numbers of histogram segments depending of image bytes depth*/
-  UInt m_uiHistoSegments;
-
-  /** Used to stop thread during calculations.*/
-  Bool m_bRunningFlag;
-
-  Int getRealHistoChannel( Int channel );
-
-  Bool m_bHasHistogram;
-
-  /**
-   * Common constructor function of a frame
-   *
-   * @param width width of the frame
-   * @param height height of the frame
-   * @param pel_format pixel format index (always use PixelFormats enum)
-   *
-   */
-  Void init( UInt width, UInt height, Int pel_format, Int bitsPixel, Int endianness );
-
-  Void FrametoRGB8Pixfc();
+ private:
+  PlaYUVerFramePrivate* d;
 };
 
-}  // NAMESPACE
-
-#endif // __PLAYUVERFRAME_H__
+#endif  // __PLAYUVERFRAME_H__

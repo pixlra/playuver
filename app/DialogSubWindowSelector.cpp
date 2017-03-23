@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -22,24 +22,23 @@
  * \brief    Dialog box to select sub windows
  */
 
+#include "DialogSubWindowSelector.h"
+#include "PlaYUVerSubWindowHandle.h"
+#include "VideoSubWindow.h"
 #include <QCheckBox>
 #include <QGroupBox>
-#include "PlaYUVerSubWindowHandle.h"
-#include "DialogSubWindowSelector.h"
-#include "VideoSubWindow.h"
 
-namespace plaYUVer
+DialogSubWindowSelector::DialogSubWindowSelector( QWidget* parent,
+                                                  PlaYUVerSubWindowHandle* windowManager,
+                                                  UInt uiCategory,
+                                                  Int minWindowsSelected,
+                                                  Int maxWindowsSelected )
+    : QDialog( parent )
+    , m_uiCategory( uiCategory )
+    , m_iMinSelectedWindows( minWindowsSelected )
+    , m_iMaxSlectedWindows( maxWindowsSelected )
+    , m_pcMainWindowManager( windowManager )
 {
-
-DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWindowHandle *windowManager, UInt uiCategory, Int minWindowsSelected,
-    Int maxWindowsSelected ) :
-        QDialog( parent ),
-        m_uiCategory( uiCategory ),
-        m_iMinSelectedWindows( minWindowsSelected ),
-        m_iMaxSlectedWindows( maxWindowsSelected ),
-        m_pcMainWindowManager( windowManager )
-{
-
   QSize windowSize( 350, 80 );
   resize( windowSize );
   setWindowTitle( "Select desired Sub-Windows" );
@@ -82,9 +81,9 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWi
   connect( m_pushButtonRemoveAll, SIGNAL( clicked() ), this, SLOT( removeAllSubWindow() ) );
 
   m_mapperWindowsList = new QSignalMapper( this );
-  connect( m_mapperWindowsList, SIGNAL( mapped(int) ), this, SLOT( toggleSubWindow(int) ) );
+  connect( m_mapperWindowsList, SIGNAL( mapped( int ) ), this, SLOT( toggleSubWindow( int ) ) );
 
-  SubWindowAbstract *subWindow;
+  SubWindowAbstract* subWindow;
   QString currSubWindowName;
   QCheckBox* windowCheckBox;
   m_apcSubWindowList = m_pcMainWindowManager->findSubWindow( m_uiCategory );
@@ -93,7 +92,7 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWi
     subWindow = m_apcSubWindowList.at( i );
     currSubWindowName = subWindow->getWindowName();
     windowCheckBox = new QCheckBox( currSubWindowName, this );
-    connect( windowCheckBox, SIGNAL( stateChanged(int) ), m_mapperWindowsList, SLOT( map() ) );
+    connect( windowCheckBox, SIGNAL( stateChanged( int ) ), m_mapperWindowsList, SLOT( map() ) );
     m_mapperWindowsList->setMapping( windowCheckBox, i );
     m_apcWindowsListCheckBox.append( windowCheckBox );
   }
@@ -101,7 +100,6 @@ DialogSubWindowSelector::DialogSubWindowSelector( QWidget *parent, PlaYUVerSubWi
   update();
 
   setFixedSize( mainLayout->sizeHint() );
-
 }
 
 Void DialogSubWindowSelector::updateSubWindowList()
@@ -138,18 +136,14 @@ Void DialogSubWindowSelector::updateSubWindowList()
     if( !m_apcSelectedSubWindowList.contains( m_apcSubWindowList.at( i ) ) )
       m_pcGroupCheckBox->layout()->addWidget( m_apcWindowsListCheckBox.at( i ) );
   }
-
-//  qDebug( ) << "Selected windows: "
-//            << m_apcSelectedSubWindowList.size();
 }
 
-Void DialogSubWindowSelector::selectSubWindow( SubWindowAbstract * subWindow )
+Void DialogSubWindowSelector::selectSubWindow( SubWindowAbstract* subWindow )
 {
   Int iIdx = m_apcSubWindowList.indexOf( subWindow );
   if( iIdx >= 0 )
   {
     m_apcWindowsListCheckBox.at( iIdx )->setChecked( true );
-    //m_apcSelectedSubWindowList.append( m_apcSubWindowList.at( iIdx ) );
   }
 }
 
@@ -244,5 +238,3 @@ Void DialogSubWindowSelector::removeAllSubWindow()
   m_apcSelectedSubWindowList.clear();
   update();
 }
-
-}  // Namespace SCode

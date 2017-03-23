@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,29 +25,22 @@
 #ifndef __EIGHTBITSSAMPLING_H__
 #define __EIGHTBITSSAMPLING_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
+class EightBitsSampling : public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( EightBitsSampling )
 
-class EightBitsSampling: public PlaYUVerModuleIf
-{
-REGISTER_CLASS_FACTORY( EightBitsSampling )
-
-private:
+ private:
   PlaYUVerFrame* m_pcSubSampledFrame;
-public:
+
+ public:
   EightBitsSampling();
-  virtual ~EightBitsSampling()
-  {
-  }
+  virtual ~EightBitsSampling() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Void destroy();
-
 };
 
-}  // NAMESPACE
-
-#endif // __EIGHTBITSSAMPLING_H__
-
+#endif  // __EIGHTBITSSAMPLING_H__

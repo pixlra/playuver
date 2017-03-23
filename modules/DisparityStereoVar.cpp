@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -19,15 +19,11 @@
 
 /**
  * \file     DisparityStereoVar.cpp
- * \brief    Measure the disparity between two images using the Stereo Var method (OpenCV)
+ * \brief    Measure the disparity between two images using the Stereo Var
+ * method (OpenCV)
  */
 
-#include <cstdio>
-
 #include "DisparityStereoVar.h"
-
-namespace plaYUVer
-{
 
 DisparityStereoVar::DisparityStereoVar()
 {
@@ -36,13 +32,15 @@ DisparityStereoVar::DisparityStereoVar()
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Disparity";
   m_pchModuleName = "StereoVar";
-  m_pchModuleTooltip = "Measure the disparity between two images using the Stereo Var method (OpenCV)";
+  m_pchModuleTooltip =
+      "Measure the disparity between two images using the "
+      "Stereo Var method (OpenCV)";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
   m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW;
 
   m_pcDisparityFrame = NULL;
-  m_cStereoVar.levels = 3;                                 // ignored with USE_AUTO_PARAMS
-  m_cStereoVar.pyrScale = 0.5;                             // ignored with USE_AUTO_PARAMS
+  m_cStereoVar.levels = 3;      // ignored with USE_AUTO_PARAMS
+  m_cStereoVar.pyrScale = 0.5;  // ignored with USE_AUTO_PARAMS
   m_cStereoVar.nIt = 25;
 
   m_cStereoVar.maxDisp = 0;
@@ -50,15 +48,17 @@ DisparityStereoVar::DisparityStereoVar()
   m_cStereoVar.poly_sigma = 0.0;
   m_cStereoVar.fi = 15.0f;
   m_cStereoVar.lambda = 0.03f;
-  m_cStereoVar.penalization = m_cStereoVar.PENALIZATION_TICHONOV;            // ignored with USE_AUTO_PARAMS
-  m_cStereoVar.cycle = m_cStereoVar.CYCLE_V;                                 // ignored with USE_AUTO_PARAMS
-  m_cStereoVar.flags = m_cStereoVar.USE_SMART_ID | m_cStereoVar.USE_AUTO_PARAMS | m_cStereoVar.USE_INITIAL_DISPARITY | m_cStereoVar.USE_MEDIAN_FILTERING;
+  m_cStereoVar.penalization = m_cStereoVar.PENALIZATION_TICHONOV;  // ignored with USE_AUTO_PARAMS
+  m_cStereoVar.cycle = m_cStereoVar.CYCLE_V;                       // ignored with USE_AUTO_PARAMS
+  m_cStereoVar.flags = m_cStereoVar.USE_SMART_ID | m_cStereoVar.USE_AUTO_PARAMS |
+                       m_cStereoVar.USE_INITIAL_DISPARITY | m_cStereoVar.USE_MEDIAN_FILTERING;
 }
 
 Bool DisparityStereoVar::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
-  m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+  m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
+                                          PlaYUVerFrame::GRAY );
   m_cStereoVar.minDisp = -( ( ( apcFrameList[0]->getWidth() / 8 ) + 15 ) & -16 );
   return true;
 }
@@ -84,6 +84,3 @@ Void DisparityStereoVar::destroy()
     delete m_pcDisparityFrame;
   m_pcDisparityFrame = NULL;
 }
-
-}  // NAMESPACE
-

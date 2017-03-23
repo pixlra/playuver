@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -27,25 +27,15 @@
 
 #include "config.h"
 #include "lib/PlaYUVerDefs.h"
-#include "lib/PlaYUVerCmdParser.h"
+#include "lib/PlaYUVerOptions.h"
 
-namespace plaYUVer
+class PlaYUVerToolsCmdParser
 {
-
-class PlaYUVerStream;
-
-class PlaYUVerToolsCmdParser: public PlaYUVerCmdParser
-{
-  friend class PlaYUVerTools;
-public:
+ public:
   PlaYUVerToolsCmdParser();
   ~PlaYUVerToolsCmdParser();
 
-  Void setLogLevel( enum LOG_LEVEL level )
-  {
-    m_uiLogLevel = level;
-  }
-
+  Void setLogLevel( enum LOG_LEVEL level ) { m_uiLogLevel = level; }
   /**
    * Send the specified message to the log if the level is higher than or equal
    * to the current LogLevel. By default, all logging messages are sent to
@@ -58,12 +48,13 @@ public:
    *
    * @note this function might not be safe in C++ (try to upgrade it)
    */
-  Void log( UInt level, const char *fmt, ... );
+  Void log( UInt level, const char* fmt, ... );
 
-  Int parseToolsArgs( Int argc, Char *argv[] );
+  Int parseToolsArgs( Int argc, Char* argv[] );
 
-private:
-  Options m_cParserOptions;
+  PlaYUVerOptions& Opts() { return m_cOptions; }
+ protected:
+  PlaYUVerOptions m_cOptions;
   UInt m_uiLogLevel;
 
   /**
@@ -73,16 +64,17 @@ private:
   Bool m_bShowVersion;
   Bool m_bQuiet;
 
-  std::vector<std::string> m_apcInputs;
-  std::vector<std::string> m_strResolution;
-  std::vector<std::string> m_strPelFmt;
+  std::vector<String> m_apcInputs;
+  std::vector<String> m_strResolution;
+  std::vector<String> m_strPelFmt;
   std::vector<UInt> m_uiBitsPerPixel;
-  std::vector<std::string> m_strEndianness;
-  std::string m_strOutput;
+  std::vector<String> m_strEndianness;
+  String m_strOutput;
   Int64 m_iFrames;
 
-  std::string m_strQualityMetric;
-  std::string m_strModule;
+  Int m_iRateReductionFactor;
+  String m_strQualityMetric;
+  String m_strModule;
 
   Bool m_bListPelFmts;
   Bool m_bListQuality;
@@ -90,9 +82,6 @@ private:
 
   Void listModules();
   Void listModuleHelp();
-
 };
 
-}  // NAMESPACE
-
-#endif // __PLAYUVERTOOLSCMDPARSER_H__
+#endif  // __PLAYUVERTOOLSCMDPARSER_H__

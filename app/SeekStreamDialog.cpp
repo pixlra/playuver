@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -24,20 +24,15 @@
 
 #include "SeekStreamDialog.h"
 #include "lib/PlaYUVerStream.h"
-#include <QWidget>
-#include <QLabel>
-#include <QVector>
 #include <QGridLayout>
+#include <QLabel>
 #include <QSpinBox>
+#include <QVector>
+#include <QWidget>
 
-namespace plaYUVer
+SeekStreamDialog::SeekStreamDialog( PlaYUVerStream* pcCurrStream, QWidget* parent )
+    : QDialog( parent, Qt::Dialog | Qt::WindowTitleHint ), m_iSelectedFrameNum()
 {
-
-SeekStreamDialog::SeekStreamDialog( PlaYUVerStream *pcCurrStream, QWidget *parent ) :
-        QDialog( parent, Qt::Dialog | Qt::WindowTitleHint ),
-        m_iSelectedFrameNum()
-{
-
   m_iSelectedFrameNum = pcCurrStream->getCurrFrameNum();
 
   setWindowModality( Qt::ApplicationModal );
@@ -62,7 +57,8 @@ SeekStreamDialog::SeekStreamDialog( PlaYUVerStream *pcCurrStream, QWidget *paren
   QVBoxLayout* verticalLayout = new QVBoxLayout;
   QHBoxLayout* horizontalLayout = new QHBoxLayout;
   horizontalLayout->addWidget( pcLabel );
-  horizontalLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  horizontalLayout->addItem(
+      new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
   horizontalLayout->addWidget( m_spinFrameNum );
   verticalLayout->addLayout( horizontalLayout );
   verticalLayout->addWidget( dialogButtonOkCancel, Qt::AlignRight );
@@ -82,5 +78,3 @@ Int SeekStreamDialog::runDialog()
   m_iSelectedFrameNum = m_spinFrameNum->value();
   return m_iSelectedFrameNum;
 }
-
-}  // NAMESPACE

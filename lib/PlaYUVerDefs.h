@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -26,11 +26,9 @@
 #ifndef __PLAYUVERDEFS_H__
 #define __PLAYUVERDEFS_H__
 
-#include <string>
 #include <algorithm>
-
-namespace plaYUVer
-{
+#include <string>
+#include <vector>
 
 // ====================================================================================================================
 // Basic type redefinition
@@ -51,6 +49,8 @@ typedef float Float;
 typedef unsigned char UInt8;
 typedef unsigned int UInt16;
 
+typedef std::string String;
+
 // ====================================================================================================================
 // 64-bit integer type
 // ====================================================================================================================
@@ -58,8 +58,8 @@ typedef unsigned int UInt16;
 #ifdef _MSC_VER
 typedef __int64 Int64;
 
-#if _MSC_VER <= 1200 // MS VC6
-typedef __int64 UInt64;   // MS VC6 does not support unsigned __int64 to double conversion
+#if _MSC_VER <= 1200     // MS VC6
+typedef __int64 UInt64;  // MS VC6 does not support unsigned __int64 to double conversion
 #else
 typedef unsigned __int64 UInt64;
 #endif
@@ -75,22 +75,21 @@ typedef unsigned long long UInt64;
 // Type definition
 // ====================================================================================================================
 
-typedef UShort Pel;        ///< 16-bit pixel type
+typedef UShort Pel;  ///< 16-bit pixel type
 typedef UChar Byte;
 
 // ====================================================================================================================
 // Limits definition
 // ====================================================================================================================
 
-#define MAX_UINT                    0xFFFFFFFFU ///< max. value of unsigned 32-bit integer
-#define MAX_INT                     2147483647  ///< max. value of signed 32-bit integer
-#define MAX_INT64                   0x7FFFFFFFFFFFFFFFLL  ///< max. value of signed 64-bit integer
-#define MAX_DOUBLE                  1.7e+308    ///< max. value of double-type value
-
-// ====================================================================================================================
-// Macro functions
-// ====================================================================================================================
-
+// #define MAX_UINT                    0xFFFFFFFFU ///< max. value of unsigned
+// 32-bit integer
+// #define MAX_INT                     2147483647  ///< max. value of signed
+// 32-bit integer
+// #define MAX_INT64                   0x7FFFFFFFFFFFFFFFLL  ///< max. value of
+// signed 64-bit integer
+// #define MAX_DOUBLE                  1.7e+308    ///< max. value of
+// double-type value
 
 // ====================================================================================================================
 // PlaYUVer definitions
@@ -119,21 +118,41 @@ enum RGBcomponent
   COLOR_A,
 };
 
-
-inline std::string lowercase( const std::string& in )
+enum Endianness
 {
-  std::string out;
+  PLAYUVER_BIG_ENDIAN = 0,
+  PLAYUVER_LITTLE_ENDIAN = 1,
+};
+
+inline String lowercase( const String& in )
+{
+  String out;
   transform( in.begin(), in.end(), std::back_inserter( out ), tolower );
   return out;
 }
 
-inline std::string uppercase( const std::string& in )
+inline String uppercase( const String& in )
 {
-  std::string out;
+  String out;
   transform( in.begin(), in.end(), std::back_inserter( out ), toupper );
   return out;
 }
 
-}  // NAMESPACE
+struct PlaYUVerFailure : public std::exception
+{
+  String m_class_name;
+  String m_error_msg;
+  PlaYUVerFailure( String error_msg ) throw() : m_error_msg( error_msg ) {}
+  PlaYUVerFailure( String class_name, String error_msg ) throw()
+      : m_class_name( class_name ), m_error_msg( error_msg )
+  {
+  }
+  ~PlaYUVerFailure() throw() {}
+  const Char* what() const throw()
+  {
+    String* msg = new String( "[" + m_class_name + "] " + m_error_msg );
+    return msg->c_str();
+  }
+};
 
-#endif // __PLAYUVERDEFS_H__
+#endif  // __PLAYUVERDEFS_H__

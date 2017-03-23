@@ -1,4 +1,4 @@
-PlaYUVer - Enhanced raw video player
+PlaYUVer - Enhanced Raw Video Player
 ========
 
 
@@ -14,7 +14,13 @@ plaYUVer is an open-source video player with the following features:
 - Constant growing libs for stream and frame processing (PlaYUVerStream PlaYUVerFrame)
 - Advanced API for frame/video processing algorithms
 - Frame level quality measurement API based on the PlaYUVerFrame class
-- Command-line tool for quality and frame processing algorithms (uses the referred APIs)
+- Powefull command-line tool for quality and frame processing algorithms (uses the referred APIs)
+
+Libs and API
+----------------------------------------------------------------
+- PlaYUVerFrame and PlaYUVerStream: Stream and frame handling lib
+- PlaYUVerModules: Interface for processing modules (extensions)
+
 
 Supported Quality Metrics
 ----------------------------------------------------------------
@@ -27,8 +33,24 @@ Frame Processing Modules
 - Component filtering
 - Frame difference, crop, shift, binarization
 - Sub-sampling operations
-- Disparity Computation
-- Measuring modules
+- Measuring modules 
+- Modules based on opencv:
+    * Disparity estimation
+    * Motion estimation
+
+Supported Formats
+----------------------------------------------------------------
+- Supports for the following pixel formats:
+    * YUV: 420, 44, 422, 400
+    * RGB
+    * Gray
+- Support containers:
+    * Raw video (yuv,rgb,gray)
+    * Portable Network Graphics (png)
+    * Joint Photographic Experts Group (jpeg)
+    * Windows Bitmap (bmp)
+    * Tagged Image File Format (tiff)
+    * Portable Map (ppm,pgm,pbm)
 
 Developers
 ----------------------------------------------------------------

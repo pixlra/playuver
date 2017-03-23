@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,25 +25,21 @@
 #ifndef __MODULEHANDLEDOCK_H__
 #define __MODULEHANDLEDOCK_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
+#include "config.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
 #include <QWidget>
+#include <QtGui>
 #endif
-
-
-namespace plaYUVer
-{
 
 class PlaYUVerAppModuleIf;
 
-class ModuleHandleDock: public QWidget
+class ModuleHandleDock : public QWidget
 {
-Q_OBJECT
-public:
+  Q_OBJECT
+ public:
   ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf );
   ~ModuleHandleDock();
 
@@ -51,19 +47,15 @@ public:
 
   QSize sizeHint() const;
 
-private:
-
+ private:
   PlaYUVerAppModuleIf* m_pcCurrModuleIf;
 
   Bool m_bIsVisible;
   QLabel* labelModulueValueLabel;
   QLabel* labelModulueReturnValue;
 
-public Q_SLOTS:
+ public Q_SLOTS:
   void visibilityChangedSlot( bool );
-
 };
 
-}   // NAMESPACE
-
-#endif // __MODULEHANDLEDOCK_H__
+#endif  // __MODULEHANDLEDOCK_H__

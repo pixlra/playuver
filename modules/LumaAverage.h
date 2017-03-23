@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -22,32 +22,23 @@
  * \brief    Luma frame average
  */
 
-
 #ifndef __LUMAAVERAGE_H__
 #define __LUMAAVERAGE_H__
 
+// PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
-namespace plaYUVer
-{
-
-class LumaAverage: public PlaYUVerModuleIf
+class LumaAverage : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( LumaAverage )
 
-private:
-public:
+ private:
+ public:
   LumaAverage();
-  virtual ~LumaAverage()
-  {
-  }
+  virtual ~LumaAverage() {}
   Void create( PlaYUVerFrame* );
   Double measure( PlaYUVerFrame* );
   Void destroy();
-
 };
 
-}  // NAMESPACE
-
-#endif // __LUMAAVERAGE_H__
-
+#endif  // __LUMAAVERAGE_H__

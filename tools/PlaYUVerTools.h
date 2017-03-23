@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,31 +25,28 @@
 #ifndef __PLAYUVERTOOLS_H__
 #define __PLAYUVERTOOLS_H__
 
-#include "config.h"
 #include "lib/PlaYUVerDefs.h"
 #include "lib/PlaYUVerFrame.h"
-#include "lib/PlaYUVerStream.h"
+
 #include "PlaYUVerToolsCmdParser.h"
 
-namespace plaYUVer
-{
-
+class PlaYUVerFrame;
+class PlaYUVerStream;
 class PlaYUVerModuleIf;
 
 #define MAX_NUMBER_INPUTS 10
 
-class PlaYUVerTools
+class PlaYUVerTools : public PlaYUVerToolsCmdParser
 {
-public:
+ public:
   PlaYUVerTools();
   ~PlaYUVerTools();
 
-  Int Open( Int argc, Char *argv[] );
+  Int Open( Int argc, Char* argv[] );
   Int Process();
   Int Close();
 
-private:
-  PlaYUVerToolsCmdParser m_cCmdLineHandler;
+ private:
   Bool m_bVerbose;
 
   UInt m_uiOperation;
@@ -57,6 +54,7 @@ private:
   {
     INVALID_OPERATION,
     SAVE_OPERATION,
+    RATE_REDUCTION_OPERATION,
     QUALITY_OPERATION,
     MODULE_OPERATION,
   };
@@ -68,12 +66,14 @@ private:
 
   Int openInputs();
 
-  typedef Int (PlaYUVerTools::*FpProcess) ();
+  typedef Int ( PlaYUVerTools::*FpProcess )();
   FpProcess m_fpProcess;
 
   Int64 m_iFrameNum;
-  std::vector<std::string> m_pcOutputFileNames;
+  std::vector<String> m_pcOutputFileNames;
   Int SaveOperation();
+
+  Int RateReductionOperation();
 
   Int m_uiQualityMetric;
   Int QualityOperation();
@@ -83,6 +83,4 @@ private:
   Int ModuleOperation();
 };
 
-}  // NAMESPACE
-
-#endif // __PLAYUVERTOOLS_H__
+#endif  // __PLAYUVERTOOLS_H__

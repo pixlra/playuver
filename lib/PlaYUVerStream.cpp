@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -19,19 +19,22 @@
 
 /**
  * \file     PlaYUVerStream.cpp
- * \ingroup  PlaYUVerLib
  * \brief    Input stream handling
  */
 
-#include "config.h"
-#include <cstdio>
-#include <vector>
-#include "LibMemory.h"
+// Self
 #include "PlaYUVerStream.h"
-#include "PlaYUVerStreamHandlerIf.h"
-#include "StreamHandlerRaw.h"
-#include "StreamHandlerPortableMap.h"
+#include "config.h"
 
+// System
+#include <cstdio>
+
+// Own
+#include "LibMemory.h"
+#include "PlaYUVerFrame.h"
+#include "PlaYUVerStreamHandlerIf.h"
+#include "StreamHandlerPortableMap.h"
+#include "StreamHandlerRaw.h"
 #ifdef USE_FFMPEG
 #include "StreamHandlerLibav.h"
 #endif
@@ -39,14 +42,12 @@
 #include "StreamHandlerOpenCV.h"
 #endif
 
-namespace plaYUVer
-{
-
 std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( &PlaYUVerRawHandler::Create, "Raw Video", "yuv" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &PlaYUVerRawHandler::Create, "Raw Video", "gray" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Video", "yuv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Video", "gray" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Video", "rgb" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable PixMap ", "ppm" );
@@ -62,7 +63,7 @@ std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
 std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedWriteFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( &PlaYUVerRawHandler::Create, "Raw Video", "yuv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Video", "yuv" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
 #ifdef USE_FFMPEG
@@ -76,12 +77,11 @@ std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedWriteFormats()
 
 std::vector<PlaYUVerStdResolution> PlaYUVerStream::stdResolutionSizes()
 {
-
-#define REGIST_PLAYUVER_STANDARD_RESOLUTION( name, width, height) \
-    stdResElement.shortName = name; \
-    stdResElement.uiWidth = width; \
-    stdResElement.uiHeight = height; \
-    stdResList.push_back( stdResElement );
+#define REGIST_PLAYUVER_STANDARD_RESOLUTION( name, width, height ) \
+  stdResElement.shortName = name;                                  \
+  stdResElement.uiWidth = width;                                   \
+  stdResElement.uiHeight = height;                                 \
+  stdResList.push_back( stdResElement );
 
   std::vector<PlaYUVerStdResolution> stdResList;
   PlaYUVerStdResolution stdResElement;
@@ -100,10 +100,9 @@ std::vector<PlaYUVerStdResolution> PlaYUVerStream::stdResolutionSizes()
   return stdResList;
 }
 
-
-CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( std::string strFilename, bool bRead )
+CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( String strFilename, bool bRead )
 {
-  std::string currExt = strFilename.substr( strFilename.find_last_of( "." ) + 1 );
+  String currExt = strFilename.substr( strFilename.find_last_of( "." ) + 1 );
   currExt = lowercase( currExt );
 
   std::vector<PlaYUVerSupportedFormat> supportedFmts;
@@ -117,16 +116,17 @@ CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( std::string strFilename
   }
   for( UInt i = 0; i < supportedFmts.size(); i++ )
   {
-    if( currExt != "" &&  supportedFmts[i].formatExt == currExt )
+    if( currExt != "" && supportedFmts[i].formatExt == currExt )
     {
       return supportedFmts[i].formatFct;
     }
-    else if( strFilename.find( supportedFmts[i].formatExt ) != std::string::npos )
-    {
-      return supportedFmts[i].formatFct;
-    }
+    //     else if( strFilename.find( supportedFmts[i].formatExt ) !=
+    //     String::npos )
+    //     {
+    //       return supportedFmts[i].formatFct;
+    //     }
   }
-  return &PlaYUVerRawHandler::Create;
+  return &StreamHandlerRaw::Create;
 }
 
 PlaYUVerStream::PlaYUVerStream()
@@ -152,19 +152,25 @@ PlaYUVerStream::~PlaYUVerStream()
   close();
 }
 
-std::string PlaYUVerStream::getFormatName()
+String PlaYUVerStream::getFormatName()
 {
   return !m_pcHandler ? "" : m_pcHandler->getFormatName();
 }
-std::string PlaYUVerStream::getCodecName()
+String PlaYUVerStream::getCodecName()
 {
   return !m_pcHandler ? "" : m_pcHandler->getCodecName();
 }
 
-Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::string input_format_name, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput )
+Bool PlaYUVerStream::open( String filename,
+                           String resolution,
+                           String input_format_name,
+                           UInt bitsPel,
+                           Int endianness,
+                           UInt frame_rate,
+                           Bool bInput )
 {
-  UInt width;
-  UInt height;
+  UInt width = 0;
+  UInt height = 0;
   Int input_format = -1;
 
   if( resolution.size() > 0 )
@@ -177,7 +183,8 @@ Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::st
   }
   for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
   {
-    if( lowercase( PlaYUVerFrame::supportedPixelFormatListNames()[i] ) == lowercase( input_format_name ) )
+    if( lowercase( PlaYUVerFrame::supportedPixelFormatListNames()[i] ) ==
+        lowercase( input_format_name ) )
     {
       input_format = i;
       break;
@@ -186,7 +193,14 @@ Bool PlaYUVerStream::open( std::string filename, std::string resolution, std::st
   return open( filename, width, height, input_format, bitsPel, endianness, frame_rate, bInput );
 }
 
-Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput )
+Bool PlaYUVerStream::open( String filename,
+                           UInt width,
+                           UInt height,
+                           Int input_format,
+                           UInt bitsPel,
+                           Int endianness,
+                           UInt frame_rate,
+                           Bool bInput )
 {
   if( m_bInit )
   {
@@ -198,14 +212,14 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   m_pfctCreateHandler = PlaYUVerStream::findStreamHandler( filename, m_bIsInput );
   if( !m_pfctCreateHandler )
   {
-    throw "[PlaYUVerStream] Invalid handler";
+    throw PlaYUVerFailure( "PlaYUVerStream", "Invalid handler" );
   }
 
   m_pcHandler = m_pfctCreateHandler();
 
   if( !m_pcHandler )
   {
-    throw "[PlaYUVerStream] Cannot create handler";
+    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot create handler" );
   }
 
   m_cFilename = filename;
@@ -218,19 +232,18 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   m_pcHandler->m_iEndianness = endianness;
   m_pcHandler->m_dFrameRate = frame_rate;
 
-
   if( !m_pcHandler->openHandler( m_cFilename, m_bIsInput ) )
   {
     close();
-    throw "[PlaYUVerStream] Cannot open file";
+    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot open file " + m_cFilename );
     return m_bInit;
   }
 
-
-  if( m_pcHandler->m_uiWidth <= 0 || m_pcHandler->m_uiHeight <= 0 || m_pcHandler->m_iPixelFormat < 0 )
+  if( m_pcHandler->m_uiWidth <= 0 || m_pcHandler->m_uiHeight <= 0 ||
+      m_pcHandler->m_iPixelFormat < 0 )
   {
     close();
-    throw "[PlaYUVerStream] Incorrect configuration";
+    throw PlaYUVerFailure( "PlaYUVerStream", "Incorrect configuration" );
     return m_bInit;
   }
 
@@ -241,12 +254,14 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   {
     try
     {
-      m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight, m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel, m_pcHandler->m_iEndianness );
+      m_ppcFrameBuffer[i] =
+          new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight,
+                             m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel );
     }
-    catch( const char *msg )
+    catch( PlaYUVerFailure& e )
     {
       close();
-      throw "[PlaYUVerStream] Cannot allocated frame buffer";
+      throw PlaYUVerFailure( "PlaYUVerStream", "Cannot allocated frame buffer" );
       return m_bInit;
     }
   }
@@ -263,14 +278,14 @@ Bool PlaYUVerStream::open( std::string filename, UInt width, UInt height, Int in
   if( m_bIsInput && m_uiTotalFrameNum <= 0 )
   {
     close();
-    throw "[PlaYUVerStream] Incorrect configuration: less than one frame";
+    throw PlaYUVerFailure( "PlaYUVerStream", "Incorrect configuration: less than one frame" );
     return m_bInit;
   }
 
   if( !m_pcHandler->configureBuffer( m_pcCurrFrame ) )
   {
     close();
-    throw "[PlaYUVerStream] Cannot allocated memory";
+    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot allocated memory" );
     return m_bInit;
   }
 
@@ -288,13 +303,14 @@ Bool PlaYUVerStream::reload()
   m_pcHandler->closeHandler();
   if( !m_pcHandler->openHandler( m_cFilename, m_bIsInput ) )
   {
-    throw "[PlaYUVerStream] Cannot open file using FFmpeg libs";
+    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot open file" );
   }
   m_pcHandler->setBytesPerFrame( m_pcCurrFrame->getBytesPerFrame() );
   m_uiTotalFrameNum = m_pcHandler->calculateFrameNumber();
 
-  if( m_pcHandler->m_uiWidth <= 0 || m_pcHandler->m_uiHeight <= 0
-    || m_pcHandler->m_iPixelFormat < 0 || m_pcHandler->m_uiBitsPerPixel == 0 || m_uiTotalFrameNum < 1 )
+  if( m_pcHandler->m_uiWidth <= 0 || m_pcHandler->m_uiHeight <= 0 ||
+      m_pcHandler->m_iPixelFormat < 0 || m_pcHandler->m_uiBitsPerPixel == 0 ||
+      m_uiTotalFrameNum < 1 )
   {
     return false;
   }
@@ -314,8 +330,7 @@ Void PlaYUVerStream::close()
     return;
 
   m_pcHandler->closeHandler();
-
-
+  m_pcHandler->Delete();
 
   if( m_ppcFrameBuffer )
   {
@@ -333,7 +348,7 @@ Void PlaYUVerStream::close()
   m_bInit = false;
 }
 
-std::string PlaYUVerStream::getFileName()
+String PlaYUVerStream::getFileName()
 {
   return m_cFilename;
 }
@@ -350,6 +365,10 @@ UInt PlaYUVerStream::getHeight() const
 {
   return m_pcHandler->m_uiHeight;
 }
+Int PlaYUVerStream::getEndianess() const
+{
+  return m_pcHandler->m_iEndianness;
+}
 Double PlaYUVerStream::getFrameRate()
 {
   return m_pcHandler->m_dFrameRate;
@@ -360,7 +379,12 @@ Int PlaYUVerStream::getCurrFrameNum()
   return m_iCurrFrameNum;
 }
 
-Void PlaYUVerStream::getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, UInt& rFrameRate )
+Void PlaYUVerStream::getFormat( UInt& rWidth,
+                                UInt& rHeight,
+                                Int& rInputFormat,
+                                UInt& rBitsPerPel,
+                                Int& rEndianness,
+                                UInt& rFrameRate )
 {
   if( m_bInit )
   {
@@ -402,7 +426,9 @@ Void PlaYUVerStream::loadAll()
   getMem1D<PlaYUVerFrame*>( &m_ppcFrameBuffer, m_uiFrameBufferSize );
   for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
   {
-    m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight, m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel );
+    m_ppcFrameBuffer[i] =
+        new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight,
+                           m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel );
     if( !m_ppcFrameBuffer[i] )
     {
       close();
@@ -426,25 +452,25 @@ Void PlaYUVerStream::loadAll()
 
 Void PlaYUVerStream::getDuration( Int* duration_array )
 {
-//   Int hours, mins, secs = 0;
-// #ifdef USE_FFMPEG
-//   if( m_iStreamHandler == FFMPEG )
-//   {
-//     secs = m_cLibAvContext->getStreamDuration();
-//   }
-//   else
-// #endif
-//   if( m_iStreamHandler == YUV_IO )
-//   {
-//     secs = m_uiTotalFrameNum / m_dFrameRate;
-//   }
-//   mins = secs / 60;
-//   secs %= 60;
-//   hours = mins / 60;
-//   mins %= 60;
-//   *duration_array++ = hours;
-//   *duration_array++ = mins;
-//   *duration_array++ = secs;
+  //   Int hours, mins, secs = 0;
+  // #ifdef USE_FFMPEG
+  //   if( m_iStreamHandler == FFMPEG )
+  //   {
+  //     secs = m_cLibAvContext->getStreamDuration();
+  //   }
+  //   else
+  // #endif
+  //   if( m_iStreamHandler == YUV_IO )
+  //   {
+  //     secs = m_uiTotalFrameNum / m_dFrameRate;
+  //   }
+  //   mins = secs / 60;
+  //   secs %= 60;
+  //   hours = mins / 60;
+  //   mins %= 60;
+  //   *duration_array++ = hours;
+  //   *duration_array++ = mins;
+  //   *duration_array++ = secs;
 }
 
 Void PlaYUVerStream::readFrameFillRGBBuffer()
@@ -468,7 +494,7 @@ Void PlaYUVerStream::readFrame()
 
   if( !m_pcHandler->read( m_pcNextFrame ) )
   {
-    throw "[PlaYUVerStream] Cannot read file";
+    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot read file" );
     return;
   }
 
@@ -481,24 +507,26 @@ Void PlaYUVerStream::writeFrame()
   writeFrame( m_pcCurrFrame );
 }
 
-Void PlaYUVerStream::writeFrame( PlaYUVerFrame *pcFrame )
+Void PlaYUVerStream::writeFrame( PlaYUVerFrame* pcFrame )
 {
   if( !m_pcHandler->write( pcFrame ) )
   {
-    throw "[PlaYUVerStream] Cannot write into the file";
+    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot write into the file" );
   }
   return;
 }
 
-Bool PlaYUVerStream::saveFrame( const std::string& filename )
+Bool PlaYUVerStream::saveFrame( const String& filename )
 {
   return saveFrame( filename, m_pcCurrFrame );
 }
 
-Bool PlaYUVerStream::saveFrame( const std::string& filename, PlaYUVerFrame *saveFrame )
+Bool PlaYUVerStream::saveFrame( const String& filename, PlaYUVerFrame* saveFrame )
 {
   PlaYUVerStream auxSaveStream;
-  if( !auxSaveStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(), saveFrame->getPelFormat(), saveFrame->getBitsPel(), saveFrame->getEndianness(), 1, false ) )
+  if( !auxSaveStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(),
+                           saveFrame->getPelFormat(), saveFrame->getBitsPel(),
+                           PLAYUVER_LITTLE_ENDIAN, 1, false ) )
   {
     return false;
   }
@@ -535,7 +563,7 @@ Bool PlaYUVerStream::setNextFrame()
   return bEndOfSeq;
 }
 
-PlaYUVerFrame* PlaYUVerStream::getCurrFrame( PlaYUVerFrame *pyuv_image )
+PlaYUVerFrame* PlaYUVerStream::getCurrFrame( PlaYUVerFrame* pyuv_image )
 {
   if( pyuv_image == NULL )
     pyuv_image = new PlaYUVerFrame( m_pcCurrFrame );
@@ -575,7 +603,7 @@ Bool PlaYUVerStream::seekInputRelative( Bool bIsFoward )
 
 Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 {
-  if( !m_bInit || new_frame_num < 0 || new_frame_num >= m_uiTotalFrameNum || ( Int64 )new_frame_num == m_iCurrFrameNum )
+  if( !m_bInit || new_frame_num >= m_uiTotalFrameNum || (Int64)new_frame_num == m_iCurrFrameNum )
     return false;
 
   m_iCurrFrameNum = new_frame_num - 1;
@@ -590,7 +618,7 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 
   if( !m_pcHandler->seek( new_frame_num ) )
   {
-    throw "[PlaYUVerStream] Cannot write into the file";
+    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot write into the file" );
   }
 
   m_uiCurrFrameFileIdx = new_frame_num;
@@ -604,5 +632,3 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
     readFrame();
   return true;
 }
-
-}  // NAMESPACE

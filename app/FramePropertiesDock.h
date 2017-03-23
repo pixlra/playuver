@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -25,36 +25,33 @@
 #ifndef __FRAMEPROPERTIESDOCK_H__
 #define __FRAMEPROPERTIESDOCK_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
+#include "config.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
 #include <QWidget>
+#include <QtGui>
 #endif
-#include "lib/PlaYUVerStream.h"
-#include "lib/PlaYUVerFrame.h"
 #include "HistogramWidget.h"
+#include "lib/PlaYUVerFrame.h"
+#include "lib/PlaYUVerStream.h"
 
-namespace plaYUVer
+class FramePropertiesDock : public QWidget
 {
-
-class FramePropertiesDock: public QWidget
-{
-Q_OBJECT
-public:
+  Q_OBJECT
+ public:
   FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitch );
   ~FramePropertiesDock();
 
   QSize sizeHint() const;
 
   Void setFrame( PlaYUVerFrame* m_pcFrame );
-  Void setSelection( const QRect &selectionArea );
+  Void setSelection( const QRect& selectionArea );
   Void reset();
   Void stopHistogram();
 
-private:
+ private:
   enum ColorChannel
   {
     LuminosityChannel = 0,
@@ -72,50 +69,45 @@ private:
     AllColorsBlue
   };
 
-  PlaYUVerFrame *m_pcFrame;
-  PlaYUVerFrame *m_pcSelectedFrame;
+  PlaYUVerFrame* m_pcFrame;
+  PlaYUVerFrame* m_pcSelectedFrame;
   Int m_iLastFrameType;
 
   Bool* m_pbIsPlaying;
 
+  QComboBox* channelCB;
+  QComboBox* colorsCB;
+  QComboBox* renderingCB;
 
-  QComboBox *channelCB;
-  QComboBox *colorsCB;
-  QComboBox *renderingCB;
+  QPushButton* linHistoButton;
+  QPushButton* logHistoButton;
+  QPushButton* fullImageButton;
+  QPushButton* selectionImageButton;
 
-  QPushButton *linHistoButton;
-  QPushButton *logHistoButton;
-  QPushButton *fullImageButton;
-  QPushButton *selectionImageButton;
+  QButtonGroup* scaleButtonGroup;
+  QButtonGroup* renderingButtonGroup;
 
-  QButtonGroup *scaleButtonGroup;
-  QButtonGroup *renderingButtonGroup;
+  QSpinBox* minInterv;
+  QSpinBox* maxInterv;
 
-  QSpinBox *minInterv;
-  QSpinBox *maxInterv;
+  QLabel* labelPixelsValue;
+  QLabel* labelCountValue;
+  QLabel* labelRangeValue;
+  QLabel* labelMeanValue;
+  QLabel* labelStdDevValue;
+  QLabel* labelMedianValue;
+  QLabel* labelPercentileValue;
 
-  QLabel *colorsLabel;
-  QLabel *labelMeanValue;
-  QLabel *labelPixelsValue;
-  QLabel *labelStdDevValue;
-  QLabel *labelCountValue;
-  QLabel *labelMedianValue;
-  QLabel *labelPercentileValue;
-  QLabel *formatValueLabel;
-  QLabel *sizeValueLabel;
-  QLabel *colorSpaceValueLabel;
-  QLabel *colorModeValueLabel;
-  QLabel *depthValueLabel;
-  QLabel *alphaValueLabel;
+  QLabel* colorsLabel;
 
   QRect m_cSelectionArea;
 
-  HistogramWidget *histogramWidget;
+  HistogramWidget* histogramWidget;
 
   Void updateStatistiques();
   Void updateDataHistogram();
 
-private Q_SLOTS:
+ private Q_SLOTS:
   void slotRefreshOptions( int range );
   void slotHistogramComputationFailed( void );
   void slotChannelChanged( int channel );
@@ -127,9 +119,6 @@ private Q_SLOTS:
 
   void slotUpdateInterval( int min, int max );
   void slotUpdateIntervRange( int range );
-
 };
 
-}   // NAMESPACE
-
-#endif // __FRAMEPROPERTIESDOCK_H__
+#endif  // __FRAMEPROPERTIESDOCK_H__

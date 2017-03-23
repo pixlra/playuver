@@ -10,24 +10,6 @@ set(plaYUver_Mod_SRCS
   PlaYUVerModuleFactory.cpp
 )
 
-MACRO(ADD_MODULE name file )
-  set(__modulename "Module${name}")
-  OPTION(MODULE_${name}        "Use module ${name}"       ON )
-  ADD_FEATURE_INFO(${name} MODULE_${name} "Module ${name}" )
-  if( MODULE_${name} )
-    list(APPEND plaYUver_Mod_SRCS ${file} )
-    LIST(APPEND MODULES_LIST ${name} )
-    file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#include \"${file}.h\"\n")
-  endif()
-  unset(__modulename)
-ENDMACRO()
-
-
-file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "// This files add the header files of each module\n"
-
-                                                            "#ifndef __MODULESLISTHEADER_H__\n#define __MODULESLISTHEADER_H__\n" )
-
-
 #
 # Modules List
 #
@@ -37,6 +19,7 @@ ADD_MODULE( FilterComponentChromaV "FilterComponent" )
 ADD_MODULE( FrameDifference "FrameDifference" )
 ADD_MODULE( FrameMask "FrameMask" )
 ADD_MODULE( AbsoluteFrameDifference "AbsoluteFrameDifference" )
+ADD_MODULE( InterFrameVariance "InterFrameVariance" )
 ADD_MODULE( FrameBinarization "FrameBinarization" )
 ADD_MODULE( FrameShift "FrameShift" )
 ADD_MODULE( SetChromaHalfScale "SetChromaHalfScale" )
@@ -44,18 +27,20 @@ ADD_MODULE( EightBitsSampling "EightBitsSampling" )
 ADD_MODULE( FrameCrop "FrameCrop" )
 ADD_MODULE( LumaAverage "LumaAverage" )
 ADD_MODULE( WeightedPSNR "WeightedPSNR" )
-IF( USE_OPENCV )
-  ADD_MODULE( DisparityStereoBM "DisparityStereoBM" )
-  ADD_MODULE( DisparityStereoSGBM "DisparityStereoSGBM" )
-  #ADD_MODULE( DisparityStereoVar "DisparityStereoVar" )
-ENDIF()
+
+ADD_MODULE_USE_OPENCV( MeasureOpticalFlowDualTVL1 "MeasureOpticalFlowDualTVL1" VERSION 2.4.13.0 MODULES video )
+
+ADD_MODULE_USE_OPENCV( OpticalFlowDualTVL1 "OpticalFlow" VERSION  3.1.0 MODULES optflow )
+ADD_MODULE_USE_OPENCV( OpticalFlowSparseToDense "OpticalFlow" VERSION  3.1.0 MODULES optflow )
+ADD_MODULE_USE_OPENCV( OpticalFlowFarneback "OpticalFlow" VERSION 3.1.0 MODULES video optflow )
+ADD_MODULE_USE_OPENCV( OpticalDeepFlow "OpticalFlow" VERSION 3.1.0 MODULES video optflow )
+
+ADD_MODULE_USE_OPENCV( DisparityStereoBM "DisparityStereoBM" VERSION 2.4.13.0 MODULES calib3d )
+ADD_MODULE_USE_OPENCV( DisparityStereoSGBM "DisparityStereoSGBM" VERSION 2.4.13.0 MODULES calib3d )
 
 
-#
-# Finish header
-#
-file( APPEND ${CMAKE_CURRENT_BINARY_DIR}/ModulesListHeader.h   "#endif // __MODULESLISTHEADER_H__\n" )
 
+CREATE_MODULE_MACROS()
 INCLUDE_DIRECTORIES( ${OpenCV_INCLUDE_DIRS} )
 ADD_LIBRARY( PlaYUVerModules ${plaYUver_Mod_SRCS} )
 TARGET_LINK_LIBRARIES( PlaYUVerModules PlaYUVerLib  ${OpenCV_LIBRARIES} -ldl )

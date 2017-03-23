@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -18,39 +18,30 @@
  */
 
 /**
- * \file     AbsoluteFrameDifference_APIv2.h
+ * \file     AbsoluteFrameDifferenceExampleExample.h
  * \brief    Absolute Frame Difference module
  */
 
-#ifndef __ABSOLUTEFRAMEDIFFERENCE_H__
-#define __ABSOLUTEFRAMEDIFFERENCE_H__
+#ifndef __ABSOLUTEFRAMEDIFFERENCEEXAMPLE_H__
+#define __ABSOLUTEFRAMEDIFFERENCEEXAMPLE_H__
 
 #include "PlaYUVerModuleIf.h"
 
 #include <cassert>
 
-namespace plaYUVer
+class AbsoluteFrameDifferenceExample : public PlaYUVerModuleIf
 {
+  REGISTER_CLASS_FACTORY( AbsoluteFrameDifferenceExample )
 
-class AbsoluteFrameDifference: public PlaYUVerModuleIf
-{
-REGISTER_CLASS_FACTORY( AbsoluteFrameDifference )
-
-private:
+ private:
   PlaYUVerFrame* m_pcFrameDifference;
 
-public:
-  AbsoluteFrameDifference();
-  virtual ~AbsoluteFrameDifference()
-  {
-  }
+ public:
+  AbsoluteFrameDifferenceExample();
+  virtual ~AbsoluteFrameDifferenceExample() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
   Void destroy();
-
 };
 
-}  // NAMESPACE
-
-#endif // __FRAMEDIFFERENCE_H__
-
+#endif  // __ABSOLUTEFRAMEDIFFERENCEEXAMPLE_H__

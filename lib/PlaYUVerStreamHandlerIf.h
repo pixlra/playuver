@@ -1,5 +1,5 @@
 /*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2015  by Luis Lucas      (luisfrlucas@gmail.com)
+ *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
  *                                Joao Carreira   (jfmcarreira@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
@@ -27,25 +27,23 @@
 
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerStream.h"
-#include "PlaYUVerFrame.h"
 
-namespace plaYUVer
-{
+class PlaYUVerFrame;
 
-#define REGISTER_STREAM_HANDLER(X) \
-  public: \
-    static PlaYUVerStreamHandlerIf* Create() { return new X(); } \
-    void Delete() { delete this; }
-
+#define REGISTER_STREAM_HANDLER( X )                           \
+ public:                                                       \
+  static PlaYUVerStreamHandlerIf* Create() { return new X(); } \
+  void Delete() { delete this; }
 /**
  * \class PlaYUVerStreamHandlerIf
- * \ingroup  PlaYUVerLib PlaYUVerLib_Stream
+ * \ingroup  PlaYUVerLib_Stream
  * \brief    Abstract class for stream handling
  */
 class PlaYUVerStreamHandlerIf
 {
   friend class PlaYUVerStream;
-public:
+
+ public:
   PlaYUVerStreamHandlerIf()
   {
     m_bIsInput = true;
@@ -56,11 +54,10 @@ public:
     m_iEndianness = -1;
     m_dFrameRate = 30;
   }
-  virtual ~PlaYUVerStreamHandlerIf()
-  {
-  }
+  virtual ~PlaYUVerStreamHandlerIf() {}
+  virtual void Delete() = 0;
 
-  virtual Bool openHandler( std::string strFilename, Bool bInput ) = 0;
+  virtual Bool openHandler( String strFilename, Bool bInput ) = 0;
   virtual Void closeHandler() = 0;
   virtual Bool configureBuffer( PlaYUVerFrame* pcFrame ) = 0;
   virtual UInt64 calculateFrameNumber() = 0;
@@ -68,22 +65,12 @@ public:
   virtual Bool read( PlaYUVerFrame* pcFrame ) = 0;
   virtual Bool write( PlaYUVerFrame* pcFrame ) = 0;
 
-  Void setBytesPerFrame( UInt64 uiNBytes )
-  {
-    m_uiNBytesPerFrame = uiNBytes;
-  }
-  std::string getFormatName()
-  {
-    return m_strFormatName;
-  }
-  std::string getCodecName()
-  {
-    return m_strCodecName;
-  }
-
-protected:
+  Void setBytesPerFrame( UInt64 uiNBytes ) { m_uiNBytesPerFrame = uiNBytes; }
+  String getFormatName() { return m_strFormatName; }
+  String getCodecName() { return m_strCodecName; }
+ protected:
   Bool m_bIsInput;
-  std::string m_cFilename;
+  String m_cFilename;
   UInt m_uiWidth;
   UInt m_uiHeight;
   Int m_iPixelFormat;
@@ -93,12 +80,8 @@ protected:
 
   Byte* m_pStreamBuffer;
   UInt64 m_uiNBytesPerFrame;
-  std::string m_strFormatName;
-  std::string m_strCodecName;
+  String m_strFormatName;
+  String m_strCodecName;
 };
 
-
-}  // NAMESPACE
-
-#endif // __PLAYUVERSTREAMHANDLERIF_H__
-
+#endif  // __PLAYUVERSTREAMHANDLERIF_H__

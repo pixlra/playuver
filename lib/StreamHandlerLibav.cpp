@@ -39,7 +39,8 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedReadFormats()
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Audio video interleaved", "avi" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows media video", "wmv" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "MPEG4", "mp4" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Matroska Multimedia Container", "mkv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Matroska Multimedia Container",
+                                 "mkv" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "H.264 streams", "h264" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "HEVC streams", "hevc" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
@@ -129,7 +130,8 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
     return false;
   }
 
-  m_uiFrameBufferSize = av_image_get_buffer_size( AVPixelFormat( codec_param->format ), codec_param->width, codec_param->height, 1 );
+  m_uiFrameBufferSize = av_image_get_buffer_size( AVPixelFormat( codec_param->format ),
+                                                  codec_param->width, codec_param->height, 1 );
   getMem1D( &m_pchFrameBuffer, m_uiFrameBufferSize );
 
   m_strFormatName = uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
@@ -331,7 +333,8 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
   if( bGotFrame )
   {
     AVCodecParameters* codec_param = m_cStream->codecpar;
-    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, AVPixelFormat( codec_param->format ),
+    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data,
+                             m_cFrame->linesize, AVPixelFormat( codec_param->format ),
                              codec_param->width, codec_param->height, 1 );
     if( orig_pkt.size )
       av_free_packet( &orig_pkt );

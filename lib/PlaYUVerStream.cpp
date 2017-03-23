@@ -120,11 +120,10 @@ CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( String strFilename, boo
     {
       return supportedFmts[i].formatFct;
     }
-    //     else if( strFilename.find( supportedFmts[i].formatExt ) !=
-    //     String::npos )
-    //     {
-    //       return supportedFmts[i].formatFct;
-    //     }
+    else if( strFilename.find( supportedFmts[i].formatExt ) != String::npos )
+    {
+      return supportedFmts[i].formatFct;
+    }
   }
   return &StreamHandlerRaw::Create;
 }

@@ -89,7 +89,7 @@ class PlaYUVerApp : public QMainWindow
    *  File functions slots
    */
   void open();
-  void openDevice();
+  // void openDevice();
   void openRecent();
   void save();
   void format();
@@ -128,8 +128,6 @@ class PlaYUVerApp : public QMainWindow
 
   static VideoSubWindow* findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager,
                                                    const QString& fileName );
-
-  Void load( QString fileName, PlaYUVerStreamInfo* pStreamInfo );
 
   Void updateMenus();
 

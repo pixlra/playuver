@@ -40,8 +40,7 @@ using cv::VideoCapture;
 std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  //   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Device",
-  //   "/dev/" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Device", "/dev/" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
@@ -71,9 +70,15 @@ Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
      */
     if( m_cFilename.find( "/dev/video" ) != String::npos )
     {
+      Int iDeviceId = 0;
+      if( m_cFilename.find( "/dev/video0" ) != String::npos )
+        iDeviceId = 0;
+      else if( m_cFilename.find( "/dev/video1" ) != String::npos )
+        iDeviceId = 1;
+
       m_strFormatName = "DEV";
       m_strCodecName = "Raw Video";
-      pcVideoCapture = new VideoCapture( 0 );
+      pcVideoCapture = new VideoCapture( iDeviceId );
       m_uiWidth = pcVideoCapture->get( CV_CAP_PROP_FRAME_WIDTH );
       m_uiHeight = pcVideoCapture->get( CV_CAP_PROP_FRAME_HEIGHT );
       m_dFrameRate = 25;
@@ -88,7 +93,7 @@ Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
       m_dFrameRate = 1;
     }
     m_uiBitsPerPixel = 8;
-    m_iPixelFormat = PlaYUVerFrame::findPixelFormat( "BGR24" );
+    m_iPixelFormat = PlaYUVerFrame::findPixelFormat( "BGR" );
   }
 
   return true;

@@ -449,7 +449,7 @@ Void ModulesHandle::activateModule()
   if( pcCurrAppModuleIf->m_pcModule->m_iModuleAPI == MODULE_API_2 )
   {
     std::vector<PlaYUVerFrame*> apcFrameList;
-    for( UInt i = 0; i < videoSubWindowList.size(); i++ )
+    for( Int i = 0; i < videoSubWindowList.size(); i++ )
     {
       apcFrameList.push_back( pcCurrAppModuleIf->m_pcSubWindow[i]->getCurrFrame() );
     }

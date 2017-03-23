@@ -2,7 +2,7 @@
 Language:        Cpp
 # BasedOnStyle:  Chromium
 ColumnLimit:     80
-ColumnLimit:     120
+ColumnLimit:     140
 AccessModifierOffset: -1
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: false

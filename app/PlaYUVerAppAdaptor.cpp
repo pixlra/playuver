@@ -22,11 +22,12 @@
  * \brief    Define function to manage the interface in DBus
  */
 
-#include <QDBusAbstractAdaptor>
 #include "PlaYUVerAppAdaptor.h"
 #include "PlaYUVerApp.h"
+#include <QDBusAbstractAdaptor>
 
-PlaYUVerAppAdaptor::PlaYUVerAppAdaptor( PlaYUVerApp* app ) : QDBusAbstractAdaptor( app ), m_app( app )
+PlaYUVerAppAdaptor::PlaYUVerAppAdaptor( PlaYUVerApp* app )
+    : QDBusAbstractAdaptor( app ), m_app( app )
 {
   // application dbus interface
   QDBusConnection::sessionBus().registerObject( QStringLiteral( PLAYUVER_DBUS_PATH ), this,

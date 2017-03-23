@@ -30,13 +30,16 @@ InterFrameVariance::InterFrameVariance()
   /* Module Definition */
   m_iModuleAPI = MODULE_API_2;  // Use API version 2 (recommended).
   // See this example for details on the functions prototype
-  m_iModuleType = FRAME_PROCESSING_MODULE;  // Apply module to the frames or to the whole sequence.
+  m_iModuleType = FRAME_PROCESSING_MODULE;  // Apply module to the frames or to
+                                            // the whole sequence.
   m_pchModuleCategory = "Measurements";     // Category (sub-menu)
   m_pchModuleName = "InterFrameVariance";   // Name
   m_pchModuleTooltip = "Measure the variance across several frames";
-  m_uiNumberOfFrames =
-      MODULE_REQUIRES_SEVERAL_FRAMES;  // Number of Frames required (This module allows a variable number of inputs)
-  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;  // Module requirements (check PlaYUVerModulesIf.h).
+  m_uiNumberOfFrames = MODULE_REQUIRES_SEVERAL_FRAMES;  // Number of Frames required (This module
+                                                        // allows a variable number of inputs)
+  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;  // Module requirements
+                                                        // (check
+                                                        // PlaYUVerModulesIf.h).
   // Several requirements should be "or" between each others.
   m_pcFrameVariance = NULL;
 }
@@ -53,8 +56,8 @@ Bool InterFrameVariance::create( std::vector<PlaYUVerFrame*> apcFrameList )
                                                             PlaYUVerFrame::MATCH_BITS ) )
       return false;
 
-  m_pcFrameVariance =
-      new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY, 8 );
+  m_pcFrameVariance = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
+                                         PlaYUVerFrame::GRAY, 8 );
   getMem2D( &m_pVariance, apcFrameList[0]->getHeight(), apcFrameList[0]->getWidth() );
 
   return true;

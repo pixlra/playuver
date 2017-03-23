@@ -22,10 +22,10 @@
  * \brief    Pixel handling
  */
 
-#include <cstdio>
-#include <cmath>
-#include "PlaYUVerFrame.h"
 #include "PlaYUVerPixel.h"
+#include "PlaYUVerFrame.h"
+#include <cmath>
+#include <cstdio>
 
 PlaYUVerPixel::PlaYUVerPixel() : m_iColorSpace( COLOR_INVALID )
 {

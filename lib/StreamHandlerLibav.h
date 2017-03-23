@@ -26,8 +26,8 @@
 #define __LIBAVCONTEXTHANDLE_H__
 
 #include <inttypes.h>
-#include <vector>
 #include <string>
+#include <vector>
 
 #ifndef __PRI64_PREFIX
 #define __PRI64_PREFIX "l"
@@ -38,10 +38,10 @@
 #endif
 
 extern "C" {
+#include <libavformat/avformat.h>
 #include <libavutil/avutil.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/samplefmt.h>
-#include <libavformat/avformat.h>
 }
 
 #include "PlaYUVerDefs.h"

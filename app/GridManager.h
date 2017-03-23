@@ -26,11 +26,11 @@
 #ifndef __GRIDMANAGER_H__
 #define __GRIDMANAGER_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
-#include <QRect>
+#include "config.h"
 #include <QColor>
 #include <QPen>
+#include <QRect>
 
 class QPoint;
 class QBitmap;

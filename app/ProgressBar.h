@@ -26,8 +26,8 @@
 #define __PROGRESSBAR_H__
 
 #include "PlaYUVerAppDefs.h"
-#include <QWidget>
 #include <QDialog>
+#include <QWidget>
 
 class QProgressBar;
 

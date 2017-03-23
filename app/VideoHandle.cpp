@@ -22,21 +22,21 @@
  * \brief    Class to handle video playback
  */
 
-#include "PlaYUVerApp.h"
 #include "VideoHandle.h"
-#include "VideoSubWindow.h"
-#include "PlaYUVerSubWindowHandle.h"
 #include "DialogSubWindowSelector.h"
-#include "SeekStreamDialog.h"
 #include "FramePropertiesDock.h"
+#include "PlaYUVerApp.h"
+#include "PlaYUVerSubWindowHandle.h"
+#include "SeekStreamDialog.h"
+#include "VideoSubWindow.h"
 #include "WidgetFrameNumber.h"
-#include <QtGui>
-#include <QToolBar>
 #include <QDockWidget>
+#include <QElapsedTimer>
+#include <QLabel>
 #include <QSignalMapper>
 #include <QSlider>
-#include <QLabel>
-#include <QElapsedTimer>
+#include <QToolBar>
+#include <QtGui>
 #if( _CONTROL_PLAYING_TIME_ == 1 )
 #include <QElapsedTimer>
 #endif
@@ -77,16 +77,20 @@ Void VideoHandle::createActions()
 
   m_arrayActions[VIDEO_BACKWARD_ACT] = new QAction( "Video Backward", this );
   m_arrayActions[VIDEO_BACKWARD_ACT]->setStatusTip( "Seek backward" );
-  m_arrayActions[VIDEO_BACKWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
+  m_arrayActions[VIDEO_BACKWARD_ACT]->setIcon(
+      QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
   m_arrayActions[VIDEO_BACKWARD_ACT]->setShortcut( Qt::Key_Left );
-  connect( m_arrayActions[VIDEO_BACKWARD_ACT], SIGNAL( triggered() ), m_mapperVideoSeek, SLOT( map() ) );
+  connect( m_arrayActions[VIDEO_BACKWARD_ACT], SIGNAL( triggered() ), m_mapperVideoSeek,
+           SLOT( map() ) );
   m_mapperVideoSeek->setMapping( m_arrayActions[VIDEO_BACKWARD_ACT], 0 );
 
   m_arrayActions[VIDEO_FORWARD_ACT] = new QAction( "Video Forward", this );
   m_arrayActions[VIDEO_FORWARD_ACT]->setStatusTip( "Seek forward" );
-  m_arrayActions[VIDEO_FORWARD_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
+  m_arrayActions[VIDEO_FORWARD_ACT]->setIcon(
+      QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
   m_arrayActions[VIDEO_FORWARD_ACT]->setShortcut( Qt::Key_Right );
-  connect( m_arrayActions[VIDEO_FORWARD_ACT], SIGNAL( triggered() ), m_mapperVideoSeek, SLOT( map() ) );
+  connect( m_arrayActions[VIDEO_FORWARD_ACT], SIGNAL( triggered() ), m_mapperVideoSeek,
+           SLOT( map() ) );
   m_mapperVideoSeek->setMapping( m_arrayActions[VIDEO_FORWARD_ACT], 1 );
 
   m_arrayActions[VIDEO_GOTO_ACT] = new QAction( "Go to", this );
@@ -108,13 +112,16 @@ Void VideoHandle::createActions()
 
   m_arrayActions[VIDEO_LOCK_SELECTION_ACT] = new QAction( "Sync Play", this );
   m_arrayActions[VIDEO_LOCK_SELECTION_ACT]->setStatusTip(
-      "Select which windows should be played synchronized. Press Ctrl while click to quickly to select all!" );
-  connect( m_arrayActions[VIDEO_LOCK_SELECTION_ACT], SIGNAL( triggered() ), this, SLOT( videoSelectionButtonEvent() ) );
+      "Select which windows should be played synchronized. Press Ctrl while "
+      "click to quickly to select all!" );
+  connect( m_arrayActions[VIDEO_LOCK_SELECTION_ACT], SIGNAL( triggered() ), this,
+           SLOT( videoSelectionButtonEvent() ) );
 
   m_pcFrameSlider = new QSlider;
   m_pcFrameSlider->setOrientation( Qt::Horizontal );
   m_pcFrameSlider->setMaximumWidth( 2000 );
-  m_pcFrameSlider->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
+  m_pcFrameSlider->setSizePolicy(
+      QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
   m_pcFrameSlider->setEnabled( false );
   m_pcFrameSlider->setTracking( false );
   connect( m_pcFrameSlider, SIGNAL( valueChanged( int ) ), this, SLOT( seekSliderEvent( int ) ) );
@@ -133,7 +140,8 @@ Void VideoHandle::createActions()
   m_arrayActions[NAVIGATION_TOOL_ACT]->setChecked( true );
   m_arrayActions[NAVIGATION_TOOL_ACT]->setShortcut( Qt::CTRL + Qt::Key_1 );
   actionGroupTools->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
-  connect( m_arrayActions[NAVIGATION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
+  connect( m_arrayActions[NAVIGATION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools,
+           SLOT( map() ) );
   m_mapperTools->setMapping( m_arrayActions[NAVIGATION_TOOL_ACT], ViewArea::NavigationView );
 
   m_arrayActions[SELECTION_TOOL_ACT] = new QAction( "Selection Tool", this );
@@ -141,7 +149,8 @@ Void VideoHandle::createActions()
   m_arrayActions[SELECTION_TOOL_ACT]->setChecked( false );
   m_arrayActions[SELECTION_TOOL_ACT]->setShortcut( Qt::CTRL + Qt::Key_2 );
   actionGroupTools->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
-  connect( m_arrayActions[SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
+  connect( m_arrayActions[SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools,
+           SLOT( map() ) );
   m_mapperTools->setMapping( m_arrayActions[SELECTION_TOOL_ACT], ViewArea::NormalSelectionView );
 
   m_arrayActions[BLOCK_SELECTION_TOOL_ACT] = new QAction( "Block Selection Tool", this );
@@ -149,13 +158,16 @@ Void VideoHandle::createActions()
   m_arrayActions[BLOCK_SELECTION_TOOL_ACT]->setChecked( false );
   m_arrayActions[BLOCK_SELECTION_TOOL_ACT]->setShortcut( Qt::CTRL + Qt::Key_3 );
   actionGroupTools->addAction( m_arrayActions[BLOCK_SELECTION_TOOL_ACT] );
-  connect( m_arrayActions[BLOCK_SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools, SLOT( map() ) );
-  m_mapperTools->setMapping( m_arrayActions[BLOCK_SELECTION_TOOL_ACT], ViewArea::BlockSelectionView );
+  connect( m_arrayActions[BLOCK_SELECTION_TOOL_ACT], SIGNAL( triggered() ), m_mapperTools,
+           SLOT( map() ) );
+  m_mapperTools->setMapping( m_arrayActions[BLOCK_SELECTION_TOOL_ACT],
+                             ViewArea::BlockSelectionView );
 
   m_arrayActions[SHOW_GRID_ACT] = new QAction( "Show grid", this );
   m_arrayActions[SHOW_GRID_ACT]->setCheckable( true );
   m_arrayActions[SHOW_GRID_ACT]->setChecked( false );
-  connect( m_arrayActions[SHOW_GRID_ACT], SIGNAL( toggled( bool ) ), this, SLOT( toggleGrid( bool ) ) );
+  connect( m_arrayActions[SHOW_GRID_ACT], SIGNAL( toggled( bool ) ), this,
+           SLOT( toggleGrid( bool ) ) );
 }
 
 QMenu* VideoHandle::createVideoMenu()
@@ -243,7 +255,8 @@ QWidget* VideoHandle::createStatusBarMessage()
 
 Void VideoHandle::updateMenus()
 {
-  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
+  VideoSubWindow* pcSubWindow =
+      qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
   Bool hasSubWindow = pcSubWindow ? true : false;
 
   m_arrayActions[PLAY_ACT]->setEnabled( hasSubWindow );
@@ -270,8 +283,10 @@ Void VideoHandle::updateMenus()
 Void VideoHandle::readSettings()
 {
   QSettings appSettings;
-  m_arrayActions[VIDEO_REPEAT_ACT]->setChecked( appSettings.value( "VideoHandle/Repeat", false ).toBool() );
-  m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setChecked( appSettings.value( "VideoHandle/VideoZoomLock", false ).toBool() );
+  m_arrayActions[VIDEO_REPEAT_ACT]->setChecked(
+      appSettings.value( "VideoHandle/Repeat", false ).toBool() );
+  m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setChecked(
+      appSettings.value( "VideoHandle/VideoZoomLock", false ).toBool() );
   if( !appSettings.value( "VideoHandle/FrameProperties", true ).toBool() )
     m_pcFramePropertiesDock->close();
 
@@ -283,7 +298,8 @@ Void VideoHandle::writeSettings()
 {
   QSettings appSettings;
   appSettings.setValue( "VideoHandle/Repeat", m_arrayActions[VIDEO_REPEAT_ACT]->isChecked() );
-  appSettings.setValue( "VideoHandle/VideoZoomLock", m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() );
+  appSettings.setValue( "VideoHandle/VideoZoomLock",
+                        m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() );
   appSettings.setValue( "VideoHandle/FrameProperties", m_pcFramePropertiesSideBar->isVisible() );
   appSettings.setValue( "VideoHandle/SelectedTool", m_uiViewTool );
 }
@@ -303,7 +319,8 @@ Void VideoHandle::update()
     QString resolution;
     if( pcFrame )
     {
-      resolution.append( QString( "%1x%2" ).arg( pcFrame->getWidth() ).arg( pcFrame->getHeight() ) );
+      resolution.append(
+          QString( "%1x%2" ).arg( pcFrame->getWidth() ).arg( pcFrame->getHeight() ) );
     }
 
     if( pcStream )
@@ -376,7 +393,8 @@ Void VideoHandle::updateSelectionArea( QRect area )
 
 Void VideoHandle::openSubWindow( VideoSubWindow* subWindow )
 {
-  connect( subWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectionArea( QRect ) ) );
+  connect( subWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this,
+           SLOT( updateSelectionArea( QRect ) ) );
   subWindow->getViewArea()->setTool( m_uiViewTool );
   subWindow->getViewArea()->setGridVisible( m_arrayActions[SHOW_GRID_ACT]->isChecked() );
 }
@@ -433,7 +451,8 @@ Void VideoHandle::moveAllScrollBars( const QPoint offset )
     QScrollBar* scrollBar;
     scrollBar = m_pcCurrentVideoSubWindow->getScroll()->horizontalScrollBar();
 
-    // Do not move other images, if current image reached maximum or minimum scroll position
+    // Do not move other images, if current image reached maximum or minimum
+    // scroll position
     if( scrollBar->value() == scrollBar->maximum() && offset.x() > 0 )
       newOffset.setX( 0 );
     if( scrollBar->value() == scrollBar->minimum() && offset.x() < 0 )
@@ -511,7 +530,8 @@ Void VideoHandle::setTimerStatus()
 #if( _CONTROL_PLAYING_TIME_ == 1 )
     if( m_pcPlayControlTimer && m_pcPlayingTimer->interval() > 0 )
     {
-      qDebug() << "Desired Fps: " << 1000 / m_pcPlayingTimer->interval() << "Real Fps: " << 1000 / m_dAverageFps;
+      qDebug() << "Desired Fps: " << 1000 / m_pcPlayingTimer->interval()
+               << "Real Fps: " << 1000 / m_dAverageFps;
 
       delete m_pcPlayControlTimer;
       m_pcPlayControlTimer = NULL;
@@ -599,8 +619,9 @@ Void VideoHandle::playEvent()
 {
   Bool bEndOfSequence = false;
 #if( _CONTROL_PLAYING_TIME_ == 1 )
-  m_dAverageFps = Double( m_dAverageFps * m_uiNumberPlayedFrames + m_pcPlayControlTimer->elapsed() ) /
-                  Double( m_uiNumberPlayedFrames + 1 );
+  m_dAverageFps =
+      Double( m_dAverageFps * m_uiNumberPlayedFrames + m_pcPlayControlTimer->elapsed() ) /
+      Double( m_uiNumberPlayedFrames + 1 );
   m_uiNumberPlayedFrames++;
   m_pcPlayControlTimer->restart();
 #endif
@@ -638,7 +659,8 @@ Void VideoHandle::seekEvent( Int direction )
   {
     if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
     {
-      if( !( ( UInt )( m_pcCurrentVideoSubWindow->getInputStream()->getCurrFrameNum() + 1 ) >= getMaxFrameNumber() &&
+      if( !( ( UInt )( m_pcCurrentVideoSubWindow->getInputStream()->getCurrFrameNum() + 1 ) >=
+                 getMaxFrameNumber() &&
              direction > 0 ) )
       {
         for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
@@ -662,7 +684,8 @@ Void VideoHandle::seekVideo()
   {
     if( m_pcCurrentVideoSubWindow->getInputStream() )
     {
-      SeekStreamDialog* dialogSeekVideo = new SeekStreamDialog( m_pcCurrentVideoSubWindow->getInputStream(), this );
+      SeekStreamDialog* dialogSeekVideo =
+          new SeekStreamDialog( m_pcCurrentVideoSubWindow->getInputStream(), this );
       Int newFrameNum = dialogSeekVideo->runDialog();
       if( newFrameNum >= 0 )
       {
@@ -769,7 +792,8 @@ Void VideoHandle::setTool( Int tool )
 {
   m_uiViewTool = tool;
   actionGroupTools->actions().at( m_uiViewTool )->setChecked( true );
-  QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
+  QList<SubWindowAbstract*> subWindowList =
+      m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     qobject_cast<VideoSubWindow*>( subWindowList.at( i ) )->getViewArea()->setTool( m_uiViewTool );
@@ -778,9 +802,12 @@ Void VideoHandle::setTool( Int tool )
 
 Void VideoHandle::toggleGrid( Bool checked )
 {
-  QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
+  QList<SubWindowAbstract*> subWindowList =
+      m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
-    qobject_cast<VideoSubWindow*>( subWindowList.at( i ) )->getViewArea()->setGridVisible( checked );
+    qobject_cast<VideoSubWindow*>( subWindowList.at( i ) )
+        ->getViewArea()
+        ->setGridVisible( checked );
   }
 }

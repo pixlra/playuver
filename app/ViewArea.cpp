@@ -25,19 +25,19 @@
 
 #include <cmath>
 
+#include "GridManager.h"
+#include "ViewArea.h"
+#include <QColor>
 #include <QCoreApplication>
-#include <QWidget>
+#include <QDebug>
+#include <QImage>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
-#include <QMouseEvent>
-#include <QImage>
-#include <QColor>
-#include <QString>
 #include <QPixmapCache>
 #include <QRectF>
-#include <QDebug>
-#include "ViewArea.h"
-#include "GridManager.h"
+#include <QString>
+#include <QWidget>
 
 static const QColor selectionColor = Qt::cyan;
 static const QColor imageMaskColor = Qt::green;
@@ -72,8 +72,8 @@ Void ViewArea::setImage( PlaYUVerFrame* pcFrame )
   m_pcCurrFrame = pcFrame;
   m_uiPixelHalfScale = 1 << ( m_pcCurrFrame->getBitsPel() - 1 );
   m_pcCurrFrame->fillRGBBuffer();
-  QImage qimg = QImage( m_pcCurrFrame->getRGBBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(),
-                        QImage::Format_RGB32 );
+  QImage qimg = QImage( m_pcCurrFrame->getRGBBuffer(), m_pcCurrFrame->getWidth(),
+                        m_pcCurrFrame->getHeight(), QImage::Format_RGB32 );
   setImage( QPixmap::fromImage( qimg ) );
 }
 
@@ -432,11 +432,15 @@ Void ViewArea::paintEvent( QPaintEvent* event )
   paInter.scale( m_dZoomFactor, m_dZoomFactor );
 
   // This line is for fast paiting. Only visible area of the image is paInted.
-  // We take the exposed rect from the event (that gives us scroll/expose optimizations for free – no need
-  // to draw the whole pixmap if your widget is only partially exposed), and reverse map it with the paInter matrix.
+  // We take the exposed rect from the event (that gives us scroll/expose
+  // optimizations for free – no need
+  // to draw the whole pixmap if your widget is only partially exposed), and
+  // reverse map it with the paInter matrix.
   // That gives us the part of the pixmap that has actually been exposed.
-  // See: http://blog.qt.digia.com/blog/2006/05/13/fast-transformed-pixmapimage-drawing/
-  QRect exposedRect = paInter.worldTransform().inverted().mapRect( event->rect() ).adjusted( -1, -1, 1, 1 );
+  // See:
+  // http://blog.qt.digia.com/blog/2006/05/13/fast-transformed-pixmapimage-drawing/
+  QRect exposedRect =
+      paInter.worldTransform().inverted().mapRect( event->rect() ).adjusted( -1, -1, 1, 1 );
   // Draw the pixmap.
   paInter.drawPixmap( exposedRect, m_pixmap, exposedRect );
 
@@ -471,7 +475,8 @@ Void ViewArea::paintEvent( QPaintEvent* event )
   /*  if( m_xOffset || m_yOffset )
    {
    paInter.setPen( Qt::black );
-   paInter.drawRect( m_xOffset - 1, m_yOffset - 1, m_pixmap.width() * m_dZoomFactor + 1, m_pixmap.height() *
+   paInter.drawRect( m_xOffset - 1, m_yOffset - 1, m_pixmap.width() *
+   m_dZoomFactor + 1, m_pixmap.height() *
    m_dZoomFactor + 1 );
    }*/
 
@@ -508,9 +513,10 @@ Void ViewArea::paintEvent( QPaintEvent* event )
           else
             paInter.setPen( QColor( Qt::black ) );
 
-          paInter.drawText( pixelRect, Qt::AlignCenter, "Y: " + QString::number( sPixelValue.Y() ) + "\n" + "U: " +
-                                                            QString::number( sPixelValue.Cb() ) + "\n" + "V: " +
-                                                            QString::number( sPixelValue.Cr() ) );
+          paInter.drawText( pixelRect, Qt::AlignCenter,
+                            "Y: " + QString::number( sPixelValue.Y() ) + "\n" + "U: " +
+                                QString::number( sPixelValue.Cb() ) + "\n" + "V: " +
+                                QString::number( sPixelValue.Cr() ) );
         }
         if( frFormat == PlaYUVerPixel::COLOR_GRAY )
         {
@@ -521,7 +527,8 @@ Void ViewArea::paintEvent( QPaintEvent* event )
           else
             paInter.setPen( QColor( Qt::black ) );
 
-          paInter.drawText( pixelRect, Qt::AlignCenter, "Y: " + QString::number( sPixelValue.Y() ) );
+          paInter.drawText( pixelRect, Qt::AlignCenter,
+                            "Y: " + QString::number( sPixelValue.Y() ) );
         }
 
         if( ( frFormat == PlaYUVerPixel::COLOR_RGB ) )
@@ -533,9 +540,10 @@ Void ViewArea::paintEvent( QPaintEvent* event )
           else
             paInter.setPen( QColor( Qt::black ) );
 
-          paInter.drawText( pixelRect, Qt::AlignCenter, "R: " + QString::number( sPixelValue.R() ) + "\n" + "G: " +
-                                                            QString::number( sPixelValue.G() ) + "\n" + "B: " +
-                                                            QString::number( sPixelValue.B() ) );
+          paInter.drawText( pixelRect, Qt::AlignCenter,
+                            "R: " + QString::number( sPixelValue.R() ) + "\n" + "G: " +
+                                QString::number( sPixelValue.G() ) + "\n" + "B: " +
+                                QString::number( sPixelValue.B() ) );
         }
       }
     }
@@ -1021,8 +1029,10 @@ QRect ViewArea::windowToView( const QRect& rc ) const
   r.setTopLeft( windowToView( rc.topLeft() ) );
   //     r.setRight ( (Int)( ceil(( rc.right()  - m_xOffset)/m_dZoomFactor  )));
   //     r.setBottom( (Int)( ceil(( rc.bottom()- m_yOffset)/m_dZoomFactor  )));
-  //     r.setRight ( static_cast<Int>(( rc.right() - m_xOffset ) / m_dZoomFactor +1));
-  //     r.setBottom( static_cast<Int>(( rc.bottom() - m_xOffset ) / m_dZoomFactor+1));
+  //     r.setRight ( static_cast<Int>(( rc.right() - m_xOffset ) /
+  //     m_dZoomFactor +1));
+  //     r.setBottom( static_cast<Int>(( rc.bottom() - m_xOffset ) /
+  //     m_dZoomFactor+1));
   r.setBottomRight( windowToView( rc.bottomRight() ) );
   return r;
 }
@@ -1042,13 +1052,19 @@ QRect ViewArea::viewToWindow( const QRect& rc ) const
   QRect r;
 
   r.setTopLeft( viewToWindow( rc.topLeft() ) );
-  //     r.setRight ( (Int)( ceil(( rc.right() +1+m_xOffset )*m_dZoomFactor ) - 1 ));
-  //     r.setBottom( (Int)( ceil(( rc.bottom()+1+m_yOffset )*m_dZoomFactor ) - 1 ));
-  //     r.setRight ( (Int)( ceil(( rc.right()+0.5)*m_dZoomFactor  )+ m_xOffset )-1);
-  //     r.setBottom( (Int)( ceil(( rc.bottom()+0.5)*m_dZoomFactor ) +m_yOffset )-1);
+  //     r.setRight ( (Int)( ceil(( rc.right() +1+m_xOffset )*m_dZoomFactor ) -
+  //     1 ));
+  //     r.setBottom( (Int)( ceil(( rc.bottom()+1+m_yOffset )*m_dZoomFactor ) -
+  //     1 ));
+  //     r.setRight ( (Int)( ceil(( rc.right()+0.5)*m_dZoomFactor  )+ m_xOffset
+  //     )-1);
+  //     r.setBottom( (Int)( ceil(( rc.bottom()+0.5)*m_dZoomFactor ) +m_yOffset
+  //     )-1);
   // qDebug()<<"Right = "<< r.right();
-  //     r.setRight ( static_cast<Int>(( rc.right()+1) * m_dZoomFactor + m_xOffset -1) );
-  //     r.setBottom( static_cast<Int>(( rc.bottom()+1) * m_dZoomFactor + m_yOffset -1));
+  //     r.setRight ( static_cast<Int>(( rc.right()+1) * m_dZoomFactor +
+  //     m_xOffset -1) );
+  //     r.setBottom( static_cast<Int>(( rc.bottom()+1) * m_dZoomFactor +
+  //     m_yOffset -1));
   r.setBottomRight( viewToWindow( rc.bottomRight() ) );
 
   return r;

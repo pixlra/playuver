@@ -22,9 +22,9 @@
  * \brief    Re-implementation QMdiSubWindow
  */
 
-#include <QCloseEvent>
 #include "PlaYUVerMdiSubWindow.h"
 #include "SubWindowAbstract.h"
+#include <QCloseEvent>
 
 PlaYUVerMdiSubWindow::PlaYUVerMdiSubWindow( QWidget* parent ) : QMdiSubWindow( parent )
 {

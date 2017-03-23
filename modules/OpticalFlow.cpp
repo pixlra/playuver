@@ -45,10 +45,12 @@ OpticalFlowModule::OpticalFlowModule()
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "OpticalFlow";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
-  m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
+  m_uiModuleRequirements =
+      MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions() /**/
-      ( "Show reconstruction", m_bShowReconstruction, "Show reconstructed frame instead of MVs [false]" );
+      ( "Show reconstruction", m_bShowReconstruction,
+        "Show reconstructed frame instead of MVs [false]" );
 
   m_bShowReconstruction = false;
   m_pcOutputFrame = NULL;
@@ -65,7 +67,8 @@ Bool OpticalFlowModule::commonCreate( std::vector<PlaYUVerFrame*> apcFrameList )
       return false;
 
   m_iStep = 16;
-  m_pcOutputFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+  m_pcOutputFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
+                                       PlaYUVerFrame::GRAY );
 
   return true;
 }

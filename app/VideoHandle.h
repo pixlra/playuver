@@ -25,13 +25,13 @@
 #ifndef __VIDEOHANDLE_H__
 #define __VIDEOHANDLE_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
+#include "config.h"
 
-#include <QWidget>
 #include <QMenu>
-#include <QVector>
 #include <QPoint>
+#include <QVector>
+#include <QWidget>
 
 #define _CONTROL_PLAYING_TIME_ 0
 

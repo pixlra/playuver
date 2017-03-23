@@ -57,7 +57,8 @@ Bool WeightedPSNR::create( std::vector<PlaYUVerFrame*> apcFrameList )
   }
   for( UInt i = 1; i < apcFrameList.size(); i++ )
   {
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[1], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_BITS ) )
+    if( !apcFrameList[i]->haveSameFmt(
+            apcFrameList[1], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_BITS ) )
       return false;
   }
   return true;

@@ -26,14 +26,15 @@
 #define __PLAYUVERFRAMEPIXELFORMATS_H__
 
 #include "PlaYUVerDefs.h"
-#include "PlaYUVerPixel.h"
 #include "PlaYUVerFrame.h"
+#include "PlaYUVerPixel.h"
 
 #define CHROMA_RESAMPLING( X ) ( ( ( X + 1 ) >> 1 ) << 1 )
 
 #define CHROMARATIO( SIZE, RATIO ) ( RATIO > 1 ? ( ( SIZE + 1 ) / RATIO ) : SIZE )
 
-#define PEL_RGB( r, g, b ) ( 0xffu << 24 ) | ( ( r & 0xff ) << 16 ) | ( ( g & 0xff ) << 8 ) | ( b & 0xff )
+#define PEL_RGB( r, g, b ) \
+  ( 0xffu << 24 ) | ( ( r & 0xff ) << 16 ) | ( ( g & 0xff ) << 8 ) | ( b & 0xff )
 
 typedef struct PlaYUVerComponentDescriptor
 {

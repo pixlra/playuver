@@ -23,8 +23,8 @@
  */
 
 // Self
-#include "config.h"
 #include "PlaYUVerStream.h"
+#include "config.h"
 
 // System
 #include <cstdio>
@@ -33,8 +33,8 @@
 #include "LibMemory.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerStreamHandlerIf.h"
-#include "StreamHandlerRaw.h"
 #include "StreamHandlerPortableMap.h"
+#include "StreamHandlerRaw.h"
 #ifdef USE_FFMPEG
 #include "StreamHandlerLibav.h"
 #endif
@@ -120,7 +120,8 @@ CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( String strFilename, boo
     {
       return supportedFmts[i].formatFct;
     }
-    //     else if( strFilename.find( supportedFmts[i].formatExt ) != String::npos )
+    //     else if( strFilename.find( supportedFmts[i].formatExt ) !=
+    //     String::npos )
     //     {
     //       return supportedFmts[i].formatFct;
     //     }
@@ -182,7 +183,8 @@ Bool PlaYUVerStream::open( String filename,
   }
   for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
   {
-    if( lowercase( PlaYUVerFrame::supportedPixelFormatListNames()[i] ) == lowercase( input_format_name ) )
+    if( lowercase( PlaYUVerFrame::supportedPixelFormatListNames()[i] ) ==
+        lowercase( input_format_name ) )
     {
       input_format = i;
       break;
@@ -237,7 +239,8 @@ Bool PlaYUVerStream::open( String filename,
     return m_bInit;
   }
 
-  if( m_pcHandler->m_uiWidth <= 0 || m_pcHandler->m_uiHeight <= 0 || m_pcHandler->m_iPixelFormat < 0 )
+  if( m_pcHandler->m_uiWidth <= 0 || m_pcHandler->m_uiHeight <= 0 ||
+      m_pcHandler->m_iPixelFormat < 0 )
   {
     close();
     throw PlaYUVerFailure( "PlaYUVerStream", "Incorrect configuration" );
@@ -251,8 +254,9 @@ Bool PlaYUVerStream::open( String filename,
   {
     try
     {
-      m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight,
-                                               m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel );
+      m_ppcFrameBuffer[i] =
+          new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight,
+                             m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel );
     }
     catch( PlaYUVerFailure& e )
     {
@@ -304,8 +308,9 @@ Bool PlaYUVerStream::reload()
   m_pcHandler->setBytesPerFrame( m_pcCurrFrame->getBytesPerFrame() );
   m_uiTotalFrameNum = m_pcHandler->calculateFrameNumber();
 
-  if( m_pcHandler->m_uiWidth <= 0 || m_pcHandler->m_uiHeight <= 0 || m_pcHandler->m_iPixelFormat < 0 ||
-      m_pcHandler->m_uiBitsPerPixel == 0 || m_uiTotalFrameNum < 1 )
+  if( m_pcHandler->m_uiWidth <= 0 || m_pcHandler->m_uiHeight <= 0 ||
+      m_pcHandler->m_iPixelFormat < 0 || m_pcHandler->m_uiBitsPerPixel == 0 ||
+      m_uiTotalFrameNum < 1 )
   {
     return false;
   }
@@ -421,8 +426,9 @@ Void PlaYUVerStream::loadAll()
   getMem1D<PlaYUVerFrame*>( &m_ppcFrameBuffer, m_uiFrameBufferSize );
   for( UInt i = 0; i < m_uiFrameBufferSize; i++ )
   {
-    m_ppcFrameBuffer[i] = new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight,
-                                             m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel );
+    m_ppcFrameBuffer[i] =
+        new PlaYUVerFrame( m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight,
+                           m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel );
     if( !m_ppcFrameBuffer[i] )
     {
       close();
@@ -518,8 +524,9 @@ Bool PlaYUVerStream::saveFrame( const String& filename )
 Bool PlaYUVerStream::saveFrame( const String& filename, PlaYUVerFrame* saveFrame )
 {
   PlaYUVerStream auxSaveStream;
-  if( !auxSaveStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(), saveFrame->getPelFormat(),
-                           saveFrame->getBitsPel(), PLAYUVER_LITTLE_ENDIAN, 1, false ) )
+  if( !auxSaveStream.open( filename, saveFrame->getWidth(), saveFrame->getHeight(),
+                           saveFrame->getPelFormat(), saveFrame->getBitsPel(),
+                           PLAYUVER_LITTLE_ENDIAN, 1, false ) )
   {
     return false;
   }

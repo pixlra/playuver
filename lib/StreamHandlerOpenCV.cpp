@@ -30,9 +30,9 @@
 #include <opencv2/opencv.hpp>
 
 // Own
+#include "LibMemory.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"
-#include "LibMemory.h"
 
 using cv::Mat;
 using cv::VideoCapture;
@@ -40,7 +40,8 @@ using cv::VideoCapture;
 std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  //   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Device", "/dev/" );
+  //   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Device",
+  //   "/dev/" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
@@ -49,7 +50,8 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedWriteFormats(
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Portable PixMap ", "ppm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Portable Network Graphics", "png" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Joint Photographic Experts Group", "jpg" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Joint Photographic Experts Group",
+                                 "jpg" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Windows Bitmap", "bmp" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
@@ -78,7 +80,8 @@ Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
     }
     else
     {
-      m_strCodecName = m_strFormatName = uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
+      m_strCodecName = m_strFormatName =
+          uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
       Mat cvMat = cv::imread( m_cFilename );
       m_uiWidth = cvMat.cols;
       m_uiHeight = cvMat.rows;

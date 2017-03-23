@@ -24,12 +24,12 @@
 
 #include "PlaYUVerToolsCmdParser.h"
 
-#include <cstring>
 #include <cstdarg>
+#include <cstring>
 
 #include "lib/PlaYUVerFrame.h"
-#include "lib/PlaYUVerStream.h"
 #include "lib/PlaYUVerModuleIf.h"
+#include "lib/PlaYUVerStream.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
 PlaYUVerToolsCmdParser::PlaYUVerToolsCmdParser()
@@ -90,7 +90,10 @@ Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char* argv[] )
   }
   else if( m_cOptions.hasOpt( "help" ) )
   {
-    printf( "Usage: %s modules/quality/save [options] -input=input_file [--output=output_file]\n", argv[0] );
+    printf(
+        "Usage: %s modules/quality/save [options] -input=input_file "
+        "[--output=output_file]\n",
+        argv[0] );
     m_cOptions.doHelp( std::cout );
     iRet = 1;
   }

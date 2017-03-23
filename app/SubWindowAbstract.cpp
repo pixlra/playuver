@@ -22,15 +22,16 @@
  * \brief    Abstract class to handle subwindows
  */
 
-#include <QFocusEvent>
-#include <QCloseEvent>
-#include <QScrollBar>
-#include <QIcon>
-#include <QHBoxLayout>
 #include "SubWindowAbstract.h"
 #include "PlaYUVerMdiSubWindow.h"
+#include <QCloseEvent>
+#include <QFocusEvent>
+#include <QHBoxLayout>
+#include <QIcon>
+#include <QScrollBar>
 
-SubWindowAbstract::SubWindowAbstract( QWidget* parent, UInt category ) : QWidget( parent ), m_cSubWindow( NULL )
+SubWindowAbstract::SubWindowAbstract( QWidget* parent, UInt category )
+    : QWidget( parent ), m_cSubWindow( NULL )
 {
   setParent( parent );
   setVisible( false );

@@ -49,9 +49,9 @@ Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
 
   for( UInt i = 1; i < apcFrameList.size(); i++ )
   {
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE_IGNORE_GRAY |
-                                                            PlaYUVerFrame::MATCH_RESOLUTION |
-                                                            PlaYUVerFrame::MATCH_BITS ) )
+    if( !apcFrameList[i]->haveSameFmt(
+            apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE_IGNORE_GRAY |
+                                 PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
     {
       return false;
     }
@@ -79,8 +79,8 @@ Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
       break;
   }
 
-  m_pcFrameProcessed = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), iPelFmt,
-                                          apcFrameList[0]->getBitsPel() );
+  m_pcFrameProcessed = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
+                                          iPelFmt, apcFrameList[0]->getBitsPel() );
   return true;
 }
 

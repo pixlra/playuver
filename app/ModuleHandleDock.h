@@ -25,13 +25,13 @@
 #ifndef __MODULEHANDLEDOCK_H__
 #define __MODULEHANDLEDOCK_H__
 
-#include "config.h"
 #include "PlaYUVerAppDefs.h"
+#include "config.h"
 #if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
 #elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
 #include <QWidget>
+#include <QtGui>
 #endif
 
 class PlaYUVerAppModuleIf;

@@ -36,11 +36,11 @@
 #ifndef __PLAYUVERAPP_H__
 #define __PLAYUVERAPP_H__
 
+#include "PlaYUVerAppDefs.h"
 #include "config.h"
 #include <QMainWindow>
-#include <QVector>
 #include <QString>
-#include "PlaYUVerAppDefs.h"
+#include <QVector>
 #ifdef USE_QTDBUS
 #include "PlaYUVerAppAdaptor.h"
 #endif

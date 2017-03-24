@@ -32,9 +32,9 @@
 #define FF_USER_CODEC_PARAM
 #endif
 
-//#if( ( LIBAVCODEC_VERSION_MAJOR >= 57 ) && ( LIBAVCODEC_VERSION_MINOR >= 37 ) )
-//#define FF_SEND_RECEIVE_API
-//#endif
+#if( ( LIBAVCODEC_VERSION_MAJOR >= 57 ) && ( LIBAVCODEC_VERSION_MINOR >= 37 ) )
+#define FF_SEND_RECEIVE_API
+#endif
 
 std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedReadFormats()
 {
@@ -300,39 +300,32 @@ UInt64 StreamHandlerLibav::calculateFrameNumber()
   return num_frames;
 }
 
-#ifdef FF_SEND_RECEIVE_API
-// The flush packet is a non-NULL packet with size 0 and data NULL
 Int StreamHandlerLibav::decodeVideoPkt( Bool& gotFrame )
 {
-  int ret;
+  gotFrame = false;
 
-  ret = avcodec_send_packet( m_cCodedCtx, &m_cPacket );
-  //  // In particular, we don't expect AVERROR(EAGAIN), because we read all
-  //  // decoded frames with avcodec_receive_frame() until done.
-  //  if( ret < 0 )
-  //    return ret == AVERROR_EOF ? 0 : ret;
-
-  ret = avcodec_receive_frame( m_cCodedCtx, m_cFrame );
-  if( ret < 0 && ret != AVERROR( EAGAIN ) && ret != AVERROR_EOF )
-    return ret;
-  if( ret >= 0 )
-    gotFrame = true;
-
-  return ret;
-}
-#else
-Int StreamHandlerLibav::decodeVideoPkt( Bool& gotFrame )
-{
-  Int got_frame = false;
   Int decResult;
   if( m_cPacket.stream_index == m_iStreamIdx )
   {
+#ifdef FF_SEND_RECEIVE_API
+    decResult = avcodec_receive_frame( m_cCodedCtx, m_cFrame );
+    if( decResult < 0 && decResult != AVERROR( EAGAIN ) && decResult != AVERROR_EOF )
+    {
+      fprintf( stderr, "Error decoding video frame\n" );
+      return decResult;
+    }
+    if( decResult >= 0 )
+      gotFrame = true;
+#else
+    Int got_frame = false;
     decResult = avcodec_decode_video2( m_cCodedCtx, m_cFrame, &got_frame, &m_cPacket );
     if( decResult < 0 )
     {
       fprintf( stderr, "Error decoding video frame\n" );
       return decResult;
     }
+    gotFrame = got_frame > 0 ? true : false;
+#endif
     m_cPacket.data += decResult;
     m_cPacket.size -= decResult;
   }
@@ -340,10 +333,8 @@ Int StreamHandlerLibav::decodeVideoPkt( Bool& gotFrame )
   {
     m_cPacket.size = 0;
   }
-  gotFrame = got_frame > 0 ? true : false;
   return decResult;
 }
-#endif
 
 Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
 {
@@ -356,6 +347,9 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
   while( !bGotFrame && ( av_read_frame( m_cFmtCtx, &m_cPacket ) >= 0 ) )
   {
     orig_pkt = m_cPacket;
+#ifdef FF_SEND_RECEIVE_API
+    avcodec_send_packet( m_cCodedCtx, &m_cPacket );
+#endif
     do
     {
       decodeVideoPkt( bGotFrame );

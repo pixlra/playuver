@@ -22,8 +22,8 @@
  * \brief    Interface with libav libs
  */
 
-#ifndef __LIBAVCONTEXTHANDLE_H__
-#define __LIBAVCONTEXTHANDLE_H__
+#ifndef __STREAMHANDLERLIBAV_H__
+#define __STREAMHANDLERLIBAV_H__
 
 #include <inttypes.h>
 #include <string>
@@ -94,4 +94,4 @@ class StreamHandlerLibav : public PlaYUVerStreamHandlerIf
   Int decodeVideoPkt( Bool& gotFrame );
 };
 
-#endif  // __LIBAVCONTEXTHANDLE_H__
+#endif  // __STREAMHANDLERLIBAV_H__

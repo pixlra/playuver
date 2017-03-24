@@ -28,6 +28,10 @@
 #include "PlaYUVerFramePixelFormats.h"
 #include <cstdio>
 
+#if( ( LIBAVCODEC_VERSION_MAJOR >= 57 ) && ( LIBAVCODEC_VERSION_MINOR >= 64 ) )
+#define FF_USER_CODEC_PARAM
+#endif
+
 std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
@@ -113,7 +117,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 
 /* find decoder for the stream */
 
-#if( LIBAVCODEC_VERSION_MAJOR >= 57 )
+#ifdef FF_USER_CODEC_PARAM
   AVCodecParameters* codec_param = m_cStream->codecpar;
   AVCodec* dec = avcodec_find_decoder( codec_param->codec_id );
 #else
@@ -134,7 +138,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
     return false;
   }
 
-#if( LIBAVCODEC_VERSION_MAJOR >= 57 )
+#ifdef FF_USER_CODEC_PARAM
   m_uiFrameBufferSize = av_image_get_buffer_size( AVPixelFormat( codec_param->format ),
                                                   codec_param->width, codec_param->height, 1 );
 #else
@@ -223,7 +227,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
     return false;
   }
 
-#if( LIBAVFORMAT_VERSION_MAJOR >= 55 )
+#ifdef FF_USER_CODEC_PARAM
   m_cFrame = av_frame_alloc();
 #else
   m_cFrame = avcodec_alloc_frame();
@@ -344,7 +348,7 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
 
   if( bGotFrame )
   {
-#if( LIBAVCODEC_VERSION_MAJOR >= 57 )
+#ifdef FF_USER_CODEC_PARAM
     AVCodecParameters* codec_param = m_cStream->codecpar;
     av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data,
                              m_cFrame->linesize, AVPixelFormat( codec_param->format ),

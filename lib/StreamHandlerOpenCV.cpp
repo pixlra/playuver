@@ -40,7 +40,9 @@ using cv::VideoCapture;
 std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+#if( CV_MAJOR_VERSION >= 3 )
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Device", "/dev/" );
+#endif
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
@@ -65,6 +67,7 @@ Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
   m_cFilename = strFilename;
   if( bInput )
   {
+#if( CV_VERSION_MAJOR >= 3 )
     /*
      * Special filename to handle webcam input
      */
@@ -84,6 +87,7 @@ Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
       m_dFrameRate = 25;
     }
     else
+#endif
     {
       m_strCodecName = m_strFormatName =
           uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );

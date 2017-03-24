@@ -84,14 +84,14 @@ class StreamHandlerLibav : public PlaYUVerStreamHandlerIf
   AVCodecContext* m_cCodedCtx;
 
   AVFrame* m_cFrame;
-  AVPacket pkt;
+  AVPacket m_cPacket;
 
   Bool m_bHasStream;
 
   UInt64 m_uiSecs;
   UInt64 m_uiMicroSec;
 
-  Bool decodeVideoPkt();
+  Int decodeVideoPkt( Bool& gotFrame );
 };
 
 #endif  // __LIBAVCONTEXTHANDLE_H__

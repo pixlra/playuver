@@ -24,14 +24,14 @@
 
 #include "FrameBinarization_APIv1.h"
 
-REGISTER_CLASS_MAKER( FrameBinarization )
+REGISTER_CLASS_MAKER( FrameBinarization_APIv1 )
 
-FrameBinarization::FrameBinarization()
+FrameBinarization_APIv1::FrameBinarization_APIv1()
 {
   /* Module Definition */
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Utilities";
-  m_pchModuleName = "FrameBinarization";
+  m_pchModuleName = "FrameBinarization_APIv1";
   m_pchModuleTooltip = "Binarize frame";
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
   m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS;
@@ -43,13 +43,13 @@ FrameBinarization::FrameBinarization()
   m_uiThreshold = 128;
 }
 
-Void FrameBinarization::create( PlaYUVerFrame* frame )
+Void FrameBinarization_APIv1::create( PlaYUVerFrame* frame )
 {
   m_pcBinFrame = NULL;
   m_pcBinFrame = new PlaYUVerFrame( frame->getWidth(), frame->getHeight(), PlaYUVerFrame::GRAY, 8 );
 }
 
-PlaYUVerFrame* FrameBinarization::process( PlaYUVerFrame* frame )
+PlaYUVerFrame* FrameBinarization_APIv1::process( PlaYUVerFrame* frame )
 {
   Pel* pPelInput = frame->getPelBufferYUV()[0][0];
   Pel* pPelBin = m_pcBinFrame->getPelBufferYUV()[0][0];
@@ -61,7 +61,7 @@ PlaYUVerFrame* FrameBinarization::process( PlaYUVerFrame* frame )
   return m_pcBinFrame;
 }
 
-Void FrameBinarization::destroy()
+Void FrameBinarization_APIv1::destroy()
 {
   if( m_pcBinFrame )
     delete m_pcBinFrame;

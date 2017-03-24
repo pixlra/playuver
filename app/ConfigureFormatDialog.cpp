@@ -142,7 +142,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget* parent ) : QDialog( paren
   UInt uiWidth, uiHeight;
 
   readSettings();
-  for( UInt i = 0; i < aRCustomFileFormats.size(); i++ )
+  for( Int i = 0; i < aRCustomFileFormats.size(); i++ )
   {
     Name = QString::fromStdString( aRCustomFileFormats[i].shortName );
     uiWidth = aRCustomFileFormats[i].uiWidth;

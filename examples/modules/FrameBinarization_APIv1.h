@@ -22,25 +22,25 @@
  * \brief    Binarize frame module (example of APIv1)
  */
 
-#ifndef __FRAMEBINARIZATION_H__
-#define __FRAMEBINARIZATION_H__
+#ifndef __FRAMEBINARIZATION_APIV1_H__
+#define __FRAMEBINARIZATION_APIV1_H__
 
 #include "PlaYUVerModuleIf.h"
 
-class FrameBinarization : public PlaYUVerModuleIf
+class FrameBinarization_APIv1 : public PlaYUVerModuleIf
 {
-  REGISTER_CLASS_FACTORY( FrameBinarization )
+  REGISTER_CLASS_FACTORY( FrameBinarization_APIv1 )
 
  private:
   PlaYUVerFrame* m_pcBinFrame;
   UInt m_uiThreshold;
 
  public:
-  FrameBinarization();
-  virtual ~FrameBinarization() {}
+   FrameBinarization_APIv1();
+   virtual ~FrameBinarization_APIv1() {}
   Void create( PlaYUVerFrame* );
   PlaYUVerFrame* process( PlaYUVerFrame* );
   Void destroy();
 };
 
-#endif  // __FRAMEBINARIZATION_H__
+#endif  // __FRAMEBINARIZATION_APIV1_H__

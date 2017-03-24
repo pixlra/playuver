@@ -136,7 +136,7 @@ IF( USE_FERVOR )
   ENDIF()
 ENDIF()
 
-SET_PACKAGE_PROPERTIES(Fervor PROPERTIES URL "http://ffmpeg.org/" DESCRIPTION "Fervor lib includes check for updates feature" TYPE OPTIONAL )
+SET_PACKAGE_PROPERTIES(Fervor PROPERTIES URL "https://github.com/pypt/fervor" DESCRIPTION "Fervor lib includes check for updates feature" TYPE OPTIONAL )
 ADD_FEATURE_INFO(Fervor USE_FERVOR "Fervor lib includes check for updates feature.")
 
 IF( USE_QT4 )

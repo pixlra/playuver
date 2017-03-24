@@ -142,12 +142,12 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
       av_image_get_buffer_size( m_cCodedCtx->pix_fmt, m_cCodedCtx->width, m_cCodedCtx->height, 1 );
 #endif
 
-  m_uiFrameBufferSize = av_image_get_buffer_size( AVPixelFormat( codec_param->format ),
-                                                  codec_param->width, codec_param->height, 1 );
+  m_uiFrameBufferSize =
+      av_image_get_buffer_size( m_cCodedCtx->pix_fmt, m_cCodedCtx->width, m_cCodedCtx->height, 1 );
   getMem1D( &m_pchFrameBuffer, m_uiFrameBufferSize );
 
   m_strFormatName = uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
-  const char* name = avcodec_get_name( m_cStream->codecpar->codec_id );
+  const char* name = avcodec_get_name( m_cCodedCtx->codec_id );
   //   sprintf( m_acCodecName, "%s", name );
   m_strCodecName = name;
 
@@ -165,7 +165,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 
   m_dFrameRate = fr;
 
-  Int pix_fmt = m_cStream->codecpar->format;
+  Int pix_fmt = m_cCodedCtx->pix_fmt;
 
   // Set bits per pixel to default (8 bits)
   m_uiBitsPerPixel = 8;
@@ -195,8 +195,8 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
       pix_fmt = AV_PIX_FMT_GRAY8;
   }
 
-  m_uiWidth = m_cStream->codecpar->width;
-  m_uiHeight = m_cStream->codecpar->height;
+  m_uiWidth = m_cCodedCtx->width;
+  m_uiHeight = m_cCodedCtx->height;
 
   m_iPixelFormat = PlaYUVerFrame::NO_FMT;
   for( Int i = 0; i < PlaYUVerFrame::NUMBER_PEL_FORMATS; i++ )

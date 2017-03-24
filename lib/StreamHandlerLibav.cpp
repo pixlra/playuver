@@ -111,11 +111,15 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 
   m_cStream = m_cFmtCtx->streams[m_iStreamIdx];
 
-  /* find decoder for the stream */
-  AVCodecParameters* codec_param = m_cStream->codecpar;
+/* find decoder for the stream */
 
-  // dec = avcodec_find_decoder( dec_ctx->codec_id );
+#if( LIBAVCODEC_VERSION_MAJOR >= 57 )
+  AVCodecParameters* codec_param = m_cStream->codecpar;
   AVCodec* dec = avcodec_find_decoder( codec_param->codec_id );
+#else
+  AVCodec* dec = avcodec_find_decoder( m_cStream->codec->codec_id );
+#endif
+
   if( !dec )
   {
     printf( "Failed to find %s codec\n", av_get_media_type_string( AVMEDIA_TYPE_VIDEO ) );
@@ -129,6 +133,14 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
     printf( "Failed to open %s codec\n", av_get_media_type_string( AVMEDIA_TYPE_VIDEO ) );
     return false;
   }
+
+#if( LIBAVCODEC_VERSION_MAJOR >= 57 )
+  m_uiFrameBufferSize = av_image_get_buffer_size( AVPixelFormat( codec_param->format ),
+                                                  codec_param->width, codec_param->height, 1 );
+#else
+  m_uiFrameBufferSize =
+      av_image_get_buffer_size( m_cCodedCtx->pix_fmt, m_cCodedCtx->width, m_cCodedCtx->height, 1 );
+#endif
 
   m_uiFrameBufferSize = av_image_get_buffer_size( AVPixelFormat( codec_param->format ),
                                                   codec_param->width, codec_param->height, 1 );
@@ -332,10 +344,18 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
 
   if( bGotFrame )
   {
+#if( LIBAVCODEC_VERSION_MAJOR >= 57 )
     AVCodecParameters* codec_param = m_cStream->codecpar;
     av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data,
                              m_cFrame->linesize, AVPixelFormat( codec_param->format ),
                              codec_param->width, codec_param->height, 1 );
+#else
+    AVCodecParameters* codec_param = m_cStream->codecpar;
+    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data,
+                             m_cFrame->linesize, m_cCodedCtx->pix_fmt, m_cCodedCtx->width,
+                             m_cCodedCtx->height, 1 );
+
+#endif
     if( orig_pkt.size )
       av_free_packet( &orig_pkt );
 

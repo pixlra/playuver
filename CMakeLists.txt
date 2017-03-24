@@ -31,6 +31,7 @@ OPTION( BUILD_APP               "Build GUI Application"                 ON  )
 OPTION( BUILD_TOOLS             "Build Command Line Application"        ON  )
 OPTION( BUILD_EXAMPLES          "Build Examples"                        OFF )
 OPTION( BUILD_DOC               "Build Documentation"                   OFF )
+OPTION( BUILD_TESTS             "Build Google Tests"                    ON  )
 
 OPTION( USE_FERVOR              "Add Fervor support"                    OFF )
 
@@ -87,6 +88,16 @@ IF( BUILD_DOC )
   SET( BUILD_DOC ${Doxygen_FOUND} )
 ENDIF()
 SET_PACKAGE_PROPERTIES(Doxygen PROPERTIES URL "http://www.doxygen.org/" DESCRIPTION "Doxygen" TYPE OPTIONAL)
+
+
+IF( BUILD_TESTS )
+  FIND_PACKAGE(GTest)
+  SET( BUILD_DOC ${GTEST_FOUND} )
+  IF( GTEST_FOUND )
+    ENABLE_TESTING()
+    INCLUDE_DIRECTORIES(${GTEST_INCLUDE_DIRS})
+  ENDIF()
+ENDIF()
 
 OPTION( USE_OPENCV "Add OpenCV support" ON )
 SET( OPENCV_OPTFLOW_FOUND OFF )
@@ -174,12 +185,12 @@ IF( ${BUILD_EXAMPLES} )
 ENDIF()
 
 # add a target to generate API documentation with Doxygen
-# IF(BUILD_DOC)
-#   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-#   add_custom_target(doc   ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-#     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-#     COMMENT "Generating API documentation with Doxygen" VERBATIM )
-# ENDIF(BUILD_DOC)
+IF(BUILD_DOC)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
+  add_custom_target(doc   ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Generating API documentation with Doxygen" VERBATIM )
+ENDIF(BUILD_DOC)
 
 
 ######################################################################################

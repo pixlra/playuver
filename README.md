@@ -11,15 +11,17 @@ plaYUVer is an open-source video player with the following features:
 - Synchronized zoom across several videos (perfect for comparison operations)
 - Useful information in status bar, *e.g.*, pixel information
     Useful sidebars with frame information, *e.g.*, frame histogram
-- Constant growing libs for stream and frame processing (PlaYUVerStream PlaYUVerFrame)
+- Constant growing libs for stream and frame processing (PlaYUVerStream and PlaYUVerFrame)
 - Advanced API for frame/video processing algorithms
 - Frame level quality measurement API based on the PlaYUVerFrame class
 - Powefull command-line tool for quality and frame processing algorithms (uses the referred APIs)
 
-Libs and API
+Modules
 ----------------------------------------------------------------
-- PlaYUVerFrame and PlaYUVerStream: Stream and frame handling lib
-- PlaYUVerModules: Interface for processing modules (extensions)
+- PlaYUVerLib: Low level library
+- PlaYUVerModules: Abstract interface for frame processing modules
+- PlaYUVerApp: High level graphical interface
+- PlaYUVerTools: High level command line interface
 
 
 Supported Quality Metrics
@@ -33,7 +35,7 @@ Frame Processing Modules
 - Component filtering
 - Frame difference, crop, shift, binarization
 - Sub-sampling operations
-- Measuring modules 
+- Measuring modules
 - Modules based on opencv:
     * Disparity estimation
     * Motion estimation

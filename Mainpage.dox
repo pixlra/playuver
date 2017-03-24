@@ -3,16 +3,19 @@
 Description
 ----------------------------------------------------------------
 
-plaYUVer is an open-source video player with the following features:
+PlaYUVer is an open-source video player with the following features:
 - Support for libavformat and libavcodec;
 - Support for wide range of raw video formats;
-- Support for OpenCV imag/video processing library
+- Support up to 16 bits per pixel
+- Support for OpenCV image/video processing library
 - Advanced frame zoom with easy to use pan function
-- Usefull information in status bar, *e.g.*, pixel information
-- Usefull sidebars with stream and frame information, *e.g.*, frame histogram
-- Constant growing libs for stream and frame processing (PlaYUVerStream PlaYUVerFrame)
+- Synchronized zoom across several videos (perfect for comparison operations)
+- Useful information in status bar, *e.g.*, pixel information
+    Useful sidebars with frame information, *e.g.*, frame histogram
+- Constant growing libs for stream and frame processing (PlaYUVerStream and PlaYUVerFrame)
 - Advanced API for frame/video processing algorithms
 - Frame level quality measurement API based on the PlaYUVerFrame class
+- Powefull command-line tool for quality and frame processing algorithms (uses the referred APIs)
 
 Modules
 ----------------------------------------------------------------
@@ -22,12 +25,41 @@ Modules
 - PlaYUVerTools: High level command line interface
 
 
+Supported Quality Metrics
+----------------------------------------------------------------
+- PSNR
+- SSIM
+- MSE
+
+Frame Processing Modules
+----------------------------------------------------------------
+- Component filtering
+- Frame difference, crop, shift, binarization
+- Sub-sampling operations
+- Measuring modules
+- Modules based on opencv:
+    * Disparity estimation
+    * Motion estimation
+
+Supported Formats
+----------------------------------------------------------------
+- Supports for the following pixel formats:
+    * YUV: 420, 44, 422, 400
+    * RGB
+    * Gray
+- Support containers:
+    * Raw video (yuv,rgb,gray)
+    * Portable Network Graphics (png)
+    * Joint Photographic Experts Group (jpeg)
+    * Windows Bitmap (bmp)
+    * Tagged Image File Format (tiff)
+    * Portable Map (ppm,pgm,pbm)
+
 Developers
 ----------------------------------------------------------------
 
 - Joao Carreira     (jfmcarreira@gmail.com)
 - Lui­s Lucas        (luisfrlucas@gmail.com)
-
 
 Builds
 ----------------------------------------------------------------

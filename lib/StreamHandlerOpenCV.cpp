@@ -35,12 +35,16 @@
 #include "PlaYUVerFramePixelFormats.h"
 
 using cv::Mat;
+#if( CV_MAJOR_VERSION >= 3 )
 using cv::VideoCapture;
+#endif
 
 std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+#if( CV_MAJOR_VERSION >= 3 )
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Device", "/dev/" );
+#endif
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
@@ -65,6 +69,7 @@ Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
   m_cFilename = strFilename;
   if( bInput )
   {
+#if( CV_MAJOR_VERSION >= 3 )
     /*
      * Special filename to handle webcam input
      */
@@ -84,6 +89,7 @@ Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
       m_dFrameRate = 25;
     }
     else
+#endif
     {
       m_strCodecName = m_strFormatName =
           uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
@@ -101,12 +107,14 @@ Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
 
 Void StreamHandlerOpenCV::closeHandler()
 {
+#if( CV_MAJOR_VERSION >= 3 )
   if( pcVideoCapture )
   {
     pcVideoCapture->release();
     delete pcVideoCapture;
     pcVideoCapture = NULL;
   }
+#endif
 }
 
 Bool StreamHandlerOpenCV::configureBuffer( PlaYUVerFrame* pcFrame )
@@ -131,6 +139,7 @@ Bool StreamHandlerOpenCV::seek( UInt64 iFrameNum )
 Bool StreamHandlerOpenCV::read( PlaYUVerFrame* pcFrame )
 {
   Bool bRet = false;
+#if( CV_MAJOR_VERSION >= 3 )
   if( pcVideoCapture )
   {
     Mat cvMat;
@@ -139,6 +148,7 @@ Bool StreamHandlerOpenCV::read( PlaYUVerFrame* pcFrame )
       bRet = pcFrame->fromMat( cvMat );
   }
   else
+#endif
   {
     Mat cvMat = cv::imread( m_cFilename );
     bRet = pcFrame->fromMat( cvMat );

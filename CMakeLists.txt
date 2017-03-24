@@ -184,14 +184,6 @@ IF( ${BUILD_EXAMPLES} )
   ADD_SUBDIRECTORY( examples )
 ENDIF()
 
-# add a target to generate API documentation with Doxygen
-IF(BUILD_DOC)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-  add_custom_target(doc   ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Generating API documentation with Doxygen" VERBATIM )
-ENDIF(BUILD_DOC)
-
 
 ######################################################################################
 # Final information dump

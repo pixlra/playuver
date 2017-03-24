@@ -350,7 +350,6 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
                              m_cFrame->linesize, AVPixelFormat( codec_param->format ),
                              codec_param->width, codec_param->height, 1 );
 #else
-    AVCodecParameters* codec_param = m_cStream->codecpar;
     av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data,
                              m_cFrame->linesize, m_cCodedCtx->pix_fmt, m_cCodedCtx->width,
                              m_cCodedCtx->height, 1 );

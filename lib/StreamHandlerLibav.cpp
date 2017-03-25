@@ -304,7 +304,7 @@ Int StreamHandlerLibav::decodeVideoPkt( Bool& gotFrame )
 {
   gotFrame = false;
 
-  Int decResult;
+  Int decResult = 0;
   if( m_cPacket.stream_index == m_iStreamIdx )
   {
 #ifdef FF_SEND_RECEIVE_API

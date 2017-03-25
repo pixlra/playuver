@@ -41,7 +41,7 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
 #if( CV_MAJOR_VERSION >= 3 )
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Device", "/dev/" );
+  REGIST_PLAYUVER_SUPPORTED_ABSTRACT_FMT( &StreamHandlerOpenCV::Create, "Device", "/dev/video*" );
 #endif
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }

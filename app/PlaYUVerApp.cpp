@@ -262,14 +262,17 @@ Void PlaYUVerApp::open()
 
   for( UInt i = 0; i < supportedFmts.size(); i++ )
   {
-    QString currFmt;
-    supported.append( " *." );
-    supported.append( QString::fromStdString( supportedFmts[i].formatExt ) );
-    currFmt.append( QString::fromStdString( supportedFmts[i].formatName ) );
-    currFmt.append( " (*." );
-    currFmt.append( QString::fromStdString( supportedFmts[i].formatExt ) );
-    currFmt.append( ")" );
-    formatsList << currFmt;
+    if( supportedFmts[i].formatExt != "" )
+    {
+      QString currFmt;
+      supported.append( " *." );
+      supported.append( QString::fromStdString( supportedFmts[i].formatExt ) );
+      currFmt.append( QString::fromStdString( supportedFmts[i].formatName ) );
+      currFmt.append( " (*." );
+      currFmt.append( QString::fromStdString( supportedFmts[i].formatExt ) );
+      currFmt.append( ")" );
+      formatsList << currFmt;
+    }
   }
   supported.append( " )" );
 

@@ -43,6 +43,7 @@ typedef struct
 {
   String formatName;
   String formatExt;
+  String formatPattern;
   CreateStreamHandlerFn formatFct;
 } PlaYUVerSupportedFormat;
 
@@ -57,6 +58,10 @@ typedef struct
   formatElem.formatExt = lowercase( ext );                  \
   formatElem.formatFct = handler;                           \
   formatsList.push_back( formatElem );
+
+#define REGIST_PLAYUVER_SUPPORTED_ABSTRACT_FMT( handler, name, pattern ) \
+  formatElem.formatPattern = pattern;                                    \
+  REGIST_PLAYUVER_SUPPORTED_FMT( handler, name, "" )
 
 #define APPEND_PLAYUVER_SUPPORTED_FMT( class_name, fct )                                   \
   {                                                                                        \

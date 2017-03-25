@@ -157,9 +157,6 @@ struct PlaYUVerFramePrivate
   /** Numbers of histogram segments depending of image bytes depth*/
   UInt m_uiHistoSegments;
 
-  /** Used to stop thread during calculations.*/
-  Bool m_bRunningFlag;
-
   Bool m_bHasHistogram;
 
   /**
@@ -797,7 +794,6 @@ Void PlaYUVerFrame::calcHistogram()
       return;
     }
   }
-  d->m_bRunningFlag = true;
 
   xMemSet( UInt, d->m_uiHistoSegments * d->m_uiHistoChannels, d->m_puiHistogram );
 
@@ -810,12 +806,12 @@ Void PlaYUVerFrame::calcHistogram()
     data[LUMA] = d->m_pppcInputPel[LUMA][0];
     data[CHROMA_U] = d->m_pppcInputPel[CHROMA_U][0];
     data[CHROMA_V] = d->m_pppcInputPel[CHROMA_V][0];
-    for( i = 0; i < d->m_uiHeight * d->m_uiWidth && d->m_bRunningFlag; i++ )
+    for( i = 0; i < d->m_uiHeight * d->m_uiWidth; i++ )
     {
       d->m_puiHistogram[*( data[LUMA] ) + LUMA * d->m_uiHistoSegments]++;
       data[LUMA] += 1;
     }
-    for( i = 0; ( i < getChromaLength() ) && d->m_bRunningFlag; i++ )
+    for( i = 0; ( i < getChromaLength() ); i++ )
     {
       for( j = 1; j < numberChannels; j++ )
       {
@@ -832,7 +828,7 @@ Void PlaYUVerFrame::calcHistogram()
     data[COLOR_G] = d->m_pppcInputPel[COLOR_G][0];
     data[COLOR_B] = d->m_pppcInputPel[COLOR_B][0];
 
-    for( i = 0; ( i < d->m_uiHeight * d->m_uiWidth ) && d->m_bRunningFlag; i++ )
+    for( i = 0; ( i < d->m_uiHeight * d->m_uiWidth ); i++ )
     {
       for( j = 0; j < numberChannels; j++ )
       {
@@ -850,7 +846,6 @@ Void PlaYUVerFrame::calcHistogram()
     }
   }
   d->m_bHasHistogram = true;
-  d->m_bRunningFlag = false;
 }
 
 Int PlaYUVerFrame::getHistogramSegment()

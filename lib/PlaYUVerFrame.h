@@ -63,18 +63,6 @@ class PlaYUVerFrame
     NUMBER_PEL_FORMATS
   };
 
-  /** Format match opts
-   */
-  enum FormatMatching
-  {
-    MATCH_COLOR_SPACE = 1,
-    MATCH_RESOLUTION = 2,
-    MATCH_PEL_FMT = 4,
-    MATCH_BITS = 8,
-    MATCH_COLOR_SPACE_IGNORE_GRAY = 16,
-    MATCH_ALL = 0xFFFF,
-  };
-
   /**
    * Function that handles the supported color space
    * of PlaYUVerFrame
@@ -111,8 +99,7 @@ class PlaYUVerFrame
   PlaYUVerFrame( const PlaYUVerFrame* other );
 
   /**
-   * Creates and new frame with the configuration of an
-   * existing one and copy its contents.
+   * Creates and new frame with the configuration of an existing one and copy its contents.
    * This function only copies a specific region from the existing frame
    *
    * @param other existing frame to copy from
@@ -126,6 +113,24 @@ class PlaYUVerFrame
 
   ~PlaYUVerFrame();
 
+  /** Format match opts
+   */
+  enum FormatMatching
+  {
+    MATCH_COLOR_SPACE = 1,
+    MATCH_RESOLUTION = 2,
+    MATCH_PEL_FMT = 4,
+    MATCH_BITS = 8,
+    MATCH_COLOR_SPACE_IGNORE_GRAY = 16,
+    MATCH_ALL = 0xFFFF,
+  };
+
+  /**
+   * Check if two PlaYUVerFrames have the same fmt
+   * @param other frame to compare with
+   * @param match matching conditions (use enum FormatMatching)
+   * @return true if format matches
+   */
   Bool haveSameFmt( const PlaYUVerFrame& other, UInt match = MATCH_ALL ) const;
   Bool haveSameFmt( const PlaYUVerFrame* other, UInt match = MATCH_ALL ) const;
 
@@ -144,10 +149,13 @@ class PlaYUVerFrame
   /**
    * Get color space information
    * @return get color space index
-   * @
    */
   Int getColorSpace() const;
 
+  /**
+   * Get the number of channels
+   * @return number of channels
+   */
   UInt getNumberChannels() const;
 
   /**
@@ -156,12 +164,14 @@ class PlaYUVerFrame
    * @return number of pixels
    */
   UInt getWidth( Int channel = 0 ) const;
+
   /**
    * Get height of the frame
    * @param channel/component
    * @return number of pixels
    */
   UInt getHeight( Int channel = 0 ) const;
+
   /**
    * Get number of pixels of the frame
    * @param channel/component
@@ -176,6 +186,10 @@ class PlaYUVerFrame
   UInt getChromaLength() const;
   UInt getChromaSize() const;
 
+  /**
+   * Get number of bits per pixel
+   * @return number of bits
+   */
   UInt getBitsPel() const;
 
   /**
@@ -185,8 +199,7 @@ class PlaYUVerFrame
   UInt64 getBytesPerFrame();
 
   /**
-   * Get number of bytes per frame of a specific
-   * pixel format
+   * Get number of bytes per frame of a specific pixel format
    * @return number of bytes per frame
    */
   static UInt64 getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel );

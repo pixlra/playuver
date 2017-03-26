@@ -28,7 +28,7 @@
 #include "PlaYUVerFramePixelFormats.h"
 #include <cstdio>
 
-#if( ( LIBAVCODEC_VERSION_MAJOR >= 57 ) && ( LIBAVCODEC_VERSION_MINOR >= 64 ) )
+#if( ( LIBAVCODEC_VERSION_MAJOR >= 57 ) && ( LIBAVCODEC_VERSION_MINOR >= 24 ) )
 #define FF_USER_CODEC_PARAM
 #endif
 

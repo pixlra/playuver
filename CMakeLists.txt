@@ -144,6 +144,7 @@ SET( CMAKE_CXX_FLAGS "" )
 # Configure targets
 ######################################################################################
 
+SET(CMAKE_CXX_STANDARD 14)
 if(CMAKE_COMPILER_IS_GNUCXX)
     ADD_DEFINITIONS(-std=gnu++0x)
 endif()

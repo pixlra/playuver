@@ -1,8 +1,16 @@
-PlaYUVer - Enhanced Raw Video Player
-========
+---
+title: PlaYUVer
+author:
+    username: jfmcarreira
+markdown:
+    extra: true
+---
+
+# [PlaYUVer](https://github.com/pixlra/playuver)
+## Enhanced YUV video player based on Qt focusing on image/video analysis
 
 
-plaYUVer is an open-source video player with the following features:
+## Features
 - Support for libavformat and libavcodec;
 - Support for wide range of raw video formats;
 - Support up to 16 bits per pixel
@@ -16,32 +24,27 @@ plaYUVer is an open-source video player with the following features:
 - Frame level quality measurement API based on the PlaYUVerFrame class
 - Powefull command-line tool for quality and frame processing algorithms (uses the referred APIs)
 
-Modules
-----------------------------------------------------------------
+## Modules
 - PlaYUVerLib: Low level library
 - PlaYUVerModules: Abstract interface for frame processing modules
 - PlaYUVerApp: High level graphical interface
 - PlaYUVerTools: High level command line interface
 
-
-Supported Quality Metrics
-----------------------------------------------------------------
+##  Supported Quality Metrics
 - PSNR
 - SSIM
 - MSE
 
-Frame Processing Modules
-----------------------------------------------------------------
+## Frame Processing Modules
 - Component filtering
 - Frame difference, crop, shift, binarization
 - Sub-sampling operations
 - Measuring modules
 - Modules based on opencv:
-    * Disparity estimation
-    * Motion estimation
+    - Disparity estimation
+    - Motion estimation
 
-Supported Formats
-----------------------------------------------------------------
+## Supported Formats
 - Supports for the following pixel formats:
     * YUV: 420, 44, 422, 400
     * RGB
@@ -54,27 +57,19 @@ Supported Formats
     * Tagged Image File Format (tiff)
     * Portable Map (ppm,pgm,pbm)
 
-Developers
-----------------------------------------------------------------
-
-- Joao Carreira     (jfmcarreira@gmail.com)
-- Lui­s Lucas        (luisfrlucas@gmail.com)
+## Developers
+- **Joao Carreira**     (jfmcarreira@gmail.com)
+- **Lui­s Lucas**        (luisfrlucas@gmail.com)
 
 
-Build
-----------------------------------------------------------------
-Download update build for windows and linux from our <a href="https://sourceforge.net/projects/playuver/">SourceForge project page</a>
-
-Building yourself
-
-1. Dependencies
-  - an ordinary C++ development environment (g++, make, C++ libraries and headers, ...)
-  - cmake
-  - a Qt development environment (libraries, headers, qmake, ...): only QtCore, QtGui and QtWidgets are required, at least in version 4
-  - QtDBus (optional)
-  - OpenCv (optional)
-  - FFmpeg (optional)
-2. Example configuration command
+### Binaries and Build
+* **Daily builds** available for Windows and Linux in our [SourceForge page](https://sourceforge.net/projects/playuver/)
+* **Dependencies**
+  1. an ordinary C++ development environment (g++, make, C++ libraries and headers, ...)
+  2. cmake
+  3. a Qt development environment: QtCore, QtGui, QtWidgets, QtPrintSupport and QtConcurrent (version 4 or higher)
+  4. Optional: QtDBus, OpenCV, FFmpeg
+* **List of required commands**
 ```
 mkdir build
 cd build

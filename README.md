@@ -1,11 +1,3 @@
----
-title: PlaYUVer
-author:
-    username: jfmcarreira
-markdown:
-    extra: true
----
-
 # [PlaYUVer](https://github.com/pixlra/playuver)
 ## Enhanced YUV video player based on Qt focusing on image/video analysis
 

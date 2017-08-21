@@ -10,6 +10,7 @@ cmake_minimum_required( VERSION 2.8.9 )
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
 INCLUDE( cmake/ModulesFct.cmake )
 INCLUDE(FeatureSummary)
+INCLUDE(GNUInstallDirs)
 
 ######################################################################################
 # Project Definition
@@ -21,7 +22,7 @@ PROJECT( ${PROJECT_NAME} )
 SET( PLAYUVER_VERSION_MAJOR "0" )
 SET( PLAYUVER_VERSION_MINOR "13" )
 SET( PLAYUVER_VERSION_PATCH "0" )
-set( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLAYUVER_VERSION_PATCH}" CACHE INTERNAL "" FORCE )
+SET( PLAYUVER_VERSION "${PLAYUVER_VERSION_MAJOR}.${PLAYUVER_VERSION_MINOR}.${PLAYUVER_VERSION_PATCH}" CACHE INTERNAL "" FORCE )
 
 ######################################################################################
 # Variables

@@ -34,8 +34,6 @@ class PlaYUVerFrame;
  public:                                                       \
   static PlaYUVerStreamHandlerIf* Create() { return new X(); } \
   void Delete() { delete this; }
-
-
 /**
  * \class PlaYUVerStreamHandlerIf
  * \ingroup  PlaYUVerLib_Stream

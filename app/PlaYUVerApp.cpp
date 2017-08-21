@@ -196,8 +196,8 @@ Void PlaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     m_pcWindowHandle->setActiveSubWindow( videoSubWindow );
     return;
   }
-	videoSubWindow =
-			new VideoSubWindow( VideoSubWindow::VIDEO_STREAM_SUBWINDOW );  // createSubWindow();
+  videoSubWindow =
+      new VideoSubWindow( VideoSubWindow::VIDEO_STREAM_SUBWINDOW );  // createSubWindow();
   SubWindowAbstract* subWindow = videoSubWindow;
   if( !pStreamInfo )
   {
@@ -872,8 +872,8 @@ Void PlaYUVerApp::updateRecentFileActions()
     m_arrayRecentFilesActions.at( actionIdx )->setText( QFileInfo( text ).fileName() );
     m_arrayRecentFilesActions.at( actionIdx )->setToolTip( "Open File " + text );
     m_arrayRecentFilesActions.at( actionIdx )->setStatusTip( "Open File " + text );
-		m_arrayRecentFilesActions.at( actionIdx )
-				->setData( QVariant::fromValue( m_aRecentFileStreamInfo.at( actionIdx ) ) );
+    m_arrayRecentFilesActions.at( actionIdx )
+        ->setData( QVariant::fromValue( m_aRecentFileStreamInfo.at( actionIdx ) ) );
     m_arrayRecentFilesActions.at( actionIdx )->setVisible( true );
     actionIdx++;
   }

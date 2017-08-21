@@ -2,7 +2,7 @@
 ### CMakeLists for playuver
 ###
 
-cmake_minimum_required( VERSION 2.8.9 )
+cmake_minimum_required( VERSION 3.5.0 )
 
 ######################################################################################
 # CMake  functions
@@ -10,7 +10,6 @@ cmake_minimum_required( VERSION 2.8.9 )
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
 INCLUDE( cmake/ModulesFct.cmake )
 INCLUDE(FeatureSummary)
-INCLUDE(GNUInstallDirs)
 
 ######################################################################################
 # Project Definition

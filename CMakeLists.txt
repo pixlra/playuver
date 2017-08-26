@@ -10,6 +10,7 @@ cmake_minimum_required( VERSION 3.2.0 )
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
 INCLUDE( cmake/ModulesFct.cmake )
 INCLUDE(FeatureSummary)
+INCLUDE(GNUInstallDirs)
 
 ######################################################################################
 # Project Definition

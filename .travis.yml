@@ -1,5 +1,5 @@
 language: cpp
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install build-essential cmake qtbase5-dev
+  - sudo apt-get install build-essential cmake qtbase5-dev libavcodec-dev libavformat-dev libopencv-dev
 script: mkdir -p build && cd build && cmake .. && make && cd ..

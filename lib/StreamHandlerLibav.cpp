@@ -233,10 +233,10 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
     return false;
   }
 
-#ifdef FF_USER_CODEC_PARAM
-  m_cFrame = av_frame_alloc();
+#if( ( LIBAVCODEC_VERSION_MAJOR >= 56 ) && ( LIBAVCODEC_VERSION_MINOR >= 0 ) )
+	m_cFrame = av_frame_alloc();
 #else
-  m_cFrame = avcodec_alloc_frame();
+	m_cFrame = avcodec_alloc_frame();
 #endif
   if( !m_cFrame )
   {

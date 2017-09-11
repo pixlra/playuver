@@ -33,14 +33,14 @@
 #include <QtDBus>
 
 #define PLAYUVER_DBUS_SESSION_NAME "org.pixlra.PlaYUVer.application"
-#define PLAYUVER_DBUS_PATH "/MainApplication"
+#define PLAYUVER_DBUS_PATH "/"
 
 class PlaYUVerApp;
 
 class PlaYUVerAppAdaptor : public QDBusAbstractAdaptor
 {
   Q_OBJECT
-  Q_CLASSINFO( "D-Bus Interface", "org.pixlra.PlaYUVer.application" )
+	Q_CLASSINFO( "D-Bus Interface", PLAYUVER_DBUS_SESSION_NAME )
   Q_PROPERTY( QString activeSession READ activeSession )
  public:
   PlaYUVerAppAdaptor( PlaYUVerApp* app );

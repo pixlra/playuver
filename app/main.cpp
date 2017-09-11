@@ -56,8 +56,7 @@ int main( int argc, char* argv[] )
    * use dbus, if available
    * allows for resuse of running Kate instances
    */
-  QDBusConnectionInterface* const sessionBusInterface = QDBusConnection::sessionBus().interface();
-  if( sessionBusInterface )
+	if (QDBusConnectionInterface * const sessionBusInterface = QDBusConnection::sessionBus().interface())
   {
     Bool force_new = false;
     QStringList filenameList;

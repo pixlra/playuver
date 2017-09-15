@@ -32,11 +32,11 @@ class InterFrameVariance : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( InterFrameVariance )
 
- private:
+private:
   PlaYUVerFrame* m_pcFrameVariance;
   Double** m_pVariance;
 
- public:
+public:
   InterFrameVariance();
   virtual ~InterFrameVariance() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );

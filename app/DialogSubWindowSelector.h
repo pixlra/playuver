@@ -52,7 +52,7 @@ class DialogSubWindowSelector : public QDialog
 {
   Q_OBJECT
 
- public:
+public:
   DialogSubWindowSelector( QWidget* parent,
                            PlaYUVerSubWindowHandle* windowManager,
                            UInt uiCategory,
@@ -61,7 +61,8 @@ class DialogSubWindowSelector : public QDialog
 
   Void selectSubWindow( SubWindowAbstract* subWindow );
   QList<SubWindowAbstract*> getSelectedWindows() { return m_apcSelectedSubWindowList; }
- private:
+
+private:
   UInt m_uiCategory;
   Int m_iMinSelectedWindows;
   Int m_iMaxSlectedWindows;
@@ -82,7 +83,7 @@ class DialogSubWindowSelector : public QDialog
   Void updateSubWindowList();
   Void update();
 
- private Q_SLOTS:
+private Q_SLOTS:
   void toggleSubWindow( int );
   void addAllSubWindow();
   void removeAllSubWindow();

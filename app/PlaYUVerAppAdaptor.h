@@ -40,9 +40,9 @@ class PlaYUVerApp;
 class PlaYUVerAppAdaptor : public QDBusAbstractAdaptor
 {
   Q_OBJECT
-	Q_CLASSINFO( "D-Bus Interface", PLAYUVER_DBUS_SESSION_NAME )
+  Q_CLASSINFO( "D-Bus Interface", PLAYUVER_DBUS_SESSION_NAME )
   Q_PROPERTY( QString activeSession READ activeSession )
- public:
+public:
   PlaYUVerAppAdaptor( PlaYUVerApp* app );
   ~PlaYUVerAppAdaptor();
   /**
@@ -50,7 +50,7 @@ class PlaYUVerAppAdaptor : public QDBusAbstractAdaptor
    */
   // void emitExiting();
   // void emitDocumentClosed(const QString &token);
- public Q_SLOTS:
+public Q_SLOTS:
   /**
    * open a file with given url and encoding
    * will get view created
@@ -65,7 +65,7 @@ class PlaYUVerAppAdaptor : public QDBusAbstractAdaptor
    */
   void activate();
 
- Q_SIGNALS:
+Q_SIGNALS:
   /**
    * Notify the world that this kate instance is exiting.
    * All apps should stop using the dbus interface of this instance after this
@@ -73,10 +73,10 @@ class PlaYUVerAppAdaptor : public QDBusAbstractAdaptor
    */
   // void exiting();
   // void documentClosed(const QString &token);
- public:
+public:
   QString activeSession();
 
- private:
+private:
   PlaYUVerApp* m_app;
 };
 

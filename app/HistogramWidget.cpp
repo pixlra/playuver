@@ -33,11 +33,11 @@
 
 class HistogramWorker : public QThread
 {
- private:
+private:
   QObject* m_parent;
   PlaYUVerFrame* m_pcFrame;
 
- public:
+public:
   HistogramWorker( QObject* parent )
   {
     m_pcFrame = NULL;
@@ -76,7 +76,7 @@ class HistogramWorker : public QThread
    */
   class EventData : public QEvent
   {
-   public:
+  public:
     EventData() : QEvent( QEvent::User )
     {
       starting = false;
@@ -105,7 +105,7 @@ const QBrush g_eColorPallet[][3] = {
 
 class HistogramWidgetPrivate
 {
- public:
+public:
   enum RepaintType
   {
     HistogramNone = 0,     // No current histogram values calculation.
@@ -515,39 +515,39 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
 
   switch( m_channelType )
   {
-    case HistogramWidget::FirstChannelHistogram:  // Y channel.
-      max = frame->getMaximum( LUMA );
-      break;
-    case HistogramWidget::SecondChannelHistogram:  // Cb channel.
-      max = frame->getMaximum( CHROMA_U );
-      break;
-    case HistogramWidget::ThirdChannelHistogram:  // Cr channel.
-      max = frame->getMaximum( CHROMA_V );
-      break;
-    case HistogramWidget::AlphaChannelHistogram:  // Alpha channel.
-      max = frame->getMaximum( COLOR_A );
-      break;
+  case HistogramWidget::FirstChannelHistogram:  // Y channel.
+    max = frame->getMaximum( LUMA );
+    break;
+  case HistogramWidget::SecondChannelHistogram:  // Cb channel.
+    max = frame->getMaximum( CHROMA_U );
+    break;
+  case HistogramWidget::ThirdChannelHistogram:  // Cr channel.
+    max = frame->getMaximum( CHROMA_V );
+    break;
+  case HistogramWidget::AlphaChannelHistogram:  // Alpha channel.
+    max = frame->getMaximum( COLOR_A );
+    break;
 
-    case HistogramWidget::ColorChannelsHistogram:  // All color channels.
-      max = qMax( qMax( frame->getMaximum( LUMA ), frame->getMaximum( CHROMA_U ) ),
-                  frame->getMaximum( CHROMA_V ) );
-      break;
-      //   case HistogramWidget::LumaHistogram:            // Luminance.
-      //     max = frame->getMaximum( LUMA );
-      //     break;
+  case HistogramWidget::ColorChannelsHistogram:  // All color channels.
+    max = qMax( qMax( frame->getMaximum( LUMA ), frame->getMaximum( CHROMA_U ) ),
+                frame->getMaximum( CHROMA_V ) );
+    break;
+    //   case HistogramWidget::LumaHistogram:            // Luminance.
+    //     max = frame->getMaximum( LUMA );
+    //     break;
   }
 
   switch( m_scaleType )
   {
-    case HistogramWidget::LinScaleHistogram:
-      break;
+  case HistogramWidget::LinScaleHistogram:
+    break;
 
-    case HistogramWidget::LogScaleHistogram:
-      if( max > 0.0 )
-        max = log( max );
-      else
-        max = 1.0;
-      break;
+  case HistogramWidget::LogScaleHistogram:
+    if( max > 0.0 )
+      max = log( max );
+    else
+      max = 1.0;
+    break;
   }
 
   // From Qt 4.0, QWidget automatically double-buffers its painting,
@@ -579,26 +579,26 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
 
       switch( m_channelType )
       {
-        case HistogramWidget::FirstChannelHistogram:  // Y channel.
-          v = frame->getHistogramValue( LUMA, i++ );
-          break;
-        case HistogramWidget::SecondChannelHistogram:  // Cb channel.
-          v = frame->getHistogramValue( CHROMA_U, i++ );
-          break;
-        case HistogramWidget::ThirdChannelHistogram:  // Cr channel.
-          v = frame->getHistogramValue( CHROMA_V, i++ );
-          break;
-        case HistogramWidget::AlphaChannelHistogram:  // Alpha channel.
-          v = frame->getHistogramValue( COLOR_A, i++ );
-          break;
-        case HistogramWidget::ColorChannelsHistogram:  // All color.
-          vr = frame->getHistogramValue( LUMA, i );
-          vg = frame->getHistogramValue( CHROMA_U, i );
-          vb = frame->getHistogramValue( CHROMA_V, i++ );
-          break;
-          //       case HistogramWidget::LumaHistogram:           // Luminance.
-          //         v = frame->getHistogramValue( LUMA, i++ );
-          //         break;
+      case HistogramWidget::FirstChannelHistogram:  // Y channel.
+        v = frame->getHistogramValue( LUMA, i++ );
+        break;
+      case HistogramWidget::SecondChannelHistogram:  // Cb channel.
+        v = frame->getHistogramValue( CHROMA_U, i++ );
+        break;
+      case HistogramWidget::ThirdChannelHistogram:  // Cr channel.
+        v = frame->getHistogramValue( CHROMA_V, i++ );
+        break;
+      case HistogramWidget::AlphaChannelHistogram:  // Alpha channel.
+        v = frame->getHistogramValue( COLOR_A, i++ );
+        break;
+      case HistogramWidget::ColorChannelsHistogram:  // All color.
+        vr = frame->getHistogramValue( LUMA, i );
+        vg = frame->getHistogramValue( CHROMA_U, i );
+        vb = frame->getHistogramValue( CHROMA_V, i++ );
+        break;
+        //       case HistogramWidget::LumaHistogram:           // Luminance.
+        //         v = frame->getHistogramValue( LUMA, i++ );
+        //         break;
       }
 
       if( m_channelType != HistogramWidget::ColorChannelsHistogram )
@@ -621,48 +621,48 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
     {
       switch( m_scaleType )
       {
-        case HistogramWidget::LinScaleHistogram:
-          y = (int)( ( wHeight * value ) / max );
-          break;
+      case HistogramWidget::LinScaleHistogram:
+        y = (int)( ( wHeight * value ) / max );
+        break;
 
-        case HistogramWidget::LogScaleHistogram:
-          if( value <= 0.0 )
-            value = 1.0;
-          y = (int)( ( wHeight * log( value ) ) / max );
-          break;
+      case HistogramWidget::LogScaleHistogram:
+        if( value <= 0.0 )
+          value = 1.0;
+        y = (int)( ( wHeight * log( value ) ) / max );
+        break;
 
-        default:
-          y = 0;
-          break;
+      default:
+        y = 0;
+        break;
       }
     }
     else
     {
       switch( m_scaleType )
       {
-        case HistogramWidget::LinScaleHistogram:
-          yr = (int)( ( wHeight * value_r ) / max );
-          yg = (int)( ( wHeight * value_g ) / max );
-          yb = (int)( ( wHeight * value_b ) / max );
-          break;
+      case HistogramWidget::LinScaleHistogram:
+        yr = (int)( ( wHeight * value_r ) / max );
+        yg = (int)( ( wHeight * value_g ) / max );
+        yb = (int)( ( wHeight * value_b ) / max );
+        break;
 
-        case HistogramWidget::LogScaleHistogram:
-          if( value_r <= 0.0 )
-            value_r = 1.0;
-          if( value_g <= 0.0 )
-            value_g = 1.0;
-          if( value_b <= 0.0 )
-            value_b = 1.0;
-          yr = (int)( ( wHeight * log( value_r ) ) / max );
-          yg = (int)( ( wHeight * log( value_g ) ) / max );
-          yb = (int)( ( wHeight * log( value_b ) ) / max );
-          break;
+      case HistogramWidget::LogScaleHistogram:
+        if( value_r <= 0.0 )
+          value_r = 1.0;
+        if( value_g <= 0.0 )
+          value_g = 1.0;
+        if( value_b <= 0.0 )
+          value_b = 1.0;
+        yr = (int)( ( wHeight * log( value_r ) ) / max );
+        yg = (int)( ( wHeight * log( value_g ) ) / max );
+        yb = (int)( ( wHeight * log( value_b ) ) / max );
+        break;
 
-        default:
-          yr = 0;
-          yg = 0;
-          yb = 0;
-          break;
+      default:
+        yr = 0;
+        yg = 0;
+        yb = 0;
+        break;
       }
     }
 
@@ -721,17 +721,17 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
           // colors channel mode?
           switch( m_colorType )
           {
-            case HistogramWidget::FirstChannelColor:
-              p1.drawLine( x, wHeight, x, wHeight - yr );
-              break;
+          case HistogramWidget::FirstChannelColor:
+            p1.drawLine( x, wHeight, x, wHeight - yr );
+            break;
 
-            case HistogramWidget::SecondChannelColor:
-              p1.drawLine( x, wHeight, x, wHeight - yg );
-              break;
+          case HistogramWidget::SecondChannelColor:
+            p1.drawLine( x, wHeight, x, wHeight - yg );
+            break;
 
-            default:
-              p1.drawLine( x, wHeight, x, wHeight - yb );
-              break;
+          default:
+            p1.drawLine( x, wHeight, x, wHeight - yb );
+            break;
           }
         }
         else
@@ -740,56 +740,56 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
           // colors channel mode?
           switch( m_colorType )
           {
-            case HistogramWidget::FirstChannelColor:
-              p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight, x, wHeight - yg );
-              p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight, x, wHeight - yb );
-              p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight, x, wHeight - yr );
+          case HistogramWidget::FirstChannelColor:
+            p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight, x, wHeight - yg );
+            p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight, x, wHeight - yb );
+            p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight, x, wHeight - yr );
 
-              p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight - qMax( qMax( yr, yg ), yb ), x, 0 );
-              p1.setPen( QPen( Qt::gray, 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight - yg - 1, x, wHeight - yg );
-              p1.drawLine( x, wHeight - yb - 1, x, wHeight - yb );
-              p1.drawLine( x, wHeight - yr - 1, x, wHeight - yr );
+            p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight - qMax( qMax( yr, yg ), yb ), x, 0 );
+            p1.setPen( QPen( Qt::gray, 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight - yg - 1, x, wHeight - yg );
+            p1.drawLine( x, wHeight - yb - 1, x, wHeight - yb );
+            p1.drawLine( x, wHeight - yr - 1, x, wHeight - yr );
 
-              break;
+            break;
 
-            case HistogramWidget::SecondChannelColor:
-              p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight, x, wHeight - yb );
-              p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight, x, wHeight - yr );
-              p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight, x, wHeight - yg );
+          case HistogramWidget::SecondChannelColor:
+            p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight, x, wHeight - yb );
+            p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight, x, wHeight - yr );
+            p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight, x, wHeight - yg );
 
-              p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight - qMax( qMax( yr, yg ), yb ), x, 0 );
-              p1.setPen( QPen( Qt::gray, 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight - yb - 1, x, wHeight - yb );
-              p1.drawLine( x, wHeight - yr - 1, x, wHeight - yr );
-              p1.drawLine( x, wHeight - yg - 1, x, wHeight - yg );
+            p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight - qMax( qMax( yr, yg ), yb ), x, 0 );
+            p1.setPen( QPen( Qt::gray, 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight - yb - 1, x, wHeight - yb );
+            p1.drawLine( x, wHeight - yr - 1, x, wHeight - yr );
+            p1.drawLine( x, wHeight - yg - 1, x, wHeight - yg );
 
-              break;
+            break;
 
-            default:
-              p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight, x, wHeight - yr );
-              p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight, x, wHeight - yg );
-              p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight, x, wHeight - yb );
+          default:
+            p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight, x, wHeight - yr );
+            p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight, x, wHeight - yg );
+            p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight, x, wHeight - yb );
 
-              p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight - qMax( qMax( yr, yg ), yb ), x, 0 );
-              p1.setPen( QPen( Qt::gray, 1, Qt::SolidLine ) );
-              p1.drawLine( x, wHeight - yr - 1, x, wHeight - yr );
-              p1.drawLine( x, wHeight - yg - 1, x, wHeight - yg );
-              p1.drawLine( x, wHeight - yb - 1, x, wHeight - yb );
+            p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight - qMax( qMax( yr, yg ), yb ), x, 0 );
+            p1.setPen( QPen( Qt::gray, 1, Qt::SolidLine ) );
+            p1.drawLine( x, wHeight - yr - 1, x, wHeight - yr );
+            p1.drawLine( x, wHeight - yg - 1, x, wHeight - yg );
+            p1.drawLine( x, wHeight - yb - 1, x, wHeight - yb );
 
-              break;
+            break;
           }
 
           if( x == wWidth / 4 || x == wWidth / 2 || x == 3 * wWidth / 4 )
@@ -805,65 +805,65 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
         // colors channel mode?
         switch( m_colorType )
         {
-          case HistogramWidget::FirstChannelColor:
-            p1.setPen( QPen( Qt::green, 1, Qt::SolidLine ) );
-            p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight, x, wHeight - yg );
-            p1.setPen( QPen( Qt::blue, 1, Qt::SolidLine ) );
-            p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight, x, wHeight - yb );
-            p1.setPen( QPen( Qt::red, 1, Qt::SolidLine ) );
-            p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight, x, wHeight - yr );
+        case HistogramWidget::FirstChannelColor:
+          p1.setPen( QPen( Qt::green, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight, x, wHeight - yg );
+          p1.setPen( QPen( Qt::blue, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight, x, wHeight - yb );
+          p1.setPen( QPen( Qt::red, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight, x, wHeight - yr );
 
-            p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight - qMax( qMax( yr, yg ), yb ), x, 0 );
-            p1.setPen( QPen( Qt::gray, 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight - yg - 1, x, wHeight - yg );
-            p1.drawLine( x, wHeight - yb - 1, x, wHeight - yb );
-            p1.drawLine( x, wHeight - yr - 1, x, wHeight - yr );
+          p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight - qMax( qMax( yr, yg ), yb ), x, 0 );
+          p1.setPen( QPen( Qt::gray, 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight - yg - 1, x, wHeight - yg );
+          p1.drawLine( x, wHeight - yb - 1, x, wHeight - yb );
+          p1.drawLine( x, wHeight - yr - 1, x, wHeight - yr );
 
-            break;
+          break;
 
-          case HistogramWidget::SecondChannelColor:
-            p1.setPen( QPen( Qt::blue, 1, Qt::SolidLine ) );
-            p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight, x, wHeight - yb );
-            p1.setPen( QPen( Qt::red, 1, Qt::SolidLine ) );
-            p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight, x, wHeight - yr );
-            p1.setPen( QPen( Qt::green, 1, Qt::SolidLine ) );
-            p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight, x, wHeight - yg );
+        case HistogramWidget::SecondChannelColor:
+          p1.setPen( QPen( Qt::blue, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight, x, wHeight - yb );
+          p1.setPen( QPen( Qt::red, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight, x, wHeight - yr );
+          p1.setPen( QPen( Qt::green, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight, x, wHeight - yg );
 
-            p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight - qMax( qMax( yr, yg ), yb ), x, 0 );
-            p1.setPen( QPen( Qt::gray, 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight - yb - 1, x, wHeight - yb );
-            p1.drawLine( x, wHeight - yr - 1, x, wHeight - yr );
-            p1.drawLine( x, wHeight - yg - 1, x, wHeight - yg );
+          p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight - qMax( qMax( yr, yg ), yb ), x, 0 );
+          p1.setPen( QPen( Qt::gray, 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight - yb - 1, x, wHeight - yb );
+          p1.drawLine( x, wHeight - yr - 1, x, wHeight - yr );
+          p1.drawLine( x, wHeight - yg - 1, x, wHeight - yg );
 
-            break;
+          break;
 
-          default:
-            p1.setPen( QPen( Qt::red, 1, Qt::SolidLine ) );
-            p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight, x, wHeight - yr );
-            p1.setPen( QPen( Qt::green, 1, Qt::SolidLine ) );
-            p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight, x, wHeight - yg );
-            p1.setPen( QPen( Qt::blue, 1, Qt::SolidLine ) );
-            p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight, x, wHeight - yb );
+        default:
+          p1.setPen( QPen( Qt::red, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][FirstChannelColor], 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight, x, wHeight - yr );
+          p1.setPen( QPen( Qt::green, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][SecondChannelColor], 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight, x, wHeight - yg );
+          p1.setPen( QPen( Qt::blue, 1, Qt::SolidLine ) );
+          p1.setPen( QPen( g_eColorPallet[pallet][ThirdChannelColor], 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight, x, wHeight - yb );
 
-            p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight - qMax( qMax( yr, yg ), yb ), x, 0 );
-            p1.setPen( QPen( Qt::gray, 1, Qt::SolidLine ) );
-            p1.drawLine( x, wHeight - yr - 1, x, wHeight - yr );
-            p1.drawLine( x, wHeight - yg - 1, x, wHeight - yg );
-            p1.drawLine( x, wHeight - yb - 1, x, wHeight - yb );
+          p1.setPen( QPen( Qt::white, 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight - qMax( qMax( yr, yg ), yb ), x, 0 );
+          p1.setPen( QPen( Qt::gray, 1, Qt::SolidLine ) );
+          p1.drawLine( x, wHeight - yr - 1, x, wHeight - yr );
+          p1.drawLine( x, wHeight - yg - 1, x, wHeight - yg );
+          p1.drawLine( x, wHeight - yb - 1, x, wHeight - yb );
 
-            break;
+          break;
         }
 
         if( x == wWidth / 4 || x == wWidth / 2 || x == 3 * wWidth / 4 )
@@ -884,26 +884,26 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
   {
     switch( m_channelType )
     {
-      case HistogramWidget::FirstChannelHistogram:
-        guidePos = d->colorGuide.red();
-        break;
+    case HistogramWidget::FirstChannelHistogram:
+      guidePos = d->colorGuide.red();
+      break;
 
-      case HistogramWidget::SecondChannelHistogram:
-        guidePos = d->colorGuide.green();
-        break;
+    case HistogramWidget::SecondChannelHistogram:
+      guidePos = d->colorGuide.green();
+      break;
 
-      case HistogramWidget::ThirdChannelHistogram:
-        guidePos = d->colorGuide.blue();
-        break;
+    case HistogramWidget::ThirdChannelHistogram:
+      guidePos = d->colorGuide.blue();
+      break;
 
       //     case HistogramWidget::LumaHistogram:
       //       guidePos = qMax( qMax( d->colorGuide.red(), d->colorGuide.green()
       //       ), d->colorGuide.blue() );
       //       break;
 
-      default:  // Alpha.
-        guidePos = -1;
-        break;
+    default:  // Alpha.
+      guidePos = -1;
+      break;
     }
 
     if( guidePos != -1 )

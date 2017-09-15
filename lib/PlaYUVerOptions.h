@@ -50,7 +50,7 @@
  */
 class OptionBase
 {
- public:
+public:
   OptionBase( const String& name, const String& desc )
       : arg_count( 0 ), opt_string( name ), opt_desc( desc )
   {
@@ -68,7 +68,7 @@ class OptionBase
 
 class PlaYUVerOptions
 {
- public:
+public:
   struct Option
   {
     Option() : opt( 0 ) {}
@@ -134,7 +134,7 @@ class PlaYUVerOptions
   Bool checkListingOpts();
   Void listModules();
 
- private:
+private:
   typedef std::map<String, OptionsList> OptionMap;
   OptionMap opt_long_map;
   OptionMap opt_short_map;

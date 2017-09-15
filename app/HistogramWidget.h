@@ -41,7 +41,7 @@ class HistogramWidget : public QWidget
 {
   Q_OBJECT
 
- public:
+public:
   enum HistogramChannel
   {
     /** Luminance */
@@ -95,7 +95,7 @@ class HistogramWidget : public QWidget
   };
   Q_DECLARE_FLAGS( HistogramOptions, HistogramOption )
 
- public:
+public:
   /**
    * Constructor without image data. Needed to use @p updateData() method
    * after to create instance.
@@ -122,7 +122,7 @@ class HistogramWidget : public QWidget
 
   Void reset();
 
- public:
+public:
   /** Channel type to draw */
   Int m_channelType;
   /** Scale to use for drawing */
@@ -141,30 +141,30 @@ class HistogramWidget : public QWidget
   // PlaYUVerFrameStats* m_selectionHistogram;
   PlaYUVerFrame* m_selectionImage;
 
- Q_SIGNALS:
+Q_SIGNALS:
   void signalIntervalChanged( int min, int max );
   void signalMaximumValueChanged( int );
   void signalHistogramComputationDone( int );
   void signalHistogramComputationFailed( void );
 
- public Q_SLOTS:
+public Q_SLOTS:
   void slotMinValueChanged( int min );
   void slotMaxValueChanged( int max );
 
- protected slots:
+protected slots:
   void slotBlinkTimerDone( void );
 
- protected:
+protected:
   Void paintEvent( QPaintEvent* );
   Void mousePressEvent( QMouseEvent* e );
   Void mouseReleaseEvent( QMouseEvent* e );
   Void mouseMoveEvent( QMouseEvent* e );
 
- private:
+private:
   Void customEvent( QEvent* event );
   Void notifyValuesChanged();
 
- private:
+private:
   HistogramWidgetPrivate* d;
 };
 

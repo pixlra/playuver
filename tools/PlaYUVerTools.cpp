@@ -437,20 +437,20 @@ Int PlaYUVerTools::QualityOperation()
   String metric_fmt = " ";
   switch( m_uiQualityMetric )
   {
-    case PlaYUVerFrame::PSNR_METRIC:
-      //"PSNR_0_0"
-      metric_fmt += " %6.3f ";
-      break;
-    case PlaYUVerFrame::SSIM_METRIC:
-      //"SSIM_0_0"
-      metric_fmt += " %6.4f ";
-      break;
-    case PlaYUVerFrame::MSE_METRIC:
-      //"MSE_0_0"
-      metric_fmt += "%7.2f";
-      break;
-    default:
-      metric_fmt += " %6.3f ";
+  case PlaYUVerFrame::PSNR_METRIC:
+    //"PSNR_0_0"
+    metric_fmt += " %6.3f ";
+    break;
+  case PlaYUVerFrame::SSIM_METRIC:
+    //"SSIM_0_0"
+    metric_fmt += " %6.4f ";
+    break;
+  case PlaYUVerFrame::MSE_METRIC:
+    //"MSE_0_0"
+    metric_fmt += "%7.2f";
+    break;
+  default:
+    metric_fmt += " %6.3f ";
   }
   metric_fmt += " ";
 

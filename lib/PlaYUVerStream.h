@@ -76,7 +76,7 @@ typedef struct
  */
 class PlaYUVerStream
 {
- public:
+public:
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
 
@@ -152,7 +152,7 @@ class PlaYUVerStream
   Bool isInit() { return m_bInit; }
   Void getDuration( Int* duration_array );
 
- private:
+private:
   Bool m_bInit;
   CreateStreamHandlerFn m_pfctCreateHandler;
   PlaYUVerStreamHandlerIf* m_pcHandler;

@@ -39,7 +39,7 @@ class StreamHandlerOpenCV : public PlaYUVerStreamHandlerIf
 {
   REGISTER_STREAM_HANDLER( StreamHandlerOpenCV )
 
- public:
+public:
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
 
@@ -53,7 +53,7 @@ class StreamHandlerOpenCV : public PlaYUVerStreamHandlerIf
   Bool read( PlaYUVerFrame* pcFrame );
   Bool write( PlaYUVerFrame* pcFrame );
 
- private:
+private:
   cv::VideoCapture* pcVideoCapture;
 };
 

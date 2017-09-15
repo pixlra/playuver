@@ -104,7 +104,7 @@ Int getMem2D( T*** array2D, Int dim0, Int dim1 )
 template <typename T>
 Int getMem3D( T**** array3D, Int dim0, Int dim1, Int dim2 )
 {
-  Int i, mem_size = dim0 * sizeof( T ** );
+  Int i, mem_size = dim0 * sizeof( T** );
 
   if( ( ( *array3D ) = (T***)xMallocMem( dim0 * sizeof( T** ) ) ) == NULL )
     printf( "get_mem3Dint: array3D" );
@@ -120,7 +120,7 @@ Int getMem3D( T**** array3D, Int dim0, Int dim1, Int dim2 )
 template <typename T>
 Int getMem4D( T***** array4D, Int dim0, Int dim1, Int dim2, Int dim3 )
 {
-  int i, mem_size = dim0 * sizeof( int *** );
+  int i, mem_size = dim0 * sizeof( int*** );
 
   if( ( ( *array4D ) = (T****)xMallocMem( dim0 * sizeof( T*** ) ) ) == NULL )
     printf( "get_mem4Dint: array4D" );
@@ -136,7 +136,7 @@ Int getMem4D( T***** array4D, Int dim0, Int dim1, Int dim2, Int dim3 )
 template <typename T>
 Int getMem5D( T****** array5D, Int dim0, Int dim1, Int dim2, Int dim3, Int dim4 )
 {
-  int i, mem_size = dim0 * sizeof( T **** );
+  int i, mem_size = dim0 * sizeof( T**** );
 
   if( ( ( *array5D ) = (T*****)xMallocMem( dim0 * sizeof( T**** ) ) ) == NULL )
     printf( "get_mem5Dint: array5D" );

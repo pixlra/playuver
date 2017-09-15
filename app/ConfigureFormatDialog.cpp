@@ -72,7 +72,7 @@ QDataStream& operator>>( QDataStream& in, PlaYUVerStdResolutionVector& array )
 
 class AddCustomFormat : public QDialog
 {
- public:
+public:
   AddCustomFormat( QWidget* parent = NULL ) : QDialog( parent, Qt::Dialog | Qt::WindowTitleHint )
   {
     setWindowModality( Qt::ApplicationModal );
@@ -130,7 +130,7 @@ class AddCustomFormat : public QDialog
     return stdResolution;
   }
 
- private:
+private:
   QLineEdit* m_lineEdtName;
   QSpinBox* m_spinWidth;
   QSpinBox* m_spinHeight;

@@ -69,19 +69,19 @@ class PlaYUVerApp : public QMainWindow
 {
   Q_OBJECT
 
- public:
+public:
   PlaYUVerApp();
   Bool parseArgs( Int argc, Char* argv[] );
   Void loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo = NULL );
 
- public Q_SLOTS:
+public Q_SLOTS:
   void printMessage( const QString& msg );
   void printMessage( const QString& msg, UInt logLevel );
 
- protected:
+protected:
   Void closeEvent( QCloseEvent* event );
 
- private Q_SLOTS:
+private Q_SLOTS:
 
   void about();
 
@@ -115,7 +115,7 @@ class PlaYUVerApp : public QMainWindow
   void update();
   void updateZoomFactorSBox();
 
- private:
+private:
   PlaYUVerAppAdaptor* m_pDBusAdaptor;
   PlaYUVerOptions* m_pcCmdParser;
   /**

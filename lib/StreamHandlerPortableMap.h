@@ -34,7 +34,7 @@ class StreamHandlerPortableMap : public PlaYUVerStreamHandlerIf
 {
   REGISTER_STREAM_HANDLER( StreamHandlerPortableMap )
 
- public:
+public:
   StreamHandlerPortableMap() {}
   ~StreamHandlerPortableMap() {}
   Bool openHandler( String strFilename, Bool bInput );
@@ -45,7 +45,7 @@ class StreamHandlerPortableMap : public PlaYUVerStreamHandlerIf
   Bool read( PlaYUVerFrame* pcFrame );
   Bool write( PlaYUVerFrame* pcFrame );
 
- private:
+private:
   FILE* m_pFile; /**< The input file pointer >*/
   Int m_iMagicNumber;
   Int m_iMaxValue;

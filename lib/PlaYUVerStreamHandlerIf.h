@@ -31,7 +31,7 @@
 class PlaYUVerFrame;
 
 #define REGISTER_STREAM_HANDLER( X )                           \
- public:                                                       \
+public:                                                        \
   static PlaYUVerStreamHandlerIf* Create() { return new X(); } \
   void Delete() { delete this; }
 /**
@@ -43,7 +43,7 @@ class PlaYUVerStreamHandlerIf
 {
   friend class PlaYUVerStream;
 
- public:
+public:
   PlaYUVerStreamHandlerIf()
   {
     m_bIsInput = true;
@@ -68,7 +68,8 @@ class PlaYUVerStreamHandlerIf
   Void setBytesPerFrame( UInt64 uiNBytes ) { m_uiNBytesPerFrame = uiNBytes; }
   String getFormatName() { return m_strFormatName; }
   String getCodecName() { return m_strCodecName; }
- protected:
+
+protected:
   Bool m_bIsInput;
   String m_cFilename;
   UInt m_uiWidth;

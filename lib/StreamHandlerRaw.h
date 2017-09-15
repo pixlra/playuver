@@ -36,10 +36,10 @@ class StreamHandlerRaw : public PlaYUVerStreamHandlerIf
 {
   REGISTER_STREAM_HANDLER( StreamHandlerRaw )
 
- private:
+private:
   FILE* m_pFile; /**< The input file pointer >*/
 
- public:
+public:
   StreamHandlerRaw() {}
   ~StreamHandlerRaw() {}
   Bool openHandler( String strFilename, Bool bInput );

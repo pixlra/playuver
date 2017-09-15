@@ -47,7 +47,7 @@ class SubWindowHandle;
 class ModulesHandle : public QWidget
 {
   Q_OBJECT
- public:
+public:
   ModulesHandle( QWidget*, PlaYUVerSubWindowHandle*, VideoHandle* );
   ~ModulesHandle();
 
@@ -65,7 +65,7 @@ class ModulesHandle : public QWidget
                              Bool isPlaying = false,
                              Bool disableThreads = false );
 
- private:
+private:
   QWidget* m_pcParent;
   PlaYUVerSubWindowHandle* m_pcMainWindowManager;
   VideoHandle* m_appModuleVideo;
@@ -103,10 +103,10 @@ class ModulesHandle : public QWidget
 
   Void customEvent( QEvent* event );
 
- Q_SIGNALS:
+Q_SIGNALS:
   void changed();
 
- private Q_SLOTS:
+private Q_SLOTS:
   void loadExternalModule();
   void activateModule();
   void processOpt( int index );

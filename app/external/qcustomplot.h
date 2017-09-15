@@ -256,23 +256,23 @@ inline void setMarginValue( QMargins& margins, QCP::MarginSide side, int value )
 {
   switch( side )
   {
-    case QCP::msLeft:
-      margins.setLeft( value );
-      break;
-    case QCP::msRight:
-      margins.setRight( value );
-      break;
-    case QCP::msTop:
-      margins.setTop( value );
-      break;
-    case QCP::msBottom:
-      margins.setBottom( value );
-      break;
-    case QCP::msAll:
-      margins = QMargins( value, value, value, value );
-      break;
-    default:
-      break;
+  case QCP::msLeft:
+    margins.setLeft( value );
+    break;
+  case QCP::msRight:
+    margins.setRight( value );
+    break;
+  case QCP::msTop:
+    margins.setTop( value );
+    break;
+  case QCP::msBottom:
+    margins.setBottom( value );
+    break;
+  case QCP::msAll:
+    margins = QMargins( value, value, value, value );
+    break;
+  default:
+    break;
   }
 }
 
@@ -288,16 +288,16 @@ inline int getMarginValue( const QMargins& margins, QCP::MarginSide side )
 {
   switch( side )
   {
-    case QCP::msLeft:
-      return margins.left();
-    case QCP::msRight:
-      return margins.right();
-    case QCP::msTop:
-      return margins.top();
-    case QCP::msBottom:
-      return margins.bottom();
-    default:
-      break;
+  case QCP::msLeft:
+    return margins.left();
+  case QCP::msRight:
+    return margins.right();
+  case QCP::msTop:
+    return margins.top();
+  case QCP::msBottom:
+    return margins.bottom();
+  default:
+    break;
   }
   return 0;
 }
@@ -312,7 +312,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QCP::Interactions )
 class QCP_LIB_DECL QCPScatterStyle
 {
   Q_GADGET
- public:
+public:
   /*!
     Defines the shape used for scatter points.
 
@@ -407,7 +407,7 @@ class QCP_LIB_DECL QCPScatterStyle
   void drawShape( QCPPainter* painter, QPointF pos ) const;
   void drawShape( QCPPainter* painter, double x, double y ) const;
 
- protected:
+protected:
   // property members:
   double mSize;
   ScatterShape mShape;
@@ -424,7 +424,7 @@ Q_DECLARE_TYPEINFO( QCPScatterStyle, Q_MOVABLE_TYPE );
 class QCP_LIB_DECL QCPPainter : public QPainter
 {
   Q_GADGET
- public:
+public:
   /*!
     Defines special modes the painter can operate in. They disable or enable
     certain subsets of
@@ -476,7 +476,7 @@ class QCP_LIB_DECL QCPPainter : public QPainter
   // non-virtual methods:
   void makeNonCosmetic();
 
- protected:
+protected:
   // property members:
   PainterModes mModes;
   bool mIsAntialiasing;
@@ -496,7 +496,7 @@ class QCP_LIB_DECL QCPLayer : public QObject
   Q_PROPERTY( QList<QCPLayerable*> children READ children )
   Q_PROPERTY( bool visible READ visible WRITE setVisible )
   /// \endcond
- public:
+public:
   QCPLayer( QCustomPlot* parentPlot, const QString& layerName );
   ~QCPLayer();
 
@@ -509,7 +509,7 @@ class QCP_LIB_DECL QCPLayer : public QObject
   // setters:
   void setVisible( bool visible );
 
- protected:
+protected:
   // property members:
   QCustomPlot* mParentPlot;
   QString mName;
@@ -521,7 +521,7 @@ class QCP_LIB_DECL QCPLayer : public QObject
   void addChild( QCPLayerable* layerable, bool prepend );
   void removeChild( QCPLayerable* layerable );
 
- private:
+private:
   Q_DISABLE_COPY( QCPLayer )
 
   friend class QCustomPlot;
@@ -538,7 +538,7 @@ class QCP_LIB_DECL QCPLayerable : public QObject
   Q_PROPERTY( QCPLayer* layer READ layer WRITE setLayer NOTIFY layerChanged )
   Q_PROPERTY( bool antialiased READ antialiased WRITE setAntialiased )
   /// \endcond
- public:
+public:
   QCPLayerable( QCustomPlot* plot, QString targetLayer = "", QCPLayerable* parentLayerable = 0 );
   ~QCPLayerable();
 
@@ -560,10 +560,10 @@ class QCP_LIB_DECL QCPLayerable : public QObject
   // non-property methods:
   bool realVisibility() const;
 
- signals:
+signals:
   void layerChanged( QCPLayer* newLayer );
 
- protected:
+protected:
   // property members:
   bool mVisible;
   QCustomPlot* mParentPlot;
@@ -592,7 +592,7 @@ class QCP_LIB_DECL QCPLayerable : public QObject
                               bool localAntialiased,
                               QCP::AntialiasedElement overrideElement ) const;
 
- private:
+private:
   Q_DISABLE_COPY( QCPLayerable )
 
   friend class QCustomPlot;
@@ -601,7 +601,7 @@ class QCP_LIB_DECL QCPLayerable : public QObject
 
 class QCP_LIB_DECL QCPRange
 {
- public:
+public:
   double lower, upper;
 
   QCPRange();
@@ -743,7 +743,7 @@ inline const QCPRange operator/( const QCPRange& range, double value )
 class QCP_LIB_DECL QCPMarginGroup : public QObject
 {
   Q_OBJECT
- public:
+public:
   QCPMarginGroup( QCustomPlot* parentPlot );
   ~QCPMarginGroup();
 
@@ -755,7 +755,7 @@ class QCP_LIB_DECL QCPMarginGroup : public QObject
   bool isEmpty() const;
   void clear();
 
- protected:
+protected:
   // non-property members:
   QCustomPlot* mParentPlot;
   QHash<QCP::MarginSide, QList<QCPLayoutElement*>> mChildren;
@@ -765,7 +765,7 @@ class QCP_LIB_DECL QCPMarginGroup : public QObject
   void addChild( QCP::MarginSide side, QCPLayoutElement* element );
   void removeChild( QCP::MarginSide side, QCPLayoutElement* element );
 
- private:
+private:
   Q_DISABLE_COPY( QCPMarginGroup )
 
   friend class QCPLayoutElement;
@@ -783,7 +783,7 @@ class QCP_LIB_DECL QCPLayoutElement : public QCPLayerable
   Q_PROPERTY( QSize minimumSize READ minimumSize WRITE setMinimumSize )
   Q_PROPERTY( QSize maximumSize READ maximumSize WRITE setMaximumSize )
   /// \endcond
- public:
+public:
   /*!
     Defines the phases of the update process, that happens just before a replot.
     At each phase,
@@ -839,7 +839,7 @@ class QCP_LIB_DECL QCPLayoutElement : public QCPLayerable
   // reimplemented virtual methods:
   virtual double selectTest( const QPointF& pos, bool onlySelectable, QVariant* details = 0 ) const;
 
- protected:
+protected:
   // property members:
   QCPLayout* mParentLayout;
   QSize mMinimumSize, mMaximumSize;
@@ -861,7 +861,7 @@ class QCP_LIB_DECL QCPLayoutElement : public QCPLayerable
   virtual void draw( QCPPainter* painter ) { Q_UNUSED( painter ) }
   virtual void parentPlotInitialized( QCustomPlot* parentPlot );
 
- private:
+private:
   Q_DISABLE_COPY( QCPLayoutElement )
 
   friend class QCustomPlot;
@@ -872,7 +872,7 @@ class QCP_LIB_DECL QCPLayoutElement : public QCPLayerable
 class QCP_LIB_DECL QCPLayout : public QCPLayoutElement
 {
   Q_OBJECT
- public:
+public:
   explicit QCPLayout();
 
   // reimplemented virtual methods:
@@ -891,7 +891,7 @@ class QCP_LIB_DECL QCPLayout : public QCPLayoutElement
   bool remove( QCPLayoutElement* element );
   void clear();
 
- protected:
+protected:
   // introduced virtual methods:
   virtual void updateLayout();
 
@@ -904,7 +904,7 @@ class QCP_LIB_DECL QCPLayout : public QCPLayoutElement
                                 QVector<double> stretchFactors,
                                 int totalSize ) const;
 
- private:
+private:
   Q_DISABLE_COPY( QCPLayout )
   friend class QCPLayoutElement;
 };
@@ -921,7 +921,7 @@ class QCP_LIB_DECL QCPLayoutGrid : public QCPLayout
   Q_PROPERTY( int columnSpacing READ columnSpacing WRITE setColumnSpacing )
   Q_PROPERTY( int rowSpacing READ rowSpacing WRITE setRowSpacing )
   /// \endcond
- public:
+public:
   explicit QCPLayoutGrid();
   virtual ~QCPLayoutGrid();
 
@@ -959,7 +959,7 @@ class QCP_LIB_DECL QCPLayoutGrid : public QCPLayout
   void insertRow( int newIndex );
   void insertColumn( int newIndex );
 
- protected:
+protected:
   // property members:
   QList<QList<QCPLayoutElement*>> mElements;
   QList<double> mColumnStretchFactors;
@@ -970,14 +970,14 @@ class QCP_LIB_DECL QCPLayoutGrid : public QCPLayout
   void getMinimumRowColSizes( QVector<int>* minColWidths, QVector<int>* minRowHeights ) const;
   void getMaximumRowColSizes( QVector<int>* maxColWidths, QVector<int>* maxRowHeights ) const;
 
- private:
+private:
   Q_DISABLE_COPY( QCPLayoutGrid )
 };
 
 class QCP_LIB_DECL QCPLayoutInset : public QCPLayout
 {
   Q_OBJECT
- public:
+public:
   /*!
     Defines how the placement and sizing is handled for a certain element in a
     QCPLayoutInset.
@@ -1017,21 +1017,21 @@ class QCP_LIB_DECL QCPLayoutInset : public QCPLayout
   void addElement( QCPLayoutElement* element, Qt::Alignment alignment );
   void addElement( QCPLayoutElement* element, const QRectF& rect );
 
- protected:
+protected:
   // property members:
   QList<QCPLayoutElement*> mElements;
   QList<InsetPlacement> mInsetPlacement;
   QList<Qt::Alignment> mInsetAlignment;
   QList<QRectF> mInsetRect;
 
- private:
+private:
   Q_DISABLE_COPY( QCPLayoutInset )
 };
 
 class QCP_LIB_DECL QCPLineEnding
 {
   Q_GADGET
- public:
+public:
   /*!
     Defines the type of ending decoration for line-like items, e.g. an arrow.
 
@@ -1093,7 +1093,7 @@ class QCP_LIB_DECL QCPLineEnding
   void draw( QCPPainter* painter, const QVector2D& pos, const QVector2D& dir ) const;
   void draw( QCPPainter* painter, const QVector2D& pos, double angle ) const;
 
- protected:
+protected:
   // property members:
   EndingStyle mStyle;
   double mWidth, mLength;
@@ -1112,7 +1112,7 @@ class QCP_LIB_DECL QCPGrid : public QCPLayerable
   Q_PROPERTY( QPen subGridPen READ subGridPen WRITE setSubGridPen )
   Q_PROPERTY( QPen zeroLinePen READ zeroLinePen WRITE setZeroLinePen )
   /// \endcond
- public:
+public:
   QCPGrid( QCPAxis* parentAxis );
 
   // getters:
@@ -1130,7 +1130,7 @@ class QCP_LIB_DECL QCPGrid : public QCPLayerable
   void setSubGridPen( const QPen& pen );
   void setZeroLinePen( const QPen& pen );
 
- protected:
+protected:
   // property members:
   bool mSubGridVisible;
   bool mAntialiasedSubGrid, mAntialiasedZeroLine;
@@ -1209,7 +1209,7 @@ class QCP_LIB_DECL QCPAxis : public QCPLayerable
   Q_PROPERTY( QCPLineEnding upperEnding READ upperEnding WRITE setUpperEnding )
   Q_PROPERTY( QCPGrid* grid READ grid )
   /// \endcond
- public:
+public:
   /*!
     Defines at which side of the axis rect the axis will appear. This also
     affects how the tick
@@ -1415,7 +1415,7 @@ class QCP_LIB_DECL QCPAxis : public QCPLayerable
   }
   static AxisType opposite( AxisType type );
 
- signals:
+signals:
   void ticksRequest();
   void rangeChanged( const QCPRange& newRange );
   void rangeChanged( const QCPRange& newRange, const QCPRange& oldRange );
@@ -1423,7 +1423,7 @@ class QCP_LIB_DECL QCPAxis : public QCPLayerable
   void selectionChanged( const QCPAxis::SelectableParts& parts );
   void selectableChanged( const QCPAxis::SelectableParts& parts );
 
- protected:
+protected:
   // property members:
   // axis base:
   AxisType mAxisType;
@@ -1506,7 +1506,7 @@ class QCP_LIB_DECL QCPAxis : public QCPLayerable
   QColor getTickLabelColor() const;
   QColor getLabelColor() const;
 
- private:
+private:
   Q_DISABLE_COPY( QCPAxis )
 
   friend class QCustomPlot;
@@ -1519,7 +1519,7 @@ Q_DECLARE_METATYPE( QCPAxis::SelectablePart )
 
 class QCPAxisPainterPrivate
 {
- public:
+public:
   explicit QCPAxisPainterPrivate( QCustomPlot* parentPlot );
   virtual ~QCPAxisPainterPrivate();
 
@@ -1556,7 +1556,7 @@ class QCPAxisPainterPrivate
   QVector<double> tickPositions;
   QVector<QString> tickLabels;
 
- protected:
+protected:
   struct CachedLabel
   {
     QPointF offset;
@@ -1609,7 +1609,7 @@ class QCP_LIB_DECL QCPAbstractPlottable : public QCPLayerable
   Q_PROPERTY( bool selectable READ selectable WRITE setSelectable NOTIFY selectableChanged )
   Q_PROPERTY( bool selected READ selected WRITE setSelected NOTIFY selectionChanged )
   /// \endcond
- public:
+public:
   QCPAbstractPlottable( QCPAxis* keyAxis, QCPAxis* valueAxis );
 
   // getters:
@@ -1652,11 +1652,11 @@ class QCP_LIB_DECL QCPAbstractPlottable : public QCPLayerable
   void rescaleKeyAxis( bool onlyEnlarge = false ) const;
   void rescaleValueAxis( bool onlyEnlarge = false ) const;
 
- signals:
+signals:
   void selectionChanged( bool selected );
   void selectableChanged( bool selectable );
 
- protected:
+protected:
   /*!
     Represents negative and positive sign domain for passing to \ref getKeyRange
     and \ref getValueRange.
@@ -1707,7 +1707,7 @@ class QCP_LIB_DECL QCPAbstractPlottable : public QCPLayerable
   void applyErrorBarsAntialiasingHint( QCPPainter* painter ) const;
   double distSqrToLine( const QPointF& start, const QPointF& end, const QPointF& point ) const;
 
- private:
+private:
   Q_DISABLE_COPY( QCPAbstractPlottable )
 
   friend class QCustomPlot;
@@ -1717,7 +1717,7 @@ class QCP_LIB_DECL QCPAbstractPlottable : public QCPLayerable
 
 class QCP_LIB_DECL QCPItemAnchor
 {
- public:
+public:
   QCPItemAnchor( QCustomPlot* parentPlot,
                  QCPAbstractItem* parentItem,
                  const QString name,
@@ -1728,7 +1728,7 @@ class QCP_LIB_DECL QCPItemAnchor
   QString name() const { return mName; }
   virtual QPointF pixelPoint() const;
 
- protected:
+protected:
   // property members:
   QString mName;
 
@@ -1745,7 +1745,7 @@ class QCP_LIB_DECL QCPItemAnchor
   void removeChild( QCPItemPosition* pos );  // called from pos when its parent
                                              // anchor is reset or pos deleted
 
- private:
+private:
   Q_DISABLE_COPY( QCPItemAnchor )
 
   friend class QCPItemPosition;
@@ -1753,7 +1753,7 @@ class QCP_LIB_DECL QCPItemAnchor
 
 class QCP_LIB_DECL QCPItemPosition : public QCPItemAnchor
 {
- public:
+public:
   /*!
     Defines the ways an item position can be specified. Thus it defines what the
     numbers passed to
@@ -1811,7 +1811,7 @@ class QCP_LIB_DECL QCPItemPosition : public QCPItemAnchor
   void setAxisRect( QCPAxisRect* axisRect );
   void setPixelPoint( const QPointF& pixelPoint );
 
- protected:
+protected:
   // property members:
   PositionType mPositionType;
   QPointer<QCPAxis> mKeyAxis, mValueAxis;
@@ -1821,7 +1821,8 @@ class QCP_LIB_DECL QCPItemPosition : public QCPItemAnchor
 
   // reimplemented virtual methods:
   virtual QCPItemPosition* toQCPItemPosition() { return this; }
- private:
+
+private:
   Q_DISABLE_COPY( QCPItemPosition )
 };
 
@@ -1834,7 +1835,7 @@ class QCP_LIB_DECL QCPAbstractItem : public QCPLayerable
   Q_PROPERTY( bool selectable READ selectable WRITE setSelectable NOTIFY selectableChanged )
   Q_PROPERTY( bool selected READ selected WRITE setSelected NOTIFY selectionChanged )
   /// \endcond
- public:
+public:
   QCPAbstractItem( QCustomPlot* parentPlot );
   virtual ~QCPAbstractItem();
 
@@ -1861,11 +1862,11 @@ class QCP_LIB_DECL QCPAbstractItem : public QCPLayerable
   QCPItemAnchor* anchor( const QString& name ) const;
   bool hasAnchor( const QString& name ) const;
 
- signals:
+signals:
   void selectionChanged( bool selected );
   void selectableChanged( bool selectable );
 
- protected:
+protected:
   // property members:
   bool mClipToAxisRect;
   QPointer<QCPAxisRect> mClipAxisRect;
@@ -1894,7 +1895,7 @@ class QCP_LIB_DECL QCPAbstractItem : public QCPLayerable
   QCPItemPosition* createPosition( const QString& name );
   QCPItemAnchor* createAnchor( const QString& name, int anchorId );
 
- private:
+private:
   Q_DISABLE_COPY( QCPAbstractItem )
 
   friend class QCustomPlot;
@@ -1918,7 +1919,7 @@ class QCP_LIB_DECL QCustomPlot : public QWidget
   Q_PROPERTY( Qt::KeyboardModifier multiSelectModifier READ multiSelectModifier WRITE
                   setMultiSelectModifier )
   /// \endcond
- public:
+public:
   /*!
     Defines how a layer should be inserted relative to an other layer.
 
@@ -2081,7 +2082,7 @@ class QCP_LIB_DECL QCustomPlot : public QWidget
   QCPAxis *xAxis, *yAxis, *xAxis2, *yAxis2;
   QCPLegend* legend;
 
- signals:
+signals:
   void mouseDoubleClick( QMouseEvent* event );
   void mousePress( QMouseEvent* event );
   void mouseMove( QMouseEvent* event );
@@ -2103,7 +2104,7 @@ class QCP_LIB_DECL QCustomPlot : public QWidget
   void beforeReplot();
   void afterReplot();
 
- protected:
+protected:
   // property members:
   QRect mViewport;
   QCPLayoutGrid* mPlotLayout;
@@ -2164,7 +2165,7 @@ class QCP_LIB_DECL QCustomPlot : public QWidget
 class QCP_LIB_DECL QCPColorGradient
 {
   Q_GADGET
- public:
+public:
   /*!
     Defines the color spaces in which color interpolation between gradient stops
     can be performed.
@@ -2258,7 +2259,7 @@ class QCP_LIB_DECL QCPColorGradient
   void clearColorStops();
   QCPColorGradient inverted() const;
 
- protected:
+protected:
   void updateColorBuffer();
 
   // property members:
@@ -2283,7 +2284,7 @@ class QCP_LIB_DECL QCPAxisRect : public QCPLayoutElement
   Q_PROPERTY( Qt::Orientations rangeDrag READ rangeDrag WRITE setRangeDrag )
   Q_PROPERTY( Qt::Orientations rangeZoom READ rangeZoom WRITE setRangeZoom )
   /// \endcond
- public:
+public:
   explicit QCPAxisRect( QCustomPlot* parentPlot, bool setupDefaultAxes = true );
   virtual ~QCPAxisRect();
 
@@ -2343,7 +2344,7 @@ class QCP_LIB_DECL QCPAxisRect : public QCPLayoutElement
   virtual void update( UpdatePhase phase );
   virtual QList<QCPLayoutElement*> elements( bool recursive ) const;
 
- protected:
+protected:
   // property members:
   QBrush mBackgroundBrush;
   QPixmap mBackgroundPixmap;
@@ -2375,7 +2376,7 @@ class QCP_LIB_DECL QCPAxisRect : public QCPLayoutElement
   void drawBackground( QCPPainter* painter );
   void updateAxesOffset( QCPAxis::AxisType type );
 
- private:
+private:
   Q_DISABLE_COPY( QCPAxisRect )
 
   friend class QCustomPlot;
@@ -2393,7 +2394,7 @@ class QCP_LIB_DECL QCPAbstractLegendItem : public QCPLayoutElement
   Q_PROPERTY( bool selectable READ selectable WRITE setSelectable NOTIFY selectionChanged )
   Q_PROPERTY( bool selected READ selected WRITE setSelected NOTIFY selectableChanged )
   /// \endcond
- public:
+public:
   explicit QCPAbstractLegendItem( QCPLegend* parent );
 
   // getters:
@@ -2415,11 +2416,11 @@ class QCP_LIB_DECL QCPAbstractLegendItem : public QCPLayoutElement
   // reimplemented virtual methods:
   virtual double selectTest( const QPointF& pos, bool onlySelectable, QVariant* details = 0 ) const;
 
- signals:
+signals:
   void selectionChanged( bool selected );
   void selectableChanged( bool selectable );
 
- protected:
+protected:
   // property members:
   QCPLegend* mParentLegend;
   QFont mFont;
@@ -2440,7 +2441,7 @@ class QCP_LIB_DECL QCPAbstractLegendItem : public QCPLayoutElement
                             bool* selectionStateChanged );
   virtual void deselectEvent( bool* selectionStateChanged );
 
- private:
+private:
   Q_DISABLE_COPY( QCPAbstractLegendItem )
 
   friend class QCPLegend;
@@ -2449,12 +2450,13 @@ class QCP_LIB_DECL QCPAbstractLegendItem : public QCPLayoutElement
 class QCP_LIB_DECL QCPPlottableLegendItem : public QCPAbstractLegendItem
 {
   Q_OBJECT
- public:
+public:
   QCPPlottableLegendItem( QCPLegend* parent, QCPAbstractPlottable* plottable );
 
   // getters:
   QCPAbstractPlottable* plottable() { return mPlottable; }
- protected:
+
+protected:
   // property members:
   QCPAbstractPlottable* mPlottable;
 
@@ -2489,7 +2491,7 @@ class QCP_LIB_DECL QCPLegend : public QCPLayoutGrid
   Q_PROPERTY( QFont selectedFont READ selectedFont WRITE setSelectedFont )
   Q_PROPERTY( QColor selectedTextColor READ selectedTextColor WRITE setSelectedTextColor )
   /// \endcond
- public:
+public:
   /*!
     Defines the selectable parts of a legend
 
@@ -2557,11 +2559,11 @@ class QCP_LIB_DECL QCPLegend : public QCPLayoutGrid
   void clearItems();
   QList<QCPAbstractLegendItem*> selectedItems() const;
 
- signals:
+signals:
   void selectionChanged( QCPLegend::SelectableParts parts );
   void selectableChanged( QCPLegend::SelectableParts parts );
 
- protected:
+protected:
   // property members:
   QPen mBorderPen, mIconBorderPen;
   QBrush mBrush;
@@ -2591,7 +2593,7 @@ class QCP_LIB_DECL QCPLegend : public QCPLayoutGrid
   QPen getBorderPen() const;
   QBrush getBrush() const;
 
- private:
+private:
   Q_DISABLE_COPY( QCPLegend )
 
   friend class QCustomPlot;
@@ -2612,7 +2614,7 @@ class QCP_LIB_DECL QCPPlotTitle : public QCPLayoutElement
   Q_PROPERTY( bool selectable READ selectable WRITE setSelectable NOTIFY selectableChanged )
   Q_PROPERTY( bool selected READ selected WRITE setSelected NOTIFY selectionChanged )
   /// \endcond
- public:
+public:
   explicit QCPPlotTitle( QCustomPlot* parentPlot );
   explicit QCPPlotTitle( QCustomPlot* parentPlot, const QString& text );
 
@@ -2636,11 +2638,11 @@ class QCP_LIB_DECL QCPPlotTitle : public QCPLayoutElement
   // reimplemented virtual methods:
   virtual double selectTest( const QPointF& pos, bool onlySelectable, QVariant* details = 0 ) const;
 
- signals:
+signals:
   void selectionChanged( bool selected );
   void selectableChanged( bool selectable );
 
- protected:
+protected:
   // property members:
   QString mText;
   QFont mFont;
@@ -2666,28 +2668,28 @@ class QCP_LIB_DECL QCPPlotTitle : public QCPLayoutElement
   QFont mainFont() const;
   QColor mainTextColor() const;
 
- private:
+private:
   Q_DISABLE_COPY( QCPPlotTitle )
 };
 
 class QCPColorScaleAxisRectPrivate : public QCPAxisRect
 {
   Q_OBJECT
- public:
+public:
   explicit QCPColorScaleAxisRectPrivate( QCPColorScale* parentColorScale );
 
- protected:
+protected:
   QCPColorScale* mParentColorScale;
   QImage mGradientImage;
   bool mGradientImageInvalidated;
   // re-using some methods of QCPAxisRect to make them available to friend class
   // QCPColorScale
   using QCPAxisRect::calculateAutoMargin;
-  using QCPAxisRect::mousePressEvent;
   using QCPAxisRect::mouseMoveEvent;
+  using QCPAxisRect::mousePressEvent;
   using QCPAxisRect::mouseReleaseEvent;
-  using QCPAxisRect::wheelEvent;
   using QCPAxisRect::update;
+  using QCPAxisRect::wheelEvent;
   virtual void draw( QCPPainter* painter );
   void updateGradientImage();
   Q_SLOT void axisSelectionChanged( QCPAxis::SelectableParts selectedParts );
@@ -2709,7 +2711,7 @@ class QCP_LIB_DECL QCPColorScale : public QCPLayoutElement
   Q_PROPERTY( bool rangeDrag READ rangeDrag WRITE setRangeDrag )
   Q_PROPERTY( bool rangeZoom READ rangeZoom WRITE setRangeZoom )
   /// \endcond
- public:
+public:
   explicit QCPColorScale( QCustomPlot* parentPlot );
   virtual ~QCPColorScale();
 
@@ -2741,12 +2743,12 @@ class QCP_LIB_DECL QCPColorScale : public QCPLayoutElement
   // reimplemented virtual methods:
   virtual void update( UpdatePhase phase );
 
- signals:
+signals:
   void dataRangeChanged( QCPRange newRange );
   void dataScaleTypeChanged( QCPAxis::ScaleType scaleType );
   void gradientChanged( QCPColorGradient newGradient );
 
- protected:
+protected:
   // property members:
   QCPAxis::AxisType mType;
   QCPRange mDataRange;
@@ -2766,7 +2768,7 @@ class QCP_LIB_DECL QCPColorScale : public QCPLayoutElement
   virtual void mouseReleaseEvent( QMouseEvent* event );
   virtual void wheelEvent( QWheelEvent* event );
 
- private:
+private:
   Q_DISABLE_COPY( QCPColorScale )
 
   friend class QCPColorScaleAxisRectPrivate;
@@ -2776,7 +2778,7 @@ class QCP_LIB_DECL QCPColorScale : public QCPLayoutElement
 
 class QCP_LIB_DECL QCPData
 {
- public:
+public:
   QCPData();
   QCPData( double key, double value );
   double key, value;
@@ -2809,7 +2811,7 @@ class QCP_LIB_DECL QCPGraph : public QCPAbstractPlottable
   Q_PROPERTY( QCPGraph* channelFillGraph READ channelFillGraph WRITE setChannelFillGraph )
   Q_PROPERTY( bool adaptiveSampling READ adaptiveSampling WRITE setAdaptiveSampling )
   /// \endcond
- public:
+public:
   /*!
     Defines how the graph's line is represented visually in the plot. The line
     is drawn with the
@@ -2926,7 +2928,7 @@ class QCP_LIB_DECL QCPGraph : public QCPAbstractPlottable
   void rescaleValueAxis( bool onlyEnlarge,
                          bool includeErrorBars ) const;  // overloads base class interface
 
- protected:
+protected:
   // property members:
   QCPDataMap* mData;
   QPen mErrorPen;
@@ -2991,7 +2993,7 @@ class QCP_LIB_DECL QCPGraph : public QCPAbstractPlottable
 
 class QCP_LIB_DECL QCPCurveData
 {
- public:
+public:
   QCPCurveData();
   QCPCurveData( double t, double key, double value );
   double t, key, value;
@@ -3018,7 +3020,7 @@ class QCP_LIB_DECL QCPCurve : public QCPAbstractPlottable
   Q_PROPERTY( QCPScatterStyle scatterStyle READ scatterStyle WRITE setScatterStyle )
   Q_PROPERTY( LineStyle lineStyle READ lineStyle WRITE setLineStyle )
   /// \endcond
- public:
+public:
   /*!
     Defines how the curve's line is represented visually in the plot. The line
     is drawn with the
@@ -3064,7 +3066,7 @@ class QCP_LIB_DECL QCPCurve : public QCPAbstractPlottable
   virtual void clearData();
   virtual double selectTest( const QPointF& pos, bool onlySelectable, QVariant* details = 0 ) const;
 
- protected:
+protected:
   // property members:
   QCPCurveDataMap* mData;
   QCPScatterStyle mScatterStyle;
@@ -3092,7 +3094,7 @@ class QCP_LIB_DECL QCPCurve : public QCPAbstractPlottable
 
 class QCP_LIB_DECL QCPBarData
 {
- public:
+public:
   QCPBarData();
   QCPBarData( double key, double value );
   double key, value;
@@ -3118,7 +3120,7 @@ class QCP_LIB_DECL QCPBars : public QCPAbstractPlottable
   Q_PROPERTY( QCPBars* barBelow READ barBelow )
   Q_PROPERTY( QCPBars* barAbove READ barAbove )
   /// \endcond
- public:
+public:
   explicit QCPBars( QCPAxis* keyAxis, QCPAxis* valueAxis );
   virtual ~QCPBars();
 
@@ -3148,7 +3150,7 @@ class QCP_LIB_DECL QCPBars : public QCPAbstractPlottable
   virtual void clearData();
   virtual double selectTest( const QPointF& pos, bool onlySelectable, QVariant* details = 0 ) const;
 
- protected:
+protected:
   // property members:
   QCPBarDataMap* mData;
   double mWidth;
@@ -3189,7 +3191,7 @@ class QCP_LIB_DECL QCPStatisticalBox : public QCPAbstractPlottable
   Q_PROPERTY( QPen medianPen READ medianPen WRITE setMedianPen )
   Q_PROPERTY( QCPScatterStyle outlierStyle READ outlierStyle WRITE setOutlierStyle )
   /// \endcond
- public:
+public:
   explicit QCPStatisticalBox( QCPAxis* keyAxis, QCPAxis* valueAxis );
 
   // getters:
@@ -3231,7 +3233,7 @@ class QCP_LIB_DECL QCPStatisticalBox : public QCPAbstractPlottable
   virtual void clearData();
   virtual double selectTest( const QPointF& pos, bool onlySelectable, QVariant* details = 0 ) const;
 
- protected:
+protected:
   // property members:
   QVector<double> mOutliers;
   double mKey, mMinimum, mLowerQuartile, mMedian, mUpperQuartile, mMaximum;
@@ -3258,7 +3260,7 @@ class QCP_LIB_DECL QCPStatisticalBox : public QCPAbstractPlottable
 
 class QCP_LIB_DECL QCPColorMapData
 {
- public:
+public:
   QCPColorMapData( int keySize,
                    int valueSize,
                    const QCPRange& keyRange,
@@ -3294,7 +3296,7 @@ class QCP_LIB_DECL QCPColorMapData
   void coordToCell( double key, double value, int* keyIndex, int* valueIndex ) const;
   void cellToCoord( int keyIndex, int valueIndex, double* key, double* value ) const;
 
- protected:
+protected:
   // property members:
   int mKeySize, mValueSize;
   QCPRange mKeyRange, mValueRange;
@@ -3319,7 +3321,7 @@ class QCP_LIB_DECL QCPColorMap : public QCPAbstractPlottable
   Q_PROPERTY( bool tightBoundary READ tightBoundary WRITE setTightBoundary )
   Q_PROPERTY( QCPColorScale* colorScale READ colorScale WRITE setColorScale )
   /// \endcond
- public:
+public:
   explicit QCPColorMap( QCPAxis* keyAxis, QCPAxis* valueAxis );
   virtual ~QCPColorMap();
 
@@ -3349,12 +3351,12 @@ class QCP_LIB_DECL QCPColorMap : public QCPAbstractPlottable
   virtual void clearData();
   virtual double selectTest( const QPointF& pos, bool onlySelectable, QVariant* details = 0 ) const;
 
- signals:
+signals:
   void dataRangeChanged( QCPRange newRange );
   void dataScaleTypeChanged( QCPAxis::ScaleType scaleType );
   void gradientChanged( QCPColorGradient newGradient );
 
- protected:
+protected:
   // property members:
   QCPRange mDataRange;
   QCPAxis::ScaleType mDataScaleType;
@@ -3388,7 +3390,7 @@ class QCP_LIB_DECL QCPItemStraightLine : public QCPAbstractItem
   Q_PROPERTY( QPen pen READ pen WRITE setPen )
   Q_PROPERTY( QPen selectedPen READ selectedPen WRITE setSelectedPen )
   /// \endcond
- public:
+public:
   QCPItemStraightLine( QCustomPlot* parentPlot );
   virtual ~QCPItemStraightLine();
 
@@ -3405,7 +3407,7 @@ class QCP_LIB_DECL QCPItemStraightLine : public QCPAbstractItem
   QCPItemPosition* const point1;
   QCPItemPosition* const point2;
 
- protected:
+protected:
   // property members:
   QPen mPen, mSelectedPen;
 
@@ -3431,7 +3433,7 @@ class QCP_LIB_DECL QCPItemLine : public QCPAbstractItem
   Q_PROPERTY( QCPLineEnding head READ head WRITE setHead )
   Q_PROPERTY( QCPLineEnding tail READ tail WRITE setTail )
   /// \endcond
- public:
+public:
   QCPItemLine( QCustomPlot* parentPlot );
   virtual ~QCPItemLine();
 
@@ -3452,7 +3454,7 @@ class QCP_LIB_DECL QCPItemLine : public QCPAbstractItem
   QCPItemPosition* const start;
   QCPItemPosition* const end;
 
- protected:
+protected:
   // property members:
   QPen mPen, mSelectedPen;
   QCPLineEnding mHead, mTail;
@@ -3476,7 +3478,7 @@ class QCP_LIB_DECL QCPItemCurve : public QCPAbstractItem
   Q_PROPERTY( QCPLineEnding head READ head WRITE setHead )
   Q_PROPERTY( QCPLineEnding tail READ tail WRITE setTail )
   /// \endcond
- public:
+public:
   QCPItemCurve( QCustomPlot* parentPlot );
   virtual ~QCPItemCurve();
 
@@ -3499,7 +3501,7 @@ class QCP_LIB_DECL QCPItemCurve : public QCPAbstractItem
   QCPItemPosition* const endDir;
   QCPItemPosition* const end;
 
- protected:
+protected:
   // property members:
   QPen mPen, mSelectedPen;
   QCPLineEnding mHead, mTail;
@@ -3520,7 +3522,7 @@ class QCP_LIB_DECL QCPItemRect : public QCPAbstractItem
   Q_PROPERTY( QBrush brush READ brush WRITE setBrush )
   Q_PROPERTY( QBrush selectedBrush READ selectedBrush WRITE setSelectedBrush )
   /// \endcond
- public:
+public:
   QCPItemRect( QCustomPlot* parentPlot );
   virtual ~QCPItemRect();
 
@@ -3547,7 +3549,7 @@ class QCP_LIB_DECL QCPItemRect : public QCPAbstractItem
   QCPItemAnchor* const bottomLeft;
   QCPItemAnchor* const left;
 
- protected:
+protected:
   enum AnchorIndex
   {
     aiTop,
@@ -3589,7 +3591,7 @@ class QCP_LIB_DECL QCPItemText : public QCPAbstractItem
   Q_PROPERTY( double rotation READ rotation WRITE setRotation )
   Q_PROPERTY( QMargins padding READ padding WRITE setPadding )
   /// \endcond
- public:
+public:
   QCPItemText( QCustomPlot* parentPlot );
   virtual ~QCPItemText();
 
@@ -3635,7 +3637,7 @@ class QCP_LIB_DECL QCPItemText : public QCPAbstractItem
   QCPItemAnchor* const bottomLeft;
   QCPItemAnchor* const left;
 
- protected:
+protected:
   enum AnchorIndex
   {
     aiTopLeft,
@@ -3682,7 +3684,7 @@ class QCP_LIB_DECL QCPItemEllipse : public QCPAbstractItem
   Q_PROPERTY( QBrush brush READ brush WRITE setBrush )
   Q_PROPERTY( QBrush selectedBrush READ selectedBrush WRITE setSelectedBrush )
   /// \endcond
- public:
+public:
   QCPItemEllipse( QCustomPlot* parentPlot );
   virtual ~QCPItemEllipse();
 
@@ -3712,7 +3714,7 @@ class QCP_LIB_DECL QCPItemEllipse : public QCPAbstractItem
   QCPItemAnchor* const left;
   QCPItemAnchor* const center;
 
- protected:
+protected:
   enum AnchorIndex
   {
     aiTopLeftRim,
@@ -3749,7 +3751,7 @@ class QCP_LIB_DECL QCPItemPixmap : public QCPAbstractItem
   Q_PROPERTY( QPen pen READ pen WRITE setPen )
   Q_PROPERTY( QPen selectedPen READ selectedPen WRITE setSelectedPen )
   /// \endcond
- public:
+public:
   QCPItemPixmap( QCustomPlot* parentPlot );
   virtual ~QCPItemPixmap();
 
@@ -3777,7 +3779,7 @@ class QCP_LIB_DECL QCPItemPixmap : public QCPAbstractItem
   QCPItemAnchor* const bottomLeft;
   QCPItemAnchor* const left;
 
- protected:
+protected:
   enum AnchorIndex
   {
     aiTop,
@@ -3821,7 +3823,7 @@ class QCP_LIB_DECL QCPItemTracer : public QCPAbstractItem
   Q_PROPERTY( double graphKey READ graphKey WRITE setGraphKey )
   Q_PROPERTY( bool interpolating READ interpolating WRITE setInterpolating )
   /// \endcond
- public:
+public:
   /*!
     The different visual appearances a tracer item can have. Some styles size
     may be controlled with \ref setSize.
@@ -3874,7 +3876,7 @@ class QCP_LIB_DECL QCPItemTracer : public QCPAbstractItem
 
   QCPItemPosition* const position;
 
- protected:
+protected:
   // property members:
   QPen mPen, mSelectedPen;
   QBrush mBrush, mSelectedBrush;
@@ -3901,7 +3903,7 @@ class QCP_LIB_DECL QCPItemBracket : public QCPAbstractItem
   Q_PROPERTY( double length READ length WRITE setLength )
   Q_PROPERTY( BracketStyle style READ style WRITE setStyle )
   /// \endcond
- public:
+public:
   enum BracketStyle
   {
     bsSquare  ///< A brace with angled edges
@@ -3935,7 +3937,7 @@ class QCP_LIB_DECL QCPItemBracket : public QCPAbstractItem
   QCPItemPosition* const right;
   QCPItemAnchor* const center;
 
- protected:
+protected:
   // property members:
   enum AnchorIndex
   {

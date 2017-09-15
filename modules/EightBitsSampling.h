@@ -32,10 +32,10 @@ class EightBitsSampling : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( EightBitsSampling )
 
- private:
+private:
   PlaYUVerFrame* m_pcSubSampledFrame;
 
- public:
+public:
   EightBitsSampling();
   virtual ~EightBitsSampling() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );

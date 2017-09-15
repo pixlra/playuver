@@ -32,10 +32,10 @@ class WeightedPSNR : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( WeightedPSNR )
 
- private:
+private:
   UInt m_uiComponent;
 
- public:
+public:
   WeightedPSNR();
   virtual ~WeightedPSNR() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );

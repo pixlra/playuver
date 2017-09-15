@@ -40,7 +40,7 @@
 class FramePropertiesDock : public QWidget
 {
   Q_OBJECT
- public:
+public:
   FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitch );
   ~FramePropertiesDock();
 
@@ -51,7 +51,7 @@ class FramePropertiesDock : public QWidget
   Void reset();
   Void stopHistogram();
 
- private:
+private:
   enum ColorChannel
   {
     LuminosityChannel = 0,
@@ -107,7 +107,7 @@ class FramePropertiesDock : public QWidget
   Void updateStatistiques();
   Void updateDataHistogram();
 
- private Q_SLOTS:
+private Q_SLOTS:
   void slotRefreshOptions( int range );
   void slotHistogramComputationFailed( void );
   void slotChannelChanged( int channel );

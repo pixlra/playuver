@@ -152,23 +152,23 @@ Void PlaYUVerAppModuleIf::show()
 {
   switch( m_pcModule->m_iModuleType )
   {
-    case FRAME_PROCESSING_MODULE:
-      if( m_pcDisplaySubWindow )
-      {
-        m_pcDisplaySubWindow->setCurrFrame( m_pcProcessedFrame );
-        m_pcDisplaySubWindow->setFillWindow( false );
-        m_pcDisplaySubWindow->clearWindowBusy();
-      }
-      else
-      {
-        m_pcSubWindow[0]->setCurrFrame( m_pcProcessedFrame );
-        m_pcSubWindow[0]->setFillWindow( false );
-        m_pcSubWindow[0]->clearWindowBusy();
-      }
-      break;
-    case FRAME_MEASUREMENT_MODULE:
-      m_pcModuleDock->setModulueReturnValue( m_dMeasurementResult );
-      break;
+  case FRAME_PROCESSING_MODULE:
+    if( m_pcDisplaySubWindow )
+    {
+      m_pcDisplaySubWindow->setCurrFrame( m_pcProcessedFrame );
+      m_pcDisplaySubWindow->setFillWindow( false );
+      m_pcDisplaySubWindow->clearWindowBusy();
+    }
+    else
+    {
+      m_pcSubWindow[0]->setCurrFrame( m_pcProcessedFrame );
+      m_pcSubWindow[0]->setFillWindow( false );
+      m_pcSubWindow[0]->clearWindowBusy();
+    }
+    break;
+  case FRAME_MEASUREMENT_MODULE:
+    m_pcModuleDock->setModulueReturnValue( m_dMeasurementResult );
+    break;
   }
 }
 

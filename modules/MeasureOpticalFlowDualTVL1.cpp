@@ -24,12 +24,12 @@
 
 #include "MeasureOpticalFlowDualTVL1.h"
 
-using cv::Scalar;
 using cv::Mat;
 using cv::Mat_;
-using cv::Ptr;
 using cv::Point;
 using cv::Point2f;
+using cv::Ptr;
+using cv::Scalar;
 
 MeasureOpticalFlowDualTVL1::MeasureOpticalFlowDualTVL1()
 {

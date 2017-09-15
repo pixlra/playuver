@@ -42,9 +42,7 @@ LumaAverage::LumaAverage()
   // Several requirements should be "or" between each others.
 }
 
-Void LumaAverage::create( PlaYUVerFrame* frame )
-{
-}
+Void LumaAverage::create( PlaYUVerFrame* frame ) {}
 
 Double LumaAverage::measure( PlaYUVerFrame* frame )
 {
@@ -59,6 +57,4 @@ Double LumaAverage::measure( PlaYUVerFrame* frame )
   return average / Double( frame->getHeight() * frame->getWidth() );
 }
 
-Void LumaAverage::destroy()
-{
-}
+Void LumaAverage::destroy() {}

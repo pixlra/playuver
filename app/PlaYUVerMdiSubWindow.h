@@ -33,13 +33,13 @@ class PlaYUVerMdiSubWindow : public QMdiSubWindow
 {
   Q_OBJECT
 
- public:
+public:
   PlaYUVerMdiSubWindow( QWidget* parent = 0 );
 
- Q_SIGNALS:
+Q_SIGNALS:
   void aboutToClose( PlaYUVerMdiSubWindow* );
 
- protected:
+protected:
   QSize sizeHint() const;
   void closeEvent( QCloseEvent* event );
 };

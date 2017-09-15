@@ -36,7 +36,7 @@ class DisparityStereoBM : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( DisparityStereoBM )
 
- private:
+private:
   PlaYUVerFrame* m_pcDisparityFrame;
   Int m_uiNumberOfDisparities;
   UInt m_uiBlockSize;
@@ -46,7 +46,7 @@ class DisparityStereoBM : public PlaYUVerModuleIf
   cv::Ptr<cv::StereoBM> m_cStereoBM;
 #endif
 
- public:
+public:
   DisparityStereoBM();
   virtual ~DisparityStereoBM() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );

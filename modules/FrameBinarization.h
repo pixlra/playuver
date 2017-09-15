@@ -32,11 +32,11 @@ class FrameBinarization : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( FrameBinarization )
 
- private:
+private:
   PlaYUVerFrame* m_pcBinFrame;
   UInt m_uiThreshold;
 
- public:
+public:
   FrameBinarization();
   virtual ~FrameBinarization() {}
   Void create( PlaYUVerFrame* );

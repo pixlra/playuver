@@ -65,7 +65,7 @@ static inline Void rgbToYuv( const Int& iR,
  */
 class PlaYUVerPixel
 {
- public:
+public:
   static const UInt MAX_NUMBER_COMPONENTS = 5;
 
   /** ColorSpace list
@@ -119,7 +119,7 @@ class PlaYUVerPixel
    */
   PlaYUVerPixel ConvertPixel( ColorSpace eOutputSpace );
 
- private:
+private:
   Int m_iColorSpace;
   Pel PixelComponents[MAX_NUMBER_COMPONENTS];
 };

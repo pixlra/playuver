@@ -54,14 +54,14 @@ class SubWindowAbstract : public QWidget
 {
   Q_OBJECT
 
- private:
+private:
   QHBoxLayout* m_pcLayout;
   UInt m_uiCategory;
   QString m_cWindowName;
 
   PlaYUVerMdiSubWindow* m_cSubWindow;
 
- public:
+public:
   enum SubWindowCategory
   {
     SUBWINDOW = 0,
@@ -134,13 +134,13 @@ class SubWindowAbstract : public QWidget
   Void setSubWindow( PlaYUVerMdiSubWindow* subWindow ) { m_cSubWindow = subWindow; }
   Void closeSubWindow();
 
- protected:
+protected:
   void focusInEvent( QFocusEvent* event );
   void closeEvent( QCloseEvent* event );
 
   Void setWidget( QWidget* widget );
 
- Q_SIGNALS:
+Q_SIGNALS:
   /**
    * Notify that zoom factor was changed by internal event (e.g. by mouse wheel)
    */
@@ -158,7 +158,7 @@ class SubWindowAbstract : public QWidget
   void aboutToActivate( SubWindowAbstract* );
   void aboutToClose( SubWindowAbstract* );
 
- public Q_SLOTS:
+public Q_SLOTS:
   void onDestroyed();
 };
 

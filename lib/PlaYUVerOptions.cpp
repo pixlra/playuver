@@ -59,7 +59,7 @@ struct ParseFailure : public std::exception
 /** Type specific option storage */
 class BoolOption : public OptionBase
 {
- public:
+public:
   BoolOption( const String& name, const String& desc ) : OptionBase( name, desc )
   {
     is_binary = true;
@@ -71,7 +71,7 @@ class BoolOption : public OptionBase
 template <typename T>
 class StandardOption : public OptionBase
 {
- public:
+public:
   StandardOption( const String& name, T& storage, const String& desc )
       : OptionBase( name, desc ), opt_storage( storage )
   {
@@ -158,7 +158,7 @@ inline void StandardOption<std::vector<String>>::parse( const String& arg )
 /** Option class for argument handling using a user provided function */
 struct FunctionOption : public OptionBase
 {
- public:
+public:
   typedef Void( Func )( PlaYUVerOptions&, const String& );
 
   FunctionOption( const String& name, PlaYUVerOptions& parent_, Func* func_, const String& desc )
@@ -173,7 +173,7 @@ struct FunctionOption : public OptionBase
     arg_count++;
   }
 
- private:
+private:
   PlaYUVerOptions& parent;
   void ( *func )( PlaYUVerOptions&, const String& );
 };
@@ -774,12 +774,12 @@ Void PlaYUVerOptions::listModules()
       printf( "   %-40s", ModuleNameString );
       switch( pcCurrModuleIf->m_iModuleType )
       {
-        case FRAME_PROCESSING_MODULE:
-          printf( "   Processing    " );
-          break;
-        case FRAME_MEASUREMENT_MODULE:
-          printf( "   Measurement   " );
-          break;
+      case FRAME_PROCESSING_MODULE:
+        printf( "   Processing    " );
+        break;
+      case FRAME_MEASUREMENT_MODULE:
+        printf( "   Measurement   " );
+        break;
       }
       printf( "   %s", pcCurrModuleIf->m_pchModuleTooltip );
       pcCurrModuleIf->Delete();

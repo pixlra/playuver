@@ -45,7 +45,7 @@ struct PlaYUVerFramePrivate;
  */
 class PlaYUVerFrame
 {
- public:
+public:
   /** ColorSpace Enum
    * List of supported pixel formats - do not change order
    */
@@ -263,7 +263,7 @@ class PlaYUVerFrame
 
   /** @} */
 
- private:
+private:
   PlaYUVerFramePrivate* d;
 };
 

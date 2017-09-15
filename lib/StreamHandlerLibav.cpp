@@ -119,7 +119,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 
   m_cStream = m_cFmtCtx->streams[m_iStreamIdx];
 
-/* find decoder for the stream */
+  /* find decoder for the stream */
 
 #ifdef FF_USER_CODEC_PARAM
   AVCodecParameters* codec_param = m_cStream->codecpar;
@@ -164,24 +164,24 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
    */
   switch( pix_fmt )
   {
-    case AV_PIX_FMT_YUVJ420P:
-      pix_fmt = AV_PIX_FMT_YUV420P;
-      break;
-    case AV_PIX_FMT_YUVJ422P:
-      pix_fmt = AV_PIX_FMT_YUV422P;
-      break;
-    case AV_PIX_FMT_YUVJ444P:
-      pix_fmt = AV_PIX_FMT_YUV444P;
-      break;
-    case AV_PIX_FMT_GRAY16LE:
-      m_uiBitsPerPixel = 16;
-      m_iEndianness = 1;
-      pix_fmt = AV_PIX_FMT_GRAY8;
-      break;
-    case AV_PIX_FMT_GRAY16BE:
-      m_uiBitsPerPixel = 16;
-      m_iEndianness = 0;
-      pix_fmt = AV_PIX_FMT_GRAY8;
+  case AV_PIX_FMT_YUVJ420P:
+    pix_fmt = AV_PIX_FMT_YUV420P;
+    break;
+  case AV_PIX_FMT_YUVJ422P:
+    pix_fmt = AV_PIX_FMT_YUV422P;
+    break;
+  case AV_PIX_FMT_YUVJ444P:
+    pix_fmt = AV_PIX_FMT_YUV444P;
+    break;
+  case AV_PIX_FMT_GRAY16LE:
+    m_uiBitsPerPixel = 16;
+    m_iEndianness = 1;
+    pix_fmt = AV_PIX_FMT_GRAY8;
+    break;
+  case AV_PIX_FMT_GRAY16BE:
+    m_uiBitsPerPixel = 16;
+    m_iEndianness = 0;
+    pix_fmt = AV_PIX_FMT_GRAY8;
   }
 
   m_strFormatName = uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
@@ -234,9 +234,9 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   }
 
 #if( ( LIBAVCODEC_VERSION_MAJOR >= 56 ) && ( LIBAVCODEC_VERSION_MINOR >= 0 ) )
-	m_cFrame = av_frame_alloc();
+  m_cFrame = av_frame_alloc();
 #else
-	m_cFrame = avcodec_alloc_frame();
+  m_cFrame = avcodec_alloc_frame();
 #endif
   if( !m_cFrame )
   {

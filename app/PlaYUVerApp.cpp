@@ -152,28 +152,28 @@ Void PlaYUVerApp::closeEvent( QCloseEvent* event )
   }
   switch( msgBoxCloseRet )
   {
-    case QMessageBox::Yes:
-      mayCloseAll = true;
-      for( Int i = 0; i < subWindowList.size(); i++ )
-      {
-        mayCloseAll &= subWindowList.at( i )->mayClose();
-      }
+  case QMessageBox::Yes:
+    mayCloseAll = true;
+    for( Int i = 0; i < subWindowList.size(); i++ )
+    {
+      mayCloseAll &= subWindowList.at( i )->mayClose();
+    }
 
-      if( mayCloseAll )
-      {
-        // m_pcPlayingTimer->stop();
-        closeAll();
-        writeSettings();
-        event->accept();
-      }
-      else
-      {
-        event->ignore();
-      }
-      break;
-    case QMessageBox::No:
-    default:
+    if( mayCloseAll )
+    {
+      // m_pcPlayingTimer->stop();
+      closeAll();
+      writeSettings();
+      event->accept();
+    }
+    else
+    {
       event->ignore();
+    }
+    break;
+  case QMessageBox::No:
+  default:
+    event->ignore();
   }
 }
 
@@ -392,7 +392,8 @@ Void PlaYUVerApp::reload()
 Void PlaYUVerApp::reloadAll()
 {
   UInt windowCategoryOrder[] = {
-      SubWindowAbstract::VIDEO_STREAM_SUBWINDOW, SubWindowAbstract::MODULE_SUBWINDOW,
+      SubWindowAbstract::VIDEO_STREAM_SUBWINDOW,
+      SubWindowAbstract::MODULE_SUBWINDOW,
       SubWindowAbstract::MODULE_SUBWINDOW,
   };
 
@@ -720,7 +721,7 @@ Void PlaYUVerApp::createActions()
   m_appModuleExtensions->createActions();
   m_pcWindowHandle->createActions();
 
-// ------------ About ------------
+  // ------------ About ------------
 
 #ifdef USE_FERVOR
   m_arrayActions[UPDATE_ACT] = new QAction( tr( "&Update" ), this );

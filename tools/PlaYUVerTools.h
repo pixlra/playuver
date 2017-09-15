@@ -38,7 +38,7 @@ class PlaYUVerModuleIf;
 
 class PlaYUVerTools : public PlaYUVerToolsCmdParser
 {
- public:
+public:
   PlaYUVerTools();
   ~PlaYUVerTools();
 
@@ -46,7 +46,7 @@ class PlaYUVerTools : public PlaYUVerToolsCmdParser
   Int Process();
   Int Close();
 
- private:
+private:
   Bool m_bVerbose;
 
   UInt m_uiOperation;

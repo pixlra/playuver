@@ -32,8 +32,8 @@ class LumaAverage : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( LumaAverage )
 
- private:
- public:
+private:
+public:
   LumaAverage();
   virtual ~LumaAverage() {}
   Void create( PlaYUVerFrame* );

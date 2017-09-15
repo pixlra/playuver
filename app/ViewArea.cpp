@@ -103,21 +103,21 @@ Void ViewArea::setTool( UInt view )
 {
   switch( view )
   {
-    case NavigationView:
-      m_eTool = NavigationTool;
-      m_snapToGrid = false;
-      m_blockTrackEnable = false;
-      break;
-    case NormalSelectionView:
-      m_eTool = SelectionTool;
-      m_snapToGrid = false;
-      m_blockTrackEnable = false;
-      break;
-    case BlockSelectionView:
-      m_eTool = SelectionTool;
-      m_snapToGrid = true;
-      m_blockTrackEnable = false;
-      break;
+  case NavigationView:
+    m_eTool = NavigationTool;
+    m_snapToGrid = false;
+    m_blockTrackEnable = false;
+    break;
+  case NormalSelectionView:
+    m_eTool = SelectionTool;
+    m_snapToGrid = false;
+    m_blockTrackEnable = false;
+    break;
+  case BlockSelectionView:
+    m_eTool = SelectionTool;
+    m_snapToGrid = true;
+    m_blockTrackEnable = false;
+    break;
   }
 
   if( m_eTool != SelectionTool )
@@ -514,9 +514,9 @@ Void ViewArea::paintEvent( QPaintEvent* event )
             paInter.setPen( QColor( Qt::black ) );
 
           paInter.drawText( pixelRect, Qt::AlignCenter,
-                            "Y: " + QString::number( sPixelValue.Y() ) + "\n" + "U: " +
-                                QString::number( sPixelValue.Cb() ) + "\n" + "V: " +
-                                QString::number( sPixelValue.Cr() ) );
+                            "Y: " + QString::number( sPixelValue.Y() ) + "\n" +
+                                "U: " + QString::number( sPixelValue.Cb() ) + "\n" +
+                                "V: " + QString::number( sPixelValue.Cr() ) );
         }
         if( frFormat == PlaYUVerPixel::COLOR_GRAY )
         {
@@ -541,9 +541,9 @@ Void ViewArea::paintEvent( QPaintEvent* event )
             paInter.setPen( QColor( Qt::black ) );
 
           paInter.drawText( pixelRect, Qt::AlignCenter,
-                            "R: " + QString::number( sPixelValue.R() ) + "\n" + "G: " +
-                                QString::number( sPixelValue.G() ) + "\n" + "B: " +
-                                QString::number( sPixelValue.B() ) );
+                            "R: " + QString::number( sPixelValue.R() ) + "\n" +
+                                "G: " + QString::number( sPixelValue.G() ) + "\n" +
+                                "B: " + QString::number( sPixelValue.B() ) );
         }
       }
     }
@@ -692,22 +692,22 @@ Void ViewArea::paintEvent( QPaintEvent* event )
     {
       switch( tool() )
       {
-        case MaskTool:
-        {
-          if( m_maskColor.isValid() )
-            color = m_maskColor;
-          else
-            color = imageMaskColor;
+      case MaskTool:
+      {
+        if( m_maskColor.isValid() )
+          color = m_maskColor;
+        else
+          color = imageMaskColor;
 
-          break;
-        }
-        case EraserTool:
-        {
-          color = eraserColor;
-          break;
-        }
-        default:
-          color = selectionColor;  // ?Problems!
+        break;
+      }
+      case EraserTool:
+      {
+        color = eraserColor;
+        break;
+      }
+      default:
+        color = selectionColor;  // ?Problems!
       }
 
       color.setAlpha( 120 );
@@ -1077,27 +1077,27 @@ Void ViewArea::updateMask( const QRect& rect )
 {
   switch( tool() )
   {
-    case MaskTool:
-    {
-      // Add rect to the mask
-      QPainter paInter( &m_mask );
-      paInter.setBrush( Qt::color1 );
-      paInter.setPen( Qt::NoPen );
-      paInter.drawRect( rect );
-      paInter.end();
-      break;
-    }
-    case EraserTool:
-    {
-      // Clears rect area in the mask
-      QPainter paInter( &m_mask );
-      paInter.setBrush( Qt::color0 );
-      paInter.setPen( Qt::NoPen );
-      paInter.drawRect( rect );
-      paInter.end();
-      break;
-    }
-    default: /* Do Nothing */
-             ;
+  case MaskTool:
+  {
+    // Add rect to the mask
+    QPainter paInter( &m_mask );
+    paInter.setBrush( Qt::color1 );
+    paInter.setPen( Qt::NoPen );
+    paInter.drawRect( rect );
+    paInter.end();
+    break;
+  }
+  case EraserTool:
+  {
+    // Clears rect area in the mask
+    QPainter paInter( &m_mask );
+    paInter.setBrush( Qt::color0 );
+    paInter.setPen( Qt::NoPen );
+    paInter.drawRect( rect );
+    paInter.end();
+    break;
+  }
+  default: /* Do Nothing */
+           ;
   }
 }

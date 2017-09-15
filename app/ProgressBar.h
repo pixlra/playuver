@@ -35,12 +35,12 @@ class ProgressBar : public QWidget
 {
   Q_OBJECT
 
- public:
+public:
   ProgressBar( QWidget* parent, UInt maxValue );
 
   Void incrementProgress( UInt );
 
- private:
+private:
   UInt m_uiTotalProgress;
   UInt m_uiProgress;
   QProgressBar* m_pcProgressBar;

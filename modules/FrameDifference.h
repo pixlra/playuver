@@ -32,13 +32,13 @@ class FrameDifference : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( FrameDifference )
 
- private:
+private:
   UInt m_uiBitsPixel;
   Int m_iDiffBitShift;
   Int m_iMaxDiffValue;
   PlaYUVerFrame* m_pcFrameDifference;
 
- public:
+public:
   FrameDifference();
   virtual ~FrameDifference() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );

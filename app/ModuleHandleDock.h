@@ -39,7 +39,7 @@ class PlaYUVerAppModuleIf;
 class ModuleHandleDock : public QWidget
 {
   Q_OBJECT
- public:
+public:
   ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf );
   ~ModuleHandleDock();
 
@@ -47,14 +47,14 @@ class ModuleHandleDock : public QWidget
 
   QSize sizeHint() const;
 
- private:
+private:
   PlaYUVerAppModuleIf* m_pcCurrModuleIf;
 
   Bool m_bIsVisible;
   QLabel* labelModulueValueLabel;
   QLabel* labelModulueReturnValue;
 
- public Q_SLOTS:
+public Q_SLOTS:
   void visibilityChangedSlot( bool );
 };
 

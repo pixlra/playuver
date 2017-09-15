@@ -46,7 +46,7 @@ class PlaYUVerSubWindowHandle : public QWidget
 {
   Q_OBJECT
 
- public:
+public:
   PlaYUVerSubWindowHandle( QWidget* parent );
 
   Void processLogMsg( const QString& msg );
@@ -71,7 +71,7 @@ class PlaYUVerSubWindowHandle : public QWidget
     MDISUBWINDOWMODE = 1,
   };
 
- private:
+private:
   PlaYUVerApp* m_pcApp;
   Int m_iWindowMode;
   QList<SubWindowAbstract*> m_apcSubWindowList;
@@ -111,7 +111,7 @@ class PlaYUVerSubWindowHandle : public QWidget
   Void resetWindowMode();
   Void removeSubWindow( Int windowIdx );
 
- public Q_SLOTS:
+public Q_SLOTS:
   void setWindowMode( int iWindowMode );
   void updateActiveSubWindow( SubWindowAbstract* window = 0 );
   void setActiveSubWindow( QWidget* window );
@@ -123,7 +123,7 @@ class PlaYUVerSubWindowHandle : public QWidget
   void cascadeSubWindows();
   void updateMenu();
 
- Q_SIGNALS:
+Q_SIGNALS:
   void changed();
   void windowActivated();
 };

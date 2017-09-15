@@ -39,9 +39,7 @@ QualityHandle::QualityHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowMa
 {
 }
 
-QualityHandle::~QualityHandle()
-{
-}
+QualityHandle::~QualityHandle() {}
 
 Void QualityHandle::createActions()
 {
@@ -190,7 +188,7 @@ Void QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
 
   ProgressBar* pcProgressBar = new ProgressBar( m_pcParet, numberOfFrames );
 
-  padQualityValues = new QVector<Double>[ numberOfWindows + 1 ];
+  padQualityValues = new QVector<Double>[numberOfWindows + 1];
 
   PlaYUVerFrame* pcReferenceFrame;
   PlaYUVerFrame* pcCurrFrame;

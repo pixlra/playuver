@@ -103,9 +103,7 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent,
            SLOT( slotQualityMetricChanged( int ) ) );
 }
 
-QualityMeasurementSidebar::~QualityMeasurementSidebar()
-{
-}
+QualityMeasurementSidebar::~QualityMeasurementSidebar() {}
 
 QSize QualityMeasurementSidebar::sizeHint() const
 {

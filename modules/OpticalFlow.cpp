@@ -31,12 +31,12 @@
 // Opencv
 #include <opencv2/optflow.hpp>
 
-using cv::Scalar;
 using cv::Mat;
 using cv::Mat_;
-using cv::Ptr;
 using cv::Point;
 using cv::Point2f;
+using cv::Ptr;
+using cv::Scalar;
 
 OpticalFlowModule::OpticalFlowModule()
 {

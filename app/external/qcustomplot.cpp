@@ -79,9 +79,7 @@ QCPPainter::QCPPainter( QPaintDevice* device )
 #endif
 }
 
-QCPPainter::~QCPPainter()
-{
-}
+QCPPainter::~QCPPainter() {}
 
 /*!
   Sets the pen of the painter and applies certain fixes to it, depending on the
@@ -885,9 +883,10 @@ QCPLayer::~QCPLayer()
     mChildren.last()->setLayer( 0 );  // removes itself from mChildren via removeChild()
 
   if( mParentPlot->currentLayer() == this )
-    qDebug() << Q_FUNC_INFO << "The parent plot's mCurrentLayer will be a "
-                               "dangling pointer. Should have been set to a "
-                               "valid layer or 0 beforehand.";
+    qDebug() << Q_FUNC_INFO
+             << "The parent plot's mCurrentLayer will be a "
+                "dangling pointer. Should have been set to a "
+                "valid layer or 0 beforehand.";
 }
 
 /*!
@@ -1402,10 +1401,7 @@ void QCPLayerable::applyAntialiasingHint( QCPPainter* painter,
 
   \see initializeParentPlot
 */
-void QCPLayerable::parentPlotInitialized( QCustomPlot* parentPlot )
-{
-  Q_UNUSED( parentPlot )
-}
+void QCPLayerable::parentPlotInitialized( QCustomPlot* parentPlot ){Q_UNUSED( parentPlot )}
 
 /*! \internal
 
@@ -1560,9 +1556,7 @@ const double QCPRange::maxRange = 1e250;
 /*!
   Constructs a range with \a lower and \a upper set to zero.
 */
-QCPRange::QCPRange() : lower( 0 ), upper( 0 )
-{
-}
+QCPRange::QCPRange() : lower( 0 ), upper( 0 ) {}
 
 /*! \overload
   Constructs a range with the specified \a lower and \a upper values.
@@ -2467,10 +2461,11 @@ void QCPLayoutElement::update( UpdatePhase phase )
         if( mAutoMargins.testFlag( side ) )  // this side's margin shall be calculated automatically
         {
           if( mMarginGroups.contains( side ) )
-            QCP::setMarginValue( newMargins, side, mMarginGroups[side]->commonMargin(
-                                                       side ) );  // this side is part of a margin
-                                                                  // group, so get the margin value
-                                                                  // from that group
+            QCP::setMarginValue(
+                newMargins, side,
+                mMarginGroups[side]->commonMargin( side ) );  // this side is part of a margin
+                                                              // group, so get the margin value
+                                                              // from that group
           else
             QCP::setMarginValue( newMargins, side,
                                  calculateAutoMargin( side ) );  // this side is not
@@ -2700,9 +2695,7 @@ int QCPLayoutElement::calculateAutoMargin( QCP::MarginSide side )
   QCPLayout
   is an abstract base class, it can't be instantiated directly.
 */
-QCPLayout::QCPLayout()
-{
-}
+QCPLayout::QCPLayout() {}
 
 /*!
   First calls the QCPLayoutElement::update base class implementation to update
@@ -2761,9 +2754,7 @@ QList<QCPLayoutElement*> QCPLayout::elements( bool recursive ) const
   explicit
   simplification while QCPLayoutGrid does.
 */
-void QCPLayout::simplify()
-{
-}
+void QCPLayout::simplify() {}
 
 /*!
   Removes and deletes the element at the provided \a index. Returns true on
@@ -2859,9 +2850,7 @@ void QCPLayout::sizeConstraintsChanged() const
 
   \see update
 */
-void QCPLayout::updateLayout()
-{
-}
+void QCPLayout::updateLayout() {}
 
 /*! \internal
 
@@ -3060,8 +3049,9 @@ QVector<int> QCPLayout::getSectionSizes( QVector<int> maxSizes,
       }
     }
     if( innerIterations == sectionCount * 2 )
-      qDebug() << Q_FUNC_INFO << "Exceeded maximum expected inner iteration "
-                                 "count, layouting aborted. Input was:"
+      qDebug() << Q_FUNC_INFO
+               << "Exceeded maximum expected inner iteration "
+                  "count, layouting aborted. Input was:"
                << maxSizes << minSizes << stretchFactors << totalSize;
 
     // now check whether the resulting section sizes violate minimum
@@ -3099,8 +3089,9 @@ QVector<int> QCPLayout::getSectionSizes( QVector<int> maxSizes,
     }
   }
   if( outerIterations == sectionCount * 2 )
-    qDebug() << Q_FUNC_INFO << "Exceeded maximum expected outer iteration "
-                               "count, layouting aborted. Input was:"
+    qDebug() << Q_FUNC_INFO
+             << "Exceeded maximum expected outer iteration "
+                "count, layouting aborted. Input was:"
              << maxSizes << minSizes << stretchFactors << totalSize;
 
   QVector<int> result( sectionCount );
@@ -3140,9 +3131,7 @@ QVector<int> QCPLayout::getSectionSizes( QVector<int> maxSizes,
 /*!
   Creates an instance of QCPLayoutGrid and sets default values.
 */
-QCPLayoutGrid::QCPLayoutGrid() : mColumnSpacing( 5 ), mRowSpacing( 5 )
-{
-}
+QCPLayoutGrid::QCPLayoutGrid() : mColumnSpacing( 5 ), mRowSpacing( 5 ) {}
 
 QCPLayoutGrid::~QCPLayoutGrid()
 {
@@ -3803,9 +3792,7 @@ void QCPLayoutGrid::getMaximumRowColSizes( QVector<int>* maxColWidths,
 /*!
   Creates an instance of QCPLayoutInset and sets default values.
 */
-QCPLayoutInset::QCPLayoutInset()
-{
-}
+QCPLayoutInset::QCPLayoutInset() {}
 
 QCPLayoutInset::~QCPLayoutInset()
 {
@@ -4165,9 +4152,7 @@ void QCPLayoutInset::addElement( QCPLayoutElement* element, const QRectF& rect )
 /*!
   Creates a QCPLineEnding instance with default values (style \ref esNone).
 */
-QCPLineEnding::QCPLineEnding() : mStyle( esNone ), mWidth( 8 ), mLength( 10 ), mInverted( false )
-{
-}
+QCPLineEnding::QCPLineEnding() : mStyle( esNone ), mWidth( 8 ), mLength( 10 ), mInverted( false ) {}
 
 /*!
   Creates a QCPLineEnding instance with the specified values.
@@ -5662,8 +5647,9 @@ void QCPAxis::setNumberFormat( const QString& formatCode )
   }
   else
   {
-    qDebug() << Q_FUNC_INFO << "Invalid number format code (second char not "
-                               "'b' or first char neither 'e' nor 'g'):"
+    qDebug() << Q_FUNC_INFO
+             << "Invalid number format code (second char not "
+                "'b' or first char neither 'e' nor 'g'):"
              << formatCode;
     return;
   }
@@ -6204,8 +6190,9 @@ void QCPAxis::scaleRange( double factor, double center )
         mRange = newRange.sanitizedForLogScale();
     }
     else
-      qDebug() << Q_FUNC_INFO << "Center of scaling operation doesn't lie in "
-                                 "same logarithmic sign domain as range:"
+      qDebug() << Q_FUNC_INFO
+               << "Center of scaling operation doesn't lie in "
+                  "same logarithmic sign domain as range:"
                << center;
   }
   mCachedMarginValid = false;
@@ -6425,13 +6412,13 @@ double QCPAxis::coordToPixel( double value ) const
       else
       {
         if( !mRangeReversed )
-          return mAxisRect->bottom() -
-                 baseLog( value / mRange.lower ) / baseLog( mRange.upper / mRange.lower ) *
-                     mAxisRect->height();
+          return mAxisRect->bottom() - baseLog( value / mRange.lower ) /
+                                           baseLog( mRange.upper / mRange.lower ) *
+                                           mAxisRect->height();
         else
-          return mAxisRect->bottom() -
-                 baseLog( mRange.upper / value ) / baseLog( mRange.upper / mRange.lower ) *
-                     mAxisRect->height();
+          return mAxisRect->bottom() - baseLog( mRange.upper / value ) /
+                                           baseLog( mRange.upper / mRange.lower ) *
+                                           mAxisRect->height();
       }
     }
   }
@@ -7317,9 +7304,7 @@ QCPAxisPainterPrivate::QCPAxisPainterPrivate( QCustomPlot* parentPlot )
 {
 }
 
-QCPAxisPainterPrivate::~QCPAxisPainterPrivate()
-{
-}
+QCPAxisPainterPrivate::~QCPAxisPainterPrivate() {}
 
 /*! \internal
 
@@ -7440,14 +7425,16 @@ void QCPAxisPainterPrivate::draw( QCPPainter* painter )
   painter->setBrush( QBrush( basePen.color() ) );
   QVector2D baseLineVector( baseLine.dx(), baseLine.dy() );
   if( lowerEnding.style() != QCPLineEnding::esNone )
-    lowerEnding.draw( painter, QVector2D( baseLine.p1() ) -
-                                   baseLineVector.normalized() * lowerEnding.realLength() *
-                                       ( lowerEnding.inverted() ? -1 : 1 ),
+    lowerEnding.draw( painter,
+                      QVector2D( baseLine.p1() ) - baseLineVector.normalized() *
+                                                       lowerEnding.realLength() *
+                                                       ( lowerEnding.inverted() ? -1 : 1 ),
                       -baseLineVector );
   if( upperEnding.style() != QCPLineEnding::esNone )
-    upperEnding.draw( painter, QVector2D( baseLine.p2() ) +
-                                   baseLineVector.normalized() * upperEnding.realLength() *
-                                       ( upperEnding.inverted() ? -1 : 1 ),
+    upperEnding.draw( painter,
+                      QVector2D( baseLine.p2() ) + baseLineVector.normalized() *
+                                                       upperEnding.realLength() *
+                                                       ( upperEnding.inverted() ? -1 : 1 ),
                       baseLineVector );
   painter->setAntialiasing( antialiasingBackup );
 
@@ -9281,8 +9268,9 @@ bool QCPItemPosition::setParentAnchor( QCPItemAnchor* parentAnchor, bool keepPix
       // because they're both on the same item:
       if( currentParent->mParentItem == mParentItem )
       {
-        qDebug() << Q_FUNC_INFO << "can't set parent to be an anchor which "
-                                   "itself depends on this position"
+        qDebug() << Q_FUNC_INFO
+                 << "can't set parent to be an anchor which "
+                    "itself depends on this position"
                  << reinterpret_cast<quintptr>( parentAnchor );
         return false;
       }
@@ -10157,8 +10145,9 @@ double QCPAbstractItem::rectSelectTest( const QRectF& rect,
 */
 QPointF QCPAbstractItem::anchorPixelPoint( int anchorId ) const
 {
-  qDebug() << Q_FUNC_INFO << "called on item which shouldn't have any anchors "
-                             "(this method not reimplemented). anchorId"
+  qDebug() << Q_FUNC_INFO
+           << "called on item which shouldn't have any anchors "
+              "(this method not reimplemented). anchorId"
            << anchorId;
   return QPointF();
 }
@@ -11759,15 +11748,17 @@ QCPGraph* QCustomPlot::addGraph( QCPAxis* keyAxis, QCPAxis* valueAxis )
     valueAxis = yAxis;
   if( !keyAxis || !valueAxis )
   {
-    qDebug() << Q_FUNC_INFO << "can't use default QCustomPlot xAxis or yAxis, "
-                               "because at least one is invalid (has been "
-                               "deleted)";
+    qDebug() << Q_FUNC_INFO
+             << "can't use default QCustomPlot xAxis or yAxis, "
+                "because at least one is invalid (has been "
+                "deleted)";
     return 0;
   }
   if( keyAxis->parentPlot() != this || valueAxis->parentPlot() != this )
   {
-    qDebug() << Q_FUNC_INFO << "passed keyAxis or valueAxis doesn't have this "
-                               "QCustomPlot as parent";
+    qDebug() << Q_FUNC_INFO
+             << "passed keyAxis or valueAxis doesn't have this "
+                "QCustomPlot as parent";
     return 0;
   }
 
@@ -11917,8 +11908,9 @@ bool QCustomPlot::addItem( QCPAbstractItem* item )
   }
   else
   {
-    qDebug() << Q_FUNC_INFO << "item either already in list or not created "
-                               "with this QCustomPlot as parent:"
+    qDebug() << Q_FUNC_INFO
+             << "item either already in list or not created "
+                "with this QCustomPlot as parent:"
              << reinterpret_cast<quintptr>( item );
     return false;
   }
@@ -12411,7 +12403,7 @@ QCPLayoutElement* QCustomPlot::layoutElementAt( const QPointF& pos ) const
 */
 QList<QCPAxis*> QCustomPlot::selectedAxes() const
 {
-  QList<QCPAxis *> result, allAxes;
+  QList<QCPAxis*> result, allAxes;
   foreach( QCPAxisRect* rect, axisRects() )
     allAxes << rect->axes();
 
@@ -12625,8 +12617,9 @@ bool QCustomPlot::savePdf( const QString& fileName,
   Q_UNUSED( noCosmeticPen )
   Q_UNUSED( width )
   Q_UNUSED( height )
-  qDebug() << Q_FUNC_INFO << "Qt was built without printer support "
-                             "(QT_NO_PRINTER). PDF not created.";
+  qDebug() << Q_FUNC_INFO
+           << "Qt was built without printer support "
+              "(QT_NO_PRINTER). PDF not created.";
 #else
   int newWidth, newHeight;
   if( width == 0 || height == 0 )
@@ -15632,7 +15625,7 @@ void QCPLegend::setIconSize( const QSize& size )
 }
 
 /*! \overload
-*/
+ */
 void QCPLegend::setIconSize( int width, int height )
 {
   mIconSize.setWidth( width );
@@ -15727,8 +15720,9 @@ void QCPLegend::setSelectedParts( const SelectableParts& selected )
     if( !mSelectedParts.testFlag( spItems ) &&
         newSelected.testFlag( spItems ) )  // attempt to set spItems flag (can't do that)
     {
-      qDebug() << Q_FUNC_INFO << "spItems flag can not be set, it can only be "
-                                 "unset with this function";
+      qDebug() << Q_FUNC_INFO
+               << "spItems flag can not be set, it can only be "
+                  "unset with this function";
       newSelected &= ~spItems;
     }
     if( mSelectedParts.testFlag( spItems ) &&
@@ -16085,10 +16079,7 @@ QCP::Interaction QCPAbstractLegendItem::selectionCategory() const
 }
 
 /* inherits documentation from base class */
-void QCPLegend::parentPlotInitialized( QCustomPlot* parentPlot )
-{
-  Q_UNUSED( parentPlot )
-}
+void QCPLegend::parentPlotInitialized( QCustomPlot* parentPlot ){Q_UNUSED( parentPlot )}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////// QCPPlotTitle
@@ -16961,9 +16952,9 @@ QCPColorScaleAxisRectPrivate::QCPColorScaleAxisRectPrivate( QCPColorScale* paren
 {
   setParentLayerable( parentColorScale );
   setMinimumMargins( QMargins( 0, 0, 0, 0 ) );
-  foreach( QCPAxis::AxisType type, QList<QCPAxis::AxisType>() << QCPAxis::atBottom << QCPAxis::atTop
-                                                              << QCPAxis::atLeft
-                                                              << QCPAxis::atRight )
+  foreach( QCPAxis::AxisType type, QList<QCPAxis::AxisType>()
+                                       << QCPAxis::atBottom << QCPAxis::atTop << QCPAxis::atLeft
+                                       << QCPAxis::atRight )
   {
     axis( type )->setVisible( true );
     axis( type )->grid()->setVisible( false );
@@ -16996,9 +16987,9 @@ QCPColorScaleAxisRectPrivate::QCPColorScaleAxisRectPrivate( QCPColorScale* paren
   // gradient drawn by axis rect:
   connect( parentColorScale, SIGNAL( layerChanged( QCPLayer* ) ), this,
            SLOT( setLayer( QCPLayer* ) ) );
-  foreach( QCPAxis::AxisType type, QList<QCPAxis::AxisType>() << QCPAxis::atBottom << QCPAxis::atTop
-                                                              << QCPAxis::atLeft
-                                                              << QCPAxis::atRight )
+  foreach( QCPAxis::AxisType type, QList<QCPAxis::AxisType>()
+                                       << QCPAxis::atBottom << QCPAxis::atTop << QCPAxis::atLeft
+                                       << QCPAxis::atRight )
     connect( parentColorScale, SIGNAL( layerChanged( QCPLayer* ) ), axis( type ),
              SLOT( setLayer( QCPLayer* ) ) );
 }
@@ -17086,9 +17077,9 @@ void QCPColorScaleAxisRectPrivate::updateGradientImage()
 void QCPColorScaleAxisRectPrivate::axisSelectionChanged( QCPAxis::SelectableParts selectedParts )
 {
   // axis bases of four axes shall always (de-)selected synchronously:
-  foreach( QCPAxis::AxisType type, QList<QCPAxis::AxisType>() << QCPAxis::atBottom << QCPAxis::atTop
-                                                              << QCPAxis::atLeft
-                                                              << QCPAxis::atRight )
+  foreach( QCPAxis::AxisType type, QList<QCPAxis::AxisType>()
+                                       << QCPAxis::atBottom << QCPAxis::atTop << QCPAxis::atLeft
+                                       << QCPAxis::atRight )
   {
     if( QCPAxis* senderAxis = qobject_cast<QCPAxis*>( sender() ) )
       if( senderAxis->axisType() == type )
@@ -17113,9 +17104,9 @@ void QCPColorScaleAxisRectPrivate::axisSelectionChanged( QCPAxis::SelectablePart
 void QCPColorScaleAxisRectPrivate::axisSelectableChanged( QCPAxis::SelectableParts selectableParts )
 {
   // synchronize axis base selectability:
-  foreach( QCPAxis::AxisType type, QList<QCPAxis::AxisType>() << QCPAxis::atBottom << QCPAxis::atTop
-                                                              << QCPAxis::atLeft
-                                                              << QCPAxis::atRight )
+  foreach( QCPAxis::AxisType type, QList<QCPAxis::AxisType>()
+                                       << QCPAxis::atBottom << QCPAxis::atTop << QCPAxis::atLeft
+                                       << QCPAxis::atRight )
   {
     if( QCPAxis* senderAxis = qobject_cast<QCPAxis*>( sender() ) )
       if( senderAxis->axisType() == type )
@@ -20023,9 +20014,7 @@ QCPRange QCPGraph::getValueRange( bool& foundRange,
 /*!
   Constructs a curve data point with t, key and value set to zero.
 */
-QCPCurveData::QCPCurveData() : t( 0 ), key( 0 ), value( 0 )
-{
-}
+QCPCurveData::QCPCurveData() : t( 0 ), key( 0 ), value( 0 ) {}
 
 /*!
   Constructs a curve data point with the specified \a t, \a key and \a value.
@@ -20630,7 +20619,7 @@ void QCPCurve::getCurveData( QVector<QPointF>* lineData ) const
             ( lastRegion == 6 && currentRegion == 8 ) ) ||  // skip bottom right diagonal
           ( ( lastRegion == 6 && currentRegion == 2 ) ||
             ( lastRegion == 2 && currentRegion == 6 ) )  // skip bottom left diagonal
-          )
+      )
       {
         // always add last point if not added already, original:
         if( !addedLastAlready )
@@ -20850,16 +20839,12 @@ QCPRange QCPCurve::getValueRange( bool& foundRange, SignDomain inSignDomain ) co
 /*!
   Constructs a bar data point with key and value set to zero.
 */
-QCPBarData::QCPBarData() : key( 0 ), value( 0 )
-{
-}
+QCPBarData::QCPBarData() : key( 0 ), value( 0 ) {}
 
 /*!
   Constructs a bar data point with the specified \a key and \a value.
 */
-QCPBarData::QCPBarData( double key, double value ) : key( key ), value( value )
-{
-}
+QCPBarData::QCPBarData( double key, double value ) : key( key ), value( value ) {}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////// QCPBars
@@ -21029,8 +21014,9 @@ void QCPBars::moveBelow( QCPBars* bars )
     return;
   if( bars && ( bars->keyAxis() != mKeyAxis.data() || bars->valueAxis() != mValueAxis.data() ) )
   {
-    qDebug() << Q_FUNC_INFO << "passed QCPBars* doesn't have same key and "
-                               "value axis as this QCPBars";
+    qDebug() << Q_FUNC_INFO
+             << "passed QCPBars* doesn't have same key and "
+                "value axis as this QCPBars";
     return;
   }
   // remove from stacking:
@@ -21070,8 +21056,9 @@ void QCPBars::moveAbove( QCPBars* bars )
     return;
   if( bars && ( bars->keyAxis() != mKeyAxis.data() || bars->valueAxis() != mValueAxis.data() ) )
   {
-    qDebug() << Q_FUNC_INFO << "passed QCPBars* doesn't have same key and "
-                               "value axis as this QCPBars";
+    qDebug() << Q_FUNC_INFO
+             << "passed QCPBars* doesn't have same key and "
+                "value axis as this QCPBars";
     return;
   }
   // remove from stacking:
@@ -23079,9 +23066,7 @@ QCPItemStraightLine::QCPItemStraightLine( QCustomPlot* parentPlot )
   setSelectedPen( QPen( Qt::blue, 2 ) );
 }
 
-QCPItemStraightLine::~QCPItemStraightLine()
-{
-}
+QCPItemStraightLine::~QCPItemStraightLine() {}
 
 /*!
   Sets the pen that will be used to draw the line
@@ -23292,9 +23277,7 @@ QCPItemLine::QCPItemLine( QCustomPlot* parentPlot )
   setSelectedPen( QPen( Qt::blue, 2 ) );
 }
 
-QCPItemLine::~QCPItemLine()
-{
-}
+QCPItemLine::~QCPItemLine() {}
 
 /*!
   Sets the pen that will be used to draw the line
@@ -23548,9 +23531,7 @@ QCPItemCurve::QCPItemCurve( QCustomPlot* parentPlot )
   setSelectedPen( QPen( Qt::blue, 2 ) );
 }
 
-QCPItemCurve::~QCPItemCurve()
-{
-}
+QCPItemCurve::~QCPItemCurve() {}
 
 /*!
   Sets the pen that will be used to draw the line
@@ -23712,9 +23693,7 @@ QCPItemRect::QCPItemRect( QCustomPlot* parentPlot )
   setSelectedBrush( Qt::NoBrush );
 }
 
-QCPItemRect::~QCPItemRect()
-{
-}
+QCPItemRect::~QCPItemRect() {}
 
 /*!
   Sets the pen that will be used to draw the line of the rectangle
@@ -23891,9 +23870,7 @@ QCPItemText::QCPItemText( QCustomPlot* parentPlot )
   setSelectedColor( Qt::blue );
 }
 
-QCPItemText::~QCPItemText()
-{
-}
+QCPItemText::~QCPItemText() {}
 
 /*!
   Sets the color of the text.
@@ -24268,9 +24245,7 @@ QCPItemEllipse::QCPItemEllipse( QCustomPlot* parentPlot )
   setSelectedBrush( Qt::NoBrush );
 }
 
-QCPItemEllipse::~QCPItemEllipse()
-{
-}
+QCPItemEllipse::~QCPItemEllipse() {}
 
 /*!
   Sets the pen that will be used to draw the line of the ellipse
@@ -24477,9 +24452,7 @@ QCPItemPixmap::QCPItemPixmap( QCustomPlot* parentPlot )
   setScaled( false, Qt::KeepAspectRatio );
 }
 
-QCPItemPixmap::~QCPItemPixmap()
-{
-}
+QCPItemPixmap::~QCPItemPixmap() {}
 
 /*!
   Sets the pixmap that will be displayed.
@@ -24771,9 +24744,7 @@ QCPItemTracer::QCPItemTracer( QCustomPlot* parentPlot )
   setGraphKey( 0 );
 }
 
-QCPItemTracer::~QCPItemTracer()
-{
-}
+QCPItemTracer::~QCPItemTracer() {}
 
 /*!
   Sets the pen that will be used to draw the line of the tracer
@@ -25166,9 +25137,7 @@ QCPItemBracket::QCPItemBracket( QCustomPlot* parentPlot )
   setStyle( bsCalligraphic );
 }
 
-QCPItemBracket::~QCPItemBracket()
-{
-}
+QCPItemBracket::~QCPItemBracket() {}
 
 /*!
   Sets the pen that will be used to draw the bracket.

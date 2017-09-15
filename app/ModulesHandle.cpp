@@ -43,9 +43,7 @@ ModulesHandle::ModulesHandle( QWidget* parent,
   setParent( m_pcParent );
 }
 
-ModulesHandle::~ModulesHandle()
-{
-}
+ModulesHandle::~ModulesHandle() {}
 
 Void ModulesHandle::createActions()
 {

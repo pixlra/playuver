@@ -514,9 +514,9 @@ Void ViewArea::paintEvent( QPaintEvent* event )
             paInter.setPen( QColor( Qt::black ) );
 
           paInter.drawText( pixelRect, Qt::AlignCenter,
-                            "Y: " + QString::number( sPixelValue.Y() ) + "\n" + "U: " +
-                                QString::number( sPixelValue.Cb() ) + "\n" + "V: " +
-                                QString::number( sPixelValue.Cr() ) );
+                            "Y: " + QString::number( sPixelValue.Y() ) + "\n" +
+                                "U: " + QString::number( sPixelValue.Cb() ) + "\n" +
+                                "V: " + QString::number( sPixelValue.Cr() ) );
         }
         if( frFormat == PlaYUVerPixel::COLOR_GRAY )
         {
@@ -541,9 +541,9 @@ Void ViewArea::paintEvent( QPaintEvent* event )
             paInter.setPen( QColor( Qt::black ) );
 
           paInter.drawText( pixelRect, Qt::AlignCenter,
-                            "R: " + QString::number( sPixelValue.R() ) + "\n" + "G: " +
-                                QString::number( sPixelValue.G() ) + "\n" + "B: " +
-                                QString::number( sPixelValue.B() ) );
+                            "R: " + QString::number( sPixelValue.R() ) + "\n" +
+                                "G: " + QString::number( sPixelValue.G() ) + "\n" +
+                                "B: " + QString::number( sPixelValue.B() ) );
         }
       }
     }

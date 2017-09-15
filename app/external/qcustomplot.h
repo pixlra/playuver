@@ -1821,6 +1821,7 @@ class QCP_LIB_DECL QCPItemPosition : public QCPItemAnchor
 
   // reimplemented virtual methods:
   virtual QCPItemPosition* toQCPItemPosition() { return this; }
+
  private:
   Q_DISABLE_COPY( QCPItemPosition )
 };
@@ -2454,6 +2455,7 @@ class QCP_LIB_DECL QCPPlottableLegendItem : public QCPAbstractLegendItem
 
   // getters:
   QCPAbstractPlottable* plottable() { return mPlottable; }
+
  protected:
   // property members:
   QCPAbstractPlottable* mPlottable;
@@ -2683,11 +2685,11 @@ class QCPColorScaleAxisRectPrivate : public QCPAxisRect
   // re-using some methods of QCPAxisRect to make them available to friend class
   // QCPColorScale
   using QCPAxisRect::calculateAutoMargin;
-  using QCPAxisRect::mousePressEvent;
   using QCPAxisRect::mouseMoveEvent;
+  using QCPAxisRect::mousePressEvent;
   using QCPAxisRect::mouseReleaseEvent;
-  using QCPAxisRect::wheelEvent;
   using QCPAxisRect::update;
+  using QCPAxisRect::wheelEvent;
   virtual void draw( QCPPainter* painter );
   void updateGradientImage();
   Q_SLOT void axisSelectionChanged( QCPAxis::SelectableParts selectedParts );

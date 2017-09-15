@@ -68,6 +68,7 @@ class OpionConfiguration : public QWidget
     return m_pcValue->text();
   }
   const String& getName() { return m_cName; }
+
  private:
   QLineEdit* m_pcValue;
   QCheckBox* m_pcChecked;

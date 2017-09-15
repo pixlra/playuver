@@ -896,10 +896,10 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
         guidePos = d->colorGuide.blue();
         break;
 
-      //     case HistogramWidget::LumaHistogram:
-      //       guidePos = qMax( qMax( d->colorGuide.red(), d->colorGuide.green()
-      //       ), d->colorGuide.blue() );
-      //       break;
+        //     case HistogramWidget::LumaHistogram:
+        //       guidePos = qMax( qMax( d->colorGuide.red(), d->colorGuide.green()
+        //       ), d->colorGuide.blue() );
+        //       break;
 
       default:  // Alpha.
         guidePos = -1;

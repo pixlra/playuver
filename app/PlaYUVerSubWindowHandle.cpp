@@ -177,8 +177,8 @@ Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
     // m_pcApp->resize( m_cMdiModeWindowSize );
     if( m_pcActiveWindow )
     {
-      m_pcApp->setWindowTitle( QApplication::applicationName() + " :: " +
-                               m_pcActiveWindow->getWindowName() );
+      m_pcApp->setWindowTitle( QApplication::applicationName() +
+                               " :: " + m_pcActiveWindow->getWindowName() );
     }
   }
   m_iWindowMode = iWindowMode;
@@ -215,8 +215,8 @@ Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowAbstract* window )
     }
     if( m_pcActiveWindow )
     {
-      m_pcApp->setWindowTitle( QApplication::applicationName() + " :: " +
-                               m_pcActiveWindow->getWindowName() );
+      m_pcApp->setWindowTitle( QApplication::applicationName() +
+                               " :: " + m_pcActiveWindow->getWindowName() );
     }
   }
 }

@@ -392,7 +392,8 @@ Void PlaYUVerApp::reload()
 Void PlaYUVerApp::reloadAll()
 {
   UInt windowCategoryOrder[] = {
-      SubWindowAbstract::VIDEO_STREAM_SUBWINDOW, SubWindowAbstract::MODULE_SUBWINDOW,
+      SubWindowAbstract::VIDEO_STREAM_SUBWINDOW,
+      SubWindowAbstract::MODULE_SUBWINDOW,
       SubWindowAbstract::MODULE_SUBWINDOW,
   };
 
@@ -720,7 +721,7 @@ Void PlaYUVerApp::createActions()
   m_appModuleExtensions->createActions();
   m_pcWindowHandle->createActions();
 
-// ------------ About ------------
+  // ------------ About ------------
 
 #ifdef USE_FERVOR
   m_arrayActions[UPDATE_ACT] = new QAction( tr( "&Update" ), this );

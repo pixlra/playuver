@@ -40,7 +40,9 @@
 std::vector<String> PlaYUVerFrame::supportedColorSpacesListNames()
 {
   return std::vector<String>{
-      "YUV", "RGB", "GRAY",
+      "YUV",
+      "RGB",
+      "GRAY",
   };
 }
 
@@ -84,9 +86,8 @@ static Int getImgMemory( Pel**** array3D,
   Int dim0 = 3;
   Int i;
   UInt64 total_mem_size = 0;
-  UInt64 mem_size =
-      ( dim1 * dim2 +
-        CHROMASHIFT( dim1, log2ChromaHeight ) * CHROMASHIFT( dim2, log2ChromaWidth ) * 2 );
+  UInt64 mem_size = ( dim1 * dim2 + CHROMASHIFT( dim1, log2ChromaHeight ) *
+                                        CHROMASHIFT( dim2, log2ChromaWidth ) * 2 );
 
   total_mem_size += getMem2D<Pel*>( array3D, dim0, dim1 );
 
@@ -601,9 +602,8 @@ Void PlaYUVerFrame::frameFromBuffer( Byte* Buff, Int iEndianness )
   {
     ratioW = i > 1 ? d->m_pcPelFormat->log2ChromaWidth : 0;
     ratioH = i > 1 ? d->m_pcPelFormat->log2ChromaHeight : 0;
-    ppBuff[i] =
-        ppBuff[i - 1] +
-        CHROMASHIFT( d->m_uiHeight, ratioH ) * CHROMASHIFT( d->m_uiWidth, ratioW ) * bytesPixel;
+    ppBuff[i] = ppBuff[i - 1] + CHROMASHIFT( d->m_uiHeight, ratioH ) *
+                                    CHROMASHIFT( d->m_uiWidth, ratioW ) * bytesPixel;
   }
 
   for( ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
@@ -663,9 +663,8 @@ Void PlaYUVerFrame::frameToBuffer( Byte* output_buffer, Int iEndianness )
   {
     ratioW = i > 1 ? d->m_pcPelFormat->log2ChromaWidth : 0;
     ratioH = i > 1 ? d->m_pcPelFormat->log2ChromaHeight : 0;
-    ppBuff[i] =
-        ppBuff[i - 1] +
-        CHROMASHIFT( d->m_uiHeight, ratioH ) * CHROMASHIFT( d->m_uiWidth, ratioW ) * bytesPixel;
+    ppBuff[i] = ppBuff[i - 1] + CHROMASHIFT( d->m_uiHeight, ratioH ) *
+                                    CHROMASHIFT( d->m_uiWidth, ratioW ) * bytesPixel;
   }
 
   for( ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
@@ -1188,9 +1187,8 @@ Bool PlaYUVerFrame::toMat( cv::Mat& cvMat, Bool convertToGray )
 {
   Bool bRet = false;
 #ifdef USE_OPENCV
-  if( convertToGray &&
-      !( d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_YUV ||
-         d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY ) )
+  if( convertToGray && !( d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_YUV ||
+                          d->m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY ) )
   {
     return bRet;
   }
@@ -1290,7 +1288,9 @@ Bool PlaYUVerFrame::fromMat( cv::Mat& cvMat )
 std::vector<String> PlaYUVerFrame::supportedQualityMetricsList()
 {
   return std::vector<String>{
-      "PSNR", "MSE", "SSIM",
+      "PSNR",
+      "MSE",
+      "SSIM",
   };
 }
 

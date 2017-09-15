@@ -53,9 +53,7 @@ ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* module
   setEnabled( true );
 }
 
-ModuleHandleDock::~ModuleHandleDock()
-{
-}
+ModuleHandleDock::~ModuleHandleDock() {}
 
 Void ModuleHandleDock::setModulueReturnValue( Double value )
 {

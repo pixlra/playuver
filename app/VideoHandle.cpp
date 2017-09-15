@@ -54,9 +54,7 @@ VideoHandle::VideoHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManage
   m_acPlayingSubWindows.clear();
 }
 
-VideoHandle::~VideoHandle()
-{
-}
+VideoHandle::~VideoHandle() {}
 
 Void VideoHandle::createActions()
 {

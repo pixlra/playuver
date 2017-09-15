@@ -40,7 +40,7 @@ class PlaYUVerApp;
 class PlaYUVerAppAdaptor : public QDBusAbstractAdaptor
 {
   Q_OBJECT
-	Q_CLASSINFO( "D-Bus Interface", PLAYUVER_DBUS_SESSION_NAME )
+  Q_CLASSINFO( "D-Bus Interface", PLAYUVER_DBUS_SESSION_NAME )
   Q_PROPERTY( QString activeSession READ activeSession )
  public:
   PlaYUVerAppAdaptor( PlaYUVerApp* app );

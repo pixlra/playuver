@@ -107,6 +107,7 @@ class VideoInformation : public QWidget
     }
   }
   Void setBusyWindow( Bool bFlag ) { m_bBusyWindow = bFlag; }
+
  protected:
   void paintEvent( QPaintEvent* event )
   {

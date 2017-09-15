@@ -119,7 +119,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 
   m_cStream = m_cFmtCtx->streams[m_iStreamIdx];
 
-/* find decoder for the stream */
+  /* find decoder for the stream */
 
 #ifdef FF_USER_CODEC_PARAM
   AVCodecParameters* codec_param = m_cStream->codecpar;
@@ -234,9 +234,9 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   }
 
 #if( ( LIBAVCODEC_VERSION_MAJOR >= 56 ) && ( LIBAVCODEC_VERSION_MINOR >= 0 ) )
-	m_cFrame = av_frame_alloc();
+  m_cFrame = av_frame_alloc();
 #else
-	m_cFrame = avcodec_alloc_frame();
+  m_cFrame = avcodec_alloc_frame();
 #endif
   if( !m_cFrame )
   {

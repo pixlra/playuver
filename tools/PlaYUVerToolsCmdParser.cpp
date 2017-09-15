@@ -41,9 +41,7 @@ PlaYUVerToolsCmdParser::PlaYUVerToolsCmdParser()
   m_cOptions.addDefaultOptions();
 }
 
-PlaYUVerToolsCmdParser::~PlaYUVerToolsCmdParser()
-{
-}
+PlaYUVerToolsCmdParser::~PlaYUVerToolsCmdParser() {}
 
 Void PlaYUVerToolsCmdParser::log( UInt level, const char* fmt, ... )
 {

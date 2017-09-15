@@ -111,6 +111,4 @@ Double WeightedPSNR::measure( std::vector<PlaYUVerFrame*> apcFrameList )
   return dPSNR;
 }
 
-Void WeightedPSNR::destroy()
-{
-}
+Void WeightedPSNR::destroy() {}

@@ -54,9 +54,7 @@ PlaYUVerPixel::PlaYUVerPixel( const Int& ColorSpace, const Pel& c0, const Pel& c
   PixelComponents[3] = 0;
 }
 
-PlaYUVerPixel::~PlaYUVerPixel()
-{
-}
+PlaYUVerPixel::~PlaYUVerPixel() {}
 
 Int PlaYUVerPixel::ColorSpaceType()
 {

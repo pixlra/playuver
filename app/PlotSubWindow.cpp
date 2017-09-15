@@ -135,9 +135,7 @@ Void PlotSubWindow::zoomToFit()
   normalSize();
 }
 
-Void PlotSubWindow::zoomToFactor( Double factor, QPoint center )
-{
-}
+Void PlotSubWindow::zoomToFactor( Double factor, QPoint center ) {}
 
 Void PlotSubWindow::scaleView( Double scale, QPoint center )
 {

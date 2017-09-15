@@ -68,6 +68,7 @@ class PlaYUVerStreamHandlerIf
   Void setBytesPerFrame( UInt64 uiNBytes ) { m_uiNBytesPerFrame = uiNBytes; }
   String getFormatName() { return m_strFormatName; }
   String getCodecName() { return m_strCodecName; }
+
  protected:
   Bool m_bIsInput;
   String m_cFilename;

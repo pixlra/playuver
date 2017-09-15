@@ -61,6 +61,7 @@ class DialogSubWindowSelector : public QDialog
 
   Void selectSubWindow( SubWindowAbstract* subWindow );
   QList<SubWindowAbstract*> getSelectedWindows() { return m_apcSelectedSubWindowList; }
+
  private:
   UInt m_uiCategory;
   Int m_iMinSelectedWindows;

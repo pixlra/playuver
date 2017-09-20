@@ -347,7 +347,7 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget* parent ) : QDialog( paren
   m_spinBoxFrameRate = new QSpinBox();
   m_spinBoxFrameRate->setSuffix( QStringLiteral( " Hz" ) );
   m_spinBoxFrameRate->setMinimumWidth( 30 );
-  m_spinBoxFrameRate->setRange( 0, 200 );
+	m_spinBoxFrameRate->setRange( 0, 1000 );
   m_spinBoxFrameRate->setValue( 30 );
   framerateFormatLayout->addWidget( framerateFormatLabel );
   framerateFormatLayout->addItem(

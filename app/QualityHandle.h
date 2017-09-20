@@ -42,7 +42,7 @@ class VideoSubWindow;
 class QualityHandle : public QWidget
 {
   Q_OBJECT
- public:
+public:
   QualityHandle( QWidget*, PlaYUVerSubWindowHandle* );
   ~QualityHandle();
 
@@ -56,7 +56,7 @@ class QualityHandle : public QWidget
 
   Void update( VideoSubWindow* currSubWindow );
 
- private:
+private:
   QWidget* m_pcParet;
   PlaYUVerSubWindowHandle* m_pcMainWindowManager;
 
@@ -81,10 +81,10 @@ class QualityHandle : public QWidget
   QFuture<Void> m_cMeasurementResult;
   Void measureQuality( QVector<VideoSubWindow*> apcWindowList );
 
- Q_SIGNALS:
+Q_SIGNALS:
   void changed();
 
- private Q_SLOTS:
+private Q_SLOTS:
   void slotQualityMetricChanged( int );
   void slotSelectCurrentAsReference();
   void slotPlotQualitySingle();

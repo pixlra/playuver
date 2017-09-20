@@ -32,12 +32,12 @@ class FrameShift : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( FrameShift )
 
- private:
+private:
   PlaYUVerFrame* m_pcProcessedFrame;
   Int m_iShiftHor;
   Int m_iShiftVer;
 
- public:
+public:
   FrameShift();
   virtual ~FrameShift() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );

@@ -49,7 +49,7 @@ class ConfigureFormatDialog : public QDialog
 {
   Q_OBJECT
 
- public:
+public:
   ConfigureFormatDialog( QWidget* parent = 0 );
   Int runConfigureFormatDialog( const QString& Filename,
                                 UInt& rWidth,
@@ -62,13 +62,13 @@ class ConfigureFormatDialog : public QDialog
   Void readSettings();
   Void writeSettings();
 
- private Q_SLOTS:
+private Q_SLOTS:
   void slotStandardResolutionSelected( int );
   void slotResolutionChange();
   void slotColorSpaceChange( int );
   void slotBitsChange( int );
 
- private:
+private:
   QStringList standardResolutionNames;
   QVector<QSize> standardResolutionSizes;
   PlaYUVerStdResolutionVector aRCustomFileFormats;

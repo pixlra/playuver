@@ -32,10 +32,10 @@ class SetChromaHalfScale : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( SetChromaHalfScale )
 
- private:
+private:
   PlaYUVerFrame* m_pcProcessedFrame;
 
- public:
+public:
   SetChromaHalfScale();
   virtual ~SetChromaHalfScale() {}
   Void create( PlaYUVerFrame* );

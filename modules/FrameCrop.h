@@ -32,14 +32,14 @@ class FrameCrop : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( FrameCrop )
 
- private:
+private:
   PlaYUVerFrame* m_pcCropedFrame;
   UInt m_uiXPosition;
   UInt m_uiYPosition;
   Int m_iXSize;
   Int m_iYSize;
 
- public:
+public:
   FrameCrop();
   virtual ~FrameCrop() {}
   Void create( PlaYUVerFrame* );

@@ -38,12 +38,12 @@ typedef std::map<const char*, CreateModuleFn> PlaYUVerModuleFactoryMap;
 // Factory for creating instances of PlaYUVerModuleIf
 class PlaYUVerModuleFactory
 {
- private:
+private:
   PlaYUVerModuleFactory();
   PlaYUVerModuleFactory& operator=( const PlaYUVerModuleFactory& ) { return *this; }
   PlaYUVerModuleFactoryMap m_FactoryMap;
 
- public:
+public:
   ~PlaYUVerModuleFactory();
 
   static PlaYUVerModuleFactory* Get()

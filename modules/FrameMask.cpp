@@ -68,15 +68,15 @@ Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
   }
   switch( iColorSpace )
   {
-    case PlaYUVerPixel::COLOR_GRAY:
-      iPelFmt = PlaYUVerFrame::GRAY;
-      break;
-    case PlaYUVerPixel::COLOR_YUV:
-      iPelFmt = PlaYUVerFrame::YUV444p;
-      break;
-    case PlaYUVerPixel::COLOR_RGB:
-      iPelFmt = PlaYUVerFrame::RGB24;
-      break;
+  case PlaYUVerPixel::COLOR_GRAY:
+    iPelFmt = PlaYUVerFrame::GRAY;
+    break;
+  case PlaYUVerPixel::COLOR_YUV:
+    iPelFmt = PlaYUVerFrame::YUV444p;
+    break;
+  case PlaYUVerPixel::COLOR_RGB:
+    iPelFmt = PlaYUVerFrame::RGB24;
+    break;
   }
 
   m_pcFrameProcessed = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),

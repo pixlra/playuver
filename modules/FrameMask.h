@@ -32,11 +32,11 @@ class FrameMask : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( FrameMask )
 
- private:
+private:
   Int m_iWeight;
   PlaYUVerFrame* m_pcFrameProcessed;
 
- public:
+public:
   FrameMask();
   virtual ~FrameMask() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );

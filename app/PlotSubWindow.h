@@ -40,7 +40,7 @@ class PlotSubWindow : public SubWindowAbstract
 {
   Q_OBJECT
 
- private:
+private:
   QCustomPlot* m_cPlotArea;
 
   QVector<QColor> m_arrayColorList;
@@ -55,7 +55,7 @@ class PlotSubWindow : public SubWindowAbstract
   Double m_dScaleFactor;
   Int m_iNumberPlots;
 
- public:
+public:
   PlotSubWindow( const QString& windowTitle, QWidget* parent = NULL );
   ~PlotSubWindow();
 

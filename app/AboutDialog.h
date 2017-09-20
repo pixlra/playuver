@@ -33,7 +33,7 @@ class AboutDialog : public QDialog
 {
   Q_OBJECT
 
- public:
+public:
   AboutDialog( QWidget* parent = 0 );
 };
 

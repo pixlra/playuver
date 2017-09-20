@@ -34,7 +34,7 @@
 
 class OpionConfiguration : public QWidget
 {
- public:
+public:
   OpionConfiguration( OptionBase* option )
   {
     m_pcChecked = NULL;
@@ -69,7 +69,7 @@ class OpionConfiguration : public QWidget
   }
   const String& getName() { return m_cName; }
 
- private:
+private:
   QLineEdit* m_pcValue;
   QCheckBox* m_pcChecked;
   QLabel* m_pcDescription;

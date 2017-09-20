@@ -858,60 +858,60 @@ Int getRealHistoChannel( Int colorSpace, Int channel )
 
   switch( colorSpace )
   {
-    case PlaYUVerPixel::COLOR_GRAY:
-      if( channel != LUMA )
+  case PlaYUVerPixel::COLOR_GRAY:
+    if( channel != LUMA )
+    {
+      return -1;
+    }
+    histoChannel = 0;
+    break;
+  case PlaYUVerPixel::COLOR_RGB:
+    if( channel != COLOR_R && channel != COLOR_G && channel != COLOR_B && channel != LUMA )
+    {
+      return -1;
+    }
+    else
+    {
+      //       if( channel == LUMA )
+      //       {
+      //         histoChannel = 3;
+      //       }
+      //       else
       {
-        return -1;
+        histoChannel = channel;
       }
-      histoChannel = 0;
-      break;
-    case PlaYUVerPixel::COLOR_RGB:
-      if( channel != COLOR_R && channel != COLOR_G && channel != COLOR_B && channel != LUMA )
+    }
+    break;
+  case PlaYUVerPixel::COLOR_ARGB:
+    if( channel != COLOR_R && channel != COLOR_G && channel != COLOR_B && channel != COLOR_A &&
+        channel != LUMA )
+    {
+      return -1;
+    }
+    else
+    {
+      if( channel == LUMA )
       {
-        return -1;
-      }
-      else
-      {
-        //       if( channel == LUMA )
-        //       {
-        //         histoChannel = 3;
-        //       }
-        //       else
-        {
-          histoChannel = channel;
-        }
-      }
-      break;
-    case PlaYUVerPixel::COLOR_ARGB:
-      if( channel != COLOR_R && channel != COLOR_G && channel != COLOR_B && channel != COLOR_A &&
-          channel != LUMA )
-      {
-        return -1;
-      }
-      else
-      {
-        if( channel == LUMA )
-        {
-          histoChannel = 4;
-        }
-        else
-        {
-          histoChannel = channel;
-        }
-      }
-      break;
-    case PlaYUVerPixel::COLOR_YUV:
-      if( channel != LUMA && channel != CHROMA_U && channel != CHROMA_V )
-      {
-        return -1;
+        histoChannel = 4;
       }
       else
       {
         histoChannel = channel;
       }
-      break;
-    default:
-      histoChannel = -1;
+    }
+    break;
+  case PlaYUVerPixel::COLOR_YUV:
+    if( channel != LUMA && channel != CHROMA_U && channel != CHROMA_V )
+    {
+      return -1;
+    }
+    else
+    {
+      histoChannel = channel;
+    }
+    break;
+  default:
+    histoChannel = -1;
   }
   return histoChannel;
 }
@@ -1231,14 +1231,14 @@ Bool PlaYUVerFrame::fromMat( cv::Mat& cvMat )
     {
       switch( cvMat.channels() )
       {
-        case 1:
-          d->m_iPixelFormat = findPixelFormat( "GRAY" );
-          break;
-        case 3:
-          d->m_iPixelFormat = findPixelFormat( "BGR24" );
-          break;
-        default:
-          return false;
+      case 1:
+        d->m_iPixelFormat = findPixelFormat( "GRAY" );
+        break;
+      case 3:
+        d->m_iPixelFormat = findPixelFormat( "BGR24" );
+        break;
+      default:
+        return false;
       }
     }
     d->init( cvMat.cols, cvMat.rows, d->m_iPixelFormat, 8 );
@@ -1293,17 +1293,17 @@ Double PlaYUVerFrame::getQuality( Int Metric, PlaYUVerFrame* Org, Int component 
 {
   switch( Metric )
   {
-    case PSNR_METRIC:
-      return getPSNR( Org, component );
-      break;
-    case MSE_METRIC:
-      return getMSE( Org, component );
-      break;
-    case SSIM_METRIC:
-      return getSSIM( Org, component );
-      break;
-    default:
-      assert( 0 );
+  case PSNR_METRIC:
+    return getPSNR( Org, component );
+    break;
+  case MSE_METRIC:
+    return getMSE( Org, component );
+    break;
+  case SSIM_METRIC:
+    return getSSIM( Org, component );
+    break;
+  default:
+    assert( 0 );
   };
   return 0;
 }

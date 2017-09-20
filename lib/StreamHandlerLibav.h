@@ -58,7 +58,7 @@ class StreamHandlerLibav : public PlaYUVerStreamHandlerIf
 {
   REGISTER_STREAM_HANDLER( StreamHandlerLibav )
 
- public:
+public:
   static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
   static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
 
@@ -76,7 +76,7 @@ class StreamHandlerLibav : public PlaYUVerStreamHandlerIf
   UChar* m_pchFrameBuffer;
   UInt64 m_uiFrameBufferSize;
 
- private:
+private:
   AVFormatContext* m_cFmtCtx;
   AVStream* m_cStream;
   Int m_iStreamIdx;

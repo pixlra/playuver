@@ -43,7 +43,7 @@ class VideoSubWindow;
 class QualityMeasurementSidebar : public QWidget
 {
   Q_OBJECT
- public:
+public:
   QualityMeasurementSidebar( QWidget*, PlaYUVerSubWindowHandle* );
   ~QualityMeasurementSidebar();
 
@@ -56,7 +56,7 @@ class QualityMeasurementSidebar : public QWidget
   Void updateSidebarData();
   Void updateQualityMetric( Int );
 
- private:
+private:
   PlaYUVerSubWindowHandle* m_pcMainWindowManager;
 
   QVector<VideoSubWindow*> m_pcVideoWindowList;
@@ -75,10 +75,10 @@ class QualityMeasurementSidebar : public QWidget
 
   HistogramWidget* histogramWidget;
 
- Q_SIGNALS:
+Q_SIGNALS:
   void signalQualityMetricChanged( int );
 
- private Q_SLOTS:
+private Q_SLOTS:
   void slotReferenceChanged( int );
   void slotQualityMetricChanged( int );
 };

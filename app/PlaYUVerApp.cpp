@@ -152,28 +152,28 @@ Void PlaYUVerApp::closeEvent( QCloseEvent* event )
   }
   switch( msgBoxCloseRet )
   {
-    case QMessageBox::Yes:
-      mayCloseAll = true;
-      for( Int i = 0; i < subWindowList.size(); i++ )
-      {
-        mayCloseAll &= subWindowList.at( i )->mayClose();
-      }
+  case QMessageBox::Yes:
+    mayCloseAll = true;
+    for( Int i = 0; i < subWindowList.size(); i++ )
+    {
+      mayCloseAll &= subWindowList.at( i )->mayClose();
+    }
 
-      if( mayCloseAll )
-      {
-        // m_pcPlayingTimer->stop();
-        closeAll();
-        writeSettings();
-        event->accept();
-      }
-      else
-      {
-        event->ignore();
-      }
-      break;
-    case QMessageBox::No:
-    default:
+    if( mayCloseAll )
+    {
+      // m_pcPlayingTimer->stop();
+      closeAll();
+      writeSettings();
+      event->accept();
+    }
+    else
+    {
       event->ignore();
+    }
+    break;
+  case QMessageBox::No:
+  default:
+    event->ignore();
   }
 }
 

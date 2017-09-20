@@ -530,31 +530,31 @@ Void FramePropertiesDock::slotChannelChanged( Int channel )
 
   switch( channel )
   {
-    case FirstChannel:
-      histogramWidget->m_channelType = HistogramWidget::FirstChannelHistogram;
-      colorsCB->setEnabled( false );
-      break;
-    case SecondChannel:
-      histogramWidget->m_channelType = HistogramWidget::SecondChannelHistogram;
-      colorsCB->setEnabled( false );
-      break;
-    case ThirdChannel:
-      histogramWidget->m_channelType = HistogramWidget::ThirdChannelHistogram;
-      colorsCB->setEnabled( false );
-      break;
-    case AlphaChannel:
-      histogramWidget->m_channelType = HistogramWidget::AlphaChannelHistogram;
-      colorsCB->setEnabled( false );
-      break;
-    case ColorChannels:
-      histogramWidget->m_channelType = HistogramWidget::ColorChannelsHistogram;
-      colorsCB->setEnabled( true );
-      break;
-    default:  // Luminance.
-      // histogramWidget->m_channelType = HistogramWidget::LumaHistogram;
-      histogramWidget->m_channelType = HistogramWidget::FirstChannelHistogram;
-      colorsCB->setEnabled( false );
-      break;
+  case FirstChannel:
+    histogramWidget->m_channelType = HistogramWidget::FirstChannelHistogram;
+    colorsCB->setEnabled( false );
+    break;
+  case SecondChannel:
+    histogramWidget->m_channelType = HistogramWidget::SecondChannelHistogram;
+    colorsCB->setEnabled( false );
+    break;
+  case ThirdChannel:
+    histogramWidget->m_channelType = HistogramWidget::ThirdChannelHistogram;
+    colorsCB->setEnabled( false );
+    break;
+  case AlphaChannel:
+    histogramWidget->m_channelType = HistogramWidget::AlphaChannelHistogram;
+    colorsCB->setEnabled( false );
+    break;
+  case ColorChannels:
+    histogramWidget->m_channelType = HistogramWidget::ColorChannelsHistogram;
+    colorsCB->setEnabled( true );
+    break;
+  default:  // Luminance.
+    // histogramWidget->m_channelType = HistogramWidget::LumaHistogram;
+    histogramWidget->m_channelType = HistogramWidget::FirstChannelHistogram;
+    colorsCB->setEnabled( false );
+    break;
   }
   histogramWidget->update();
   updateStatistiques();
@@ -570,15 +570,15 @@ Void FramePropertiesDock::slotColorsChanged( Int color )
 {
   switch( color )
   {
-    case AllColorsGreen:
-      histogramWidget->m_colorType = HistogramWidget::SecondChannelColor;
-      break;
-    case AllColorsBlue:
-      histogramWidget->m_colorType = HistogramWidget::ThirdChannelColor;
-      break;
-    default:  // Red.
-      histogramWidget->m_colorType = HistogramWidget::FirstChannelColor;
-      break;
+  case AllColorsGreen:
+    histogramWidget->m_colorType = HistogramWidget::SecondChannelColor;
+    break;
+  case AllColorsBlue:
+    histogramWidget->m_colorType = HistogramWidget::ThirdChannelColor;
+    break;
+  default:  // Red.
+    histogramWidget->m_colorType = HistogramWidget::FirstChannelColor;
+    break;
   }
 
   histogramWidget->update();

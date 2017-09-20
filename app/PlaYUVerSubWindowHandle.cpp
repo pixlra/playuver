@@ -42,7 +42,7 @@
 
 class PlaYUVerMdiArea : public QMdiArea
 {
- public:
+public:
   PlaYUVerMdiArea( QWidget* parent = 0 )
       : QMdiArea( parent ), m_pixmapLogo( ":/images/playuver-backgroud-logo.png" )
   {
@@ -57,7 +57,7 @@ class PlaYUVerMdiArea : public QMdiArea
     update();
   }
 
- protected:
+protected:
   void paintEvent( QPaintEvent* event )
   {
     QMdiArea::paintEvent( event );
@@ -76,7 +76,7 @@ class PlaYUVerMdiArea : public QMdiArea
     //    QPoint bottomLeftCorner( 0, viewport()->height() );
   }
 
- private:
+private:
   QVector<QString> m_acLogMessages;
   QPixmap m_pixmapLogo;
 };

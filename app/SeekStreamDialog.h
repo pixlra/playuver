@@ -38,11 +38,11 @@ class SeekStreamDialog : public QDialog
 {
   Q_OBJECT
 
- public:
+public:
   SeekStreamDialog( PlaYUVerStream* pcCurrStream, QWidget* parent = 0 );
   Int runDialog();
 
- private:
+private:
   QSpinBox* m_spinFrameNum;
   Int m_iSelectedFrameNum;
 };

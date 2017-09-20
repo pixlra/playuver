@@ -40,11 +40,11 @@ class ModulesHandleOptDialog : public QDialog
 {
   Q_OBJECT
 
- public:
+public:
   ModulesHandleOptDialog( QWidget* parent, PlaYUVerAppModuleIf* pcCurrModuleIf );
   Int runConfiguration();
 
- private:
+private:
   PlaYUVerAppModuleIf* m_pcCurrModuleIf;
   QVector<OpionConfiguration*> m_apcOptionList;
 };

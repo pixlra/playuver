@@ -32,10 +32,10 @@ class AbsoluteFrameDifference : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( AbsoluteFrameDifference )
 
- private:
+private:
   PlaYUVerFrame* m_pcFrameDifference;
 
- public:
+public:
   AbsoluteFrameDifference();
   virtual ~AbsoluteFrameDifference() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );

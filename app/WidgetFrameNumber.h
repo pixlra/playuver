@@ -36,13 +36,13 @@
 
 class WidgetFrameNumber : public QWidget
 {
- public:
+public:
   WidgetFrameNumber( QWidget* parent = 0 );
   Void setCurrFrameNum( Int number );
   Void setTotalFrameNum( Int number );
   Void clear();
 
- private:
+private:
   QLabel* m_pcCurrFrameNumLabel;
   QLabel* m_pcTotalFrameNumLabel;
 };

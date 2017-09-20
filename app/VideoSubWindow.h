@@ -63,7 +63,7 @@ class VideoSubWindow : public SubWindowAbstract
 {
   Q_OBJECT
 
- private:
+private:
   Bool m_bWindowBusy;
 
   QScrollArea* m_pcScrollArea;
@@ -118,7 +118,7 @@ class VideoSubWindow : public SubWindowAbstract
 
   QSize getScrollSize();
 
- public:
+public:
   enum VideoSubWindowCategories
   {
     VIDEO_STREAM_SUBWINDOW = SubWindowAbstract::VIDEO_STREAM_SUBWINDOW,
@@ -200,12 +200,12 @@ class VideoSubWindow : public SubWindowAbstract
   Void clearWindowBusy() { m_bWindowBusy = false; }
   Void setFillWindow( Bool bFlag );
 
- protected:
+protected:
   Void keyPressEvent( QKeyEvent* event );
   Void resizeEvent( QResizeEvent* event );
   // void closeEvent( QCloseEvent *event );
 
- public Q_SLOTS:
+public Q_SLOTS:
   void updateWindowOnTimeout();
   void adjustScrollBarByScale( double scale, QPoint center );
   void adjustScrollBarByOffset( QPoint Offset );

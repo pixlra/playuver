@@ -230,16 +230,16 @@ Void ModulesHandle::processOpt( Int index )
       PlaYUVerAppModuleIf* pcCurrModule = pcCurrentModule;
       switch( index )
       {
-        case INVALID_OPT:
-          break;
-        case SWAP_FRAMES_ACT:
-          swapModulesWindowsIf( pcCurrModule );
-          break;
-        case APPLY_ALL_ACT:
-          applyAllModuleIf( pcCurrModule );
-          break;
-        default:
-          Q_ASSERT( 0 );
+      case INVALID_OPT:
+        break;
+      case SWAP_FRAMES_ACT:
+        swapModulesWindowsIf( pcCurrModule );
+        break;
+      case APPLY_ALL_ACT:
+        applyAllModuleIf( pcCurrModule );
+        break;
+      default:
+        Q_ASSERT( 0 );
       }
     }
     emit changed();

@@ -636,123 +636,123 @@ void QCPScatterStyle::drawShape( QCPPainter* painter, double x, double y ) const
   double w = mSize / 2.0;
   switch( mShape )
   {
-    case ssNone:
-      break;
-    case ssDot:
-    {
-      painter->drawLine( QPointF( x, y ), QPointF( x + 0.0001, y ) );
-      break;
-    }
-    case ssCross:
-    {
-      painter->drawLine( QLineF( x - w, y - w, x + w, y + w ) );
-      painter->drawLine( QLineF( x - w, y + w, x + w, y - w ) );
-      break;
-    }
-    case ssPlus:
-    {
-      painter->drawLine( QLineF( x - w, y, x + w, y ) );
-      painter->drawLine( QLineF( x, y + w, x, y - w ) );
-      break;
-    }
-    case ssCircle:
-    {
-      painter->drawEllipse( QPointF( x, y ), w, w );
-      break;
-    }
-    case ssDisc:
-    {
-      QBrush b = painter->brush();
-      painter->setBrush( painter->pen().color() );
-      painter->drawEllipse( QPointF( x, y ), w, w );
-      painter->setBrush( b );
-      break;
-    }
-    case ssSquare:
-    {
-      painter->drawRect( QRectF( x - w, y - w, mSize, mSize ) );
-      break;
-    }
-    case ssDiamond:
-    {
-      painter->drawLine( QLineF( x - w, y, x, y - w ) );
-      painter->drawLine( QLineF( x, y - w, x + w, y ) );
-      painter->drawLine( QLineF( x + w, y, x, y + w ) );
-      painter->drawLine( QLineF( x, y + w, x - w, y ) );
-      break;
-    }
-    case ssStar:
-    {
-      painter->drawLine( QLineF( x - w, y, x + w, y ) );
-      painter->drawLine( QLineF( x, y + w, x, y - w ) );
-      painter->drawLine( QLineF( x - w * 0.707, y - w * 0.707, x + w * 0.707, y + w * 0.707 ) );
-      painter->drawLine( QLineF( x - w * 0.707, y + w * 0.707, x + w * 0.707, y - w * 0.707 ) );
-      break;
-    }
-    case ssTriangle:
-    {
-      painter->drawLine( QLineF( x - w, y + 0.755 * w, x + w, y + 0.755 * w ) );
-      painter->drawLine( QLineF( x + w, y + 0.755 * w, x, y - 0.977 * w ) );
-      painter->drawLine( QLineF( x, y - 0.977 * w, x - w, y + 0.755 * w ) );
-      break;
-    }
-    case ssTriangleInverted:
-    {
-      painter->drawLine( QLineF( x - w, y - 0.755 * w, x + w, y - 0.755 * w ) );
-      painter->drawLine( QLineF( x + w, y - 0.755 * w, x, y + 0.977 * w ) );
-      painter->drawLine( QLineF( x, y + 0.977 * w, x - w, y - 0.755 * w ) );
-      break;
-    }
-    case ssCrossSquare:
-    {
-      painter->drawLine( QLineF( x - w, y - w, x + w * 0.95, y + w * 0.95 ) );
-      painter->drawLine( QLineF( x - w, y + w * 0.95, x + w * 0.95, y - w ) );
-      painter->drawRect( QRectF( x - w, y - w, mSize, mSize ) );
-      break;
-    }
-    case ssPlusSquare:
-    {
-      painter->drawLine( QLineF( x - w, y, x + w * 0.95, y ) );
-      painter->drawLine( QLineF( x, y + w, x, y - w ) );
-      painter->drawRect( QRectF( x - w, y - w, mSize, mSize ) );
-      break;
-    }
-    case ssCrossCircle:
-    {
-      painter->drawLine( QLineF( x - w * 0.707, y - w * 0.707, x + w * 0.670, y + w * 0.670 ) );
-      painter->drawLine( QLineF( x - w * 0.707, y + w * 0.670, x + w * 0.670, y - w * 0.707 ) );
-      painter->drawEllipse( QPointF( x, y ), w, w );
-      break;
-    }
-    case ssPlusCircle:
-    {
-      painter->drawLine( QLineF( x - w, y, x + w, y ) );
-      painter->drawLine( QLineF( x, y + w, x, y - w ) );
-      painter->drawEllipse( QPointF( x, y ), w, w );
-      break;
-    }
-    case ssPeace:
-    {
-      painter->drawLine( QLineF( x, y - w, x, y + w ) );
-      painter->drawLine( QLineF( x, y, x - w * 0.707, y + w * 0.707 ) );
-      painter->drawLine( QLineF( x, y, x + w * 0.707, y + w * 0.707 ) );
-      painter->drawEllipse( QPointF( x, y ), w, w );
-      break;
-    }
-    case ssPixmap:
-    {
-      painter->drawPixmap( x - mPixmap.width() * 0.5, y - mPixmap.height() * 0.5, mPixmap );
-      break;
-    }
-    case ssCustom:
-    {
-      QTransform oldTransform = painter->transform();
-      painter->translate( x, y );
-      painter->scale( mSize / 6.0, mSize / 6.0 );
-      painter->drawPath( mCustomPath );
-      painter->setTransform( oldTransform );
-      break;
-    }
+  case ssNone:
+    break;
+  case ssDot:
+  {
+    painter->drawLine( QPointF( x, y ), QPointF( x + 0.0001, y ) );
+    break;
+  }
+  case ssCross:
+  {
+    painter->drawLine( QLineF( x - w, y - w, x + w, y + w ) );
+    painter->drawLine( QLineF( x - w, y + w, x + w, y - w ) );
+    break;
+  }
+  case ssPlus:
+  {
+    painter->drawLine( QLineF( x - w, y, x + w, y ) );
+    painter->drawLine( QLineF( x, y + w, x, y - w ) );
+    break;
+  }
+  case ssCircle:
+  {
+    painter->drawEllipse( QPointF( x, y ), w, w );
+    break;
+  }
+  case ssDisc:
+  {
+    QBrush b = painter->brush();
+    painter->setBrush( painter->pen().color() );
+    painter->drawEllipse( QPointF( x, y ), w, w );
+    painter->setBrush( b );
+    break;
+  }
+  case ssSquare:
+  {
+    painter->drawRect( QRectF( x - w, y - w, mSize, mSize ) );
+    break;
+  }
+  case ssDiamond:
+  {
+    painter->drawLine( QLineF( x - w, y, x, y - w ) );
+    painter->drawLine( QLineF( x, y - w, x + w, y ) );
+    painter->drawLine( QLineF( x + w, y, x, y + w ) );
+    painter->drawLine( QLineF( x, y + w, x - w, y ) );
+    break;
+  }
+  case ssStar:
+  {
+    painter->drawLine( QLineF( x - w, y, x + w, y ) );
+    painter->drawLine( QLineF( x, y + w, x, y - w ) );
+    painter->drawLine( QLineF( x - w * 0.707, y - w * 0.707, x + w * 0.707, y + w * 0.707 ) );
+    painter->drawLine( QLineF( x - w * 0.707, y + w * 0.707, x + w * 0.707, y - w * 0.707 ) );
+    break;
+  }
+  case ssTriangle:
+  {
+    painter->drawLine( QLineF( x - w, y + 0.755 * w, x + w, y + 0.755 * w ) );
+    painter->drawLine( QLineF( x + w, y + 0.755 * w, x, y - 0.977 * w ) );
+    painter->drawLine( QLineF( x, y - 0.977 * w, x - w, y + 0.755 * w ) );
+    break;
+  }
+  case ssTriangleInverted:
+  {
+    painter->drawLine( QLineF( x - w, y - 0.755 * w, x + w, y - 0.755 * w ) );
+    painter->drawLine( QLineF( x + w, y - 0.755 * w, x, y + 0.977 * w ) );
+    painter->drawLine( QLineF( x, y + 0.977 * w, x - w, y - 0.755 * w ) );
+    break;
+  }
+  case ssCrossSquare:
+  {
+    painter->drawLine( QLineF( x - w, y - w, x + w * 0.95, y + w * 0.95 ) );
+    painter->drawLine( QLineF( x - w, y + w * 0.95, x + w * 0.95, y - w ) );
+    painter->drawRect( QRectF( x - w, y - w, mSize, mSize ) );
+    break;
+  }
+  case ssPlusSquare:
+  {
+    painter->drawLine( QLineF( x - w, y, x + w * 0.95, y ) );
+    painter->drawLine( QLineF( x, y + w, x, y - w ) );
+    painter->drawRect( QRectF( x - w, y - w, mSize, mSize ) );
+    break;
+  }
+  case ssCrossCircle:
+  {
+    painter->drawLine( QLineF( x - w * 0.707, y - w * 0.707, x + w * 0.670, y + w * 0.670 ) );
+    painter->drawLine( QLineF( x - w * 0.707, y + w * 0.670, x + w * 0.670, y - w * 0.707 ) );
+    painter->drawEllipse( QPointF( x, y ), w, w );
+    break;
+  }
+  case ssPlusCircle:
+  {
+    painter->drawLine( QLineF( x - w, y, x + w, y ) );
+    painter->drawLine( QLineF( x, y + w, x, y - w ) );
+    painter->drawEllipse( QPointF( x, y ), w, w );
+    break;
+  }
+  case ssPeace:
+  {
+    painter->drawLine( QLineF( x, y - w, x, y + w ) );
+    painter->drawLine( QLineF( x, y, x - w * 0.707, y + w * 0.707 ) );
+    painter->drawLine( QLineF( x, y, x + w * 0.707, y + w * 0.707 ) );
+    painter->drawEllipse( QPointF( x, y ), w, w );
+    break;
+  }
+  case ssPixmap:
+  {
+    painter->drawPixmap( x - mPixmap.width() * 0.5, y - mPixmap.height() * 0.5, mPixmap );
+    break;
+  }
+  case ssCustom:
+  {
+    QTransform oldTransform = painter->transform();
+    painter->translate( x, y );
+    painter->scale( mSize / 6.0, mSize / 6.0 );
+    painter->drawPath( mCustomPath );
+    painter->setTransform( oldTransform );
+    break;
+  }
   }
 }
 
@@ -4231,21 +4231,21 @@ double QCPLineEnding::boundingDistance() const
 {
   switch( mStyle )
   {
-    case esNone:
-      return 0;
+  case esNone:
+    return 0;
 
-    case esFlatArrow:
-    case esSpikeArrow:
-    case esLineArrow:
-    case esSkewedBar:
-      return qSqrt( mWidth * mWidth + mLength * mLength );  // items that have width and length
+  case esFlatArrow:
+  case esSpikeArrow:
+  case esLineArrow:
+  case esSkewedBar:
+    return qSqrt( mWidth * mWidth + mLength * mLength );  // items that have width and length
 
-    case esDisc:
-    case esSquare:
-    case esDiamond:
-    case esBar:
-    case esHalfBar:
-      return mWidth * 1.42;  // items that only have a width -> width*sqrt(2)
+  case esDisc:
+  case esSquare:
+  case esDiamond:
+  case esBar:
+  case esHalfBar:
+    return mWidth * 1.42;  // items that only have a width -> width*sqrt(2)
   }
   return 0;
 }
@@ -4270,23 +4270,23 @@ double QCPLineEnding::realLength() const
 {
   switch( mStyle )
   {
-    case esNone:
-    case esLineArrow:
-    case esSkewedBar:
-    case esBar:
-    case esHalfBar:
-      return 0;
+  case esNone:
+  case esLineArrow:
+  case esSkewedBar:
+  case esBar:
+  case esHalfBar:
+    return 0;
 
-    case esFlatArrow:
-      return mLength;
+  case esFlatArrow:
+    return mLength;
 
-    case esDisc:
-    case esSquare:
-    case esDiamond:
-      return mWidth * 0.5;
+  case esDisc:
+  case esSquare:
+  case esDiamond:
+    return mWidth * 0.5;
 
-    case esSpikeArrow:
-      return mLength * 0.8;
+  case esSpikeArrow:
+    return mLength * 0.8;
   }
   return 0;
 }
@@ -4316,110 +4316,108 @@ void QCPLineEnding::draw( QCPPainter* painter, const QVector2D& pos, const QVect
   QBrush brush( painter->pen().color(), Qt::SolidPattern );
   switch( mStyle )
   {
-    case esNone:
-      break;
-    case esFlatArrow:
+  case esNone:
+    break;
+  case esFlatArrow:
+  {
+    QPointF points[3] = {pos.toPointF(), ( pos - lengthVec + widthVec ).toPointF(),
+                         ( pos - lengthVec - widthVec ).toPointF()};
+    painter->setPen( miterPen );
+    painter->setBrush( brush );
+    painter->drawConvexPolygon( points, 3 );
+    painter->setBrush( brushBackup );
+    painter->setPen( penBackup );
+    break;
+  }
+  case esSpikeArrow:
+  {
+    QPointF points[4] = {pos.toPointF(), ( pos - lengthVec + widthVec ).toPointF(),
+                         ( pos - lengthVec * 0.8f ).toPointF(),
+                         ( pos - lengthVec - widthVec ).toPointF()};
+    painter->setPen( miterPen );
+    painter->setBrush( brush );
+    painter->drawConvexPolygon( points, 4 );
+    painter->setBrush( brushBackup );
+    painter->setPen( penBackup );
+    break;
+  }
+  case esLineArrow:
+  {
+    QPointF points[3] = {( pos - lengthVec + widthVec ).toPointF(), pos.toPointF(),
+                         ( pos - lengthVec - widthVec ).toPointF()};
+    painter->setPen( miterPen );
+    painter->drawPolyline( points, 3 );
+    painter->setPen( penBackup );
+    break;
+  }
+  case esDisc:
+  {
+    painter->setBrush( brush );
+    painter->drawEllipse( pos.toPointF(), mWidth * 0.5, mWidth * 0.5 );
+    painter->setBrush( brushBackup );
+    break;
+  }
+  case esSquare:
+  {
+    QVector2D widthVecPerp( -widthVec.y(), widthVec.x() );
+    QPointF points[4] = {
+        ( pos - widthVecPerp + widthVec ).toPointF(), ( pos - widthVecPerp - widthVec ).toPointF(),
+        ( pos + widthVecPerp - widthVec ).toPointF(), ( pos + widthVecPerp + widthVec ).toPointF()};
+    painter->setPen( miterPen );
+    painter->setBrush( brush );
+    painter->drawConvexPolygon( points, 4 );
+    painter->setBrush( brushBackup );
+    painter->setPen( penBackup );
+    break;
+  }
+  case esDiamond:
+  {
+    QVector2D widthVecPerp( -widthVec.y(), widthVec.x() );
+    QPointF points[4] = {( pos - widthVecPerp ).toPointF(), ( pos - widthVec ).toPointF(),
+                         ( pos + widthVecPerp ).toPointF(), ( pos + widthVec ).toPointF()};
+    painter->setPen( miterPen );
+    painter->setBrush( brush );
+    painter->drawConvexPolygon( points, 4 );
+    painter->setBrush( brushBackup );
+    painter->setPen( penBackup );
+    break;
+  }
+  case esBar:
+  {
+    painter->drawLine( ( pos + widthVec ).toPointF(), ( pos - widthVec ).toPointF() );
+    break;
+  }
+  case esHalfBar:
+  {
+    painter->drawLine( ( pos + widthVec ).toPointF(), pos.toPointF() );
+    break;
+  }
+  case esSkewedBar:
+  {
+    if( qFuzzyIsNull( painter->pen().widthF() ) &&
+        !painter->modes().testFlag( QCPPainter::pmNonCosmetic ) )
     {
-      QPointF points[3] = {pos.toPointF(), ( pos - lengthVec + widthVec ).toPointF(),
-                           ( pos - lengthVec - widthVec ).toPointF()};
-      painter->setPen( miterPen );
-      painter->setBrush( brush );
-      painter->drawConvexPolygon( points, 3 );
-      painter->setBrush( brushBackup );
-      painter->setPen( penBackup );
-      break;
+      // if drawing with cosmetic pen (perfectly thin stroke, happens only in
+      // vector exports), draw bar exactly on tip
+      // of line
+      painter->drawLine(
+          ( pos + widthVec + lengthVec * 0.2f * ( mInverted ? -1 : 1 ) ).toPointF(),
+          ( pos - widthVec - lengthVec * 0.2f * ( mInverted ? -1 : 1 ) ).toPointF() );
     }
-    case esSpikeArrow:
+    else
     {
-      QPointF points[4] = {pos.toPointF(), ( pos - lengthVec + widthVec ).toPointF(),
-                           ( pos - lengthVec * 0.8f ).toPointF(),
-                           ( pos - lengthVec - widthVec ).toPointF()};
-      painter->setPen( miterPen );
-      painter->setBrush( brush );
-      painter->drawConvexPolygon( points, 4 );
-      painter->setBrush( brushBackup );
-      painter->setPen( penBackup );
-      break;
+      // if drawing with thick (non-cosmetic) pen, shift bar a little in line
+      // direction to prevent line from sticking
+      // through bar slightly
+      painter->drawLine( ( pos + widthVec + lengthVec * 0.2f * ( mInverted ? -1 : 1 ) +
+                           dir.normalized() * qMax( 1.0f, (float)painter->pen().widthF() ) * 0.5f )
+                             .toPointF(),
+                         ( pos - widthVec - lengthVec * 0.2f * ( mInverted ? -1 : 1 ) +
+                           dir.normalized() * qMax( 1.0f, (float)painter->pen().widthF() ) * 0.5f )
+                             .toPointF() );
     }
-    case esLineArrow:
-    {
-      QPointF points[3] = {( pos - lengthVec + widthVec ).toPointF(), pos.toPointF(),
-                           ( pos - lengthVec - widthVec ).toPointF()};
-      painter->setPen( miterPen );
-      painter->drawPolyline( points, 3 );
-      painter->setPen( penBackup );
-      break;
-    }
-    case esDisc:
-    {
-      painter->setBrush( brush );
-      painter->drawEllipse( pos.toPointF(), mWidth * 0.5, mWidth * 0.5 );
-      painter->setBrush( brushBackup );
-      break;
-    }
-    case esSquare:
-    {
-      QVector2D widthVecPerp( -widthVec.y(), widthVec.x() );
-      QPointF points[4] = {( pos - widthVecPerp + widthVec ).toPointF(),
-                           ( pos - widthVecPerp - widthVec ).toPointF(),
-                           ( pos + widthVecPerp - widthVec ).toPointF(),
-                           ( pos + widthVecPerp + widthVec ).toPointF()};
-      painter->setPen( miterPen );
-      painter->setBrush( brush );
-      painter->drawConvexPolygon( points, 4 );
-      painter->setBrush( brushBackup );
-      painter->setPen( penBackup );
-      break;
-    }
-    case esDiamond:
-    {
-      QVector2D widthVecPerp( -widthVec.y(), widthVec.x() );
-      QPointF points[4] = {( pos - widthVecPerp ).toPointF(), ( pos - widthVec ).toPointF(),
-                           ( pos + widthVecPerp ).toPointF(), ( pos + widthVec ).toPointF()};
-      painter->setPen( miterPen );
-      painter->setBrush( brush );
-      painter->drawConvexPolygon( points, 4 );
-      painter->setBrush( brushBackup );
-      painter->setPen( penBackup );
-      break;
-    }
-    case esBar:
-    {
-      painter->drawLine( ( pos + widthVec ).toPointF(), ( pos - widthVec ).toPointF() );
-      break;
-    }
-    case esHalfBar:
-    {
-      painter->drawLine( ( pos + widthVec ).toPointF(), pos.toPointF() );
-      break;
-    }
-    case esSkewedBar:
-    {
-      if( qFuzzyIsNull( painter->pen().widthF() ) &&
-          !painter->modes().testFlag( QCPPainter::pmNonCosmetic ) )
-      {
-        // if drawing with cosmetic pen (perfectly thin stroke, happens only in
-        // vector exports), draw bar exactly on tip
-        // of line
-        painter->drawLine(
-            ( pos + widthVec + lengthVec * 0.2f * ( mInverted ? -1 : 1 ) ).toPointF(),
-            ( pos - widthVec - lengthVec * 0.2f * ( mInverted ? -1 : 1 ) ).toPointF() );
-      }
-      else
-      {
-        // if drawing with thick (non-cosmetic) pen, shift bar a little in line
-        // direction to prevent line from sticking
-        // through bar slightly
-        painter->drawLine(
-            ( pos + widthVec + lengthVec * 0.2f * ( mInverted ? -1 : 1 ) +
-              dir.normalized() * qMax( 1.0f, (float)painter->pen().widthF() ) * 0.5f )
-                .toPointF(),
-            ( pos - widthVec - lengthVec * 0.2f * ( mInverted ? -1 : 1 ) +
-              dir.normalized() * qMax( 1.0f, (float)painter->pen().widthF() ) * 0.5f )
-                .toPointF() );
-      }
-      break;
-    }
+    break;
+  }
   }
 }
 
@@ -6545,16 +6543,16 @@ QCPAxis::AxisType QCPAxis::marginSideToAxisType( QCP::MarginSide side )
 {
   switch( side )
   {
-    case QCP::msLeft:
-      return atLeft;
-    case QCP::msRight:
-      return atRight;
-    case QCP::msTop:
-      return atTop;
-    case QCP::msBottom:
-      return atBottom;
-    default:
-      break;
+  case QCP::msLeft:
+    return atLeft;
+  case QCP::msRight:
+    return atRight;
+  case QCP::msTop:
+    return atTop;
+  case QCP::msBottom:
+    return atBottom;
+  default:
+    break;
   }
   qDebug() << Q_FUNC_INFO << "Invalid margin side passed:" << (int)side;
   return atLeft;
@@ -6568,22 +6566,22 @@ QCPAxis::AxisType QCPAxis::opposite( QCPAxis::AxisType type )
 {
   switch( type )
   {
-    case atLeft:
-      return atRight;
-      break;
-    case atRight:
-      return atLeft;
-      break;
-    case atBottom:
-      return atTop;
-      break;
-    case atTop:
-      return atBottom;
-      break;
-    default:
-      qDebug() << Q_FUNC_INFO << "invalid axis type";
-      return atLeft;
-      break;
+  case atLeft:
+    return atRight;
+    break;
+  case atRight:
+    return atLeft;
+    break;
+  case atBottom:
+    return atTop;
+    break;
+  case atTop:
+    return atBottom;
+    break;
+  default:
+    qDebug() << Q_FUNC_INFO << "invalid axis type";
+    return atLeft;
+    break;
   }
 }
 
@@ -6838,33 +6836,33 @@ int QCPAxis::calculateAutoSubTickCount( double tickStep ) const
       ++intPart;
     switch( intPart )
     {
-      case 1:
-        result = 4;
-        break;  // 1.0 -> 0.2 substep
-      case 2:
-        result = 3;
-        break;  // 2.0 -> 0.5 substep
-      case 3:
-        result = 2;
-        break;  // 3.0 -> 1.0 substep
-      case 4:
-        result = 3;
-        break;  // 4.0 -> 1.0 substep
-      case 5:
-        result = 4;
-        break;  // 5.0 -> 1.0 substep
-      case 6:
-        result = 2;
-        break;  // 6.0 -> 2.0 substep
-      case 7:
-        result = 6;
-        break;  // 7.0 -> 1.0 substep
-      case 8:
-        result = 3;
-        break;  // 8.0 -> 2.0 substep
-      case 9:
-        result = 2;
-        break;  // 9.0 -> 3.0 substep
+    case 1:
+      result = 4;
+      break;  // 1.0 -> 0.2 substep
+    case 2:
+      result = 3;
+      break;  // 2.0 -> 0.5 substep
+    case 3:
+      result = 2;
+      break;  // 3.0 -> 1.0 substep
+    case 4:
+      result = 3;
+      break;  // 4.0 -> 1.0 substep
+    case 5:
+      result = 4;
+      break;  // 5.0 -> 1.0 substep
+    case 6:
+      result = 2;
+      break;  // 6.0 -> 2.0 substep
+    case 7:
+      result = 6;
+      break;  // 7.0 -> 1.0 substep
+    case 8:
+      result = 3;
+      break;  // 8.0 -> 2.0 substep
+    case 9:
+      result = 2;
+      break;  // 9.0 -> 3.0 substep
     }
   }
   else
@@ -6874,34 +6872,34 @@ int QCPAxis::calculateAutoSubTickCount( double tickStep ) const
     {
       switch( intPart )
       {
-        case 1:
-          result = 2;
-          break;  // 1.5 -> 0.5 substep
-        case 2:
-          result = 4;
-          break;  // 2.5 -> 0.5 substep
-        case 3:
-          result = 4;
-          break;  // 3.5 -> 0.7 substep
-        case 4:
-          result = 2;
-          break;  // 4.5 -> 1.5 substep
-        case 5:
-          result = 4;
-          break;  // 5.5 -> 1.1 substep (won't occur with autoTickStep from here
-                  // on)
-        case 6:
-          result = 4;
-          break;  // 6.5 -> 1.3 substep
-        case 7:
-          result = 2;
-          break;  // 7.5 -> 2.5 substep
-        case 8:
-          result = 4;
-          break;  // 8.5 -> 1.7 substep
-        case 9:
-          result = 4;
-          break;  // 9.5 -> 1.9 substep
+      case 1:
+        result = 2;
+        break;  // 1.5 -> 0.5 substep
+      case 2:
+        result = 4;
+        break;  // 2.5 -> 0.5 substep
+      case 3:
+        result = 4;
+        break;  // 3.5 -> 0.7 substep
+      case 4:
+        result = 2;
+        break;  // 4.5 -> 1.5 substep
+      case 5:
+        result = 4;
+        break;  // 5.5 -> 1.1 substep (won't occur with autoTickStep from here
+                // on)
+      case 6:
+        result = 4;
+        break;  // 6.5 -> 1.3 substep
+      case 7:
+        result = 2;
+        break;  // 7.5 -> 2.5 substep
+      case 8:
+        result = 4;
+        break;  // 8.5 -> 1.7 substep
+      case 9:
+        result = 4;
+        break;  // 9.5 -> 1.9 substep
       }
     }
     // if mantissa fraction isnt 0.0 or 0.5, don't bother finding good sub tick
@@ -7326,32 +7324,32 @@ void QCPAxisPainterPrivate::draw( QCPPainter* painter )
   QPoint origin;
   switch( type )
   {
-    case QCPAxis::atLeft:
-      origin = alignmentRect.bottomLeft() + QPoint( -offset, 0 );
-      break;
-    case QCPAxis::atRight:
-      origin = alignmentRect.bottomRight() + QPoint( +offset, 0 );
-      break;
-    case QCPAxis::atTop:
-      origin = alignmentRect.topLeft() + QPoint( 0, -offset );
-      break;
-    case QCPAxis::atBottom:
-      origin = alignmentRect.bottomLeft() + QPoint( 0, +offset );
-      break;
+  case QCPAxis::atLeft:
+    origin = alignmentRect.bottomLeft() + QPoint( -offset, 0 );
+    break;
+  case QCPAxis::atRight:
+    origin = alignmentRect.bottomRight() + QPoint( +offset, 0 );
+    break;
+  case QCPAxis::atTop:
+    origin = alignmentRect.topLeft() + QPoint( 0, -offset );
+    break;
+  case QCPAxis::atBottom:
+    origin = alignmentRect.bottomLeft() + QPoint( 0, +offset );
+    break;
   }
 
   double xCor = 0, yCor = 0;  // paint system correction, for pixel exact matches (affects
                               // baselines and ticks of top/right axes)
   switch( type )
   {
-    case QCPAxis::atTop:
-      yCor = -1;
-      break;
-    case QCPAxis::atRight:
-      xCor = 1;
-      break;
-    default:
-      break;
+  case QCPAxis::atTop:
+    yCor = -1;
+    break;
+  case QCPAxis::atRight:
+    xCor = 1;
+    break;
+  default:
+    break;
   }
 
   int margin = 0;
@@ -7667,18 +7665,18 @@ void QCPAxisPainterPrivate::placeTickLabel( QCPPainter* painter,
   QPointF labelAnchor;
   switch( type )
   {
-    case QCPAxis::atLeft:
-      labelAnchor = QPointF( alignmentRect.left() - distanceToAxis - offset, position );
-      break;
-    case QCPAxis::atRight:
-      labelAnchor = QPointF( alignmentRect.right() + distanceToAxis + offset, position );
-      break;
-    case QCPAxis::atTop:
-      labelAnchor = QPointF( position, alignmentRect.top() - distanceToAxis - offset );
-      break;
-    case QCPAxis::atBottom:
-      labelAnchor = QPointF( position, alignmentRect.bottom() + distanceToAxis + offset );
-      break;
+  case QCPAxis::atLeft:
+    labelAnchor = QPointF( alignmentRect.left() - distanceToAxis - offset, position );
+    break;
+  case QCPAxis::atRight:
+    labelAnchor = QPointF( alignmentRect.right() + distanceToAxis + offset, position );
+    break;
+  case QCPAxis::atTop:
+    labelAnchor = QPointF( position, alignmentRect.top() - distanceToAxis - offset );
+    break;
+  case QCPAxis::atBottom:
+    labelAnchor = QPointF( position, alignmentRect.bottom() + distanceToAxis + offset );
+    break;
   }
   if( mParentPlot->plottingHints().testFlag( QCP::phCacheLabels ) &&
       !painter->modes().testFlag( QCPPainter::pmNoCaching ) )  // label caching enabled
@@ -9350,110 +9348,110 @@ QPointF QCPItemPosition::pixelPoint() const
 {
   switch( mPositionType )
   {
-    case ptAbsolute:
-    {
-      if( mParentAnchor )
-        return QPointF( mKey, mValue ) + mParentAnchor->pixelPoint();
-      else
-        return QPointF( mKey, mValue );
-    }
+  case ptAbsolute:
+  {
+    if( mParentAnchor )
+      return QPointF( mKey, mValue ) + mParentAnchor->pixelPoint();
+    else
+      return QPointF( mKey, mValue );
+  }
 
-    case ptViewportRatio:
+  case ptViewportRatio:
+  {
+    if( mParentAnchor )
+    {
+      return QPointF( mKey * mParentPlot->viewport().width(),
+                      mValue * mParentPlot->viewport().height() ) +
+             mParentAnchor->pixelPoint();
+    }
+    else
+    {
+      return QPointF( mKey * mParentPlot->viewport().width(),
+                      mValue * mParentPlot->viewport().height() ) +
+             mParentPlot->viewport().topLeft();
+    }
+  }
+
+  case ptAxisRectRatio:
+  {
+    if( mAxisRect )
     {
       if( mParentAnchor )
       {
-        return QPointF( mKey * mParentPlot->viewport().width(),
-                        mValue * mParentPlot->viewport().height() ) +
+        return QPointF( mKey * mAxisRect.data()->width(), mValue * mAxisRect.data()->height() ) +
                mParentAnchor->pixelPoint();
       }
       else
       {
-        return QPointF( mKey * mParentPlot->viewport().width(),
-                        mValue * mParentPlot->viewport().height() ) +
-               mParentPlot->viewport().topLeft();
+        return QPointF( mKey * mAxisRect.data()->width(), mValue * mAxisRect.data()->height() ) +
+               mAxisRect.data()->topLeft();
       }
     }
-
-    case ptAxisRectRatio:
+    else
     {
-      if( mAxisRect )
+      qDebug() << Q_FUNC_INFO << "No axis rect defined";
+      return QPointF( mKey, mValue );
+    }
+  }
+
+  case ptPlotCoords:
+  {
+    double x, y;
+    if( mKeyAxis && mValueAxis )
+    {
+      // both key and value axis are given, translate key/value to x/y
+      // coordinates:
+      if( mKeyAxis.data()->orientation() == Qt::Horizontal )
       {
-        if( mParentAnchor )
-        {
-          return QPointF( mKey * mAxisRect.data()->width(), mValue * mAxisRect.data()->height() ) +
-                 mParentAnchor->pixelPoint();
-        }
-        else
-        {
-          return QPointF( mKey * mAxisRect.data()->width(), mValue * mAxisRect.data()->height() ) +
-                 mAxisRect.data()->topLeft();
-        }
+        x = mKeyAxis.data()->coordToPixel( mKey );
+        y = mValueAxis.data()->coordToPixel( mValue );
       }
       else
       {
-        qDebug() << Q_FUNC_INFO << "No axis rect defined";
-        return QPointF( mKey, mValue );
+        y = mKeyAxis.data()->coordToPixel( mKey );
+        x = mValueAxis.data()->coordToPixel( mValue );
       }
     }
-
-    case ptPlotCoords:
+    else if( mKeyAxis )
     {
-      double x, y;
-      if( mKeyAxis && mValueAxis )
+      // only key axis is given, depending on orientation only transform x or y
+      // to key coordinate, other stays pixel:
+      if( mKeyAxis.data()->orientation() == Qt::Horizontal )
       {
-        // both key and value axis are given, translate key/value to x/y
-        // coordinates:
-        if( mKeyAxis.data()->orientation() == Qt::Horizontal )
-        {
-          x = mKeyAxis.data()->coordToPixel( mKey );
-          y = mValueAxis.data()->coordToPixel( mValue );
-        }
-        else
-        {
-          y = mKeyAxis.data()->coordToPixel( mKey );
-          x = mValueAxis.data()->coordToPixel( mValue );
-        }
-      }
-      else if( mKeyAxis )
-      {
-        // only key axis is given, depending on orientation only transform x or y
-        // to key coordinate, other stays pixel:
-        if( mKeyAxis.data()->orientation() == Qt::Horizontal )
-        {
-          x = mKeyAxis.data()->coordToPixel( mKey );
-          y = mValue;
-        }
-        else
-        {
-          y = mKeyAxis.data()->coordToPixel( mKey );
-          x = mValue;
-        }
-      }
-      else if( mValueAxis )
-      {
-        // only value axis is given, depending on orientation only transform x or
-        // y to value coordinate, other stays
-        // pixel:
-        if( mValueAxis.data()->orientation() == Qt::Horizontal )
-        {
-          x = mValueAxis.data()->coordToPixel( mValue );
-          y = mKey;
-        }
-        else
-        {
-          y = mValueAxis.data()->coordToPixel( mValue );
-          x = mKey;
-        }
-      }
-      else
-      {
-        // no axis given, basically the same as if mPositionType were ptAbsolute
-        qDebug() << Q_FUNC_INFO << "No axes defined";
-        x = mKey;
+        x = mKeyAxis.data()->coordToPixel( mKey );
         y = mValue;
       }
-      return QPointF( x, y );
+      else
+      {
+        y = mKeyAxis.data()->coordToPixel( mKey );
+        x = mValue;
+      }
     }
+    else if( mValueAxis )
+    {
+      // only value axis is given, depending on orientation only transform x or
+      // y to value coordinate, other stays
+      // pixel:
+      if( mValueAxis.data()->orientation() == Qt::Horizontal )
+      {
+        x = mValueAxis.data()->coordToPixel( mValue );
+        y = mKey;
+      }
+      else
+      {
+        y = mValueAxis.data()->coordToPixel( mValue );
+        x = mKey;
+      }
+    }
+    else
+    {
+      // no axis given, basically the same as if mPositionType were ptAbsolute
+      qDebug() << Q_FUNC_INFO << "No axes defined";
+      x = mKey;
+      y = mValue;
+    }
+    return QPointF( x, y );
+  }
   }
   return QPointF();
 }
@@ -9501,120 +9499,120 @@ void QCPItemPosition::setPixelPoint( const QPointF& pixelPoint )
 {
   switch( mPositionType )
   {
-    case ptAbsolute:
-    {
-      if( mParentAnchor )
-        setCoords( pixelPoint - mParentAnchor->pixelPoint() );
-      else
-        setCoords( pixelPoint );
-      break;
-    }
+  case ptAbsolute:
+  {
+    if( mParentAnchor )
+      setCoords( pixelPoint - mParentAnchor->pixelPoint() );
+    else
+      setCoords( pixelPoint );
+    break;
+  }
 
-    case ptViewportRatio:
+  case ptViewportRatio:
+  {
+    if( mParentAnchor )
+    {
+      QPointF p( pixelPoint - mParentAnchor->pixelPoint() );
+      p.rx() /= (double)mParentPlot->viewport().width();
+      p.ry() /= (double)mParentPlot->viewport().height();
+      setCoords( p );
+    }
+    else
+    {
+      QPointF p( pixelPoint - mParentPlot->viewport().topLeft() );
+      p.rx() /= (double)mParentPlot->viewport().width();
+      p.ry() /= (double)mParentPlot->viewport().height();
+      setCoords( p );
+    }
+    break;
+  }
+
+  case ptAxisRectRatio:
+  {
+    if( mAxisRect )
     {
       if( mParentAnchor )
       {
         QPointF p( pixelPoint - mParentAnchor->pixelPoint() );
-        p.rx() /= (double)mParentPlot->viewport().width();
-        p.ry() /= (double)mParentPlot->viewport().height();
+        p.rx() /= (double)mAxisRect.data()->width();
+        p.ry() /= (double)mAxisRect.data()->height();
         setCoords( p );
       }
       else
       {
-        QPointF p( pixelPoint - mParentPlot->viewport().topLeft() );
-        p.rx() /= (double)mParentPlot->viewport().width();
-        p.ry() /= (double)mParentPlot->viewport().height();
+        QPointF p( pixelPoint - mAxisRect.data()->topLeft() );
+        p.rx() /= (double)mAxisRect.data()->width();
+        p.ry() /= (double)mAxisRect.data()->height();
         setCoords( p );
       }
-      break;
     }
-
-    case ptAxisRectRatio:
+    else
     {
-      if( mAxisRect )
+      qDebug() << Q_FUNC_INFO << "No axis rect defined";
+      setCoords( pixelPoint );
+    }
+    break;
+  }
+
+  case ptPlotCoords:
+  {
+    double newKey, newValue;
+    if( mKeyAxis && mValueAxis )
+    {
+      // both key and value axis are given, translate point to key/value
+      // coordinates:
+      if( mKeyAxis.data()->orientation() == Qt::Horizontal )
       {
-        if( mParentAnchor )
-        {
-          QPointF p( pixelPoint - mParentAnchor->pixelPoint() );
-          p.rx() /= (double)mAxisRect.data()->width();
-          p.ry() /= (double)mAxisRect.data()->height();
-          setCoords( p );
-        }
-        else
-        {
-          QPointF p( pixelPoint - mAxisRect.data()->topLeft() );
-          p.rx() /= (double)mAxisRect.data()->width();
-          p.ry() /= (double)mAxisRect.data()->height();
-          setCoords( p );
-        }
+        newKey = mKeyAxis.data()->pixelToCoord( pixelPoint.x() );
+        newValue = mValueAxis.data()->pixelToCoord( pixelPoint.y() );
       }
       else
       {
-        qDebug() << Q_FUNC_INFO << "No axis rect defined";
-        setCoords( pixelPoint );
+        newKey = mKeyAxis.data()->pixelToCoord( pixelPoint.y() );
+        newValue = mValueAxis.data()->pixelToCoord( pixelPoint.x() );
       }
-      break;
     }
-
-    case ptPlotCoords:
+    else if( mKeyAxis )
     {
-      double newKey, newValue;
-      if( mKeyAxis && mValueAxis )
+      // only key axis is given, depending on orientation only transform x or y
+      // to key coordinate, other stays pixel:
+      if( mKeyAxis.data()->orientation() == Qt::Horizontal )
       {
-        // both key and value axis are given, translate point to key/value
-        // coordinates:
-        if( mKeyAxis.data()->orientation() == Qt::Horizontal )
-        {
-          newKey = mKeyAxis.data()->pixelToCoord( pixelPoint.x() );
-          newValue = mValueAxis.data()->pixelToCoord( pixelPoint.y() );
-        }
-        else
-        {
-          newKey = mKeyAxis.data()->pixelToCoord( pixelPoint.y() );
-          newValue = mValueAxis.data()->pixelToCoord( pixelPoint.x() );
-        }
-      }
-      else if( mKeyAxis )
-      {
-        // only key axis is given, depending on orientation only transform x or y
-        // to key coordinate, other stays pixel:
-        if( mKeyAxis.data()->orientation() == Qt::Horizontal )
-        {
-          newKey = mKeyAxis.data()->pixelToCoord( pixelPoint.x() );
-          newValue = pixelPoint.y();
-        }
-        else
-        {
-          newKey = mKeyAxis.data()->pixelToCoord( pixelPoint.y() );
-          newValue = pixelPoint.x();
-        }
-      }
-      else if( mValueAxis )
-      {
-        // only value axis is given, depending on orientation only transform x or
-        // y to value coordinate, other stays
-        // pixel:
-        if( mValueAxis.data()->orientation() == Qt::Horizontal )
-        {
-          newKey = pixelPoint.y();
-          newValue = mValueAxis.data()->pixelToCoord( pixelPoint.x() );
-        }
-        else
-        {
-          newKey = pixelPoint.x();
-          newValue = mValueAxis.data()->pixelToCoord( pixelPoint.y() );
-        }
-      }
-      else
-      {
-        // no axis given, basically the same as if mPositionType were ptAbsolute
-        qDebug() << Q_FUNC_INFO << "No axes defined";
-        newKey = pixelPoint.x();
+        newKey = mKeyAxis.data()->pixelToCoord( pixelPoint.x() );
         newValue = pixelPoint.y();
       }
-      setCoords( newKey, newValue );
-      break;
+      else
+      {
+        newKey = mKeyAxis.data()->pixelToCoord( pixelPoint.y() );
+        newValue = pixelPoint.x();
+      }
     }
+    else if( mValueAxis )
+    {
+      // only value axis is given, depending on orientation only transform x or
+      // y to value coordinate, other stays
+      // pixel:
+      if( mValueAxis.data()->orientation() == Qt::Horizontal )
+      {
+        newKey = pixelPoint.y();
+        newValue = mValueAxis.data()->pixelToCoord( pixelPoint.x() );
+      }
+      else
+      {
+        newKey = pixelPoint.x();
+        newValue = mValueAxis.data()->pixelToCoord( pixelPoint.y() );
+      }
+    }
+    else
+    {
+      // no axis given, basically the same as if mPositionType were ptAbsolute
+      qDebug() << Q_FUNC_INFO << "No axes defined";
+      newKey = pixelPoint.x();
+      newValue = pixelPoint.y();
+    }
+    setCoords( newKey, newValue );
+    break;
+  }
   }
 }
 
@@ -13761,102 +13759,102 @@ void QCPColorGradient::loadPreset( GradientPreset preset )
   clearColorStops();
   switch( preset )
   {
-    case gpGrayscale:
-      setColorInterpolation( ciRGB );
-      setColorStopAt( 0, Qt::black );
-      setColorStopAt( 1, Qt::white );
-      break;
-    case gpHot:
-      setColorInterpolation( ciRGB );
-      setColorStopAt( 0, QColor( 50, 0, 0 ) );
-      setColorStopAt( 0.2, QColor( 180, 10, 0 ) );
-      setColorStopAt( 0.4, QColor( 245, 50, 0 ) );
-      setColorStopAt( 0.6, QColor( 255, 150, 10 ) );
-      setColorStopAt( 0.8, QColor( 255, 255, 50 ) );
-      setColorStopAt( 1, QColor( 255, 255, 255 ) );
-      break;
-    case gpCold:
-      setColorInterpolation( ciRGB );
-      setColorStopAt( 0, QColor( 0, 0, 50 ) );
-      setColorStopAt( 0.2, QColor( 0, 10, 180 ) );
-      setColorStopAt( 0.4, QColor( 0, 50, 245 ) );
-      setColorStopAt( 0.6, QColor( 10, 150, 255 ) );
-      setColorStopAt( 0.8, QColor( 50, 255, 255 ) );
-      setColorStopAt( 1, QColor( 255, 255, 255 ) );
-      break;
-    case gpNight:
-      setColorInterpolation( ciHSV );
-      setColorStopAt( 0, QColor( 10, 20, 30 ) );
-      setColorStopAt( 1, QColor( 250, 255, 250 ) );
-      break;
-    case gpCandy:
-      setColorInterpolation( ciHSV );
-      setColorStopAt( 0, QColor( 0, 0, 255 ) );
-      setColorStopAt( 1, QColor( 255, 250, 250 ) );
-      break;
-    case gpGeography:
-      setColorInterpolation( ciRGB );
-      setColorStopAt( 0, QColor( 70, 170, 210 ) );
-      setColorStopAt( 0.20, QColor( 90, 160, 180 ) );
-      setColorStopAt( 0.25, QColor( 45, 130, 175 ) );
-      setColorStopAt( 0.30, QColor( 100, 140, 125 ) );
-      setColorStopAt( 0.5, QColor( 100, 140, 100 ) );
-      setColorStopAt( 0.6, QColor( 130, 145, 120 ) );
-      setColorStopAt( 0.7, QColor( 140, 130, 120 ) );
-      setColorStopAt( 0.9, QColor( 180, 190, 190 ) );
-      setColorStopAt( 1, QColor( 210, 210, 230 ) );
-      break;
-    case gpIon:
-      setColorInterpolation( ciHSV );
-      setColorStopAt( 0, QColor( 50, 10, 10 ) );
-      setColorStopAt( 0.45, QColor( 0, 0, 255 ) );
-      setColorStopAt( 0.8, QColor( 0, 255, 255 ) );
-      setColorStopAt( 1, QColor( 0, 255, 0 ) );
-      break;
-    case gpThermal:
-      setColorInterpolation( ciRGB );
-      setColorStopAt( 0, QColor( 0, 0, 50 ) );
-      setColorStopAt( 0.15, QColor( 20, 0, 120 ) );
-      setColorStopAt( 0.33, QColor( 200, 30, 140 ) );
-      setColorStopAt( 0.6, QColor( 255, 100, 0 ) );
-      setColorStopAt( 0.85, QColor( 255, 255, 40 ) );
-      setColorStopAt( 1, QColor( 255, 255, 255 ) );
-      break;
-    case gpPolar:
-      setColorInterpolation( ciRGB );
-      setColorStopAt( 0, QColor( 50, 255, 255 ) );
-      setColorStopAt( 0.18, QColor( 10, 70, 255 ) );
-      setColorStopAt( 0.28, QColor( 10, 10, 190 ) );
-      setColorStopAt( 0.5, QColor( 0, 0, 0 ) );
-      setColorStopAt( 0.72, QColor( 190, 10, 10 ) );
-      setColorStopAt( 0.82, QColor( 255, 70, 10 ) );
-      setColorStopAt( 1, QColor( 255, 255, 50 ) );
-      break;
-    case gpSpectrum:
-      setColorInterpolation( ciHSV );
-      setColorStopAt( 0, QColor( 50, 0, 50 ) );
-      setColorStopAt( 0.15, QColor( 0, 0, 255 ) );
-      setColorStopAt( 0.35, QColor( 0, 255, 255 ) );
-      setColorStopAt( 0.6, QColor( 255, 255, 0 ) );
-      setColorStopAt( 0.75, QColor( 255, 30, 0 ) );
-      setColorStopAt( 1, QColor( 50, 0, 0 ) );
-      break;
-    case gpJet:
-      setColorInterpolation( ciRGB );
-      setColorStopAt( 0, QColor( 0, 0, 100 ) );
-      setColorStopAt( 0.15, QColor( 0, 50, 255 ) );
-      setColorStopAt( 0.35, QColor( 0, 255, 255 ) );
-      setColorStopAt( 0.65, QColor( 255, 255, 0 ) );
-      setColorStopAt( 0.85, QColor( 255, 30, 0 ) );
-      setColorStopAt( 1, QColor( 100, 0, 0 ) );
-      break;
-    case gpHues:
-      setColorInterpolation( ciHSV );
-      setColorStopAt( 0, QColor( 255, 0, 0 ) );
-      setColorStopAt( 1.0 / 3.0, QColor( 0, 0, 255 ) );
-      setColorStopAt( 2.0 / 3.0, QColor( 0, 255, 0 ) );
-      setColorStopAt( 1, QColor( 255, 0, 0 ) );
-      break;
+  case gpGrayscale:
+    setColorInterpolation( ciRGB );
+    setColorStopAt( 0, Qt::black );
+    setColorStopAt( 1, Qt::white );
+    break;
+  case gpHot:
+    setColorInterpolation( ciRGB );
+    setColorStopAt( 0, QColor( 50, 0, 0 ) );
+    setColorStopAt( 0.2, QColor( 180, 10, 0 ) );
+    setColorStopAt( 0.4, QColor( 245, 50, 0 ) );
+    setColorStopAt( 0.6, QColor( 255, 150, 10 ) );
+    setColorStopAt( 0.8, QColor( 255, 255, 50 ) );
+    setColorStopAt( 1, QColor( 255, 255, 255 ) );
+    break;
+  case gpCold:
+    setColorInterpolation( ciRGB );
+    setColorStopAt( 0, QColor( 0, 0, 50 ) );
+    setColorStopAt( 0.2, QColor( 0, 10, 180 ) );
+    setColorStopAt( 0.4, QColor( 0, 50, 245 ) );
+    setColorStopAt( 0.6, QColor( 10, 150, 255 ) );
+    setColorStopAt( 0.8, QColor( 50, 255, 255 ) );
+    setColorStopAt( 1, QColor( 255, 255, 255 ) );
+    break;
+  case gpNight:
+    setColorInterpolation( ciHSV );
+    setColorStopAt( 0, QColor( 10, 20, 30 ) );
+    setColorStopAt( 1, QColor( 250, 255, 250 ) );
+    break;
+  case gpCandy:
+    setColorInterpolation( ciHSV );
+    setColorStopAt( 0, QColor( 0, 0, 255 ) );
+    setColorStopAt( 1, QColor( 255, 250, 250 ) );
+    break;
+  case gpGeography:
+    setColorInterpolation( ciRGB );
+    setColorStopAt( 0, QColor( 70, 170, 210 ) );
+    setColorStopAt( 0.20, QColor( 90, 160, 180 ) );
+    setColorStopAt( 0.25, QColor( 45, 130, 175 ) );
+    setColorStopAt( 0.30, QColor( 100, 140, 125 ) );
+    setColorStopAt( 0.5, QColor( 100, 140, 100 ) );
+    setColorStopAt( 0.6, QColor( 130, 145, 120 ) );
+    setColorStopAt( 0.7, QColor( 140, 130, 120 ) );
+    setColorStopAt( 0.9, QColor( 180, 190, 190 ) );
+    setColorStopAt( 1, QColor( 210, 210, 230 ) );
+    break;
+  case gpIon:
+    setColorInterpolation( ciHSV );
+    setColorStopAt( 0, QColor( 50, 10, 10 ) );
+    setColorStopAt( 0.45, QColor( 0, 0, 255 ) );
+    setColorStopAt( 0.8, QColor( 0, 255, 255 ) );
+    setColorStopAt( 1, QColor( 0, 255, 0 ) );
+    break;
+  case gpThermal:
+    setColorInterpolation( ciRGB );
+    setColorStopAt( 0, QColor( 0, 0, 50 ) );
+    setColorStopAt( 0.15, QColor( 20, 0, 120 ) );
+    setColorStopAt( 0.33, QColor( 200, 30, 140 ) );
+    setColorStopAt( 0.6, QColor( 255, 100, 0 ) );
+    setColorStopAt( 0.85, QColor( 255, 255, 40 ) );
+    setColorStopAt( 1, QColor( 255, 255, 255 ) );
+    break;
+  case gpPolar:
+    setColorInterpolation( ciRGB );
+    setColorStopAt( 0, QColor( 50, 255, 255 ) );
+    setColorStopAt( 0.18, QColor( 10, 70, 255 ) );
+    setColorStopAt( 0.28, QColor( 10, 10, 190 ) );
+    setColorStopAt( 0.5, QColor( 0, 0, 0 ) );
+    setColorStopAt( 0.72, QColor( 190, 10, 10 ) );
+    setColorStopAt( 0.82, QColor( 255, 70, 10 ) );
+    setColorStopAt( 1, QColor( 255, 255, 50 ) );
+    break;
+  case gpSpectrum:
+    setColorInterpolation( ciHSV );
+    setColorStopAt( 0, QColor( 50, 0, 50 ) );
+    setColorStopAt( 0.15, QColor( 0, 0, 255 ) );
+    setColorStopAt( 0.35, QColor( 0, 255, 255 ) );
+    setColorStopAt( 0.6, QColor( 255, 255, 0 ) );
+    setColorStopAt( 0.75, QColor( 255, 30, 0 ) );
+    setColorStopAt( 1, QColor( 50, 0, 0 ) );
+    break;
+  case gpJet:
+    setColorInterpolation( ciRGB );
+    setColorStopAt( 0, QColor( 0, 0, 100 ) );
+    setColorStopAt( 0.15, QColor( 0, 50, 255 ) );
+    setColorStopAt( 0.35, QColor( 0, 255, 255 ) );
+    setColorStopAt( 0.65, QColor( 255, 255, 0 ) );
+    setColorStopAt( 0.85, QColor( 255, 30, 0 ) );
+    setColorStopAt( 1, QColor( 100, 0, 0 ) );
+    break;
+  case gpHues:
+    setColorInterpolation( ciHSV );
+    setColorStopAt( 0, QColor( 255, 0, 0 ) );
+    setColorStopAt( 1.0 / 3.0, QColor( 0, 0, 255 ) );
+    setColorStopAt( 2.0 / 3.0, QColor( 0, 255, 0 ) );
+    setColorStopAt( 1, QColor( 255, 0, 0 ) );
+    break;
   }
 }
 
@@ -13926,35 +13924,35 @@ void QCPColorGradient::updateColorBuffer()
             ( position - low.key() ) / ( high.key() - low.key() );  // interpolation factor 0..1
         switch( mColorInterpolation )
         {
-          case ciRGB:
-          {
-            mColorBuffer[i] = qRgb( ( 1 - t ) * low.value().red() + t * high.value().red(),
-                                    ( 1 - t ) * low.value().green() + t * high.value().green(),
-                                    ( 1 - t ) * low.value().blue() + t * high.value().blue() );
-            break;
-          }
-          case ciHSV:
-          {
-            QColor lowHsv = low.value().toHsv();
-            QColor highHsv = high.value().toHsv();
-            double hue = 0;
-            double hueDiff = highHsv.hueF() - lowHsv.hueF();
-            if( hueDiff > 0.5 )
-              hue = lowHsv.hueF() - t * ( 1.0 - hueDiff );
-            else if( hueDiff < -0.5 )
-              hue = lowHsv.hueF() + t * ( 1.0 + hueDiff );
-            else
-              hue = lowHsv.hueF() + t * hueDiff;
-            if( hue < 0 )
-              hue += 1.0;
-            else if( hue >= 1.0 )
-              hue -= 1.0;
-            mColorBuffer[i] =
-                QColor::fromHsvF( hue, ( 1 - t ) * lowHsv.saturationF() + t * highHsv.saturationF(),
-                                  ( 1 - t ) * lowHsv.valueF() + t * highHsv.valueF() )
-                    .rgb();
-            break;
-          }
+        case ciRGB:
+        {
+          mColorBuffer[i] = qRgb( ( 1 - t ) * low.value().red() + t * high.value().red(),
+                                  ( 1 - t ) * low.value().green() + t * high.value().green(),
+                                  ( 1 - t ) * low.value().blue() + t * high.value().blue() );
+          break;
+        }
+        case ciHSV:
+        {
+          QColor lowHsv = low.value().toHsv();
+          QColor highHsv = high.value().toHsv();
+          double hue = 0;
+          double hueDiff = highHsv.hueF() - lowHsv.hueF();
+          if( hueDiff > 0.5 )
+            hue = lowHsv.hueF() - t * ( 1.0 - hueDiff );
+          else if( hueDiff < -0.5 )
+            hue = lowHsv.hueF() + t * ( 1.0 + hueDiff );
+          else
+            hue = lowHsv.hueF() + t * hueDiff;
+          if( hue < 0 )
+            hue += 1.0;
+          else if( hue >= 1.0 )
+            hue -= 1.0;
+          mColorBuffer[i] =
+              QColor::fromHsvF( hue, ( 1 - t ) * lowHsv.saturationF() + t * highHsv.saturationF(),
+                                ( 1 - t ) * lowHsv.valueF() + t * highHsv.valueF() )
+                  .rgb();
+          break;
+        }
         }
       }
     }
@@ -14539,20 +14537,20 @@ void QCPAxisRect::update( UpdatePhase phase )
 
   switch( phase )
   {
-    case upPreparation:
-    {
-      QList<QCPAxis*> allAxes = axes();
-      for( int i = 0; i < allAxes.size(); ++i )
-        allAxes.at( i )->setupTickVectors();
-      break;
-    }
-    case upLayout:
-    {
-      mInsetLayout->setOuterRect( rect() );
-      break;
-    }
-    default:
-      break;
+  case upPreparation:
+  {
+    QList<QCPAxis*> allAxes = axes();
+    for( int i = 0; i < allAxes.size(); ++i )
+      allAxes.at( i )->setupTickVectors();
+    break;
+  }
+  case upLayout:
+  {
+    mInsetLayout->setOuterRect( rect() );
+    break;
+  }
+  default:
+    break;
   }
 
   // pass update call on to inset layout (doesn't happen automatically, because
@@ -16844,37 +16842,37 @@ void QCPColorScale::update( UpdatePhase phase )
 
   switch( phase )
   {
-    case upMargins:
+  case upMargins:
+  {
+    if( mType == QCPAxis::atBottom || mType == QCPAxis::atTop )
     {
-      if( mType == QCPAxis::atBottom || mType == QCPAxis::atTop )
-      {
-        setMaximumSize( QWIDGETSIZE_MAX, mBarWidth + mAxisRect.data()->margins().top() +
-                                             mAxisRect.data()->margins().bottom() +
-                                             margins().top() + margins().bottom() );
-        setMinimumSize( 0, mBarWidth + mAxisRect.data()->margins().top() +
-                               mAxisRect.data()->margins().bottom() + margins().top() +
-                               margins().bottom() );
-      }
-      else
-      {
-        setMaximumSize( mBarWidth + mAxisRect.data()->margins().left() +
-                            mAxisRect.data()->margins().right() + margins().left() +
-                            margins().right(),
-                        QWIDGETSIZE_MAX );
-        setMinimumSize( mBarWidth + mAxisRect.data()->margins().left() +
-                            mAxisRect.data()->margins().right() + margins().left() +
-                            margins().right(),
-                        0 );
-      }
-      break;
+      setMaximumSize( QWIDGETSIZE_MAX, mBarWidth + mAxisRect.data()->margins().top() +
+                                           mAxisRect.data()->margins().bottom() + margins().top() +
+                                           margins().bottom() );
+      setMinimumSize( 0, mBarWidth + mAxisRect.data()->margins().top() +
+                             mAxisRect.data()->margins().bottom() + margins().top() +
+                             margins().bottom() );
     }
-    case upLayout:
+    else
     {
-      mAxisRect.data()->setOuterRect( rect() );
-      break;
+      setMaximumSize( mBarWidth + mAxisRect.data()->margins().left() +
+                          mAxisRect.data()->margins().right() + margins().left() +
+                          margins().right(),
+                      QWIDGETSIZE_MAX );
+      setMinimumSize( mBarWidth + mAxisRect.data()->margins().left() +
+                          mAxisRect.data()->margins().right() + margins().left() +
+                          margins().right(),
+                      0 );
     }
-    default:
-      break;
+    break;
+  }
+  case upLayout:
+  {
+    mAxisRect.data()->setOuterRect( rect() );
+    break;
+  }
+  default:
+    break;
   }
 }
 
@@ -18072,24 +18070,24 @@ void QCPGraph::getPlotData( QVector<QPointF>* lineData, QVector<QCPData>* scatte
 {
   switch( mLineStyle )
   {
-    case lsNone:
-      getScatterPlotData( scatterData );
-      break;
-    case lsLine:
-      getLinePlotData( lineData, scatterData );
-      break;
-    case lsStepLeft:
-      getStepLeftPlotData( lineData, scatterData );
-      break;
-    case lsStepRight:
-      getStepRightPlotData( lineData, scatterData );
-      break;
-    case lsStepCenter:
-      getStepCenterPlotData( lineData, scatterData );
-      break;
-    case lsImpulse:
-      getImpulsePlotData( lineData, scatterData );
-      break;
+  case lsNone:
+    getScatterPlotData( scatterData );
+    break;
+  case lsLine:
+    getLinePlotData( lineData, scatterData );
+    break;
+  case lsStepLeft:
+    getStepLeftPlotData( lineData, scatterData );
+    break;
+  case lsStepRight:
+    getStepRightPlotData( lineData, scatterData );
+    break;
+  case lsStepCenter:
+    getStepCenterPlotData( lineData, scatterData );
+    break;
+  case lsImpulse:
+    getImpulsePlotData( lineData, scatterData );
+    break;
   }
 }
 
@@ -20720,34 +20718,34 @@ QPointF QCPCurve::outsideCoordsToPixels( double key,
   QPointF result = coordsToPixels( key, value );
   switch( region )
   {
-    case 2:
-      result.setX( axisRect.left() - margin );
-      break;  // left
-    case 8:
-      result.setX( axisRect.right() + margin );
-      break;  // right
-    case 4:
-      result.setY( axisRect.top() - margin );
-      break;  // top
-    case 6:
-      result.setY( axisRect.bottom() + margin );
-      break;  // bottom
-    case 1:
-      result.setX( axisRect.left() - margin );
-      result.setY( axisRect.top() - margin );
-      break;  // top left
-    case 7:
-      result.setX( axisRect.right() + margin );
-      result.setY( axisRect.top() - margin );
-      break;  // top right
-    case 9:
-      result.setX( axisRect.right() + margin );
-      result.setY( axisRect.bottom() + margin );
-      break;  // bottom right
-    case 3:
-      result.setX( axisRect.left() - margin );
-      result.setY( axisRect.bottom() + margin );
-      break;  // bottom left
+  case 2:
+    result.setX( axisRect.left() - margin );
+    break;  // left
+  case 8:
+    result.setX( axisRect.right() + margin );
+    break;  // right
+  case 4:
+    result.setY( axisRect.top() - margin );
+    break;  // top
+  case 6:
+    result.setY( axisRect.bottom() + margin );
+    break;  // bottom
+  case 1:
+    result.setX( axisRect.left() - margin );
+    result.setY( axisRect.top() - margin );
+    break;  // top left
+  case 7:
+    result.setX( axisRect.right() + margin );
+    result.setY( axisRect.top() - margin );
+    break;  // top right
+  case 9:
+    result.setX( axisRect.right() + margin );
+    result.setY( axisRect.bottom() + margin );
+    break;  // bottom right
+  case 3:
+    result.setX( axisRect.left() - margin );
+    result.setY( axisRect.bottom() + margin );
+    break;  // bottom left
   }
   return result;
 }
@@ -23776,18 +23774,18 @@ QPointF QCPItemRect::anchorPixelPoint( int anchorId ) const
   QRectF rect = QRectF( topLeft->pixelPoint(), bottomRight->pixelPoint() );
   switch( anchorId )
   {
-    case aiTop:
-      return ( rect.topLeft() + rect.topRight() ) * 0.5;
-    case aiTopRight:
-      return rect.topRight();
-    case aiRight:
-      return ( rect.topRight() + rect.bottomRight() ) * 0.5;
-    case aiBottom:
-      return ( rect.bottomLeft() + rect.bottomRight() ) * 0.5;
-    case aiBottomLeft:
-      return rect.bottomLeft();
-    case aiLeft:
-      return ( rect.topLeft() + rect.bottomLeft() ) * 0.5;
+  case aiTop:
+    return ( rect.topLeft() + rect.topRight() ) * 0.5;
+  case aiTopRight:
+    return rect.topRight();
+  case aiRight:
+    return ( rect.topRight() + rect.bottomRight() ) * 0.5;
+  case aiBottom:
+    return ( rect.bottomLeft() + rect.bottomRight() ) * 0.5;
+  case aiBottomLeft:
+    return rect.bottomLeft();
+  case aiLeft:
+    return ( rect.topLeft() + rect.bottomLeft() ) * 0.5;
   }
 
   qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
@@ -24103,22 +24101,22 @@ QPointF QCPItemText::anchorPixelPoint( int anchorId ) const
 
   switch( anchorId )
   {
-    case aiTopLeft:
-      return rectPoly.at( 0 );
-    case aiTop:
-      return ( rectPoly.at( 0 ) + rectPoly.at( 1 ) ) * 0.5;
-    case aiTopRight:
-      return rectPoly.at( 1 );
-    case aiRight:
-      return ( rectPoly.at( 1 ) + rectPoly.at( 2 ) ) * 0.5;
-    case aiBottomRight:
-      return rectPoly.at( 2 );
-    case aiBottom:
-      return ( rectPoly.at( 2 ) + rectPoly.at( 3 ) ) * 0.5;
-    case aiBottomLeft:
-      return rectPoly.at( 3 );
-    case aiLeft:
-      return ( rectPoly.at( 3 ) + rectPoly.at( 0 ) ) * 0.5;
+  case aiTopLeft:
+    return rectPoly.at( 0 );
+  case aiTop:
+    return ( rectPoly.at( 0 ) + rectPoly.at( 1 ) ) * 0.5;
+  case aiTopRight:
+    return rectPoly.at( 1 );
+  case aiRight:
+    return ( rectPoly.at( 1 ) + rectPoly.at( 2 ) ) * 0.5;
+  case aiBottomRight:
+    return rectPoly.at( 2 );
+  case aiBottom:
+    return ( rectPoly.at( 2 ) + rectPoly.at( 3 ) ) * 0.5;
+  case aiBottomLeft:
+    return rectPoly.at( 3 );
+  case aiLeft:
+    return ( rectPoly.at( 3 ) + rectPoly.at( 0 ) ) * 0.5;
   }
 
   qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
@@ -24359,24 +24357,24 @@ QPointF QCPItemEllipse::anchorPixelPoint( int anchorId ) const
   QRectF rect = QRectF( topLeft->pixelPoint(), bottomRight->pixelPoint() );
   switch( anchorId )
   {
-    case aiTopLeftRim:
-      return rect.center() + ( rect.topLeft() - rect.center() ) * 1 / qSqrt( 2 );
-    case aiTop:
-      return ( rect.topLeft() + rect.topRight() ) * 0.5;
-    case aiTopRightRim:
-      return rect.center() + ( rect.topRight() - rect.center() ) * 1 / qSqrt( 2 );
-    case aiRight:
-      return ( rect.topRight() + rect.bottomRight() ) * 0.5;
-    case aiBottomRightRim:
-      return rect.center() + ( rect.bottomRight() - rect.center() ) * 1 / qSqrt( 2 );
-    case aiBottom:
-      return ( rect.bottomLeft() + rect.bottomRight() ) * 0.5;
-    case aiBottomLeftRim:
-      return rect.center() + ( rect.bottomLeft() - rect.center() ) * 1 / qSqrt( 2 );
-    case aiLeft:
-      return ( rect.topLeft() + rect.bottomLeft() ) * 0.5;
-    case aiCenter:
-      return ( rect.topLeft() + rect.bottomRight() ) * 0.5;
+  case aiTopLeftRim:
+    return rect.center() + ( rect.topLeft() - rect.center() ) * 1 / qSqrt( 2 );
+  case aiTop:
+    return ( rect.topLeft() + rect.topRight() ) * 0.5;
+  case aiTopRightRim:
+    return rect.center() + ( rect.topRight() - rect.center() ) * 1 / qSqrt( 2 );
+  case aiRight:
+    return ( rect.topRight() + rect.bottomRight() ) * 0.5;
+  case aiBottomRightRim:
+    return rect.center() + ( rect.bottomRight() - rect.center() ) * 1 / qSqrt( 2 );
+  case aiBottom:
+    return ( rect.bottomLeft() + rect.bottomRight() ) * 0.5;
+  case aiBottomLeftRim:
+    return rect.center() + ( rect.bottomLeft() - rect.center() ) * 1 / qSqrt( 2 );
+  case aiLeft:
+    return ( rect.topLeft() + rect.bottomLeft() ) * 0.5;
+  case aiCenter:
+    return ( rect.topLeft() + rect.bottomRight() ) * 0.5;
   }
 
   qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
@@ -24544,19 +24542,19 @@ QPointF QCPItemPixmap::anchorPixelPoint( int anchorId ) const
 
   switch( anchorId )
   {
-    case aiTop:
-      return ( rect.topLeft() + rect.topRight() ) * 0.5;
-    case aiTopRight:
-      return rect.topRight();
-    case aiRight:
-      return ( rect.topRight() + rect.bottomRight() ) * 0.5;
-    case aiBottom:
-      return ( rect.bottomLeft() + rect.bottomRight() ) * 0.5;
-    case aiBottomLeft:
-      return rect.bottomLeft();
-    case aiLeft:
-      return ( rect.topLeft() + rect.bottomLeft() ) * 0.5;
-      ;
+  case aiTop:
+    return ( rect.topLeft() + rect.topRight() ) * 0.5;
+  case aiTopRight:
+    return rect.topRight();
+  case aiRight:
+    return ( rect.topRight() + rect.bottomRight() ) * 0.5;
+  case aiBottom:
+    return ( rect.bottomLeft() + rect.bottomRight() ) * 0.5;
+  case aiBottomLeft:
+    return rect.bottomLeft();
+  case aiLeft:
+    return ( rect.topLeft() + rect.bottomLeft() ) * 0.5;
+    ;
   }
 
   qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
@@ -24893,53 +24891,53 @@ double QCPItemTracer::selectTest( const QPointF& pos, bool onlySelectable, QVari
   QRect clip = clipRect();
   switch( mStyle )
   {
-    case tsNone:
-      return -1;
-    case tsPlus:
+  case tsNone:
+    return -1;
+  case tsPlus:
+  {
+    if( clipRect().intersects(
+            QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ).toRect() ) )
+      return qSqrt(
+          qMin( distSqrToLine( center + QPointF( -w, 0 ), center + QPointF( w, 0 ), pos ),
+                distSqrToLine( center + QPointF( 0, -w ), center + QPointF( 0, w ), pos ) ) );
+    break;
+  }
+  case tsCrosshair:
+  {
+    return qSqrt( qMin( distSqrToLine( QPointF( clip.left(), center.y() ),
+                                       QPointF( clip.right(), center.y() ), pos ),
+                        distSqrToLine( QPointF( center.x(), clip.top() ),
+                                       QPointF( center.x(), clip.bottom() ), pos ) ) );
+  }
+  case tsCircle:
+  {
+    if( clip.intersects( QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ).toRect() ) )
     {
-      if( clipRect().intersects(
-              QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ).toRect() ) )
-        return qSqrt(
-            qMin( distSqrToLine( center + QPointF( -w, 0 ), center + QPointF( w, 0 ), pos ),
-                  distSqrToLine( center + QPointF( 0, -w ), center + QPointF( 0, w ), pos ) ) );
-      break;
-    }
-    case tsCrosshair:
-    {
-      return qSqrt( qMin( distSqrToLine( QPointF( clip.left(), center.y() ),
-                                         QPointF( clip.right(), center.y() ), pos ),
-                          distSqrToLine( QPointF( center.x(), clip.top() ),
-                                         QPointF( center.x(), clip.bottom() ), pos ) ) );
-    }
-    case tsCircle:
-    {
-      if( clip.intersects( QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ).toRect() ) )
+      // distance to border:
+      double centerDist = QVector2D( center - pos ).length();
+      double circleLine = w;
+      double result = qAbs( centerDist - circleLine );
+      // filled ellipse, allow click inside to count as hit:
+      if( result > mParentPlot->selectionTolerance() * 0.99 && mBrush.style() != Qt::NoBrush &&
+          mBrush.color().alpha() != 0 )
       {
-        // distance to border:
-        double centerDist = QVector2D( center - pos ).length();
-        double circleLine = w;
-        double result = qAbs( centerDist - circleLine );
-        // filled ellipse, allow click inside to count as hit:
-        if( result > mParentPlot->selectionTolerance() * 0.99 && mBrush.style() != Qt::NoBrush &&
-            mBrush.color().alpha() != 0 )
-        {
-          if( centerDist <= circleLine )
-            result = mParentPlot->selectionTolerance() * 0.99;
-        }
-        return result;
+        if( centerDist <= circleLine )
+          result = mParentPlot->selectionTolerance() * 0.99;
       }
-      break;
+      return result;
     }
-    case tsSquare:
+    break;
+  }
+  case tsSquare:
+  {
+    if( clip.intersects( QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ).toRect() ) )
     {
-      if( clip.intersects( QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ).toRect() ) )
-      {
-        QRectF rect = QRectF( center - QPointF( w, w ), center + QPointF( w, w ) );
-        bool filledRect = mBrush.style() != Qt::NoBrush && mBrush.color().alpha() != 0;
-        return rectSelectTest( rect, pos, filledRect );
-      }
-      break;
+      QRectF rect = QRectF( center - QPointF( w, w ), center + QPointF( w, w ) );
+      bool filledRect = mBrush.style() != Qt::NoBrush && mBrush.color().alpha() != 0;
+      return rectSelectTest( rect, pos, filledRect );
     }
+    break;
+  }
   }
   return -1;
 }
@@ -24958,37 +24956,37 @@ void QCPItemTracer::draw( QCPPainter* painter )
   QRect clip = clipRect();
   switch( mStyle )
   {
-    case tsNone:
-      return;
-    case tsPlus:
+  case tsNone:
+    return;
+  case tsPlus:
+  {
+    if( clip.intersects( QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ).toRect() ) )
     {
-      if( clip.intersects( QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ).toRect() ) )
-      {
-        painter->drawLine( QLineF( center + QPointF( -w, 0 ), center + QPointF( w, 0 ) ) );
-        painter->drawLine( QLineF( center + QPointF( 0, -w ), center + QPointF( 0, w ) ) );
-      }
-      break;
+      painter->drawLine( QLineF( center + QPointF( -w, 0 ), center + QPointF( w, 0 ) ) );
+      painter->drawLine( QLineF( center + QPointF( 0, -w ), center + QPointF( 0, w ) ) );
     }
-    case tsCrosshair:
-    {
-      if( center.y() > clip.top() && center.y() < clip.bottom() )
-        painter->drawLine( QLineF( clip.left(), center.y(), clip.right(), center.y() ) );
-      if( center.x() > clip.left() && center.x() < clip.right() )
-        painter->drawLine( QLineF( center.x(), clip.top(), center.x(), clip.bottom() ) );
-      break;
-    }
-    case tsCircle:
-    {
-      if( clip.intersects( QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ).toRect() ) )
-        painter->drawEllipse( center, w, w );
-      break;
-    }
-    case tsSquare:
-    {
-      if( clip.intersects( QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ).toRect() ) )
-        painter->drawRect( QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ) );
-      break;
-    }
+    break;
+  }
+  case tsCrosshair:
+  {
+    if( center.y() > clip.top() && center.y() < clip.bottom() )
+      painter->drawLine( QLineF( clip.left(), center.y(), clip.right(), center.y() ) );
+    if( center.x() > clip.left() && center.x() < clip.right() )
+      painter->drawLine( QLineF( center.x(), clip.top(), center.x(), clip.bottom() ) );
+    break;
+  }
+  case tsCircle:
+  {
+    if( clip.intersects( QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ).toRect() ) )
+      painter->drawEllipse( center, w, w );
+    break;
+  }
+  case tsSquare:
+  {
+    if( clip.intersects( QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ).toRect() ) )
+      painter->drawRect( QRectF( center - QPointF( w, w ), center + QPointF( w, w ) ) );
+    break;
+  }
   }
 }
 
@@ -25238,66 +25236,64 @@ void QCPItemBracket::draw( QCPPainter* painter )
     painter->setPen( mainPen() );
     switch( mStyle )
     {
-      case bsSquare:
-      {
-        painter->drawLine( ( centerVec + widthVec ).toPointF(),
-                           ( centerVec - widthVec ).toPointF() );
-        painter->drawLine( ( centerVec + widthVec ).toPointF(),
-                           ( centerVec + widthVec + lengthVec ).toPointF() );
-        painter->drawLine( ( centerVec - widthVec ).toPointF(),
-                           ( centerVec - widthVec + lengthVec ).toPointF() );
-        break;
-      }
-      case bsRound:
-      {
-        painter->setBrush( Qt::NoBrush );
-        QPainterPath path;
-        path.moveTo( ( centerVec + widthVec + lengthVec ).toPointF() );
-        path.cubicTo( ( centerVec + widthVec ).toPointF(), ( centerVec + widthVec ).toPointF(),
-                      centerVec.toPointF() );
-        path.cubicTo( ( centerVec - widthVec ).toPointF(), ( centerVec - widthVec ).toPointF(),
-                      ( centerVec - widthVec + lengthVec ).toPointF() );
-        painter->drawPath( path );
-        break;
-      }
-      case bsCurly:
-      {
-        painter->setBrush( Qt::NoBrush );
-        QPainterPath path;
-        path.moveTo( ( centerVec + widthVec + lengthVec ).toPointF() );
-        path.cubicTo( ( centerVec + widthVec - lengthVec * 0.8f ).toPointF(),
-                      ( centerVec + 0.4f * widthVec + lengthVec ).toPointF(),
-                      centerVec.toPointF() );
-        path.cubicTo( ( centerVec - 0.4f * widthVec + lengthVec ).toPointF(),
-                      ( centerVec - widthVec - lengthVec * 0.8f ).toPointF(),
-                      ( centerVec - widthVec + lengthVec ).toPointF() );
-        painter->drawPath( path );
-        break;
-      }
-      case bsCalligraphic:
-      {
-        painter->setPen( Qt::NoPen );
-        painter->setBrush( QBrush( mainPen().color() ) );
-        QPainterPath path;
-        path.moveTo( ( centerVec + widthVec + lengthVec ).toPointF() );
+    case bsSquare:
+    {
+      painter->drawLine( ( centerVec + widthVec ).toPointF(), ( centerVec - widthVec ).toPointF() );
+      painter->drawLine( ( centerVec + widthVec ).toPointF(),
+                         ( centerVec + widthVec + lengthVec ).toPointF() );
+      painter->drawLine( ( centerVec - widthVec ).toPointF(),
+                         ( centerVec - widthVec + lengthVec ).toPointF() );
+      break;
+    }
+    case bsRound:
+    {
+      painter->setBrush( Qt::NoBrush );
+      QPainterPath path;
+      path.moveTo( ( centerVec + widthVec + lengthVec ).toPointF() );
+      path.cubicTo( ( centerVec + widthVec ).toPointF(), ( centerVec + widthVec ).toPointF(),
+                    centerVec.toPointF() );
+      path.cubicTo( ( centerVec - widthVec ).toPointF(), ( centerVec - widthVec ).toPointF(),
+                    ( centerVec - widthVec + lengthVec ).toPointF() );
+      painter->drawPath( path );
+      break;
+    }
+    case bsCurly:
+    {
+      painter->setBrush( Qt::NoBrush );
+      QPainterPath path;
+      path.moveTo( ( centerVec + widthVec + lengthVec ).toPointF() );
+      path.cubicTo( ( centerVec + widthVec - lengthVec * 0.8f ).toPointF(),
+                    ( centerVec + 0.4f * widthVec + lengthVec ).toPointF(), centerVec.toPointF() );
+      path.cubicTo( ( centerVec - 0.4f * widthVec + lengthVec ).toPointF(),
+                    ( centerVec - widthVec - lengthVec * 0.8f ).toPointF(),
+                    ( centerVec - widthVec + lengthVec ).toPointF() );
+      painter->drawPath( path );
+      break;
+    }
+    case bsCalligraphic:
+    {
+      painter->setPen( Qt::NoPen );
+      painter->setBrush( QBrush( mainPen().color() ) );
+      QPainterPath path;
+      path.moveTo( ( centerVec + widthVec + lengthVec ).toPointF() );
 
-        path.cubicTo( ( centerVec + widthVec - lengthVec * 0.8f ).toPointF(),
-                      ( centerVec + 0.4f * widthVec + 0.8f * lengthVec ).toPointF(),
-                      centerVec.toPointF() );
-        path.cubicTo( ( centerVec - 0.4f * widthVec + 0.8f * lengthVec ).toPointF(),
-                      ( centerVec - widthVec - lengthVec * 0.8f ).toPointF(),
-                      ( centerVec - widthVec + lengthVec ).toPointF() );
+      path.cubicTo( ( centerVec + widthVec - lengthVec * 0.8f ).toPointF(),
+                    ( centerVec + 0.4f * widthVec + 0.8f * lengthVec ).toPointF(),
+                    centerVec.toPointF() );
+      path.cubicTo( ( centerVec - 0.4f * widthVec + 0.8f * lengthVec ).toPointF(),
+                    ( centerVec - widthVec - lengthVec * 0.8f ).toPointF(),
+                    ( centerVec - widthVec + lengthVec ).toPointF() );
 
-        path.cubicTo( ( centerVec - widthVec - lengthVec * 0.5f ).toPointF(),
-                      ( centerVec - 0.2f * widthVec + 1.2f * lengthVec ).toPointF(),
-                      ( centerVec + lengthVec * 0.2f ).toPointF() );
-        path.cubicTo( ( centerVec + 0.2f * widthVec + 1.2f * lengthVec ).toPointF(),
-                      ( centerVec + widthVec - lengthVec * 0.5f ).toPointF(),
-                      ( centerVec + widthVec + lengthVec ).toPointF() );
+      path.cubicTo( ( centerVec - widthVec - lengthVec * 0.5f ).toPointF(),
+                    ( centerVec - 0.2f * widthVec + 1.2f * lengthVec ).toPointF(),
+                    ( centerVec + lengthVec * 0.2f ).toPointF() );
+      path.cubicTo( ( centerVec + 0.2f * widthVec + 1.2f * lengthVec ).toPointF(),
+                    ( centerVec + widthVec - lengthVec * 0.5f ).toPointF(),
+                    ( centerVec + widthVec + lengthVec ).toPointF() );
 
-        painter->drawPath( path );
-        break;
-      }
+      painter->drawPath( path );
+      break;
+    }
     }
   }
 }
@@ -25317,8 +25313,8 @@ QPointF QCPItemBracket::anchorPixelPoint( int anchorId ) const
 
   switch( anchorId )
   {
-    case aiCenter:
-      return centerVec.toPointF();
+  case aiCenter:
+    return centerVec.toPointF();
   }
   qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
   return QPointF();

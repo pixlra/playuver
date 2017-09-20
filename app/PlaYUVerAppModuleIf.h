@@ -52,7 +52,7 @@ class PlaYUVerAppModuleIf
   friend class ModuleHandleDock;
   friend class ModulesHandleOptDialog;
 
- private:
+private:
   Bool m_bIsRunning;
   Bool m_bSuccess;
 
@@ -70,10 +70,10 @@ class PlaYUVerAppModuleIf
   PlaYUVerFrame* m_pcProcessedFrame;
   Double m_dMeasurementResult;
 
- public:
+public:
   class EventData : public QEvent
   {
-   public:
+  public:
     EventData( bool success, PlaYUVerAppModuleIf* module ) : QEvent( QEvent::User )
     {
       m_bSuccess = success;
@@ -101,7 +101,7 @@ class PlaYUVerAppModuleIf
   Void show();
   Void destroy();
 
- protected:
+protected:
   virtual void run();
 };
 

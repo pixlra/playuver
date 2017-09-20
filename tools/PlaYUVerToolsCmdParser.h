@@ -31,7 +31,7 @@
 
 class PlaYUVerToolsCmdParser
 {
- public:
+public:
   PlaYUVerToolsCmdParser();
   ~PlaYUVerToolsCmdParser();
 
@@ -54,7 +54,7 @@ class PlaYUVerToolsCmdParser
 
   PlaYUVerOptions& Opts() { return m_cOptions; }
 
- protected:
+protected:
   PlaYUVerOptions m_cOptions;
   UInt m_uiLogLevel;
 

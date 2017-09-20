@@ -35,7 +35,7 @@ class MeasureOpticalFlowDualTVL1 : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( MeasureOpticalFlowDualTVL1 )
 
- private:
+private:
   Bool m_bShowReconstruction;
   Int m_iStep;
   cv::Ptr<cv::DenseOpticalFlow> m_cTvl1;
@@ -47,7 +47,7 @@ class MeasureOpticalFlowDualTVL1 : public PlaYUVerModuleIf
   Void drawFlow();
   Void compensateFlow();
 
- public:
+public:
   MeasureOpticalFlowDualTVL1();
   virtual ~MeasureOpticalFlowDualTVL1() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );

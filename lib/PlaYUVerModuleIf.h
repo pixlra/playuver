@@ -42,7 +42,7 @@
 #define REGISTER_CLASS_MAKER( X ) \
   extern "C" PlaYUVerModuleIf* Maker() { return new X; }
 #define REGISTER_CLASS_FACTORY( X )                     \
- public:                                                \
+public:                                                 \
   static PlaYUVerModuleIf* Create() { return new X(); } \
   void Delete() { delete this; }
 #define _BASIC_MODULE_API_2_CHECK_                \
@@ -120,7 +120,7 @@ enum Module_Key_Supported
  */
 class PlaYUVerModuleIf
 {
- public:
+public:
   Int m_iModuleAPI;
   Int m_iModuleType;
   const Char* m_pchModuleCategory;

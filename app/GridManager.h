@@ -41,7 +41,7 @@ class QPainter;
  */
 class GridManager
 {
- public:
+public:
   enum Style
   {
     IntersectionDot = 0,
@@ -92,7 +92,7 @@ class GridManager
    */
   QPoint nearPos( int x = -1, int y = -1 );
 
- private:
+private:
   UInt m_uiHSpace;
   UInt m_uiVSpace;
   QColor m_cGridColor;

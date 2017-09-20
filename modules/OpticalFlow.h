@@ -34,7 +34,7 @@
 
 class OpticalFlowModule : public PlaYUVerModuleIf
 {
- protected:
+protected:
   Bool m_bShowReconstruction;
   Int m_iStep;
   cv::Ptr<cv::DenseOpticalFlow> m_cOpticalFlow;
@@ -46,7 +46,7 @@ class OpticalFlowModule : public PlaYUVerModuleIf
   Void compensateFlow();
   Bool commonCreate( std::vector<PlaYUVerFrame*> apcFrameList );
 
- public:
+public:
   OpticalFlowModule();
   virtual ~OpticalFlowModule() {}
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
@@ -56,7 +56,7 @@ class OpticalFlowModule : public PlaYUVerModuleIf
 class OpticalFlowDualTVL1 : public OpticalFlowModule
 {
   REGISTER_CLASS_FACTORY( OpticalFlowDualTVL1 )
- public:
+public:
   OpticalFlowDualTVL1();
   virtual ~OpticalFlowDualTVL1() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
@@ -65,7 +65,7 @@ class OpticalFlowDualTVL1 : public OpticalFlowModule
 class OpticalFlowSparseToDense : public OpticalFlowModule
 {
   REGISTER_CLASS_FACTORY( OpticalFlowSparseToDense )
- public:
+public:
   OpticalFlowSparseToDense();
   virtual ~OpticalFlowSparseToDense() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
@@ -74,7 +74,7 @@ class OpticalFlowSparseToDense : public OpticalFlowModule
 class OpticalFlowFarneback : public OpticalFlowModule
 {
   REGISTER_CLASS_FACTORY( OpticalFlowFarneback )
- public:
+public:
   OpticalFlowFarneback();
   virtual ~OpticalFlowFarneback() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
@@ -83,7 +83,7 @@ class OpticalFlowFarneback : public OpticalFlowModule
 class OpticalDeepFlow : public OpticalFlowModule
 {
   REGISTER_CLASS_FACTORY( OpticalDeepFlow )
- public:
+public:
   OpticalDeepFlow();
   virtual ~OpticalDeepFlow() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );

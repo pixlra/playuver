@@ -30,10 +30,10 @@
 
 class FilterComponentModule : public PlaYUVerModuleIf
 {
- private:
+private:
   PlaYUVerFrame* m_pcFilteredFrame;
 
- public:
+public:
   FilterComponentModule();
   virtual ~FilterComponentModule() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList ) = 0;
@@ -47,7 +47,7 @@ class FilterComponentModule : public PlaYUVerModuleIf
 class FilterComponentLuma : public FilterComponentModule
 {
   REGISTER_CLASS_FACTORY( FilterComponentLuma )
- public:
+public:
   FilterComponentLuma();
   virtual ~FilterComponentLuma() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
@@ -57,7 +57,7 @@ class FilterComponentLuma : public FilterComponentModule
 class FilterComponentChromaU : public FilterComponentModule
 {
   REGISTER_CLASS_FACTORY( FilterComponentChromaU )
- public:
+public:
   FilterComponentChromaU();
   virtual ~FilterComponentChromaU() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
@@ -67,7 +67,7 @@ class FilterComponentChromaU : public FilterComponentModule
 class FilterComponentChromaV : public FilterComponentModule
 {
   REGISTER_CLASS_FACTORY( FilterComponentChromaV )
- public:
+public:
   FilterComponentChromaV();
   virtual ~FilterComponentChromaV() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );

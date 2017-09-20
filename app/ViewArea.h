@@ -45,7 +45,7 @@ class ViewArea : public QWidget
 {
   Q_OBJECT
 
- public:
+public:
   enum ViewModes
   {
     NavigationView,
@@ -88,13 +88,13 @@ class ViewArea : public QWidget
   // min or max zoom value)
   Double scaleZoomFactor( Double scale, QPoint center, QSize minimumSize );
 
- Q_SIGNALS:
+Q_SIGNALS:
   void selectionChanged( const QRect& rect );
   void positionChanged( const QPoint& pos );
   void scrollBarMoved( QPoint offset );
   void zoomFactorChanged_byWheel( const double factor, const QPoint center );
 
- public Q_SLOTS:
+public Q_SLOTS:
   //  Void setNormalMode();
   //  Void setMaskMode();
   //  Void setMaskTool();
@@ -104,7 +104,7 @@ class ViewArea : public QWidget
   void setSnapToGrid( bool enable );
   //  void setSelectedArea( QRect &rect );
 
- protected:
+protected:
   Void paintEvent( QPaintEvent* event );
   Void resizeEvent( QResizeEvent* event );
   Void mousePressEvent( QMouseEvent* event );
@@ -115,7 +115,7 @@ class ViewArea : public QWidget
   Void updateSize();
   Void updateOffset();
 
- private:
+private:
   enum ViewMode
   {
     NormalMode,

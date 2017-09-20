@@ -65,71 +65,71 @@ void GridManager::drawGrid( QPixmap& image, const QRect& area, QPainter* painter
   style = Solid;
   switch( style )
   {
-    case IntersectionDot:
-    case IntersectionCross:
+  case IntersectionDot:
+  case IntersectionCross:
+  {
+    painter->setPen( mainPen );
+    // Draw crosses or dots on intersections
+    for( int x = offsetx; x <= area.right(); x += hSpacing )
     {
-      painter->setPen( mainPen );
-      // Draw crosses or dots on intersections
-      for( int x = offsetx; x <= area.right(); x += hSpacing )
-      {
-        if( x >= imageWidth )
-          break;
+      if( x >= imageWidth )
+        break;
 
-        for( int y = offsety; y <= area.bottom(); y += vSpacing )
-        {
-          if( y >= imageHeight )
-            break;
-
-          if( x >= area.x() && y >= area.y() )
-          {
-            if( style == IntersectionDot )
-              painter->drawPoint( x, y );  // Dot
-            else
-            {                                           // Crosses:
-              painter->drawLine( x, y - 1, x, y + 1 );  // Ver.line
-              painter->drawLine( x - 1, y, x + 1, y );  // Hor.line
-            }
-          }
-        }
-      }
-      break;
-    }
-    case Dashed:
-    {
-      // Change pen to the dashed line
-      mainPen.setStyle( Qt::DashLine );
-    }
-    default:  // Solid:
-    {
-      painter->setPen( mainPen );
-
-      // Draw vertical line
-      for( int x = offsetx; x <= area.right(); x += hSpacing )
-      {
-        if( x >= imageWidth )
-          break;
-
-        if( x >= area.x() )
-        {
-          // Always draw the full line otherwise the line stippling
-          // varies with the location of view area and we get glitchy
-          // patterns.
-          painter->drawLine( x, 0, x, imageHeight - 1 );
-        }
-      }
-      // Draw horizontal line
       for( int y = offsety; y <= area.bottom(); y += vSpacing )
       {
         if( y >= imageHeight )
           break;
 
-        if( y >= area.y() )
+        if( x >= area.x() && y >= area.y() )
         {
-          painter->drawLine( 0, y, imageWidth - 1, y );
+          if( style == IntersectionDot )
+            painter->drawPoint( x, y );  // Dot
+          else
+          {                                           // Crosses:
+            painter->drawLine( x, y - 1, x, y + 1 );  // Ver.line
+            painter->drawLine( x - 1, y, x + 1, y );  // Hor.line
+          }
         }
       }
-      break;
     }
+    break;
+  }
+  case Dashed:
+  {
+    // Change pen to the dashed line
+    mainPen.setStyle( Qt::DashLine );
+  }
+  default:  // Solid:
+  {
+    painter->setPen( mainPen );
+
+    // Draw vertical line
+    for( int x = offsetx; x <= area.right(); x += hSpacing )
+    {
+      if( x >= imageWidth )
+        break;
+
+      if( x >= area.x() )
+      {
+        // Always draw the full line otherwise the line stippling
+        // varies with the location of view area and we get glitchy
+        // patterns.
+        painter->drawLine( x, 0, x, imageHeight - 1 );
+      }
+    }
+    // Draw horizontal line
+    for( int y = offsety; y <= area.bottom(); y += vSpacing )
+    {
+      if( y >= imageHeight )
+        break;
+
+      if( y >= area.y() )
+      {
+        painter->drawLine( 0, y, imageWidth - 1, y );
+      }
+    }
+    break;
+  }
   }
 }
 

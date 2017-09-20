@@ -51,7 +51,7 @@ class WidgetFrameNumber;
 class VideoHandle : public QWidget
 {
   Q_OBJECT
- public:
+public:
   VideoHandle( QWidget*, PlaYUVerSubWindowHandle* );
   ~VideoHandle();
 
@@ -70,7 +70,7 @@ class VideoHandle : public QWidget
 
   Void openSubWindow( VideoSubWindow* subWindow );
 
- private:
+private:
   QWidget* m_pcParet;
   PlaYUVerSubWindowHandle* m_pcMainWindowManager;
   enum
@@ -126,10 +126,10 @@ class VideoHandle : public QWidget
   UInt64 getMaxFrameNumber();
   Void setTimerStatus();
 
- Q_SIGNALS:
+Q_SIGNALS:
   void changed();
 
- private Q_SLOTS:
+private Q_SLOTS:
   void update();
   void updateSelectionArea( QRect area );
   void closeSubWindow( SubWindowAbstract* subWindow );

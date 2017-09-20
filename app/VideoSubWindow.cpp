@@ -84,13 +84,13 @@ Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename )
 
 class VideoInformation : public QWidget
 {
- private:
+private:
   QList<QStaticText> m_cTopLeftTextList;
   QFont m_cTopLeftTextFont;
   QFont m_cCenterTextFont;
   Bool m_bBusyWindow;
 
- public:
+public:
   VideoInformation( QWidget* parent ) : QWidget( parent ), m_bBusyWindow( false )
   {
     setPalette( Qt::transparent );
@@ -108,7 +108,7 @@ class VideoInformation : public QWidget
   }
   Void setBusyWindow( Bool bFlag ) { m_bBusyWindow = bFlag; }
 
- protected:
+protected:
   void paintEvent( QPaintEvent* event )
   {
     QPainter painter( this );
@@ -208,18 +208,18 @@ Void VideoSubWindow::keyPressEvent( QKeyEvent* event )
       Bool bRet = false;
       switch( event->key() )
       {
-        case Qt::Key_A:
-          bRet = m_pcCurrentDisplayModule->getModule()->keyPressed( MODULE_KEY_LEFT );
-          break;
-        case Qt::Key_D:
-          bRet = m_pcCurrentDisplayModule->getModule()->keyPressed( MODULE_KEY_RIGHT );
-          break;
-        case Qt::Key_W:
-          bRet = m_pcCurrentDisplayModule->getModule()->keyPressed( MODULE_KEY_UP );
-          break;
-        case Qt::Key_S:
-          bRet = m_pcCurrentDisplayModule->getModule()->keyPressed( MODULE_KEY_DOWN );
-          break;
+      case Qt::Key_A:
+        bRet = m_pcCurrentDisplayModule->getModule()->keyPressed( MODULE_KEY_LEFT );
+        break;
+      case Qt::Key_D:
+        bRet = m_pcCurrentDisplayModule->getModule()->keyPressed( MODULE_KEY_RIGHT );
+        break;
+      case Qt::Key_W:
+        bRet = m_pcCurrentDisplayModule->getModule()->keyPressed( MODULE_KEY_UP );
+        break;
+      case Qt::Key_S:
+        bRet = m_pcCurrentDisplayModule->getModule()->keyPressed( MODULE_KEY_DOWN );
+        break;
       }
       if( bRet )
       {

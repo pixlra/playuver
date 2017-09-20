@@ -36,11 +36,11 @@ class DisparityStereoVar : public PlaYUVerModuleIf
 {
   REGISTER_CLASS_FACTORY( DisparityStereoVar )
 
- private:
+private:
   PlaYUVerFrame* m_pcDisparityFrame;
   cv::StereoVar m_cStereoVar;
 
- public:
+public:
   DisparityStereoVar();
   virtual ~DisparityStereoVar() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );

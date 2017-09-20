@@ -736,9 +736,9 @@ Bool VideoSubWindow::playEvent()
     {
       refreshFrame();
 #ifndef QT_NO_CONCURRENT
-      m_cReadResult = QtConcurrent::run( m_pCurrStream, &PlaYUVerStream::readFrameFillRGBBuffer );
+			m_cReadResult = QtConcurrent::run( m_pCurrStream, &PlaYUVerStream::readNextFrameFillRGBBuffer );
 #else
-      m_pCurrStream->readFrameFillRGBBuffer();
+			m_pCurrStream->readNextFrameFillRGBBuffer();
 #endif
     }
   }

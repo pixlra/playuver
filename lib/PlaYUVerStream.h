@@ -29,6 +29,7 @@
 
 class PlaYUVerFrame;
 class PlaYUVerStreamHandlerIf;
+class PlaYUVerStreamBufferPrivate;
 
 typedef struct
 {
@@ -133,24 +134,29 @@ public:
 
   Void loadAll();
 
-  Void readFrame();
-  Void readFrameFillRGBBuffer();
+
   Void writeFrame();
   Void writeFrame( PlaYUVerFrame* pcFrame );
 
   Bool saveFrame( const String& filename );
   static Bool saveFrame( const String& filename, PlaYUVerFrame* saveFrame );
 
-  Bool setNextFrame();
-  PlaYUVerFrame* getCurrFrame();
   PlaYUVerFrame* getCurrFrame( PlaYUVerFrame* );
-  PlaYUVerFrame* getNextFrame();
+
+	// continuous read control
+	Bool setNextFrame();
+	Void readNextFrame();
+	Void readNextFrameFillRGBBuffer();
+	PlaYUVerFrame* getCurrFrame();
 
   Bool seekInputRelative( Bool bIsFoward );
   Bool seekInput( UInt64 new_frame_num );
 
   Bool isInit() { return m_bInit; }
   Void getDuration( Int* duration_array );
+
+private:
+	Bool readFrame( PlaYUVerFrame* frame );
 
 private:
   Bool m_bInit;
@@ -164,11 +170,8 @@ private:
 
   Bool m_bLoadAll;
 
-  UInt m_uiFrameBufferSize;
-  PlaYUVerFrame** m_ppcFrameBuffer;
-  PlaYUVerFrame* m_pcCurrFrame;
-  PlaYUVerFrame* m_pcNextFrame;
-  UInt m_uiFrameBufferIndex;
+  PlaYUVerStreamBufferPrivate* m_frameBuffer;
+
   UInt64 m_uiCurrFrameFileIdx;
 };
 

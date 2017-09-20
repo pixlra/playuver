@@ -442,7 +442,6 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( const QString& Filename,
     if( standardResolutionSizes.at( i ) == QSize( rWidth, rHeight ) )
     {
       m_comboBoxStandardResolution->setCurrentIndex( i );
-      qDebug() << "ola";
       break;
     }
   }

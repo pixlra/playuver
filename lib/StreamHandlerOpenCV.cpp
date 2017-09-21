@@ -129,6 +129,7 @@ UInt64 StreamHandlerOpenCV::calculateFrameNumber()
 
 Bool StreamHandlerOpenCV::seek( UInt64 iFrameNum )
 {
+  // m_uiCurrFrameFileIdx =
   return true;
 }
 
@@ -147,6 +148,8 @@ Bool StreamHandlerOpenCV::read( PlaYUVerFrame* pcFrame )
     Mat cvMat = cv::imread( m_cFilename );
     bRet = pcFrame->fromMat( cvMat );
   }
+  if( bRet )
+    m_uiCurrFrameFileIdx++;
   return bRet;
 }
 

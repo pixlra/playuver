@@ -101,6 +101,7 @@ private:
   QFuture<Void> m_cReadResult;
 
   Void refreshFrameOperation();
+  Bool goToNextFrame( Bool bThreaded = false );
 
   static Bool guessFormat( QString filename,
                            UInt& rWidth,

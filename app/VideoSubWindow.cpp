@@ -689,6 +689,33 @@ Void VideoSubWindow::refreshFrame( Bool bThreaded )
   }
 }
 
+Bool VideoSubWindow::goToNextFrame( Bool bThreaded )
+{
+#ifndef QT_NO_CONCURRENT
+  m_cRefreshResult.waitForFinished();
+  m_cReadResult.waitForFinished();
+#endif
+  Bool bEndOfSeq = m_pCurrStream->setNextFrame();
+  if( !bEndOfSeq )
+  {
+#ifndef QT_NO_CONCURRENT
+    m_cRefreshResult.waitForFinished();
+    if( bThreaded )
+    {
+      refreshFrame();
+      m_cReadResult =
+          QtConcurrent::run( m_pCurrStream, &PlaYUVerStream::readNextFrameFillRGBBuffer );
+    }
+    else
+#endif
+    {
+      refreshFrame();
+      m_pCurrStream->readNextFrameFillRGBBuffer();
+    }
+  }
+  return bEndOfSeq;
+}
+
 Bool VideoSubWindow::save( QString filename )
 {
   Bool iRet = false;
@@ -727,20 +754,7 @@ Bool VideoSubWindow::playEvent()
   Bool bEndOfSeq = false;
   if( m_pCurrStream && m_bIsPlaying )
   {
-#ifndef QT_NO_CONCURRENT
-    m_cRefreshResult.waitForFinished();
-    m_cReadResult.waitForFinished();
-#endif
-    bEndOfSeq = m_pCurrStream->setNextFrame();
-    if( !bEndOfSeq )
-    {
-      refreshFrame();
-#ifndef QT_NO_CONCURRENT
-			m_cReadResult = QtConcurrent::run( m_pCurrStream, &PlaYUVerStream::readNextFrameFillRGBBuffer );
-#else
-			m_pCurrStream->readNextFrameFillRGBBuffer();
-#endif
-    }
+    bEndOfSeq = goToNextFrame( true );
   }
   return bEndOfSeq;
 }
@@ -754,22 +768,27 @@ Void VideoSubWindow::pause()
 Void VideoSubWindow::seekAbsoluteEvent( UInt new_frame_num )
 {
   if( m_pCurrStream )
-  {
     if( m_pCurrStream->seekInput( new_frame_num ) )
-    {
       refreshFrame();
-    }
-  }
 }
 
 Void VideoSubWindow::seekRelativeEvent( Bool bIsFoward )
 {
+  Bool bRefresh = false;
   if( m_pCurrStream )
   {
-    if( m_pCurrStream->seekInputRelative( bIsFoward ) )
+    if( bIsFoward )
     {
-      refreshFrame();
+      goToNextFrame( true );
     }
+    else
+    {
+      bRefresh = m_pCurrStream->seekInputRelative( bIsFoward );
+    }
+  }
+  if( bRefresh )
+  {
+    refreshFrame();
   }
 }
 

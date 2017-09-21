@@ -419,7 +419,7 @@ Int PlaYUVerTools::RateReductionOperation()
     abEOF = m_apcInputStreams[0]->setNextFrame();
     if( !abEOF )
     {
-			m_apcInputStreams[0]->readNextFrame();
+      m_apcInputStreams[0]->readNextFrame();
     }
   }
   return 0;
@@ -500,7 +500,7 @@ Int PlaYUVerTools::QualityOperation()
       abEOF[s] = m_apcInputStreams[s]->setNextFrame();
       if( !abEOF[s] )
       {
-				m_apcInputStreams[s]->readNextFrame();
+        m_apcInputStreams[s]->readNextFrame();
       }
     }
   }
@@ -584,7 +584,7 @@ Int PlaYUVerTools::ModuleOperation()
       abEOF[s] = m_apcInputStreams[s]->setNextFrame();
       if( !abEOF[s] )
       {
-				m_apcInputStreams[s]->readNextFrame();
+        m_apcInputStreams[s]->readNextFrame();
       }
     }
   }

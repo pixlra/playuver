@@ -214,6 +214,24 @@ struct PlaYUVerFramePrivate
 
     m_bInit = true;
   }
+
+  ~PlaYUVerFramePrivate()
+  {
+    if( m_puiHistogram )
+    {
+      freeMem1D( m_puiHistogram );
+    }
+    m_puiHistogram = NULL;
+    m_bHasHistogram = false;
+
+    if( m_pppcInputPel )
+      freeImgMemory( m_pppcInputPel );
+    m_pppcInputPel = NULL;
+
+    if( m_pcARGB32 )
+      freeMem1D( m_pcARGB32 );
+    m_pcARGB32 = NULL;
+  }
 };
 
 /*!
@@ -302,21 +320,6 @@ PlaYUVerFrame::PlaYUVerFrame( const PlaYUVerFrame* other,
 
 PlaYUVerFrame::~PlaYUVerFrame()
 {
-  if( d->m_puiHistogram )
-  {
-    freeMem1D( d->m_puiHistogram );
-  }
-  d->m_puiHistogram = NULL;
-  d->m_bHasHistogram = false;
-
-  if( d->m_pppcInputPel )
-    freeImgMemory( d->m_pppcInputPel );
-  d->m_pppcInputPel = NULL;
-
-  if( d->m_pcARGB32 )
-    freeMem1D( d->m_pcARGB32 );
-  d->m_pcARGB32 = NULL;
-
   delete d;
 }
 

@@ -389,6 +389,7 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
 #endif
 
     pcFrame->frameFromBuffer( m_pStreamBuffer, m_iEndianness );
+    m_uiCurrFrameFileIdx++;
     return true;
   }
   return false;
@@ -402,5 +403,6 @@ Bool StreamHandlerLibav::write( PlaYUVerFrame* pcFrame )
 Bool StreamHandlerLibav::seek( UInt64 iFrameNum )
 {
   av_seek_frame( m_cFmtCtx, m_iStreamIdx, iFrameNum, AVSEEK_FLAG_FRAME );
+  m_uiCurrFrameFileIdx = iFrameNum;
   return true;
 }

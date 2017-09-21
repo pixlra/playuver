@@ -45,14 +45,16 @@ class PlaYUVerStreamHandlerIf
 
 public:
   PlaYUVerStreamHandlerIf()
+      : m_bIsInput( true )
+      , m_uiCurrFrameFileIdx( 0 )
+      , m_uiWidth( 0 )
+      , m_uiHeight( 0 )
+      , m_iPixelFormat( -1 )
+      , m_uiBitsPerPixel( 8 )
+      , m_iEndianness( -1 )
+      , m_dFrameRate( 30 )
+      , m_pStreamBuffer( NULL )
   {
-    m_bIsInput = true;
-    m_uiWidth = 0;
-    m_uiHeight = 0;
-    m_iPixelFormat = -1;
-    m_uiBitsPerPixel = 8;
-    m_iEndianness = -1;
-    m_dFrameRate = 30;
   }
   virtual ~PlaYUVerStreamHandlerIf() {}
   virtual void Delete() = 0;
@@ -71,6 +73,7 @@ public:
 
 protected:
   Bool m_bIsInput;
+  UInt64 m_uiCurrFrameFileIdx;
   String m_cFilename;
   UInt m_uiWidth;
   UInt m_uiHeight;

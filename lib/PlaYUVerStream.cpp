@@ -45,63 +45,47 @@
 class PlaYUVerStreamBufferPrivate
 {
 private:
-	UInt m_uiSize;
-	UInt m_uiIndex;
   std::vector<PlaYUVerFrame*> m_apcFrameBuffer;
+  UInt m_uiIndex;
 
 public:
   PlaYUVerStreamBufferPrivate( UInt size, UInt width, UInt height, Int pelFormat, Int bitsPixel )
   {
-		m_uiSize = size;
-		for( UInt i = 0; i < m_uiSize; i++ )
+    for( UInt i = 0; i < size; i++ )
     {
-      try
-      {
-        PlaYUVerFrame* pFrame = new PlaYUVerFrame( width, height, pelFormat, bitsPixel );
-        m_apcFrameBuffer.push_back( pFrame );
-      }
-      catch( PlaYUVerFailure& e )
-      {
-        throw PlaYUVerFailure( "PlaYUVerStream", "Cannot allocated frame buffer" );
-      }
+      PlaYUVerFrame* pFrame = new PlaYUVerFrame( width, height, pelFormat, bitsPixel );
+      m_apcFrameBuffer.push_back( pFrame );
     }
-		m_uiIndex = 0;
+    m_uiIndex = 0;
   }
 
   ~PlaYUVerStreamBufferPrivate()
   {
-    for( UInt i = 0; i < m_apcFrameBuffer.size(); i++ )
+    while( m_apcFrameBuffer.size() > 0 )
     {
       delete m_apcFrameBuffer.back();
       m_apcFrameBuffer.pop_back();
     }
   }
+  Void increase( UInt newSize )
+  {
+    for( UInt i = m_apcFrameBuffer.size(); i < newSize; i++ )
+    {
+      PlaYUVerFrame* pFrame = new PlaYUVerFrame( m_apcFrameBuffer.at( 0 ) );
+      m_apcFrameBuffer.push_back( pFrame );
+    }
+  }
+  UInt size() { return m_apcFrameBuffer.size(); }
+  Void setIndex( UInt i ) { m_uiIndex = i; }
+  PlaYUVerFrame* frame( Int i ) { return m_apcFrameBuffer.at( i ); }
 
-	UInt size()
-	{
-		return m_uiSize;
-	}
-	Void setIndex( UInt i )
-	{
-		m_uiSize = i;
-	}
-	PlaYUVerFrame* frame( Int i) { return m_apcFrameBuffer.at( i ); }
+  PlaYUVerFrame* current() { return m_apcFrameBuffer.at( m_uiIndex ); }
+  PlaYUVerFrame* next() { return m_apcFrameBuffer.at( nextIndex() ); }
+  Void setNextFrame() { m_uiIndex = nextIndex(); }
 
-	PlaYUVerFrame* current() { return m_apcFrameBuffer.at( m_uiIndex ); }
-	PlaYUVerFrame* next() { return m_apcFrameBuffer.at( nextIndex() ); }
-	Void setNextFrame()
-	{
-		m_uiIndex = nextIndex();
-	}
 private:
-	inline Int nextIndex()
-	{
-		return m_uiIndex + 1 >= m_uiSize ? 0 : m_uiIndex + 1;
-	}
-	inline Int prevIndex()
-	{
-		return m_uiIndex - 1 < 0 ? 0 : m_uiIndex + 1;
-	}
+  inline Int nextIndex() { return m_uiIndex + 1 >= m_apcFrameBuffer.size() ? 0 : m_uiIndex + 1; }
+  inline Int prevIndex() { return m_uiIndex - 1 < 0 ? m_apcFrameBuffer.size() - 1 : m_uiIndex - 1; }
 };
 
 std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
@@ -200,7 +184,6 @@ PlaYUVerStream::PlaYUVerStream()
   m_uiTotalFrameNum = 0;
   m_iCurrFrameNum = -1;
   m_cFilename = "";
-  m_uiCurrFrameFileIdx = 0;
 }
 
 PlaYUVerStream::~PlaYUVerStream()
@@ -450,35 +433,23 @@ Void PlaYUVerStream::loadAll()
   if( m_bLoadAll || !m_bIsInput )
     return;
 
-
-	// Keep past, current and future frames
-
-	PlaYUVerStreamBufferPrivate* aux_frameBuffer;
-	try
-	{
-		aux_frameBuffer = new PlaYUVerStreamBufferPrivate(
-				m_uiTotalFrameNum, m_pcHandler->m_uiWidth, m_pcHandler->m_uiHeight,
-				m_pcHandler->m_iPixelFormat, m_pcHandler->m_uiBitsPerPixel );
-	}
-	catch( PlaYUVerFailure& e )
-	{
-		delete aux_frameBuffer;
-		return;
-	}
-
-	if( m_frameBuffer )
-	{
-		delete m_frameBuffer;
-	}
-	m_frameBuffer = aux_frameBuffer;
+  try
+  {
+    m_frameBuffer->increase( m_uiTotalFrameNum );
+  }
+  catch( PlaYUVerFailure& e )
+  {
+    close();
+    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot allocated frame buffer" );
+  }
 
   seekInput( 0 );
-	for( UInt i = 2; i < m_frameBuffer->size(); i++ )
+  for( UInt i = 2; i < m_frameBuffer->size(); i++ )
   {
-		readFrame( m_frameBuffer->frame(i) );
-	}
+    readFrame( m_frameBuffer->frame( i ) );
+  }
   m_bLoadAll = true;
-	m_iCurrFrameNum = 0;
+  m_iCurrFrameNum = 0;
 }
 
 Void PlaYUVerStream::getDuration( Int* duration_array )
@@ -504,26 +475,25 @@ Void PlaYUVerStream::getDuration( Int* duration_array )
   //   *duration_array++ = secs;
 }
 
-Bool PlaYUVerStream::readFrame(PlaYUVerFrame *frame)
+Bool PlaYUVerStream::readFrame( PlaYUVerFrame* frame )
 {
-	if( !m_bInit || !m_bIsInput || m_uiCurrFrameFileIdx >= m_uiTotalFrameNum )
-		return false;
+  if( !m_bInit || !m_bIsInput || m_pcHandler->m_uiCurrFrameFileIdx >= m_uiTotalFrameNum )
+    return false;
 
-	if( m_bLoadAll )
-		return true;
+  if( m_bLoadAll )
+    return true;
 
-	if( !m_pcHandler->read( frame ) )
+  if( !m_pcHandler->read( frame ) )
   {
     throw PlaYUVerFailure( "PlaYUVerStream", "Cannot read file" );
-		return false;
+    return false;
   }
-  m_uiCurrFrameFileIdx++;
-	return true;
+  return true;
 }
 
 Void PlaYUVerStream::writeFrame()
 {
-	writeFrame( m_frameBuffer->current() );
+  writeFrame( m_frameBuffer->current() );
 }
 
 Void PlaYUVerStream::writeFrame( PlaYUVerFrame* pcFrame )
@@ -537,7 +507,7 @@ Void PlaYUVerStream::writeFrame( PlaYUVerFrame* pcFrame )
 
 Bool PlaYUVerStream::saveFrame( const String& filename )
 {
-	return saveFrame( filename, m_frameBuffer->current() );
+  return saveFrame( filename, m_frameBuffer->current() );
 }
 
 Bool PlaYUVerStream::saveFrame( const String& filename, PlaYUVerFrame* saveFrame )
@@ -558,44 +528,42 @@ Bool PlaYUVerStream::setNextFrame()
 {
   Bool bEndOfSeq = false;
 
-	if( m_iCurrFrameNum + 1 < Int( m_uiTotalFrameNum ) )
-	{
-		m_frameBuffer->setNextFrame();
-		m_iCurrFrameNum++;
-	}
-	else
-	{
-		bEndOfSeq = true;
-	}
+  if( m_iCurrFrameNum + 1 < Int( m_uiTotalFrameNum ) )
+  {
+    m_frameBuffer->setNextFrame();
+    m_iCurrFrameNum++;
+  }
+  else
+  {
+    bEndOfSeq = true;
+  }
   return bEndOfSeq;
 }
 
 Void PlaYUVerStream::readNextFrame()
 {
-	readFrame( m_frameBuffer->next() );
+  readFrame( m_frameBuffer->next() );
 }
 
 Void PlaYUVerStream::readNextFrameFillRGBBuffer()
 {
-	readNextFrame();
-	m_frameBuffer->next()->fillRGBBuffer();
-	return;
+  readNextFrame();
+  m_frameBuffer->next()->fillRGBBuffer();
+  return;
 }
-
-
 
 PlaYUVerFrame* PlaYUVerStream::getCurrFrame( PlaYUVerFrame* pyuv_image )
 {
   if( pyuv_image == NULL )
-		pyuv_image = new PlaYUVerFrame( m_frameBuffer->current() );
-	else
-		pyuv_image->copyFrom( m_frameBuffer->current() );
+    pyuv_image = new PlaYUVerFrame( m_frameBuffer->current() );
+  else
+    pyuv_image->copyFrom( m_frameBuffer->current() );
   return pyuv_image;
 }
 
 PlaYUVerFrame* PlaYUVerStream::getCurrFrame()
 {
-	return m_frameBuffer->current();
+  return m_frameBuffer->current();
 }
 
 Bool PlaYUVerStream::seekInputRelative( Bool bIsFoward )
@@ -607,7 +575,7 @@ Bool PlaYUVerStream::seekInputRelative( Bool bIsFoward )
   if( bIsFoward )
   {
     bRet = !setNextFrame();
-		readFrame( m_frameBuffer->next() );
+    readFrame( m_frameBuffer->next() );
   }
   else
   {
@@ -622,26 +590,23 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
   if( !m_bInit || new_frame_num >= m_uiTotalFrameNum || (Int64)new_frame_num == m_iCurrFrameNum )
     return false;
 
-  m_iCurrFrameNum = new_frame_num - 1;
+  m_iCurrFrameNum = new_frame_num;
 
   if( m_bLoadAll )
   {
-		m_frameBuffer->setIndex( new_frame_num );
-		setNextFrame();
+    m_frameBuffer->setIndex( m_iCurrFrameNum );
     return true;
   }
 
-  if( !m_pcHandler->seek( new_frame_num ) )
+  if( !m_pcHandler->seek( m_iCurrFrameNum ) )
   {
     throw PlaYUVerFailure( "PlaYUVerStream", "Cannot write into the file" );
   }
 
-  m_uiCurrFrameFileIdx = new_frame_num;
-
-	m_frameBuffer->setIndex( 0 );
-	readFrame( m_frameBuffer->current() );
-	if( m_uiTotalFrameNum > 1 )
-		readFrame( m_frameBuffer->next() );
+  m_frameBuffer->setIndex( 0 );
+  readFrame( m_frameBuffer->current() );
+  if( m_uiTotalFrameNum > 1 )
+    readFrame( m_frameBuffer->next() );
 
   return true;
 }

@@ -113,6 +113,7 @@ UInt64 StreamHandlerPortableMap::calculateFrameNumber()
 
 Bool StreamHandlerPortableMap::seek( UInt64 iFrameNum )
 {
+  // m_uiCurrFrameFileIdx =
   return true;
 }
 
@@ -122,6 +123,7 @@ Bool StreamHandlerPortableMap::read( PlaYUVerFrame* pcFrame )
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
   pcFrame->frameFromBuffer( m_pStreamBuffer, PLAYUVER_BIG_ENDIAN );
+  m_uiCurrFrameFileIdx++;
   return true;
 }
 

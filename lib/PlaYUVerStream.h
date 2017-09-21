@@ -134,7 +134,6 @@ public:
 
   Void loadAll();
 
-
   Void writeFrame();
   Void writeFrame( PlaYUVerFrame* pcFrame );
 
@@ -143,11 +142,11 @@ public:
 
   PlaYUVerFrame* getCurrFrame( PlaYUVerFrame* );
 
-	// continuous read control
-	Bool setNextFrame();
-	Void readNextFrame();
-	Void readNextFrameFillRGBBuffer();
-	PlaYUVerFrame* getCurrFrame();
+  // continuous read control
+  Bool setNextFrame();
+  Void readNextFrame();
+  Void readNextFrameFillRGBBuffer();
+  PlaYUVerFrame* getCurrFrame();
 
   Bool seekInputRelative( Bool bIsFoward );
   Bool seekInput( UInt64 new_frame_num );
@@ -156,7 +155,7 @@ public:
   Void getDuration( Int* duration_array );
 
 private:
-	Bool readFrame( PlaYUVerFrame* frame );
+  Bool readFrame( PlaYUVerFrame* frame );
 
 private:
   Bool m_bInit;
@@ -171,8 +170,6 @@ private:
   Bool m_bLoadAll;
 
   PlaYUVerStreamBufferPrivate* m_frameBuffer;
-
-  UInt64 m_uiCurrFrameFileIdx;
 };
 
 #endif  // __PLAYUVERSTREAM_H__

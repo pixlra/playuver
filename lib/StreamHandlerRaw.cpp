@@ -48,6 +48,8 @@ Void StreamHandlerRaw::closeHandler()
 {
   if( m_pFile )
     fclose( m_pFile );
+  if( m_pStreamBuffer )
+    freeMem1D( m_pStreamBuffer );
 }
 
 Bool StreamHandlerRaw::configureBuffer( PlaYUVerFrame* pcFrame )
@@ -70,6 +72,7 @@ Bool StreamHandlerRaw::seek( UInt64 iFrameNum )
   if( m_bIsInput && m_pFile )
   {
     fseek( m_pFile, iFrameNum >= 0 ? iFrameNum * m_uiNBytesPerFrame : 0, SEEK_SET );
+    m_uiCurrFrameFileIdx = iFrameNum;
     return true;
   }
   return false;
@@ -80,6 +83,7 @@ Bool StreamHandlerRaw::read( PlaYUVerFrame* pcFrame )
   UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
+  m_uiCurrFrameFileIdx++;
   pcFrame->frameFromBuffer( m_pStreamBuffer, m_iEndianness );
   return true;
 }

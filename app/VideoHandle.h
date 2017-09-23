@@ -31,6 +31,7 @@
 #include <QMenu>
 #include <QPoint>
 #include <QVector>
+#include <QThread>
 #include <QWidget>
 
 #define _CONTROL_PLAYING_TIME_ 0
@@ -48,7 +49,7 @@ class VideoSubWindow;
 class FramePropertiesDock;
 class WidgetFrameNumber;
 
-class VideoHandle : public QWidget
+class VideoHandle : public QObject
 {
   Q_OBJECT
 public:

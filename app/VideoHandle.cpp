@@ -63,13 +63,15 @@ Void VideoHandle::createActions()
   m_arrayActions.resize( TOTAL_ACT );
   m_arrayActions[PLAY_ACT] = new QAction( "Play", this );
   m_arrayActions[PLAY_ACT]->setStatusTip( "Play/Pause" );
-  m_arrayActions[PLAY_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaPlay ) ) );
+  m_arrayActions[PLAY_ACT]->setIcon(
+      QIcon( m_pcParet->style()->standardIcon( QStyle::SP_MediaPlay ) ) );
   m_arrayActions[PLAY_ACT]->setShortcut( Qt::Key_Space );
   connect( m_arrayActions[PLAY_ACT], SIGNAL( triggered() ), this, SLOT( play() ) );
 
   m_arrayActions[STOP_ACT] = new QAction( "Stop", this );
   m_arrayActions[STOP_ACT]->setStatusTip( "Stop" );
-  m_arrayActions[STOP_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_MediaStop ) ) );
+  m_arrayActions[STOP_ACT]->setIcon(
+      QIcon( m_pcParet->style()->standardIcon( QStyle::SP_MediaStop ) ) );
   connect( m_arrayActions[STOP_ACT], SIGNAL( triggered() ), this, SLOT( stop() ) );
 
   m_mapperVideoSeek = new QSignalMapper( this );
@@ -78,7 +80,7 @@ Void VideoHandle::createActions()
   m_arrayActions[VIDEO_BACKWARD_ACT] = new QAction( "Video Backward", this );
   m_arrayActions[VIDEO_BACKWARD_ACT]->setStatusTip( "Seek backward" );
   m_arrayActions[VIDEO_BACKWARD_ACT]->setIcon(
-      QIcon( style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
+      QIcon( m_pcParet->style()->standardIcon( QStyle::SP_MediaSeekBackward ) ) );
   m_arrayActions[VIDEO_BACKWARD_ACT]->setShortcut( Qt::Key_Left );
   connect( m_arrayActions[VIDEO_BACKWARD_ACT], SIGNAL( triggered() ), m_mapperVideoSeek,
            SLOT( map() ) );
@@ -87,7 +89,7 @@ Void VideoHandle::createActions()
   m_arrayActions[VIDEO_FORWARD_ACT] = new QAction( "Video Forward", this );
   m_arrayActions[VIDEO_FORWARD_ACT]->setStatusTip( "Seek forward" );
   m_arrayActions[VIDEO_FORWARD_ACT]->setIcon(
-      QIcon( style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
+      QIcon( m_pcParet->style()->standardIcon( QStyle::SP_MediaSeekForward ) ) );
   m_arrayActions[VIDEO_FORWARD_ACT]->setShortcut( Qt::Key_Right );
   connect( m_arrayActions[VIDEO_FORWARD_ACT], SIGNAL( triggered() ), m_mapperVideoSeek,
            SLOT( map() ) );
@@ -172,7 +174,7 @@ Void VideoHandle::createActions()
 
 QMenu* VideoHandle::createVideoMenu()
 {
-  m_pcMenuVideo = new QMenu( "Video", this );
+  m_pcMenuVideo = new QMenu( "Video", m_pcParet );
   m_pcMenuVideo->addAction( m_arrayActions[PLAY_ACT] );
   m_pcMenuVideo->addAction( m_arrayActions[STOP_ACT] );
   m_pcMenuVideo->addAction( m_arrayActions[VIDEO_BACKWARD_ACT] );
@@ -187,7 +189,7 @@ QMenu* VideoHandle::createVideoMenu()
 
 QMenu* VideoHandle::createImageMenu()
 {
-  m_pcMenuImage = new QMenu( "Image", this );
+  m_pcMenuImage = new QMenu( "Image", m_pcParet );
   m_pcMenuImage->addAction( m_arrayActions[NAVIGATION_TOOL_ACT] );
   m_pcMenuImage->addAction( m_arrayActions[SELECTION_TOOL_ACT] );
   m_pcMenuImage->addAction( m_arrayActions[BLOCK_SELECTION_TOOL_ACT] );
@@ -203,7 +205,7 @@ QToolBar* VideoHandle::createToolBar()
   m_toolbarVideo->addAction( m_arrayActions[PLAY_ACT] );
   m_toolbarVideo->addAction( m_arrayActions[STOP_ACT] );
 
-  QLabel* pcLockLabel = new QLabel( "PlayingLock", this );
+  QLabel* pcLockLabel = new QLabel( "PlayingLock" );
   pcLockLabel->setAlignment( Qt::AlignCenter );
   m_arrayActions[VIDEO_LOCK_ACT] = m_toolbarVideo->addWidget( pcLockLabel );
   m_arrayActions[VIDEO_LOCK_ACT]->setVisible( false );
@@ -220,8 +222,8 @@ QToolBar* VideoHandle::createToolBar()
 
 QDockWidget* VideoHandle::createDock()
 {
-  m_pcFramePropertiesSideBar = new FramePropertiesDock( this, &m_bIsPlaying );
-  m_pcFramePropertiesDock = new QDockWidget( tr( "Frame Information" ), this );
+  m_pcFramePropertiesSideBar = new FramePropertiesDock( m_pcParet, &m_bIsPlaying );
+  m_pcFramePropertiesDock = new QDockWidget( tr( "Frame Information" ), m_pcParet );
   m_pcFramePropertiesDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   m_pcFramePropertiesDock->setWidget( m_pcFramePropertiesSideBar );
   connect( m_pcFramePropertiesDock, SIGNAL( visibilityChanged( bool ) ), this, SLOT( update() ) );
@@ -265,13 +267,20 @@ Void VideoHandle::updateMenus()
   m_arrayActions[VIDEO_BACKWARD_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_FORWARD_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_REPEAT_ACT]->setEnabled( hasSubWindow );
+  m_arrayActions[VIDEO_GOTO_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_LOCK_SELECTION_ACT]->setEnabled( hasSubWindow );
   m_pcFrameSlider->setEnabled( hasSubWindow );
   if( !hasSubWindow )
   {
+    disconnect( m_pcFrameSlider, SIGNAL( valueChanged( int ) ), this,
+                SLOT( seekSliderEvent( int ) ) );
     m_pcFrameSlider->setValue( 0 );
     m_pcFrameNumInfo->clear();
+  }
+  else
+  {
+    connect( m_pcFrameSlider, SIGNAL( valueChanged( int ) ), this, SLOT( seekSliderEvent( int ) ) );
   }
 
   m_arrayActions[NAVIGATION_TOOL_ACT]->setEnabled( hasSubWindow );
@@ -359,12 +368,13 @@ Void VideoHandle::update()
     if( m_pcCurrentVideoSubWindow->isPlaying() )
     {
       m_arrayActions[PLAY_ACT]->setText( "Pause" );
-      m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPause ) );
+      m_arrayActions[PLAY_ACT]->setIcon(
+          m_pcParet->style()->standardIcon( QStyle::SP_MediaPause ) );
     }
     else
     {
       m_arrayActions[PLAY_ACT]->setText( "Play" );
-      m_arrayActions[PLAY_ACT]->setIcon( style()->standardIcon( QStyle::SP_MediaPlay ) );
+      m_arrayActions[PLAY_ACT]->setIcon( m_pcParet->style()->standardIcon( QStyle::SP_MediaPlay ) );
     }
   }
   else
@@ -645,7 +655,7 @@ Void VideoHandle::playEvent()
     QString warningMsg = "Error while playing " +
                          QFileInfo( m_pcCurrentVideoSubWindow->getCurrentFileName() ).fileName() +
                          " with the following error: \n" + msg;
-    QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
+    QMessageBox::warning( m_pcParet, QApplication::applicationName(), warningMsg );
     qDebug() << warningMsg;
     stop();
     m_pcCurrentVideoSubWindow->close();
@@ -685,7 +695,7 @@ Void VideoHandle::seekVideo()
     if( m_pcCurrentVideoSubWindow->getInputStream() )
     {
       SeekStreamDialog* dialogSeekVideo =
-          new SeekStreamDialog( m_pcCurrentVideoSubWindow->getInputStream(), this );
+          new SeekStreamDialog( m_pcCurrentVideoSubWindow->getInputStream(), m_pcParet );
       Int newFrameNum = dialogSeekVideo->runDialog();
       if( newFrameNum >= 0 )
       {
@@ -743,7 +753,7 @@ Void VideoHandle::videoSelectionButtonEvent()
   }
   else
   {
-    DialogSubWindowSelector dialogWindowsSelection( this, m_pcMainWindowManager,
+    DialogSubWindowSelector dialogWindowsSelection( m_pcParet, m_pcMainWindowManager,
                                                     SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
     QStringList cWindowListNames;
     for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )

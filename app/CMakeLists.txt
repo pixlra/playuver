@@ -23,19 +23,21 @@ IF( USE_QT4 )
     ADD_DEFINITIONS( ${QT_DEFINITIONS} )
     SET( QT_LINKER_LIBS ${QT_LIBRARIES} )
   ENDIF()
-ENDIF()
 
-IF( NOT USE_QT4 )
+ELSE()
+
   FIND_PACKAGE( Qt5 REQUIRED COMPONENTS Core Gui Widgets PrintSupport Concurrent )
   LIST(APPEND QT_LINKER_LIBS Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport Qt5::Concurrent )
   LIST(APPEND QT_MODULES Core Gui Widgets PrintSupport Concurrent )
 
+  IF( USE_QTDBUS )
   FIND_PACKAGE( Qt5DBus )
-  IF( ${Qt5DBus_FOUND} )
-    SET( USE_QTDBUS ${Qt5DBus_FOUND} ) # TODO: fix this stupid variable
-    SET( USE_QTDBUS ${Qt5DBus_FOUND} PARENT_SCOPE)
-    LIST(APPEND QT_LINKER_LIBS Qt5::DBus )
-    LIST(APPEND QT_MODULES DBus )
+    IF( ${Qt5DBus_FOUND} )
+      SET( USE_QTDBUS ${Qt5DBus_FOUND} ) # TODO: fix this stupid variable
+      SET( USE_QTDBUS ${Qt5DBus_FOUND} PARENT_SCOPE)
+      LIST(APPEND QT_LINKER_LIBS Qt5::DBus )
+      LIST(APPEND QT_MODULES DBus )
+    ENDIF()
   ENDIF()
 
 ENDIF()
@@ -87,8 +89,6 @@ set(PlaYUVer_App_RCC
 )
 
 
-
-
 IF( USE_FERVOR )
 
   SET( FERVOR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/fervor )
@@ -114,21 +114,6 @@ IF( USE_FERVOR )
 
     SET(QT_USE_QTNETWORK true)
     SET(QT_USE_QTWEBKIT true)
-
-    IF( WIN32 )
-      INSTALL(FILES ${QT_DIR}/bin/Qt5Network${QT_DLL_POSTFIX}.dll DESTINATION bin )
-      INSTALL(FILES ${QT_DIR}/bin/Qt5WebKit${QT_DLL_POSTFIX}.dll DESTINATION bin )
-      INSTALL(FILES ${QT_DIR}/bin/Qt5WebKitWidgets${QT_DLL_POSTFIX}.dll DESTINATION bin )
-      INSTALL(FILES ${QT_DIR}/bin/Qt5Quick${QT_DLL_POSTFIX}.dll DESTINATION bin )
-      INSTALL(FILES ${QT_DIR}/bin/Qt5Qml${QT_DLL_POSTFIX}.dll DESTINATION bin )
-      INSTALL(FILES ${QT_DIR}/bin/Qt5Multimedia${QT_DLL_POSTFIX}.dll DESTINATION bin )
-      INSTALL(FILES ${QT_DIR}/bin/Qt5Sql${QT_DLL_POSTFIX}.dll DESTINATION bin )
-      INSTALL(FILES ${QT_DIR}/bin/Qt5Positioning${QT_DLL_POSTFIX}.dll DESTINATION bin )
-      INSTALL(FILES ${QT_DIR}/bin/Qt5Sensors${QT_DLL_POSTFIX}.dll DESTINATION bin )
-      INSTALL(FILES ${QT_DIR}/bin/Qt5MultimediaWidgets${QT_DLL_POSTFIX}.dll DESTINATION bin )
-      INSTALL(FILES ${QT_DIR}/bin/Qt5OpenGL${QT_DLL_POSTFIX}.dll DESTINATION bin )
-      INSTALL(FILES ${QT_DIR}/bin/Qt5PrintSupport${QT_DLL_POSTFIX}.dll DESTINATION bin )
-    ENDIF()
 
   ELSE()
     MESSAGE( "Fervor lib source code is not find in ${FERVOR_DIR}... Disabling it!" )
@@ -168,7 +153,6 @@ ENDIF()
 
 
 ADD_EXECUTABLE( ${PROJECT_NAME} ${plaYUVer_App_SRCS} ${HEADERS_MOC_FILES} ${PlaYUVer_App_UI_Wrap} ${PlaYUVer_App_RCC} ${WINDOWS_RES_FILE} )
-
 TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib PlaYUVerModules ${APP_LINKER_LIBS} ${QT_LINKER_LIBS} )
 
 IF( NOT USE_QT4 )

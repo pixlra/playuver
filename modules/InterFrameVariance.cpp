@@ -67,7 +67,7 @@ PlaYUVerFrame* InterFrameVariance::process( std::vector<PlaYUVerFrame*> apcFrame
 {
   Int numFrames = apcFrameList.size();
 
-	Pel** pInput = new Pel*[numFrames];
+  Pel** pInput = new Pel*[numFrames];
   Pel* pOutputPelYUV = m_pcFrameVariance->getPelBufferYUV()[0][0];
 
   for( Int i = 0; i < numFrames; i++ )
@@ -101,7 +101,7 @@ PlaYUVerFrame* InterFrameVariance::process( std::vector<PlaYUVerFrame*> apcFrame
     {
       *pOutputPelYUV++ = m_pVariance[y][x] * 255 / maxVariance;
     }
-	delete [] pInput;
+  delete[] pInput;
   return m_pcFrameVariance;
 }
 

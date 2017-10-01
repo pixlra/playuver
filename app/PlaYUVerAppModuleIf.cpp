@@ -58,6 +58,15 @@ Void PlaYUVerAppModuleIf::update()
   }
 }
 
+Bool PlaYUVerAppModuleIf::isRunning()
+{
+#ifdef PLAYUVER_THREADED_MODULES
+  return QThread::isRunning();
+#else
+  return false;
+#endif
+}
+
 Bool PlaYUVerAppModuleIf::apply( Bool isPlaying, Bool disableThreads )
 {
   Bool bRet = false;

@@ -639,6 +639,20 @@ Void VideoSubWindow::associateModule( PlaYUVerAppModuleIf* pcModule )
   m_apcCurrentModule.append( pcModule );
 }
 
+Bool VideoSubWindow::hasRunningModule()
+{
+	Bool bRet = false;
+  if( m_pcCurrentDisplayModule )
+  {
+		bRet |= m_pcCurrentDisplayModule->isRunning();
+  }
+	for( Int i = 0; i < m_apcCurrentModule.size() && !bRet; i++ )
+  {
+		bRet |= m_apcCurrentModule.at( i )->isRunning();
+  }
+	return bRet;
+}
+
 Void VideoSubWindow::setFillWindow( Bool bFlag )
 {
   m_pcVideoInfo->setBusyWindow( bFlag );

@@ -100,25 +100,6 @@ private:
   QFuture<Void> m_cRefreshResult;
   QFuture<Void> m_cReadResult;
 
-  Void refreshFrameOperation();
-  Bool goToNextFrame( Bool bThreaded = false );
-
-  static Bool guessFormat( QString filename,
-                           UInt& rWidth,
-                           UInt& rHeight,
-                           Int& rInputFormat,
-                           UInt& rBitsPerPixel,
-                           Int& rEndianness );
-
-  /**
-   * Private zoom function to handle
-   * zoom to fit
-   */
-  Void scaleView( const QSize& size, QPoint center = QPoint() );
-  Void updateVideoWindowInfo();
-
-  QSize getScrollSize();
-
 public:
   enum VideoSubWindowCategories
   {
@@ -200,6 +181,28 @@ public:
   Bool getIsModule() { return getCategory() | SubWindowAbstract::MODULE_SUBWINDOW; }
   Void clearWindowBusy() { m_bWindowBusy = false; }
   Void setFillWindow( Bool bFlag );
+
+private:
+  Void refreshFrameOperation();
+  Bool goToNextFrame( Bool bThreaded = false );
+
+  static Bool guessFormat( QString filename,
+                           UInt& rWidth,
+                           UInt& rHeight,
+                           Int& rInputFormat,
+                           UInt& rBitsPerPixel,
+                           Int& rEndianness );
+
+  Bool hasRunningModule();
+
+  /**
+   * Private zoom function to handle
+   * zoom to fit
+   */
+  Void scaleView( const QSize& size, QPoint center = QPoint() );
+  Void updateVideoWindowInfo();
+
+  QSize getScrollSize();
 
 protected:
   Void keyPressEvent( QKeyEvent* event );

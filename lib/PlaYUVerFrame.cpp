@@ -1440,7 +1440,7 @@ Double PlaYUVerFrame::getSSIM( PlaYUVerFrame* Org, Int component )
   else
   {
     dSSIM = compute_ssim( d->m_pppcInputPel[component], Org->getPelBufferYUV()[component],
-                          getChromaWidth(), getChromaHeight(), 4, 4, 255, 8 );
+													getChromaWidth(), getChromaHeight(), 4, 4, 255, 4 );
   }
   return dSSIM;
 }

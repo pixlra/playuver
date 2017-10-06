@@ -141,6 +141,8 @@ IF(DEFINED CMAKE_BUILD_TYPE AND CMAKE_VERSION VERSION_GREATER "2.8")
 ENDIF()
 SET( CMAKE_CXX_FLAGS "" )
 
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
+
 ######################################################################################
 # Configure targets
 ######################################################################################
@@ -168,9 +170,6 @@ SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2" )
 ADD_FEATURE_INFO(PlaYUVerApp     BUILD_APP    "Build Graphical Interface")
 ADD_FEATURE_INFO(PlaYUVerTools   BUILD_TOOLS  "Build Command line tool"  )
 
-INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
-
 ADD_SUBDIRECTORY( lib )
 ADD_SUBDIRECTORY( modules )
 
@@ -186,6 +185,8 @@ IF( ${BUILD_EXAMPLES} )
   ADD_SUBDIRECTORY( examples )
 ENDIF()
 
+
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
 ######################################################################################
 # Final information dump

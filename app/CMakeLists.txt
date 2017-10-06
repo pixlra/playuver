@@ -31,7 +31,8 @@ ELSE()
   LIST(APPEND QT_MODULES Core Gui Widgets PrintSupport Concurrent )
 
   IF( USE_QTDBUS )
-  FIND_PACKAGE( Qt5DBus )
+    FIND_PACKAGE( Qt5DBus )
+    SET_PACKAGE_PROPERTIES(Qt5DBus PROPERTIES DESCRIPTION "Support for Qt5 DBus messages between instances" TYPE OPTIONAL )
     IF( ${Qt5DBus_FOUND} )
       SET( USE_QTDBUS ${Qt5DBus_FOUND} ) # TODO: fix this stupid variable
       SET( USE_QTDBUS ${Qt5DBus_FOUND} PARENT_SCOPE)

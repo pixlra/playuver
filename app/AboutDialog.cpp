@@ -24,7 +24,7 @@
  * in KTikZ project
  */
 
-#include <config.h>
+#include "config.h"
 
 #include "AboutDialog.h"
 #include <QApplication>

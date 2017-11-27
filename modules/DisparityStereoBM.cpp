@@ -36,8 +36,7 @@ DisparityStereoBM::DisparityStereoBM()
       "Measure the disparity between two images using the "
       "Stereo BM method (OpenCV)";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
-  m_uiModuleRequirements =
-      MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
+  m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions() /**/
       ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [9]" );
@@ -49,8 +48,7 @@ DisparityStereoBM::DisparityStereoBM()
 Bool DisparityStereoBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
-  m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
-                                          PlaYUVerFrame::GRAY );
+  m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
   if( ( m_uiBlockSize % 2 ) == 0 )
   {
     m_uiBlockSize++;

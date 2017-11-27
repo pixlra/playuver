@@ -44,8 +44,7 @@ Void PlotSubWindow::definePlotColors()
   m_arrayColorList.append( Qt::darkYellow );
 }
 
-PlotSubWindow::PlotSubWindow( const QString& windowTitle, QWidget* parent )
-    : SubWindowAbstract( parent, SubWindowAbstract::PLOT_SUBWINDOW )
+PlotSubWindow::PlotSubWindow( const QString& windowTitle, QWidget* parent ) : SubWindowAbstract( parent, SubWindowAbstract::PLOT_SUBWINDOW )
 {
   definePlotColors();
   m_iNumberPlots = 0;
@@ -94,18 +93,15 @@ PlotSubWindow::PlotSubWindow( const QString& windowTitle, QWidget* parent )
   m_cPlotArea->yAxis2->setTickLabels( false );
   // make left and bottom axes always transfer their ranges to right and top
   // axes:
-  connect( m_cPlotArea->xAxis, SIGNAL( rangeChanged( QCPRange ) ), m_cPlotArea->xAxis2,
-           SLOT( setRange( QCPRange ) ) );
-  connect( m_cPlotArea->yAxis, SIGNAL( rangeChanged( QCPRange ) ), m_cPlotArea->yAxis2,
-           SLOT( setRange( QCPRange ) ) );
+  connect( m_cPlotArea->xAxis, SIGNAL( rangeChanged( QCPRange ) ), m_cPlotArea->xAxis2, SLOT( setRange( QCPRange ) ) );
+  connect( m_cPlotArea->yAxis, SIGNAL( rangeChanged( QCPRange ) ), m_cPlotArea->yAxis2, SLOT( setRange( QCPRange ) ) );
 
   QFont legendFont = font();     // start out with MainWindow's font..
   legendFont.setPointSize( 9 );  // and make a bit smaller for legend
   m_cPlotArea->legend->setFont( legendFont );
   m_cPlotArea->legend->setBrush( backgroundBrush );
   m_cPlotArea->legend->setTextColor( palette().text().color() );
-  m_cPlotArea->legend->setBorderPen(
-      QPen( palette().brush( QPalette::Active, QPalette::Shadow ), 1 ) );
+  m_cPlotArea->legend->setBorderPen( QPen( palette().brush( QPalette::Active, QPalette::Shadow ), 1 ) );
   m_cPlotArea->legend->setVisible( false );
 
   m_cPlotArea->setInteractions( QCP::iRangeZoom | QCP::iRangeDrag );  // QCP::iSelectPlottables
@@ -192,9 +188,7 @@ Void PlotSubWindow::setAxisRange( const QLine& axisLimits )
   setAxisRange( VERTICAL, axisLimits.y1(), axisLimits.y2() );
 }
 
-Void PlotSubWindow::setAxisRange( PlotSubWindow::Axis eAxis,
-                                  const Int& axisStart,
-                                  const Int& axisEnd )
+Void PlotSubWindow::setAxisRange( PlotSubWindow::Axis eAxis, const Int& axisStart, const Int& axisEnd )
 {
   if( eAxis == HORIZONTAL )
   {
@@ -213,9 +207,7 @@ Void PlotSubWindow::setAxisRange( PlotSubWindow::Axis eAxis,
   m_cPlotArea->replot();
 }
 
-Void PlotSubWindow::addPlot( const QVector<Double>& arrayX,
-                             const QVector<Double>& arrayY,
-                             const QString& key )
+Void PlotSubWindow::addPlot( const QVector<Double>& arrayX, const QVector<Double>& arrayY, const QString& key )
 {
   QCPGraph* newPlot = m_cPlotArea->addGraph();
   QColor plotColor = m_arrayColorList.at( 0 );

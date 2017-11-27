@@ -177,8 +177,7 @@ HistogramWidget::HistogramWidget( Int width, Int height, QWidget* parent ) : QWi
   m_colorType = FirstChannelColor;
   m_renderingType = FullImageHistogram;
 
-  setOptions( HistogramWidget::BlinkComputation | HistogramWidget::SelectMode |
-              HistogramWidget::ShowLumaChannel );
+  setOptions( HistogramWidget::BlinkComputation | HistogramWidget::SelectMode | HistogramWidget::ShowLumaChannel );
 
   setMouseTracking( true );
   setMinimumSize( width, height );
@@ -434,22 +433,21 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
   // or loading, but no message shall be drawn:
   // Drawing grayed frame.
   if( !isEnabled() || d->clearFlag == HistogramWidgetPrivate::HistogramNone ||
-      ( !d->blinkComputation && ( d->clearFlag == HistogramWidgetPrivate::HistogramStarted ||
-                                  d->clearFlag == HistogramWidgetPrivate::HistogramDataLoading ) ) )
+      ( !d->blinkComputation &&
+        ( d->clearFlag == HistogramWidgetPrivate::HistogramStarted || d->clearFlag == HistogramWidgetPrivate::HistogramDataLoading ) ) )
   {
     QPainter p1( this );
 
     p1.fillRect( 0, 0, maxX, maxY, palette().color( QPalette::Disabled, QPalette::Window ) );
-    p1.setPen(
-        QPen( palette().color( QPalette::Disabled, QPalette::WindowText ), 1, Qt::SolidLine ) );
+    p1.setPen( QPen( palette().color( QPalette::Disabled, QPalette::WindowText ), 1, Qt::SolidLine ) );
     p1.drawRect( 0, 0, maxX, maxY );
 
     return;
   }
   // Image data is loading or histogram is being computed:
   // Draw message.
-  else if( d->blinkComputation && ( d->clearFlag == HistogramWidgetPrivate::HistogramStarted ||
-                                    d->clearFlag == HistogramWidgetPrivate::HistogramDataLoading ) )
+  else if( d->blinkComputation &&
+           ( d->clearFlag == HistogramWidgetPrivate::HistogramStarted || d->clearFlag == HistogramWidgetPrivate::HistogramDataLoading ) )
   {
     QPainter p1( this );
 
@@ -463,8 +461,7 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
     if( d->clearFlag == HistogramWidgetPrivate::HistogramDataLoading )
       p1.drawText( 0, 0, maxX, maxY, Qt::AlignCenter, tr( "Loading image..." ) );
     else
-      p1.drawText( 0, 0, maxX, maxY, Qt::AlignCenter,
-                   tr( "Histogram\ncalculation\nin progress..." ) );
+      p1.drawText( 0, 0, maxX, maxY, Qt::AlignCenter, tr( "Histogram\ncalculation\nin progress..." ) );
 
     return;
   }
@@ -529,8 +526,7 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
     break;
 
   case HistogramWidget::ColorChannelsHistogram:  // All color channels.
-    max = qMax( qMax( frame->getMaximum( LUMA ), frame->getMaximum( CHROMA_U ) ),
-                frame->getMaximum( CHROMA_V ) );
+    max = qMax( qMax( frame->getMaximum( LUMA ), frame->getMaximum( CHROMA_U ) ), frame->getMaximum( CHROMA_V ) );
     break;
     //   case HistogramWidget::LumaHistogram:            // Luminance.
     //     max = frame->getMaximum( LUMA );
@@ -1058,8 +1054,7 @@ Void HistogramWidget::mouseMoveEvent( QMouseEvent* e )
 
 Void HistogramWidget::notifyValuesChanged()
 {
-  emit signalIntervalChanged( (int)( d->xmin * d->range ),
-                              d->xmax == 0.0 ? d->range : (int)( d->xmax * d->range ) );
+  emit signalIntervalChanged( (int)( d->xmin * d->range ), d->xmax == 0.0 ? d->range : (int)( d->xmax * d->range ) );
 }
 
 Void HistogramWidget::slotMinValueChanged( int min )

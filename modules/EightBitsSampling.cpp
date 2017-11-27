@@ -43,9 +43,7 @@ Bool EightBitsSampling::create( std::vector<PlaYUVerFrame*> apcFrameList )
   if( apcFrameList[0]->getBitsPel() > 8 )
   {
     m_pcSubSampledFrame = NULL;
-    m_pcSubSampledFrame =
-        new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
-                           apcFrameList[0]->getPelFormat(), 8 );
+    m_pcSubSampledFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), apcFrameList[0]->getPelFormat(), 8 );
     return true;
   }
   return false;

@@ -40,12 +40,10 @@ MeasureOpticalFlowDualTVL1::MeasureOpticalFlowDualTVL1()
   m_pchModuleName = "MeasureOpticalFlowDualTVL1";
   m_pchModuleTooltip = "Measure optical flow";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
-  m_uiModuleRequirements =
-      MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
+  m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions() /**/
-      ( "Show reconstruction", m_bShowReconstruction,
-        "Show reconstructed frame instead of MVs [false]" );
+      ( "Show reconstruction", m_bShowReconstruction, "Show reconstructed frame instead of MVs [false]" );
 
   m_bShowReconstruction = false;
   m_pcOutputFrame = NULL;
@@ -56,15 +54,13 @@ Bool MeasureOpticalFlowDualTVL1::create( std::vector<PlaYUVerFrame*> apcFrameLis
   _BASIC_MODULE_API_2_CHECK_
 
   for( UInt i = 1; i < apcFrameList.size(); i++ )
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE |
-                                                            PlaYUVerFrame::MATCH_RESOLUTION |
-                                                            PlaYUVerFrame::MATCH_BITS ) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0],
+                                       PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
       return false;
 
   m_iStep = 16;
   m_cTvl1 = cv::createOptFlow_DualTVL1();
-  m_pcOutputFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
-                                       PlaYUVerFrame::GRAY );
+  m_pcOutputFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
 
   return true;
 }

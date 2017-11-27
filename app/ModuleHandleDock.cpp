@@ -27,8 +27,7 @@
 #include "PlaYUVerAppModuleIf.h"
 #include <QtGui>
 
-ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf )
-    : QWidget( parent ), m_pcCurrModuleIf( moduleIf )
+ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf ) : QWidget( parent ), m_pcCurrModuleIf( moduleIf )
 {
   // ----------------- Dock definition -----------------
 

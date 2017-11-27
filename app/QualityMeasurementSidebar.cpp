@@ -27,8 +27,7 @@
 #include "VideoSubWindow.h"
 #include <QtGui>
 
-QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent,
-                                                      PlaYUVerSubWindowHandle* windowManager )
+QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerSubWindowHandle* windowManager )
     : QWidget( parent ), m_pcMainWindowManager( windowManager ), m_pcCurrentVideoSubWindow( NULL )
 {
   // Side bar area -----------------------------------------------------
@@ -99,8 +98,7 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent,
   setLayout( mainLayout );
 
   connect( m_comboBoxRef, SIGNAL( activated( int ) ), this, SLOT( slotReferenceChanged( int ) ) );
-  connect( m_comboBoxMetric, SIGNAL( currentIndexChanged( int ) ), this,
-           SLOT( slotQualityMetricChanged( int ) ) );
+  connect( m_comboBoxMetric, SIGNAL( currentIndexChanged( int ) ), this, SLOT( slotQualityMetricChanged( int ) ) );
 }
 
 QualityMeasurementSidebar::~QualityMeasurementSidebar() {}
@@ -129,8 +127,7 @@ Void QualityMeasurementSidebar::updateSubWindowList()
   m_pcVideoWindowList.clear();
 
   VideoSubWindow* pcVideoSubWindow;
-  QList<SubWindowAbstract*> subWindowList =
-      m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
+  QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
   for( Int i = 0; i < subWindowList.size(); i++ )
   {
     pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
@@ -140,8 +137,7 @@ Void QualityMeasurementSidebar::updateSubWindowList()
     }
     if( m_pcCurrentVideoSubWindow )
     {
-      if( !m_pcCurrentVideoSubWindow->getCurrFrame()->haveSameFmt(
-              pcVideoSubWindow->getCurrFrame() ) )
+      if( !m_pcCurrentVideoSubWindow->getCurrFrame()->haveSameFmt( pcVideoSubWindow->getCurrFrame() ) )
       {
         continue;
       }

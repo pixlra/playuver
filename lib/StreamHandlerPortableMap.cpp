@@ -29,6 +29,23 @@
 #include <cmath>
 #include <cstdio>
 
+std::vector<PlaYUVerSupportedFormat> StreamHandlerPortableMap::supportedReadFormats()
+{
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable PixMap ", "ppm" );
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+}
+
+std::vector<PlaYUVerSupportedFormat> StreamHandlerPortableMap::supportedWriteFormats()
+{
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+}
+
 Bool StreamHandlerPortableMap::openHandler( String strFilename, Bool bInput )
 {
   m_bIsInput = bInput;
@@ -62,8 +79,7 @@ Bool StreamHandlerPortableMap::openHandler( String strFilename, Bool bInput )
         ;
       sscanf( line, "%d", &m_iMaxValue );
       m_uiBitsPerPixel = log( m_iMaxValue + 1 ) / log( 2 );
-      m_iPixelFormat =
-          m_iMagicNumber == 2 || m_iMagicNumber == 5 ? PlaYUVerFrame::GRAY : PlaYUVerFrame::RGB24;
+      m_iPixelFormat = m_iMagicNumber == 2 || m_iMagicNumber == 5 ? PlaYUVerFrame::GRAY : PlaYUVerFrame::RGB24;
     }
   }
   else

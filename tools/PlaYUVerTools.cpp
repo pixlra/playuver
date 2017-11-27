@@ -102,8 +102,7 @@ Int PlaYUVerTools::openInputs()
       pcStream = new PlaYUVerStream;
       try
       {
-        if( !pcStream->open( inputFileNames[i], resolutionString, fmtString, uiBitPerPixel,
-                             uiEndianness, 1, true ) )
+        if( !pcStream->open( inputFileNames[i], resolutionString, fmtString, uiBitPerPixel, uiEndianness, 1, true ) )
         {
           log( LOG_ERROR, "Cannot open input stream %s! ", inputFileNames[i].c_str() );
           return 2;
@@ -112,8 +111,7 @@ Int PlaYUVerTools::openInputs()
       }
       catch( const char* msg )
       {
-        log( LOG_ERROR, "Cannot open input stream %s with the following error: \n%s\n",
-             inputFileNames[i].c_str(), msg );
+        log( LOG_ERROR, "Cannot open input stream %s with the following error: \n%s\n", inputFileNames[i].c_str(), msg );
         return 2;
       }
     }
@@ -129,8 +127,7 @@ Int PlaYUVerTools::openInputs()
   for( UInt i = 0; i < m_apcInputStreams.size(); i++ )
   {
     m_uiNumberOfFrames = std::min( m_uiNumberOfFrames, m_apcInputStreams[i]->getFrameNum() );
-    m_uiNumberOfComponents = std::min( m_uiNumberOfComponents,
-                                       m_apcInputStreams[i]->getCurrFrame()->getNumberChannels() );
+    m_uiNumberOfComponents = std::min( m_uiNumberOfComponents, m_apcInputStreams[i]->getCurrFrame()->getNumberChannels() );
   }
 
   return 0;
@@ -214,14 +211,12 @@ Int PlaYUVerTools::Open( Int argc, Char* argv[] )
     PlaYUVerStream* pcOutputStream = new PlaYUVerStream;
     try
     {
-      pcOutputStream->open( m_pcOutputFileNames[0], pcInputFrame->getWidth(),
-                            pcInputFrame->getHeight(), pcInputFrame->getPelFormat(),
+      pcOutputStream->open( m_pcOutputFileNames[0], pcInputFrame->getWidth(), pcInputFrame->getHeight(), pcInputFrame->getPelFormat(),
                             pcInputFrame->getBitsPel(), PLAYUVER_LITTLE_ENDIAN, 1, false );
     }
     catch( const char* msg )
     {
-      log( LOG_ERROR, "Cannot open input stream %s with the following error %s!\n",
-           m_pcOutputFileNames[0].c_str(), msg );
+      log( LOG_ERROR, "Cannot open input stream %s with the following error %s!\n", m_pcOutputFileNames[0].c_str(), msg );
       delete pcOutputStream;
       pcOutputStream = NULL;
       return 2;
@@ -254,8 +249,7 @@ Int PlaYUVerTools::Open( Int argc, Char* argv[] )
     }
     for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
     {
-      if( lowercase( PlaYUVerFrame::supportedQualityMetricsList()[i] ) ==
-          lowercase( qualityMetric ) )
+      if( lowercase( PlaYUVerFrame::supportedQualityMetricsList()[i] ) == lowercase( qualityMetric ) )
       {
         m_uiQualityMetric = i;
       }
@@ -344,14 +338,12 @@ Int PlaYUVerTools::Open( Int argc, Char* argv[] )
         PlaYUVerStream* pcModStream = new PlaYUVerStream;
         try
         {
-          pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(),
-                             pcModFrame->getPelFormat(), pcModFrame->getBitsPel(),
-                             PLAYUVER_LITTLE_ENDIAN, 1, false );
+          pcModStream->open( outputFileNames[0], pcModFrame->getWidth(), pcModFrame->getHeight(), pcModFrame->getPelFormat(),
+                             pcModFrame->getBitsPel(), PLAYUVER_LITTLE_ENDIAN, 1, false );
         }
         catch( const char* msg )
         {
-          log( LOG_ERROR, "Cannot open input stream %s with the following error %s!\n",
-               outputFileNames[0].c_str(), msg );
+          log( LOG_ERROR, "Cannot open input stream %s with the following error %s!\n", outputFileNames[0].c_str(), msg );
           delete pcModStream;
           pcModStream = NULL;
           return 2;
@@ -427,8 +419,7 @@ Int PlaYUVerTools::RateReductionOperation()
 
 Int PlaYUVerTools::QualityOperation()
 {
-  const char* pchQualityMetricName =
-      PlaYUVerFrame::supportedQualityMetricsList()[m_uiQualityMetric].c_str();
+  const char* pchQualityMetricName = PlaYUVerFrame::supportedQualityMetricsList()[m_uiQualityMetric].c_str();
   PlaYUVerFrame* apcCurrFrame[MAX_NUMBER_INPUTS];
   Bool abEOF[MAX_NUMBER_INPUTS];
   Double adAverageQuality[MAX_NUMBER_INPUTS - 1][PlaYUVerPixel::MAX_NUMBER_COMPONENTS];
@@ -488,8 +479,7 @@ Int PlaYUVerTools::QualityOperation()
       for( UInt c = 0; c < m_uiNumberOfComponents; c++ )
       {
         dQuality = apcCurrFrame[s]->getQuality( m_uiQualityMetric, apcCurrFrame[0], c );
-        adAverageQuality[s - 1][c] =
-            ( adAverageQuality[s - 1][c] * Double( frame ) + dQuality ) / Double( frame + 1 );
+        adAverageQuality[s - 1][c] = ( adAverageQuality[s - 1][c] * Double( frame ) + dQuality ) / Double( frame + 1 );
         log( LOG_RESULT, metric_fmt.c_str(), dQuality );
       }
       log( LOG_RESULT, " " );
@@ -530,8 +520,7 @@ PlaYUVerFrame* PlaYUVerTools::applyFrameModule()
 Int PlaYUVerTools::ModuleOperation()
 {
   std::vector<PlaYUVerFrame*> apcFrameList;
-  log( LOG_INFO, "  Applying Module %s/%s ...\n", m_pcCurrModuleIf->m_pchModuleCategory,
-       m_pcCurrModuleIf->m_pchModuleName );
+  log( LOG_INFO, "  Applying Module %s/%s ...\n", m_pcCurrModuleIf->m_pchModuleCategory, m_pcCurrModuleIf->m_pchModuleName );
 
   PlaYUVerFrame* pcProcessedFrame = NULL;
   Double dMeasurementResult = 0.0;
@@ -574,9 +563,7 @@ Int PlaYUVerTools::ModuleOperation()
       }
       log( LOG_INFO, "   %3d", frame );
       log( LOG_RESULT, "  %8.3f \n", dMeasurementResult );
-      dAveragedMeasurementResult =
-          ( dAveragedMeasurementResult * Double( frame ) + dMeasurementResult ) /
-          Double( frame + 1 );
+      dAveragedMeasurementResult = ( dAveragedMeasurementResult * Double( frame ) + dMeasurementResult ) / Double( frame + 1 );
     }
 
     for( UInt s = 0; s < m_apcInputStreams.size(); s++ )

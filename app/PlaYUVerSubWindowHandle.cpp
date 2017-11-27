@@ -43,8 +43,7 @@
 class PlaYUVerMdiArea : public QMdiArea
 {
 public:
-  PlaYUVerMdiArea( QWidget* parent = 0 )
-      : QMdiArea( parent ), m_pixmapLogo( ":/images/playuver-backgroud-logo.png" )
+  PlaYUVerMdiArea( QWidget* parent = 0 ) : QMdiArea( parent ), m_pixmapLogo( ":/images/playuver-backgroud-logo.png" )
   {
     setBackgroundRole( QPalette::Background );
   }
@@ -120,8 +119,8 @@ Void PlaYUVerSubWindowHandle::resetWindowMode()
     }
     for( Int i = 0; i < m_apcMdiSubWindowList.size(); i++ )
     {
-      disconnect( m_apcMdiSubWindowList.at( i ), SIGNAL( aboutToClose( PlaYUVerMdiSubWindow* ) ),
-                  this, SLOT( removeMdiSubWindow( PlaYUVerMdiSubWindow* ) ) );
+      disconnect( m_apcMdiSubWindowList.at( i ), SIGNAL( aboutToClose( PlaYUVerMdiSubWindow* ) ), this,
+                  SLOT( removeMdiSubWindow( PlaYUVerMdiSubWindow* ) ) );
       m_apcMdiSubWindowList.at( i )->close();
     }
     m_apcMdiSubWindowList.clear();
@@ -163,8 +162,7 @@ Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
     setVisible( true );
     m_pcMdiArea = new PlaYUVerMdiArea;
     m_pcMdiArea->setActivationOrder( QMdiArea::ActivationHistoryOrder );
-    connect( m_pcMdiArea, SIGNAL( subWindowActivated( QMdiSubWindow* ) ), this,
-             SLOT( updateActiveSubWindow() ) );
+    connect( m_pcMdiArea, SIGNAL( subWindowActivated( QMdiSubWindow* ) ), this, SLOT( updateActiveSubWindow() ) );
     m_pcWindowManagerLayout = new QHBoxLayout( this );
     m_pcWindowManagerLayout->addWidget( m_pcMdiArea );
     setLayout( m_pcWindowManagerLayout );
@@ -177,8 +175,7 @@ Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
     // m_pcApp->resize( m_cMdiModeWindowSize );
     if( m_pcActiveWindow )
     {
-      m_pcApp->setWindowTitle( QApplication::applicationName() +
-                               " :: " + m_pcActiveWindow->getWindowName() );
+      m_pcApp->setWindowTitle( QApplication::applicationName() + " :: " + m_pcActiveWindow->getWindowName() );
     }
   }
   m_iWindowMode = iWindowMode;
@@ -205,8 +202,7 @@ Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowAbstract* window )
     if( mdiSubWindow )
     {
       QWidget* activeWidget = m_pcMdiArea->activeSubWindow()->widget();
-      Int windowIdx =
-          m_apcSubWindowList.indexOf( qobject_cast<SubWindowAbstract*>( activeWidget ) );
+      Int windowIdx = m_apcSubWindowList.indexOf( qobject_cast<SubWindowAbstract*>( activeWidget ) );
       if( windowIdx >= 0 )
       {
         m_pcActiveWindow = m_apcSubWindowList.at( windowIdx );
@@ -215,8 +211,7 @@ Void PlaYUVerSubWindowHandle::updateActiveSubWindow( SubWindowAbstract* window )
     }
     if( m_pcActiveWindow )
     {
-      m_pcApp->setWindowTitle( QApplication::applicationName() +
-                               " :: " + m_pcActiveWindow->getWindowName() );
+      m_pcApp->setWindowTitle( QApplication::applicationName() + " :: " + m_pcActiveWindow->getWindowName() );
     }
   }
 }
@@ -228,24 +223,19 @@ Void PlaYUVerSubWindowHandle::addMdiSubWindow( SubWindowAbstract* window )
   m_pcMdiArea->addSubWindow( mdiSubWindow );
   m_apcMdiSubWindowList.append( mdiSubWindow );
   window->setSubWindow( mdiSubWindow );
-  connect( mdiSubWindow, SIGNAL( aboutToClose( PlaYUVerMdiSubWindow* ) ), this,
-           SLOT( removeMdiSubWindow( PlaYUVerMdiSubWindow* ) ) );
+  connect( mdiSubWindow, SIGNAL( aboutToClose( PlaYUVerMdiSubWindow* ) ), this, SLOT( removeMdiSubWindow( PlaYUVerMdiSubWindow* ) ) );
 }
 
 Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowAbstract* window, Qt::WindowFlags flags )
 {
   if( window )
   {
-    connect( window, SIGNAL( updateStatusBar( const QString& ) ), m_pcApp,
-             SLOT( printMessage( const QString& ) ) );
-    connect( window, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_pcApp,
-             SLOT( updateZoomFactorSBox() ) );
+    connect( window, SIGNAL( updateStatusBar( const QString& ) ), m_pcApp, SLOT( printMessage( const QString& ) ) );
+    connect( window, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_pcApp, SLOT( updateZoomFactorSBox() ) );
     if( m_iWindowMode == DETACHEDSUBWINDOWMODE )
     {
-      connect( window, SIGNAL( aboutToActivate( SubWindowAbstract* ) ), this,
-               SLOT( updateActiveSubWindow( SubWindowAbstract* ) ) );
-      connect( window, SIGNAL( aboutToClose( SubWindowAbstract* ) ), this,
-               SLOT( removeSubWindow( SubWindowAbstract* ) ) );
+      connect( window, SIGNAL( aboutToActivate( SubWindowAbstract* ) ), this, SLOT( updateActiveSubWindow( SubWindowAbstract* ) ) );
+      connect( window, SIGNAL( aboutToClose( SubWindowAbstract* ) ), this, SLOT( removeSubWindow( SubWindowAbstract* ) ) );
     }
     if( m_iWindowMode == MDISUBWINDOWMODE )
     {
@@ -330,8 +320,7 @@ QList<SubWindowAbstract*> PlaYUVerSubWindowHandle::findSubWindow( const UInt uiC
   return apcSubWindowList;
 }
 
-QList<SubWindowAbstract*> PlaYUVerSubWindowHandle::findSubWindow( const QString& windowName,
-                                                                  const UInt uiCategory ) const
+QList<SubWindowAbstract*> PlaYUVerSubWindowHandle::findSubWindow( const QString& windowName, const UInt uiCategory ) const
 {
   QList<SubWindowAbstract*> subWindowList = findSubWindow( uiCategory );
   QList<SubWindowAbstract*> apcSubWindowList;
@@ -346,8 +335,7 @@ QList<SubWindowAbstract*> PlaYUVerSubWindowHandle::findSubWindow( const QString&
   return apcSubWindowList;
 }
 
-SubWindowAbstract* PlaYUVerSubWindowHandle::findSubWindow(
-    const SubWindowAbstract* subWindow ) const
+SubWindowAbstract* PlaYUVerSubWindowHandle::findSubWindow( const SubWindowAbstract* subWindow ) const
 {
   QList<SubWindowAbstract*> subWindowList = findSubWindow();
   for( Int i = 0; i < subWindowList.size(); i++ )
@@ -426,8 +414,7 @@ Void PlaYUVerSubWindowHandle::tileSubWindows()
     }
 
     QSize totalWindowsSize( screenSize.width(), screenSize.height() - topLeftCornerWindow.y() );
-    QSize windowsSize( totalWindowsSize.width() / numberTillingColumns,
-                       totalWindowsSize.height() / numberTillingRows );
+    QSize windowsSize( totalWindowsSize.width() / numberTillingColumns, totalWindowsSize.height() / numberTillingRows );
     QPoint windowRelativePos;
     for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
     {
@@ -454,8 +441,7 @@ Void PlaYUVerSubWindowHandle::cascadeSubWindows()
 Void PlaYUVerSubWindowHandle::createActions()
 {
   m_mapperWindow = new QSignalMapper( this );
-  connect( m_mapperWindow, SIGNAL( mapped( QWidget* ) ), this,
-           SLOT( setActiveSubWindow( QWidget* ) ) );
+  connect( m_mapperWindow, SIGNAL( mapped( QWidget* ) ), this, SLOT( setActiveSubWindow( QWidget* ) ) );
 
   m_arrayActions.resize( TOTAL_ACT );
 
@@ -469,16 +455,13 @@ Void PlaYUVerSubWindowHandle::createActions()
   m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT] = new QAction( tr( "&Detached SubWindows" ), this );
   m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT]->setCheckable( true );
   m_actionGroupWindowMode->addAction( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT] );
-  connect( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT], SIGNAL( triggered() ), m_mapperWindowMode,
-           SLOT( map() ) );
-  m_mapperWindowMode->setMapping( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT],
-                                  DETACHEDSUBWINDOWMODE );
+  connect( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT], SIGNAL( triggered() ), m_mapperWindowMode, SLOT( map() ) );
+  m_mapperWindowMode->setMapping( m_arrayActions[NORMAL_SUBWINDOW_MODE_ACT], DETACHEDSUBWINDOWMODE );
 
   m_arrayActions[MDI_SUBWINDOW_MODE_ACT] = new QAction( "&MDI SubWindows", this );
   m_arrayActions[MDI_SUBWINDOW_MODE_ACT]->setCheckable( true );
   m_actionGroupWindowMode->addAction( m_arrayActions[MDI_SUBWINDOW_MODE_ACT] );
-  connect( m_arrayActions[MDI_SUBWINDOW_MODE_ACT], SIGNAL( triggered() ), m_mapperWindowMode,
-           SLOT( map() ) );
+  connect( m_arrayActions[MDI_SUBWINDOW_MODE_ACT], SIGNAL( triggered() ), m_mapperWindowMode, SLOT( map() ) );
   m_mapperWindowMode->setMapping( m_arrayActions[MDI_SUBWINDOW_MODE_ACT], MDISUBWINDOWMODE );
 
   m_actionGroupWindowMode->actions().at( m_iWindowMode )->setChecked( true );
@@ -486,19 +469,16 @@ Void PlaYUVerSubWindowHandle::createActions()
   m_arrayActions[CLOSE_ACT] = new QAction( tr( "&Close" ), this );
   m_arrayActions[CLOSE_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogCloseButton ) );
   m_arrayActions[CLOSE_ACT]->setStatusTip( tr( "Close the active window" ) );
-  connect( m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), this,
-           SLOT( removeActiveSubWindow() ) );
+  connect( m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), this, SLOT( removeActiveSubWindow() ) );
 
   m_arrayActions[CLOSE_ACT] = new QAction( tr( "&Close" ), this );
   m_arrayActions[CLOSE_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogCloseButton ) );
   m_arrayActions[CLOSE_ACT]->setStatusTip( tr( "Close the active window" ) );
-  connect( m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), this,
-           SLOT( removeActiveSubWindow() ) );
+  connect( m_arrayActions[CLOSE_ACT], SIGNAL( triggered() ), this, SLOT( removeActiveSubWindow() ) );
 
   m_arrayActions[CLOSE_ALL_ACT] = new QAction( tr( "Close &All" ), this );
   m_arrayActions[CLOSE_ALL_ACT]->setStatusTip( tr( "Close all the windows" ) );
-  connect( m_arrayActions[CLOSE_ALL_ACT], SIGNAL( triggered() ), this,
-           SLOT( removeAllSubWindow() ) );
+  connect( m_arrayActions[CLOSE_ALL_ACT], SIGNAL( triggered() ), this, SLOT( removeAllSubWindow() ) );
 
   m_arrayActions[TILE_WINDOWS_ACT] = new QAction( tr( "Tile" ), this );
   m_arrayActions[TILE_WINDOWS_ACT]->setIcon( QIcon( ":images/windowstile.png" ) );
@@ -506,29 +486,24 @@ Void PlaYUVerSubWindowHandle::createActions()
   m_arrayActions[TILE_WINDOWS_ACT]->setShortcut( tr( "Ctrl+T" ) );
   // connect( m_arrayActions[TILE_WINDOWS_ACT], SIGNAL( triggered() ), mdiArea,
   // SLOT( tileSubWindows() ) );
-  connect( m_arrayActions[TILE_WINDOWS_ACT], SIGNAL( triggered() ), this,
-           SLOT( tileSubWindows() ) );
+  connect( m_arrayActions[TILE_WINDOWS_ACT], SIGNAL( triggered() ), this, SLOT( tileSubWindows() ) );
 
   m_arrayActions[CASCADE_WINDOWS_ACT] = new QAction( tr( "Cascade" ), this );
   m_arrayActions[CASCADE_WINDOWS_ACT]->setIcon( QIcon( ":images/windowscascade.png" ) );
   m_arrayActions[CASCADE_WINDOWS_ACT]->setStatusTip( tr( "Cascade the windows" ) );
-  connect( m_arrayActions[CASCADE_WINDOWS_ACT], SIGNAL( triggered() ), this,
-           SLOT( cascadeSubWindows() ) );
+  connect( m_arrayActions[CASCADE_WINDOWS_ACT], SIGNAL( triggered() ), this, SLOT( cascadeSubWindows() ) );
 
   m_arrayActions[NEXT_WINDOWS_ACT] = new QAction( tr( "Ne&xt" ), this );
   m_arrayActions[NEXT_WINDOWS_ACT]->setShortcuts( QKeySequence::NextChild );
-  m_arrayActions[NEXT_WINDOWS_ACT]->setIcon(
-      QIcon( style()->standardIcon( QStyle::SP_ArrowRight ) ) );
+  m_arrayActions[NEXT_WINDOWS_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_ArrowRight ) ) );
   m_arrayActions[NEXT_WINDOWS_ACT]->setStatusTip( tr( "Move the focus to the next window" ) );
   //  connect( m_arrayActions[NEXT_WINDOWS_ACT], SIGNAL( triggered() ), this,
   //  SLOT( activateNextSubWindow() ) );
 
   m_arrayActions[PREVIOUS_WINDOWS_ACT] = new QAction( tr( "Pre&vious" ), this );
   m_arrayActions[PREVIOUS_WINDOWS_ACT]->setShortcuts( QKeySequence::PreviousChild );
-  m_arrayActions[PREVIOUS_WINDOWS_ACT]->setIcon(
-      QIcon( style()->standardIcon( QStyle::SP_ArrowLeft ) ) );
-  m_arrayActions[PREVIOUS_WINDOWS_ACT]->setStatusTip(
-      tr( "Move the focus to the previous window" ) );
+  m_arrayActions[PREVIOUS_WINDOWS_ACT]->setIcon( QIcon( style()->standardIcon( QStyle::SP_ArrowLeft ) ) );
+  m_arrayActions[PREVIOUS_WINDOWS_ACT]->setStatusTip( tr( "Move the focus to the previous window" ) );
   //  connect( m_arrayActions[PREVIOUS_WINDOWS_ACT], SIGNAL( triggered() ),
   //  this, SLOT( activatePreviousSubWindow() ) );
 
@@ -598,10 +573,8 @@ Void PlaYUVerSubWindowHandle::updateMenu()
 Void PlaYUVerSubWindowHandle::readSettings()
 {
   QSettings appSettings;
-  m_cMdiModeWindowPosition =
-      appSettings.value( "SubWindowManager/LastMdiPosition", QPoint( 200, 200 ) ).toPoint();
-  m_cMdiModeWindowSize =
-      appSettings.value( "SubWindowManager/LastMdiSize", QSize( 500, 400 ) ).toSize();
+  m_cMdiModeWindowPosition = appSettings.value( "SubWindowManager/LastMdiPosition", QPoint( 200, 200 ) ).toPoint();
+  m_cMdiModeWindowSize = appSettings.value( "SubWindowManager/LastMdiSize", QSize( 500, 400 ) ).toSize();
   Int iWindowMode = appSettings.value( "SubWindowManager/SubWindowMode", MDISUBWINDOWMODE ).toInt();
   setWindowMode( iWindowMode );
   m_actionGroupWindowMode->actions().at( iWindowMode )->setChecked( true );

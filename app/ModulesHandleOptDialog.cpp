@@ -76,20 +76,17 @@ private:
   String m_cName;
 };
 
-ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget* parent,
-                                                PlaYUVerAppModuleIf* pcCurrModuleIf )
+ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget* parent, PlaYUVerAppModuleIf* pcCurrModuleIf )
     : QDialog( parent ), m_pcCurrModuleIf( pcCurrModuleIf )
 {
   resize( 400, 10 );
   setWindowTitle( "Select module parameters" );
 
-  const PlaYUVerOptions::OptionsList& moduleOptions =
-      m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.getOptionList();
+  const PlaYUVerOptions::OptionsList& moduleOptions = m_pcCurrModuleIf->m_pcModule->m_cModuleOptions.getOptionList();
 
   QVBoxLayout* optionsLayout = new QVBoxLayout;
   OpionConfiguration* pcOption;
-  for( PlaYUVerOptions::OptionsList::const_iterator it = moduleOptions.begin();
-       it != moduleOptions.end(); ++it )
+  for( PlaYUVerOptions::OptionsList::const_iterator it = moduleOptions.begin(); it != moduleOptions.end(); ++it )
   {
     pcOption = new OpionConfiguration( ( *it )->opt );
     m_apcOptionList.append( pcOption );

@@ -186,12 +186,7 @@ private:
   Void refreshFrameOperation();
   Bool goToNextFrame( Bool bThreaded = false );
 
-  static Bool guessFormat( QString filename,
-                           UInt& rWidth,
-                           UInt& rHeight,
-                           Int& rInputFormat,
-                           UInt& rBitsPerPixel,
-                           Int& rEndianness );
+  static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPixel, Int& rEndianness );
 
   Bool hasRunningModule();
 

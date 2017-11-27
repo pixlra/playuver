@@ -37,16 +37,14 @@
 
 AboutDialog::AboutDialog( QWidget* parent ) : QDialog( parent )
 {
-  QPixmap logo = QPixmap( ":/images/playuver-backgroud-logo.png" )
-                     .scaled( QSize( 500, 350 ), Qt::KeepAspectRatio );
+  QPixmap logo = QPixmap( ":/images/playuver-backgroud-logo.png" ).scaled( QSize( 500, 350 ), Qt::KeepAspectRatio );
   QLabel* pixmapLabel = new QLabel;
   pixmapLabel->setPixmap( logo );
 
-  QLabel* label =
-      new QLabel( QString( "<h1 style='text-align:center'>%1 Version %2</h1><h2>%3</h2>" )
-                      .arg( QApplication::applicationName() )
-                      .arg( QApplication::applicationVersion() )
-                      .arg( tr( "Enhanced open-source Qt-based raw video player" ) ) );
+  QLabel* label = new QLabel( QString( "<h1 style='text-align:center'>%1 Version %2</h1><h2>%3</h2>" )
+                                  .arg( QApplication::applicationName() )
+                                  .arg( QApplication::applicationVersion() )
+                                  .arg( tr( "Enhanced open-source Qt-based raw video player" ) ) );
   label->setWordWrap( true );
 
   QString featuresList = QStringLiteral( "<p><b>Features:</b><ul>" );
@@ -64,8 +62,7 @@ AboutDialog::AboutDialog( QWidget* parent ) : QDialog( parent )
 
   QLabel* labelFeatures = new QLabel( featuresList );
 
-  QLabel* labelCopyright =
-      new QLabel( QStringLiteral( "Copyright © 2014–2017 Luis Lucas and Joao Carreira" ) );
+  QLabel* labelCopyright = new QLabel( QStringLiteral( "Copyright © 2014–2017 Luis Lucas and Joao Carreira" ) );
 
   QWidget* topWidget = new QWidget;
   QVBoxLayout* topLayout = new QVBoxLayout;

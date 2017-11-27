@@ -84,9 +84,7 @@ public:
 
   Void setKey( const QString& key );
 
-  Void addPlot( const QVector<Double>& arrayX,
-                const QVector<Double>& arrayY,
-                const QString& key = QString() );
+  Void addPlot( const QVector<Double>& arrayX, const QVector<Double>& arrayY, const QString& key = QString() );
 };
 
 #endif  // __PLOTWINDOWHANDLE_H__

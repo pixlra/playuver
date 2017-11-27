@@ -30,8 +30,7 @@
 #include <QIcon>
 #include <QScrollBar>
 
-SubWindowAbstract::SubWindowAbstract( QWidget* parent, UInt category )
-    : QWidget( parent ), m_cSubWindow( NULL )
+SubWindowAbstract::SubWindowAbstract( QWidget* parent, UInt category ) : QWidget( parent ), m_cSubWindow( NULL )
 {
   setParent( parent );
   setVisible( false );

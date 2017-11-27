@@ -12,6 +12,7 @@ set(PlaYUVer_Lib_SRCS
     PlaYUVerFrame.cpp
     PlaYUVerFramePixelFormats.cpp
     # Stream
+    PlaYUVerStreamHandlerIf.h
     PlaYUVerStream.cpp
     StreamHandlerRaw.cpp
     StreamHandlerPortableMap.cpp

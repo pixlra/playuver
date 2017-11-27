@@ -59,10 +59,7 @@ class StreamHandlerLibav : public PlaYUVerStreamHandlerIf
   REGISTER_STREAM_HANDLER( StreamHandlerLibav )
 
 public:
-  static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
-  static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
-
-  StreamHandlerLibav() {}
+  StreamHandlerLibav();
   ~StreamHandlerLibav() {}
   Bool openHandler( String strFilename, Bool bInput );
   Void closeHandler();

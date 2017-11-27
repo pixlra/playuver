@@ -26,9 +26,7 @@
 #include "VideoSubWindow.h"
 #include "VideoSubWindow.h"
 
-PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent,
-                                          QAction* action,
-                                          PlaYUVerModuleIf* module )
+PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module )
     : m_bIsRunning( false )
     , m_pcModuleAction( action )
     , m_pcModule( module )

@@ -40,17 +40,15 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Portable Network Graphics", "png" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Joint Photographic Experts Group",
-                                 "jpg" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Joint Photographic Experts Group", "jpg,jpeg" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows Bitmap", "bmp" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Tagged Image File Format", "tiff" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Audio video interleaved", "avi" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows media video", "wmv" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "MPEG4", "mp4" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Matroska Multimedia Container",
-                                 "mkv" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "H.264 streams", "h264" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "HEVC streams", "hevc" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Matroska Multimedia Container", "mkv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "H.264 streams", "264,h264" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "HEVC streams", "265,hevc" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
@@ -59,6 +57,38 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedWriteFormats()
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
+
+StreamHandlerLibav::StreamHandlerLibav()
+{
+  /* register all formats and codecs */
+  av_register_all();
+}
+
+// Int StreamHandlerLibav::checkforSupportedFile( String strFilename, Bool bRead )
+//{
+//  Int iRet;
+
+//  /* register all formats and codecs */
+//  av_register_all();
+
+//  AVDictionary* fmtOpts = NULL;
+//  AVFormatContext* fmtCtx;
+
+//  /* register all formats and codecs */
+//  av_register_all();
+
+//  /* open input file, and allocate format context */
+//  if( ( iRet = avformat_open_input( &fmtCtx, strFilename.c_str(), NULL, &fmtOpts ) ) < 0 )
+//  {
+//    return iRet;
+//  }
+//  /* retrieve stream information */
+//  iRet = avformat_find_stream_info( fmtCtx, NULL );
+
+//  /* close format context */
+//  avformat_close_input( &fmtCtx );
+//  return iRet < 0 ? 0 : 1;
+//}
 
 Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 {
@@ -76,9 +106,6 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   m_bHasStream = false;
 
   AVDictionary* format_opts = NULL;
-
-  /* register all formats and codecs */
-  av_register_all();
 
   //   if( width > 0 && height > 0 )
   //   {
@@ -143,15 +170,13 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   }
 
 #ifdef FF_USER_CODEC_PARAM
-  m_uiFrameBufferSize = av_image_get_buffer_size( AVPixelFormat( codec_param->format ),
-                                                  codec_param->width, codec_param->height, 1 );
+  m_uiFrameBufferSize = av_image_get_buffer_size( AVPixelFormat( codec_param->format ), codec_param->width, codec_param->height, 1 );
 
   Int pix_fmt = codec_param->format;
   m_uiWidth = codec_param->width;
   m_uiHeight = codec_param->height;
 #else
-  m_uiFrameBufferSize = av_image_get_buffer_size(
-      m_cStream->codec->pix_fmt, m_cStream->codec->width, m_cStream->codec->height, 1 );
+  m_uiFrameBufferSize = av_image_get_buffer_size( m_cStream->codec->pix_fmt, m_cStream->codec->width, m_cStream->codec->height, 1 );
 
   Int pix_fmt = m_cStream->codec->pix_fmt;
   m_uiWidth = m_cStream->codec->width;
@@ -373,12 +398,10 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
   {
 #ifdef FF_USER_CODEC_PARAM
     AVCodecParameters* codec_param = m_cStream->codecpar;
-    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data,
-                             m_cFrame->linesize, AVPixelFormat( codec_param->format ),
+    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, AVPixelFormat( codec_param->format ),
                              codec_param->width, codec_param->height, 1 );
 #else
-    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data,
-                             m_cFrame->linesize, m_cCodedCtx->pix_fmt, m_cCodedCtx->width,
+    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, m_cCodedCtx->pix_fmt, m_cCodedCtx->width,
                              m_cCodedCtx->height, 1 );
 
 #endif

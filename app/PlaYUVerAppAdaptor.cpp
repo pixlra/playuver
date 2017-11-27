@@ -26,12 +26,10 @@
 #include "PlaYUVerApp.h"
 #include <QDBusAbstractAdaptor>
 
-PlaYUVerAppAdaptor::PlaYUVerAppAdaptor( PlaYUVerApp* app )
-    : QDBusAbstractAdaptor( app ), m_app( app )
+PlaYUVerAppAdaptor::PlaYUVerAppAdaptor( PlaYUVerApp* app ) : QDBusAbstractAdaptor( app ), m_app( app )
 {
   // application dbus interface
-  Bool isRegistered = QDBusConnection::sessionBus().registerObject(
-      QStringLiteral( PLAYUVER_DBUS_PATH ), this, QDBusConnection::ExportAllSlots );
+  Bool isRegistered = QDBusConnection::sessionBus().registerObject( QStringLiteral( PLAYUVER_DBUS_PATH ), this, QDBusConnection::ExportAllSlots );
 
   Q_ASSERT( isRegistered == true );
 }

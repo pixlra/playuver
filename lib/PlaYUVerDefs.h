@@ -143,10 +143,7 @@ struct PlaYUVerFailure : public std::exception
   String m_class_name;
   String m_error_msg;
   PlaYUVerFailure( String error_msg ) throw() : m_error_msg( error_msg ) {}
-  PlaYUVerFailure( String class_name, String error_msg ) throw()
-      : m_class_name( class_name ), m_error_msg( error_msg )
-  {
-  }
+  PlaYUVerFailure( String class_name, String error_msg ) throw() : m_class_name( class_name ), m_error_msg( error_msg ) {}
   ~PlaYUVerFailure() throw() {}
   const Char* what() const throw()
   {

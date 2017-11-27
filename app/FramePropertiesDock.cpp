@@ -27,8 +27,7 @@
 #include <QtGui>
 #include <cmath>
 
-FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitch )
-    : QWidget( parent ), m_pbIsPlaying( pbMainPlaySwitch )
+FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitch ) : QWidget( parent ), m_pbIsPlaying( pbMainPlaySwitch )
 {
   // -------------- Variables definition --------------
   m_pcFrame = NULL;
@@ -240,19 +239,13 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
   setEnabled( false );
 
   connect( channelCB, SIGNAL( activated( int ) ), this, SLOT( slotChannelChanged( int ) ) );
-  connect( scaleButtonGroup, SIGNAL( buttonClicked( int ) ), this,
-           SLOT( slotScaleChanged( int ) ) );
+  connect( scaleButtonGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( slotScaleChanged( int ) ) );
   connect( colorsCB, SIGNAL( activated( int ) ), this, SLOT( slotColorsChanged( int ) ) );
-  connect( renderingButtonGroup, SIGNAL( buttonClicked( int ) ), this,
-           SLOT( slotRenderingChanged( int ) ) );
-  connect( histogramWidget, SIGNAL( signalIntervalChanged( int, int ) ), this,
-           SLOT( slotUpdateInterval( int, int ) ) );
-  connect( histogramWidget, SIGNAL( signalMaximumValueChanged( int ) ), this,
-           SLOT( slotUpdateIntervRange( int ) ) );
-  connect( histogramWidget, SIGNAL( signalHistogramComputationDone( int ) ), this,
-           SLOT( slotRefreshOptions( int ) ) );
-  connect( histogramWidget, SIGNAL( signalHistogramComputationFailed( void ) ), this,
-           SLOT( slotHistogramComputationFailed( void ) ) );
+  connect( renderingButtonGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( slotRenderingChanged( int ) ) );
+  connect( histogramWidget, SIGNAL( signalIntervalChanged( int, int ) ), this, SLOT( slotUpdateInterval( int, int ) ) );
+  connect( histogramWidget, SIGNAL( signalMaximumValueChanged( int ) ), this, SLOT( slotUpdateIntervRange( int ) ) );
+  connect( histogramWidget, SIGNAL( signalHistogramComputationDone( int ) ), this, SLOT( slotRefreshOptions( int ) ) );
+  connect( histogramWidget, SIGNAL( signalHistogramComputationFailed( void ) ), this, SLOT( slotHistogramComputationFailed( void ) ) );
   connect( minInterv, SIGNAL( valueChanged( int ) ), this, SLOT( slotMinValueChanged( int ) ) );
   connect( maxInterv, SIGNAL( valueChanged( int ) ), this, SLOT( slotMaxValueChanged( int ) ) );
 }
@@ -392,8 +385,7 @@ Void FramePropertiesDock::setSelection( const QRect& selectionArea )
         {
           delete m_pcSelectedFrame;
         }
-        m_pcSelectedFrame = new PlaYUVerFrame( m_pcFrame, selectionArea.x(), selectionArea.y(),
-                                               selectionArea.width(), selectionArea.height() );
+        m_pcSelectedFrame = new PlaYUVerFrame( m_pcFrame, selectionArea.x(), selectionArea.y(), selectionArea.width(), selectionArea.height() );
       }
       updateDataHistogram();
       selectionImageButton->click();
@@ -460,8 +452,7 @@ Void FramePropertiesDock::updateStatistiques()
 
   if( frame )
   {
-    QString rangeText = "[" + QString::number( frame->getMin( channel ) ) + ":" +
-                        QString::number( frame->getMax( channel ) ) + "]";
+    QString rangeText = "[" + QString::number( frame->getMin( channel ) ) + ":" + QString::number( frame->getMax( channel ) ) + "]";
     labelRangeValue->setText( rangeText );
 
     double mean = frame->getMean( channel, min, max );

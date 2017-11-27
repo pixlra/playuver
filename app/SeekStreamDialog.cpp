@@ -57,8 +57,7 @@ SeekStreamDialog::SeekStreamDialog( PlaYUVerStream* pcCurrStream, QWidget* paren
   QVBoxLayout* verticalLayout = new QVBoxLayout;
   QHBoxLayout* horizontalLayout = new QHBoxLayout;
   horizontalLayout->addWidget( pcLabel );
-  horizontalLayout->addItem(
-      new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
+  horizontalLayout->addItem( new QSpacerItem( 20, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
   horizontalLayout->addWidget( m_spinFrameNum );
   verticalLayout->addLayout( horizontalLayout );
   verticalLayout->addWidget( dialogButtonOkCancel, Qt::AlignRight );

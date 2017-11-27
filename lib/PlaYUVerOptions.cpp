@@ -60,10 +60,7 @@ struct ParseFailure : public std::exception
 class BoolOption : public OptionBase
 {
 public:
-  BoolOption( const String& name, const String& desc ) : OptionBase( name, desc )
-  {
-    is_binary = true;
-  }
+  BoolOption( const String& name, const String& desc ) : OptionBase( name, desc ) { is_binary = true; }
   void parse( const String& arg ) { arg_count++; }
 };
 
@@ -72,11 +69,7 @@ template <typename T>
 class StandardOption : public OptionBase
 {
 public:
-  StandardOption( const String& name, T& storage, const String& desc )
-      : OptionBase( name, desc ), opt_storage( storage )
-  {
-    is_binary = false;
-  }
+  StandardOption( const String& name, T& storage, const String& desc ) : OptionBase( name, desc ), opt_storage( storage ) { is_binary = false; }
 
   void parse( const String& arg );
   T& opt_storage;
@@ -204,30 +197,14 @@ PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, T& storage, co
   return *this;
 }
 
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
-                                                       Bool& storage,
-                                                       const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
-                                                       UInt& storage,
-                                                       const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
-                                                       Int& storage,
-                                                       const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
-                                                       Int64& storage,
-                                                       const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
-                                                       String& storage,
-                                                       const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
-                                                       std::vector<UInt>& storage,
-                                                       const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
-                                                       std::vector<Int>& storage,
-                                                       const String& desc );
-template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
-                                                       std::vector<String>& storage,
-                                                       const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, Bool& storage, const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, UInt& storage, const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, Int& storage, const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, Int64& storage, const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, String& storage, const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, std::vector<UInt>& storage, const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, std::vector<Int>& storage, const String& desc );
+template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, std::vector<String>& storage, const String& desc );
 
 /**
  * Add option described by name to the parent Options list,
@@ -349,10 +326,7 @@ static void setOptions( PlaYUVerOptions::OptionsList& opt_list, const string& va
   }
 }
 
-Bool PlaYUVerOptions::storePair( Bool allow_long,
-                                 Bool allow_short,
-                                 const string& name,
-                                 const string& value )
+Bool PlaYUVerOptions::storePair( Bool allow_long, Bool allow_short, const string& name, const string& value )
 {
   bool found = false;
   PlaYUVerOptions::OptionMap::iterator opt_it;

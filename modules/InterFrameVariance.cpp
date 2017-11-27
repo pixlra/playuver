@@ -51,13 +51,11 @@ Bool InterFrameVariance::create( std::vector<PlaYUVerFrame*> apcFrameList )
   _BASIC_MODULE_API_2_CHECK_
 
   for( UInt i = 1; i < apcFrameList.size(); i++ )
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE |
-                                                            PlaYUVerFrame::MATCH_RESOLUTION |
-                                                            PlaYUVerFrame::MATCH_BITS ) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0],
+                                       PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
       return false;
 
-  m_pcFrameVariance = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
-                                         PlaYUVerFrame::GRAY, 8 );
+  m_pcFrameVariance = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY, 8 );
   getMem2D( &m_pVariance, apcFrameList[0]->getHeight(), apcFrameList[0]->getWidth() );
 
   return true;

@@ -72,8 +72,7 @@ Void ViewArea::setImage( PlaYUVerFrame* pcFrame )
   m_pcCurrFrame = pcFrame;
   m_uiPixelHalfScale = 1 << ( m_pcCurrFrame->getBitsPel() - 1 );
   m_pcCurrFrame->fillRGBBuffer();
-  QImage qimg = QImage( m_pcCurrFrame->getRGBBuffer(), m_pcCurrFrame->getWidth(),
-                        m_pcCurrFrame->getHeight(), QImage::Format_RGB32 );
+  QImage qimg = QImage( m_pcCurrFrame->getRGBBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), QImage::Format_RGB32 );
   setImage( QPixmap::fromImage( qimg ) );
 }
 
@@ -439,8 +438,7 @@ Void ViewArea::paintEvent( QPaintEvent* event )
   // That gives us the part of the pixmap that has actually been exposed.
   // See:
   // http://blog.qt.digia.com/blog/2006/05/13/fast-transformed-pixmapimage-drawing/
-  QRect exposedRect =
-      paInter.worldTransform().inverted().mapRect( event->rect() ).adjusted( -1, -1, 1, 1 );
+  QRect exposedRect = paInter.worldTransform().inverted().mapRect( event->rect() ).adjusted( -1, -1, 1, 1 );
   // Draw the pixmap.
   paInter.drawPixmap( exposedRect, m_pixmap, exposedRect );
 
@@ -514,8 +512,7 @@ Void ViewArea::paintEvent( QPaintEvent* event )
             paInter.setPen( QColor( Qt::black ) );
 
           paInter.drawText( pixelRect, Qt::AlignCenter,
-                            "Y: " + QString::number( sPixelValue.Y() ) + "\n" +
-                                "U: " + QString::number( sPixelValue.Cb() ) + "\n" +
+                            "Y: " + QString::number( sPixelValue.Y() ) + "\n" + "U: " + QString::number( sPixelValue.Cb() ) + "\n" +
                                 "V: " + QString::number( sPixelValue.Cr() ) );
         }
         if( frFormat == PlaYUVerPixel::COLOR_GRAY )
@@ -527,8 +524,7 @@ Void ViewArea::paintEvent( QPaintEvent* event )
           else
             paInter.setPen( QColor( Qt::black ) );
 
-          paInter.drawText( pixelRect, Qt::AlignCenter,
-                            "Y: " + QString::number( sPixelValue.Y() ) );
+          paInter.drawText( pixelRect, Qt::AlignCenter, "Y: " + QString::number( sPixelValue.Y() ) );
         }
 
         if( ( frFormat == PlaYUVerPixel::COLOR_RGB ) )
@@ -541,8 +537,7 @@ Void ViewArea::paintEvent( QPaintEvent* event )
             paInter.setPen( QColor( Qt::black ) );
 
           paInter.drawText( pixelRect, Qt::AlignCenter,
-                            "R: " + QString::number( sPixelValue.R() ) + "\n" +
-                                "G: " + QString::number( sPixelValue.G() ) + "\n" +
+                            "R: " + QString::number( sPixelValue.R() ) + "\n" + "G: " + QString::number( sPixelValue.G() ) + "\n" +
                                 "B: " + QString::number( sPixelValue.B() ) );
         }
       }

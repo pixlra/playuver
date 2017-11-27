@@ -44,31 +44,11 @@ typedef struct
 {
   String formatName;
   String formatExt;
+  std::vector<String> getExts();
   String formatPattern;
   CreateStreamHandlerFn formatFct;
+
 } PlaYUVerSupportedFormat;
-
-#define INI_REGIST_PLAYUVER_SUPPORTED_FMT           \
-  std::vector<PlaYUVerSupportedFormat> formatsList; \
-  PlaYUVerSupportedFormat formatElem;
-
-#define END_REGIST_PLAYUVER_SUPPORTED_FMT return formatsList;
-
-#define REGIST_PLAYUVER_SUPPORTED_FMT( handler, name, ext ) \
-  formatElem.formatName = name;                             \
-  formatElem.formatExt = lowercase( ext );                  \
-  formatElem.formatFct = handler;                           \
-  formatsList.push_back( formatElem );
-
-#define REGIST_PLAYUVER_SUPPORTED_ABSTRACT_FMT( handler, name, pattern ) \
-  formatElem.formatPattern = pattern;                                    \
-  REGIST_PLAYUVER_SUPPORTED_FMT( handler, name, "" )
-
-#define APPEND_PLAYUVER_SUPPORTED_FMT( class_name, fct )                                   \
-  {                                                                                        \
-    std::vector<PlaYUVerSupportedFormat> new_fmts = class_name::supported##fct##Formats(); \
-    formatsList.insert( formatsList.end(), new_fmts.begin(), new_fmts.end() );             \
-  }
 
 /**
  * \class PlaYUVerStream
@@ -100,21 +80,8 @@ public:
   String getFormatName();
   String getCodecName();
 
-  Bool open( String filename,
-             String resolution,
-             String input_format,
-             UInt bitsPel,
-             Int endianness,
-             UInt frame_rate,
-             Bool bInput );
-  Bool open( String filename,
-             UInt width,
-             UInt height,
-             Int input_format,
-             UInt bitsPel,
-             Int endianness,
-             UInt frame_rate,
-             Bool bInput );
+  Bool open( String filename, String resolution, String input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput );
+  Bool open( String filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput );
   Bool reload();
   Void close();
 
@@ -125,12 +92,7 @@ public:
   Int getEndianess() const;
   Int getCurrFrameNum();
   Double getFrameRate();
-  Void getFormat( UInt& rWidth,
-                  UInt& rHeight,
-                  Int& rInputFormat,
-                  UInt& rBitsPerPel,
-                  Int& rEndianness,
-                  UInt& rFrameRate );
+  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, UInt& rFrameRate );
 
   Void loadAll();
 

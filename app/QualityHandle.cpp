@@ -34,8 +34,7 @@
 #include "QtConcurrent/qtconcurrentrun.h"
 #endif
 
-QualityHandle::QualityHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManager )
-    : m_pcParet( parent ), m_pcMainWindowManager( windowManager )
+QualityHandle::QualityHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManager ) : m_pcParet( parent ), m_pcMainWindowManager( windowManager )
 {
 }
 
@@ -61,15 +60,12 @@ Void QualityHandle::createActions()
   m_arrayActions.resize( TOTAL_ACT );
 
   m_arrayActions[SELECT_CURR_REF_ACT] = new QAction( "Mark as Reference", this );
-  connect( m_arrayActions[SELECT_CURR_REF_ACT], SIGNAL( triggered() ), this,
-           SLOT( slotSelectCurrentAsReference() ) );
+  connect( m_arrayActions[SELECT_CURR_REF_ACT], SIGNAL( triggered() ), this, SLOT( slotSelectCurrentAsReference() ) );
 
   m_arrayActions[PLOT_QUALITY] = new QAction( "Plot Window's Quality", this );
-  connect( m_arrayActions[PLOT_QUALITY], SIGNAL( triggered() ), this,
-           SLOT( slotPlotQualitySingle() ) );
+  connect( m_arrayActions[PLOT_QUALITY], SIGNAL( triggered() ), this, SLOT( slotPlotQualitySingle() ) );
   m_arrayActions[PLOT_SEVERAL_QUALITY] = new QAction( "Plot Several Quality", this );
-  connect( m_arrayActions[PLOT_SEVERAL_QUALITY], SIGNAL( triggered() ), this,
-           SLOT( slotPlotQualitySeveral() ) );
+  connect( m_arrayActions[PLOT_SEVERAL_QUALITY], SIGNAL( triggered() ), this, SLOT( slotPlotQualitySeveral() ) );
 }
 
 QMenu* QualityHandle::createMenu()
@@ -91,10 +87,8 @@ QDockWidget* QualityHandle::createDock()
   m_pcQualityHandleDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   m_pcQualityHandleDock->setWidget( m_pcQualityHandleSideBar );
 
-  connect( m_pcQualityHandleSideBar, SIGNAL( signalQualityMetricChanged( int ) ), this,
-           SLOT( slotQualityMetricChanged( int ) ) );
-  connect( m_mapperQualityMetric, SIGNAL( mapped( int ) ), this,
-           SLOT( slotQualityMetricChanged( int ) ) );
+  connect( m_pcQualityHandleSideBar, SIGNAL( signalQualityMetricChanged( int ) ), this, SLOT( slotQualityMetricChanged( int ) ) );
+  connect( m_mapperQualityMetric, SIGNAL( mapped( int ) ), this, SLOT( slotQualityMetricChanged( int ) ) );
 
   slotQualityMetricChanged( 0 );
 
@@ -103,8 +97,7 @@ QDockWidget* QualityHandle::createDock()
 
 Void QualityHandle::updateMenus()
 {
-  VideoSubWindow* pcCurrentVideoSubWindow =
-      qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
+  VideoSubWindow* pcCurrentVideoSubWindow = qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
   Bool hasSubWindow = pcCurrentVideoSubWindow ? true : false;
   Bool hasReference = false;
   Bool isReference = false;
@@ -115,8 +108,7 @@ Void QualityHandle::updateMenus()
     if( hasSubWindow && !hasReference )
     {
       VideoSubWindow* pcVideoSubWindow;
-      QList<SubWindowAbstract*> subWindowList =
-          m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
+      QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
       for( Int i = 0; i < subWindowList.size(); i++ )
       {
         pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
@@ -199,8 +191,7 @@ Void QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
     for( UInt i = 0; i < numberOfWindows; i++ )
     {
       pcCurrFrame = apcWindowList.at( i )->getCurrFrame();
-      padQualityValues[i + 1].append(
-          pcCurrFrame->getQuality( m_iQualityMetricIdx, pcReferenceFrame, LUMA ) );
+      padQualityValues[i + 1].append( pcCurrFrame->getQuality( m_iQualityMetricIdx, pcReferenceFrame, LUMA ) );
       apcWindowList.at( i )->seekRelativeEvent( true );
     }
     pcReferenceWindow->seekRelativeEvent( true );
@@ -218,9 +209,7 @@ Void QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
     plotWindowTitle += " - " + apcWindowList.at( 0 )->getWindowName();
   }
   PlotSubWindow* pcPlotWindow = new PlotSubWindow( plotWindowTitle );
-  pcPlotWindow->setAxisName(
-      "Frame Number",
-      QString::fromStdString( PlaYUVerFrame::supportedQualityMetricsList()[m_iQualityMetricIdx] ) );
+  pcPlotWindow->setAxisName( "Frame Number", QString::fromStdString( PlaYUVerFrame::supportedQualityMetricsList()[m_iQualityMetricIdx] ) );
 
   if( apcWindowList.size() > 1 )
   {
@@ -252,13 +241,11 @@ Void QualityHandle::slotQualityMetricChanged( Int idx )
 
 Void QualityHandle::slotSelectCurrentAsReference()
 {
-  VideoSubWindow* pcRefSubWindow =
-      qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
+  VideoSubWindow* pcRefSubWindow = qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
   if( pcRefSubWindow )
   {
     VideoSubWindow* pcVideoSubWindow;
-    QList<SubWindowAbstract*> subWindowList =
-        m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
+    QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
       pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
@@ -273,8 +260,7 @@ Void QualityHandle::slotSelectCurrentAsReference()
 
 Void QualityHandle::slotPlotQualitySingle()
 {
-  VideoSubWindow* pcSubWindow =
-      qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
+  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
   if( pcSubWindow )
   {
     if( pcSubWindow->getRefSubWindow() )
@@ -298,8 +284,7 @@ Void QualityHandle::slotPlotQualitySingle()
 
 Void QualityHandle::slotPlotQualitySeveral()
 {
-  VideoSubWindow* pcSubWindow =
-      qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
+  VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
   if( pcSubWindow )
   {
     QVector<VideoSubWindow*> apcWindowList;
@@ -311,8 +296,7 @@ Void QualityHandle::slotPlotQualitySeveral()
     }
 
     VideoSubWindow* pcVideoSubWindow;
-    QList<SubWindowAbstract*> subWindowList =
-        m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
+    QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
     for( Int i = 0; i < subWindowList.size(); i++ )
     {
       pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );

@@ -125,9 +125,9 @@ private:
   VideoSubWindow* m_pcCurrentVideoSubWindow;
 
   QString m_cLastOpenPath;
+  QStringList showFileDialog( Bool bRead );
 
-  static VideoSubWindow* findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager,
-                                                   const QString& fileName );
+  static VideoSubWindow* findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager, const QString& fileName );
 
   Void updateMenus();
 

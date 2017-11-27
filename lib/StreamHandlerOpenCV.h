@@ -40,9 +40,6 @@ class StreamHandlerOpenCV : public PlaYUVerStreamHandlerIf
   REGISTER_STREAM_HANDLER( StreamHandlerOpenCV )
 
 public:
-  static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();
-  static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats();
-
   StreamHandlerOpenCV();
   ~StreamHandlerOpenCV() {}
   Bool openHandler( String strFilename, Bool bInput );

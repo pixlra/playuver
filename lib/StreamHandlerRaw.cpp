@@ -30,6 +30,22 @@
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"
 
+std::vector<PlaYUVerSupportedFormat> StreamHandlerRaw::supportedReadFormats()
+{
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw YUV Video", "yuv" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Gray Video", "gray" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw RGB Video", "rgb" );
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+}
+
+std::vector<PlaYUVerSupportedFormat> StreamHandlerRaw::supportedWriteFormats()
+{
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Video", "yuv" );
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+}
+
 Bool StreamHandlerRaw::openHandler( String strFilename, Bool bInput )
 {
   m_bIsInput = bInput;

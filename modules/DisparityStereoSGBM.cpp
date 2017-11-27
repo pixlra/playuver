@@ -36,12 +36,10 @@ DisparityStereoSGBM::DisparityStereoSGBM()
       "Measure the disparity between two images using the "
       "Stereo SGBM method (OpenCV)";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
-  m_uiModuleRequirements =
-      MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
+  m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions() /**/
-      ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [3]" )(
-          "HHAlgorithm", m_bUseHH, "Use HH algorithm [false]" );
+      ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [3]" )( "HHAlgorithm", m_bUseHH, "Use HH algorithm [false]" );
 
   m_pcDisparityFrame = NULL;
   m_uiBlockSize = 3;
@@ -51,8 +49,7 @@ DisparityStereoSGBM::DisparityStereoSGBM()
 Bool DisparityStereoSGBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
-  m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
-                                          PlaYUVerFrame::GRAY );
+  m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
   if( ( m_uiBlockSize % 2 ) == 0 )
   {
     m_uiBlockSize++;

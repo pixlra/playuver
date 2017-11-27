@@ -29,8 +29,7 @@
 #include <QProgressBar>
 #include <QVBoxLayout>
 
-ProgressBar::ProgressBar( QWidget* parent, UInt maxValue )
-    : QWidget( parent ), m_uiTotalProgress( maxValue ), m_uiProgress( 0 )
+ProgressBar::ProgressBar( QWidget* parent, UInt maxValue ) : QWidget( parent ), m_uiTotalProgress( maxValue ), m_uiProgress( 0 )
 {
   QVBoxLayout* mainLayout = new QVBoxLayout( this );
   m_pcProgressBar = new QProgressBar;

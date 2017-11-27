@@ -30,10 +30,36 @@
 
 class PlaYUVerFrame;
 
-#define REGISTER_STREAM_HANDLER( X )                           \
-public:                                                        \
-  static PlaYUVerStreamHandlerIf* Create() { return new X(); } \
-  void Delete() { delete this; }
+#define INI_REGIST_PLAYUVER_SUPPORTED_FMT           \
+  std::vector<PlaYUVerSupportedFormat> formatsList; \
+  PlaYUVerSupportedFormat formatElem;
+
+#define END_REGIST_PLAYUVER_SUPPORTED_FMT return formatsList;
+
+#define REGIST_PLAYUVER_SUPPORTED_FMT( handler, name, ext ) \
+  formatElem.formatName = name;                             \
+  formatElem.formatExt = lowercase( ext );                  \
+  formatElem.formatFct = handler;                           \
+  formatsList.push_back( formatElem );
+
+#define REGIST_PLAYUVER_SUPPORTED_ABSTRACT_FMT( handler, name, pattern ) \
+  formatElem.formatPattern = pattern;                                    \
+  REGIST_PLAYUVER_SUPPORTED_FMT( handler, name, "" )
+
+#define APPEND_PLAYUVER_SUPPORTED_FMT( class_name, fct )                                   \
+  {                                                                                        \
+    std::vector<PlaYUVerSupportedFormat> new_fmts = class_name::supported##fct##Formats(); \
+    formatsList.insert( formatsList.end(), new_fmts.begin(), new_fmts.end() );             \
+  }
+
+#define REGISTER_STREAM_HANDLER( X )                                   \
+public:                                                                \
+  static PlaYUVerStreamHandlerIf* Create() { return new X(); }         \
+  void Delete() { delete this; }                                       \
+  static std::vector<PlaYUVerSupportedFormat> supportedReadFormats();  \
+  static std::vector<PlaYUVerSupportedFormat> supportedWriteFormats(); \
+  // static Int checkforSupportedFile( String, Bool );
+
 /**
  * \class PlaYUVerStreamHandlerIf
  * \ingroup  PlaYUVerLib_Stream

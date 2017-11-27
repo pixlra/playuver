@@ -58,13 +58,11 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
 
   UInt xStartOut = m_iShiftHor >= 0 ? m_iShiftHor : 0;
   UInt xStartIn = m_iShiftHor >= 0 ? 0 : -m_iShiftHor;
-  UInt xEndOut = m_iShiftHor >= 0 ? m_pcProcessedFrame->getWidth()
-                                  : m_pcProcessedFrame->getWidth() + m_iShiftHor;
+  UInt xEndOut = m_iShiftHor >= 0 ? m_pcProcessedFrame->getWidth() : m_pcProcessedFrame->getWidth() + m_iShiftHor;
 
   UInt yStartOut = m_iShiftVer >= 0 ? m_iShiftVer : 0;
   UInt yStartIn = m_iShiftVer >= 0 ? 0 : -m_iShiftVer;
-  UInt yEndOut = m_iShiftVer >= 0 ? m_pcProcessedFrame->getHeight()
-                                  : m_pcProcessedFrame->getHeight() + m_iShiftVer;
+  UInt yEndOut = m_iShiftVer >= 0 ? m_pcProcessedFrame->getHeight() : m_pcProcessedFrame->getHeight() + m_iShiftVer;
 
   m_pcProcessedFrame->clear();
 
@@ -85,13 +83,11 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
 
   xStartOut = iShiftHorChroma >= 0 ? iShiftHorChroma : 0;
   xStartIn = iShiftHorChroma >= 0 ? 0 : -iShiftHorChroma;
-  xEndOut = iShiftHorChroma >= 0 ? m_pcProcessedFrame->getChromaWidth()
-                                 : m_pcProcessedFrame->getChromaWidth() + iShiftHorChroma;
+  xEndOut = iShiftHorChroma >= 0 ? m_pcProcessedFrame->getChromaWidth() : m_pcProcessedFrame->getChromaWidth() + iShiftHorChroma;
 
   yStartOut = iShiftVerChroma >= 0 ? iShiftVerChroma : 0;
   yStartIn = iShiftVerChroma >= 0 ? 0 : -iShiftVerChroma;
-  yEndOut = iShiftVerChroma >= 0 ? m_pcProcessedFrame->getChromaHeight()
-                                 : m_pcProcessedFrame->getChromaHeight() + iShiftVerChroma;
+  yEndOut = iShiftVerChroma >= 0 ? m_pcProcessedFrame->getChromaHeight() : m_pcProcessedFrame->getChromaHeight() + iShiftVerChroma;
 
   for( UInt c = 1; c < m_pcProcessedFrame->getNumberChannels(); c++ )
   {

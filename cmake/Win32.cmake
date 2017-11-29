@@ -26,7 +26,10 @@ IF( NOT USE_QT4 )
   INSTALL(FILES ${QT_DIR}/bin/Qt5Gui${QT_DLL_POSTFIX}.dll DESTINATION bin )
   INSTALL(FILES ${QT_DIR}/bin/Qt5Widgets${QT_DLL_POSTFIX}.dll DESTINATION bin )
   INSTALL(FILES ${QT_DIR}/bin/Qt5PrintSupport${QT_DLL_POSTFIX}.dll DESTINATION bin )
-  
+  INSTALL(FILES ${QT_DIR}/plugins/platforms/qwindows${QT_DLL_POSTFIX}.dll DESTINATION bin/platforms )
+  INSTALL(FILES ${QT_DIR}/plugins/platforms/qminimal${QT_DLL_POSTFIX}.dll DESTINATION bin/platforms )
+  INSTALL(FILES ${QT_DIR}/plugins/platforms/qoffscreen${QT_DLL_POSTFIX}.dll DESTINATION bin/platforms )
+
   IF( USE_FERVOR )
     INSTALL(FILES ${QT_DIR}/bin/Qt5Network${QT_DLL_POSTFIX}.dll DESTINATION bin )
     INSTALL(FILES ${QT_DIR}/bin/Qt5WebKit${QT_DLL_POSTFIX}.dll DESTINATION bin )

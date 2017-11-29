@@ -1,14 +1,14 @@
-Source: playuver
+Source: playuver-master
 Section: video
 Priority: optional
 Maintainer: Joao Carreira <jfmcarreira@gmail.com>
-Build-Depends: debhelper (>= 9.0.0), 
-	       cmake, 
+Build-Depends: debhelper (>= 9.0.0),
+	       cmake,
 	       qt5-default,
                qtbase5-dev (>= 5.2.0),
 	       libopencv-dev (>= 2.4.8),
-	       libavformat-dev, 
-	       libavcodec-dev, 
+	       libavformat-dev,
+	       libavcodec-dev,
 	       libavutil-dev
 Standards-Version: 3.9.4
 Homepage: https://github.com/pixlra/playuver

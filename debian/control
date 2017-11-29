@@ -1,0 +1,29 @@
+Source: playuver
+Section: video
+Priority: optional
+Maintainer: Joao Carreira <jfmcarreira@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), 
+	       cmake, 
+	       qt5-default,
+               qtbase5-dev (>= 5.2.0),
+	       libopencv-dev (>= 2.4.8),
+	       libavformat-dev, 
+	       libavcodec-dev, 
+	       libavutil-dev
+Standards-Version: 3.9.4
+Homepage: https://github.com/pixlra/playuver
+
+Package: playuver
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: yuv video playuver (support wide range of raw video formats)
+ plaYUVer is an open-source video player with the following features:
+ Support for libavformat and libavcodec;
+ Support for wide range of raw video formats;
+ Support for OpenCV imag/video processing library
+ Advanced frame zoom with easy to use pan function
+ Usefull information in status bar, e.g., pixel information
+ Usefull sidebars with stream and frame information, e.g., frame histogram
+ Constant growing libs for stream and frame processing (PlaYUVerStream PlaYUVerFrame)
+ Advanced API for frame/video processing algorithms
+ Frame level quality measurement API based on the PlaYUVerFrame class

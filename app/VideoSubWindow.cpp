@@ -316,22 +316,22 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
     }
   }
 
-  //  try
-  //  {
-  m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate, true );
-  //  }
-  //  catch( ... )
-  //  {
-  //    if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height,
-  //                                               InputFormat, BitsPel, Endianness,
-  //                                               FrameRate ) == QDialog::Rejected )
-  //    {
-  //      return false;
-  //    }
-  //    m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel,
-  //    Endianness,
-  //                         FrameRate, true );
-  //  }
+	try
+	{
+		m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate, true );
+	}
+	catch( ... )
+	{
+		if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height,
+																							 InputFormat, BitsPel, Endianness,
+																							 FrameRate ) == QDialog::Rejected )
+		{
+			return false;
+		}
+		m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel,
+												 Endianness,
+												 FrameRate, true );
+	}
 
   m_sStreamInfo.m_cFilename = cFilename;
   m_sStreamInfo.m_uiWidth = Width;
@@ -433,7 +433,7 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
   {
     return false;
   }
-  if( !fileExtension.compare( "yuv" ) || !fileExtension.compare( "rgb" ) || !fileExtension.compare( "gray" ) )
+	if( !fileExtension.compare( "yuv", Qt::CaseInsensitive ) || !fileExtension.compare( "rgb", Qt::CaseInsensitive ) || !fileExtension.compare( "gray", Qt::CaseInsensitive ) )
   {
     bGuessed = false;
     // Guess pixel format

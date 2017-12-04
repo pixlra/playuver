@@ -273,14 +273,15 @@ Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_f
   if( !m_pcHandler->openHandler( m_cFilename, m_bIsInput ) )
   {
     close();
-    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot open file " + m_cFilename );
+    throw PlaYUVerFailure( "PlaYUVerStream",
+                           "Cannot open stream " + m_cFilename + " with the " + String( m_pcHandler->m_pchHandlerName ) + " handler" );
     return m_bInit;
   }
 
   if( m_pcHandler->m_uiWidth <= 0 || m_pcHandler->m_uiHeight <= 0 || m_pcHandler->m_iPixelFormat < 0 )
   {
     close();
-    throw PlaYUVerFailure( "PlaYUVerStream", "Incorrect configuration" );
+    throw PlaYUVerFailure( "PlaYUVerStream", "Incorrect configuration: width, height or pixel format" );
     return m_bInit;
   }
 
@@ -314,7 +315,7 @@ Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_f
   if( !m_pcHandler->configureBuffer( m_frameBuffer->current() ) )
   {
     close();
-    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot allocated memory" );
+    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot allocated buffers" );
     return m_bInit;
   }
 
@@ -332,7 +333,8 @@ Bool PlaYUVerStream::reload()
   m_pcHandler->closeHandler();
   if( !m_pcHandler->openHandler( m_cFilename, m_bIsInput ) )
   {
-    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot open file" );
+    throw PlaYUVerFailure( "PlaYUVerStream",
+                           "Cannot open stream " + m_cFilename + " with the " + String( m_pcHandler->m_pchHandlerName ) + " handler" );
   }
   m_pcHandler->setBytesPerFrame( m_frameBuffer->current()->getBytesPerFrame() );
   m_uiTotalFrameNum = m_pcHandler->calculateFrameNumber();
@@ -431,7 +433,7 @@ Void PlaYUVerStream::loadAll()
   catch( PlaYUVerFailure& e )
   {
     close();
-    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot allocated frame buffer" );
+    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot allocated frame buffer for the whole stream" );
   }
 
   seekInput( 0 );
@@ -476,7 +478,7 @@ Bool PlaYUVerStream::readFrame( PlaYUVerFrame* frame )
 
   if( !m_pcHandler->read( frame ) )
   {
-    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot read file" );
+    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot read frame from stream" );
     return false;
   }
   return true;
@@ -491,7 +493,7 @@ Void PlaYUVerStream::writeFrame( PlaYUVerFrame* pcFrame )
 {
   if( !m_pcHandler->write( pcFrame ) )
   {
-    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot write into the file" );
+    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot write frame into the stream" );
   }
   return;
 }

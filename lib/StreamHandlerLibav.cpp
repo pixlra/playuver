@@ -54,7 +54,10 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedWriteFormats()
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }
 
-StreamHandlerLibav::StreamHandlerLibav() {}
+StreamHandlerLibav::StreamHandlerLibav()
+{
+  m_pchHandlerName = "FFmpeg";
+}
 
 Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 {
@@ -69,20 +72,17 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 
   AVDictionary* format_opts = NULL;
 
-  //   if( width > 0 && height > 0 )
-  //   {
-  //     Char aux_string[10];
-  //     sprintf( aux_string, "%dx%d", width, height );
-  //     av_dict_set( &format_opts, "video_size", aux_string, 0 );
-  //   }
-
-  //   Int ffmpeg_pel_format =
-  //   g_PlaYUVerPixFmtDescriptorsList[pixel_format].ffmpegPelFormat;
-  //   if( ffmpeg_pel_format >= 0 )
-  //   {
-  //     av_dict_set( &format_opts, "pixel_format", av_get_pix_fmt_name(
-  //     AVPixelFormat( ffmpeg_pel_format ) ), 0 );
-  //   }
+  //  if( m_uiWidth > 0 && m_uiHeight > 0 )
+  //  {
+  //    Char aux_string[10];
+  //    sprintf( aux_string, "%dx%d", m_uiWidth, m_uiHeight );
+  //    av_dict_set( &format_opts, "video_size", aux_string, 0 );
+  //  }
+  //  Int ffmpeg_pel_format = g_PlaYUVerPixFmtDescriptorsList[m_iPixelFormat].ffmpegPelFormat;
+  //  if( ffmpeg_pel_format >= 0 )
+  //  {
+  //    av_dict_set( &format_opts, "pix_fmt", av_get_pix_fmt_name( AVPixelFormat( ffmpeg_pel_format ) ), 0 );
+  //  }
   // Register all components of FFmpeg
   av_register_all();
 
@@ -125,7 +125,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 
   m_cCodedCtx = avcodec_alloc_context3( dec );
 
-  if( avcodec_open2( m_cCodedCtx, dec, NULL ) < 0 )
+  if( avcodec_open2( m_cCodedCtx, dec, &format_opts ) < 0 )
   {
     printf( "Failed to open %s codec\n", av_get_media_type_string( AVMEDIA_TYPE_VIDEO ) );
     return false;
@@ -218,8 +218,8 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   // m_pcPacket = av_packet_alloc();
   /* initialize packet, set data to NULL, let the demuxer fill it */
   av_init_packet( &m_cPacket );
-  m_cPacket.data = NULL;
-  m_cPacket.size = 0;
+  // m_cPacket.data = NULL;
+  // m_cPacket.size = 0;
 
   m_bHasStream = true;
   return true;
@@ -272,56 +272,42 @@ UInt64 StreamHandlerLibav::calculateFrameNumber()
   return num_frames;
 }
 
-Int StreamHandlerLibav::decodeVideoPkt( Bool& bGotFrame )
-{
-  Int iRet;
-
-  iRet = avcodec_send_packet( m_cCodedCtx, &m_cPacket );
-  if( iRet < 0 )
-  {
-    return iRet;
-  }
-
-  while( iRet >= 0 )
-  {
-    iRet = avcodec_receive_frame( m_cCodedCtx, m_cFrame );
-    if( iRet == AVERROR( EAGAIN ) || iRet == AVERROR_EOF )
-      return 0;
-    else if( iRet < 0 )
-      return iRet;
-  }
-  return 0;
-}
-
 Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
 {
   Bool bGotFrame = false;
+  Bool bErrors = false;
+  Bool bReadPkt = false;
   Int iRet;
 
-  decodeVideoPkt( bGotFrame );
-
-  /* read frames from the file */
-  while( !bGotFrame && ( av_read_frame( m_cFmtCtx, &m_cPacket ) >= 0 ) )
+  while( !bGotFrame && !bErrors )
   {
-    AVPacket orig_pkt = m_cPacket;
-    do
+    iRet = avcodec_receive_frame( m_cCodedCtx, m_cFrame );
+    if( iRet > 0 )
     {
-      iRet = decodeVideoPkt( bGotFrame );
-      if( iRet < 0 )
-        break;
+      bGotFrame = true;
+      break;
+    }
+    else if( iRet == AVERROR( EAGAIN ) || iRet == AVERROR_EOF )
+      bReadPkt = true;
+    else if( iRet < 0 )
+      return false;
 
-      m_cPacket.data += iRet;
-      m_cPacket.size -= iRet;
-    } while( m_cPacket.size > 0 );
-    av_packet_unref( &orig_pkt );
-  }
-
-  if( !bGotFrame )
-  {
-    do
+    if( iRet > 0 )
     {
-      iRet = decodeVideoPkt( bGotFrame );
-    } while( iRet >= 0 && !bGotFrame );
+      bGotFrame = true;
+      break;
+    }
+    if( bReadPkt )
+    {
+      bReadPkt = false;
+      av_packet_unref( &m_cPacket );
+      if( ( iRet = av_read_frame( m_cFmtCtx, &m_cPacket ) ) < 0 )
+        return false;
+      if( m_cPacket.stream_index == m_iStreamIdx )
+        // iRet = avcodec_send_packet( m_cCodedCtx, &m_cPacket );
+        if( ( iRet = avcodec_send_packet( m_cCodedCtx, &m_cPacket ) ) < 0 )
+          return iRet;
+    }
   }
 
   if( bGotFrame )

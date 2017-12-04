@@ -40,7 +40,7 @@ private:
   FILE* m_pFile; /**< The input file pointer >*/
 
 public:
-  StreamHandlerRaw() {}
+  StreamHandlerRaw() { m_pchHandlerName = "RawVideo"; }
   ~StreamHandlerRaw() {}
   Bool openHandler( String strFilename, Bool bInput );
   Void closeHandler();

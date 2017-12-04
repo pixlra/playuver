@@ -98,6 +98,7 @@ public:
   String getCodecName() { return m_strCodecName; }
 
 protected:
+  const Char* m_pchHandlerName;
   Bool m_bIsInput;
   UInt64 m_uiCurrFrameFileIdx;
   String m_cFilename;

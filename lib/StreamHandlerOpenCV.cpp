@@ -58,6 +58,7 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedWriteFormats(
 
 StreamHandlerOpenCV::StreamHandlerOpenCV()
 {
+  m_pchHandlerName = "OpenCV";
   pcVideoCapture = NULL;
 }
 

@@ -87,8 +87,6 @@ private:
 
   UInt64 m_uiSecs;
   UInt64 m_uiMicroSec;
-
-  Int decodeVideoPkt( Bool& gotFrame );
 };
 
 #endif  // __STREAMHANDLERLIBAV_H__

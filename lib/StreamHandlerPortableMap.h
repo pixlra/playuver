@@ -35,7 +35,7 @@ class StreamHandlerPortableMap : public PlaYUVerStreamHandlerIf
   REGISTER_STREAM_HANDLER( StreamHandlerPortableMap )
 
 public:
-  StreamHandlerPortableMap() {}
+  StreamHandlerPortableMap() { m_pchHandlerName = "PortableMaps"; }
   ~StreamHandlerPortableMap() {}
   Bool openHandler( String strFilename, Bool bInput );
   Void closeHandler();

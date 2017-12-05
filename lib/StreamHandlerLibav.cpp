@@ -26,7 +26,9 @@
 #include "LibMemory.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"
+
 #include <cstdio>
+#include <iostream>
 
 #if( ( LIBAVCODEC_VERSION_MAJOR >= 57 ) && ( LIBAVCODEC_VERSION_MINOR >= 37 ) )
 #define FF_SEND_RECEIVE_API
@@ -70,35 +72,34 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   m_cFrame = NULL;
   m_bHasStream = false;
 
-  AVDictionary* format_opts = NULL;
+  //	AVDictionary* format_opts = NULL;
+  //	if( m_uiWidth > 0 && m_uiHeight > 0 )
+  //	{
+  //		Char aux_string[10];
+  //		sprintf( aux_string, "%dx%d", m_uiWidth, m_uiHeight );
+  //		av_dict_set( &format_opts, "video_size", aux_string, 0 );
+  //	}
+  //	Int ffmpeg_pel_format = g_PlaYUVerPixFmtDescriptorsList[m_iPixelFormat].ffmpegPelFormat;
+  //	if( ffmpeg_pel_format >= 0 )
+  //	{
+  //		av_dict_set( &format_opts, "pix_fmt", av_get_pix_fmt_name( AVPixelFormat( ffmpeg_pel_format ) ), 0 );
+  //	}
 
-  //  if( m_uiWidth > 0 && m_uiHeight > 0 )
-  //  {
-  //    Char aux_string[10];
-  //    sprintf( aux_string, "%dx%d", m_uiWidth, m_uiHeight );
-  //    av_dict_set( &format_opts, "video_size", aux_string, 0 );
-  //  }
-  //  Int ffmpeg_pel_format = g_PlaYUVerPixFmtDescriptorsList[m_iPixelFormat].ffmpegPelFormat;
-  //  if( ffmpeg_pel_format >= 0 )
-  //  {
-  //    av_dict_set( &format_opts, "pix_fmt", av_get_pix_fmt_name( AVPixelFormat( ffmpeg_pel_format ) ), 0 );
-  //  }
   // Register all components of FFmpeg
   av_register_all();
 
-  m_cFmtCtx = avformat_alloc_context();
-
   /* open input file, and allocate format context */
-  if( avformat_open_input( &m_cFmtCtx, filename, NULL, &format_opts ) < 0 )
+  if( avformat_open_input( &m_cFmtCtx, filename, NULL, NULL ) < 0 )
   {
-    // qDebug( ) << " Could not open source file %s !!!" << filename << endl;
+    std::cout << " Could not open source file %s !!!" << filename << std::endl;
+
     return false;
   }
 
   /* retrieve stream information */
   if( avformat_find_stream_info( m_cFmtCtx, NULL ) < 0 )
   {
-    // qDebug( ) << " Could not find stream information !!!" << endl;
+    std::cout << " Could not find stream information !!!" << std::endl;
     return false;
   }
 
@@ -113,29 +114,40 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   m_cStream = m_cFmtCtx->streams[m_iStreamIdx];
 
   /* find decoder for the stream */
-
-  AVCodecParameters* codec_param = m_cStream->codecpar;
-  AVCodec* dec = avcodec_find_decoder( codec_param->codec_id );
-
+  AVCodec* dec = avcodec_find_decoder( m_cStream->codecpar->codec_id );
   if( !dec )
   {
-    printf( "Failed to find %s codec\n", av_get_media_type_string( AVMEDIA_TYPE_VIDEO ) );
+    std::cout << "Failed to find video coded" << std::endl;
     return false;
   }
 
+  /* Allocate a codec context for the decoder */
   m_cCodedCtx = avcodec_alloc_context3( dec );
-
-  if( avcodec_open2( m_cCodedCtx, dec, &format_opts ) < 0 )
+  if( !m_cCodedCtx )
   {
-    printf( "Failed to open %s codec\n", av_get_media_type_string( AVMEDIA_TYPE_VIDEO ) );
+    std::cout << "Failed to allocate the video codec context" << std::endl;
     return false;
   }
 
-  m_uiFrameBufferSize = av_image_get_buffer_size( AVPixelFormat( codec_param->format ), codec_param->width, codec_param->height, 1 );
+  /* Copy codec parameters from input stream to output codec context */
+  if( avcodec_parameters_to_context( m_cCodedCtx, m_cStream->codecpar ) < 0 )
+  {
+    std::cout << "Failed to copy video codec parameters to decoder context" << std::endl;
+    return false;
+  }
 
-  Int pix_fmt = codec_param->format;
-  m_uiWidth = codec_param->width;
-  m_uiHeight = codec_param->height;
+  if( avcodec_open2( m_cCodedCtx, dec, NULL ) < 0 )
+  {
+    std::cout << "Failed to open video coded" << std::endl;
+    return false;
+  }
+
+  m_uiFrameBufferSize =
+      av_image_get_buffer_size( AVPixelFormat( m_cStream->codecpar->format ), m_cStream->codecpar->width, m_cStream->codecpar->height, 1 );
+
+  Int pix_fmt = m_cStream->codecpar->format;
+  m_uiWidth = m_cStream->codecpar->width;
+  m_uiHeight = m_cStream->codecpar->height;
 
   /**
    * Auxiliar conversation to re-use similar pixfmt
@@ -164,7 +176,6 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 
   m_strFormatName = uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
   const char* name = avcodec_get_name( m_cCodedCtx->codec_id );
-  //   sprintf( m_acCodecName, "%s", name );
   m_strCodecName = name;
 
   Double fr = 30;
@@ -201,8 +212,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   av_dump_format( m_cFmtCtx, 0, filename, 0 );
   if( !m_cStream )
   {
-    // qDebug( ) << " Could not find audio or video stream in the input,
-    // aborting !!!" << endl;
+    std::cout << " Could not find audio or video stream in the input, aborting !!!" << std::endl;
     closeHandler();
     return false;
   }
@@ -277,22 +287,18 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
   Bool bGotFrame = false;
   Bool bErrors = false;
   Bool bReadPkt = false;
-  Int iRet;
+  Int iRet = 0;
 
   while( !bGotFrame && !bErrors )
   {
-    iRet = avcodec_receive_frame( m_cCodedCtx, m_cFrame );
-    if( iRet > 0 )
+    if( ( iRet = avcodec_receive_frame( m_cCodedCtx, m_cFrame ) ) < 0 )
     {
-      bGotFrame = true;
-      break;
+      if( iRet == AVERROR( EAGAIN ) || iRet == AVERROR_EOF )
+        bReadPkt = true;
+      else
+        return false;
     }
-    else if( iRet == AVERROR( EAGAIN ) || iRet == AVERROR_EOF )
-      bReadPkt = true;
-    else if( iRet < 0 )
-      return false;
-
-    if( iRet > 0 )
+    else
     {
       bGotFrame = true;
       break;
@@ -306,7 +312,7 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
       if( m_cPacket.stream_index == m_iStreamIdx )
         // iRet = avcodec_send_packet( m_cCodedCtx, &m_cPacket );
         if( ( iRet = avcodec_send_packet( m_cCodedCtx, &m_cPacket ) ) < 0 )
-          return iRet;
+          return false;
     }
   }
 
@@ -330,7 +336,19 @@ Bool StreamHandlerLibav::write( PlaYUVerFrame* pcFrame )
 
 Bool StreamHandlerLibav::seek( UInt64 iFrameNum )
 {
-  av_seek_frame( m_cFmtCtx, m_iStreamIdx, iFrameNum, AVSEEK_FLAG_FRAME );
+	if( m_uiCurrFrameFileIdx == iFrameNum )
+		return true;
+
+  Int flags = AVSEEK_FLAG_ANY | AVSEEK_FLAG_FRAME;
+  if( iFrameNum < m_uiCurrFrameFileIdx )
+  {
+    flags |= AVSEEK_FLAG_BACKWARD;
+  }
+  Int iRet = av_seek_frame( m_cFmtCtx, m_iStreamIdx, iFrameNum, flags );
+  if( iRet < 0 )
+  {
+    return false;
+  }
   m_uiCurrFrameFileIdx = iFrameNum;
   return true;
 }

@@ -47,7 +47,7 @@ VideoHandle::VideoHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManage
   m_bIsPlaying = false;
   m_pcPlayingTimer = new QTimer;
 #if( QT_VERSION_PLAYUVER == 5 )
-  m_pcPlayingTimer->setTimerType( Qt::VeryCoarseTimer );
+	m_pcPlayingTimer->setTimerType( Qt::PreciseTimer );
 #endif
   connect( m_pcPlayingTimer, SIGNAL( timeout() ), this, SLOT( playEvent() ) );
   m_acPlayingSubWindows.clear();

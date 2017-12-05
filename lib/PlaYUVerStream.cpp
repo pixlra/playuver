@@ -592,7 +592,7 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 
   if( !m_pcHandler->seek( m_iCurrFrameNum ) )
   {
-    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot write into the file" );
+    throw PlaYUVerFailure( "PlaYUVerStream", "Cannot seek file into desired position" );
   }
 
   m_frameBuffer->setIndex( 0 );

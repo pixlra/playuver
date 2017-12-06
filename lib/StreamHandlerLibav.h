@@ -80,7 +80,9 @@ private:
 
   AVCodecContext* m_cCodedCtx;
 
+  Int m_ffPixFmt;
   AVFrame* m_cFrame;
+  AVPacket m_cOrgPacket;
   AVPacket m_cPacket;
 
   Bool m_bHasStream;

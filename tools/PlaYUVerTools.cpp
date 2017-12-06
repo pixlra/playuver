@@ -47,12 +47,10 @@ PlaYUVerTools::PlaYUVerTools()
 
 PlaYUVerTools::~PlaYUVerTools()
 {
-  for( UInt i = 0; i < m_apcInputStreams.size(); i++ )
-  {
+  for( UInt i = 0; i < m_apcInputStreams.size(); i++ ) {
     m_apcInputStreams[i]->close();
   }
-  for( UInt i = 0; i < m_apcOutputStreams.size(); i++ )
-  {
+  for( UInt i = 0; i < m_apcOutputStreams.size(); i++ ) {
     m_apcOutputStreams[i]->close();
   }
 }
@@ -74,8 +72,7 @@ Int PlaYUVerTools::openInputs()
     UInt uiEndianness = 0;
 
     PlaYUVerStream* pcStream;
-    for( UInt i = 0; i < inputFileNames.size() && i < MAX_NUMBER_INPUTS; i++ )
-    {
+    for( UInt i = 0; i < inputFileNames.size() && i < MAX_NUMBER_INPUTS; i++ ) {
       if( Opts().hasOpt( "size" ) )
       {
         resolutionString = GET_PARAM( m_strResolution, 0 );
@@ -124,8 +121,7 @@ Int PlaYUVerTools::openInputs()
   }
 
   m_uiNumberOfComponents = UINT_MAX;
-  for( UInt i = 0; i < m_apcInputStreams.size(); i++ )
-  {
+  for( UInt i = 0; i < m_apcInputStreams.size(); i++ ) {
     m_uiNumberOfFrames = std::min( m_uiNumberOfFrames, m_apcInputStreams[i]->getFrameNum() );
     m_uiNumberOfComponents = std::min( m_uiNumberOfComponents, m_apcInputStreams[i]->getCurrFrame()->getNumberChannels() );
   }
@@ -156,8 +152,7 @@ Int PlaYUVerTools::Open( Int argc, Char* argv[] )
     }
     Int64 currFrames = 0;
     Int64 numberOfFrames = LONG_MAX;
-    for( UInt i = 0; i < m_apcInputStreams.size(); i++ )
-    {
+    for( UInt i = 0; i < m_apcInputStreams.size(); i++ ) {
       currFrames = m_apcInputStreams[i]->getFrameNum();
       if( currFrames < numberOfFrames )
         numberOfFrames = currFrames;
@@ -172,9 +167,8 @@ Int PlaYUVerTools::Open( Int argc, Char* argv[] )
       m_pcOutputFileNames.push_back( m_strOutput );
     if( m_pcOutputFileNames.size() != m_apcInputStreams.size() )
     {
-      log( LOG_ERROR,
-           "Invalid number of outputs! Each input must have an "
-           "output filename. " );
+      log( LOG_ERROR, "Invalid number of outputs! Each input must have an "
+                      "output filename. " );
       return 2;
     }
 
@@ -192,8 +186,7 @@ Int PlaYUVerTools::Open( Int argc, Char* argv[] )
     }
     Int64 currFrames = 0;
     Int64 numberOfFrames = LONG_MAX;
-    for( UInt i = 0; i < m_apcInputStreams.size(); i++ )
-    {
+    for( UInt i = 0; i < m_apcInputStreams.size(); i++ ) {
       currFrames = m_apcInputStreams[i]->getFrameNum();
       if( currFrames < numberOfFrames )
         numberOfFrames = currFrames;
@@ -225,9 +218,8 @@ Int PlaYUVerTools::Open( Int argc, Char* argv[] )
 
     if( m_apcOutputStreams.size() != m_apcInputStreams.size() )
     {
-      log( LOG_ERROR,
-           "Invalid number of outputs! Each input must have an "
-           "output filename. " );
+      log( LOG_ERROR, "Invalid number of outputs! Each input must have an "
+                      "output filename. " );
       return 2;
     }
 
@@ -247,8 +239,7 @@ Int PlaYUVerTools::Open( Int argc, Char* argv[] )
       log( LOG_ERROR, "Invalid number of inputs! " );
       return 2;
     }
-    for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
-    {
+    for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ ) {
       if( lowercase( PlaYUVerFrame::supportedQualityMetricsList()[i] ) == lowercase( qualityMetric ) )
       {
         m_uiQualityMetric = i;
@@ -273,8 +264,7 @@ Int PlaYUVerTools::Open( Int argc, Char* argv[] )
 
     PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
     PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
-    for( UInt i = 0; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ )
-    {
+    for( UInt i = 0; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ ) {
       if( strcmp( it->first, moduleName.c_str() ) == 0 )
       {
         m_pcCurrModuleIf = it->second();
@@ -298,8 +288,7 @@ Int PlaYUVerTools::Open( Int argc, Char* argv[] )
     // Create Module
     Bool moduleCreated = false;
     std::vector<PlaYUVerFrame*> apcFrameList;
-    for( UInt i = 0; i < m_pcCurrModuleIf->m_uiNumberOfFrames; i++ )
-    {
+    for( UInt i = 0; i < m_pcCurrModuleIf->m_uiNumberOfFrames; i++ ) {
       apcFrameList.push_back( m_apcInputStreams[i]->getCurrFrame() );
     }
     if( m_pcCurrModuleIf->m_iModuleAPI == MODULE_API_2 )
@@ -384,8 +373,7 @@ Int PlaYUVerTools::Close()
 Int PlaYUVerTools::SaveOperation()
 {
   Bool bRet = true;
-  for( UInt s = 0; s < m_apcInputStreams.size(); s++ )
-  {
+  for( UInt s = 0; s < m_apcInputStreams.size(); s++ ) {
     bRet = m_apcInputStreams[s]->seekInput( m_iFrameNum );
     if( bRet == false )
     {
@@ -400,8 +388,7 @@ Int PlaYUVerTools::RateReductionOperation()
 {
   Bool abEOF;
   log( LOG_INFO, "\n Reducing frame rate by a factor of %d ... ", m_iRateReductionFactor );
-  for( UInt frame = 0; frame < m_uiNumberOfFrames; frame++ )
-  {
+  for( UInt frame = 0; frame < m_uiNumberOfFrames; frame++ ) {
     log( LOG_INFO, "\n Reading frame %d ... ", frame );
     if( ( frame % m_iRateReductionFactor ) == 0 )
     {
@@ -448,10 +435,8 @@ Int PlaYUVerTools::QualityOperation()
   log( LOG_INFO, "  Measuring Quality using %s ... \n", pchQualityMetricName );
   log( LOG_INFO, "# Frame   ", pchQualityMetricName );
 
-  for( UInt s = 1; s < m_apcInputStreams.size(); s++ )
-  {
-    for( UInt c = 0; c < m_uiNumberOfComponents; c++ )
-    {
+  for( UInt s = 1; s < m_apcInputStreams.size(); s++ ) {
+    for( UInt c = 0; c < m_uiNumberOfComponents; c++ ) {
       log( LOG_INFO, "%s_%d_%d  ", pchQualityMetricName, s, c );
     }
     log( LOG_INFO, "   " );
@@ -459,25 +444,19 @@ Int PlaYUVerTools::QualityOperation()
 
   log( LOG_INFO, "\n" );
 
-  for( UInt s = 0; s < m_apcInputStreams.size(); s++ )
-  {
+  for( UInt s = 0; s < m_apcInputStreams.size(); s++ ) {
     abEOF[s] = false;
-    for( UInt c = 0; c < m_uiNumberOfComponents; c++ )
-    {
+    for( UInt c = 0; c < m_uiNumberOfComponents; c++ ) {
       adAverageQuality[s][c] = 0;
     }
   }
-  for( UInt frame = 0; frame < m_uiNumberOfFrames; frame++ )
-  {
+  for( UInt frame = 0; frame < m_uiNumberOfFrames; frame++ ) {
     log( LOG_INFO, "  %3d  ", frame );
-    for( UInt s = 0; s < m_apcInputStreams.size(); s++ )
-      apcCurrFrame[s] = m_apcInputStreams[s]->getCurrFrame();
+    for( UInt s = 0; s < m_apcInputStreams.size(); s++ ) apcCurrFrame[s] = m_apcInputStreams[s]->getCurrFrame();
 
-    for( UInt s = 1; s < m_apcInputStreams.size(); s++ )
-    {
+    for( UInt s = 1; s < m_apcInputStreams.size(); s++ ) {
       log( LOG_RESULT, "  " );
-      for( UInt c = 0; c < m_uiNumberOfComponents; c++ )
-      {
+      for( UInt c = 0; c < m_uiNumberOfComponents; c++ ) {
         dQuality = apcCurrFrame[s]->getQuality( m_uiQualityMetric, apcCurrFrame[0], c );
         adAverageQuality[s - 1][c] = ( adAverageQuality[s - 1][c] * Double( frame ) + dQuality ) / Double( frame + 1 );
         log( LOG_RESULT, metric_fmt.c_str(), dQuality );
@@ -485,8 +464,7 @@ Int PlaYUVerTools::QualityOperation()
       log( LOG_RESULT, " " );
     }
     log( LOG_RESULT, "\n" );
-    for( UInt s = 0; s < m_apcInputStreams.size(); s++ )
-    {
+    for( UInt s = 0; s < m_apcInputStreams.size(); s++ ) {
       abEOF[s] = m_apcInputStreams[s]->setNextFrame();
       if( !abEOF[s] )
       {
@@ -495,10 +473,8 @@ Int PlaYUVerTools::QualityOperation()
     }
   }
   log( LOG_INFO, "\n  Mean Values: \n         " );
-  for( UInt s = 0; s < m_apcInputStreams.size() - 1; s++ )
-  {
-    for( UInt c = 0; c < m_uiNumberOfComponents; c++ )
-    {
+  for( UInt s = 0; s < m_apcInputStreams.size() - 1; s++ ) {
+    for( UInt c = 0; c < m_uiNumberOfComponents; c++ ) {
       log( LOG_INFO, metric_fmt.c_str(), adAverageQuality[s][c] );
     }
     log( LOG_RESULT, "   " );
@@ -527,16 +503,13 @@ Int PlaYUVerTools::ModuleOperation()
   Double dAveragedMeasurementResult = 0;
   Bool abEOF[MAX_NUMBER_INPUTS];
 
-  for( UInt s = 0; s < m_apcInputStreams.size(); s++ )
-  {
+  for( UInt s = 0; s < m_apcInputStreams.size(); s++ ) {
     abEOF[s] = false;
   }
 
-  for( UInt frame = 0; frame < m_uiNumberOfFrames; frame++ )
-  {
+  for( UInt frame = 0; frame < m_uiNumberOfFrames; frame++ ) {
     apcFrameList.clear();
-    for( UInt i = 0; i < m_pcCurrModuleIf->m_uiNumberOfFrames; i++ )
-    {
+    for( UInt i = 0; i < m_pcCurrModuleIf->m_uiNumberOfFrames; i++ ) {
       apcFrameList.push_back( m_apcInputStreams[i]->getCurrFrame() );
     }
     if( m_pcCurrModuleIf->m_iModuleType == FRAME_PROCESSING_MODULE )
@@ -566,8 +539,7 @@ Int PlaYUVerTools::ModuleOperation()
       dAveragedMeasurementResult = ( dAveragedMeasurementResult * Double( frame ) + dMeasurementResult ) / Double( frame + 1 );
     }
 
-    for( UInt s = 0; s < m_apcInputStreams.size(); s++ )
-    {
+    for( UInt s = 0; s < m_apcInputStreams.size(); s++ ) {
       abEOF[s] = m_apcInputStreams[s]->setNextFrame();
       if( !abEOF[s] )
       {

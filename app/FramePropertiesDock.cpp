@@ -43,24 +43,22 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
   channelCB->addItem( tr( "Luminance" ) );
   channelCB->setItemIcon( 0, QIcon( ":/images/channel-luma.png" ) );
 
-  channelCB->setWhatsThis(
-      tr( "<p>Select here the histogram channel to display:<p>"
-          "<b>Luminance</b>: Display luminance (perceived brightness).<p>"
-          "<b>Red</b>: Display the red image channel.<p>"
-          "<b>Green</b>: Display the green image channel.<p>"
-          "<b>Blue</b>: Display the blue image channel.<p>"
-          "<b>Alpha</b>: Display the alpha image channel. "
-          "This channel corresponds to the transparency value and "
-          "is supported by some image formats such as PNG or TIFF.<p>"
-          "<b>Colors</b>: Display all color channel values at "
-          "the same time." ) );
+  channelCB->setWhatsThis( tr( "<p>Select here the histogram channel to display:<p>"
+                               "<b>Luminance</b>: Display luminance (perceived brightness).<p>"
+                               "<b>Red</b>: Display the red image channel.<p>"
+                               "<b>Green</b>: Display the green image channel.<p>"
+                               "<b>Blue</b>: Display the blue image channel.<p>"
+                               "<b>Alpha</b>: Display the alpha image channel. "
+                               "This channel corresponds to the transparency value and "
+                               "is supported by some image formats such as PNG or TIFF.<p>"
+                               "<b>Colors</b>: Display all color channel values at "
+                               "the same time." ) );
 
-  QString scaleWhatsThis(
-      tr( "<p>Select here the histogram scale.<p>"
-          "If the image's maximal values are small, you can use the "
-          "linear scale.<p>Logarithmic scale can be used when the maximal"
-          " values are big; if it is used, all values (small and large) "
-          "will be visible on the graph." ) );
+  QString scaleWhatsThis( tr( "<p>Select here the histogram scale.<p>"
+                              "If the image's maximal values are small, you can use the "
+                              "linear scale.<p>Logarithmic scale can be used when the maximal"
+                              " values are big; if it is used, all values (small and large) "
+                              "will be visible on the graph." ) );
 
   linHistoButton = new QPushButton;
   linHistoButton->setToolTip( tr( "Linear" ) );
@@ -92,11 +90,10 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
   colorsCB->hide();
   colorsLabel->hide();
 
-  QString regionWhatsThis(
-      tr( "<p>Select here from which region the histogram will be computed:"
-          "<p><b>Full Image</b>: Compute histogram using the full image."
-          "<p><b>Selection</b>: Compute histogram using the current image "
-          "selection." ) );
+  QString regionWhatsThis( tr( "<p>Select here from which region the histogram will be computed:"
+                               "<p><b>Full Image</b>: Compute histogram using the full image."
+                               "<p><b>Selection</b>: Compute histogram using the current image "
+                               "selection." ) );
 
   fullImageButton = new QPushButton;
   fullImageButton->setToolTip( tr( "Full Image" ) );
@@ -133,9 +130,8 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
   // -------------------------------------------------------------
 
   histogramWidget = new HistogramWidget( 100, 100 );
-  histogramWidget->setWhatsThis(
-      tr( "<p>This is the histogram drawing of "
-          "the selected image channel" ) );
+  histogramWidget->setWhatsThis( tr( "<p>This is the histogram drawing of "
+                                     "the selected image channel" ) );
 
   QVBoxLayout* histogramLayout = new QVBoxLayout;
   histogramLayout->setSpacing( 1 );
@@ -152,17 +148,15 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
   minInterv->setRange( 0, 255 );
   minInterv->setSingleStep( 1 );
   minInterv->setValue( 0 );
-  minInterv->setWhatsThis(
-      tr( "<p>Select here the minimal intensity "
-          "value of the histogram selection." ) );
+  minInterv->setWhatsThis( tr( "<p>Select here the minimal intensity "
+                               "value of the histogram selection." ) );
 
   maxInterv = new QSpinBox;
   maxInterv->setRange( 0, 255 );
   maxInterv->setSingleStep( 1 );
   maxInterv->setValue( 0 );
-  minInterv->setWhatsThis(
-      tr( "<p>Select here the maximal intensity value"
-          " of the histogram selection." ) );
+  minInterv->setWhatsThis( tr( "<p>Select here the maximal intensity value"
+                               " of the histogram selection." ) );
 
   QHBoxLayout* rangeLayout = new QHBoxLayout;
   rangeLayout->addWidget( rangeSelectionLabel );
@@ -227,10 +221,9 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
 
   QGroupBox* statisticsGroup = new QGroupBox( tr( "Statistics" ) );
   statisticsGroup->setLayout( statisticsLayout );
-  statisticsGroup->setWhatsThis(
-      tr( "<p>Here you can see the statistical results calculated from the "
-          "selected histogram part. These values are available for all "
-          "channels." ) );
+  statisticsGroup->setWhatsThis( tr( "<p>Here you can see the statistical results calculated from the "
+                                     "selected histogram part. These values are available for all "
+                                     "channels." ) );
 
   mainLayout->addWidget( statisticsGroup, 5, 0, 1, 4 );
 
@@ -318,11 +311,10 @@ Void FramePropertiesDock::setFrame( PlaYUVerFrame* pcFrame )
       colorsCB->addItem( "Green" );
       colorsCB->addItem( "Blue" );
       colorsCB->setEnabled( false );
-      colorsCB->setWhatsThis(
-          tr( "<p>Select here the main color displayed with Colors Channel mode:"
-              "<p><b>Red</b>: Draw the Red image channel in the foreground.<p>"
-              "<b>Green</b>: Draw the Green image channel in the foreground.<p>"
-              "<b>Blue</b>: Draw the Blue image channel in the foreground.<p>" ) );
+      colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
+                                  "<p><b>Red</b>: Draw the Red image channel in the foreground.<p>"
+                                  "<b>Green</b>: Draw the Green image channel in the foreground.<p>"
+                                  "<b>Blue</b>: Draw the Blue image channel in the foreground.<p>" ) );
       colorsCB->show();
       colorsLabel->show();
     }
@@ -339,12 +331,11 @@ Void FramePropertiesDock::setFrame( PlaYUVerFrame* pcFrame )
       colorsCB->addItem( "Chroma U" );
       colorsCB->addItem( "Chroma V" );
       colorsCB->setEnabled( false );
-      colorsCB->setWhatsThis(
-          tr( "<p>Select here the main color displayed with Colors Channel mode:"
-              "<p><b>Luminance</b>: DraupdateDataw the Luminance channel in the "
-              "foreground.<p>"
-              "<b>Chroma U</b>: Draw the Chroma U channel in the foreground.<p>"
-              "<b>Chroma V</b>: Draw the Chroma V channel in the foreground.<p>" ) );
+      colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
+                                  "<p><b>Luminance</b>: DraupdateDataw the Luminance channel in the "
+                                  "foreground.<p>"
+                                  "<b>Chroma U</b>: Draw the Chroma U channel in the foreground.<p>"
+                                  "<b>Chroma V</b>: Draw the Chroma V channel in the foreground.<p>" ) );
       colorsCB->show();
       colorsLabel->show();
     }

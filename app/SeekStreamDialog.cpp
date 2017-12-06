@@ -24,6 +24,7 @@
 
 #include "SeekStreamDialog.h"
 #include "lib/PlaYUVerStream.h"
+#include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QLabel>
 #include <QSpinBox>

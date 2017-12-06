@@ -47,8 +47,7 @@ Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
 
-  for( UInt i = 1; i < apcFrameList.size(); i++ )
-  {
+  for( UInt i = 1; i < apcFrameList.size(); i++ ) {
     if( !apcFrameList[i]->haveSameFmt( apcFrameList[0],
                                        PlaYUVerFrame::MATCH_COLOR_SPACE_IGNORE_GRAY | PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
     {
@@ -90,10 +89,8 @@ PlaYUVerFrame* FrameMask::process( std::vector<PlaYUVerFrame*> apcFrameList )
   PlaYUVerPixel pixelMask;
   PlaYUVerPixel pixelOut;
 
-  for( UInt y = 0; y < m_pcFrameProcessed->getHeight(); y++ )
-  {
-    for( UInt x = 0; x < m_pcFrameProcessed->getWidth(); x++ )
-    {
+  for( UInt y = 0; y < m_pcFrameProcessed->getHeight(); y++ ) {
+    for( UInt x = 0; x < m_pcFrameProcessed->getWidth(); x++ ) {
       pixelImg = InputFrame->getPixelValue( x, y );
       pixelMask = MaskFrame->getPixelValue( x, y );
       pixelOut = pixelImg * ( 10 - m_iWeight ) + pixelMask * m_iWeight;

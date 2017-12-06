@@ -22,14 +22,10 @@
  * \brief    Frame number widget
  */
 
-#include "config.h"
-#include <QtCore>
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
 #include "WidgetFrameNumber.h"
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QString>
 
 WidgetFrameNumber::WidgetFrameNumber( QWidget* parent ) : QWidget( parent )
 {

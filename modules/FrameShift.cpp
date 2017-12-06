@@ -66,12 +66,10 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
 
   m_pcProcessedFrame->clear();
 
-  for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ )
-  {
+  for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ ) {
     pPelInput = &( apcFrameList[0]->getPelBufferYUV()[LUMA][yIn][xStartIn] );
     pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[LUMA][y][xStartOut] );
-    for( UInt x = xStartOut; x < xEndOut; x++ )
-    {
+    for( UInt x = xStartOut; x < xEndOut; x++ ) {
       *pPelOut = *pPelInput;
       pPelInput++;
       pPelOut++;
@@ -89,14 +87,11 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
   yStartIn = iShiftVerChroma >= 0 ? 0 : -iShiftVerChroma;
   yEndOut = iShiftVerChroma >= 0 ? m_pcProcessedFrame->getChromaHeight() : m_pcProcessedFrame->getChromaHeight() + iShiftVerChroma;
 
-  for( UInt c = 1; c < m_pcProcessedFrame->getNumberChannels(); c++ )
-  {
-    for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ )
-    {
+  for( UInt c = 1; c < m_pcProcessedFrame->getNumberChannels(); c++ ) {
+    for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ ) {
       pPelInput = &( apcFrameList[0]->getPelBufferYUV()[c][yIn][xStartIn] );
       pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[c][y][xStartOut] );
-      for( UInt x = xStartOut; x < xEndOut; x++ )
-      {
+      for( UInt x = xStartOut; x < xEndOut; x++ ) {
         *pPelOut = *pPelInput;
         pPelInput++;
         pPelOut++;

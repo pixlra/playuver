@@ -194,8 +194,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   }
 
   m_iPixelFormat = PlaYUVerFrame::NO_FMT;
-  for( Int i = 0; i < PlaYUVerFrame::NUMBER_PEL_FORMATS; i++ )
-  {
+  for( Int i = 0; i < PlaYUVerFrame::NUMBER_PEL_FORMATS; i++ ) {
     if( g_PlaYUVerPixFmtDescriptorsList[i].ffmpegPelFormat == auxPixFmt )
     {
       m_iPixelFormat = i;
@@ -306,8 +305,7 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
   Bool bReadPkt = false;
   Int iRet = 0;
 
-  while( !bGotFrame && !bErrors )
-  {
+  while( !bGotFrame && !bErrors ) {
 #ifdef FF_SEND_RECEIVE_API
     if( ( iRet = avcodec_receive_frame( m_cCodedCtx, m_cFrame ) ) < 0 )
     {

@@ -74,9 +74,8 @@ Void ModulesHandle::createActions()
   connect( m_arrayActions[DISABLE_ALL_ACT], SIGNAL( triggered() ), this, SLOT( destroyAllModulesIf() ) );
 
   m_arrayActions[FORCE_NEW_WINDOW_ACT] = new QAction( "Use New Window", parent() );
-  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setStatusTip(
-      "Show module result in a new window. Some modules already force this "
-      "feature" );
+  m_arrayActions[FORCE_NEW_WINDOW_ACT]->setStatusTip( "Show module result in a new window. Some modules already force this "
+                                                      "feature" );
   m_arrayActions[FORCE_NEW_WINDOW_ACT]->setCheckable( true );
 }
 
@@ -94,8 +93,7 @@ Void ModulesHandle::buildMenu()
   QAction* currAction;
   QMenu* currSubMenu;
 
-  for( Int i = 0; i < m_arrayModulesActions.size(); i++ )
-  {
+  for( Int i = 0; i < m_arrayModulesActions.size(); i++ ) {
     delete m_arrayModulesActions.at( i );
   }
   m_arrayModulesActions.clear();
@@ -104,16 +102,14 @@ Void ModulesHandle::buildMenu()
 
   PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
   PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
-  for( ; it != PlaYUVerModuleFactoryMap.end(); ++it )
-  {
+  for( ; it != PlaYUVerModuleFactoryMap.end(); ++it ) {
     pcCurrModuleIf = it->second();
     ModuleIfInternalName = QString::fromLocal8Bit( it->first );
 
     currSubMenu = NULL;
     if( pcCurrModuleIf->m_pchModuleCategory )
     {
-      for( Int j = 0; j < m_pcModulesSubMenuList.size(); j++ )
-      {
+      for( Int j = 0; j < m_pcModulesSubMenuList.size(); j++ ) {
         if( m_pcModulesSubMenuList.at( j )->title() == QString( pcCurrModuleIf->m_pchModuleCategory ) )
         {
           currSubMenu = m_pcModulesSubMenuList.at( j );
@@ -157,19 +153,16 @@ Void ModulesHandle::updateMenus()
   Bool hasSubWindow = pcSubWindow ? true : false;
   QAction* currModuleAction;
 
-  for( Int i = 0; i < m_arrayModulesActions.size(); i++ )
-  {
+  for( Int i = 0; i < m_arrayModulesActions.size(); i++ ) {
     currModuleAction = m_arrayModulesActions.at( i );
     currModuleAction->setEnabled( hasSubWindow );
     currModuleAction->setChecked( false );
   }
-  for( Int i = 0; i < m_pcModulesSubMenuList.size(); i++ )
-  {
+  for( Int i = 0; i < m_pcModulesSubMenuList.size(); i++ ) {
     m_pcModulesSubMenuList.at( i )->setEnabled( hasSubWindow );
   }
 
-  for( Int i = 0; i < m_arrayActions.size(); i++ )
-  {
+  for( Int i = 0; i < m_arrayActions.size(); i++ ) {
     m_arrayActions.at( i )->setEnabled( false );
   }
   m_arrayActions[LOAD_EXTERNAL_ACT]->setEnabled( true );
@@ -185,8 +178,7 @@ Void ModulesHandle::updateMenus()
       m_arrayActions[APPLY_ALL_ACT]->setEnabled( true );
       m_arrayActions[SWAP_FRAMES_ACT]->setEnabled( true );
     }
-    for( Int i = 0; i < apcCurrentModule.size(); i++ )
-    {
+    for( Int i = 0; i < apcCurrentModule.size(); i++ ) {
       currModuleAction = apcCurrentModule.at( i )->m_pcModuleAction;
       currModuleAction->setChecked( true );
     }
@@ -242,8 +234,7 @@ Void ModulesHandle::loadExternalModule()
   filter << supported << formatsList << tr( "All Files (*)" );
   QStringList fileNames = QFileDialog::getOpenFileNames( m_pcParent, tr( "Open File" ), QString(), filter.join( ";;" ) );
 
-  for( Int i = 0; i < fileNames.size(); i++ )
-  {
+  for( Int i = 0; i < fileNames.size(); i++ ) {
     bUpdate |= PlaYUVerModuleFactory::Get()->RegisterDl( fileNames.at( i ).toStdString().data() );
   }
   if( bUpdate )
@@ -288,8 +279,7 @@ Void ModulesHandle::activateModule()
 
     if( windowsList.size() == minNumFrames && windowsList.size() == maxNumFrames )
     {
-      for( Int i = 0; i < windowsList.size(); i++ )
-      {
+      for( Int i = 0; i < windowsList.size(); i++ ) {
         videoSubWindowList.append( qobject_cast<VideoSubWindow*>( windowsList.at( i ) ) );
       }
     }
@@ -297,8 +287,7 @@ Void ModulesHandle::activateModule()
     {
       if( windowsList.size() <= minNumFrames )
       {
-        for( Int i = 0; i < windowsList.size(); i++ )
-        {
+        for( Int i = 0; i < windowsList.size(); i++ ) {
           dialogWindowsSelection.selectSubWindow( windowsList.at( i ) );
         }
       }
@@ -310,8 +299,7 @@ Void ModulesHandle::activateModule()
       {
         VideoSubWindow* videoSubWindow;
         QList<SubWindowAbstract*> subWindowList = dialogWindowsSelection.getSelectedWindows();
-        for( Int i = 0; i < subWindowList.size(); i++ )
-        {
+        for( Int i = 0; i < subWindowList.size(); i++ ) {
           videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
           videoSubWindowList.append( videoSubWindow );
         }
@@ -320,8 +308,7 @@ Void ModulesHandle::activateModule()
     if( pcCurrAppModuleIf->m_pcModule->m_iModuleAPI == MODULE_API_1 )
     {
       // Check for same fmt in more than one frame modules
-      for( Int i = 1; i < videoSubWindowList.size(); i++ )
-      {
+      for( Int i = 1; i < videoSubWindowList.size(); i++ ) {
         if( !videoSubWindowList.at( i )->getCurrFrame()->haveSameFmt( videoSubWindowList.at( 0 )->getCurrFrame() ) )
         {
           videoSubWindowList.clear();
@@ -344,8 +331,7 @@ Void ModulesHandle::activateModule()
     return;
   }
 
-  for( Int i = 0; i < videoSubWindowList.size(); i++ )
-  {
+  for( Int i = 0; i < videoSubWindowList.size(); i++ ) {
     pcCurrAppModuleIf->m_pcSubWindow[i] = videoSubWindowList.at( i );
   }
 
@@ -404,8 +390,7 @@ Void ModulesHandle::activateModule()
   {
     if( pcCurrAppModuleIf->m_pcDisplaySubWindow )
       pcCurrAppModuleIf->m_pcDisplaySubWindow->enableModule( pcCurrAppModuleIf );
-    for( Int i = 0; i < videoSubWindowList.size(); i++ )
-    {
+    for( Int i = 0; i < videoSubWindowList.size(); i++ ) {
       pcCurrAppModuleIf->m_pcSubWindow[i]->associateModule( pcCurrAppModuleIf );
     }
   }
@@ -415,8 +400,7 @@ Void ModulesHandle::activateModule()
   if( pcCurrAppModuleIf->m_pcModule->m_iModuleAPI == MODULE_API_2 )
   {
     std::vector<PlaYUVerFrame*> apcFrameList;
-    for( Int i = 0; i < videoSubWindowList.size(); i++ )
-    {
+    for( Int i = 0; i < videoSubWindowList.size(); i++ ) {
       apcFrameList.push_back( pcCurrAppModuleIf->m_pcSubWindow[i]->getCurrFrame() );
     }
     moduleCreated = pcCurrAppModuleIf->m_pcModule->create( apcFrameList );
@@ -476,8 +460,7 @@ Void ModulesHandle::destroyWindowModules()
 
 Void ModulesHandle::destroyAllModulesIf()
 {
-  for( Int i = 0; i < m_pcPlaYUVerAppModuleIfList.size(); i++ )
-  {
+  for( Int i = 0; i < m_pcPlaYUVerAppModuleIfList.size(); i++ ) {
     destroyModuleIf( m_pcPlaYUVerAppModuleIfList.at( i ) );
   }
   emit changed();
@@ -485,8 +468,7 @@ Void ModulesHandle::destroyAllModulesIf()
 
 Void ModulesHandle::applyModuleIf( QList<PlaYUVerAppModuleIf*> pcCurrModuleIfList, Bool isPlaying, Bool disableThreads )
 {
-  for( Int i = 0; i < pcCurrModuleIfList.size() && !isPlaying; i++ )
-  {
+  for( Int i = 0; i < pcCurrModuleIfList.size() && !isPlaying; i++ ) {
     pcCurrModuleIfList.at( i )->apply( isPlaying, disableThreads );
   }
 }
@@ -504,15 +486,13 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf )
       QStringList formatsList;
       std::vector<PlaYUVerSupportedFormat> supportedFmts = PlaYUVerStream::supportedWriteFormats();
 
-      for( UInt i = 0; i < supportedFmts.size(); i++ )
-      {
+      for( UInt i = 0; i < supportedFmts.size(); i++ ) {
         std::vector<String> arrayExt = supportedFmts[i].getExts();
         if( arrayExt.size() > 0 )
         {
           QString currFmt( QString::fromStdString( supportedFmts[i].formatName ) );
           currFmt.append( " (" );
-          for( std::vector<String>::iterator e = arrayExt.begin(); e != arrayExt.end(); ++e )
-          {
+          for( std::vector<String>::iterator e = arrayExt.begin(); e != arrayExt.end(); ++e ) {
             supported.append( " *." );
             currFmt.append( "*." );
             supported.append( QString::fromStdString( *e ) );
@@ -550,27 +530,23 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf )
     UInt numberOfWindows = pcCurrModuleIf->m_pcModule->m_uiNumberOfFrames;
     UInt64 currFrames = 0;
     UInt64 numberOfFrames = INT_MAX;
-    for( UInt i = 0; i < numberOfWindows; i++ )
-    {
+    for( UInt i = 0; i < numberOfWindows; i++ ) {
       currFrames = pcCurrModuleIf->m_pcSubWindow[i]->getInputStream()->getFrameNum();
       if( currFrames < numberOfFrames )
         numberOfFrames = currFrames;
       pcCurrModuleIf->m_pcSubWindow[i]->stop();
     }
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    for( UInt f = 1; f < numberOfFrames; f++ )
-    {
+    for( UInt f = 1; f < numberOfFrames; f++ ) {
       pcCurrModuleIf->apply( false, true );
       QCoreApplication::processEvents();
       pcCurrModuleIf->m_pcModuleStream->writeFrame( pcCurrModuleIf->m_pcProcessedFrame );
-      for( UInt i = 0; i < numberOfWindows; i++ )
-      {
+      for( UInt i = 0; i < numberOfWindows; i++ ) {
         pcCurrModuleIf->m_pcSubWindow[i]->play();
         pcCurrModuleIf->m_pcSubWindow[i]->playEvent();
       }
     }
-    for( UInt i = 0; i < numberOfWindows; i++ )
-    {
+    for( UInt i = 0; i < numberOfWindows; i++ ) {
       pcCurrModuleIf->m_pcSubWindow[i]->stop();
     }
     QApplication::restoreOverrideCursor();

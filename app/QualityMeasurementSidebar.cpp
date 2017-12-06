@@ -42,8 +42,7 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerS
   RecLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
 
   m_comboBoxMetric = new QComboBox;
-  for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
-  {
+  for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ ) {
     m_comboBoxMetric->insertItem( i, PlaYUVerFrame::supportedQualityMetricsList()[i].c_str() );
   }
   m_comboBoxMetric->setSizeAdjustPolicy( QComboBox::AdjustToContents );
@@ -88,9 +87,8 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerS
   // QGroupBox *statisticsGroup = new QGroupBox( tr( "Quality" ) );
   QGroupBox* statisticsGroup = new QGroupBox;
   statisticsGroup->setLayout( qualityResultsLayout );
-  statisticsGroup->setWhatsThis(
-      tr( "<p>Here you can see the quality results calculated for the "
-          "selected windows." ) );
+  statisticsGroup->setWhatsThis( tr( "<p>Here you can see the quality results calculated for the "
+                                     "selected windows." ) );
 
   mainLayout->addWidget( statisticsGroup, 4, 0, 3, 3 );
 
@@ -128,8 +126,7 @@ Void QualityMeasurementSidebar::updateSubWindowList()
 
   VideoSubWindow* pcVideoSubWindow;
   QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
-  for( Int i = 0; i < subWindowList.size(); i++ )
-  {
+  for( Int i = 0; i < subWindowList.size(); i++ ) {
     pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
     if( m_pcCurrentVideoSubWindow == pcVideoSubWindow )
     {
@@ -189,13 +186,11 @@ Void QualityMeasurementSidebar::updateSidebarData()
       Double quality;
       QString value;
       UInt component = 0;
-      for( ; component < currFrame->getNumberChannels(); component++ )
-      {
+      for( ; component < currFrame->getNumberChannels(); component++ ) {
         quality = currFrame->getQuality( m_comboBoxMetric->currentIndex(), refFrame, component );
         m_ppcLabelQualityValue[component]->setText( value.setNum( quality, 'f', 4 ) );
       }
-      for( ; component < 3; component++ )
-      {
+      for( ; component < 3; component++ ) {
         quality = currFrame->getQuality( m_comboBoxMetric->currentIndex(), refFrame, component );
         m_ppcLabelQualityValue[component]->setText( zeroValue );
       }
@@ -206,8 +201,7 @@ Void QualityMeasurementSidebar::updateSidebarData()
       m_comboBoxRef->setCurrentIndex( -1 );
     }
   }
-  for( Int component = 0; component < 3; component++ )
-  {
+  for( Int component = 0; component < 3; component++ ) {
     m_ppcLabelQualityValue[component]->setText( zeroValue );
   }
 }

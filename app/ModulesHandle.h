@@ -30,11 +30,7 @@
 #include <iostream>
 
 #include <QtCore>
-#if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
 #include "PlaYUVerAppDefs.h"
 #include "PlaYUVerAppModuleIf.h"
 #include "lib/PlaYUVerFrame.h"

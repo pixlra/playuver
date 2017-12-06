@@ -27,11 +27,7 @@
 
 #include "PlaYUVerAppDefs.h"
 #include "config.h"
-#if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
 #include <QtCore>
 
 #include <QVector>
@@ -53,10 +49,7 @@ class DialogSubWindowSelector : public QDialog
   Q_OBJECT
 
 public:
-  DialogSubWindowSelector( QWidget* parent,
-                           PlaYUVerSubWindowHandle* windowManager,
-                           UInt uiCategory,
-                           Int minWindowsSelected = 1,
+  DialogSubWindowSelector( QWidget* parent, PlaYUVerSubWindowHandle* windowManager, UInt uiCategory, Int minWindowsSelected = 1,
                            Int maxWindowsSelected = -1 );
 
   Void selectSubWindow( SubWindowAbstract* subWindow );

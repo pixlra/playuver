@@ -30,9 +30,7 @@
 #include "VideoSubWindow.h"
 #include "lib/LibMemory.h"
 #include <QtGui>
-#if( QT_VERSION_PLAYUVER == 5 )
 #include "QtConcurrent/qtconcurrentrun.h"
-#endif
 
 QualityHandle::QualityHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManager ) : m_pcParet( parent ), m_pcMainWindowManager( windowManager )
 {
@@ -48,8 +46,7 @@ Void QualityHandle::createActions()
   m_mapperQualityMetric = new QSignalMapper( this );
 
   QAction* currAction;
-  for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
-  {
+  for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ ) {
     currAction = new QAction( PlaYUVerFrame::supportedQualityMetricsList()[i].c_str(), this );
     currAction->setCheckable( true );
     m_actionGroupQualityMetric->addAction( currAction );
@@ -109,8 +106,7 @@ Void QualityHandle::updateMenus()
     {
       VideoSubWindow* pcVideoSubWindow;
       QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
-      for( Int i = 0; i < subWindowList.size(); i++ )
-      {
+      for( Int i = 0; i < subWindowList.size(); i++ ) {
         pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
         if( pcVideoSubWindow->getRefSubWindow() == pcCurrentVideoSubWindow )
         {
@@ -159,8 +155,7 @@ Void QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
   UInt64 numberOfFrames = INT_MAX;
 
   //! Check reference window
-  for( UInt i = 0; i < numberOfWindows; i++ )
-  {
+  for( UInt i = 0; i < numberOfWindows; i++ ) {
     if( !apcWindowList.at( i )->getRefSubWindow() )
     {
       return;
@@ -169,8 +164,7 @@ Void QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
   VideoSubWindow* pcReferenceWindow = apcWindowList.at( 0 )->getRefSubWindow();
 
   numberOfFrames = pcReferenceWindow->getInputStream()->getFrameNum();
-  for( UInt i = 0; i < numberOfWindows; i++ )
-  {
+  for( UInt i = 0; i < numberOfWindows; i++ ) {
     currFrames = apcWindowList.at( i )->getInputStream()->getFrameNum();
     if( currFrames < numberOfFrames )
       numberOfFrames = currFrames;
@@ -184,12 +178,10 @@ Void QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
 
   PlaYUVerFrame* pcReferenceFrame;
   PlaYUVerFrame* pcCurrFrame;
-  for( UInt f = 0; f < numberOfFrames; f++ )
-  {
+  for( UInt f = 0; f < numberOfFrames; f++ ) {
     padQualityValues[0].append( f );
     pcReferenceFrame = pcReferenceWindow->getCurrFrame();
-    for( UInt i = 0; i < numberOfWindows; i++ )
-    {
+    for( UInt i = 0; i < numberOfWindows; i++ ) {
       pcCurrFrame = apcWindowList.at( i )->getCurrFrame();
       padQualityValues[i + 1].append( pcCurrFrame->getQuality( m_iQualityMetricIdx, pcReferenceFrame, LUMA ) );
       apcWindowList.at( i )->seekRelativeEvent( true );
@@ -197,8 +189,7 @@ Void QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
     pcReferenceWindow->seekRelativeEvent( true );
     pcProgressBar->incrementProgress( 1 );
   }
-  for( UInt i = 0; i < numberOfWindows; i++ )
-  {
+  for( UInt i = 0; i < numberOfWindows; i++ ) {
     apcWindowList.at( i )->stop();
   }
   pcReferenceWindow->stop();
@@ -214,8 +205,7 @@ Void QualityHandle::measureQuality( QVector<VideoSubWindow*> apcWindowList )
   if( apcWindowList.size() > 1 )
   {
     QString key;
-    for( UInt i = 0; i < numberOfWindows; i++ )
-    {
+    for( UInt i = 0; i < numberOfWindows; i++ ) {
       key = apcWindowList.at( i )->getWindowName();
       pcPlotWindow->addPlot( padQualityValues[0], padQualityValues[i + 1], key );
     }
@@ -246,8 +236,7 @@ Void QualityHandle::slotSelectCurrentAsReference()
   {
     VideoSubWindow* pcVideoSubWindow;
     QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
-    for( Int i = 0; i < subWindowList.size(); i++ )
-    {
+    for( Int i = 0; i < subWindowList.size(); i++ ) {
       pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
       if( pcVideoSubWindow != pcRefSubWindow )
         pcVideoSubWindow->setRefSubWindow( pcRefSubWindow );
@@ -297,8 +286,7 @@ Void QualityHandle::slotPlotQualitySeveral()
 
     VideoSubWindow* pcVideoSubWindow;
     QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
-    for( Int i = 0; i < subWindowList.size(); i++ )
-    {
+    for( Int i = 0; i < subWindowList.size(); i++ ) {
       pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
       if( pcVideoSubWindow->getRefSubWindow() == pcRefSubWindow )
       {

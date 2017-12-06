@@ -22,15 +22,15 @@
  * \brief    main file
  */
 
+#include "config.h"
 #include "ConfigureFormatDialog.h"
 #include "PlaYUVerApp.h"
 #include "PlaYUVerAppDefs.h"
 #include "VideoSubWindow.h"
-#include "config.h"
-#include <QApplication>
 #ifdef USE_QTDBUS
 #include "PlaYUVerAppAdaptor.h"
 #endif
+#include <QApplication>
 #ifdef USE_FERVOR
 #include "fvupdater.h"
 #endif
@@ -60,8 +60,7 @@ int main( int argc, char* argv[] )
   {
     Bool force_new = false;
     QStringList filenameList;
-    for( Int i = 1; i < argc; i++ )
-    {
+    for( Int i = 1; i < argc; i++ ) {
       filenameList.append( QFileInfo( QString( argv[i] ) ).absoluteFilePath() );
     }
     if( filenameList.isEmpty() )
@@ -138,9 +137,8 @@ int main( int argc, char* argv[] )
   }
 
 #ifdef USE_FERVOR
-  FvUpdater::sharedUpdater()->SetFeedURL(
-      "http://192.168.96.201/share/PlaYUVerProject/"
-      "PlaYUVerUpdate-" UPDATE_CHANNEL ".xml" );
+  FvUpdater::sharedUpdater()->SetFeedURL( "http://192.168.96.201/share/PlaYUVerProject/"
+                                          "PlaYUVerUpdate-" UPDATE_CHANNEL ".xml" );
   FvUpdater::sharedUpdater()->SetDependencies( "ALL" );
 #endif
 

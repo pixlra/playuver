@@ -492,10 +492,8 @@ Void ViewArea::paintEvent( QPaintEvent* event )
     QRect vr = windowToView( winRect );
     vr &= QRect( 0, 0, imageWidth, imageHeight );
 
-    for( Int i = vr.x(); i <= vr.right(); i++ )
-    {
-      for( Int j = vr.y(); j <= vr.bottom(); j++ )
-      {
+    for( Int i = vr.x(); i <= vr.right(); i++ ) {
+      for( Int j = vr.y(); j <= vr.bottom(); j++ ) {
         QPoint pixelTopLeft( i, j );
 
         QRect pixelRect( viewToWindow( pixelTopLeft ), QSize( m_dZoomFactor, m_dZoomFactor ) );
@@ -548,16 +546,14 @@ Void ViewArea::paintEvent( QPaintEvent* event )
     paInter.setPen( mainPen );
 
     // Draw vertical line
-    for( Int x = vr.x(); x <= ( vr.right() + 1 ); x++ )
-    {
+    for( Int x = vr.x(); x <= ( vr.right() + 1 ); x++ ) {
       // Always draw the full line otherwise the line stippling
       // varies with the location of view area and we get glitchy
       // patterns.
       paInter.drawLine( viewToWindow( QPoint( x, 0 ) ), viewToWindow( QPoint( x, imageHeight ) ) );
     }
     // Draw horizontal line
-    for( Int y = vr.y(); y <= ( vr.bottom() + 1 ); y++ )
-    {
+    for( Int y = vr.y(); y <= ( vr.bottom() + 1 ); y++ ) {
       paInter.drawLine( viewToWindow( QPoint( 0, y ) ), viewToWindow( QPoint( imageWidth, y ) ) );
     }
   }

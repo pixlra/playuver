@@ -51,8 +51,7 @@ private:
 public:
   PlaYUVerStreamBufferPrivate( UInt size, UInt width, UInt height, Int pelFormat, Int bitsPixel )
   {
-    for( UInt i = 0; i < size; i++ )
-    {
+    for( UInt i = 0; i < size; i++ ) {
       PlaYUVerFrame* pFrame = new PlaYUVerFrame( width, height, pelFormat, bitsPixel );
       m_apcFrameBuffer.push_back( pFrame );
     }
@@ -61,16 +60,14 @@ public:
 
   ~PlaYUVerStreamBufferPrivate()
   {
-    while( m_apcFrameBuffer.size() > 0 )
-    {
+    while( m_apcFrameBuffer.size() > 0 ) {
       delete m_apcFrameBuffer.back();
       m_apcFrameBuffer.pop_back();
     }
   }
   Void increase( UInt newSize )
   {
-    for( UInt i = m_apcFrameBuffer.size(); i < newSize; i++ )
-    {
+    for( UInt i = m_apcFrameBuffer.size(); i < newSize; i++ ) {
       PlaYUVerFrame* pFrame = new PlaYUVerFrame( m_apcFrameBuffer.at( 0 ) );
       m_apcFrameBuffer.push_back( pFrame );
     }
@@ -120,8 +117,7 @@ std::vector<String> PlaYUVerSupportedFormat::getExts()
 {
   std::vector<String> arrayExt;
   String::size_type prev_pos = 0, pos = 0;
-  while( ( pos = formatExt.find( ',', pos ) ) != String::npos )
-  {
+  while( ( pos = formatExt.find( ',', pos ) ) != String::npos ) {
     String substring( formatExt.substr( prev_pos, pos - prev_pos ) );
     arrayExt.push_back( substring );
     prev_pos = ++pos;
@@ -169,11 +165,9 @@ CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( String strFilename, boo
   {
     supportedFmts = PlaYUVerStream::supportedWriteFormats();
   }
-  for( UInt i = 0; i < supportedFmts.size(); i++ )
-  {
+  for( UInt i = 0; i < supportedFmts.size(); i++ ) {
     std::vector<String> arrayExt = supportedFmts[i].getExts();
-    for( std::vector<String>::iterator e = arrayExt.begin(); e != arrayExt.end(); ++e )
-    {
+    for( std::vector<String>::iterator e = arrayExt.begin(); e != arrayExt.end(); ++e ) {
       if( currExt != "" && currExt == *e )
       {
         return supportedFmts[i].formatFct;
@@ -227,8 +221,7 @@ Bool PlaYUVerStream::open( String filename, String resolution, String input_form
       return false;
     }
   }
-  for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
-  {
+  for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ ) {
     if( lowercase( PlaYUVerFrame::supportedPixelFormatListNames()[i] ) == lowercase( input_format_name ) )
     {
       input_format = i;
@@ -437,8 +430,7 @@ Void PlaYUVerStream::loadAll()
   }
 
   seekInput( 0 );
-  for( UInt i = 2; i < m_frameBuffer->size(); i++ )
-  {
+  for( UInt i = 2; i < m_frameBuffer->size(); i++ ) {
     readFrame( m_frameBuffer->frame( i ) );
   }
   m_bLoadAll = true;

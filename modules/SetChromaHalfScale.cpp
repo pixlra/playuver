@@ -48,13 +48,11 @@ PlaYUVerFrame* SetChromaHalfScale::process( PlaYUVerFrame* frame )
   Pel* pPelInput = frame->getPelBufferYUV()[LUMA][0];
   Pel* pPelOut = m_pcProcessedFrame->getPelBufferYUV()[0][0];
   Pel halfScaleValue = 1 << ( frame->getBitsPel() - 1 );
-  for( UInt i = 0; i < frame->getHeight() * frame->getWidth(); i++ )
-  {
+  for( UInt i = 0; i < frame->getHeight() * frame->getWidth(); i++ ) {
     *pPelOut++ = *pPelInput++;
   }
   pPelInput = frame->getPelBufferYUV()[CHROMA_U][0];
-  for( UInt i = 0; i < m_pcProcessedFrame->getChromaLength() * 2; i++ )
-  {
+  for( UInt i = 0; i < m_pcProcessedFrame->getChromaLength() * 2; i++ ) {
     *pPelOut++ = halfScaleValue;
   }
   return m_pcProcessedFrame;

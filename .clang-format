@@ -1,6 +1,5 @@
 ---
 Language:        Cpp
-# BasedOnStyle:  Chromium
 ColumnLimit:     150
 AccessModifierOffset: -2
 AlignAfterOpenBracket: Align
@@ -14,13 +13,12 @@ AllowShortBlocksOnASingleLine: true
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
-AlwaysBreakAfterDefinitionReturnType: None
+AllowShortLoopsOnASingleLine: true
 AlwaysBreakAfterReturnType: None
-AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: true
 BinPackArguments: true
-BinPackParameters: false
+BinPackParameters: true
 BraceWrapping:
   AfterClass:      false
   AfterControlStatement: false
@@ -37,9 +35,8 @@ BreakBeforeBinaryOperators: None
 #BreakBeforeBraces: Attach
 BreakBeforeBraces: Allman
 BreakBeforeInheritanceComma: false
-BreakBeforeTernaryOperators: true
-BreakConstructorInitializersBeforeComma: true
-BreakConstructorInitializersBeforeComma: true
+BreakBeforeTernaryOperators: false
+BreakConstructorInitializers: BeforeComma
 BreakAfterJavaFieldAnnotations: false
 BreakStringLiterals: true
 CommentPragmas:  '^ IWYU pragma:'

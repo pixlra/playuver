@@ -88,10 +88,9 @@ Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char* argv[] )
   }
   else if( m_cOptions.hasOpt( "help" ) )
   {
-    printf(
-        "Usage: %s modules/quality/save [options] -input=input_file "
-        "[--output=output_file]\n",
-        argv[0] );
+    printf( "Usage: %s modules/quality/save [options] -input=input_file "
+            "[--output=output_file]\n",
+            argv[0] );
     m_cOptions.doHelp( std::cout );
     iRet = 1;
   }
@@ -105,8 +104,7 @@ Void PlaYUVerToolsCmdParser::listModuleHelp()
 
   PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
   PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
-  for( UInt i = 0; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ )
-  {
+  for( UInt i = 0; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ ) {
     if( strcmp( it->first, moduleName.c_str() ) == 0 )
     {
       pcCurrModuleIf = it->second();

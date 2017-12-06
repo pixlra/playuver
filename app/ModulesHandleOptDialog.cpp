@@ -29,8 +29,12 @@
 #include <QVBoxLayout>
 #include <QVector>
 #include <QWidget>
+#include <QLineEdit>
+#include <QDialogButtonBox>
 
 #include "lib/PlaYUVerOptions.h"
+
+class QLineEdit;
 
 class OpionConfiguration : public QWidget
 {
@@ -86,8 +90,7 @@ ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget* parent, PlaYUVerAppModu
 
   QVBoxLayout* optionsLayout = new QVBoxLayout;
   OpionConfiguration* pcOption;
-  for( PlaYUVerOptions::OptionsList::const_iterator it = moduleOptions.begin(); it != moduleOptions.end(); ++it )
-  {
+  for( PlaYUVerOptions::OptionsList::const_iterator it = moduleOptions.begin(); it != moduleOptions.end(); ++it ) {
     pcOption = new OpionConfiguration( ( *it )->opt );
     m_apcOptionList.append( pcOption );
     optionsLayout->addWidget( pcOption );
@@ -120,8 +123,7 @@ Int ModulesHandleOptDialog::runConfiguration()
   String optionString;
   QString valueString( "" );
 
-  for( Int i = 0; i < m_apcOptionList.size(); i++ )
-  {
+  for( Int i = 0; i < m_apcOptionList.size(); i++ ) {
     valueString = m_apcOptionList.at( i )->getValue();
     if( !valueString.isEmpty() )
     {

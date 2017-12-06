@@ -23,7 +23,7 @@
  */
 
 #include "PlotSubWindow.h"
-#include "qcustomplot.h"
+#include "external/qcustomplot/qcustomplot.h"
 
 Void PlotSubWindow::definePlotColors()
 {

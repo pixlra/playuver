@@ -26,6 +26,10 @@
 #include "ModulesHandle.h"
 #include "PlaYUVerAppModuleIf.h"
 #include <QtGui>
+#include <QLabel>
+#include <QString>
+#include <QGridLayout>
+
 
 ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf ) : QWidget( parent ), m_pcCurrModuleIf( moduleIf )
 {

@@ -227,8 +227,7 @@ PlaYUVerOptions::PlaYUVerOptions( const String& name )
 
 PlaYUVerOptions::~PlaYUVerOptions()
 {
-  for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
-  {
+  for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ ) {
     delete *it;
   }
 }
@@ -245,8 +244,7 @@ OptionBase* PlaYUVerOptions::getOption( const String& optName )
   if( opt_it != opt_short_map.end() )
   {
     OptionsList opt_list = ( *opt_it ).second;
-    for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
-    {
+    for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it ) {
       return ( *it )->opt;
     }
   }
@@ -254,8 +252,7 @@ OptionBase* PlaYUVerOptions::getOption( const String& optName )
   if( opt_it != opt_long_map.end() )
   {
     OptionsList opt_list = ( *opt_it ).second;
-    for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
-    {
+    for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it ) {
       return ( *it )->opt;
     }
   }
@@ -291,8 +288,7 @@ void PlaYUVerOptions::addOption( OptionBase* opt )
   string& opt_string = opt->opt_string;
 
   size_t opt_start = 0;
-  for( size_t opt_end = 0; opt_end != string::npos; )
-  {
+  for( size_t opt_end = 0; opt_end != string::npos; ) {
     opt_end = opt_string.find_first_of( ',', opt_start );
     bool force_short = 0;
     if( opt_string[opt_start] == '-' )
@@ -320,8 +316,7 @@ static void setOptions( PlaYUVerOptions::OptionsList& opt_list, const string& va
 {
   /* multiple options may be registered for the same name:
    *   allow each to parse value */
-  for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it )
-  {
+  for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); ++it ) {
     ( *it )->opt->parse( value );
   }
 }
@@ -492,8 +487,7 @@ list<const Char*> PlaYUVerOptions::scanArgv( UInt argc, Char* argv[] )
   /* a list for anything that didn't get handled as an option */
   list<const Char*> non_option_arguments;
 
-  for( UInt i = 1; i < argc; i++ )
-  {
+  for( UInt i = 1; i < argc; i++ ) {
     if( argv[i][0] != '-' )
     {
       non_option_arguments.push_back( argv[i] );
@@ -521,8 +515,7 @@ list<const Char*> PlaYUVerOptions::scanArgv( UInt argc, Char* argv[] )
     if( argv[i][2] == 0 )
     {
       /* a lone double dash ends option processing */
-      while( ++i < argc )
-        non_option_arguments.push_back( argv[i] );
+      while( ++i < argc ) non_option_arguments.push_back( argv[i] );
       break;
     }
 
@@ -535,8 +528,7 @@ list<const Char*> PlaYUVerOptions::scanArgv( UInt argc, Char* argv[] )
 
 Void PlaYUVerOptions::parse( std::vector<String> args_array )
 {
-  for( UInt i = 0; i < args_array.size(); i++ )
-  {
+  for( UInt i = 0; i < args_array.size(); i++ ) {
     i += parseLONG( args_array[i] );
   }
   return;
@@ -580,8 +572,7 @@ Void PlaYUVerOptions::doHelp( ostream& out, UInt columns )
   const UInt pad_short = 3;
   /* first pass: work out the longest option name */
   UInt max_width = 0;
-  for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
-  {
+  for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ ) {
     ostringstream line( ios_base::out );
     doHelpOpt( line, **it, pad_short );
     max_width = max( max_width, (UInt)line.tellp() );
@@ -595,8 +586,7 @@ Void PlaYUVerOptions::doHelp( ostream& out, UInt columns )
    *  - if the option text is longer than opt_width, place the help
    *    text at opt_width on the next line.
    */
-  for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ )
-  {
+  for( PlaYUVerOptions::OptionsList::iterator it = opt_list.begin(); it != opt_list.end(); it++ ) {
     ostringstream line( ios_base::out );
     line << "  ";
     doHelpOpt( line, **it, pad_short );
@@ -618,8 +608,7 @@ Void PlaYUVerOptions::doHelp( ostream& out, UInt columns )
     }
     /* split up the help text, taking into account new lines,
      *   (add opt_width of padding to each new line) */
-    for( size_t newline_pos = 0, cur_pos = 0; cur_pos != string::npos; currlength = 0 )
-    {
+    for( size_t newline_pos = 0, cur_pos = 0; cur_pos != string::npos; currlength = 0 ) {
       /* print any required padding space for vertical alignment */
       line << &( spaces[40 - opt_width + currlength] );
       newline_pos = opt_desc.find_first_of( '\n', newline_pos );
@@ -684,8 +673,7 @@ Bool PlaYUVerOptions::checkListingOpts()
   if( hasOpt( "pel_fmts" ) )
   {
     printf( "PlaYUVer supported pixel formats: \n" );
-    for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
-    {
+    for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ ) {
       printf( "   %s\n", PlaYUVerFrame::supportedPixelFormatListNames()[i].c_str() );
     }
     bRet |= true;
@@ -693,8 +681,7 @@ Bool PlaYUVerOptions::checkListingOpts()
   if( hasOpt( "quality_metrics" ) )
   {
     printf( "PlaYUVer supported quality metrics: \n" );
-    for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
-    {
+    for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ ) {
       printf( "   %s\n", PlaYUVerFrame::supportedQualityMetricsList()[i].c_str() );
     }
     bRet |= true;
@@ -730,8 +717,7 @@ Void PlaYUVerOptions::listModules()
 
   Char ModuleNameString[40];
 
-  for( UInt i = 0; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ )
-  {
+  for( UInt i = 0; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ ) {
     printf( "   " );
     printf( "%-30s", it->first );
     if( bDetailed )

@@ -57,14 +57,12 @@ PlaYUVerFrame* EightBitsSampling::process( std::vector<PlaYUVerFrame*> apcFrameL
   Pel* pPelSubSampled = m_pcSubSampledFrame->getPelBufferYUV()[0][0];
   Pel pelValue;
 
-  for( UInt i = 0; i < pcFrame->getHeight() * pcFrame->getWidth(); i++ )
-  {
+  for( UInt i = 0; i < pcFrame->getHeight() * pcFrame->getWidth(); i++ ) {
     pelValue = *pPelInput++;
     pelValue = pelValue >> uiShiftBits;
     *pPelSubSampled++ = pelValue;
   }
-  for( UInt i = 0; i < pcFrame->getChromaLength() * 2; i++ )
-  {
+  for( UInt i = 0; i < pcFrame->getChromaLength() * 2; i++ ) {
     pelValue = *pPelInput++;
     pelValue = pelValue >> uiShiftBits;
     *pPelSubSampled++ = pelValue;

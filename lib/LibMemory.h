@@ -95,8 +95,7 @@ Int getMem2D( T*** array2D, Int dim0, Int dim1 )
   if( ( *( *array2D ) = (T*)xCallocMem( dim0 * dim1, sizeof( T ) ) ) == NULL )
     printf( "get_mem2Dint: array2D" );
 
-  for( i = 1; i < dim0; i++ )
-    ( *array2D )[i] = ( *array2D )[i - 1] + dim1;
+  for( i = 1; i < dim0; i++ ) ( *array2D )[i] = ( *array2D )[i - 1] + dim1;
 
   return dim0 * ( sizeof( T* ) + dim1 * sizeof( T ) );
 }
@@ -111,8 +110,7 @@ Int getMem3D( T**** array3D, Int dim0, Int dim1, Int dim2 )
 
   mem_size += getMem2D( *array3D, dim0 * dim1, dim2 );
 
-  for( i = 1; i < dim0; i++ )
-    ( *array3D )[i] = ( *array3D )[i - 1] + dim1;
+  for( i = 1; i < dim0; i++ ) ( *array3D )[i] = ( *array3D )[i - 1] + dim1;
 
   return mem_size;
 }
@@ -127,8 +125,7 @@ Int getMem4D( T***** array4D, Int dim0, Int dim1, Int dim2, Int dim3 )
 
   mem_size += getMem3D( *array4D, dim0 * dim1, dim2, dim3 );
 
-  for( i = 1; i < dim0; i++ )
-    ( *array4D )[i] = ( *array4D )[i - 1] + dim1;
+  for( i = 1; i < dim0; i++ ) ( *array4D )[i] = ( *array4D )[i - 1] + dim1;
 
   return mem_size;
 }
@@ -143,8 +140,7 @@ Int getMem5D( T****** array5D, Int dim0, Int dim1, Int dim2, Int dim3, Int dim4 
 
   mem_size += getMem4D( *array5D, dim0 * dim1, dim2, dim3, dim4 );
 
-  for( i = 1; i < dim0; i++ )
-    ( *array5D )[i] = ( *array5D )[i - 1] + dim1;
+  for( i = 1; i < dim0; i++ ) ( *array5D )[i] = ( *array5D )[i - 1] + dim1;
 
   return mem_size;
 }

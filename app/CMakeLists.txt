@@ -4,43 +4,24 @@
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/external )
 
-OPTION( USE_QT4       "Build with Qt4"            OFF )
 OPTION( USE_QTDBUS    "Build with QtDBus"         ON  )
 OPTION( USE_FERVOR    "Add Fervor support"        OFF )
 
-#####################################################################################
-# Qt library
-######################################################################################
+ADD_SUBDIRECTORY( external )
 
-IF( USE_QT4 )
+FIND_PACKAGE( Qt5 REQUIRED COMPONENTS Core Gui Widgets Concurrent )
+LIST(APPEND QT_LINKER_LIBS Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Concurrent )
+LIST(APPEND QT_MODULES Core Gui Widgets Concurrent )
 
-  FIND_PACKAGE( Qt4 REQUIRED COMPONENTS QtCore QtGui QtDBus QtNetwork QtWebKit )
-  SET( USE_QTDBUS TRUE )
-  IF( NOT QT4_FOUND )
-      SET(USE_QT4 FALSE)
-  ELSE()
-    INCLUDE( ${QT_USE_FILE} )
-    ADD_DEFINITIONS( ${QT_DEFINITIONS} )
-    SET( QT_LINKER_LIBS ${QT_LIBRARIES} )
+IF( USE_QTDBUS )
+  FIND_PACKAGE( Qt5DBus )
+  SET_PACKAGE_PROPERTIES(Qt5DBus PROPERTIES DESCRIPTION "Support for Qt5 DBus messages between instances" TYPE OPTIONAL )
+  IF( ${Qt5DBus_FOUND} )
+    SET( USE_QTDBUS ${Qt5DBus_FOUND} ) # TODO: fix this stupid variable
+    SET( USE_QTDBUS ${Qt5DBus_FOUND} PARENT_SCOPE)
+    LIST(APPEND QT_LINKER_LIBS Qt5::DBus )
+    LIST(APPEND QT_MODULES DBus )
   ENDIF()
-
-ELSE()
-
-  FIND_PACKAGE( Qt5 REQUIRED COMPONENTS Core Gui Widgets PrintSupport Concurrent )
-  LIST(APPEND QT_LINKER_LIBS Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport Qt5::Concurrent )
-  LIST(APPEND QT_MODULES Core Gui Widgets PrintSupport Concurrent )
-
-  IF( USE_QTDBUS )
-    FIND_PACKAGE( Qt5DBus )
-    SET_PACKAGE_PROPERTIES(Qt5DBus PROPERTIES DESCRIPTION "Support for Qt5 DBus messages between instances" TYPE OPTIONAL )
-    IF( ${Qt5DBus_FOUND} )
-      SET( USE_QTDBUS ${Qt5DBus_FOUND} ) # TODO: fix this stupid variable
-      SET( USE_QTDBUS ${Qt5DBus_FOUND} PARENT_SCOPE)
-      LIST(APPEND QT_LINKER_LIBS Qt5::DBus )
-      LIST(APPEND QT_MODULES DBus )
-    ENDIF()
-  ENDIF()
-
 ENDIF()
 
 set(plaYUVer_App_SRCS
@@ -59,7 +40,7 @@ set(plaYUVer_App_SRCS
     QualityHandle.cpp
     QualityMeasurementSidebar.cpp
     PlotSubWindow.cpp
-    external/qcustomplot.cpp
+    external/qcustomplot/qcustomplot.cpp
 # Module Plugins
     ModulesHandle.cpp
     ModulesHandleOptDialog.cpp
@@ -125,13 +106,8 @@ ENDIF()
 SET_PACKAGE_PROPERTIES(Fervor PROPERTIES URL "https://github.com/pypt/fervor" DESCRIPTION "Fervor lib includes check for updates feature" TYPE OPTIONAL )
 ADD_FEATURE_INFO(Fervor USE_FERVOR "Fervor lib includes check for updates feature.")
 
-IF( USE_QT4 )
-  QT4_WRAP_UI( PlaYUVer_App_UI_Wrap ${PlaYUVer_App_UI} )
-  QT4_ADD_RESOURCES( PlaYUVer_App_RCC ${PlaYUVer_App_RCC} )
-ELSE()
-  QT5_WRAP_UI( PlaYUVer_App_UI_Wrap ${PlaYUVer_App_UI} )
-  QT5_ADD_RESOURCES( PlaYUVer_App_RCC ${PlaYUVer_App_RCC} )
-ENDIF()
+QT5_WRAP_UI( PlaYUVer_App_UI_Wrap ${PlaYUVer_App_UI} )
+QT5_ADD_RESOURCES( PlaYUVer_App_RCC ${PlaYUVer_App_RCC} )
 
 # Instruct CMake to run moc automatically when needed.
 SET( CMAKE_AUTOMOC ON )
@@ -154,11 +130,9 @@ ENDIF()
 
 
 ADD_EXECUTABLE( ${PROJECT_NAME} ${plaYUVer_App_SRCS} ${HEADERS_MOC_FILES} ${PlaYUVer_App_UI_Wrap} ${PlaYUVer_App_RCC} ${WINDOWS_RES_FILE} )
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib PlaYUVerModules ${APP_LINKER_LIBS} ${QT_LINKER_LIBS} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib PlaYUVerModules QCustomPlotLib ${APP_LINKER_LIBS} ${QT_LINKER_LIBS} )
 
-IF( NOT USE_QT4 )
-  QT5_USE_MODULES( ${PROJECT_NAME} ${QT_MODULES} )
-ENDIF()
+# QT5_USE_MODULES( ${PROJECT_NAME} ${QT_MODULES} )
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION bin )
 INSTALL(FILES resources/playuver.desktop DESTINATION share/applications )

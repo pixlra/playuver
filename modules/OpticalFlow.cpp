@@ -79,16 +79,12 @@ Void OpticalFlowModule::drawFlow()
   Mat cvMatAfter;
   m_pcFrameAfter->toMat( cvMatAfter, true );
   Scalar vectorColor( 255, 0, 0, 0 );
-  for( int y = m_iStep / 2; y < m_cvFlow.rows; y += m_iStep )
-  {
-    for( int x = m_iStep / 2; x < m_cvFlow.cols; x += m_iStep )
-    {
+  for( int y = m_iStep / 2; y < m_cvFlow.rows; y += m_iStep ) {
+    for( int x = m_iStep / 2; x < m_cvFlow.cols; x += m_iStep ) {
       Point2f u( 0, 0 );
       Double count = 0;
-      for( int i = ( -m_iStep / 2 ); i < ( m_iStep / 2 ); i++ )
-      {
-        for( int j = ( -m_iStep / 2 ); j < ( m_iStep / 2 ); j++ )
-        {
+      for( int i = ( -m_iStep / 2 ); i < ( m_iStep / 2 ); i++ ) {
+        for( int j = ( -m_iStep / 2 ); j < ( m_iStep / 2 ); j++ ) {
           if( isFlowCorrect( u ) )
           {
             u = u + m_cvFlow( y, x );
@@ -109,15 +105,12 @@ Void OpticalFlowModule::drawFlow()
 
 Void OpticalFlowModule::compensateFlow()
 {
-  for( UInt c = 0; c < m_pcOutputFrame->getNumberChannels(); c++ )
-  {
+  for( UInt c = 0; c < m_pcOutputFrame->getNumberChannels(); c++ ) {
     Pel** pPelPrev = m_pcFramePrev->getPelBufferYUV()[c];
     Pel* pPelOut = m_pcOutputFrame->getPelBufferYUV()[c][0];
 
-    for( UInt y = 0; y < m_pcOutputFrame->getHeight( c ); y++ )
-    {
-      for( UInt x = 0; x < m_pcOutputFrame->getWidth( c ); x++ )
-      {
+    for( UInt y = 0; y < m_pcOutputFrame->getHeight( c ); y++ ) {
+      for( UInt x = 0; x < m_pcOutputFrame->getWidth( c ); x++ ) {
         Point2f u = m_cvFlow( y, x );
         Point p( x + u.x, y + u.y );
         *pPelOut = pPelPrev[p.y][p.x];

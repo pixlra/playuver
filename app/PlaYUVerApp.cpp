@@ -112,14 +112,12 @@ Bool PlaYUVerApp::parseArgs( Int argc, Char* argv[] )
   }
   if( pcCmdParser.hasOpt( "input" ) )
   {
-    for( UInt i = 1; i < m_apcInputs.size(); i++ )
-    {
+    for( UInt i = 1; i < m_apcInputs.size(); i++ ) {
       loadFile( QString::fromStdString( m_apcInputs[i] ) );
     }
   }
   std::list<const Char*>& argv_unhandled = pcCmdParser.getUnhandledArgs();
-  for( std::list<const Char*>::const_iterator it = argv_unhandled.begin(); it != argv_unhandled.end(); it++ )
-  {
+  for( std::list<const Char*>::const_iterator it = argv_unhandled.begin(); it != argv_unhandled.end(); it++ ) {
     loadFile( QString::fromStdString( *it ) );
   }
   m_pcWindowHandle->tileSubWindows();
@@ -151,8 +149,7 @@ Void PlaYUVerApp::closeEvent( QCloseEvent* event )
   {
   case QMessageBox::Yes:
     mayCloseAll = true;
-    for( Int i = 0; i < subWindowList.size(); i++ )
-    {
+    for( Int i = 0; i < subWindowList.size(); i++ ) {
       mayCloseAll &= subWindowList.at( i )->mayClose();
     }
 
@@ -257,15 +254,13 @@ QStringList PlaYUVerApp::showFileDialog( Bool bRead )
   else
     supportedFmts = PlaYUVerStream::supportedWriteFormats();
 
-  for( UInt i = 0; i < supportedFmts.size(); i++ )
-  {
+  for( UInt i = 0; i < supportedFmts.size(); i++ ) {
     std::vector<String> arrayExt = supportedFmts[i].getExts();
     if( arrayExt.size() > 0 )
     {
       QString currFmt( QString::fromStdString( supportedFmts[i].formatName ) );
       currFmt.append( " (" );
-      for( std::vector<String>::iterator e = arrayExt.begin(); e != arrayExt.end(); ++e )
-      {
+      for( std::vector<String>::iterator e = arrayExt.begin(); e != arrayExt.end(); ++e ) {
         supported.append( " *." );
         currFmt.append( "*." );
         supported.append( QString::fromStdString( *e ) );
@@ -287,8 +282,7 @@ QStringList PlaYUVerApp::showFileDialog( Bool bRead )
 Void PlaYUVerApp::open()
 {
   QStringList fileNameList = showFileDialog( true );
-  for( Int i = 0; i < fileNameList.size(); i++ )
-  {
+  for( Int i = 0; i < fileNameList.size(); i++ ) {
     if( !fileNameList.at( i ).isEmpty() )
     {
       loadFile( fileNameList.at( i ) );
@@ -380,11 +374,9 @@ Void PlaYUVerApp::reloadAll()
       SubWindowAbstract::MODULE_SUBWINDOW,
   };
 
-  for( UInt c = 0; c < 3; c++ )
-  {
+  for( UInt c = 0; c < 3; c++ ) {
     QList<SubWindowAbstract*> subWindowList = m_pcWindowHandle->findSubWindow( windowCategoryOrder[c] );
-    for( Int i = 0; i < subWindowList.size(); i++ )
-    {
+    for( Int i = 0; i < subWindowList.size(); i++ ) {
       subWindowList.at( i )->refreshSubWindow();
     }
   }
@@ -426,8 +418,7 @@ Void PlaYUVerApp::zoomToFitAll()
 {
   VideoSubWindow* videoSubWindow;
   QList<SubWindowAbstract*> subWindowList = m_pcWindowHandle->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
-  for( Int i = 0; i < subWindowList.size(); i++ )
-  {
+  for( Int i = 0; i < subWindowList.size(); i++ ) {
     videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
     videoSubWindow->zoomToFit();
   }
@@ -492,8 +483,7 @@ VideoSubWindow* PlaYUVerApp::findVideoStreamSubWindow( const PlaYUVerSubWindowHa
   QString canonicalFilePath = QFileInfo( fileName ).canonicalFilePath();
   VideoSubWindow* pcSubWindow;
   QList<SubWindowAbstract*> subWindowList = windowManager->findSubWindow( SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
-  for( Int i = 0; i < subWindowList.size(); i++ )
-  {
+  for( Int i = 0; i < subWindowList.size(); i++ ) {
     pcSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
     if( pcSubWindow->getCurrentFileName() == canonicalFilePath )
       return qobject_cast<VideoSubWindow*>( pcSubWindow );
@@ -603,8 +593,7 @@ Void PlaYUVerApp::createActions()
   //  connect( m_arrayActions[OPEN_DEVICE_ACT], SIGNAL( triggered() ), this, SLOT( openDevice() ) );
 
   m_arrayRecentFilesActions.resize( MAX_RECENT_FILES );
-  for( Int i = 0; i < MAX_RECENT_FILES; i++ )
-  {
+  for( Int i = 0; i < MAX_RECENT_FILES; i++ ) {
     m_arrayRecentFilesActions[i] = new QAction( this );
     m_arrayRecentFilesActions[i]->setVisible( false );
     connect( m_arrayRecentFilesActions[i], SIGNAL( triggered() ), this, SLOT( openRecent() ) );
@@ -719,8 +708,7 @@ Void PlaYUVerApp::createMenus()
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[OPEN_ACT] );
   // m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[OPEN_DEVICE_ACT] );
   m_arrayMenu[RECENT_MENU] = m_arrayMenu[FILE_MENU]->addMenu( tr( "Open Recent" ) );
-  for( Int i = 0; i < MAX_RECENT_FILES; ++i )
-  {
+  for( Int i = 0; i < MAX_RECENT_FILES; ++i ) {
     m_arrayMenu[RECENT_MENU]->addAction( m_arrayRecentFilesActions[i] );
   }
 
@@ -827,8 +815,7 @@ Void PlaYUVerApp::addStreamInfoToRecentList( PlaYUVerStreamInfo streamInfo )
   if( idx >= 0 )
     m_aRecentFileStreamInfo.remove( idx );
   m_aRecentFileStreamInfo.prepend( streamInfo );
-  while( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES )
-    m_aRecentFileStreamInfo.remove( m_aRecentFileStreamInfo.size() - 1 );
+  while( m_aRecentFileStreamInfo.size() > MAX_RECENT_FILES ) m_aRecentFileStreamInfo.remove( m_aRecentFileStreamInfo.size() - 1 );
   updateRecentFileActions();
 }
 
@@ -837,8 +824,7 @@ Void PlaYUVerApp::updateRecentFileActions()
   Int numRecentFiles = m_aRecentFileStreamInfo.size();
   numRecentFiles = qMin( numRecentFiles, MAX_RECENT_FILES );
   Int actionIdx = 0;
-  while( actionIdx < numRecentFiles )
-  {
+  while( actionIdx < numRecentFiles ) {
     QString text = m_aRecentFileStreamInfo.at( actionIdx ).m_cFilename;
     m_arrayRecentFilesActions.at( actionIdx )->setText( QFileInfo( text ).fileName() );
     m_arrayRecentFilesActions.at( actionIdx )->setToolTip( "Open File " + text );
@@ -847,8 +833,7 @@ Void PlaYUVerApp::updateRecentFileActions()
     m_arrayRecentFilesActions.at( actionIdx )->setVisible( true );
     actionIdx++;
   }
-  while( actionIdx < MAX_RECENT_FILES )
-  {
+  while( actionIdx < MAX_RECENT_FILES ) {
     m_arrayRecentFilesActions.at( actionIdx )->setVisible( false );
     actionIdx++;
   }
@@ -858,8 +843,7 @@ Void PlaYUVerApp::updateRecentFileActions()
 Void PlaYUVerApp::checkRecentFileActions()
 {
   Int i = 0;
-  while( i < m_aRecentFileStreamInfo.size() )
-  {
+  while( i < m_aRecentFileStreamInfo.size() ) {
     if( !QFileInfo( m_aRecentFileStreamInfo.at( i ).m_cFilename ).exists() )
     {
       m_aRecentFileStreamInfo.remove( i );

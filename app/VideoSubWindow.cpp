@@ -28,9 +28,7 @@
 #include "SubWindowAbstract.h"
 #include <QScrollArea>
 #include <QStaticText>
-#if( QT_VERSION_PLAYUVER == 5 )
 #include "QtConcurrent/qtconcurrentrun.h"
-#endif
 
 /**
  * \brief Functions to control data stream from stream information
@@ -40,8 +38,7 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array
 {
   PlaYUVerStreamInfo d;
   out << array.size();
-  for( Int i = 0; i < array.size(); i++ )
-  {
+  for( Int i = 0; i < array.size(); i++ ) {
     d = array.at( i );
     out << d.m_cFilename << d.m_uiWidth << d.m_uiHeight << d.m_iPelFormat << d.m_uiBitsPelPixel << d.m_iEndianness << d.m_uiFrameRate
         << d.m_uiFileSize;
@@ -54,8 +51,7 @@ QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& array )
   PlaYUVerStreamInfo d;
   Int array_size;
   in >> array_size;
-  for( Int i = 0; i < array_size; i++ )
-  {
+  for( Int i = 0; i < array_size; i++ ) {
     in >> d.m_cFilename;
     in >> d.m_uiWidth;
     in >> d.m_uiHeight;
@@ -101,8 +97,7 @@ public:
   Void setInformationTopLeft( const QStringList& textLines )
   {
     m_cTopLeftTextList.clear();
-    for( Int i = 0; i < textLines.size(); i++ )
-    {
+    for( Int i = 0; i < textLines.size(); i++ ) {
       m_cTopLeftTextList.append( textLines.at( i ) );
     }
   }
@@ -116,8 +111,7 @@ protected:
     if( !m_cTopLeftTextList.isEmpty() && size().width() > 300 )
     {
       QPoint topLeftCorner( 10, 10 );
-      for( Int i = 0; i < m_cTopLeftTextList.size(); i++ )
-      {
+      for( Int i = 0; i < m_cTopLeftTextList.size(); i++ ) {
         painter.drawStaticText( topLeftCorner, m_cTopLeftTextList.at( i ) );
         topLeftCorner += QPoint( 0, 15 );
       }
@@ -385,8 +379,7 @@ Void VideoSubWindow::updateVideoWindowInfo()
     QStringList sourceWindowList;
     if( arraySubWindows.size() > 0 )
     {
-      for( Int i = 0; i < arraySubWindows.size(); i++ )
-      {
+      for( Int i = 0; i < arraySubWindows.size(); i++ ) {
         if( arraySubWindows.at( i )->getWindowName() != getWindowName() )
         {
           sourceWindowList.append( QString( "Input %1 - " + arraySubWindows.at( i )->getWindowName() ).arg( i + 1 ) );
@@ -436,8 +429,7 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
     bGuessed = false;
     // Guess pixel format
     QVector<String> formats_list = QVector<String>::fromStdVector( PlaYUVerFrame::supportedPixelFormatListNames() );
-    for( Int i = 0; i < formats_list.size(); i++ )
-    {
+    for( Int i = 0; i < formats_list.size(); i++ ) {
       if( FilenameShort.contains( formats_list.at( i ).c_str(), Qt::CaseInsensitive ) )
       {
         rInputFormat = i;
@@ -449,8 +441,7 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
     {
       // Guess resolution - match  resolution name
       Int iMatch = -1;
-      for( UInt i = 0; i < stdResList.size(); i++ )
-      {
+      for( UInt i = 0; i < stdResList.size(); i++ ) {
         if( FilenameShort.contains( QString::fromStdString( stdResList[i].shortName ) ) )
         {
           iMatch = i;
@@ -462,7 +453,6 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
         rHeight = stdResList[iMatch].uiHeight;
       }
 
-#if( QT_VERSION_PLAYUVER == 5 )
       // Guess resolution - match %dx%d
       QRegularExpressionMatch resolutionMatch = QRegularExpression( "_\\d*x\\d*" ).match( FilenameShort );
       if( resolutionMatch.hasMatch() )
@@ -479,7 +469,6 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
           }
         }
       }
-#endif
     }
 
     // Guess resolution by file size
@@ -493,8 +482,7 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
         fclose( pF );
 
         Int count = 0, module, frame_bytes, match;
-        for( UInt i = 0; i < stdResList.size(); i++ )
-        {
+        for( UInt i = 0; i < stdResList.size(); i++ ) {
           frame_bytes = PlaYUVerFrame::getBytesPerFrame( stdResList[i].uiWidth, stdResList[i].uiHeight, rInputFormat, 8 );
           module = uiFileSize % frame_bytes;
           if( module == 0 )
@@ -512,8 +500,7 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
       }
     }
 
-// Guess bits per pixel - match %dbpp
-#if( QT_VERSION_PLAYUVER == 5 )
+		// Guess bits per pixel - match %dbpp
     QRegularExpressionMatch BppMatch = QRegularExpression( "_\\d*bpp" ).match( FilenameShort );
     if( BppMatch.hasMatch() )
     {
@@ -526,7 +513,6 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
         rBitsPerPixel = -1;
       }
     }
-#endif
 
     // Guess Endianness
     if( FilenameShort.contains( QStringLiteral( "be" ), Qt::CaseInsensitive ) )
@@ -587,8 +573,7 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
   else
   {
     QList<PlaYUVerAppModuleIf*> apcCurrentModule = m_apcCurrentModule;
-    for( Int i = 0; i < apcCurrentModule.size(); i++ )
-    {
+    for( Int i = 0; i < apcCurrentModule.size(); i++ ) {
       m_apcCurrentModule.removeOne( apcCurrentModule.at( i ) );
       ModulesHandle::destroyModuleIf( apcCurrentModule.at( i ) );
       bRefresh |= true;
@@ -622,8 +607,7 @@ Bool VideoSubWindow::hasRunningModule()
   {
     bRet |= m_pcCurrentDisplayModule->isRunning();
   }
-  for( Int i = 0; i < m_apcCurrentModule.size() && !bRet; i++ )
-  {
+  for( Int i = 0; i < m_apcCurrentModule.size() && !bRet; i++ ) {
     bRet |= m_apcCurrentModule.at( i )->isRunning();
   }
   return bRet;
@@ -658,8 +642,7 @@ Void VideoSubWindow::refreshFrameOperation()
   {
     m_cViewArea->setImage( m_pcCurrFrame );
   }
-  for( Int i = 0; i < m_apcCurrentModule.size() && !m_bIsPlaying; i++ )
-  {
+  for( Int i = 0; i < m_apcCurrentModule.size() && !m_bIsPlaying; i++ ) {
     m_apcCurrentModule.at( i )->update();
   }
 }

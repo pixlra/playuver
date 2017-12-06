@@ -554,8 +554,7 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
 
   // Drawing selection or all histogram values.
 
-  for( x = 0; x < wWidth; x++ )
-  {
+  for( x = 0; x < wWidth; x++ ) {
     double value = 0.0;
     double value_r = 0.0, value_g = 0.0, value_b = 0.0;  // For all channels.
     int i, j;

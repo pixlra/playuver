@@ -49,8 +49,7 @@ Double LumaAverage::measure( PlaYUVerFrame* frame )
   Double average = 0;
   Pel* pPel = frame->getPelBufferYUV()[0][0];
   for( UInt y = 0; y < frame->getHeight(); y++ )
-    for( UInt x = 0; x < frame->getWidth(); x++ )
-    {
+    for( UInt x = 0; x < frame->getWidth(); x++ ) {
       average += *pPel;
       pPel++;
     }

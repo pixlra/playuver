@@ -38,16 +38,6 @@
 /* CPU features */
 #cmakedefine USE_SSE
 
-/* QT definition */
-#cmakedefine USE_QT4
-
-#undef QT_VERSION_PLAYUVER
-#ifndef USE_QT4
-  #define QT_VERSION_PLAYUVER 5
-#else
-  #define QT_VERSION_PLAYUVER 4
-#endif
-
 /* QtDBus */
 #cmakedefine USE_QTDBUS
 

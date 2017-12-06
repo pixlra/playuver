@@ -25,11 +25,13 @@
 #ifndef __SEEKSTREAMDIALOG_H__
 #define __SEEKSTREAMDIALOG_H__
 
+#include "config.h"
 #include "PlaYUVerAppDefs.h"
 #include "PlaYUVerAppModuleIf.h"
-#include "config.h"
 #include <QDialog>
 #include <QVector>
+
+class QSpinBox;
 
 /**
  *

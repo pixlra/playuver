@@ -46,8 +46,7 @@ Bool WeightedPSNR::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
 
-  for( UInt i = 0; i < apcFrameList.size(); i++ )
-  {
+  for( UInt i = 0; i < apcFrameList.size(); i++ ) {
     if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_RESOLUTION ) )
       return false;
   }
@@ -55,8 +54,7 @@ Bool WeightedPSNR::create( std::vector<PlaYUVerFrame*> apcFrameList )
   {
     return false;
   }
-  for( UInt i = 1; i < apcFrameList.size(); i++ )
-  {
+  for( UInt i = 1; i < apcFrameList.size(); i++ ) {
     if( !apcFrameList[i]->haveSameFmt( apcFrameList[1], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_BITS ) )
       return false;
   }
@@ -84,8 +82,7 @@ Double measureWMSE( Int component, PlaYUVerFrame* Org, PlaYUVerFrame* Rec, PlaYU
     numberOfPixels = Rec->getChromaLength();
   }
 
-  for( UInt i = 0; i < numberOfPixels; i++ )
-  {
+  for( UInt i = 0; i < numberOfPixels; i++ ) {
     aux_pel_mask = *pMaskPelYUV++;
     aux_pel_1 = *pRecPelYUV++;
     aux_pel_2 = *pOrgPelYUV++;

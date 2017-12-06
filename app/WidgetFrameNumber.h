@@ -25,14 +25,11 @@
 #ifndef __WIDGETFRAMENUMBER_H__
 #define __WIDGETFRAMENUMBER_H__
 
-#include "PlaYUVerAppDefs.h"
 #include "config.h"
-#include <QtCore>
-#if( QT_VERSION_PLAYUVER == 5 )
-#include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QtGui>
-#endif
+#include "PlaYUVerAppDefs.h"
+#include <QWidget>
+
+class QLabel;
 
 class WidgetFrameNumber : public QWidget
 {

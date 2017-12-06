@@ -32,9 +32,8 @@ DisparityStereoSGBM::DisparityStereoSGBM()
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Stereo";
   m_pchModuleName = "Disparity-SGBM";
-  m_pchModuleTooltip =
-      "Measure the disparity between two images using the "
-      "Stereo SGBM method (OpenCV)";
+  m_pchModuleTooltip = "Measure the disparity between two images using the "
+                       "Stereo SGBM method (OpenCV)";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
   m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
 

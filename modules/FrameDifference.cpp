@@ -31,9 +31,8 @@ FrameDifference::FrameDifference()
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Measurements";
   m_pchModuleName = "FrameDifference";
-  m_pchModuleTooltip =
-      "Measure the difference between two images (Y plane),  "
-      "Y1 - Y2, with max absolute diff of 128";
+  m_pchModuleTooltip = "Measure the difference between two images (Y plane),  "
+                       "Y1 - Y2, with max absolute diff of 128";
   m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
 
@@ -50,8 +49,7 @@ Bool FrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
   _BASIC_MODULE_API_2_CHECK_
 
   UInt uiMaxBitsPixel = 0;
-  for( UInt i = 0; i < apcFrameList.size(); i++ )
-  {
+  for( UInt i = 0; i < apcFrameList.size(); i++ ) {
     if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION ) )
       return false;
     if( apcFrameList[i]->getBitsPel() > uiMaxBitsPixel )
@@ -81,8 +79,7 @@ PlaYUVerFrame* FrameDifference::process( std::vector<PlaYUVerFrame*> apcFrameLis
   Int diff = 0;
 
   for( UInt y = 0; y < m_pcFrameDifference->getHeight(); y++ )
-    for( UInt x = 0; x < m_pcFrameDifference->getWidth(); x++ )
-    {
+    for( UInt x = 0; x < m_pcFrameDifference->getWidth(); x++ ) {
       aux_pel_1 = *pInput1PelYUV++;
       aux_pel_2 = *pInput2PelYUV++;
       diff = aux_pel_1 - aux_pel_2;

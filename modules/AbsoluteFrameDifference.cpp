@@ -29,13 +29,12 @@ AbsoluteFrameDifference::AbsoluteFrameDifference()
   /* Module Definition */
   m_iModuleAPI = MODULE_API_2;  // Use API version 2 (recommended).
   // See this example for details on the functions prototype
-  m_iModuleType = FRAME_PROCESSING_MODULE;      // Apply module to the frames or to
-                                                // the whole sequence.
-  m_pchModuleCategory = "Measurements";         // Category (sub-menu)
-  m_pchModuleName = "AbsoluteFrameDifference";  // Name
-  m_pchModuleTooltip =
-      "Measure the absolute difference "  // Description
-      "between two images (Y plane), e. g., abs( Y1 - Y2 )";
+  m_iModuleType = FRAME_PROCESSING_MODULE;                 // Apply module to the frames or to
+                                                           // the whole sequence.
+  m_pchModuleCategory = "Measurements";                    // Category (sub-menu)
+  m_pchModuleName = "AbsoluteFrameDifference";             // Name
+  m_pchModuleTooltip = "Measure the absolute difference "  // Description
+                       "between two images (Y plane), e. g., abs( Y1 - Y2 )";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;      // Number of Frames required
                                                         // (ONE_FRAME, TWO_FRAMES,
                                                         // THREE_FRAMES)
@@ -69,8 +68,7 @@ PlaYUVerFrame* AbsoluteFrameDifference::process( std::vector<PlaYUVerFrame*> apc
   Int aux_pel_1, aux_pel_2;
 
   for( UInt y = 0; y < m_pcFrameDifference->getHeight(); y++ )
-    for( UInt x = 0; x < m_pcFrameDifference->getWidth(); x++ )
-    {
+    for( UInt x = 0; x < m_pcFrameDifference->getWidth(); x++ ) {
       aux_pel_1 = *pInput1PelYUV++;
       aux_pel_2 = *pInput2PelYUV++;
       *pOutputPelYUV++ = abs( aux_pel_1 - aux_pel_2 );

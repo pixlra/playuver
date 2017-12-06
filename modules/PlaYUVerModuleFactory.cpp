@@ -71,8 +71,7 @@ PlaYUVerModuleIf* PlaYUVerModuleFactory::CreateModule( const char* moduleName )
 {
   PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
   PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
-  for( ; it != PlaYUVerModuleFactoryMap.end(); ++it )
-  {
+  for( ; it != PlaYUVerModuleFactoryMap.end(); ++it ) {
     if( !strcmp( it->first, moduleName ) )
     {
       return it->second();

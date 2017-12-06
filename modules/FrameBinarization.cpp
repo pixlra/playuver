@@ -52,8 +52,7 @@ PlaYUVerFrame* FrameBinarization::process( PlaYUVerFrame* frame )
   Pel* pPelInput = frame->getPelBufferYUV()[0][0];
   Pel* pPelBin = m_pcBinFrame->getPelBufferYUV()[0][0];
   for( UInt y = 0; y < frame->getHeight(); y++ )
-    for( UInt x = 0; x < frame->getWidth(); x++ )
-    {
+    for( UInt x = 0; x < frame->getWidth(); x++ ) {
       *pPelBin++ = *pPelInput++ >= m_uiThreshold ? 255 : 0;
     }
   return m_pcBinFrame;

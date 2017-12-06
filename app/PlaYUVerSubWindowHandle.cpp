@@ -113,12 +113,10 @@ Void PlaYUVerSubWindowHandle::resetWindowMode()
   {
     m_cMdiModeWindowPosition = m_pcApp->pos();
     m_cMdiModeWindowSize = m_pcApp->size();
-    for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
-    {
+    for( Int i = 0; i < m_apcSubWindowList.size(); i++ ) {
       m_apcSubWindowList.at( i )->setParent( NULL );
     }
-    for( Int i = 0; i < m_apcMdiSubWindowList.size(); i++ )
-    {
+    for( Int i = 0; i < m_apcMdiSubWindowList.size(); i++ ) {
       disconnect( m_apcMdiSubWindowList.at( i ), SIGNAL( aboutToClose( PlaYUVerMdiSubWindow* ) ), this,
                   SLOT( removeMdiSubWindow( PlaYUVerMdiSubWindow* ) ) );
       m_apcMdiSubWindowList.at( i )->close();
@@ -141,8 +139,7 @@ Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
 
   if( iWindowMode == DETACHEDSUBWINDOWMODE )
   {
-    for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
-    {
+    for( Int i = 0; i < m_apcSubWindowList.size(); i++ ) {
       m_apcSubWindowList.at( i )->setParent( NULL );
       m_apcSubWindowList.at( i )->resize( m_apcSubWindowList.at( i )->sizeHint() );
       m_apcSubWindowList.at( i )->show();
@@ -166,8 +163,7 @@ Void PlaYUVerSubWindowHandle::setWindowMode( Int iWindowMode )
     m_pcWindowManagerLayout = new QHBoxLayout( this );
     m_pcWindowManagerLayout->addWidget( m_pcMdiArea );
     setLayout( m_pcWindowManagerLayout );
-    for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
-    {
+    for( Int i = 0; i < m_apcSubWindowList.size(); i++ ) {
       addMdiSubWindow( m_apcSubWindowList.at( i ) );
       m_apcSubWindowList.at( i )->resize( m_apcSubWindowList.at( i )->sizeHint() );
     }
@@ -286,8 +282,7 @@ Void PlaYUVerSubWindowHandle::removeMdiSubWindow( PlaYUVerMdiSubWindow* window )
 
 Void PlaYUVerSubWindowHandle::removeAllSubWindow()
 {
-  while( m_apcSubWindowList.size() > 0 )
-  {
+  while( m_apcSubWindowList.size() > 0 ) {
     removeSubWindow( 0 );
   }
 }
@@ -311,8 +306,7 @@ QList<SubWindowAbstract*> PlaYUVerSubWindowHandle::findSubWindow( const UInt uiC
   }
   else
   {
-    for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
-    {
+    for( Int i = 0; i < m_apcSubWindowList.size(); i++ ) {
       if( m_apcSubWindowList.at( i )->getCategory() & uiCategory )
         apcSubWindowList.append( m_apcSubWindowList.at( i ) );
     }
@@ -326,8 +320,7 @@ QList<SubWindowAbstract*> PlaYUVerSubWindowHandle::findSubWindow( const QString&
   QList<SubWindowAbstract*> apcSubWindowList;
   if( !windowName.isEmpty() )
   {
-    for( Int i = 0; i < subWindowList.size(); i++ )
-    {
+    for( Int i = 0; i < subWindowList.size(); i++ ) {
       if( subWindowList.at( i )->getWindowName() == windowName )
         apcSubWindowList.append( subWindowList.at( i ) );
     }
@@ -338,8 +331,7 @@ QList<SubWindowAbstract*> PlaYUVerSubWindowHandle::findSubWindow( const QString&
 SubWindowAbstract* PlaYUVerSubWindowHandle::findSubWindow( const SubWindowAbstract* subWindow ) const
 {
   QList<SubWindowAbstract*> subWindowList = findSubWindow();
-  for( Int i = 0; i < subWindowList.size(); i++ )
-  {
+  for( Int i = 0; i < subWindowList.size(); i++ ) {
     if( subWindow == subWindowList.at( i ) )
       return subWindowList.at( i );
   }
@@ -373,8 +365,7 @@ Void PlaYUVerSubWindowHandle::tileSubWindows()
   {
     QSize screenSize = QApplication::desktop()->availableGeometry().size();
     UInt minWindowsInRow = 1;
-    while( ( screenSize.width() / minWindowsInRow ) > 500 )
-    {
+    while( ( screenSize.width() / minWindowsInRow ) > 500 ) {
       minWindowsInRow++;
     }
     m_pcApp->showNormal();
@@ -394,8 +385,7 @@ Void PlaYUVerSubWindowHandle::tileSubWindows()
     if( numberOfWindows > minWindowsInRow )
     {
       numberTillingColumns = minWindowsInRow;
-      for( Int i = numberOfWindows; i > 0; )
-      {
+      for( Int i = numberOfWindows; i > 0; ) {
         numberTillingRows = ( numberOfWindows + numberTillingColumns - 1 ) / numberTillingColumns;
         if( numberTillingColumns > numberTillingRows )
         {
@@ -416,8 +406,7 @@ Void PlaYUVerSubWindowHandle::tileSubWindows()
     QSize totalWindowsSize( screenSize.width(), screenSize.height() - topLeftCornerWindow.y() );
     QSize windowsSize( totalWindowsSize.width() / numberTillingColumns, totalWindowsSize.height() / numberTillingRows );
     QPoint windowRelativePos;
-    for( Int i = 0; i < m_apcSubWindowList.size(); i++ )
-    {
+    for( Int i = 0; i < m_apcSubWindowList.size(); i++ ) {
       windowRelativePos.setY( ( i / numberTillingColumns ) * windowsSize.height() );
       windowRelativePos.setX( ( i % numberTillingColumns ) * windowsSize.width() );
       m_apcSubWindowList.at( i )->resize( windowsSize );
@@ -549,8 +538,7 @@ Void PlaYUVerSubWindowHandle::updateMenu()
 
   m_arrayActions[SEPARATOR_ACT]->setVisible( number_windows > 0 );
 
-  for( Int i = 0; i < number_windows; ++i )
-  {
+  for( Int i = 0; i < number_windows; ++i ) {
     SubWindowAbstract* subWindow = m_apcSubWindowList.at( i );
 
     QString text;

@@ -27,12 +27,7 @@
 
 #include "PlaYUVerAppDefs.h"
 #include "config.h"
-#if( QT_VERSION_PLAYUVER == 5 )
 #include <QtWidgets>
-#elif( QT_VERSION_PLAYUVER == 4 )
-#include <QWidget>
-#include <QtGui>
-#endif
 #include "HistogramWidget.h"
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"

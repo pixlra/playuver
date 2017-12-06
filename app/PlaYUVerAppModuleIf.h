@@ -25,17 +25,19 @@
 #ifndef __PLAYUVERAPPMODULESIF_H__
 #define __PLAYUVERAPPMODULESIF_H__
 
+#include "config.h"
 #include "ModuleHandleDock.h"
 #include "PlaYUVerAppDefs.h"
-#include "config.h"
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerModuleIf.h"
 #include "lib/PlaYUVerStream.h"
 #include <QVector>
+#include <QEvent>
 #include <cstdio>
 #include <iostream>
 
 class QAction;
+class QDockWidget;
 
 //#define PLAYUVER_THREADED_MODULES
 

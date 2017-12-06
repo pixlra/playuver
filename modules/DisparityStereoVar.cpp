@@ -32,9 +32,8 @@ DisparityStereoVar::DisparityStereoVar()
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Disparity";
   m_pchModuleName = "StereoVar";
-  m_pchModuleTooltip =
-      "Measure the disparity between two images using the "
-      "Stereo Var method (OpenCV)";
+  m_pchModuleTooltip = "Measure the disparity between two images using the "
+                       "Stereo Var method (OpenCV)";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
   m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW;
 

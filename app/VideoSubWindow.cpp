@@ -301,21 +301,21 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
     m_pCurrStream = new PlaYUVerStream;
   }
 
-	Bool bConfig = guessFormat( cFilename, Width, Height, InputFormat, BitsPel, Endianness ) || bForceDialog;
-	Bool bRet = false;
-	for (Int iPass=0; iPass < 2 && !bRet; iPass++)
-	{
-		if( iPass && bConfig )
-		{
-			if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate ) == QDialog::Rejected )
-			{
-				return false;
-			}
-		}
-		bRet = m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate, true );
-	}
+  Bool bConfig = guessFormat( cFilename, Width, Height, InputFormat, BitsPel, Endianness ) || bForceDialog;
+  Bool bRet = false;
+  for( Int iPass = 0; iPass < 2 && !bRet; iPass++ ) {
+    if( iPass && bConfig )
+    {
+      if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate ) ==
+          QDialog::Rejected )
+      {
+        return false;
+      }
+    }
+    bRet = m_pCurrStream->open( cFilename.toStdString(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate, true );
+  }
 
-	m_sStreamInfo.m_cFilename = cFilename;
+  m_sStreamInfo.m_cFilename = cFilename;
   m_sStreamInfo.m_uiWidth = Width;
   m_sStreamInfo.m_uiHeight = Height;
   m_sStreamInfo.m_iPelFormat = InputFormat;
@@ -491,7 +491,7 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
       }
     }
 
-		// Guess bits per pixel - match %dbpp
+    // Guess bits per pixel - match %dbpp
     QRegularExpressionMatch BppMatch = QRegularExpression( "_\\d*bpp" ).match( FilenameShort );
     if( BppMatch.hasMatch() )
     {

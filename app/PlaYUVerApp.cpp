@@ -275,7 +275,16 @@ QStringList PlaYUVerApp::showFileDialog( Bool bRead )
   QStringList filter;
   filter << supported << formatsList << tr( "All Files (*)" );
 
-  QStringList fileNameList = QFileDialog::getOpenFileNames( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );
+  QStringList fileNameList;
+  if( bRead )
+  {
+    fileNameList = QFileDialog::getOpenFileNames( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );
+  }
+  else
+  {
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Open File" ), m_cLastOpenPath, filter.join( ";;" ) );
+    fileNameList.append( fileName );
+  }
   return fileNameList;
 }
 

@@ -266,8 +266,6 @@ Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_f
   if( !m_pcHandler->openHandler( m_cFilename, m_bIsInput ) )
   {
     close();
-//    throw PlaYUVerFailure( "PlaYUVerStream",
-//                           "Cannot open stream " + m_cFilename + " with the " + String( m_pcHandler->m_pchHandlerName ) + " handler" );
     return m_bInit;
   }
 

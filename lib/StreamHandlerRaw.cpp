@@ -55,6 +55,7 @@ Bool StreamHandlerRaw::openHandler( String strFilename, Bool bInput )
   {
     return false;
   }
+  calculateFrameNumber();
   m_strFormatName = "YUV";
   m_strCodecName = "Raw Video";
   return true;
@@ -73,14 +74,15 @@ Bool StreamHandlerRaw::configureBuffer( PlaYUVerFrame* pcFrame )
   return getMem1D<Byte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
 }
 
-UInt64 StreamHandlerRaw::calculateFrameNumber()
+Void StreamHandlerRaw::calculateFrameNumber()
 {
-  if( !m_pFile || m_uiNBytesPerFrame == 0 )
-    return 0;
-  fseek( m_pFile, 0, SEEK_END );
-  UInt64 fileSize = ftell( m_pFile );
-  fseek( m_pFile, 0, SEEK_SET );
-  return ( fileSize / m_uiNBytesPerFrame );
+  if( m_pFile && m_uiNBytesPerFrame > 0 )
+  {
+    fseek( m_pFile, 0, SEEK_END );
+    UInt64 fileSize = ftell( m_pFile );
+    fseek( m_pFile, 0, SEEK_SET );
+    m_uiTotalNumberFrames = fileSize / m_uiNBytesPerFrame;
+  }
 }
 
 Bool StreamHandlerRaw::seek( UInt64 iFrameNum )
@@ -96,6 +98,8 @@ Bool StreamHandlerRaw::seek( UInt64 iFrameNum )
 
 Bool StreamHandlerRaw::read( PlaYUVerFrame* pcFrame )
 {
+  if( !m_pFile || !m_pStreamBuffer || m_uiNBytesPerFrame == 0 )
+    return false;
   UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;

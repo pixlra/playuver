@@ -9,7 +9,7 @@ set(qcustomplot_SRCS
   qcustomplot.h
 )
 
-ADD_LIBRARY( QCustomPlotLib SHARED ${qcustomplot_SRCS} )
+ADD_LIBRARY( QCustomPlotLib STATIC ${qcustomplot_SRCS} )
 TARGET_LINK_LIBRARIES( QCustomPlotLib
   Qt5::Core
   Qt5::Gui

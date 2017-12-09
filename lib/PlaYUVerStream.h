@@ -126,7 +126,6 @@ private:
 
   Bool m_bIsInput;
   String m_cFilename;
-  UInt64 m_uiTotalFrameNum;
   Int64 m_iCurrFrameNum;
 
   Bool m_bLoadAll;

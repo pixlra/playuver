@@ -138,16 +138,15 @@ struct PlaYUVerFramePrivate
   Bool m_bHasRGBPel;  //!< Flag indicating that the ARGB buffer was computed
   UChar* m_pcARGB32;  //!< Buffer with the ARGB pixels used in Qt libs
 
+  /** Histogram control variables **/
+  Bool m_bHasHistogram;
+  Bool m_bHistogramRunning;
   /** The histogram data.*/
   UInt* m_puiHistogram;
-
   /** If the image is RGB and calcLuma is true, we have 1 more channel */
   UInt m_uiHistoChannels;
-
   /** Numbers of histogram segments depending of image bytes depth*/
   UInt m_uiHistoSegments;
-
-  Bool m_bHasHistogram;
 
   /**
    * Common constructor function of a frame
@@ -189,6 +188,7 @@ struct PlaYUVerFramePrivate
 
     m_puiHistogram = NULL;
     m_bHasHistogram = false;
+    m_bHistogramRunning = false;
 
     m_uiHistoSegments = 1 << m_uiBitsPel;
 
@@ -197,6 +197,8 @@ struct PlaYUVerFramePrivate
     else
       m_uiHistoChannels = m_pcPelFormat->numberChannels;
 
+    getMem1D<UInt>( &( m_puiHistogram ), m_uiHistoSegments * m_uiHistoChannels );
+
     m_cPelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[m_iPixelFormat].c_str();
 
     m_bInit = true;
@@ -204,20 +206,17 @@ struct PlaYUVerFramePrivate
 
   ~PlaYUVerFramePrivate()
   {
+    while( m_bHistogramRunning )
+      ;
     if( m_puiHistogram )
-    {
       freeMem1D( m_puiHistogram );
-    }
-    m_puiHistogram = NULL;
     m_bHasHistogram = false;
 
     if( m_pppcInputPel )
       freeImgMemory( m_pppcInputPel );
-    m_pppcInputPel = NULL;
 
     if( m_pcARGB32 )
       freeMem1D( m_pcARGB32 );
-    m_pcARGB32 = NULL;
   }
 };
 
@@ -728,17 +727,10 @@ Void PlaYUVerFrame::fillRGBBuffer()
 
 Void PlaYUVerFrame::calcHistogram()
 {
-  if( d->m_bHasHistogram )
+  if( d->m_bHasHistogram || !d->m_puiHistogram )
     return;
 
-  if( !d->m_puiHistogram )
-  {
-    getMem1D<UInt>( &( d->m_puiHistogram ), d->m_uiHistoSegments * d->m_uiHistoChannels );
-    if( !d->m_puiHistogram )
-    {
-      return;
-    }
-  }
+  d->m_bHistogramRunning = true;
 
   xMemSet( UInt, d->m_uiHistoSegments * d->m_uiHistoChannels, d->m_puiHistogram );
 
@@ -784,6 +776,7 @@ Void PlaYUVerFrame::calcHistogram()
     }
   }
   d->m_bHasHistogram = true;
+  d->m_bHistogramRunning = false;
 }
 
 Int PlaYUVerFrame::getHistogramSegment()

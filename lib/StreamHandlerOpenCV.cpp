@@ -97,6 +97,12 @@ Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
     }
     m_uiBitsPerPixel = 8;
     m_iPixelFormat = PlaYUVerFrame::findPixelFormat( "BGR" );
+
+    m_uiTotalNumberFrames = 1;
+    if( pcVideoCapture )
+    {
+      m_uiTotalNumberFrames = 2;
+    }
   }
 
   return true;
@@ -115,15 +121,6 @@ Void StreamHandlerOpenCV::closeHandler()
 Bool StreamHandlerOpenCV::configureBuffer( PlaYUVerFrame* pcFrame )
 {
   return true;
-}
-
-UInt64 StreamHandlerOpenCV::calculateFrameNumber()
-{
-  if( pcVideoCapture )
-  {
-    return 2;
-  }
-  return 1;
 }
 
 Bool StreamHandlerOpenCV::seek( UInt64 iFrameNum )

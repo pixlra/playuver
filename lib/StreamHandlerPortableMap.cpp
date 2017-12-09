@@ -105,6 +105,7 @@ Bool StreamHandlerPortableMap::openHandler( String strFilename, Bool bInput )
   }
   m_iEndianness = 0;
   m_dFrameRate = 1;
+  m_uiTotalNumberFrames = 1;
   return true;
 }
 
@@ -120,11 +121,6 @@ Void StreamHandlerPortableMap::closeHandler()
 Bool StreamHandlerPortableMap::configureBuffer( PlaYUVerFrame* pcFrame )
 {
   return getMem1D<Byte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
-}
-
-UInt64 StreamHandlerPortableMap::calculateFrameNumber()
-{
-  return 1;
 }
 
 Bool StreamHandlerPortableMap::seek( UInt64 iFrameNum )

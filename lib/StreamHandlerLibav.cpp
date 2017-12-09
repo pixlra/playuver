@@ -167,6 +167,9 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   const char* name = avcodec_get_name( m_cCodedCtx->codec_id );
   m_strCodecName = name;
 
+  // Set bits per pixel to default (8 bits)
+  m_uiBitsPerPixel = 8;
+
   /**
    * Auxiliar conversation to re-use similar pixfmt
    */
@@ -223,8 +226,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 
   m_dFrameRate = fr;
 
-  // Set bits per pixel to default (8 bits)
-  m_uiBitsPerPixel = 8;
+  calculateFrameNumber();
 
   /* dump input information to stderr */
   av_dump_format( m_cFmtCtx, 0, filename, 0 );
@@ -275,15 +277,14 @@ Bool StreamHandlerLibav::configureBuffer( PlaYUVerFrame* pcFrame )
   return getMem1D<Byte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
 }
 
-UInt64 StreamHandlerLibav::calculateFrameNumber()
+Void StreamHandlerLibav::calculateFrameNumber()
 {
   UInt64 num_frames;
-  //   if( m_cStream->nb_frames )
-  //    {                                            *
-  //    num_frames = m_cStream->nb_frames;
-  //   }
-  //   else
-  if( m_cFmtCtx->duration != AV_NOPTS_VALUE )
+  if( m_cStream->nb_frames )
+  {
+    num_frames = m_cStream->nb_frames;
+  }
+  else if( m_cFmtCtx->duration != AV_NOPTS_VALUE )
   {
     Int64 duration = m_cFmtCtx->duration + 5000;
     m_uiSecs = duration / AV_TIME_BASE;
@@ -295,7 +296,7 @@ UInt64 StreamHandlerLibav::calculateFrameNumber()
     num_frames = 0;
   }
   num_frames = num_frames == 0 ? 1 : num_frames;
-  return num_frames;
+  m_uiTotalNumberFrames = num_frames;
 }
 
 Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )

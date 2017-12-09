@@ -30,7 +30,6 @@
 #include <QString>
 #include <QGridLayout>
 
-
 ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf ) : QWidget( parent ), m_pcCurrModuleIf( moduleIf )
 {
   // ----------------- Dock definition -----------------

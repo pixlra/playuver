@@ -25,10 +25,16 @@
 
 // TODO:
 //      - Optimizar paintEvent. Parece haver codigo redundante  !!
-#include "HistogramWidget.h"
+
 #include "config.h"
+#include "HistogramWidget.h"
 #include <QtDebug>
-#include <QtGui>
+#include <QThread>
+#include <QEvent>
+#include <QCoreApplication>
+#include <QTimer>
+#include <QPainter>
+#include <QMouseEvent>
 #include <cmath>
 
 class HistogramWorker : public QThread
@@ -47,7 +53,8 @@ public:
   Void setup( PlaYUVerFrame* frame )
   {
     m_pcFrame = frame;
-    run();
+    // run();
+    start();
   }
   Void run()
   {

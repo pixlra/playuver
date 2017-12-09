@@ -133,6 +133,7 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget*
     , m_pcCurrentDisplayModule( NULL )
     , m_pcReferenceSubWindow( NULL )
     , m_bIsPlaying( false )
+    , m_pcUpdateTimer( NULL )
 {
   // Create a new scroll area inside the sub-window
   m_pcScrollArea = new QScrollArea;
@@ -150,8 +151,8 @@ VideoSubWindow::VideoSubWindow( enum VideoSubWindowCategories category, QWidget*
   connect( m_cViewArea, SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectedArea( QRect ) ) );
   connect( m_cViewArea, SIGNAL( positionChanged( const QPoint& ) ), this, SLOT( updatePixelValueStatusBar( const QPoint& ) ) );
 
-  m_pcScrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-  m_pcScrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  //  m_pcScrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  //  m_pcScrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
   // Define the cViewArea as the widget inside the scroll area
   m_pcScrollArea->setWidget( m_cViewArea );
@@ -176,6 +177,7 @@ VideoSubWindow::~VideoSubWindow()
   m_pcCurrFrame = NULL;
   disableModule();
   delete m_cViewArea;
+  delete m_pcUpdateTimer;
   if( m_pCurrStream )
     delete m_pCurrStream;
 }
@@ -304,7 +306,7 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   Bool bConfig = guessFormat( cFilename, Width, Height, InputFormat, BitsPel, Endianness ) || bForceDialog;
   Bool bRet = false;
   for( Int iPass = 0; iPass < 2 && !bRet; iPass++ ) {
-    if( iPass && bConfig )
+    if( iPass || bConfig )
     {
       if( formatDialog.runConfigureFormatDialog( QFileInfo( cFilename ).fileName(), Width, Height, InputFormat, BitsPel, Endianness, FrameRate ) ==
           QDialog::Rejected )

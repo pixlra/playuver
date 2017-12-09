@@ -188,7 +188,6 @@ PlaYUVerStream::PlaYUVerStream()
   m_pcHandler = NULL;
   m_bIsInput = true;
   m_bLoadAll = false;
-  m_uiTotalFrameNum = 0;
   m_iCurrFrameNum = -1;
   m_cFilename = "";
 }
@@ -289,14 +288,12 @@ Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_f
     return m_bInit;
   }
 
-  m_pcHandler->setBytesPerFrame( m_frameBuffer->current()->getBytesPerFrame() );
+  m_pcHandler->m_uiNBytesPerFrame = m_frameBuffer->current()->getBytesPerFrame();
 
-  if( m_bIsInput )
-  {
-    m_uiTotalFrameNum = m_pcHandler->calculateFrameNumber();
-  }
+  // Some handlers need to know how long is a frame to get frame number
+  m_pcHandler->calculateFrameNumber();
 
-  if( m_bIsInput && m_uiTotalFrameNum <= 0 )
+  if( m_bIsInput && m_pcHandler->m_uiTotalNumberFrames == 0 )
   {
     close();
     throw PlaYUVerFailure( "PlaYUVerStream", "Incorrect configuration: less than one frame" );
@@ -327,15 +324,16 @@ Bool PlaYUVerStream::reload()
     throw PlaYUVerFailure( "PlaYUVerStream",
                            "Cannot open stream " + m_cFilename + " with the " + String( m_pcHandler->m_pchHandlerName ) + " handler" );
   }
-  m_pcHandler->setBytesPerFrame( m_frameBuffer->current()->getBytesPerFrame() );
-  m_uiTotalFrameNum = m_pcHandler->calculateFrameNumber();
+  m_pcHandler->m_uiNBytesPerFrame = m_frameBuffer->current()->getBytesPerFrame();
+  m_pcHandler->calculateFrameNumber();
+  m_pcHandler->configureBuffer( m_frameBuffer->current() );
 
   if( m_pcHandler->m_uiWidth <= 0 || m_pcHandler->m_uiHeight <= 0 || m_pcHandler->m_iPixelFormat < 0 || m_pcHandler->m_uiBitsPerPixel == 0 ||
-      m_uiTotalFrameNum < 1 )
+      m_pcHandler->m_uiTotalNumberFrames == 0 )
   {
     return false;
   }
-  if( UInt( m_iCurrFrameNum ) >= m_uiTotalFrameNum )
+  if( UInt( m_iCurrFrameNum ) >= m_pcHandler->m_uiTotalNumberFrames )
   {
     m_iCurrFrameNum = 0;
   }
@@ -366,7 +364,7 @@ String PlaYUVerStream::getFileName()
 
 UInt PlaYUVerStream::getFrameNum()
 {
-  return m_uiTotalFrameNum;
+  return m_pcHandler->m_uiTotalNumberFrames;
 }
 UInt PlaYUVerStream::getWidth() const
 {
@@ -419,7 +417,7 @@ Void PlaYUVerStream::loadAll()
 
   try
   {
-    m_frameBuffer->increase( m_uiTotalFrameNum );
+    m_frameBuffer->increase( m_pcHandler->m_uiTotalNumberFrames );
   }
   catch( PlaYUVerFailure& e )
   {
@@ -460,7 +458,7 @@ Void PlaYUVerStream::getDuration( Int* duration_array )
 
 Bool PlaYUVerStream::readFrame( PlaYUVerFrame* frame )
 {
-  if( !m_bInit || !m_bIsInput || m_pcHandler->m_uiCurrFrameFileIdx >= m_uiTotalFrameNum )
+  if( !m_bInit || !m_bIsInput || m_pcHandler->m_uiCurrFrameFileIdx >= m_pcHandler->m_uiTotalNumberFrames )
     return false;
 
   if( m_bLoadAll )
@@ -510,7 +508,7 @@ Bool PlaYUVerStream::setNextFrame()
 {
   Bool bEndOfSeq = false;
 
-  if( m_iCurrFrameNum + 1 < Int( m_uiTotalFrameNum ) )
+  if( m_iCurrFrameNum + 1 < Int64( m_pcHandler->m_uiTotalNumberFrames ) )
   {
     m_frameBuffer->setNextFrame();
     m_iCurrFrameNum++;
@@ -569,7 +567,7 @@ Bool PlaYUVerStream::seekInputRelative( Bool bIsFoward )
 
 Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 {
-  if( !m_bInit || new_frame_num >= m_uiTotalFrameNum || (Int64)new_frame_num == m_iCurrFrameNum )
+  if( !m_bInit || new_frame_num >= m_pcHandler->m_uiTotalNumberFrames || Int64( new_frame_num ) == m_iCurrFrameNum )
     return false;
 
   m_iCurrFrameNum = new_frame_num;
@@ -587,7 +585,7 @@ Bool PlaYUVerStream::seekInput( UInt64 new_frame_num )
 
   m_frameBuffer->setIndex( 0 );
   readFrame( m_frameBuffer->current() );
-  if( m_uiTotalFrameNum > 1 )
+  if( m_pcHandler->m_uiTotalNumberFrames > 1 )
     readFrame( m_frameBuffer->next() );
 
   return true;

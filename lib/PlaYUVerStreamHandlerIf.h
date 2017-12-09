@@ -79,7 +79,9 @@ public:
       , m_uiBitsPerPixel( 8 )
       , m_iEndianness( -1 )
       , m_dFrameRate( 30 )
+      , m_uiTotalNumberFrames( 0 )
       , m_pStreamBuffer( NULL )
+      , m_uiNBytesPerFrame( 0 )
   {
   }
   virtual ~PlaYUVerStreamHandlerIf() {}
@@ -88,17 +90,20 @@ public:
   virtual Bool openHandler( String strFilename, Bool bInput ) = 0;
   virtual Void closeHandler() = 0;
   virtual Bool configureBuffer( PlaYUVerFrame* pcFrame ) = 0;
-  virtual UInt64 calculateFrameNumber() = 0;
   virtual Bool seek( UInt64 iFrameNum ) = 0;
   virtual Bool read( PlaYUVerFrame* pcFrame ) = 0;
   virtual Bool write( PlaYUVerFrame* pcFrame ) = 0;
 
-  Void setBytesPerFrame( UInt64 uiNBytes ) { m_uiNBytesPerFrame = uiNBytes; }
+  virtual Void calculateFrameNumber(){};
+
   String getFormatName() { return m_strFormatName; }
   String getCodecName() { return m_strCodecName; }
 
 protected:
   const Char* m_pchHandlerName;
+
+  String m_strFormatName;
+  String m_strCodecName;
   Bool m_bIsInput;
   UInt64 m_uiCurrFrameFileIdx;
   String m_cFilename;
@@ -108,11 +113,9 @@ protected:
   UInt m_uiBitsPerPixel;
   Int m_iEndianness;
   Double m_dFrameRate;
-
+  UInt64 m_uiTotalNumberFrames;
   Byte* m_pStreamBuffer;
   UInt64 m_uiNBytesPerFrame;
-  String m_strFormatName;
-  String m_strCodecName;
 };
 
 #endif  // __PLAYUVERSTREAMHANDLERIF_H__

@@ -64,7 +64,7 @@ public:
   Bool openHandler( String strFilename, Bool bInput );
   Void closeHandler();
   Bool configureBuffer( PlaYUVerFrame* pcFrame );
-  UInt64 calculateFrameNumber();
+  Void calculateFrameNumber();
   Bool seek( UInt64 iFrameNum );
   Bool read( PlaYUVerFrame* pcFrame );
   Bool write( PlaYUVerFrame* pcFrame );

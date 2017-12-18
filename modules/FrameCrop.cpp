@@ -50,14 +50,14 @@ FrameCrop::FrameCrop()
 Void FrameCrop::create( PlaYUVerFrame* frame )
 {
   m_pcCropedFrame = NULL;
-  if( m_iXSize == -1 )
-  {
+  if( m_uiXPosition >= frame->getWidth() )
+    m_uiXPosition = 0;
+  if( m_uiYPosition >= frame->getHeight() )
+    m_uiXPosition = 0;
+  if( m_iXSize == -1 || ( m_uiXPosition + m_iXSize ) >= frame->getWidth() )
     m_iXSize = frame->getWidth() - m_uiXPosition;
-  }
-  if( m_iYSize == -1 )
-  {
+  if( m_iYSize == -1 || ( m_uiYPosition + m_iYSize ) >= frame->getHeight() )
     m_iYSize = frame->getHeight() - m_uiYPosition;
-  }
   m_pcCropedFrame = new PlaYUVerFrame( m_iXSize, m_iYSize, frame->getPelFormat(), frame->getBitsPel() );
 }
 

@@ -508,7 +508,10 @@ Void ModulesHandle::applyAllModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf )
       filter << supported << formatsList << tr( "All Files (*)" );
 
       QString fileName = QFileDialog::getSaveFileName( m_pcParent, tr( "Open File" ), QString(), filter.join( ";;" ) );
-
+      if( fileName.isEmpty() )
+      {
+        return;
+      }
       Width = pcCurrModuleIf->m_pcProcessedFrame->getWidth();
       Height = pcCurrModuleIf->m_pcProcessedFrame->getHeight();
       InputFormat = pcCurrModuleIf->m_pcProcessedFrame->getPelFormat();

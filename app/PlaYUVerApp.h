@@ -91,7 +91,8 @@ private Q_SLOTS:
   void open();
   // void openDevice();
   void openRecent();
-  void save();
+  void saveFrame();
+  void saveStream();
   void format();
   void reload();
   void reloadAll();
@@ -210,6 +211,7 @@ private:
     OPEN_ACT = 0,
     OPEN_DEVICE_ACT,
     SAVE_ACT,
+    SAVE_STREAM_ACT,
     FORMAT_ACT,
     RELOAD_ACT,
     RELOAD_ALL_ACT,

@@ -113,6 +113,7 @@ public:
   Bool loadFile( PlaYUVerStreamInfo* streamInfo );
   Void loadAll();
   Bool save( QString filename );
+  Bool saveStream( QString filename );
 
   Void refreshSubWindow();
   Void refreshFrame( Bool bThreaded = false );

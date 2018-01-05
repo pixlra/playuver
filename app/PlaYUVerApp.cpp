@@ -312,7 +312,34 @@ Void PlaYUVerApp::openRecent()
     loadFile( recentFile.m_cFilename, &recentFile );
 }
 
-Void PlaYUVerApp::save()
+Void PlaYUVerApp::saveFrame()
+{
+  if( m_pcCurrentVideoSubWindow )
+  {
+    VideoSubWindow* saveWindow = m_pcCurrentVideoSubWindow;
+
+    QStringList fileNames = showFileDialog( false );
+    if( fileNames.size() == 1 )
+    {
+      QString fileName = fileNames[0];
+      m_cLastOpenPath = QFileInfo( fileName ).path();
+      try
+      {
+        saveWindow->save( fileName );
+      }
+      catch( PlaYUVerFailure& e )
+      {
+        QApplication::restoreOverrideCursor();
+        QString warningMsg = "Cannot save file " + QFileInfo( fileName ).fileName() + " with the following error: \n" + e.what();
+        QMessageBox::warning( this, QApplication::applicationName(), warningMsg );
+        printMessage( warningMsg, LOG_ERROR );
+        return;
+      }
+    }
+  }
+}
+
+Void PlaYUVerApp::saveStream()
 {
   if( m_pcCurrentVideoSubWindow )
   {
@@ -612,7 +639,13 @@ Void PlaYUVerApp::createActions()
   m_arrayActions[SAVE_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogSaveButton ) );
   m_arrayActions[SAVE_ACT]->setShortcuts( QKeySequence::SaveAs );
   m_arrayActions[SAVE_ACT]->setStatusTip( tr( "Save current frame" ) );
-  connect( m_arrayActions[SAVE_ACT], SIGNAL( triggered() ), this, SLOT( save() ) );
+  connect( m_arrayActions[SAVE_ACT], SIGNAL( triggered() ), this, SLOT( saveFrame() ) );
+
+  m_arrayActions[SAVE_STREAM_ACT] = new QAction( QIcon( ":/images/save.png" ), tr( "&Save Stream" ), this );
+  m_arrayActions[SAVE_STREAM_ACT]->setIcon( style()->standardIcon( QStyle::SP_DialogSaveButton ) );
+  m_arrayActions[SAVE_STREAM_ACT]->setShortcuts( QKeySequence::SaveAs );
+  m_arrayActions[SAVE_STREAM_ACT]->setStatusTip( tr( "Save current stream" ) );
+  connect( m_arrayActions[SAVE_ACT], SIGNAL( triggered() ), this, SLOT( saveStream() ) );
 
   m_arrayActions[FORMAT_ACT] = new QAction( tr( "&Format" ), this );
   m_arrayActions[FORMAT_ACT]->setIcon( QIcon::fromTheme( "transform-scale", QIcon( ":/images/configuredialog.png" ) ) );
@@ -722,6 +755,7 @@ Void PlaYUVerApp::createMenus()
   }
 
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[SAVE_ACT] );
+  // m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[SAVE_STREAM_ACT] );
   m_arrayMenu[FILE_MENU]->addSeparator();
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[FORMAT_ACT] );
   m_arrayMenu[FILE_MENU]->addAction( m_arrayActions[RELOAD_ACT] );

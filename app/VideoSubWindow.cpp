@@ -700,6 +700,16 @@ Bool VideoSubWindow::save( QString filename )
   return iRet;
 }
 
+Bool VideoSubWindow::saveStream( QString filename )
+{
+  Bool iRet = false;
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  // TODO: implement this
+  QApplication::restoreOverrideCursor();
+  return iRet;
+}
+
 Bool VideoSubWindow::play()
 {
   if( m_pCurrStream && m_pCurrStream->getFrameNum() > 1 )

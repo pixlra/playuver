@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -26,15 +26,15 @@
 // TODO:
 //      - Optimizar paintEvent. Parece haver codigo redundante  !!
 
-#include "config.h"
 #include "HistogramWidget.h"
-#include <QtDebug>
-#include <QThread>
-#include <QEvent>
+
 #include <QCoreApplication>
-#include <QTimer>
-#include <QPainter>
+#include <QEvent>
 #include <QMouseEvent>
+#include <QPainter>
+#include <QThread>
+#include <QTimer>
+#include <QtDebug>
 #include <cmath>
 
 class HistogramWorker : public QThread
@@ -84,7 +84,8 @@ public:
   class EventData : public QEvent
   {
   public:
-    EventData() : QEvent( QEvent::User )
+    EventData()
+        : QEvent( QEvent::User )
     {
       starting = false;
       success = false;
@@ -172,7 +173,8 @@ public:
 ////////////////////////////////////////////////////////////////////////////////
 
 // Constructor without image data
-HistogramWidget::HistogramWidget( Int width, Int height, QWidget* parent ) : QWidget( parent )
+HistogramWidget::HistogramWidget( Int width, Int height, QWidget* parent )
+    : QWidget( parent )
 {
   setAttribute( Qt::WA_DeleteOnClose );
 
@@ -440,8 +442,8 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
   // or loading, but no message shall be drawn:
   // Drawing grayed frame.
   if( !isEnabled() || d->clearFlag == HistogramWidgetPrivate::HistogramNone ||
-      ( !d->blinkComputation &&
-        ( d->clearFlag == HistogramWidgetPrivate::HistogramStarted || d->clearFlag == HistogramWidgetPrivate::HistogramDataLoading ) ) )
+      ( !d->blinkComputation && ( d->clearFlag == HistogramWidgetPrivate::HistogramStarted ||
+                                  d->clearFlag == HistogramWidgetPrivate::HistogramDataLoading ) ) )
   {
     QPainter p1( this );
 
@@ -453,8 +455,8 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
   }
   // Image data is loading or histogram is being computed:
   // Draw message.
-  else if( d->blinkComputation &&
-           ( d->clearFlag == HistogramWidgetPrivate::HistogramStarted || d->clearFlag == HistogramWidgetPrivate::HistogramDataLoading ) )
+  else if( d->blinkComputation && ( d->clearFlag == HistogramWidgetPrivate::HistogramStarted ||
+                                    d->clearFlag == HistogramWidgetPrivate::HistogramDataLoading ) )
   {
     QPainter p1( this );
 
@@ -561,7 +563,8 @@ Void HistogramWidget::paintEvent( QPaintEvent* )
 
   // Drawing selection or all histogram values.
 
-  for( x = 0; x < wWidth; x++ ) {
+  for( x = 0; x < wWidth; x++ )
+  {
     double value = 0.0;
     double value_r = 0.0, value_g = 0.0, value_b = 0.0;  // For all channels.
     int i, j;

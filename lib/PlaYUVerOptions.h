@@ -39,10 +39,10 @@
 #ifndef __PROGRAMOPTIONS_H__
 #define __PROGRAMOPTIONS_H__
 
+#include "PlaYUVerDefs.h"
+
 #include <list>
 #include <map>
-
-#include "PlaYUVerDefs.h"
 
 /** OptionBase: Virtual base class for storing information relating to a
  * specific option This base class describes common elements.
@@ -51,7 +51,8 @@
 class OptionBase
 {
 public:
-  OptionBase( const String& name, const String& desc ) : arg_count( 0 ), opt_string( name ), opt_desc( desc ) {}
+  OptionBase( const String& name, const String& desc )
+      : arg_count( 0 ), opt_string( name ), opt_desc( desc ) {}
   virtual ~OptionBase() {}
   /* parse argument arg, to obtain a value for the option */
   virtual void parse( const String& arg ) = 0;
@@ -68,7 +69,8 @@ class PlaYUVerOptions
 public:
   struct Option
   {
-    Option() : opt( 0 ) {}
+    Option()
+        : opt( 0 ) {}
     ~Option()
     {
       if( opt )

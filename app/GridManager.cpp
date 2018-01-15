@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
  *           Based on the work of Ricardo N. Rocha Sardo in SCode project
  */
 
+#include "GridManager.h"
+
 #include <QBitmap>
 #include <QColor>
 #include <QDebug>
@@ -31,8 +33,6 @@
 #include <QPoint>
 #include <QRect>
 #include <QRectF>
-
-#include "GridManager.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 //                              Constructor
@@ -70,11 +70,13 @@ void GridManager::drawGrid( QPixmap& image, const QRect& area, QPainter* painter
   {
     painter->setPen( mainPen );
     // Draw crosses or dots on intersections
-    for( int x = offsetx; x <= area.right(); x += hSpacing ) {
+    for( int x = offsetx; x <= area.right(); x += hSpacing )
+    {
       if( x >= imageWidth )
         break;
 
-      for( int y = offsety; y <= area.bottom(); y += vSpacing ) {
+      for( int y = offsety; y <= area.bottom(); y += vSpacing )
+      {
         if( y >= imageHeight )
           break;
 
@@ -102,7 +104,8 @@ void GridManager::drawGrid( QPixmap& image, const QRect& area, QPainter* painter
     painter->setPen( mainPen );
 
     // Draw vertical line
-    for( int x = offsetx; x <= area.right(); x += hSpacing ) {
+    for( int x = offsetx; x <= area.right(); x += hSpacing )
+    {
       if( x >= imageWidth )
         break;
 
@@ -115,7 +118,8 @@ void GridManager::drawGrid( QPixmap& image, const QRect& area, QPainter* painter
       }
     }
     // Draw horizontal line
-    for( int y = offsety; y <= area.bottom(); y += vSpacing ) {
+    for( int y = offsety; y <= area.bottom(); y += vSpacing )
+    {
       if( y >= imageHeight )
         break;
 
@@ -234,8 +238,10 @@ bool GridManager::isNear( int x, int y )
   int gy;
 
   // In the worse case we have 4 points of the gride surrounding
-  for( int j = 0; j < 2; j++ ) {
-    for( int i = 0; i < 2; i++ ) {
+  for( int j = 0; j < 2; j++ )
+  {
+    for( int i = 0; i < 2; i++ )
+    {
       gx = (int)( multiPosX * hSpacing + i * hSpacing );
       gy = (int)( multiPosY * vSpacing + j * vSpacing );
       gridPoint.setX( gx );

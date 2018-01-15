@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
  */
 
 #include "PlotSubWindow.h"
+
 #include "qcustomplot.h"
 //#include "external/qcustomplot/qcustomplot.h"
 
@@ -45,7 +46,8 @@ Void PlotSubWindow::definePlotColors()
   m_arrayColorList.append( Qt::darkYellow );
 }
 
-PlotSubWindow::PlotSubWindow( const QString& windowTitle, QWidget* parent ) : SubWindowAbstract( parent, SubWindowAbstract::PLOT_SUBWINDOW )
+PlotSubWindow::PlotSubWindow( const QString& windowTitle, QWidget* parent )
+    : SubWindowAbstract( parent, SubWindowAbstract::PLOT_SUBWINDOW )
 {
   definePlotColors();
   m_iNumberPlots = 0;

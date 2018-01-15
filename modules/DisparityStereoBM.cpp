@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -47,7 +47,8 @@ DisparityStereoBM::DisparityStereoBM()
 Bool DisparityStereoBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
-  m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+  m_pcDisparityFrame =
+      new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
   if( ( m_uiBlockSize % 2 ) == 0 )
   {
     m_uiBlockSize++;

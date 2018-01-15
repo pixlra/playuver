@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
  */
 
 #include "StreamHandlerLibav.h"
+
 #include "LibMemory.h"
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerFramePixelFormats.h"
@@ -80,10 +81,12 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   //		sprintf( aux_string, "%dx%d", m_uiWidth, m_uiHeight );
   //		av_dict_set( &format_opts, "video_size", aux_string, 0 );
   //	}
-  //	Int ffmpeg_pel_format = g_PlaYUVerPixFmtDescriptorsList[m_iPixelFormat].ffmpegPelFormat;
-  //	if( ffmpeg_pel_format >= 0 )
+  //	Int ffmpeg_pel_format =
+  // g_PlaYUVerPixFmtDescriptorsList[m_iPixelFormat].ffmpegPelFormat; 	if(
+  // ffmpeg_pel_format >= 0 )
   //	{
-  //		av_dict_set( &format_opts, "pix_fmt", av_get_pix_fmt_name( AVPixelFormat( ffmpeg_pel_format ) ), 0 );
+  //		av_dict_set( &format_opts, "pix_fmt", av_get_pix_fmt_name(
+  // AVPixelFormat( ffmpeg_pel_format ) ), 0 );
   //	}
 
   // Register all components of FFmpeg
@@ -197,7 +200,8 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   }
 
   m_iPixelFormat = PlaYUVerFrame::NO_FMT;
-  for( Int i = 0; i < PlaYUVerFrame::NUMBER_PEL_FORMATS; i++ ) {
+  for( Int i = 0; i < PlaYUVerFrame::NUMBER_PEL_FORMATS; i++ )
+  {
     if( g_PlaYUVerPixFmtDescriptorsList[i].ffmpegPelFormat == auxPixFmt )
     {
       m_iPixelFormat = i;
@@ -306,7 +310,8 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
   Bool bReadPkt = false;
   Int iRet = 0;
 
-  while( !bGotFrame && !bErrors ) {
+  while( !bGotFrame && !bErrors )
+  {
 #ifdef FF_SEND_RECEIVE_API
     if( ( iRet = avcodec_receive_frame( m_cCodedCtx, m_cFrame ) ) < 0 )
     {
@@ -352,8 +357,8 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
 
   if( bGotFrame )
   {
-    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize, AVPixelFormat( m_ffPixFmt ), m_uiWidth,
-                             m_uiHeight, 1 );
+    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize,
+                             AVPixelFormat( m_ffPixFmt ), m_uiWidth, m_uiHeight, 1 );
 
     pcFrame->frameFromBuffer( m_pStreamBuffer, m_iEndianness );
     m_uiCurrFrameFileIdx++;

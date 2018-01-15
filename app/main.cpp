@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -22,11 +22,11 @@
  * \brief    main file
  */
 
-#include "config.h"
 #include "ConfigureFormatDialog.h"
 #include "PlaYUVerApp.h"
 #include "PlaYUVerAppDefs.h"
 #include "VideoSubWindow.h"
+#include "config.h"
 #ifdef USE_QTDBUS
 #include "PlaYUVerAppAdaptor.h"
 #endif
@@ -60,7 +60,8 @@ int main( int argc, char* argv[] )
   {
     Bool force_new = false;
     QStringList filenameList;
-    for( Int i = 1; i < argc; i++ ) {
+    for( Int i = 1; i < argc; i++ )
+    {
       filenameList.append( QFileInfo( QString( argv[i] ) ).absoluteFilePath() );
     }
     if( filenameList.isEmpty() )
@@ -80,8 +81,9 @@ int main( int argc, char* argv[] )
         qInfo() << "Found running instance... Re-using";
 
         // open given session
-        QDBusMessage m = QDBusMessage::createMethodCall( PLAYUVER_DBUS_SESSION_NAME, QStringLiteral( PLAYUVER_DBUS_PATH ),
-                                                         QStringLiteral( PLAYUVER_DBUS_SESSION_NAME ), QStringLiteral( "activate" ) );
+        QDBusMessage m = QDBusMessage::createMethodCall(
+            PLAYUVER_DBUS_SESSION_NAME, QStringLiteral( PLAYUVER_DBUS_PATH ),
+            QStringLiteral( PLAYUVER_DBUS_SESSION_NAME ), QStringLiteral( "activate" ) );
 
         QDBusConnection::sessionBus().call( m );
 
@@ -93,8 +95,9 @@ int main( int argc, char* argv[] )
         // open given files...
         foreach( const QString& file, filenameList )
         {
-          QDBusMessage m = QDBusMessage::createMethodCall( PLAYUVER_DBUS_SESSION_NAME, QStringLiteral( PLAYUVER_DBUS_PATH ),
-                                                           QStringLiteral( PLAYUVER_DBUS_SESSION_NAME ), QStringLiteral( "loadFile" ) );
+          QDBusMessage m = QDBusMessage::createMethodCall(
+              PLAYUVER_DBUS_SESSION_NAME, QStringLiteral( PLAYUVER_DBUS_PATH ),
+              QStringLiteral( PLAYUVER_DBUS_SESSION_NAME ), QStringLiteral( "loadFile" ) );
 
           QList<QVariant> dbusargs;
           dbusargs.append( file );

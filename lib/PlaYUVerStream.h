@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -80,8 +80,10 @@ public:
   String getFormatName();
   String getCodecName();
 
-  Bool open( String filename, String resolution, String input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput );
-  Bool open( String filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate, Bool bInput );
+  Bool open( String filename, String resolution, String input_format, UInt bitsPel, Int endianness, UInt frame_rate,
+             Bool bInput );
+  Bool open( String filename, UInt width, UInt height, Int input_format, UInt bitsPel, Int endianness, UInt frame_rate,
+             Bool bInput );
   Bool reload();
   Void close();
 
@@ -92,7 +94,8 @@ public:
   Int getEndianess() const;
   Int getCurrFrameNum();
   Double getFrameRate();
-  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness, UInt& rFrameRate );
+  Void getFormat( UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPel, Int& rEndianness,
+                  UInt& rFrameRate );
 
   Void loadAll();
 

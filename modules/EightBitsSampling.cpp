@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -43,7 +43,8 @@ Bool EightBitsSampling::create( std::vector<PlaYUVerFrame*> apcFrameList )
   if( apcFrameList[0]->getBitsPel() > 8 )
   {
     m_pcSubSampledFrame = NULL;
-    m_pcSubSampledFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), apcFrameList[0]->getPelFormat(), 8 );
+    m_pcSubSampledFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
+                                             apcFrameList[0]->getPelFormat(), 8 );
     return true;
   }
   return false;
@@ -57,12 +58,14 @@ PlaYUVerFrame* EightBitsSampling::process( std::vector<PlaYUVerFrame*> apcFrameL
   Pel* pPelSubSampled = m_pcSubSampledFrame->getPelBufferYUV()[0][0];
   Pel pelValue;
 
-  for( UInt i = 0; i < pcFrame->getHeight() * pcFrame->getWidth(); i++ ) {
+  for( UInt i = 0; i < pcFrame->getHeight() * pcFrame->getWidth(); i++ )
+  {
     pelValue = *pPelInput++;
     pelValue = pelValue >> uiShiftBits;
     *pPelSubSampled++ = pelValue;
   }
-  for( UInt i = 0; i < pcFrame->getChromaLength() * 2; i++ ) {
+  for( UInt i = 0; i < pcFrame->getChromaLength() * 2; i++ )
+  {
     pelValue = *pPelInput++;
     pelValue = pelValue >> uiShiftBits;
     *pPelSubSampled++ = pelValue;

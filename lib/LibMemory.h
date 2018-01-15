@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -95,7 +95,8 @@ Int getMem2D( T*** array2D, Int dim0, Int dim1 )
   if( ( *( *array2D ) = (T*)xCallocMem( dim0 * dim1, sizeof( T ) ) ) == NULL )
     printf( "get_mem2Dint: array2D" );
 
-  for( i = 1; i < dim0; i++ ) ( *array2D )[i] = ( *array2D )[i - 1] + dim1;
+  for( i = 1; i < dim0; i++ )
+    ( *array2D )[i] = ( *array2D )[i - 1] + dim1;
 
   return dim0 * ( sizeof( T* ) + dim1 * sizeof( T ) );
 }
@@ -110,7 +111,8 @@ Int getMem3D( T**** array3D, Int dim0, Int dim1, Int dim2 )
 
   mem_size += getMem2D( *array3D, dim0 * dim1, dim2 );
 
-  for( i = 1; i < dim0; i++ ) ( *array3D )[i] = ( *array3D )[i - 1] + dim1;
+  for( i = 1; i < dim0; i++ )
+    ( *array3D )[i] = ( *array3D )[i - 1] + dim1;
 
   return mem_size;
 }

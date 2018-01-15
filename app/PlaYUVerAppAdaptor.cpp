@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -23,13 +23,17 @@
  */
 
 #include "PlaYUVerAppAdaptor.h"
+
 #include "PlaYUVerApp.h"
+
 #include <QDBusAbstractAdaptor>
 
-PlaYUVerAppAdaptor::PlaYUVerAppAdaptor( PlaYUVerApp* app ) : QDBusAbstractAdaptor( app ), m_app( app )
+PlaYUVerAppAdaptor::PlaYUVerAppAdaptor( PlaYUVerApp* app )
+    : QDBusAbstractAdaptor( app ), m_app( app )
 {
   // application dbus interface
-  Bool isRegistered = QDBusConnection::sessionBus().registerObject( QStringLiteral( PLAYUVER_DBUS_PATH ), this, QDBusConnection::ExportAllSlots );
+  Bool isRegistered = QDBusConnection::sessionBus().registerObject( QStringLiteral( PLAYUVER_DBUS_PATH ), this,
+                                                                    QDBusConnection::ExportAllSlots );
 
   Q_ASSERT( isRegistered == true );
 }

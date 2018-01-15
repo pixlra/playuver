@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -99,8 +99,9 @@ public:
   PlaYUVerFrame( const PlaYUVerFrame* other );
 
   /**
-   * Creates and new frame with the configuration of an existing one and copy its contents.
-   * This function only copies a specific region from the existing frame
+   * Creates and new frame with the configuration of an existing one and copy
+   * its contents. This function only copies a specific region from the existing
+   * frame
    *
    * @param other existing frame to copy from
    * @param posX position X to crop from

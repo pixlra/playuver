@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -142,8 +142,12 @@ struct PlaYUVerFailure : public std::exception
 {
   String m_class_name;
   String m_error_msg;
-  PlaYUVerFailure( String error_msg ) throw() : m_error_msg( error_msg ) {}
-  PlaYUVerFailure( String class_name, String error_msg ) throw() : m_class_name( class_name ), m_error_msg( error_msg ) {}
+  PlaYUVerFailure( String error_msg ) throw()
+      : m_error_msg( error_msg ) {}
+  PlaYUVerFailure( String class_name, String error_msg ) throw()
+      : m_class_name( class_name ), m_error_msg( error_msg )
+  {
+  }
   ~PlaYUVerFailure() throw() {}
   const Char* what() const throw()
   {

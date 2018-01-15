@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -23,10 +23,10 @@
  *           Based on the work of Ricardo N. Rocha Sardo in SCode project
  */
 
-#include <cmath>
+#include "ViewArea.h"
 
 #include "GridManager.h"
-#include "ViewArea.h"
+
 #include <QColor>
 #include <QCoreApplication>
 #include <QDebug>
@@ -39,11 +39,14 @@
 #include <QString>
 #include <QWidget>
 
+#include <cmath>
+
 static const QColor selectionColor = Qt::cyan;
 static const QColor imageMaskColor = Qt::green;
 static const QColor eraserColor = Qt::red;
 
-ViewArea::ViewArea( QWidget* parent ) : QWidget( parent )
+ViewArea::ViewArea( QWidget* parent )
+    : QWidget( parent )
 {
   setMouseTracking( true );
 
@@ -72,7 +75,8 @@ Void ViewArea::setImage( PlaYUVerFrame* pcFrame )
   m_pcCurrFrame = pcFrame;
   m_uiPixelHalfScale = 1 << ( m_pcCurrFrame->getBitsPel() - 1 );
   m_pcCurrFrame->fillRGBBuffer();
-  QImage qimg = QImage( m_pcCurrFrame->getRGBBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(), QImage::Format_RGB32 );
+  QImage qimg = QImage( m_pcCurrFrame->getRGBBuffer(), m_pcCurrFrame->getWidth(), m_pcCurrFrame->getHeight(),
+                        QImage::Format_RGB32 );
   setImage( QPixmap::fromImage( qimg ) );
 }
 
@@ -492,8 +496,10 @@ Void ViewArea::paintEvent( QPaintEvent* event )
     QRect vr = windowToView( winRect );
     vr &= QRect( 0, 0, imageWidth, imageHeight );
 
-    for( Int i = vr.x(); i <= vr.right(); i++ ) {
-      for( Int j = vr.y(); j <= vr.bottom(); j++ ) {
+    for( Int i = vr.x(); i <= vr.right(); i++ )
+    {
+      for( Int j = vr.y(); j <= vr.bottom(); j++ )
+      {
         QPoint pixelTopLeft( i, j );
 
         QRect pixelRect( viewToWindow( pixelTopLeft ), QSize( m_dZoomFactor, m_dZoomFactor ) );
@@ -510,7 +516,8 @@ Void ViewArea::paintEvent( QPaintEvent* event )
             paInter.setPen( QColor( Qt::black ) );
 
           paInter.drawText( pixelRect, Qt::AlignCenter,
-                            "Y: " + QString::number( sPixelValue.Y() ) + "\n" + "U: " + QString::number( sPixelValue.Cb() ) + "\n" +
+                            "Y: " + QString::number( sPixelValue.Y() ) + "\n" +
+                                "U: " + QString::number( sPixelValue.Cb() ) + "\n" +
                                 "V: " + QString::number( sPixelValue.Cr() ) );
         }
         if( frFormat == PlaYUVerPixel::COLOR_GRAY )
@@ -535,7 +542,8 @@ Void ViewArea::paintEvent( QPaintEvent* event )
             paInter.setPen( QColor( Qt::black ) );
 
           paInter.drawText( pixelRect, Qt::AlignCenter,
-                            "R: " + QString::number( sPixelValue.R() ) + "\n" + "G: " + QString::number( sPixelValue.G() ) + "\n" +
+                            "R: " + QString::number( sPixelValue.R() ) + "\n" +
+                                "G: " + QString::number( sPixelValue.G() ) + "\n" +
                                 "B: " + QString::number( sPixelValue.B() ) );
         }
       }
@@ -546,14 +554,16 @@ Void ViewArea::paintEvent( QPaintEvent* event )
     paInter.setPen( mainPen );
 
     // Draw vertical line
-    for( Int x = vr.x(); x <= ( vr.right() + 1 ); x++ ) {
+    for( Int x = vr.x(); x <= ( vr.right() + 1 ); x++ )
+    {
       // Always draw the full line otherwise the line stippling
       // varies with the location of view area and we get glitchy
       // patterns.
       paInter.drawLine( viewToWindow( QPoint( x, 0 ) ), viewToWindow( QPoint( x, imageHeight ) ) );
     }
     // Draw horizontal line
-    for( Int y = vr.y(); y <= ( vr.bottom() + 1 ); y++ ) {
+    for( Int y = vr.y(); y <= ( vr.bottom() + 1 ); y++ )
+    {
       paInter.drawLine( viewToWindow( QPoint( 0, y ) ), viewToWindow( QPoint( imageWidth, y ) ) );
     }
   }

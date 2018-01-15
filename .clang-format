@@ -1,6 +1,7 @@
 ---
+BasedOnStyle:  Google
 Language:        Cpp
-ColumnLimit:     150
+ColumnLimit:     0
 AccessModifierOffset: -2
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: false
@@ -13,30 +14,30 @@ AllowShortBlocksOnASingleLine: true
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: true
+AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: true
 BinPackArguments: true
 BinPackParameters: true
 BraceWrapping:
-  AfterClass:      false
-  AfterControlStatement: false
-  AfterEnum:       false
-  AfterFunction:   false
-  AfterNamespace:  false
-  AfterObjCDeclaration: false
-  AfterStruct:     false
-  AfterUnion:      false
-  BeforeCatch:     false
-  BeforeElse:      false
-  IndentBraces:    false
+  AfterNamespace:             true
+  AfterClass:                 true
+  AfterEnum:                  true
+  AfterFunction:              true
+  AfterStruct:                true
+  AfterUnion:                 true
+  AfterControlStatement:      true
+  AfterObjCDeclaration:       true
+  BeforeCatch:                true
+  BeforeElse:                 true
+  IndentBraces:               false
+BreakBeforeBraces: Custom
 BreakBeforeBinaryOperators: None
-#BreakBeforeBraces: Attach
-BreakBeforeBraces: Allman
 BreakBeforeInheritanceComma: false
 BreakBeforeTernaryOperators: false
-BreakConstructorInitializers: BeforeComma
+BreakConstructorInitializersBeforeComma: true
+BreakConstructorInitializers: BeforeColon
 BreakAfterJavaFieldAnnotations: false
 BreakStringLiterals: true
 CommentPragmas:  '^ IWYU pragma:'
@@ -86,6 +87,7 @@ SpacesBeforeTrailingComments: 2
 SpacesInAngles:  false
 SpacesInContainerLiterals: true
 SpacesInCStyleCastParentheses: false
+SortIncludes:    true
 SpacesInParentheses: true
 SpacesInSquareBrackets: false
 Standard:        Auto

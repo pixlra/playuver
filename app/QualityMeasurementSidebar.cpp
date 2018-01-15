@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -23,8 +23,10 @@
  */
 
 #include "QualityMeasurementSidebar.h"
+
 #include "PlaYUVerSubWindowHandle.h"
 #include "VideoSubWindow.h"
+
 #include <QtGui>
 
 QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerSubWindowHandle* windowManager )
@@ -42,7 +44,8 @@ QualityMeasurementSidebar::QualityMeasurementSidebar( QWidget* parent, PlaYUVerS
   RecLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
 
   m_comboBoxMetric = new QComboBox;
-  for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ ) {
+  for( UInt i = 0; i < PlaYUVerFrame::supportedQualityMetricsList().size(); i++ )
+  {
     m_comboBoxMetric->insertItem( i, PlaYUVerFrame::supportedQualityMetricsList()[i].c_str() );
   }
   m_comboBoxMetric->setSizeAdjustPolicy( QComboBox::AdjustToContents );
@@ -126,7 +129,8 @@ Void QualityMeasurementSidebar::updateSubWindowList()
 
   VideoSubWindow* pcVideoSubWindow;
   QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
-  for( Int i = 0; i < subWindowList.size(); i++ ) {
+  for( Int i = 0; i < subWindowList.size(); i++ )
+  {
     pcVideoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
     if( m_pcCurrentVideoSubWindow == pcVideoSubWindow )
     {
@@ -186,11 +190,13 @@ Void QualityMeasurementSidebar::updateSidebarData()
       Double quality;
       QString value;
       UInt component = 0;
-      for( ; component < currFrame->getNumberChannels(); component++ ) {
+      for( ; component < currFrame->getNumberChannels(); component++ )
+      {
         quality = currFrame->getQuality( m_comboBoxMetric->currentIndex(), refFrame, component );
         m_ppcLabelQualityValue[component]->setText( value.setNum( quality, 'f', 4 ) );
       }
-      for( ; component < 3; component++ ) {
+      for( ; component < 3; component++ )
+      {
         quality = currFrame->getQuality( m_comboBoxMetric->currentIndex(), refFrame, component );
         m_ppcLabelQualityValue[component]->setText( zeroValue );
       }
@@ -201,7 +207,8 @@ Void QualityMeasurementSidebar::updateSidebarData()
       m_comboBoxRef->setCurrentIndex( -1 );
     }
   }
-  for( Int component = 0; component < 3; component++ ) {
+  for( Int component = 0; component < 3; component++ )
+  {
     m_ppcLabelQualityValue[component]->setText( zeroValue );
   }
 }

@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -23,14 +23,17 @@
  */
 
 #include "ModuleHandleDock.h"
+
 #include "ModulesHandle.h"
 #include "PlaYUVerAppModuleIf.h"
-#include <QtGui>
+
+#include <QGridLayout>
 #include <QLabel>
 #include <QString>
-#include <QGridLayout>
+#include <QtGui>
 
-ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf ) : QWidget( parent ), m_pcCurrModuleIf( moduleIf )
+ModuleHandleDock::ModuleHandleDock( QWidget* parent, PlaYUVerAppModuleIf* moduleIf )
+    : QWidget( parent ), m_pcCurrModuleIf( moduleIf )
 {
   // ----------------- Dock definition -----------------
 

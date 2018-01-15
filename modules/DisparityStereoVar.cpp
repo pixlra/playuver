@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -49,14 +49,15 @@ DisparityStereoVar::DisparityStereoVar()
   m_cStereoVar.lambda = 0.03f;
   m_cStereoVar.penalization = m_cStereoVar.PENALIZATION_TICHONOV;  // ignored with USE_AUTO_PARAMS
   m_cStereoVar.cycle = m_cStereoVar.CYCLE_V;                       // ignored with USE_AUTO_PARAMS
-  m_cStereoVar.flags =
-      m_cStereoVar.USE_SMART_ID | m_cStereoVar.USE_AUTO_PARAMS | m_cStereoVar.USE_INITIAL_DISPARITY | m_cStereoVar.USE_MEDIAN_FILTERING;
+  m_cStereoVar.flags = m_cStereoVar.USE_SMART_ID | m_cStereoVar.USE_AUTO_PARAMS | m_cStereoVar.USE_INITIAL_DISPARITY |
+                       m_cStereoVar.USE_MEDIAN_FILTERING;
 }
 
 Bool DisparityStereoVar::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
-  m_pcDisparityFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+  m_pcDisparityFrame =
+      new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
   m_cStereoVar.minDisp = -( ( ( apcFrameList[0]->getWidth() / 8 ) + 15 ) & -16 );
   return true;
 }

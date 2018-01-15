@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -23,10 +23,11 @@
  */
 
 #include "PlaYUVerAppModuleIf.h"
+
 #include "VideoSubWindow.h"
-#include "VideoSubWindow.h"
-#include <QApplication>
+
 #include <QAction>
+#include <QApplication>
 #include <QDockWidget>
 
 PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaYUVerModuleIf* module )
@@ -41,7 +42,8 @@ PlaYUVerAppModuleIf::PlaYUVerAppModuleIf( QObject* parent, QAction* action, PlaY
     , m_dMeasurementResult( 0 )
 {
   setParent( parent );
-  for( Int i = 0; i < MODULE_REQUIRES_MAX_NUM_FRAMES; i++ ) {
+  for( Int i = 0; i < MODULE_REQUIRES_MAX_NUM_FRAMES; i++ )
+  {
     m_pcSubWindow[i] = NULL;
   }
 }
@@ -116,7 +118,8 @@ Void PlaYUVerAppModuleIf::run()
   m_bIsRunning = true;
   m_bSuccess = false;
   std::vector<PlaYUVerFrame*> apcFrameList;
-  for( UInt i = 0; i < m_pcModule->m_uiNumberOfFrames; i++ ) {
+  for( UInt i = 0; i < m_pcModule->m_uiNumberOfFrames; i++ )
+  {
     apcFrameList.push_back( m_pcSubWindow[i]->getCurrFrame() );
   }
 
@@ -185,7 +188,8 @@ Void PlaYUVerAppModuleIf::destroy()
   if( m_bIsRunning )
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    while( m_bIsRunning ) {
+    while( m_bIsRunning )
+    {
     }
     QApplication::restoreOverrideCursor();
   }
@@ -203,7 +207,8 @@ Void PlaYUVerAppModuleIf::destroy()
     m_pcDisplaySubWindow->closeSubWindow();
   m_pcDisplaySubWindow = NULL;
 
-  for( Int i = 0; i < MODULE_REQUIRES_MAX_NUM_FRAMES; i++ ) {
+  for( Int i = 0; i < MODULE_REQUIRES_MAX_NUM_FRAMES; i++ )
+  {
     if( m_pcSubWindow[i] )
     {
       m_pcSubWindow[i]->disableModule( this );

@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -24,15 +24,15 @@
 
 #include "ModulesHandleOptDialog.h"
 
+#include "lib/PlaYUVerOptions.h"
+
 #include <QCheckBox>
+#include <QDialogButtonBox>
 #include <QLabel>
+#include <QLineEdit>
 #include <QVBoxLayout>
 #include <QVector>
 #include <QWidget>
-#include <QLineEdit>
-#include <QDialogButtonBox>
-
-#include "lib/PlaYUVerOptions.h"
 
 class QLineEdit;
 
@@ -90,7 +90,8 @@ ModulesHandleOptDialog::ModulesHandleOptDialog( QWidget* parent, PlaYUVerAppModu
 
   QVBoxLayout* optionsLayout = new QVBoxLayout;
   OpionConfiguration* pcOption;
-  for( PlaYUVerOptions::OptionsList::const_iterator it = moduleOptions.begin(); it != moduleOptions.end(); ++it ) {
+  for( PlaYUVerOptions::OptionsList::const_iterator it = moduleOptions.begin(); it != moduleOptions.end(); ++it )
+  {
     pcOption = new OpionConfiguration( ( *it )->opt );
     m_apcOptionList.append( pcOption );
     optionsLayout->addWidget( pcOption );
@@ -123,7 +124,8 @@ Int ModulesHandleOptDialog::runConfiguration()
   String optionString;
   QString valueString( "" );
 
-  for( Int i = 0; i < m_apcOptionList.size(); i++ ) {
+  for( Int i = 0; i < m_apcOptionList.size(); i++ )
+  {
     valueString = m_apcOptionList.at( i )->getValue();
     if( !valueString.isEmpty() )
     {

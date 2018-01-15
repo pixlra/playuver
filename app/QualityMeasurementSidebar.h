@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@
 #ifndef __QUALITYMEASUREMENTSIDEBAR_H__
 #define __QUALITYMEASUREMENTSIDEBAR_H__
 
+#include "HistogramWidget.h"
 #include "PlaYUVerAppDefs.h"
 #include "config.h"
-#include <QtWidgets>
-#include "HistogramWidget.h"
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerStream.h"
+
+#include <QtWidgets>
 
 class PlaYUVerSubWindowHandle;
 class VideoSubWindow;

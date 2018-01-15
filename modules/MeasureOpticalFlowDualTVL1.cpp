@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -54,8 +54,9 @@ Bool MeasureOpticalFlowDualTVL1::create( std::vector<PlaYUVerFrame*> apcFrameLis
   _BASIC_MODULE_API_2_CHECK_
 
   for( UInt i = 1; i < apcFrameList.size(); i++ )
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0],
-                                       PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE |
+                                                            PlaYUVerFrame::MATCH_RESOLUTION |
+                                                            PlaYUVerFrame::MATCH_BITS ) )
       return false;
 
   m_iStep = 16;
@@ -75,12 +76,16 @@ Void MeasureOpticalFlowDualTVL1::drawFlow()
   Mat cvMatAfter;
   m_pcFrameAfter->toMat( cvMatAfter, true );
   Scalar vectorColor( 255, 0, 0, 0 );
-  for( int y = m_iStep / 2; y < m_cvFlow.rows; y += m_iStep ) {
-    for( int x = m_iStep / 2; x < m_cvFlow.cols; x += m_iStep ) {
+  for( int y = m_iStep / 2; y < m_cvFlow.rows; y += m_iStep )
+  {
+    for( int x = m_iStep / 2; x < m_cvFlow.cols; x += m_iStep )
+    {
       Point2f u( 0, 0 );
       Double count = 0;
-      for( int i = ( -m_iStep / 2 ); i < ( m_iStep / 2 ); i++ ) {
-        for( int j = ( -m_iStep / 2 ); j < ( m_iStep / 2 ); j++ ) {
+      for( int i = ( -m_iStep / 2 ); i < ( m_iStep / 2 ); i++ )
+      {
+        for( int j = ( -m_iStep / 2 ); j < ( m_iStep / 2 ); j++ )
+        {
           if( isFlowCorrect( u ) )
           {
             u = u + m_cvFlow( y, x );
@@ -101,12 +106,15 @@ Void MeasureOpticalFlowDualTVL1::drawFlow()
 
 Void MeasureOpticalFlowDualTVL1::compensateFlow()
 {
-  for( UInt c = 0; c < m_pcOutputFrame->getNumberChannels(); c++ ) {
+  for( UInt c = 0; c < m_pcOutputFrame->getNumberChannels(); c++ )
+  {
     Pel** pPelPrev = m_pcFramePrev->getPelBufferYUV()[c];
     Pel* pPelOut = m_pcOutputFrame->getPelBufferYUV()[c][0];
 
-    for( UInt y = 0; y < m_pcOutputFrame->getHeight( c ); y++ ) {
-      for( UInt x = 0; x < m_pcOutputFrame->getWidth( c ); x++ ) {
+    for( UInt y = 0; y < m_pcOutputFrame->getHeight( c ); y++ )
+    {
+      for( UInt x = 0; x < m_pcOutputFrame->getWidth( c ); x++ )
+      {
         Point2f u = m_cvFlow( y, x );
         Point p( x + u.x, y + u.y );
         *pPelOut = pPelPrev[p.y][p.x];

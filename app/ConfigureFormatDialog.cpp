@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -22,6 +22,10 @@
  * \brief    Dialog box to set the sequence resolution
  */
 
+#include "ConfigureFormatDialog.h"
+
+#include "lib/PlaYUVerFrame.h"
+
 #include <QComboBox>
 #include <QDebug>
 #include <QDialogButtonBox>
@@ -35,17 +39,14 @@
 #include <QString>
 #include <QWidget>
 
-#include "lib/PlaYUVerFrame.h"
-
-#include "ConfigureFormatDialog.h"
-
 #define MAX_SUPPORTED_RESOLUTION 99999
 
 QDataStream& operator<<( QDataStream& out, const PlaYUVerStdResolutionVector& array )
 {
   PlaYUVerStdResolution d;
   out << array.size();
-  for( Int i = 0; i < array.size(); i++ ) {
+  for( Int i = 0; i < array.size(); i++ )
+  {
     d = array.at( i );
     out << QString::fromStdString( d.shortName ) << d.uiWidth << d.uiHeight;
   }
@@ -58,7 +59,8 @@ QDataStream& operator>>( QDataStream& in, PlaYUVerStdResolutionVector& array )
   QString auxName;
   Int array_size;
   in >> array_size;
-  for( Int i = 0; i < array_size; i++ ) {
+  for( Int i = 0; i < array_size; i++ )
+  {
     in >> auxName;
     d.shortName = auxName.toStdString();
     in >> d.uiWidth;
@@ -71,7 +73,8 @@ QDataStream& operator>>( QDataStream& in, PlaYUVerStdResolutionVector& array )
 class AddCustomFormat : public QDialog
 {
 public:
-  AddCustomFormat( QWidget* parent = NULL ) : QDialog( parent, Qt::Dialog | Qt::WindowTitleHint )
+  AddCustomFormat( QWidget* parent = NULL )
+      : QDialog( parent, Qt::Dialog | Qt::WindowTitleHint )
   {
     setWindowModality( Qt::ApplicationModal );
     setWindowTitle( "Add custom resolution" );
@@ -134,13 +137,15 @@ private:
   QSpinBox* m_spinHeight;
 };
 
-ConfigureFormatDialog::ConfigureFormatDialog( QWidget* parent ) : QDialog( parent )
+ConfigureFormatDialog::ConfigureFormatDialog( QWidget* parent )
+    : QDialog( parent )
 {
   QString Name;
   UInt uiWidth, uiHeight;
 
   readSettings();
-  for( Int i = 0; i < aRCustomFileFormats.size(); i++ ) {
+  for( Int i = 0; i < aRCustomFileFormats.size(); i++ )
+  {
     Name = QString::fromStdString( aRCustomFileFormats[i].shortName );
     uiWidth = aRCustomFileFormats[i].uiWidth;
     uiHeight = aRCustomFileFormats[i].uiHeight;
@@ -149,7 +154,8 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget* parent ) : QDialog( paren
   }
 
   std::vector<PlaYUVerStdResolution> listPlaYUVerStdResolution = PlaYUVerStream::stdResolutionSizes();
-  for( UInt i = 0; i < listPlaYUVerStdResolution.size(); i++ ) {
+  for( UInt i = 0; i < listPlaYUVerStdResolution.size(); i++ )
+  {
     Name = QString::fromStdString( listPlaYUVerStdResolution[i].shortName );
     uiWidth = listPlaYUVerStdResolution[i].uiWidth;
     uiHeight = listPlaYUVerStdResolution[i].uiHeight;
@@ -277,7 +283,8 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget* parent ) : QDialog( paren
   m_comboBoxPixelFormat->setFont( normalFont );
   m_comboBoxPixelFormat->clear();
 
-  for( UInt i = 0; i < PlaYUVerFrame::supportedColorSpacesListNames().size(); i++ ) {
+  for( UInt i = 0; i < PlaYUVerFrame::supportedColorSpacesListNames().size(); i++ )
+  {
     m_comboBoxColorSpace->insertItem( i, PlaYUVerFrame::supportedColorSpacesListNames()[i].c_str() );
   }
   m_comboBoxColorSpace->setCurrentIndex( 1 );
@@ -360,7 +367,8 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget* parent ) : QDialog( paren
   MainLayout->addItem( new QSpacerItem( 10, 5, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
   MainLayout->addWidget( dialogButtonOkCancel );
 
-  connect( m_comboBoxStandardResolution, SIGNAL( currentIndexChanged( int ) ), this, SLOT( slotStandardResolutionSelected( int ) ) );
+  connect( m_comboBoxStandardResolution, SIGNAL( currentIndexChanged( int ) ), this,
+           SLOT( slotStandardResolutionSelected( int ) ) );
   connect( m_spinBoxWidth, SIGNAL( valueChanged( int ) ), this, SLOT( slotResolutionChange() ) );
   connect( m_spinBoxheight, SIGNAL( valueChanged( int ) ), this, SLOT( slotResolutionChange() ) );
   connect( m_comboBoxColorSpace, SIGNAL( currentIndexChanged( int ) ), this, SLOT( slotColorSpaceChange( int ) ) );
@@ -374,8 +382,8 @@ ConfigureFormatDialog::ConfigureFormatDialog( QWidget* parent ) : QDialog( paren
   setFixedSize( MainLayout->sizeHint() );
 }
 
-Int ConfigureFormatDialog::runConfigureFormatDialog( const QString& Filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBits,
-                                                     Int& rEndianess, UInt& rFrameRate )
+Int ConfigureFormatDialog::runConfigureFormatDialog( const QString& Filename, UInt& rWidth, UInt& rHeight,
+                                                     Int& rInputFormat, UInt& rBits, Int& rEndianess, UInt& rFrameRate )
 {
   // Set default values
   // setWindowTitle( "Configure resolution for " + Filename );
@@ -388,8 +396,10 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( const QString& Filename, UI
   if( rInputFormat >= 0 )
   {
     String pelFmtName = PlaYUVerFrame::supportedPixelFormatListNames()[rInputFormat];
-    for( UInt j = 0; j < PlaYUVerFrame::supportedColorSpacesListNames().size(); j++ ) {
-      for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames( j ).size(); i++ ) {
+    for( UInt j = 0; j < PlaYUVerFrame::supportedColorSpacesListNames().size(); j++ )
+    {
+      for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames( j ).size(); i++ )
+      {
         if( pelFmtName == PlaYUVerFrame::supportedPixelFormatListNames( j )[i] )
         {
           colorSpace = j;
@@ -413,7 +423,8 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( const QString& Filename, UI
   }
   m_spinBoxFrameRate->setValue( rFrameRate );
 
-  for( Int i = 0; i < standardResolutionSizes.size() - 1; i++ ) {
+  for( Int i = 0; i < standardResolutionSizes.size() - 1; i++ )
+  {
     if( standardResolutionSizes.at( i ) == QSize( rWidth, rHeight ) )
     {
       m_comboBoxStandardResolution->setCurrentIndex( i );
@@ -432,7 +443,8 @@ Int ConfigureFormatDialog::runConfigureFormatDialog( const QString& Filename, UI
   colorSpace = m_comboBoxColorSpace->currentIndex();
   sampling = m_comboBoxPixelFormat->currentIndex();
   String pelFmtName = PlaYUVerFrame::supportedPixelFormatListNames( colorSpace )[sampling];
-  for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ ) {
+  for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames().size(); i++ )
+  {
     if( pelFmtName == PlaYUVerFrame::supportedPixelFormatListNames()[i] )
     {
       rInputFormat = i;
@@ -482,7 +494,8 @@ void ConfigureFormatDialog::slotResolutionChange()
 {
   m_comboBoxStandardResolution->blockSignals( true );
   Int newIdx = -1;
-  for( Int i = 0; i < standardResolutionSizes.size(); i++ ) {
+  for( Int i = 0; i < standardResolutionSizes.size(); i++ )
+  {
     if( standardResolutionSizes.at( i ) == QSize( m_spinBoxWidth->value(), m_spinBoxheight->value() ) )
     {
       newIdx = i;
@@ -499,7 +512,8 @@ Void ConfigureFormatDialog::slotColorSpaceChange( Int idx )
     return;
 
   m_comboBoxPixelFormat->clear();
-  for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames( idx ).size(); i++ ) {
+  for( UInt i = 0; i < PlaYUVerFrame::supportedPixelFormatListNames( idx ).size(); i++ )
+  {
     m_comboBoxPixelFormat->insertItem( i, PlaYUVerFrame::supportedPixelFormatListNames( idx )[i].c_str() );
   }
   m_comboBoxPixelFormat->setCurrentIndex( 0 );

@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
  */
 
 #include "InterFrameVariance.h"
+
 #include "lib/LibMemory.h"
 
 InterFrameVariance::InterFrameVariance()
@@ -51,11 +52,13 @@ Bool InterFrameVariance::create( std::vector<PlaYUVerFrame*> apcFrameList )
   _BASIC_MODULE_API_2_CHECK_
 
   for( UInt i = 1; i < apcFrameList.size(); i++ )
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0],
-                                       PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE |
+                                                            PlaYUVerFrame::MATCH_RESOLUTION |
+                                                            PlaYUVerFrame::MATCH_BITS ) )
       return false;
 
-  m_pcFrameVariance = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY, 8 );
+  m_pcFrameVariance =
+      new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY, 8 );
   getMem2D( &m_pVariance, apcFrameList[0]->getHeight(), apcFrameList[0]->getWidth() );
 
   return true;
@@ -68,18 +71,21 @@ PlaYUVerFrame* InterFrameVariance::process( std::vector<PlaYUVerFrame*> apcFrame
   Pel** pInput = new Pel*[numFrames];
   Pel* pOutputPelYUV = m_pcFrameVariance->getPelBufferYUV()[0][0];
 
-  for( Int i = 0; i < numFrames; i++ ) {
+  for( Int i = 0; i < numFrames; i++ )
+  {
     pInput[i] = apcFrameList[i]->getPelBufferYUV()[0][0];
   }
 
   Double maxVariance = 0;
   for( UInt y = 0; y < m_pcFrameVariance->getHeight(); y++ )
-    for( UInt x = 0; x < m_pcFrameVariance->getWidth(); x++ ) {
+    for( UInt x = 0; x < m_pcFrameVariance->getWidth(); x++ )
+    {
       Int sum = 0;
       Int v = 0;
       m_pVariance[y][x] = 0;
 
-      for( Int i = 0; i < numFrames; i++ ) {
+      for( Int i = 0; i < numFrames; i++ )
+      {
         v = *pInput[i]++;
         sum += v;
         m_pVariance[y][x] += v * v;
@@ -92,7 +98,8 @@ PlaYUVerFrame* InterFrameVariance::process( std::vector<PlaYUVerFrame*> apcFrame
     }
 
   for( UInt y = 0; y < m_pcFrameVariance->getHeight(); y++ )
-    for( UInt x = 0; x < m_pcFrameVariance->getWidth(); x++ ) {
+    for( UInt x = 0; x < m_pcFrameVariance->getWidth(); x++ )
+    {
       *pOutputPelYUV++ = m_pVariance[y][x] * 255 / maxVariance;
     }
   delete[] pInput;

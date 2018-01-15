@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -66,10 +66,12 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
 
   m_pcProcessedFrame->clear();
 
-  for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ ) {
+  for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ )
+  {
     pPelInput = &( apcFrameList[0]->getPelBufferYUV()[LUMA][yIn][xStartIn] );
     pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[LUMA][y][xStartOut] );
-    for( UInt x = xStartOut; x < xEndOut; x++ ) {
+    for( UInt x = xStartOut; x < xEndOut; x++ )
+    {
       *pPelOut = *pPelInput;
       pPelInput++;
       pPelOut++;
@@ -81,17 +83,22 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
 
   xStartOut = iShiftHorChroma >= 0 ? iShiftHorChroma : 0;
   xStartIn = iShiftHorChroma >= 0 ? 0 : -iShiftHorChroma;
-  xEndOut = iShiftHorChroma >= 0 ? m_pcProcessedFrame->getChromaWidth() : m_pcProcessedFrame->getChromaWidth() + iShiftHorChroma;
+  xEndOut = iShiftHorChroma >= 0 ? m_pcProcessedFrame->getChromaWidth() :
+                                   m_pcProcessedFrame->getChromaWidth() + iShiftHorChroma;
 
   yStartOut = iShiftVerChroma >= 0 ? iShiftVerChroma : 0;
   yStartIn = iShiftVerChroma >= 0 ? 0 : -iShiftVerChroma;
-  yEndOut = iShiftVerChroma >= 0 ? m_pcProcessedFrame->getChromaHeight() : m_pcProcessedFrame->getChromaHeight() + iShiftVerChroma;
+  yEndOut = iShiftVerChroma >= 0 ? m_pcProcessedFrame->getChromaHeight() :
+                                   m_pcProcessedFrame->getChromaHeight() + iShiftVerChroma;
 
-  for( UInt c = 1; c < m_pcProcessedFrame->getNumberChannels(); c++ ) {
-    for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ ) {
+  for( UInt c = 1; c < m_pcProcessedFrame->getNumberChannels(); c++ )
+  {
+    for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ )
+    {
       pPelInput = &( apcFrameList[0]->getPelBufferYUV()[c][yIn][xStartIn] );
       pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[c][y][xStartOut] );
-      for( UInt x = xStartOut; x < xEndOut; x++ ) {
+      for( UInt x = xStartOut; x < xEndOut; x++ )
+      {
         *pPelOut = *pPelInput;
         pPelInput++;
         pPelOut++;

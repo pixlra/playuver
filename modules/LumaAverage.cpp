@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -49,7 +49,8 @@ Double LumaAverage::measure( PlaYUVerFrame* frame )
   Double average = 0;
   Pel* pPel = frame->getPelBufferYUV()[0][0];
   for( UInt y = 0; y < frame->getHeight(); y++ )
-    for( UInt x = 0; x < frame->getWidth(); x++ ) {
+    for( UInt x = 0; x < frame->getWidth(); x++ )
+    {
       average += *pPel;
       pPel++;
     }

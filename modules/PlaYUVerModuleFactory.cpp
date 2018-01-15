@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -71,7 +71,8 @@ PlaYUVerModuleIf* PlaYUVerModuleFactory::CreateModule( const char* moduleName )
 {
   PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
   PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
-  for( ; it != PlaYUVerModuleFactoryMap.end(); ++it ) {
+  for( ; it != PlaYUVerModuleFactoryMap.end(); ++it )
+  {
     if( !strcmp( it->first, moduleName ) )
     {
       return it->second();

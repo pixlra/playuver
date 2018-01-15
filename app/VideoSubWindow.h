@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -25,16 +25,16 @@
 #ifndef __VIDEOSUBWINDOW_H__
 #define __VIDEOSUBWINDOW_H__
 
-#include "PlaYUVerAppDefs.h"
-#include "SubWindowAbstract.h"
-#include "ViewArea.h"
-#include "config.h"
-#include "lib/PlaYUVerStream.h"
 #include <QDataStream>
 #include <QFuture>
 #include <QRect>
 #include <QString>
 #include <QVector>
+#include "PlaYUVerAppDefs.h"
+#include "SubWindowAbstract.h"
+#include "ViewArea.h"
+#include "config.h"
+#include "lib/PlaYUVerStream.h"
 
 class QScrollArea;
 
@@ -187,7 +187,8 @@ private:
   Void refreshFrameOperation();
   Bool goToNextFrame( Bool bThreaded = false );
 
-  static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPixel, Int& rEndianness );
+  static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPixel,
+                           Int& rEndianness );
 
   Bool hasRunningModule();
 

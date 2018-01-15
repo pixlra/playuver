@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -23,11 +23,13 @@
  */
 
 #include "FramePropertiesDock.h"
+
 #include <QtDebug>
 #include <QtGui>
 #include <cmath>
 
-FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitch ) : QWidget( parent ), m_pbIsPlaying( pbMainPlaySwitch )
+FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitch )
+    : QWidget( parent ), m_pbIsPlaying( pbMainPlaySwitch )
 {
   // -------------- Variables definition --------------
   m_pcFrame = NULL;
@@ -238,7 +240,8 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
   connect( histogramWidget, SIGNAL( signalIntervalChanged( int, int ) ), this, SLOT( slotUpdateInterval( int, int ) ) );
   connect( histogramWidget, SIGNAL( signalMaximumValueChanged( int ) ), this, SLOT( slotUpdateIntervRange( int ) ) );
   connect( histogramWidget, SIGNAL( signalHistogramComputationDone( int ) ), this, SLOT( slotRefreshOptions( int ) ) );
-  connect( histogramWidget, SIGNAL( signalHistogramComputationFailed( void ) ), this, SLOT( slotHistogramComputationFailed( void ) ) );
+  connect( histogramWidget, SIGNAL( signalHistogramComputationFailed( void ) ), this,
+           SLOT( slotHistogramComputationFailed( void ) ) );
   connect( minInterv, SIGNAL( valueChanged( int ) ), this, SLOT( slotMinValueChanged( int ) ) );
   connect( maxInterv, SIGNAL( valueChanged( int ) ), this, SLOT( slotMaxValueChanged( int ) ) );
 }
@@ -335,7 +338,8 @@ Void FramePropertiesDock::setFrame( PlaYUVerFrame* pcFrame )
                                   "<p><b>Luminance</b>: DraupdateDataw the Luminance channel in the "
                                   "foreground.<p>"
                                   "<b>Chroma U</b>: Draw the Chroma U channel in the foreground.<p>"
-                                  "<b>Chroma V</b>: Draw the Chroma V channel in the foreground.<p>" ) );
+                                  "<b>Chroma V</b>: Draw the Chroma V channel in the "
+                                  "foreground.<p>" ) );
       colorsCB->show();
       colorsLabel->show();
     }
@@ -376,7 +380,8 @@ Void FramePropertiesDock::setSelection( const QRect& selectionArea )
         {
           delete m_pcSelectedFrame;
         }
-        m_pcSelectedFrame = new PlaYUVerFrame( m_pcFrame, selectionArea.x(), selectionArea.y(), selectionArea.width(), selectionArea.height() );
+        m_pcSelectedFrame = new PlaYUVerFrame( m_pcFrame, selectionArea.x(), selectionArea.y(), selectionArea.width(),
+                                               selectionArea.height() );
       }
       updateDataHistogram();
       selectionImageButton->click();
@@ -443,7 +448,8 @@ Void FramePropertiesDock::updateStatistiques()
 
   if( frame )
   {
-    QString rangeText = "[" + QString::number( frame->getMin( channel ) ) + ":" + QString::number( frame->getMax( channel ) ) + "]";
+    QString rangeText =
+        "[" + QString::number( frame->getMin( channel ) ) + ":" + QString::number( frame->getMax( channel ) ) + "]";
     labelRangeValue->setText( rangeText );
 
     double mean = frame->getMean( channel, min, max );

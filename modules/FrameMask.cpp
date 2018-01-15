@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -47,9 +47,11 @@ Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
 
-  for( UInt i = 1; i < apcFrameList.size(); i++ ) {
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0],
-                                       PlaYUVerFrame::MATCH_COLOR_SPACE_IGNORE_GRAY | PlaYUVerFrame::MATCH_RESOLUTION | PlaYUVerFrame::MATCH_BITS ) )
+  for( UInt i = 1; i < apcFrameList.size(); i++ )
+  {
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE_IGNORE_GRAY |
+                                                            PlaYUVerFrame::MATCH_RESOLUTION |
+                                                            PlaYUVerFrame::MATCH_BITS ) )
     {
       return false;
     }
@@ -77,7 +79,8 @@ Bool FrameMask::create( std::vector<PlaYUVerFrame*> apcFrameList )
     break;
   }
 
-  m_pcFrameProcessed = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), iPelFmt, apcFrameList[0]->getBitsPel() );
+  m_pcFrameProcessed = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), iPelFmt,
+                                          apcFrameList[0]->getBitsPel() );
   return true;
 }
 
@@ -89,8 +92,10 @@ PlaYUVerFrame* FrameMask::process( std::vector<PlaYUVerFrame*> apcFrameList )
   PlaYUVerPixel pixelMask;
   PlaYUVerPixel pixelOut;
 
-  for( UInt y = 0; y < m_pcFrameProcessed->getHeight(); y++ ) {
-    for( UInt x = 0; x < m_pcFrameProcessed->getWidth(); x++ ) {
+  for( UInt y = 0; y < m_pcFrameProcessed->getHeight(); y++ )
+  {
+    for( UInt x = 0; x < m_pcFrameProcessed->getWidth(); x++ )
+    {
       pixelImg = InputFrame->getPixelValue( x, y );
       pixelMask = MaskFrame->getPixelValue( x, y );
       pixelOut = pixelImg * ( 10 - m_iWeight ) + pixelMask * m_iWeight;

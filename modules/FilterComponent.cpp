@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -42,7 +42,8 @@ PlaYUVerFrame* FilterComponentModule::filterComponent( PlaYUVerFrame* InputFrame
 {
   Pel*** pppOutputPelYUV = m_pcFilteredFrame->getPelBufferYUV();
   Pel*** pppInputPelYUV = InputFrame->getPelBufferYUV();
-  memcpy( pppOutputPelYUV[LUMA][0], pppInputPelYUV[Component][0], m_pcFilteredFrame->getWidth() * m_pcFilteredFrame->getHeight() * sizeof( Pel ) );
+  memcpy( pppOutputPelYUV[LUMA][0], pppInputPelYUV[Component][0],
+          m_pcFilteredFrame->getWidth() * m_pcFilteredFrame->getHeight() * sizeof( Pel ) );
   return m_pcFilteredFrame;
 }
 
@@ -98,7 +99,8 @@ Bool FilterComponentChromaU::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   if( apcFrameList[0]->getNumberChannels() > 1 )
   {
-    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(), apcFrameList[0]->getBitsPel() );
+    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(),
+                         apcFrameList[0]->getBitsPel() );
   }
   return false;
 }
@@ -124,7 +126,8 @@ Bool FilterComponentChromaV::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   if( apcFrameList[0]->getNumberChannels() > 1 )
   {
-    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(), apcFrameList[0]->getBitsPel() );
+    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(),
+                         apcFrameList[0]->getBitsPel() );
   }
   return false;
 }

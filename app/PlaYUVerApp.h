@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -37,14 +37,15 @@
 #define __PLAYUVERAPP_H__
 
 #include "PlaYUVerAppDefs.h"
+#include "VideoSubWindow.h"
 #include "config.h"
-#include <QMainWindow>
-#include <QString>
-#include <QVector>
 #ifdef USE_QTDBUS
 #include "PlaYUVerAppAdaptor.h"
 #endif
-#include "VideoSubWindow.h"
+
+#include <QMainWindow>
+#include <QString>
+#include <QVector>
 
 class QCloseEvent;
 class QDragEnterEvent;
@@ -128,7 +129,8 @@ private:
   QString m_cLastOpenPath;
   QStringList showFileDialog( Bool bRead );
 
-  static VideoSubWindow* findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager, const QString& fileName );
+  static VideoSubWindow* findVideoStreamSubWindow( const PlaYUVerSubWindowHandle* windowManager,
+                                                   const QString& fileName );
 
   Void updateMenus();
 

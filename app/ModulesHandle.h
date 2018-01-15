@@ -1,6 +1,6 @@
-/*    This file is a part of plaYUVer project
- *    Copyright (C) 2014-2017  by Luis Lucas      (luisfrlucas@gmail.com)
- *                                Joao Carreira   (jfmcarreira@gmail.com)
+/*    This file is a part of PlaYUVer project
+ *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
+ *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -57,7 +57,8 @@ public:
   Void writeSettings();
 
   static Void destroyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
-  static Void applyModuleIf( QList<PlaYUVerAppModuleIf*> pcCurrModuleIfList, Bool isPlaying = false, Bool disableThreads = false );
+  static Void applyModuleIf( QList<PlaYUVerAppModuleIf*> pcCurrModuleIfList, Bool isPlaying = false,
+                             Bool disableThreads = false );
 
 private:
   QWidget* m_pcParent;

@@ -131,7 +131,7 @@ public:
   //   desc );
 
   Bool checkListingOpts();
-  Void listModules();
+	//Void listModules();
 
 private:
   typedef std::map<String, OptionsList> OptionMap;

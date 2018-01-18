@@ -81,6 +81,12 @@ Int PlaYUVerToolsCmdParser::parseToolsArgs( Int argc, Char* argv[] )
     m_uiLogLevel = LOG_RESULT;
   }
 
+	if(  m_cOptions.hasOpt( "module_list" ) ||  m_cOptions.hasOpt( "module_list_full" ) )
+	{
+		listModules();
+		iRet = 1;
+	}
+
   if( m_cOptions.hasOpt( "module" ) && m_cOptions.hasOpt( "help" ) )
   {
     listModuleHelp();
@@ -117,4 +123,59 @@ Void PlaYUVerToolsCmdParser::listModuleHelp()
     printf( "Usage: playuverTools --module=%s options:\n", it->first );
     pcCurrModuleIf->m_cModuleOptions.doHelp( std::cout );
   }
+}
+
+Void PlaYUVerToolsCmdParser::listModules()
+{
+	Bool bDetailed = false;
+
+	if( m_cOptions.hasOpt( "module_list_full" ) )
+		bDetailed = true;
+
+	PlaYUVerModuleIf* pcCurrModuleIf;
+	PlaYUVerModuleFactoryMap& PlaYUVerModuleFactoryMap = PlaYUVerModuleFactory::Get()->getMap();
+	PlaYUVerModuleFactoryMap::iterator it = PlaYUVerModuleFactoryMap.begin();
+
+	printf( "PlaYUVer available modules: \n" );
+	printf( "   [Internal Name]               " );
+	if( bDetailed )
+	{
+		printf( "   [Full Name]                             " );
+		printf( "   [Type]        " );
+		printf( "   [Description]" );
+	}
+	printf( " \n" );
+
+	Char ModuleNameString[40];
+
+	for( UInt i = 0; it != PlaYUVerModuleFactoryMap.end(); ++it, i++ )
+	{
+		printf( "   " );
+		printf( "%-30s", it->first );
+		if( bDetailed )
+		{
+			ModuleNameString[0] = '\0';
+			pcCurrModuleIf = it->second();
+
+			if( pcCurrModuleIf->m_pchModuleCategory )
+			{
+				strcat( ModuleNameString, pcCurrModuleIf->m_pchModuleCategory );
+				strcat( ModuleNameString, "/" );
+			}
+			strcat( ModuleNameString, pcCurrModuleIf->m_pchModuleName );
+			printf( "   %-40s", ModuleNameString );
+			switch( pcCurrModuleIf->m_iModuleType )
+			{
+			case FRAME_PROCESSING_MODULE:
+				printf( "   Processing    " );
+				break;
+			case FRAME_MEASUREMENT_MODULE:
+				printf( "   Measurement   " );
+				break;
+			}
+			printf( "   %s", pcCurrModuleIf->m_pchModuleTooltip );
+			pcCurrModuleIf->Delete();
+		}
+		printf( "\n" );
+	}
 }

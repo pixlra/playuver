@@ -1,4 +1,4 @@
-# [PlaYUVer](https://github.com/pixlra/playuver)
+# PlaYUVer
 ## Enhanced YUV video player based on Qt focusing on image/video analysis
 
 
@@ -55,6 +55,7 @@
 
 
 ### Binaries and Build
+* Packages are available for [Debian](https://launchpad.net/~pixlra/+archive/ubuntu/ppa) and [openSUSE](https://software.opensuse.org/package/playuver)
 * **Daily builds** available for Windows and Linux in our [SourceForge page](https://sourceforge.net/projects/playuver/)
 * **Dependencies**
   1. an ordinary C++ development environment (g++, make, C++ libraries and headers, ...)

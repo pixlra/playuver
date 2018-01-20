@@ -102,7 +102,7 @@ public:
     m_cTopLeftTextList.clear();
     for( Int i = 0; i < textLines.size(); i++ )
     {
-      m_cTopLeftTextList.append( textLines.at( i ) );
+      m_cTopLeftTextList.append( QStaticText( textLines.at( i ) ) );
     }
   }
   Void setBusyWindow( Bool bFlag ) { m_bBusyWindow = bFlag; }

@@ -344,7 +344,11 @@ Void VideoHandle::update()
     m_pcFrameSlider->setMaximum( total_frame_num - 1 );
 
     m_pcFrameNumInfo->setCurrFrameNum( frame_num );
+
+
+		m_pcFrameSlider->blockSignals( true ); // Disable signals otherwise it will loop this function
     m_pcFrameSlider->setValue( frame_num );
+		m_pcFrameSlider->blockSignals( false );
 
     if( m_pcCurrentVideoSubWindow->isPlaying() )
     {
@@ -708,7 +712,6 @@ Void VideoHandle::seekSliderEvent( Int new_frame_num )
       m_pcCurrentVideoSubWindow->seekAbsoluteEvent( (UInt)new_frame_num );
     }
     emit changed();
-    // update();
   }
 }
 

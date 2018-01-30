@@ -34,7 +34,7 @@
 #include <QVector>
 #include <QWidget>
 
-#define _CONTROL_PLAYING_TIME_ 1
+#define _CONTROL_PLAYING_TIME_ 0
 
 class QToolBar;
 class QDockWidget;

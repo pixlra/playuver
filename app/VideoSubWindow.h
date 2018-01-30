@@ -67,8 +67,9 @@ private:
   Bool m_bWindowBusy;
 
   QScrollArea* m_pcScrollArea;
-  QPoint m_cLastScroll;
   QPoint m_cCurrScroll;
+  Double m_dHorScroll;
+  Double m_dVerScroll;
 
   ViewArea* m_cViewArea;
 
@@ -183,6 +184,8 @@ public:
   Void clearWindowBusy() { m_bWindowBusy = false; }
   Void setFillWindow( Bool bFlag );
 
+  Void adjustScrollBarToRatio( const Double& horRatio, const Double& verRatio );
+
 private:
   Void refreshFrameOperation();
   Bool goToNextFrame( Bool bThreaded = false );
@@ -210,8 +213,7 @@ public Q_SLOTS:
   void updateWindowOnTimeout();
   void adjustScrollBarByScale( double scale, QPoint center );
   void adjustScrollBarByOffset( QPoint Offset );
-  void updateCurScrollValues();
-  void setCurScrollValues();
+  void updateScrollValues();
   void updateSelectedArea( QRect area );
   void updatePixelValueStatusBar( const QPoint& pos );
 };

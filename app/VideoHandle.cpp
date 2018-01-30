@@ -252,9 +252,7 @@ Void VideoHandle::updateMenus()
   m_arrayActions[STOP_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_BACKWARD_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_FORWARD_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[VIDEO_REPEAT_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_GOTO_ACT]->setEnabled( hasSubWindow );
-  m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->setEnabled( hasSubWindow );
   m_arrayActions[VIDEO_LOCK_SELECTION_ACT]->setEnabled( hasSubWindow );
   m_pcFrameSlider->setEnabled( hasSubWindow );
   if( !hasSubWindow )
@@ -345,10 +343,9 @@ Void VideoHandle::update()
 
     m_pcFrameNumInfo->setCurrFrameNum( frame_num );
 
-
-		m_pcFrameSlider->blockSignals( true ); // Disable signals otherwise it will loop this function
+    m_pcFrameSlider->blockSignals( true );  // Disable signals otherwise it will loop this function
     m_pcFrameSlider->setValue( frame_num );
-		m_pcFrameSlider->blockSignals( false );
+    m_pcFrameSlider->blockSignals( false );
 
     if( m_pcCurrentVideoSubWindow->isPlaying() )
     {
@@ -385,11 +382,25 @@ Void VideoHandle::updateSelectionArea( QRect area )
   }
 }
 
-Void VideoHandle::openSubWindow( VideoSubWindow* subWindow )
+Void VideoHandle::openSubWindow( VideoSubWindow* window )
 {
-  connect( subWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectionArea( QRect ) ) );
-  subWindow->getViewArea()->setTool( m_uiViewTool );
-  subWindow->getViewArea()->setGridVisible( m_arrayActions[SHOW_GRID_ACT]->isChecked() );
+  window->zoomToFit();
+  window->getViewArea()->setTool( m_uiViewTool );
+  window->getViewArea()->setGridVisible( m_arrayActions[SHOW_GRID_ACT]->isChecked() );
+
+  connect( window, &SubWindowAbstract::aboutToClose,
+           this, &VideoHandle::closeSubWindow );
+
+  connect( window, &SubWindowAbstract::zoomFactorChanged,
+           this, &VideoHandle::zoomToFactorAll );
+
+  connect( window, &SubWindowAbstract::scrollBarMoved,
+           this, &VideoHandle::moveAllScrollBars );
+
+  //connect( window, SIGNAL( aboutToClose( SubWindowAbstract* ) ), this, SLOT( closeSubWindow( SubWindowAbstract* ) ) );
+  //connect( window, SIGNAL( zoomFactorChanged( const double, const QPoint ) ), this, SLOT( zoomToFactorAll( double, QPoint ) ) );
+  //connect( window, SIGNAL( scrollBarMoved( const QPoint ) ), this, SLOT( moveAllScrollBars( const QPoint ) ) );
+  connect( window->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectionArea( QRect ) ) );
 }
 
 Void VideoHandle::closeSubWindow( SubWindowAbstract* subWindow )
@@ -432,7 +443,8 @@ Void VideoHandle::zoomToFactorAll( const Double scale, const QPoint center )
   }
 }
 
-Void VideoHandle::moveAllScrollBars( const QPoint offset )
+#if 0
+Void VideoHandle::moveAllScrollBars( const QPoint& offset )
 {
   QPoint newOffset = offset;
   if( m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() && m_pcCurrentVideoSubWindow )
@@ -469,6 +481,27 @@ Void VideoHandle::moveAllScrollBars( const QPoint offset )
     }
   }
 }
+#else
+Void VideoHandle::moveAllScrollBars( const double& horRatio, const double& verRatio )
+{
+  if( m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() && m_pcCurrentVideoSubWindow )
+  {
+    VideoSubWindow* videoSubWindow;
+    QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
+
+    for( Int i = 0; i < subWindowList.size(); i++ )
+    {
+      videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
+      if( m_pcCurrentVideoSubWindow == videoSubWindow )
+        continue;
+      else
+      {
+        videoSubWindow->adjustScrollBarToRatio( horRatio, verRatio );
+      }
+    }
+  }
+}
+#endif
 
 UInt64 VideoHandle::getMaxFrameNumber()
 {

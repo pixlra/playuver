@@ -135,7 +135,7 @@ private Q_SLOTS:
   void updateSelectionArea( QRect area );
   void closeSubWindow( SubWindowAbstract* subWindow );
   void zoomToFactorAll( const double factor, const QPoint center = QPoint() );
-  void moveAllScrollBars( const QPoint offset );
+  void moveAllScrollBars( const double&, const double& );
   void play();
   void stop();
   void playEvent();

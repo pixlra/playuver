@@ -144,12 +144,12 @@ Q_SIGNALS:
   /**
    * Notify that zoom factor was changed by internal event (e.g. by mouse wheel)
    */
-  void zoomFactorChanged_SWindow( const double, const QPoint );
+  void zoomFactorChanged( const double, const QPoint );
   /**
    * Notify that scrollbar position was changed by internal event (e.g. by mouse
    * panning )
    */
-  void scrollBarMoved_SWindow( const QPoint );
+  void scrollBarMoved( const double&, const double& );
   /**
    * Update stauts bars
    */

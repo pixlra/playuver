@@ -197,7 +197,6 @@ Void PlaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
     return;
   }
   videoSubWindow = new VideoSubWindow( VideoSubWindow::VIDEO_STREAM_SUBWINDOW );  // createSubWindow();
-  SubWindowAbstract* subWindow = videoSubWindow;
   if( !pStreamInfo )
   {
     Int idx = findPlaYUVerStreamInfo( m_aRecentFileStreamInfo, fileName );
@@ -219,17 +218,9 @@ Void PlaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       m_pcWindowHandle->addSubWindow( videoSubWindow );
       videoSubWindow->show();
 
-      connect( subWindow, SIGNAL( aboutToClose( SubWindowAbstract* ) ), m_appModuleVideo,
-               SLOT( closeSubWindow( SubWindowAbstract* ) ) );
-      connect( subWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo,
-               SLOT( zoomToFactorAll( double, QPoint ) ) );
-      connect( subWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo,
-               SLOT( moveAllScrollBars( const QPoint ) ) );
-
-      videoSubWindow->zoomToFit();
-      updateZoomFactorSBox();
-
       m_appModuleVideo->openSubWindow( videoSubWindow );
+
+      updateZoomFactorSBox();
 
       addStreamInfoToRecentList( videoSubWindow->getStreamInfo() );
 

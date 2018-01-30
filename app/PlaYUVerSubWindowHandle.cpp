@@ -234,8 +234,7 @@ Void PlaYUVerSubWindowHandle::addSubWindow( SubWindowAbstract* window, Qt::Windo
   if( window )
   {
     connect( window, SIGNAL( updateStatusBar( const QString& ) ), m_pcApp, SLOT( printMessage( const QString& ) ) );
-    connect( window, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_pcApp,
-             SLOT( updateZoomFactorSBox() ) );
+    connect( window, SIGNAL( zoomFactorChanged( const double, const QPoint ) ), m_pcApp, SLOT( updateZoomFactorSBox() ) );
     if( m_iWindowMode == DETACHEDSUBWINDOWMODE )
     {
       connect( window, SIGNAL( aboutToActivate( SubWindowAbstract* ) ), this,

@@ -194,6 +194,12 @@ VideoSubWindow::~VideoSubWindow()
  * Events handlers
  */
 
+Void VideoSubWindow::closeEvent( QCloseEvent* event )
+{
+	stop();
+	SubWindowAbstract::closeEvent( event );
+}
+
 Void VideoSubWindow::keyPressEvent( QKeyEvent* event )
 {
   if( m_pcCurrentDisplayModule )
@@ -789,6 +795,10 @@ Void VideoSubWindow::seekRelativeEvent( Bool bIsFoward )
 
 Void VideoSubWindow::stop()
 {
+#ifndef QT_NO_CONCURRENT
+	m_cRefreshResult.waitForFinished();
+	m_cReadResult.waitForFinished();
+#endif
   m_bIsPlaying = false;
   seekAbsoluteEvent( 0 );
   return;

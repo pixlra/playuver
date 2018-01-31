@@ -207,7 +207,7 @@ private:
 protected:
   Void keyPressEvent( QKeyEvent* event );
   Void resizeEvent( QResizeEvent* event );
-  // void closeEvent( QCloseEvent *event );
+	Void closeEvent( QCloseEvent *event );
 
 public Q_SLOTS:
   void updateWindowOnTimeout();

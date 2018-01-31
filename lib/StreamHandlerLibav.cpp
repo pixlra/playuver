@@ -374,8 +374,8 @@ Bool StreamHandlerLibav::write( PlaYUVerFrame* pcFrame )
 
 Bool StreamHandlerLibav::seek( UInt64 iFrameNum )
 {
-	if( m_uiTotalNumberFrames == 1 )
-		return true;
+  if( m_uiTotalNumberFrames == 1 )
+    return true;
 
   if( m_uiCurrFrameFileIdx == iFrameNum )
     return true;

@@ -136,7 +136,7 @@ public:
 
 protected:
   void focusInEvent( QFocusEvent* event );
-	virtual void closeEvent( QCloseEvent* event );
+  virtual void closeEvent( QCloseEvent* event );
 
   Void setWidget( QWidget* widget );
 

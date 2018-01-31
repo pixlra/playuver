@@ -345,10 +345,9 @@ Void VideoHandle::update()
 
     m_pcFrameNumInfo->setCurrFrameNum( frame_num );
 
-
-		m_pcFrameSlider->blockSignals( true ); // Disable signals otherwise it will loop this function
+    m_pcFrameSlider->blockSignals( true );  // Disable signals otherwise it will loop this function
     m_pcFrameSlider->setValue( frame_num );
-		m_pcFrameSlider->blockSignals( false );
+    m_pcFrameSlider->blockSignals( false );
 
     if( m_pcCurrentVideoSubWindow->isPlaying() )
     {

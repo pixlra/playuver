@@ -29,7 +29,7 @@
 
 ## Frame Processing Modules
 - Component filtering
-- Frame difference, crop, shift, binarization
+- Frame difference, crop, shift, binarization and rotation
 - Sub-sampling operations
 - Measuring modules
 - Modules based on opencv:

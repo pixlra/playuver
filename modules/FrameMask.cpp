@@ -30,6 +30,7 @@ FrameMask::FrameMask()
   m_iModuleAPI = MODULE_API_2;
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Utilities";
+	m_pchModuleLongName = "Apply mask";
   m_pchModuleName = "FrameMask";
   m_pchModuleTooltip = "Applies a mask to the selected image (first image)";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;

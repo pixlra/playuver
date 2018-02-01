@@ -126,6 +126,7 @@ public:
   const Char* m_pchModuleCategory;
   const Char* m_pchModuleName;
   const Char* m_pchModuleTooltip;
+	const Char* m_pchModuleLongName;
 
   //! Number of frames
   enum Module_NumberOfFrames m_uiNumberOfFrames;
@@ -138,10 +139,16 @@ public:
   {
     m_iModuleAPI = MODULE_API_1;
     m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
+		m_pchModuleLongName = NULL;
   }
   virtual ~PlaYUVerModuleIf() {}
   virtual void Delete() = 0;
   virtual Void destroy() = 0;
+
+	const Char* getModuleLongName()
+	{
+		return m_pchModuleLongName ? m_pchModuleLongName : m_pchModuleName;
+	}
 
   /**
    * Module API version 1

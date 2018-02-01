@@ -30,6 +30,7 @@ FrameRotate::FrameRotate()
   m_iModuleAPI = MODULE_API_2;
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Utilities";
+	m_pchModuleLongName = "Rotation";
   m_pchModuleName = "FrameRotate";
   m_pchModuleTooltip = "Rotates frame";
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;

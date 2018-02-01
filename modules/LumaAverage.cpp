@@ -32,6 +32,7 @@ LumaAverage::LumaAverage()
                                                                  // Currently only support for frame
   m_pchModuleCategory = "Measurements";                          // Category (sub-menu)
   m_pchModuleName = "LumaAverage";                               // Name
+	m_pchModuleLongName = "Average";                               // Long name
   m_pchModuleTooltip = "Measure the average of luma component";  // Description
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;                // Number of Frames required
                                                                  // (ONE_FRAME, TWO_FRAMES,

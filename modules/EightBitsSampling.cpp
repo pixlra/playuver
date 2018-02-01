@@ -31,6 +31,7 @@ EightBitsSampling::EightBitsSampling()
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Conversions";
   m_pchModuleName = "EightBitsSampling";
+	m_pchModuleLongName = "8 bit sub-sampling";
   m_pchModuleTooltip = "Sub-sampling frame to 8bpp";
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
   m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;

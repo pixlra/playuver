@@ -38,6 +38,7 @@ MeasureOpticalFlowDualTVL1::MeasureOpticalFlowDualTVL1()
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Measurements";
   m_pchModuleName = "MeasureOpticalFlowDualTVL1";
+	m_pchModuleLongName = "Optical flow based on DualTVL1";
   m_pchModuleTooltip = "Measure optical flow";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
   m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;

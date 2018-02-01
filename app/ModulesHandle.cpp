@@ -129,8 +129,12 @@ Void ModulesHandle::buildMenu()
       }
     }
 
-    currAction = new QAction( pcCurrModuleIf->m_pchModuleName, parent() );
-    currAction->setStatusTip( pcCurrModuleIf->m_pchModuleTooltip );
+		currAction = new QAction( pcCurrModuleIf->getModuleLongName(), parent() );
+		QString moduleTooltip = pcCurrModuleIf->m_pchModuleTooltip;
+		if( pcCurrModuleIf->m_uiNumberOfFrames > 1 )
+			moduleTooltip += QString(" | Requires %1 frames").arg( pcCurrModuleIf->m_uiNumberOfFrames );
+
+		currAction->setStatusTip( moduleTooltip );
     currAction->setData( ModuleIfInternalName );
     currAction->setCheckable( false );
     connect( currAction, SIGNAL( triggered() ), this, SLOT( activateModule() ) );
@@ -157,18 +161,18 @@ Void ModulesHandle::updateMenus()
 {
   VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
   Bool hasSubWindow = pcSubWindow ? true : false;
-  QAction* currModuleAction;
+	QAction* currModuleAction;
 
-  for( Int i = 0; i < m_arrayModulesActions.size(); i++ )
-  {
-    currModuleAction = m_arrayModulesActions.at( i );
-    currModuleAction->setEnabled( hasSubWindow );
-    currModuleAction->setChecked( false );
-  }
-  for( Int i = 0; i < m_pcModulesSubMenuList.size(); i++ )
-  {
-    m_pcModulesSubMenuList.at( i )->setEnabled( hasSubWindow );
-  }
+	for( Int i = 0; i < m_arrayModulesActions.size(); i++ )
+	{
+		currModuleAction = m_arrayModulesActions.at( i );
+		//currModuleAction->setEnabled( hasSubWindow );
+		currModuleAction->setChecked( false );
+	}
+	//for( Int i = 0; i < m_pcModulesSubMenuList.size(); i++ )
+	//{
+	//	m_pcModulesSubMenuList.at( i )->setEnabled( hasSubWindow );
+	//}
 
   for( Int i = 0; i < m_arrayActions.size(); i++ )
   {
@@ -187,11 +191,11 @@ Void ModulesHandle::updateMenus()
       m_arrayActions[APPLY_ALL_ACT]->setEnabled( true );
       m_arrayActions[SWAP_FRAMES_ACT]->setEnabled( true );
     }
-    for( Int i = 0; i < apcCurrentModule.size(); i++ )
-    {
-      currModuleAction = apcCurrentModule.at( i )->m_pcModuleAction;
-      currModuleAction->setChecked( true );
-    }
+		for( Int i = 0; i < apcCurrentModule.size(); i++ )
+		{
+			currModuleAction = apcCurrentModule.at( i )->m_pcModuleAction;
+			currModuleAction->setChecked( true );
+		}
   }
 }
 

@@ -156,7 +156,8 @@ Void OpticalFlowModule::destroy()
 OpticalFlowDualTVL1::OpticalFlowDualTVL1()
 {
   /* Module Definition */
-  m_pchModuleName = "OpticalFlowDualTVL1";
+	m_pchModuleName = "OpticalFlowDualTVL1";
+	m_pchModuleLongName = "Dual TVL1";
   m_pchModuleTooltip = "Measure optical flow using DualTVL1 method";
 }
 
@@ -173,6 +174,7 @@ OpticalFlowSparseToDense::OpticalFlowSparseToDense()
 {
   /* Module Definition */
   m_pchModuleName = "OpticalFlowSparseToDense";
+	m_pchModuleLongName = "Sparse to dense";
   m_pchModuleTooltip = "Measure optical flow using SparseToDense method";
 }
 
@@ -189,6 +191,7 @@ OpticalFlowFarneback::OpticalFlowFarneback()
 {
   /* Module Definition */
   m_pchModuleName = "OpticalFlowFarneback";
+	m_pchModuleLongName = "Farneback";
   m_pchModuleTooltip = "Measure optical flow using Farneback method";
 }
 
@@ -205,6 +208,7 @@ OpticalDeepFlow::OpticalDeepFlow()
 {
   /* Module Definition */
   m_pchModuleName = "OpticalDeepFlow";
+	m_pchModuleLongName = "Deep flow";
   m_pchModuleTooltip = "Measure optical flow using Farneback method";
 }
 

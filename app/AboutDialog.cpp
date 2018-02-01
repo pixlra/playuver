@@ -1,6 +1,7 @@
 /*    This file is a part of PlaYUVer project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
+ *                                Joao Santos     (joaompssantos@gmail.com)
  *
  *    This program is free software; you can redistribute it and/or modify
  *    it under the terms of the GNU General Public License as published by
@@ -39,7 +40,7 @@
 AboutDialog::AboutDialog( QWidget* parent )
     : QDialog( parent )
 {
-  QPixmap logo = QPixmap( ":/images/playuver-backgroud-logo.png" ).scaled( QSize( 500, 350 ), Qt::KeepAspectRatio );
+  QPixmap logo = QPixmap( ":/images/playuver-background-logo.png" ).scaled( QSize( 500, 350 ), Qt::KeepAspectRatio );
   QLabel* pixmapLabel = new QLabel;
   pixmapLabel->setPixmap( logo );
 

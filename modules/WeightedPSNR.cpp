@@ -33,7 +33,7 @@ WeightedPSNR::WeightedPSNR()
   m_iModuleType = FRAME_MEASUREMENT_MODULE;
   m_pchModuleCategory = "Quality";
   m_pchModuleName = "WeightedPSNR";
-	m_pchModuleLongName = "Weighted PSNR";
+  m_pchModuleLongName = "Weighted PSNR";
   m_pchModuleTooltip = "Measure the weighted PSNR between two images";
   m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS;
   m_uiNumberOfFrames = MODULE_REQUIRES_THREE_FRAMES;

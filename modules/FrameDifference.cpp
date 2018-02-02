@@ -31,7 +31,7 @@ FrameDifference::FrameDifference()
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Measurements";
   m_pchModuleName = "FrameDifference";
-	m_pchModuleName = "Difference";
+  m_pchModuleName = "Difference";
   m_pchModuleTooltip = "Measure the difference between two images (Y plane),  "
                        "Y1 - Y2, with max absolute diff of 128";
   m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;

@@ -172,7 +172,7 @@ struct PlaYUVerFramePrivate
     m_uiHeight = height;
     m_iPixelFormat = pel_format;
     m_iNumberChannels = 3;
-    m_uiBitsPel = bitsPixel > 8 ? bitsPixel : 8;
+    m_uiBitsPel = bitsPixel < 8 ? 8 : bitsPixel;
     m_uiHalfPelValue = 1 << ( m_uiBitsPel - 1 );
 
     if( m_uiWidth == 0 || m_uiHeight == 0 || m_iPixelFormat == -1 || bitsPixel > 16 )

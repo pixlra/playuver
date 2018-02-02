@@ -29,7 +29,7 @@ FrameCrop::FrameCrop()
   /* Module Definition */
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Utilities";
-	m_pchModuleLongName = "Crop";
+  m_pchModuleLongName = "Crop";
   m_pchModuleName = "FrameCrop";
   m_pchModuleTooltip = "Crop a region of a frame";
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;

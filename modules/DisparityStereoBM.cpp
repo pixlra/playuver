@@ -32,7 +32,7 @@ DisparityStereoBM::DisparityStereoBM()
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Stereo";
   m_pchModuleName = "Disparity-BM";
-	m_pchModuleLongName = "Block macth based disparity";
+  m_pchModuleLongName = "Block macth based disparity";
   m_pchModuleTooltip = "Measure the disparity between two images using the "
                        "Stereo BM method (OpenCV)";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;

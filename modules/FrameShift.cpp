@@ -30,9 +30,9 @@ FrameShift::FrameShift()
   m_iModuleAPI = MODULE_API_2;
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Utilities";
-	m_pchModuleLongName = "Pixel Shift";
+  m_pchModuleLongName = "Pixel Shift";
   m_pchModuleName = "FrameShift";
-	m_pchModuleTooltip = "Shift frame horizontal and vertical";
+  m_pchModuleTooltip = "Shift frame horizontal and vertical";
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
   m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS | MODULE_USES_KEYS;
 

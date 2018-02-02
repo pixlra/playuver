@@ -30,7 +30,7 @@ SetChromaHalfScale::SetChromaHalfScale()
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Conversions";
   m_pchModuleName = "SetChromaHalfScale";
-	m_pchModuleLongName = "Half scale chroma";
+  m_pchModuleLongName = "Half scale chroma";
   m_pchModuleTooltip = "Copy frame only keeping luma component";
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
   m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;

@@ -35,7 +35,7 @@ InterFrameVariance::InterFrameVariance()
                                             // the whole sequence.
   m_pchModuleCategory = "Measurements";     // Category (sub-menu)
   m_pchModuleName = "InterFrameVariance";   // Name
-	m_pchModuleLongName = "Variance across frames";
+  m_pchModuleLongName = "Variance across frames";
   m_pchModuleTooltip = "Measure the variance across several frames";
   m_uiNumberOfFrames = MODULE_REQUIRES_SEVERAL_FRAMES;  // Number of Frames required (This module
                                                         // allows a variable number of inputs)

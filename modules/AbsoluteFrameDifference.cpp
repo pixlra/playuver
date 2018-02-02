@@ -32,8 +32,8 @@ AbsoluteFrameDifference::AbsoluteFrameDifference()
   m_iModuleType = FRAME_PROCESSING_MODULE;                 // Apply module to the frames or to
                                                            // the whole sequence.
   m_pchModuleCategory = "Measurements";                    // Category (sub-menu)
-	m_pchModuleName = "AbsoluteFrameDifference";             // Name (no spaces)
-	m_pchModuleLongName = "Absolute Difference";						 // Long Name
+  m_pchModuleName = "AbsoluteFrameDifference";             // Name (no spaces)
+  m_pchModuleLongName = "Absolute Difference";             // Long Name
   m_pchModuleTooltip = "Measure the absolute difference "  // Description
                        "between two images (Y plane), e. g., abs( Y1 - Y2 )";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;      // Number of Frames required

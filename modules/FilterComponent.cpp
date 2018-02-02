@@ -28,12 +28,12 @@
 
 FilterComponentModule::FilterComponentModule()
 {
-	/* Module Definition */
-	m_iModuleAPI = MODULE_API_2;
-	m_iModuleType = FRAME_PROCESSING_MODULE;
-	m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
-	m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
-	m_pchModuleCategory = "Filtering";
+  /* Module Definition */
+  m_iModuleAPI = MODULE_API_2;
+  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
+  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
+  m_pchModuleCategory = "Filtering";
 
   m_pcFilteredFrame = NULL;
 }
@@ -64,8 +64,8 @@ Void FilterComponentModule::destroy()
 FilterComponentLuma::FilterComponentLuma()
 {
   /* Module Definition */
-	m_pchModuleName = "FilterLuma";                       // Name
-	m_pchModuleLongName = "Luma Component";               // Name on the Gui
+  m_pchModuleName = "FilterLuma";                       // Name
+  m_pchModuleLongName = "Luma Component";               // Name on the Gui
   m_pchModuleTooltip = "Filter Y matrix of YUV frame";  // Description
 }
 
@@ -81,8 +81,8 @@ PlaYUVerFrame* FilterComponentLuma::process( std::vector<PlaYUVerFrame*> apcFram
 
 FilterComponentChromaU::FilterComponentChromaU()
 {
-	m_pchModuleName = "FilterChromaU";
-	m_pchModuleLongName = "U/Cb Component";
+  m_pchModuleName = "FilterChromaU";
+  m_pchModuleLongName = "U/Cb Component";
   m_pchModuleTooltip = "Filter U matrix of YUV frame";
 }
 
@@ -104,9 +104,9 @@ PlaYUVerFrame* FilterComponentChromaU::process( std::vector<PlaYUVerFrame*> apcF
 FilterComponentChromaV::FilterComponentChromaV()
 {
   /* Module Definition */
-	m_pchModuleName = "FilterChromaV";
-	m_pchModuleLongName = "V/Cr Component";
-	m_pchModuleTooltip = "Filter V matrix of YUV frame";
+  m_pchModuleName = "FilterChromaV";
+  m_pchModuleLongName = "V/Cr Component";
+  m_pchModuleTooltip = "Filter V matrix of YUV frame";
 }
 
 Bool FilterComponentChromaV::create( std::vector<PlaYUVerFrame*> apcFrameList )

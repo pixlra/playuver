@@ -339,11 +339,10 @@ Void VideoHandle::update()
     m_pcFramePropertiesSideBar->setFrame( pcFrame );
 
     m_pcFrameNumInfo->setTotalFrameNum( total_frame_num );
-    m_pcFrameSlider->setMaximum( total_frame_num - 1 );
-
     m_pcFrameNumInfo->setCurrFrameNum( frame_num );
 
     m_pcFrameSlider->blockSignals( true );  // Disable signals otherwise it will loop this function
+    m_pcFrameSlider->setMaximum( total_frame_num - 1 );
     m_pcFrameSlider->setValue( frame_num );
     m_pcFrameSlider->blockSignals( false );
 

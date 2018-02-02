@@ -65,6 +65,9 @@ public:
  * The algorithm analyze the log spectrum of each image and obtain the
  * spectral residual. Then transform the spectral residual to spatial
  * domain to obtain the saliency map, which suggests the positions of proto-objects.
+ * Xiaodi Hou and Liqing Zhang. Saliency detection: A spectral residual
+ * approach. In Computer Vision and Pattern Recognition, 2007.
+ * CVPR'07. IEEE Conference on, pages 1–8. IEEE, 2007.
  */
 class SaliencyDetectionSpectral : public SaliencyDetectionModule
 {
@@ -85,9 +88,9 @@ public:
  * \brief    This method calculates saliency based on center-surround
  * differences. High resolution saliency maps are generated in real
  * time by using integral images.
- * Xiaodi Hou and Liqing Zhang. Saliency detection: A spectral residual
- * approach. In Computer Vision and Pattern Recognition, 2007.
- * CVPR'07. IEEE Conference on, pages 1–8. IEEE, 2007.
+ * Sebastian Montabone and Alvaro Soto. Human detection using a mobile
+ * platform and novel features derived from a visual saliency mechanism.
+ * In Image and Vision Computing, Vol. 28 Issue 3, pages 391–402. Elsevier, 2010.
  */
 class SaliencyDetectionFineGrained : public SaliencyDetectionModule
 {

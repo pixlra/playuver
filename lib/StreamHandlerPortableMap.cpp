@@ -34,7 +34,7 @@
 std::vector<PlaYUVerSupportedFormat> StreamHandlerPortableMap::supportedReadFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
+  //REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable PixMap ", "ppm" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
@@ -43,7 +43,6 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerPortableMap::supportedReadForm
 std::vector<PlaYUVerSupportedFormat> StreamHandlerPortableMap::supportedWriteFormats()
 {
   INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
   END_REGIST_PLAYUVER_SUPPORTED_FMT;
 }

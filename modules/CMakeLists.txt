@@ -30,17 +30,19 @@ ADD_MODULE( LumaAverage "LumaAverage" )
 ADD_MODULE( WeightedPSNR "WeightedPSNR" )
 
 ADD_MODULE_USE_OPENCV( MeasureOpticalFlowDualTVL1 "MeasureOpticalFlowDualTVL1" VERSION 2.4.13.0 MODULES video )
-
+ADD_MODULE_USE_OPENCV( DisparityStereoBM "DisparityStereoBM" VERSION 2.4.13.0 MODULES calib3d )
+ADD_MODULE_USE_OPENCV( DisparityStereoSGBM "DisparityStereoSGBM" VERSION 2.4.13.0 MODULES calib3d )
 ADD_MODULE_USE_OPENCV( OpticalFlowDualTVL1 "OpticalFlow" VERSION  3.1.0 MODULES optflow )
 ADD_MODULE_USE_OPENCV( OpticalFlowSparseToDense "OpticalFlow" VERSION  3.1.0 MODULES optflow )
 ADD_MODULE_USE_OPENCV( OpticalFlowFarneback "OpticalFlow" VERSION 3.1.0 MODULES video optflow )
 ADD_MODULE_USE_OPENCV( OpticalDeepFlow "OpticalFlow" VERSION 3.1.0 MODULES video optflow )
-
-ADD_MODULE_USE_OPENCV( DisparityStereoBM "DisparityStereoBM" VERSION 2.4.13.0 MODULES calib3d )
-ADD_MODULE_USE_OPENCV( DisparityStereoSGBM "DisparityStereoSGBM" VERSION 2.4.13.0 MODULES calib3d )
-
+ADD_MODULE_USE_OPENCV( SaliencyDetectionSpectral "SaliencyDetection" VERSION 3.1.0 MODULES saliency )
+ADD_MODULE_USE_OPENCV( SaliencyDetectionFineGrained "SaliencyDetection" VERSION 3.1.0 MODULES saliency )
 
 
+#
+# Create header and auxiliar files
+#
 CREATE_MODULE_MACROS()
 INCLUDE_DIRECTORIES( ${OpenCV_INCLUDE_DIRS} )
 ADD_LIBRARY( PlaYUVerModules ${plaYUver_Mod_SRCS} )

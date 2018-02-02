@@ -44,22 +44,26 @@ Frame Processing Modules
 Supported Formats
 ----------------------------------------------------------------
 - Supports for the following pixel formats:
-    * YUV: 420, 44, 422, 400
+    * YUV: 444, 420, 422
     * RGB
     * Gray
-- Support containers:
-    * Raw video (yuv,rgb,gray)
-    * Portable Network Graphics (png)
+- Supported formats:
+    * Raw video:
+        * YUV: 444, 420, 422
+        * RGB
+        * Gray
     * Joint Photographic Experts Group (jpeg)
+    * Portable Map (ppm, pgm)
+- Partially supported formats:
+    * Portable Network Graphics (png)
     * Windows Bitmap (bmp)
     * Tagged Image File Format (tiff)
-    * Portable Map (ppm,pgm,pbm)
 
 Developers
 ----------------------------------------------------------------
 
 - Joao Carreira     (jfmcarreira@gmail.com)
-- Lui­s Lucas        (luisfrlucas@gmail.com)
+- Lui­s Lucas       (luisfrlucas@gmail.com)
 
 Builds
 ----------------------------------------------------------------

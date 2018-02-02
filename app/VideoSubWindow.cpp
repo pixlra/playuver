@@ -660,7 +660,7 @@ Void VideoSubWindow::refreshFrameOperation()
   {
     m_cViewArea->setImage( m_pcCurrFrame );
   }
-  for( Int i = 0; i < m_apcCurrentModule.size() && !m_bIsPlaying; i++ )
+  for( Int i = 0; i < m_apcCurrentModule.size(); i++ )
   {
     m_apcCurrentModule.at( i )->update();
   }

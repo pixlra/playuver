@@ -382,7 +382,7 @@ Void VideoHandle::updateSelectionArea( QRect area )
   }
 }
 
-Void VideoHandle::openSubWindow( VideoSubWindow* window )
+Void VideoHandle::addSubWindow( VideoSubWindow* window )
 {
   window->zoomToFit();
   window->getViewArea()->setTool( m_uiViewTool );
@@ -397,9 +397,6 @@ Void VideoHandle::openSubWindow( VideoSubWindow* window )
   connect( window, &SubWindowAbstract::scrollBarMoved,
            this, &VideoHandle::moveAllScrollBars );
 
-  //connect( window, SIGNAL( aboutToClose( SubWindowAbstract* ) ), this, SLOT( closeSubWindow( SubWindowAbstract* ) ) );
-  //connect( window, SIGNAL( zoomFactorChanged( const double, const QPoint ) ), this, SLOT( zoomToFactorAll( double, QPoint ) ) );
-  //connect( window, SIGNAL( scrollBarMoved( const QPoint ) ), this, SLOT( moveAllScrollBars( const QPoint ) ) );
   connect( window->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectionArea( QRect ) ) );
 }
 

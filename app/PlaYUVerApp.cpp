@@ -219,7 +219,7 @@ Void PlaYUVerApp::loadFile( QString fileName, PlaYUVerStreamInfo* pStreamInfo )
       m_pcWindowHandle->addSubWindow( videoSubWindow );
       videoSubWindow->show();
 
-      m_appModuleVideo->openSubWindow( videoSubWindow );
+      m_appModuleVideo->addSubWindow( videoSubWindow );
 
       updateZoomFactorSBox();
 

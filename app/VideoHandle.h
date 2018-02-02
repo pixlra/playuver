@@ -69,7 +69,7 @@ public:
 
   Void update( VideoSubWindow* currSubWindow );
 
-  Void openSubWindow( VideoSubWindow* subWindow );
+  Void addSubWindow( VideoSubWindow* subWindow );
 
 private:
   QWidget* m_pcParet;

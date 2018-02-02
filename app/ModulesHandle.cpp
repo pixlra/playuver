@@ -376,21 +376,18 @@ Void ModulesHandle::activateModule()
   VideoSubWindow* pcModuleSubWindow = NULL;
   if( pcCurrAppModuleIf->m_pcModule->m_iModuleType == FRAME_PROCESSING_MODULE )
   {
-    if( ( pcCurrAppModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) ||
-        bShowModulesNewWindow )
+    if( ( pcCurrAppModuleIf->m_pcModule->m_uiModuleRequirements & MODULE_REQUIRES_NEW_WINDOW ) || bShowModulesNewWindow )
     {
       pcModuleSubWindow = new VideoSubWindow( VideoSubWindow::MODULE_SUBWINDOW );
       windowName.append( QStringLiteral( "Module " ) );
       windowName.append( pcCurrAppModuleIf->m_pcModule->m_pchModuleName );
-
-      connect( pcModuleSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo,
-               SLOT( updateSelectionArea( QRect ) ) );
-      connect( pcModuleSubWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo,
-               SLOT( zoomToFactorAll( double, QPoint ) ) );
-      connect( pcModuleSubWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo,
-               SLOT( moveAllScrollBars( const QPoint ) ) );
-
       pcCurrAppModuleIf->m_pcDisplaySubWindow = pcModuleSubWindow;
+      //      connect( pcModuleSubWindow->getViewArea(), SIGNAL( selectionChanged( QRect ) ), m_appModuleVideo,
+      //               SLOT( updateSelectionArea( QRect ) ) );
+      //      connect( pcModuleSubWindow, SIGNAL( zoomFactorChanged_SWindow( const double, const QPoint ) ), m_appModuleVideo,
+      //               SLOT( zoomToFactorAll( double, QPoint ) ) );
+      //      connect( pcModuleSubWindow, SIGNAL( scrollBarMoved_SWindow( const QPoint ) ), m_appModuleVideo,
+      //               SLOT( moveAllScrollBars( const QPoint ) ) );
     }
   }
   else if( pcCurrAppModuleIf->m_pcModule->m_iModuleType == FRAME_MEASUREMENT_MODULE )
@@ -455,6 +452,7 @@ Void ModulesHandle::activateModule()
     pcModuleSubWindow->setWindowName( windowName );
     m_pcMainWindowManager->addSubWindow( pcModuleSubWindow );
     pcModuleSubWindow->show();
+    m_appModuleVideo->addSubWindow( pcModuleSubWindow );
   }
   else
   {

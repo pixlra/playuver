@@ -32,6 +32,14 @@
 // PlaYUVerLib
 #include "lib/PlaYUVerModuleIf.h"
 
+/**
+ * \ingroup  PlaYUVer_Modules
+ * @defgroup PlaYUVer_Modules_Saliency Saliency
+ * @{
+ * Frame processing modules for saliency detection
+ * @}
+ */
+
 class SaliencyDetectionModule : public PlaYUVerModuleIf
 {
 protected:
@@ -49,6 +57,15 @@ public:
   Void destroy();
 };
 
+/**
+ * \ingroup  PlaYUVer_Modules_Saliency
+ * \class    SaliencyDetectionSpectral
+ * \brief    Starting from the principle of natural image statistics,
+ *  this method simulate the behavior of pre-attentive visual search.
+ * The algorithm analyze the log spectrum of each image and obtain the
+ * spectral residual. Then transform the spectral residual to spatial
+ * domain to obtain the saliency map, which suggests the positions of proto-objects.
+ */
 class SaliencyDetectionSpectral : public SaliencyDetectionModule
 {
   REGISTER_CLASS_FACTORY( SaliencyDetectionSpectral )
@@ -62,12 +79,39 @@ public:
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
 };
 
+/**
+ * \ingroup  PlaYUVer_Modules_Saliency
+ * \class    SaliencyDetectionFineGrained
+ * \brief    This method calculates saliency based on center-surround
+ * differences. High resolution saliency maps are generated in real
+ * time by using integral images.
+ * Xiaodi Hou and Liqing Zhang. Saliency detection: A spectral residual
+ * approach. In Computer Vision and Pattern Recognition, 2007.
+ * CVPR'07. IEEE Conference on, pages 1–8. IEEE, 2007.
+ */
 class SaliencyDetectionFineGrained : public SaliencyDetectionModule
 {
   REGISTER_CLASS_FACTORY( SaliencyDetectionFineGrained )
 public:
   SaliencyDetectionFineGrained();
   virtual ~SaliencyDetectionFineGrained() {}
+  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
+};
+
+/**
+ * \ingroup  PlaYUVer_Modules_Saliency
+ * \class    SaliencyDetectionBinWangApr2014
+ * \brief    Fast Self-tuning Background Subtraction Algorithm based on the work
+ *					 Wang and P. Dudek “A Fast Self-tuning Background Subtraction Algorithm”,
+ *					 in proc of IEEE Workshop on Change Detection, 2014
+ */
+class SaliencyDetectionBinWangApr2014 : public SaliencyDetectionModule
+{
+  REGISTER_CLASS_FACTORY( SaliencyDetectionBinWangApr2014 )
+public:
+  SaliencyDetectionBinWangApr2014();
+  virtual ~SaliencyDetectionBinWangApr2014() {}
   Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
   PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
 };

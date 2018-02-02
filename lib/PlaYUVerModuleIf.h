@@ -19,7 +19,7 @@
 
 /**
  * \file     PlaYUVerModuleIf.h
- * \ingroup  PlaYUVerLib_Modules
+ * \ingroup  PlaYUVer_Modules
  * \brief    PlaYUVer modules interface
  */
 
@@ -27,8 +27,7 @@
 #define __PLAYUVERMODULESIF_H__
 
 /**
- * \ingroup  PlaYUVerLib
- * @defgroup PlaYUVerLib_Modules PlaYUVer Modules
+ * @defgroup PlaYUVer_Modules PlaYUVer Modules
  * @{
  * PlaYUVerLib supports the creation of independent
  * frame processing modules
@@ -53,7 +52,7 @@ public:                                                 \
       return false;
 
 /** Module_API_Version Enum
- * \ingroup PlaYUVerLib_Modules
+ * \ingroup PlaYUVer_Modules
  * Version of the modules API required
  * @see m_iModuleAPI
  */
@@ -64,7 +63,7 @@ enum Module_API_Version
 };
 
 /** Module_Type Enum
- * \ingroup PlaYUVerLib_Modules
+ * \ingroup PlaYUVer_Modules
  * Type of module
  * @see m_iModuleType
  */
@@ -75,7 +74,7 @@ enum Module_Type
 };
 
 /** Module_NumberOfFrames Enum
- * \ingroup PlaYUVerLib_Modules
+ * \ingroup PlaYUVer_Modules
  * Number of frames requires by a module
  * @see m_uiNumberOfFrames
  */
@@ -92,7 +91,7 @@ enum Module_NumberOfFrames
 };
 
 /** Module_Features Enum
- * \ingroup PlaYUVerLib_Modules
+ * \ingroup PlaYUVer_Modules
  * Features/Requirements of a module
  * @see m_uiModuleRequirements
  */
@@ -115,7 +114,7 @@ enum Module_Key_Supported
 
 /**
  * \class    PlaYUVerModuleIf
- * \ingroup  PlaYUVerLib PlaYUVerLib_Modules
+ * \ingroup  PlaYUVerLib PlaYUVer_Modules
  * \brief    Abstract class for modules
  */
 class PlaYUVerModuleIf

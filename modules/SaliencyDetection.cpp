@@ -30,7 +30,7 @@
 
 using cv::Mat;
 using cv::Ptr;
-using cv::saliency::Saliency;
+using namespace cv::saliency;
 
 SaliencyDetectionModule::SaliencyDetectionModule()
 {
@@ -91,7 +91,7 @@ Bool SaliencyDetectionSpectral::create( std::vector<PlaYUVerFrame*> apcFrameList
   if( !bRet )
     return bRet;
 
-  m_ptrSaliencyAlgorithm = cv::saliency::StaticSaliencySpectralResidual::create();
+  m_ptrSaliencyAlgorithm = StaticSaliencySpectralResidual::create();
 
   return true;
 }
@@ -101,13 +101,18 @@ PlaYUVerFrame* SaliencyDetectionSpectral::process( std::vector<PlaYUVerFrame*> a
   if( commonProcess( apcFrameList ) )
   {
     Mat matBinaryMap;
-    cv::saliency::StaticSaliencySpectralResidual spec;
+    StaticSaliencySpectralResidual spec;
     spec.computeBinaryMap( m_matSaliency, matBinaryMap );
-
     if( m_bBinaryMap )
+    {
       m_pcSaliencyFrame->fromMat( matBinaryMap );
+    }
     else
+    {
+      m_matSaliency *= 255;
+      m_matSaliency.convertTo( m_matSaliency, CV_8UC1 );
       m_pcSaliencyFrame->fromMat( m_matSaliency );
+    }
   }
   return m_pcSaliencyFrame;
 }
@@ -133,5 +138,36 @@ PlaYUVerFrame* SaliencyDetectionFineGrained::process( std::vector<PlaYUVerFrame*
 {
   if( commonProcess( apcFrameList ) )
     m_pcSaliencyFrame->fromMat( m_matSaliency );
+  return m_pcSaliencyFrame;
+}
+
+SaliencyDetectionBinWangApr2014::SaliencyDetectionBinWangApr2014()
+{
+  /* Module Definition */
+  m_pchModuleName = "SaliencyDetectionBinWangApr2014";
+  m_pchModuleLongName = "Fast Self-tuning Background Subtraction Algorithm";
+  m_pchModuleTooltip = "Measure saliency using a fast self-tuning background subtraction algorithm";
+}
+
+Bool SaliencyDetectionBinWangApr2014::create( std::vector<PlaYUVerFrame*> apcFrameList )
+{
+  Bool bRet = commonCreate( apcFrameList );
+  if( !bRet )
+    return bRet;
+  m_ptrSaliencyAlgorithm = MotionSaliencyBinWangApr2014::create();
+  m_ptrSaliencyAlgorithm.dynamicCast<MotionSaliencyBinWangApr2014>()->setImagesize( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight() );
+  m_ptrSaliencyAlgorithm.dynamicCast<MotionSaliencyBinWangApr2014>()->init();
+  return true;
+}
+
+PlaYUVerFrame* SaliencyDetectionBinWangApr2014::process( std::vector<PlaYUVerFrame*> apcFrameList )
+{
+  if( commonProcess( apcFrameList ) )
+  {
+    m_matSaliency *= 255;
+    m_matSaliency.convertTo( m_matSaliency, CV_8UC1 );
+    //cv::cvtColor(m_matSaliency, m_matSaliency, cv::COLOR_BGR2GRAY);
+    m_pcSaliencyFrame->fromMat( m_matSaliency );
+  }
   return m_pcSaliencyFrame;
 }

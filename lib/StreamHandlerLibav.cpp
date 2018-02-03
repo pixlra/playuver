@@ -43,6 +43,7 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedReadFormats()
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Joint Photographic Experts Group", "jpg,jpeg" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows Bitmap", "bmp" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Tagged Image File Format", "tiff" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, " Graphics Interchange Format", "gif" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Audio video interleaved", "avi" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows media video", "wmv" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "MPEG-4", "mp4" );
@@ -174,7 +175,6 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   /**
 	 * Auxiliar conversation to re-use similar pixfmt
 	 */
-  m_bRequiresConvertion = false;
   Int auxPixFmt = m_ffPixFmt;
   switch( m_ffPixFmt )
   {
@@ -211,7 +211,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   {
     Int newPelFmt = PlaYUVerFrame::findPixelFormat( "YUV444p" );
     m_iPixelFormat = newPelFmt;
-    m_bRequiresConvertion = true;
+    m_bNative = false;
     //throw PlaYUVerFailure( "StreamHandlerLibav", "Cannot open file using FFmpeg libs - unsupported pixel format" );
     //return false;
   }
@@ -250,7 +250,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
     return false;
   }
 
-  if( m_bRequiresConvertion )
+  if( !m_bNative )
   {
     AVPixelFormat newAvFmt = AVPixelFormat( g_PlaYUVerPixFmtDescriptorsMap.at( m_iPixelFormat ).ffmpegPelFormat );
 
@@ -388,7 +388,7 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
   if( bGotFrame )
   {
     AVFrame* decFrame = m_cFrame;
-    if( m_bRequiresConvertion )
+    if( !m_bNative )
     {
       sws_scale( m_ScalerCtx, (const uint8_t* const*)decFrame->data, decFrame->linesize, 0,
                  decFrame->height, (uint8_t* const*)m_cConvertedFrame->data, m_cConvertedFrame->linesize );

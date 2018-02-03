@@ -413,6 +413,9 @@ Void VideoSubWindow::updateVideoWindowInfo()
   if( m_pcCurrFrame )
   {
     QString m_cPelFmtName = QString::fromStdString( m_pcCurrFrame->getPelFmtName() );
+    if( m_pCurrStream )
+      if( !m_pCurrStream->isNative() )
+        m_cPelFmtName += "*";
     m_cStreamInformation += " | " + m_cPelFmtName;
   }
   //#endif

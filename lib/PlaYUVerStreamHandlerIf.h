@@ -72,6 +72,7 @@ class PlaYUVerStreamHandlerIf
 public:
   PlaYUVerStreamHandlerIf()
       : m_bIsInput( true )
+      , m_bNative( true )
       , m_uiCurrFrameFileIdx( 0 )
       , m_uiWidth( 0 )
       , m_uiHeight( 0 )
@@ -105,6 +106,7 @@ protected:
   String m_strFormatName;
   String m_strCodecName;
   Bool m_bIsInput;
+  Bool m_bNative;
   UInt64 m_uiCurrFrameFileIdx;
   String m_cFilename;
   UInt m_uiWidth;

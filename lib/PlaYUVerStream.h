@@ -28,15 +28,8 @@
 #include "PlaYUVerDefs.h"
 
 class PlaYUVerFrame;
+class PlaYUVerStreamPrivate;
 class PlaYUVerStreamHandlerIf;
-class PlaYUVerStreamBufferPrivate;
-
-typedef struct
-{
-  String shortName;
-  UInt uiWidth;
-  UInt uiHeight;
-} PlaYUVerStdResolution;
 
 typedef PlaYUVerStreamHandlerIf* ( *CreateStreamHandlerFn )( void );
 
@@ -47,8 +40,14 @@ typedef struct
   std::vector<String> getExts();
   String formatPattern;
   CreateStreamHandlerFn formatFct;
-
 } PlaYUVerSupportedFormat;
+
+typedef struct
+{
+  String shortName;
+  UInt uiWidth;
+  UInt uiHeight;
+} PlaYUVerStdResolution;
 
 /**
  * \class PlaYUVerStream
@@ -87,6 +86,7 @@ public:
   Bool reload();
   Void close();
 
+  Bool isNative();
   String getFileName();
   UInt getFrameNum();
   UInt getWidth() const;
@@ -116,24 +116,13 @@ public:
   Bool seekInputRelative( Bool bIsFoward );
   Bool seekInput( UInt64 new_frame_num );
 
-  Bool isInit() { return m_bInit; }
   Void getDuration( Int* duration_array );
 
 private:
   Bool readFrame( PlaYUVerFrame* frame );
 
 private:
-  Bool m_bInit;
-  CreateStreamHandlerFn m_pfctCreateHandler;
-  PlaYUVerStreamHandlerIf* m_pcHandler;
-
-  Bool m_bIsInput;
-  String m_cFilename;
-  Int64 m_iCurrFrameNum;
-
-  Bool m_bLoadAll;
-
-  PlaYUVerStreamBufferPrivate* m_frameBuffer;
+  PlaYUVerStreamPrivate* d;
 };
 
 #endif  // __PLAYUVERSTREAM_H__

@@ -69,18 +69,12 @@ class PlaYUVerOptions
 public:
   struct Option
   {
-    Option()
-        : opt( 0 ) {}
-    ~Option()
-    {
-      if( opt )
-        delete opt;
-    }
+    Option();
+    ~Option();
     std::list<String> opt_long;
     std::list<String> opt_short;
     OptionBase* opt;
   };
-
   typedef std::list<Option*> OptionsList;
 
   PlaYUVerOptions( const String& name = "" );
@@ -119,19 +113,7 @@ public:
   template <typename T>
   PlaYUVerOptions& operator()( const String& name, T& storage, const String& desc );
 
-  /**
-   * Add option described by name to the parent Options list,
-   *   with desc as an optional help description
-   * instead of storing the value somewhere, a function of type
-   * OptionFunc::Func is called.  It is upto this function to correctly
-   * handle evaluating the option's value.
-   */
-  //   PlaYUVerOptions&
-  //   operator()( const String& name, OptionFunc::Func *func, const String&
-  //   desc );
-
   Bool checkListingOpts();
-  //Void listModules();
 
 private:
   typedef std::map<String, OptionsList> OptionMap;

@@ -93,7 +93,6 @@ private:
   UInt64 m_uiSecs;
   UInt64 m_uiMicroSec;
 
-  Bool m_bRequiresConvertion;
   AVFrame* m_cConvertedFrame;
 };
 

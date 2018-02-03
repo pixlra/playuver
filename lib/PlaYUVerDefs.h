@@ -30,10 +30,6 @@
 #include <string>
 #include <vector>
 
-// ====================================================================================================================
-// Basic type redefinition
-// ====================================================================================================================
-
 typedef void Void;
 typedef bool Bool;
 
@@ -49,51 +45,22 @@ typedef float Float;
 typedef unsigned char UInt8;
 typedef unsigned int UInt16;
 
-typedef std::string String;
+typedef UShort Pel;  ///< 16-bit pixel type
+typedef UChar Byte;
 
-// ====================================================================================================================
-// 64-bit integer type
-// ====================================================================================================================
+typedef std::string String;
 
 #ifdef _MSC_VER
 typedef __int64 Int64;
-
 #if _MSC_VER <= 1200     // MS VC6
 typedef __int64 UInt64;  // MS VC6 does not support unsigned __int64 to double conversion
 #else
 typedef unsigned __int64 UInt64;
 #endif
-
 #else
-
 typedef long long Int64;
 typedef unsigned long long UInt64;
-
 #endif
-
-// ====================================================================================================================
-// Type definition
-// ====================================================================================================================
-
-typedef UShort Pel;  ///< 16-bit pixel type
-typedef UChar Byte;
-
-// ====================================================================================================================
-// Limits definition
-// ====================================================================================================================
-
-// #define MAX_UINT                    0xFFFFFFFFU ///< max. value of unsigned
-// 32-bit integer
-// #define MAX_INT                     2147483647  ///< max. value of signed
-// 32-bit integer
-// #define MAX_INT64                   0x7FFFFFFFFFFFFFFFLL  ///< max. value of
-// signed 64-bit integer
-// #define MAX_DOUBLE                  1.7e+308    ///< max. value of
-// double-type value
-
-// ====================================================================================================================
-// PlaYUVer definitions
-// ====================================================================================================================
 
 enum LOG_LEVEL
 {

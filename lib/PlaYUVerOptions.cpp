@@ -214,19 +214,15 @@ template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, std::
 template PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name, std::vector<String>& storage,
                                                        const String& desc );
 
-/**
- * Add option described by name to the parent Options list,
- *   with desc as an optional help description
- * instead of storing the value somewhere, a function of type
- * FunctionOption::Func is called.  It is upto this function to correctly
- * handle evaluating the option's value.
- */
-// PlaYUVerOptions& PlaYUVerOptions::operator()( const String& name,
-// FunctionOption::Func *func, const String& desc )
-// {
-//   addOption( new FunctionOption( name, parent, func, desc ) );
-//   return *this;
-// }
+PlaYUVerOptions::Option::Option()
+    : opt( 0 ) {}
+
+PlaYUVerOptions::Option::~Option()
+{
+  if( opt )
+    delete opt;
+}
+
 PlaYUVerOptions::PlaYUVerOptions( const String& name )
 {
   m_cOptionGroupName = name;

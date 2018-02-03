@@ -32,6 +32,7 @@ FrameBinarization_APIv1::FrameBinarization_APIv1()
   m_iModuleType = FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Utilities";
   m_pchModuleName = "FrameBinarization_APIv1";
+  m_pchModuleLongName = "Frame Binarization API v1";
   m_pchModuleTooltip = "Binarize frame";
   m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
   m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS;

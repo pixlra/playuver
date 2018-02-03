@@ -34,9 +34,9 @@ AbsoluteFrameDifferenceExample::AbsoluteFrameDifferenceExample()
                                                               // See this example for details on the functions prototype
   m_iModuleType = FRAME_PROCESSING_MODULE;                    // Apply module to the frames or to the whole sequence.
   m_pchModuleCategory = "Measurements";                       // Category (sub-menu)
-  m_pchModuleName = "AbsoluteFrameDifferenceExampleExample";  // Name
-  m_pchModuleTooltip =
-      "Measure the absolute difference "  // Description
+  m_pchModuleName = "AbsoluteDifferenceExample";  // Name
+  m_pchModuleLongName = "Absolute Difference Example";  // Name
+  m_pchModuleTooltip =  "Measure the absolute difference "  // Description
       "between two images (Y plane), e. g., abs( Y1 - Y2 )";
   m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;  // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
   m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;  // Module requirements (check PlaYUVerModulesIf.h).

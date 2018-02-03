@@ -53,8 +53,8 @@ public:
   {
     NO_FMT = -1,
     YUV420p = 0,
-    YUV444p,
     YUV422p,
+    YUV444p,
     YUYV422,
     GRAY,
     RGBp,

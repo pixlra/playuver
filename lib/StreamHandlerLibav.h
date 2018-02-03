@@ -42,6 +42,7 @@ extern "C" {
 #include <libavutil/avutil.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/samplefmt.h>
+#include <libswscale/swscale.h>
 }
 
 #include "PlaYUVerDefs.h"
@@ -78,6 +79,8 @@ private:
   AVStream* m_cStream;
   Int m_iStreamIdx;
 
+  struct SwsContext* m_ScalerCtx;
+
   AVCodecContext* m_cCodedCtx;
 
   Int m_ffPixFmt;
@@ -89,6 +92,9 @@ private:
 
   UInt64 m_uiSecs;
   UInt64 m_uiMicroSec;
+
+  Bool m_bRequiresConvertion;
+  AVFrame* m_cConvertedFrame;
 };
 
 #endif  // __STREAMHANDLERLIBAV_H__

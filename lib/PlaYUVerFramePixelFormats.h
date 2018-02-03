@@ -29,6 +29,8 @@
 #include "PlaYUVerFrame.h"
 #include "PlaYUVerPixel.h"
 
+#include <map>
+
 #define CHROMA_RESAMPLING( X ) ( ( ( X + 1 ) >> 1 ) << 1 )
 
 #define CHROMARATIO( SIZE, RATIO ) ( RATIO > 1 ? ( ( SIZE + 1 ) / RATIO ) : SIZE )
@@ -109,6 +111,6 @@ typedef struct PlaYUVerPixFmtDescriptor
 
 #define MAX_NUMBER_PLANES 3
 
-extern const PlaYUVerPixFmtDescriptor g_PlaYUVerPixFmtDescriptorsList[];
+extern const std::map<int, PlaYUVerPixFmtDescriptor> g_PlaYUVerPixFmtDescriptorsMap;
 
 #endif  // __PLAYUVERFRAMEPIXELFORMATS_H__

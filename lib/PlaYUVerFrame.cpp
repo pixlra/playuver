@@ -51,7 +51,7 @@ std::vector<String> PlaYUVerFrame::supportedPixelFormatListNames()
   std::vector<String> formatsList;
   for( Int i = 0; i < NUMBER_PEL_FORMATS; i++ )
   {
-    formatsList.push_back( g_PlaYUVerPixFmtDescriptorsList[i].name );
+    formatsList.push_back( g_PlaYUVerPixFmtDescriptorsMap.at( i ).name );
   }
   return formatsList;
 }
@@ -61,8 +61,8 @@ std::vector<String> PlaYUVerFrame::supportedPixelFormatListNames( Int colorSpace
   std::vector<String> formatsList;
   for( Int i = 0; i < NUMBER_PEL_FORMATS; i++ )
   {
-    if( g_PlaYUVerPixFmtDescriptorsList[i].colorSpace == colorSpace )
-      formatsList.push_back( g_PlaYUVerPixFmtDescriptorsList[i].name );
+    if( g_PlaYUVerPixFmtDescriptorsMap.at( i ).colorSpace == colorSpace )
+      formatsList.push_back( g_PlaYUVerPixFmtDescriptorsMap.at( i ).name );
   }
   return formatsList;
 }
@@ -71,7 +71,7 @@ Int PlaYUVerFrame::findPixelFormat( const String& name )
 {
   for( Int i = 0; i < NUMBER_PEL_FORMATS; i++ )
   {
-    if( g_PlaYUVerPixFmtDescriptorsList[i].name == name )
+    if( g_PlaYUVerPixFmtDescriptorsMap.at( i ).name == name )
       return i;
   }
   return -1;
@@ -180,7 +180,7 @@ struct PlaYUVerFramePrivate
       throw PlaYUVerFailure( "PlaYUVerFrame", "Cannot create a PlYUVerFrame of this type" );
     }
 
-    m_pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[pel_format] );
+    m_pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsMap.at( pel_format ) );
 
     m_bHasRGBPel = false;
     if( m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY )
@@ -259,7 +259,7 @@ PlaYUVerFrame::PlaYUVerFrame( const PlaYUVerFrame* other )
 PlaYUVerFrame::PlaYUVerFrame( const PlaYUVerFrame& other, UInt x, UInt y, UInt width, UInt height )
     : d( new PlaYUVerFramePrivate )
 {
-  const PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[other.getPelFormat()] );
+  const PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsMap.at( other.getPelFormat() ) );
   if( pcPelFormat->log2ChromaWidth )
   {
     if( x % ( 1 << pcPelFormat->log2ChromaWidth ) )
@@ -287,7 +287,7 @@ PlaYUVerFrame::PlaYUVerFrame( const PlaYUVerFrame* other, UInt posX, UInt posY, 
   if( !other )
     return;
 
-  const PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[other->getPelFormat()] );
+  const PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsMap.at( other->getPelFormat() ) );
   if( pcPelFormat->log2ChromaWidth )
   {
     if( posX % ( 1 << pcPelFormat->log2ChromaWidth ) )
@@ -415,7 +415,7 @@ UInt64 PlaYUVerFrame::getBytesPerFrame()
 
 UInt64 PlaYUVerFrame::getBytesPerFrame( UInt uiWidth, UInt uiHeight, Int iPixelFormat, UInt bitsPixel )
 {
-  const PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsList[iPixelFormat] );
+  const PlaYUVerPixFmtDescriptor* pcPelFormat = &( g_PlaYUVerPixFmtDescriptorsMap.at( iPixelFormat ) );
   UInt bytesPerPixel = ( bitsPixel - 1 ) / 8 + 1;
   UInt64 numberBytes = uiWidth * uiHeight;
   if( pcPelFormat->numberChannels > 1 )

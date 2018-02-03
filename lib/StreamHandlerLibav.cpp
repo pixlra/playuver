@@ -164,8 +164,6 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   m_uiHeight = m_cStream->codec->height;
 
 #endif
-  m_uiFrameBufferSize = av_image_get_buffer_size( AVPixelFormat( m_ffPixFmt ), m_uiWidth, m_uiHeight, 1 );
-
   m_strFormatName = uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
   const char* name = avcodec_get_name( m_cCodedCtx->codec_id );
   m_strCodecName = name;
@@ -174,8 +172,9 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   m_uiBitsPerPixel = 8;
 
   /**
-   * Auxiliar conversation to re-use similar pixfmt
-   */
+	 * Auxiliar conversation to re-use similar pixfmt
+	 */
+  m_bRequiresConvertion = false;
   Int auxPixFmt = m_ffPixFmt;
   switch( m_ffPixFmt )
   {
@@ -202,7 +201,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   m_iPixelFormat = PlaYUVerFrame::NO_FMT;
   for( Int i = 0; i < PlaYUVerFrame::NUMBER_PEL_FORMATS; i++ )
   {
-    if( g_PlaYUVerPixFmtDescriptorsList[i].ffmpegPelFormat == auxPixFmt )
+    if( g_PlaYUVerPixFmtDescriptorsMap.at( i ).ffmpegPelFormat == auxPixFmt )
     {
       m_iPixelFormat = i;
       break;
@@ -210,8 +209,11 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   }
   if( m_iPixelFormat == PlaYUVerFrame::NO_FMT )
   {
-    throw PlaYUVerFailure( "Cannot open file using FFmpeg libs - unsupported pixel format" );
-    return false;
+    Int newPelFmt = PlaYUVerFrame::findPixelFormat( "YUV444p" );
+    m_iPixelFormat = newPelFmt;
+    m_bRequiresConvertion = true;
+    //throw PlaYUVerFailure( "StreamHandlerLibav", "Cannot open file using FFmpeg libs - unsupported pixel format" );
+    //return false;
   }
 
   Double fr = 30;
@@ -247,6 +249,34 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
     closeHandler();
     return false;
   }
+
+  if( m_bRequiresConvertion )
+  {
+    AVPixelFormat newAvFmt = AVPixelFormat( g_PlaYUVerPixFmtDescriptorsMap.at( m_iPixelFormat ).ffmpegPelFormat );
+
+    /* create scaling context */
+    m_ScalerCtx = sws_getContext( m_uiWidth, m_uiHeight, AVPixelFormat( m_ffPixFmt ),
+                                  m_uiWidth, m_uiHeight, newAvFmt,
+                                  SWS_BILINEAR, NULL, NULL, NULL );
+
+    m_cConvertedFrame = av_frame_alloc();
+    if( !m_cConvertedFrame )
+    {
+      closeHandler();
+      return false;
+    }
+
+    if( av_image_alloc( m_cConvertedFrame->data, m_cConvertedFrame->linesize,
+                        m_uiWidth, m_uiHeight, newAvFmt, 1 ) < 0 )
+    {
+      closeHandler();
+      return false;
+    }
+
+    m_ffPixFmt = newAvFmt;
+  }
+
+  m_uiFrameBufferSize = av_image_get_buffer_size( AVPixelFormat( m_ffPixFmt ), m_uiWidth, m_uiHeight, 1 );
 
   /* initialize packet, set data to NULL, let the demuxer fill it */
   av_init_packet( &m_cPacket );
@@ -357,8 +387,16 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
 
   if( bGotFrame )
   {
-    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, m_cFrame->data, m_cFrame->linesize,
-                             AVPixelFormat( m_ffPixFmt ), m_uiWidth, m_uiHeight, 1 );
+    AVFrame* decFrame = m_cFrame;
+    if( m_bRequiresConvertion )
+    {
+      sws_scale( m_ScalerCtx, (const uint8_t* const*)decFrame->data, decFrame->linesize, 0,
+                 decFrame->height, (uint8_t* const*)m_cConvertedFrame->data, m_cConvertedFrame->linesize );
+
+      decFrame = m_cConvertedFrame;
+    }
+    av_image_copy_to_buffer( m_pStreamBuffer, m_uiFrameBufferSize, decFrame->data,
+                             decFrame->linesize, AVPixelFormat( m_ffPixFmt ), m_uiWidth, m_uiHeight, 1 );
 
     pcFrame->frameFromBuffer( m_pStreamBuffer, m_iEndianness );
     m_uiCurrFrameFileIdx++;

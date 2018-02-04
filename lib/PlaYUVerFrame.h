@@ -55,7 +55,7 @@ public:
     COLOR_YUV = 0,       //!< YUV
     COLOR_RGB = 1,       //!< RGB
     COLOR_GRAY = 2,      //!< Grayscale
-    COLOR_ARGB = 3,      //!< RGB + Alpha
+    COLOR_RGBA = 3,      //!< RGB + Alpha
     COLOR_MAX = 255,     //!< Accouunt for future formats
   };
 
@@ -130,7 +130,9 @@ public:
     RGBp,
     RGB24,
     BGR24,
-    NUMBER_PEL_FORMATS
+    RGBA,
+    BGRA,
+    PEL_FMT_MAX = 255,
   };
 
   /**
@@ -147,6 +149,7 @@ public:
 	 */
   static std::vector<String> supportedPixelFormatListNames();
   static std::vector<String> supportedPixelFormatListNames( Int colorSpace );
+  static Int numberOfFormats();
   static Int findPixelFormat( const String& name );
 
   /**

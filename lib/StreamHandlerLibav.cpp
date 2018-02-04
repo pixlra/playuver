@@ -199,7 +199,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   }
 
   m_iPixelFormat = PlaYUVerFrame::NO_FMT;
-  for( Int i = 0; i < PlaYUVerFrame::NUMBER_PEL_FORMATS; i++ )
+  for( Int i = 0; i < PlaYUVerFrame::numberOfFormats(); i++ )
   {
     if( g_PlaYUVerPixFmtDescriptorsMap.at( i ).ffmpegPelFormat == auxPixFmt )
     {

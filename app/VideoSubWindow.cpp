@@ -977,7 +977,6 @@ Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
 {
   if( m_pcCurrFrame )
   {
-    PlaYUVerPixel sPixelValue;
     Int iWidth, iHeight;
     Int posX = pos.x();
     Int posY = pos.y();
@@ -990,28 +989,33 @@ Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
     {
       strStatus = QString( "(%1,%2)   " ).arg( posX ).arg( posY );
 
-      Int ColorSpace = m_pcCurrFrame->getColorSpace();
-      if( ColorSpace == PlaYUVerPixel::COLOR_GRAY )
+      Int colorSpace = m_pcCurrFrame->getColorSpace();
+      PlaYUVerPixel pixelValue = m_pcCurrFrame->getPixelValue( pos.x(), pos.y() );
+      switch( colorSpace )
       {
-        sPixelValue = m_pcCurrFrame->getPixelValue( pos.x(), pos.y() );
-        strStatus.append( QString( "Y: %1" ).arg( sPixelValue.Y() ) );
-      }
-      if( ColorSpace == PlaYUVerPixel::COLOR_YUV )
-      {
-        sPixelValue = m_pcCurrFrame->getPixelValue( pos.x(), pos.y() );
+      case PlaYUVerPixel::COLOR_GRAY:
+        strStatus.append( QString( "Y: %1" ).arg( pixelValue.Y() ) );
+        break;
+      case PlaYUVerPixel::COLOR_YUV:
         strStatus.append( QString( "Y: %1   U: %2   V: %3" )
-                              .arg( sPixelValue.Y() )
-                              .arg( sPixelValue.Cb() )
-                              .arg( sPixelValue.Cr() ) );
-      }
-
-      if( ( ColorSpace == PlaYUVerPixel::COLOR_RGB ) )
-      {
-        sPixelValue = m_pcCurrFrame->getPixelValue( pos.x(), pos.y() );
+                              .arg( pixelValue.Y() )
+                              .arg( pixelValue.Cb() )
+                              .arg( pixelValue.Cr() ) );
+        break;
+      case PlaYUVerPixel::COLOR_RGB:
         strStatus.append( QString( "R: %1   G: %2   B: %3" )
-                              .arg( sPixelValue.R() )
-                              .arg( sPixelValue.G() )
-                              .arg( sPixelValue.B() ) );
+                              .arg( pixelValue.R() )
+                              .arg( pixelValue.G() )
+                              .arg( pixelValue.B() ) );
+        break;
+      case PlaYUVerPixel::COLOR_RGBA:
+        strStatus.append( QString( "R: %1   G: %2   B: %3   A: %4" )
+                              .arg( pixelValue.R() )
+                              .arg( pixelValue.G() )
+                              .arg( pixelValue.B() )
+                              .arg( pixelValue.A() ) );
+
+        break;
       }
       emit updateStatusBar( strStatus );
     }

@@ -295,7 +295,7 @@ Void FramePropertiesDock::setFrame( PlaYUVerFrame* pcFrame )
   if( m_iLastFrameType != colorSpace )
   {
     m_iLastFrameType = colorSpace;
-    if( colorSpace == PlaYUVerPixel::COLOR_RGB || colorSpace == PlaYUVerPixel::COLOR_ARGB )
+    if( colorSpace == PlaYUVerPixel::COLOR_RGB || colorSpace == PlaYUVerPixel::COLOR_RGBA )
     {
       channelCB->clear();
       channelCB->clear();
@@ -303,7 +303,7 @@ Void FramePropertiesDock::setFrame( PlaYUVerFrame* pcFrame )
       channelCB->insertItem( FirstChannel, QIcon( ":/images/channel-red.png" ), "Red" );
       channelCB->insertItem( SecondChannel, QIcon( ":/images/channel-green.png" ), "Green" );
       channelCB->insertItem( ThirdChannel, QIcon( ":/images/channel-blue.png" ), "Blue" );
-      if( colorSpace == PlaYUVerPixel::COLOR_ARGB )
+      if( colorSpace == PlaYUVerPixel::COLOR_RGBA )
       {
         channelCB->insertItem( AlphaChannel, QIcon( ":/images/channel-alpha.png" ), "Alpha" );
       }
@@ -513,7 +513,7 @@ Void FramePropertiesDock::slotChannelChanged( Int channel )
 {
   if( m_pcFrame->getColorSpace() == PlaYUVerPixel::COLOR_YUV )
     channel += 1;
-  if( channel == AlphaChannel && m_pcFrame->getColorSpace() != PlaYUVerPixel::COLOR_ARGB )
+  if( channel == AlphaChannel && m_pcFrame->getColorSpace() != PlaYUVerPixel::COLOR_RGBA )
     channel = ColorChannels;
 
   switch( channel )

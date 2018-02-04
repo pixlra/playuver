@@ -34,8 +34,6 @@
 
 #define CHROMARATIO( SIZE, RATIO ) ( RATIO > 1 ? ( ( SIZE + 1 ) / RATIO ) : SIZE )
 
-#define PEL_RGB( r, g, b ) ( 0xffu << 24 ) | ( ( r & 0xff ) << 16 ) | ( ( g & 0xff ) << 8 ) | ( b & 0xff )
-
 typedef struct PlaYUVerComponentDescriptor
 {
   /**

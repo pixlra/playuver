@@ -10,7 +10,6 @@ set(PlaYUVer_Lib_SRCS
     LibMemory.h
     PlaYUVerLib.h
     # Frame
-    PlaYUVerPixel.cpp
     PlaYUVerFrame.cpp
     PlaYUVerFramePixelFormats.cpp
     # Stream
@@ -34,7 +33,6 @@ ENDIF()
 
 set(PlaYUVer_Lib_HEADERS
     PlaYUVerDefs.h
-    PlaYUVerPixel.h
     PlaYUVerFrame.h
     PlaYUVerStream.h
     PlaYUVerOptions.h

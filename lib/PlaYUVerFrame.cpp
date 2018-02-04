@@ -33,6 +33,8 @@
 #include <opencv2/core/core.hpp>
 #endif
 
+#define MAX_NUMBER_COMPONENTS 4
+
 /*! \brief Supported formats
  *
  *  List of supported pixels formats
@@ -75,6 +77,178 @@ Int PlaYUVerFrame::findPixelFormat( const String& name )
       return i;
   }
   return -1;
+}
+
+static inline Void YuvToRgb( const Int& iY, const Int& iU, const Int& iV, Int& iR, Int& iG, Int& iB )
+{
+  iR = iY + ( ( 1436 * ( iV - 128 ) ) >> 10 );
+  iG = iY - ( ( 352 * ( iU - 128 ) + 731 * ( iV - 128 ) ) >> 10 );
+  iB = iY + ( ( 1812 * ( iU - 128 ) ) >> 10 );
+  iR = iR < 0 ? 0 : iR > 255 ? 255 : iR;
+  iG = iG < 0 ? 0 : iG > 255 ? 255 : iG;
+  iB = iB < 0 ? 0 : iB > 255 ? 255 : iB;
+}
+
+static inline Void rgbToYuv( const Int& iR, const Int& iG, const Int& iB, Int& iY, Int& iU, Int& iV )
+{
+  iY = ( 299 * iR + 587 * iG + 114 * iB + 500 ) / 1000;
+  iU = ( 1000 * ( iB - iY ) + 226816 ) / 1772;
+  iV = ( 1000 * ( iR - iY ) + 179456 ) / 1402;
+}
+
+struct PlaYUVerPixelPrivate
+{
+  Int iColorSpace;
+  Pel PixelComponents[MAX_NUMBER_COMPONENTS];
+};
+
+Int PlaYUVerPixel::getMaxNumberOfComponents()
+{
+  return MAX_NUMBER_COMPONENTS;
+}
+
+PlaYUVerPixel::PlaYUVerPixel()
+    : d( new PlaYUVerPixelPrivate )
+{
+  d->iColorSpace = COLOR_INVALID;
+  d->PixelComponents[0] = 0;
+  d->PixelComponents[1] = 0;
+  d->PixelComponents[2] = 0;
+  d->PixelComponents[3] = 0;
+}
+
+PlaYUVerPixel::PlaYUVerPixel( const Int& ColorSpace )
+{
+  d->iColorSpace = ColorSpace == COLOR_GRAY ? COLOR_YUV : ColorSpace;
+  d->PixelComponents[0] = 0;
+  d->PixelComponents[1] = 0;
+  d->PixelComponents[2] = 0;
+  d->PixelComponents[3] = 0;
+}
+
+PlaYUVerPixel::PlaYUVerPixel( const Int& ColorSpace, const Pel& c0, const Pel& c1, const Pel& c2 )
+{
+  d->iColorSpace = ColorSpace == COLOR_GRAY ? COLOR_YUV : ColorSpace;
+  d->PixelComponents[0] = c0;
+  d->PixelComponents[1] = c1;
+  d->PixelComponents[2] = c2;
+  d->PixelComponents[3] = 0;
+}
+
+PlaYUVerPixel::PlaYUVerPixel( const Int& ColorSpace, const Pel& c0, const Pel& c1, const Pel& c2, const Pel& c3 )
+{
+  d->iColorSpace = ColorSpace == COLOR_GRAY ? COLOR_YUV : ColorSpace;
+  d->PixelComponents[0] = c0;
+  d->PixelComponents[1] = c1;
+  d->PixelComponents[2] = c2;
+  d->PixelComponents[3] = c3;
+}
+
+PlaYUVerPixel::~PlaYUVerPixel() {}
+
+Int PlaYUVerPixel::ColorSpaceType()
+{
+  return d->iColorSpace;
+}
+
+Pel* PlaYUVerPixel::Components()
+{
+  return d->PixelComponents;
+}
+
+Pel PlaYUVerPixel::Y() const
+{
+  return d->PixelComponents[0];
+}
+Pel PlaYUVerPixel::Cb() const
+{
+  return d->PixelComponents[1];
+}
+Pel PlaYUVerPixel::Cr() const
+{
+  return d->PixelComponents[2];
+}
+
+Pel& PlaYUVerPixel::Y()
+{
+  return d->PixelComponents[0];
+}
+Pel& PlaYUVerPixel::Cb()
+{
+  return d->PixelComponents[1];
+}
+Pel& PlaYUVerPixel::Cr()
+{
+  return d->PixelComponents[2];
+}
+Pel& PlaYUVerPixel::R()
+{
+  return d->PixelComponents[0];
+}
+Pel& PlaYUVerPixel::G()
+{
+  return d->PixelComponents[1];
+}
+Pel& PlaYUVerPixel::B()
+{
+  return d->PixelComponents[2];
+}
+
+Pel PlaYUVerPixel::operator[]( const Int& channel ) const
+{
+  return d->PixelComponents[channel];
+}
+Pel& PlaYUVerPixel::operator[]( const Int& channel )
+{
+  return d->PixelComponents[channel];
+}
+
+PlaYUVerPixel PlaYUVerPixel::operator+( const PlaYUVerPixel& in )
+{
+  PlaYUVerPixel result;
+  for( Int i = 0; i < MAX_NUMBER_COMPONENTS; i++ )
+  {
+    result[i] = d->PixelComponents[i] + in[i];
+  }
+  PlaYUVerPixel out( d->iColorSpace, Y() + in.Y(), Cb() + in.Cb(), Cr() + in.Cr() );
+  return out;
+}
+
+PlaYUVerPixel PlaYUVerPixel::operator-( const PlaYUVerPixel& in )
+{
+  PlaYUVerPixel out( d->iColorSpace, Y() - in.Y(), Cb() - in.Cb(), Cr() - in.Cr() );
+  return out;
+}
+
+PlaYUVerPixel PlaYUVerPixel::operator*( const Double& op )
+{
+  PlaYUVerPixel out( d->iColorSpace, Y() * op, Cb() * op, Cr() * op );
+  return out;
+}
+
+PlaYUVerPixel PlaYUVerPixel::ConvertPixel( ColorSpace eOutputSpace )
+{
+  Int outA, outB, outC;
+  PlaYUVerPixel outPixel( COLOR_INVALID, 0, 0, 0 );
+
+  if( ColorSpace() == eOutputSpace || eOutputSpace == COLOR_ARGB || eOutputSpace == COLOR_GRAY )
+    return *this;
+
+  if( eOutputSpace == COLOR_RGB )
+  {
+    YuvToRgb( Y(), Cb(), Cr(), outA, outB, outC );
+    outPixel.R() = outA;
+    outPixel.G() = outB;
+    outPixel.B() = outC;
+  }
+  if( eOutputSpace == COLOR_YUV )
+  {
+    rgbToYuv( R(), G(), B(), outA, outB, outC );
+    outPixel.Y() = outA;
+    outPixel.Cb() = outB;
+    outPixel.Cr() = outC;
+  }
+  return outPixel;
 }
 
 static Int getImgMemory( Pel**** array3D, Int dim1, Int dim2, Int log2ChromaHeight, Int log2ChromaWidth )

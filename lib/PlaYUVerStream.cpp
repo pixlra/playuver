@@ -86,9 +86,8 @@ private:
   inline Int prevIndex() { return m_uiIndex - 1 < 0 ? m_apcFrameBuffer.size() - 1 : m_uiIndex - 1; }
 };
 
-class PlaYUVerStreamPrivate
+struct PlaYUVerStreamPrivate
 {
-public:
   Bool isInit;
   Bool isInput;
 

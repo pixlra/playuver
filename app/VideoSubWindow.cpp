@@ -30,6 +30,8 @@
 #include "QtConcurrent/qtconcurrentrun.h"
 #include "SubWindowAbstract.h"
 
+#include <cassert>
+
 /**
  * \brief Functions to control data stream from stream information
  */

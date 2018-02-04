@@ -24,13 +24,14 @@
 
 #include "PlaYUVerToolsCmdParser.h"
 
-#include <cstdarg>
-#include <cstring>
-
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerModuleIf.h"
 #include "lib/PlaYUVerStream.h"
 #include "modules/PlaYUVerModuleFactory.h"
+
+#include <cstdarg>
+#include <cstring>
+#include <iostream>
 
 PlaYUVerToolsCmdParser::PlaYUVerToolsCmdParser()
 {

@@ -27,7 +27,6 @@
 
 #include "PlaYUVerDefs.h"
 #include "PlaYUVerFrame.h"
-#include "PlaYUVerPixel.h"
 
 #include <map>
 

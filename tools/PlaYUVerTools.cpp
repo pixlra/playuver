@@ -30,7 +30,6 @@
 
 #include "lib/PlaYUVerFrame.h"
 #include "lib/PlaYUVerModuleIf.h"
-#include "lib/PlaYUVerPixel.h"
 #include "lib/PlaYUVerStream.h"
 #include "modules/PlaYUVerModuleFactory.h"
 
@@ -425,7 +424,7 @@ Int PlaYUVerTools::QualityOperation()
   const char* pchQualityMetricName = PlaYUVerFrame::supportedQualityMetricsList()[m_uiQualityMetric].c_str();
   PlaYUVerFrame* apcCurrFrame[MAX_NUMBER_INPUTS];
   Bool abEOF[MAX_NUMBER_INPUTS];
-  Double adAverageQuality[MAX_NUMBER_INPUTS - 1][PlaYUVerPixel::MAX_NUMBER_COMPONENTS];
+  Double adAverageQuality[MAX_NUMBER_INPUTS - 1][PlaYUVerPixel::getMaxNumberOfComponents()];
   Double dQuality;
 
   String metric_fmt = " ";

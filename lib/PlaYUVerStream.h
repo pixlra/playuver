@@ -28,7 +28,6 @@
 #include "PlaYUVerDefs.h"
 
 class PlaYUVerFrame;
-class PlaYUVerStreamPrivate;
 class PlaYUVerStreamHandlerIf;
 
 typedef PlaYUVerStreamHandlerIf* ( *CreateStreamHandlerFn )( void );
@@ -122,7 +121,7 @@ private:
   Bool readFrame( PlaYUVerFrame* frame );
 
 private:
-  PlaYUVerStreamPrivate* d;
+  struct PlaYUVerStreamPrivate* d;
 };
 
 #endif  // __PLAYUVERSTREAM_H__

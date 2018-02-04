@@ -20,10 +20,29 @@
 /**
  * \file     PlaYUVerTools.h
  * \brief    Main definition of the PlaYUVerTools app
+ *
+ * @defgroup PlaYUVerTools PlaYUVer Tools
+ * @{
+ *
+ * PlaYUVerTools is a command line interface
+ * for the modules and quality metrics
+ * included in PlaYUVer
+ *
+ * @}
  */
 
 #ifndef __PLAYUVERTOOLS_H__
 #define __PLAYUVERTOOLS_H__
+
+/**
+ * @defgroup PlaYUVerTools PlaYUVer Tools
+ * @{
+ * PlaYUVerTools is a command line interface
+ * for the modules and quality metrics
+ * included in PlaYUVer
+ * @}
+ *
+ */
 
 #include "lib/PlaYUVerDefs.h"
 #include "lib/PlaYUVerFrame.h"

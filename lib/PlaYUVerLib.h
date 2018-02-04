@@ -39,12 +39,12 @@
  * This guaratees that the top-level applications does not need to worry
  * about dealig with different stream formats as well as different pixel formats
  *
- * @defgroup PlaYUVerLib_Frame PlaYUVer Frame
+ * @defgroup PlaYUVerLibFrame PlaYUVer Frame
  * @{
  *  Describe PlaYUVerFrame
  * @}
  *
- * @defgroup PlaYUVerLib_Stream PlaYUVer Stream
+ * @defgroup PlaYUVerLibStream PlaYUVer Stream
  * @{
  *  Describe PlaYUVerStream
  * @}

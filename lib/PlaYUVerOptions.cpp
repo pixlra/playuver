@@ -42,6 +42,7 @@
 #include "lib/PlaYUVerModuleIf.h"
 
 #include <cstring>
+#include <iostream>
 #include <sstream>
 
 using namespace std;

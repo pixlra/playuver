@@ -19,6 +19,7 @@
 
 /**
  * \file     PlaYUVerFrame.h
+ * \ingroup	 PlaYUVerLibFrame
  * \brief    Video Frame handling
  */
 
@@ -26,7 +27,6 @@
 #define __PLAYUVERFRAME_H__
 
 #include "PlaYUVerDefs.h"
-#include "PlaYUVerPixel.h"
 
 namespace cv
 {
@@ -39,8 +39,74 @@ struct PlaYUVerFramePrivate;
 #define CHROMASHIFT( SIZE, SHIFT ) UInt( -( ( -( Int( SIZE ) ) ) >> ( SHIFT ) ) )
 
 /**
+ * \class    PlaYUVerPixel
+ * \ingroup	 PlaYUVerLibFrame
+ * \brief    Pixel handling class
+ */
+class PlaYUVerPixel
+{
+public:
+  /** ColorSpace list
+	 * List of supported color spaces
+	 */
+  enum ColorSpace
+  {
+    COLOR_INVALID = -1,  //!< Invalid
+    COLOR_YUV = 0,       //!< YUV
+    COLOR_RGB = 1,       //!< RGB
+    COLOR_GRAY = 2,      //!< Grayscale
+    COLOR_ARGB = 3,      //!< RGB + Alpha
+    COLOR_MAX = 255,     //!< Accouunt for future formats
+  };
+
+  static Int getMaxNumberOfComponents();
+
+  PlaYUVerPixel();
+  PlaYUVerPixel( const Int& ColorSpace );
+  PlaYUVerPixel( const Int& ColorSpace, const Pel& c0, const Pel& c1, const Pel& c2 );
+  PlaYUVerPixel( const Int& ColorSpace, const Pel& c0, const Pel& c1, const Pel& c2, const Pel& c3 );
+  ~PlaYUVerPixel();
+
+  Int ColorSpaceType();
+
+  Pel* Components();
+
+  Pel Y() const;
+  Pel Cb() const;
+  Pel Cr() const;
+  Pel R() const;
+  Pel G() const;
+  Pel B() const;
+
+  Pel& Y();
+  Pel& Cb();
+  Pel& Cr();
+  Pel& R();
+  Pel& G();
+  Pel& B();
+
+  Pel operator[]( const Int& channel ) const;
+  Pel& operator[]( const Int& channel );
+
+  PlaYUVerPixel operator+( const PlaYUVerPixel& );
+  PlaYUVerPixel operator-( const PlaYUVerPixel& );
+  PlaYUVerPixel operator*( const Double& );
+
+  /**
+	 * Convert a Pixel to a new color space
+	 * @param inputPixel input pixel (PlaYUVerPixel)
+	 * @param eOutputSpace output color space
+	 * @return converted pixel
+	 */
+  PlaYUVerPixel ConvertPixel( ColorSpace eOutputSpace );
+
+private:
+  struct PlaYUVerPixelPrivate* d;
+};
+
+/**
  * \class    PlaYUVerFrame
- * \ingroup  PlaYUVerLib PlaYUVerLib_Frame
+ * \ingroup	 PlaYUVerLibFrame
  * \brief    Frame handling class
  */
 class PlaYUVerFrame
@@ -253,8 +319,8 @@ public:
   Bool fromMat( cv::Mat& cvMat );
 
   /**
-   * \ingroup  PlaYUVerLib_Frame
-   * @defgroup PlaYUVerLib_Frame_QualityMetrics Quality Metrics Interface
+	 * \ingroup	 PlaYUVerLibFrame
+	 * @defgroup PlaYUVerLibFrameQualityMetrics Quality Metrics Interface
    * @{
    * Quality metrics interface
    *

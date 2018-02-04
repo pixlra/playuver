@@ -35,10 +35,6 @@
 
 #define MAX_NUMBER_COMPONENTS 4
 
-/*! \brief Supported formats
- *
- *  List of supported pixels formats
- */
 std::vector<String> PlaYUVerFrame::supportedColorSpacesListNames()
 {
   return std::vector<String>{
@@ -79,7 +75,24 @@ Int PlaYUVerFrame::findPixelFormat( const String& name )
   return -1;
 }
 
-static inline Void YuvToRgb( const Int& iY, const Int& iU, const Int& iV, Int& iR, Int& iG, Int& iB )
+struct PlaYUVerPixelPrivate
+{
+  PlaYUVerPixelPrivate( const Int& ColorSpace )
+  {
+    iColorSpace = ColorSpace == PlaYUVerPixel::COLOR_GRAY ?
+                      PlaYUVerPixel::COLOR_YUV :
+                      ColorSpace;
+    for( Int i = 0; i < MAX_NUMBER_COMPONENTS; i++ )
+    {
+      PixelComponents[i] = 0;
+    }
+  }
+
+  Int iColorSpace;
+  Pel PixelComponents[MAX_NUMBER_COMPONENTS];
+};
+
+static inline Void yuvToRgb( const Int& iY, const Int& iU, const Int& iV, Int& iR, Int& iG, Int& iB )
 {
   iR = iY + ( ( 1436 * ( iV - 128 ) ) >> 10 );
   iG = iY - ( ( 352 * ( iU - 128 ) + 731 * ( iV - 128 ) ) >> 10 );
@@ -96,64 +109,56 @@ static inline Void rgbToYuv( const Int& iR, const Int& iG, const Int& iB, Int& i
   iV = ( 1000 * ( iR - iY ) + 179456 ) / 1402;
 }
 
-struct PlaYUVerPixelPrivate
-{
-  Int iColorSpace;
-  Pel PixelComponents[MAX_NUMBER_COMPONENTS];
-};
-
 Int PlaYUVerPixel::getMaxNumberOfComponents()
 {
   return MAX_NUMBER_COMPONENTS;
 }
 
-PlaYUVerPixel::PlaYUVerPixel()
-    : d( new PlaYUVerPixelPrivate )
+PlaYUVerPixel::PlaYUVerPixel( const Int& ColorSpace )
+    : d( new PlaYUVerPixelPrivate( ColorSpace ) )
 {
-  d->iColorSpace = COLOR_INVALID;
-  d->PixelComponents[0] = 0;
-  d->PixelComponents[1] = 0;
-  d->PixelComponents[2] = 0;
-  d->PixelComponents[3] = 0;
 }
 
-PlaYUVerPixel::PlaYUVerPixel( const Int& ColorSpace )
+PlaYUVerPixel::PlaYUVerPixel( const Int& ColorSpace, const Pel& c0 )
+    : d( new PlaYUVerPixelPrivate( ColorSpace ) )
 {
-  d->iColorSpace = ColorSpace == COLOR_GRAY ? COLOR_YUV : ColorSpace;
-  d->PixelComponents[0] = 0;
-  d->PixelComponents[1] = 0;
-  d->PixelComponents[2] = 0;
-  d->PixelComponents[3] = 0;
+  d->PixelComponents[0] = c0;
 }
 
 PlaYUVerPixel::PlaYUVerPixel( const Int& ColorSpace, const Pel& c0, const Pel& c1, const Pel& c2 )
+    : d( new PlaYUVerPixelPrivate( ColorSpace ) )
 {
-  d->iColorSpace = ColorSpace == COLOR_GRAY ? COLOR_YUV : ColorSpace;
   d->PixelComponents[0] = c0;
   d->PixelComponents[1] = c1;
   d->PixelComponents[2] = c2;
-  d->PixelComponents[3] = 0;
 }
 
 PlaYUVerPixel::PlaYUVerPixel( const Int& ColorSpace, const Pel& c0, const Pel& c1, const Pel& c2, const Pel& c3 )
+    : d( new PlaYUVerPixelPrivate( ColorSpace ) )
 {
-  d->iColorSpace = ColorSpace == COLOR_GRAY ? COLOR_YUV : ColorSpace;
   d->PixelComponents[0] = c0;
   d->PixelComponents[1] = c1;
   d->PixelComponents[2] = c2;
   d->PixelComponents[3] = c3;
 }
 
-PlaYUVerPixel::~PlaYUVerPixel() {}
-
-Int PlaYUVerPixel::ColorSpaceType()
+PlaYUVerPixel::PlaYUVerPixel( const PlaYUVerPixel& other )
+    : d( new PlaYUVerPixelPrivate( other.colorSpace() ) )
 {
-  return d->iColorSpace;
+  for( Int i = 0; i < MAX_NUMBER_COMPONENTS; i++ )
+  {
+    d->PixelComponents[i] = other[i];
+  }
 }
 
-Pel* PlaYUVerPixel::Components()
+PlaYUVerPixel::~PlaYUVerPixel()
 {
-  return d->PixelComponents;
+  delete d;
+}
+
+Int PlaYUVerPixel::colorSpace() const
+{
+  return d->iColorSpace;
 }
 
 Pel PlaYUVerPixel::Y() const
@@ -167,6 +172,22 @@ Pel PlaYUVerPixel::Cb() const
 Pel PlaYUVerPixel::Cr() const
 {
   return d->PixelComponents[2];
+}
+Pel PlaYUVerPixel::R() const
+{
+  return d->PixelComponents[0];
+}
+Pel PlaYUVerPixel::G() const
+{
+  return d->PixelComponents[1];
+}
+Pel PlaYUVerPixel::B() const
+{
+  return d->PixelComponents[2];
+}
+Pel PlaYUVerPixel::A() const
+{
+  return d->PixelComponents[3];
 }
 
 Pel& PlaYUVerPixel::Y()
@@ -193,6 +214,10 @@ Pel& PlaYUVerPixel::B()
 {
   return d->PixelComponents[2];
 }
+Pel& PlaYUVerPixel::A()
+{
+  return d->PixelComponents[3];
+}
 
 Pel PlaYUVerPixel::operator[]( const Int& channel ) const
 {
@@ -203,6 +228,15 @@ Pel& PlaYUVerPixel::operator[]( const Int& channel )
   return d->PixelComponents[channel];
 }
 
+PlaYUVerPixel PlaYUVerPixel::operator=( const PlaYUVerPixel& other )
+{
+  for( Int i = 0; i < MAX_NUMBER_COMPONENTS; i++ )
+  {
+    d->PixelComponents[i] = other[i];
+  }
+  return *this;
+}
+
 PlaYUVerPixel PlaYUVerPixel::operator+( const PlaYUVerPixel& in )
 {
   PlaYUVerPixel result;
@@ -210,20 +244,45 @@ PlaYUVerPixel PlaYUVerPixel::operator+( const PlaYUVerPixel& in )
   {
     result[i] = d->PixelComponents[i] + in[i];
   }
-  PlaYUVerPixel out( d->iColorSpace, Y() + in.Y(), Cb() + in.Cb(), Cr() + in.Cr() );
-  return out;
+  return result;
+}
+
+PlaYUVerPixel PlaYUVerPixel::operator+=( const PlaYUVerPixel& in )
+{
+  for( Int i = 0; i < MAX_NUMBER_COMPONENTS; i++ )
+  {
+    d->PixelComponents[i] += in[i];
+  }
+  return *this;
 }
 
 PlaYUVerPixel PlaYUVerPixel::operator-( const PlaYUVerPixel& in )
 {
-  PlaYUVerPixel out( d->iColorSpace, Y() - in.Y(), Cb() - in.Cb(), Cr() - in.Cr() );
-  return out;
+  PlaYUVerPixel result;
+  for( Int i = 0; i < MAX_NUMBER_COMPONENTS; i++ )
+  {
+    result[i] = d->PixelComponents[i] - in[i];
+  }
+  return result;
+}
+
+PlaYUVerPixel PlaYUVerPixel::operator-=( const PlaYUVerPixel& in )
+{
+  for( Int i = 0; i < MAX_NUMBER_COMPONENTS; i++ )
+  {
+    d->PixelComponents[i] -= in[i];
+  }
+  return *this;
 }
 
 PlaYUVerPixel PlaYUVerPixel::operator*( const Double& op )
 {
-  PlaYUVerPixel out( d->iColorSpace, Y() * op, Cb() * op, Cr() * op );
-  return out;
+  PlaYUVerPixel result;
+  for( Int i = 0; i < MAX_NUMBER_COMPONENTS; i++ )
+  {
+    result[i] = d->PixelComponents[i] * op;
+  }
+  return result;
 }
 
 PlaYUVerPixel PlaYUVerPixel::ConvertPixel( ColorSpace eOutputSpace )
@@ -236,7 +295,7 @@ PlaYUVerPixel PlaYUVerPixel::ConvertPixel( ColorSpace eOutputSpace )
 
   if( eOutputSpace == COLOR_RGB )
   {
-    YuvToRgb( Y(), Cb(), Cr(), outA, outB, outC );
+    yuvToRgb( Y(), Cb(), Cr(), outA, outB, outC );
     outPixel.R() = outA;
     outPixel.G() = outB;
     outPixel.B() = outC;
@@ -649,8 +708,7 @@ UChar* PlaYUVerFrame::getRGBBuffer()
 
 PlaYUVerPixel PlaYUVerFrame::getPixelValue( Int xPos, Int yPos )
 {
-  PlaYUVerPixel PixelValue( d->m_pcPelFormat->colorSpace, d->m_uiHalfPelValue, d->m_uiHalfPelValue,
-                            d->m_uiHalfPelValue );
+  PlaYUVerPixel PixelValue( d->m_pcPelFormat->colorSpace );
   for( UInt ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
   {
     Int ratioH = ch > 0 ? d->m_pcPelFormat->log2ChromaWidth : 0;
@@ -679,7 +737,7 @@ Void PlaYUVerFrame::setPixelValue( Int xPos, Int yPos, PlaYUVerPixel pixel )
   {
     Int ratioH = ch > 0 ? d->m_pcPelFormat->log2ChromaWidth : 0;
     Int ratioW = ch > 0 ? d->m_pcPelFormat->log2ChromaHeight : 0;
-    d->m_pppcInputPel[ch][( yPos >> ratioH )][( xPos >> ratioW )] = pixel.Components()[ch];
+    d->m_pppcInputPel[ch][( yPos >> ratioH )][( xPos >> ratioW )] = pixel[ch];
   }
   d->m_bHasHistogram = false;
   d->m_bHasRGBPel = false;

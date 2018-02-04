@@ -999,15 +999,19 @@ Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
       if( ColorSpace == PlaYUVerPixel::COLOR_YUV )
       {
         sPixelValue = m_pcCurrFrame->getPixelValue( pos.x(), pos.y() );
-        strStatus.append(
-            QString( "Y: %1   U: %2   V: %3" ).arg( sPixelValue.Y() ).arg( sPixelValue.Cb() ).arg( sPixelValue.Cr() ) );
+        strStatus.append( QString( "Y: %1   U: %2   V: %3" )
+                              .arg( sPixelValue.Y() )
+                              .arg( sPixelValue.Cb() )
+                              .arg( sPixelValue.Cr() ) );
       }
 
       if( ( ColorSpace == PlaYUVerPixel::COLOR_RGB ) )
       {
         sPixelValue = m_pcCurrFrame->getPixelValue( pos.x(), pos.y() );
-        strStatus.append(
-            QString( "R: %1   G: %2   B: %3" ).arg( sPixelValue.R() ).arg( sPixelValue.G() ).arg( sPixelValue.B() ) );
+        strStatus.append( QString( "R: %1   G: %2   B: %3" )
+                              .arg( sPixelValue.R() )
+                              .arg( sPixelValue.G() )
+                              .arg( sPixelValue.B() ) );
       }
       emit updateStatusBar( strStatus );
     }

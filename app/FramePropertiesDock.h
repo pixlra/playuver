@@ -48,23 +48,6 @@ public:
   Void stopHistogram();
 
 private:
-  enum ColorChannel
-  {
-    LuminosityChannel = 0,
-    FirstChannel = 1,
-    SecondChannel = 2,
-    ThirdChannel = 3,
-    ColorChannels = 4,
-    AlphaChannel = 5,
-  };
-
-  enum AllColorsColorType
-  {
-    AllColorsRed = 0,
-    AllColorsGreen,
-    AllColorsBlue
-  };
-
   PlaYUVerFrame* m_pcFrame;
   PlaYUVerFrame* m_pcSelectedFrame;
   Int m_iLastFrameType;
@@ -106,9 +89,9 @@ private:
 private Q_SLOTS:
   void slotRefreshOptions( int range );
   void slotHistogramComputationFailed( void );
-  void slotChannelChanged( int channel );
+  void slotChannelChanged( int index );
   void slotScaleChanged( int scale );
-  void slotColorsChanged( int color );
+  void slotColorsChanged( int index );
   void slotRenderingChanged( int rendering );
   void slotMinValueChanged( int );
   void slotMaxValueChanged( int );

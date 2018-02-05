@@ -40,6 +40,59 @@
 
 #include <cstdio>
 
+std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
+{
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerRaw, Read );
+  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerPortableMap, Read );
+//#ifdef USE_OPENCV
+//  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerOpenCV, Read );
+//#endif
+#ifdef USE_FFMPEG
+  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerLibav, Read );
+#endif
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+}
+
+std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedWriteFormats()
+{
+  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerRaw, Write );
+  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerPortableMap, Write );
+#ifdef USE_FFMPEG
+  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerLibav, Write );
+#endif
+#ifdef USE_OPENCV
+  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerOpenCV, Write );
+#endif
+  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+}
+
+std::vector<PlaYUVerStdResolution> PlaYUVerStream::stdResolutionSizes()
+{
+#define REGIST_PLAYUVER_STANDARD_RESOLUTION( name, width, height ) \
+  stdResElement.shortName = name;                                  \
+  stdResElement.uiWidth = width;                                   \
+  stdResElement.uiHeight = height;                                 \
+  stdResList.push_back( stdResElement );
+
+  std::vector<PlaYUVerStdResolution> stdResList;
+  PlaYUVerStdResolution stdResElement;
+  REGIST_PLAYUVER_STANDARD_RESOLUTION( "CIF", 352, 288 );
+  REGIST_PLAYUVER_STANDARD_RESOLUTION( "VGA", 640, 480 );
+  REGIST_PLAYUVER_STANDARD_RESOLUTION( "WVGA", 832, 480 );
+  REGIST_PLAYUVER_STANDARD_RESOLUTION( "XVGA", 1024, 768 );
+  REGIST_PLAYUVER_STANDARD_RESOLUTION( "HD", 1280, 720 );
+  REGIST_PLAYUVER_STANDARD_RESOLUTION( "SXGA-", 1280, 900 );
+  REGIST_PLAYUVER_STANDARD_RESOLUTION( "SXGA", 1280, 1024 );
+  REGIST_PLAYUVER_STANDARD_RESOLUTION( "WSXGA", 1440, 900 );
+  REGIST_PLAYUVER_STANDARD_RESOLUTION( "FullHD", 1920, 1080 );
+  REGIST_PLAYUVER_STANDARD_RESOLUTION( "WQXGA", 2560, 1600 );
+  REGIST_PLAYUVER_STANDARD_RESOLUTION( "UltraHD", 3840, 2160 );
+  REGIST_PLAYUVER_STANDARD_RESOLUTION( "8K", 8192, 4608 );
+  return stdResList;
+}
+
 class PlaYUVerStreamBufferPrivate
 {
 private:
@@ -112,34 +165,6 @@ struct PlaYUVerStreamPrivate
   }
 };
 
-std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedReadFormats()
-{
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerRaw, Read );
-  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerPortableMap, Read );
-#ifdef USE_FFMPEG
-  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerLibav, Read );
-#endif
-#ifdef USE_OPENCV
-  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerOpenCV, Read );
-#endif
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
-}
-
-std::vector<PlaYUVerSupportedFormat> PlaYUVerStream::supportedWriteFormats()
-{
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerRaw, Write );
-  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerPortableMap, Write );
-#ifdef USE_FFMPEG
-  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerLibav, Write );
-#endif
-#ifdef USE_OPENCV
-  APPEND_PLAYUVER_SUPPORTED_FMT( StreamHandlerOpenCV, Write );
-#endif
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
-}
-
 std::vector<String> PlaYUVerSupportedFormat::getExts()
 {
   std::vector<String> arrayExt;
@@ -152,31 +177,6 @@ std::vector<String> PlaYUVerSupportedFormat::getExts()
   }
   arrayExt.push_back( formatExt.substr( prev_pos, pos - prev_pos ) );  // Last word
   return arrayExt;
-}
-
-std::vector<PlaYUVerStdResolution> PlaYUVerStream::stdResolutionSizes()
-{
-#define REGIST_PLAYUVER_STANDARD_RESOLUTION( name, width, height ) \
-  stdResElement.shortName = name;                                  \
-  stdResElement.uiWidth = width;                                   \
-  stdResElement.uiHeight = height;                                 \
-  stdResList.push_back( stdResElement );
-
-  std::vector<PlaYUVerStdResolution> stdResList;
-  PlaYUVerStdResolution stdResElement;
-  REGIST_PLAYUVER_STANDARD_RESOLUTION( "CIF", 352, 288 );
-  REGIST_PLAYUVER_STANDARD_RESOLUTION( "VGA", 640, 480 );
-  REGIST_PLAYUVER_STANDARD_RESOLUTION( "WVGA", 832, 480 );
-  REGIST_PLAYUVER_STANDARD_RESOLUTION( "XVGA", 1024, 768 );
-  REGIST_PLAYUVER_STANDARD_RESOLUTION( "HD", 1280, 720 );
-  REGIST_PLAYUVER_STANDARD_RESOLUTION( "SXGA-", 1280, 900 );
-  REGIST_PLAYUVER_STANDARD_RESOLUTION( "SXGA", 1280, 1024 );
-  REGIST_PLAYUVER_STANDARD_RESOLUTION( "WSXGA", 1440, 900 );
-  REGIST_PLAYUVER_STANDARD_RESOLUTION( "FullHD", 1920, 1080 );
-  REGIST_PLAYUVER_STANDARD_RESOLUTION( "WQXGA", 2560, 1600 );
-  REGIST_PLAYUVER_STANDARD_RESOLUTION( "UltraHD", 3840, 2160 );
-  REGIST_PLAYUVER_STANDARD_RESOLUTION( "8K", 8192, 4608 );
-  return stdResList;
 }
 
 CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( String strFilename, bool bRead )
@@ -208,7 +208,7 @@ CreateStreamHandlerFn PlaYUVerStream::findStreamHandler( String strFilename, boo
       }
     }
   }
-  return &StreamHandlerRaw::Create;
+  return &StreamHandlerLibav::Create;
 }
 
 PlaYUVerStream::PlaYUVerStream()
@@ -298,7 +298,7 @@ Bool PlaYUVerStream::open( String filename, UInt width, UInt height, Int input_f
   if( d->handler->m_uiWidth <= 0 || d->handler->m_uiHeight <= 0 || d->handler->m_iPixelFormat < 0 )
   {
     close();
-    throw PlaYUVerFailure( "PlaYUVerStream", "Incorrect configuration: width, height or pixel format" );
+    //throw PlaYUVerFailure( "PlaYUVerStream", "Incorrect configuration: width, height or pixel format" );
     return d->isInit;
   }
 

@@ -91,7 +91,7 @@ SortIncludes:    true
 SpacesInParentheses: true
 SpacesInSquareBrackets: false
 Standard:        Auto
-TabWidth:        8
+TabWidth:        2
 UseTab:          Never
 ...
 

@@ -102,8 +102,8 @@ PlaYUVerFrame* FrameRotate::process( std::vector<PlaYUVerFrame*> apcFrameList )
         inY = x;
         break;
       }
-      pixel = InputFrame->getPixelValue( inX, inY );
-      m_pcFrameProcessed->setPixelValue( x, y, pixel );
+      pixel = InputFrame->getPixel( inX, inY );
+      m_pcFrameProcessed->setPixel( x, y, pixel );
     }
   }
   return m_pcFrameProcessed;

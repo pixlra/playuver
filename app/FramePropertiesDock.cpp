@@ -42,8 +42,8 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
   channelLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
 
   channelCB = new QComboBox;
-  channelCB->addItem( tr( "Luminance" ) );
-  channelCB->setItemIcon( 0, QIcon( ":/images/channel-luma.png" ) );
+  //channelCB->addItem( tr( "Luminance" ) );
+  //channelCB->setItemIcon( 0, QIcon( ":/images/channel-luma.png" ) );
 
   channelCB->setWhatsThis( tr( "<p>Select here the histogram channel to display:<p>"
                                "<b>Luminance</b>: Display luminance (perceived brightness).<p>"
@@ -218,8 +218,6 @@ FramePropertiesDock::FramePropertiesDock( QWidget* parent, Bool* pbMainPlaySwitc
   statisticsLayout->addWidget( labelStdDevValue, gridRow++, 1 );
   statisticsLayout->addWidget( medianLabel, gridRow, 0 );
   statisticsLayout->addWidget( labelMedianValue, gridRow++, 1 );
-  //  statisticsLayout->addWidget( percentileLabel, 5, 0 );
-  //  statisticsLayout->addWidget( labelPercentileValue, 5, 1 );
 
   QGroupBox* statisticsGroup = new QGroupBox( tr( "Statistics" ) );
   statisticsGroup->setLayout( statisticsLayout );
@@ -298,21 +296,20 @@ Void FramePropertiesDock::setFrame( PlaYUVerFrame* pcFrame )
     if( colorSpace == PlaYUVerPixel::COLOR_RGB || colorSpace == PlaYUVerPixel::COLOR_RGBA )
     {
       channelCB->clear();
-      channelCB->clear();
-      channelCB->insertItem( LuminosityChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
-      channelCB->insertItem( FirstChannel, QIcon( ":/images/channel-red.png" ), "Red" );
-      channelCB->insertItem( SecondChannel, QIcon( ":/images/channel-green.png" ), "Green" );
-      channelCB->insertItem( ThirdChannel, QIcon( ":/images/channel-blue.png" ), "Blue" );
+      channelCB->addItem( QIcon( ":/images/channel-luma.png" ), "Luminance", PlaYUVerFrame::HIST_LUMA );
+      channelCB->addItem( QIcon( ":/images/channel-red.png" ), "Red", PlaYUVerFrame::HIST_COLOR_R );
+      channelCB->addItem( QIcon( ":/images/channel-green.png" ), "Green", PlaYUVerFrame::HIST_COLOR_G );
+      channelCB->addItem( QIcon( ":/images/channel-blue.png" ), "Blue", PlaYUVerFrame::HIST_COLOR_B );
       if( colorSpace == PlaYUVerPixel::COLOR_RGBA )
       {
-        channelCB->insertItem( AlphaChannel, QIcon( ":/images/channel-alpha.png" ), "Alpha" );
+        channelCB->addItem( QIcon( ":/images/channel-alpha.png" ), "Alpha", PlaYUVerFrame::HIST_COLOR_A );
       }
-      channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "Colors" );
+      channelCB->addItem( QIcon( ":/images/channel-all.png" ), "Colors", PlaYUVerFrame::HIST_ALL_CHANNELS );
 
       colorsCB->clear();
-      colorsCB->addItem( "Red" );
-      colorsCB->addItem( "Green" );
-      colorsCB->addItem( "Blue" );
+      colorsCB->addItem( "Red", PlaYUVerFrame::HIST_COLOR_R );
+      colorsCB->addItem( "Green", PlaYUVerFrame::HIST_COLOR_G );
+      colorsCB->addItem( "Blue", PlaYUVerFrame::HIST_COLOR_B );
       colorsCB->setEnabled( false );
       colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
                                   "<p><b>Red</b>: Draw the Red image channel in the foreground.<p>"
@@ -324,15 +321,15 @@ Void FramePropertiesDock::setFrame( PlaYUVerFrame* pcFrame )
     else if( colorSpace == PlaYUVerPixel::COLOR_YUV )
     {
       channelCB->clear();
-      channelCB->insertItem( FirstChannel, QIcon( ":/images/channel-luma.png" ), "Luminance" );
-      channelCB->insertItem( SecondChannel, QIcon( ":/images/channel-red.png" ), "Chroma U" );
-      channelCB->insertItem( ThirdChannel, QIcon( ":/images/channel-green.png" ), "Chroma V" );
-      channelCB->insertItem( ColorChannels, QIcon( ":/images/channel-all.png" ), "All Channels" );
+      channelCB->addItem( QIcon( ":/images/channel-luma.png" ), "Luminance", PlaYUVerFrame::HIST_LUMA );
+      channelCB->addItem( QIcon( ":/images/channel-red.png" ), "Chroma U", PlaYUVerFrame::HIST_CHROMA_U );
+      channelCB->addItem( QIcon( ":/images/channel-green.png" ), "Chroma V", PlaYUVerFrame::HIST_CHROMA_V );
+      channelCB->addItem( QIcon( ":/images/channel-all.png" ), "All Channels", PlaYUVerFrame::HIST_ALL_CHANNELS );
 
       colorsCB->clear();
-      colorsCB->addItem( "Luminance" );
-      colorsCB->addItem( "Chroma U" );
-      colorsCB->addItem( "Chroma V" );
+      colorsCB->addItem( "Luminance", PlaYUVerFrame::HIST_LUMA );
+      colorsCB->addItem( "Chroma U", PlaYUVerFrame::HIST_CHROMA_U );
+      colorsCB->addItem( "Chroma V", PlaYUVerFrame::HIST_CHROMA_V );
       colorsCB->setEnabled( false );
       colorsCB->setWhatsThis( tr( "<p>Select here the main color displayed with Colors Channel mode:"
                                   "<p><b>Luminance</b>: DraupdateDataw the Luminance channel in the "
@@ -346,8 +343,7 @@ Void FramePropertiesDock::setFrame( PlaYUVerFrame* pcFrame )
     else
     {
       channelCB->clear();
-      channelCB->addItem( tr( "Luminance" ) );
-      channelCB->setItemIcon( 0, QIcon( ":/images/channel-luma.png" ) );
+      channelCB->addItem( QIcon( ":/images/channel-luma.png" ), "Luminance", PlaYUVerFrame::HIST_LUMA );
       colorsCB->hide();
       colorsLabel->hide();
     }
@@ -436,8 +432,8 @@ Void FramePropertiesDock::updateStatistiques()
   Int max = maxInterv->value();
   Int channel = histogramWidget->m_channelType;
 
-  if( channel == HistogramWidget::ColorChannelsHistogram )
-    channel = colorsCB->currentIndex();
+  if( channel == PlaYUVerFrame::HIST_ALL_CHANNELS )
+    channel = colorsCB->itemData( colorsCB->currentIndex() ).toInt();
 
   PlaYUVerFrame* frame;
 
@@ -449,7 +445,7 @@ Void FramePropertiesDock::updateStatistiques()
   if( frame )
   {
     QString rangeText =
-        "[" + QString::number( frame->getMin( channel ) ) + ":" + QString::number( frame->getMax( channel ) ) + "]";
+        "[" + QString::number( frame->getMinimumPelValue( channel ) ) + ":" + QString::number( frame->getMaximumPelValue( channel ) ) + "]";
     labelRangeValue->setText( rangeText );
 
     double mean = frame->getMean( channel, min, max );
@@ -461,7 +457,7 @@ Void FramePropertiesDock::updateStatistiques()
     double stddev = frame->getStdDev( channel, min, max );
     labelStdDevValue->setText( value.setNum( stddev, 'f', 1 ) );
 
-    double counts = frame->getCount( channel, min, max );
+    double counts = frame->getNumPixelsRange( channel, min, max );
     labelCountValue->setText( value.setNum( (float)counts, 'f', 0 ) );
 
     double median = frame->getMedian( channel, min, max );
@@ -509,41 +505,15 @@ Void FramePropertiesDock::slotHistogramComputationFailed()
   m_pcFrame = NULL;
 }
 
-Void FramePropertiesDock::slotChannelChanged( Int channel )
+Void FramePropertiesDock::slotChannelChanged( Int index )
 {
-  if( m_pcFrame->getColorSpace() == PlaYUVerPixel::COLOR_YUV )
-    channel += 1;
-  if( channel == AlphaChannel && m_pcFrame->getColorSpace() != PlaYUVerPixel::COLOR_RGBA )
-    channel = ColorChannels;
+  Int channel = channelCB->itemData( index ).toInt();
 
-  switch( channel )
-  {
-  case FirstChannel:
-    histogramWidget->m_channelType = HistogramWidget::FirstChannelHistogram;
-    colorsCB->setEnabled( false );
-    break;
-  case SecondChannel:
-    histogramWidget->m_channelType = HistogramWidget::SecondChannelHistogram;
-    colorsCB->setEnabled( false );
-    break;
-  case ThirdChannel:
-    histogramWidget->m_channelType = HistogramWidget::ThirdChannelHistogram;
-    colorsCB->setEnabled( false );
-    break;
-  case AlphaChannel:
-    histogramWidget->m_channelType = HistogramWidget::AlphaChannelHistogram;
-    colorsCB->setEnabled( false );
-    break;
-  case ColorChannels:
-    histogramWidget->m_channelType = HistogramWidget::ColorChannelsHistogram;
+  histogramWidget->m_channelType = channel;
+  if( channel == PlaYUVerFrame::HIST_ALL_CHANNELS )
     colorsCB->setEnabled( true );
-    break;
-  default:  // Luminance.
-    // histogramWidget->m_channelType = HistogramWidget::LumaHistogram;
-    histogramWidget->m_channelType = HistogramWidget::FirstChannelHistogram;
+  else
     colorsCB->setEnabled( false );
-    break;
-  }
   histogramWidget->update();
   updateStatistiques();
 }
@@ -554,21 +524,10 @@ Void FramePropertiesDock::slotScaleChanged( Int scale )
   histogramWidget->update();
 }
 
-Void FramePropertiesDock::slotColorsChanged( Int color )
+Void FramePropertiesDock::slotColorsChanged( Int index )
 {
-  switch( color )
-  {
-  case AllColorsGreen:
-    histogramWidget->m_colorType = HistogramWidget::SecondChannelColor;
-    break;
-  case AllColorsBlue:
-    histogramWidget->m_colorType = HistogramWidget::ThirdChannelColor;
-    break;
-  default:  // Red.
-    histogramWidget->m_colorType = HistogramWidget::FirstChannelColor;
-    break;
-  }
-
+  Int color = colorsCB->itemData( index ).toInt();
+  histogramWidget->m_colorType = color;
   histogramWidget->update();
   updateStatistiques();
 }

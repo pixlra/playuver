@@ -487,7 +487,7 @@ Void ViewArea::paintEvent( QPaintEvent* event )
   {
     Int imageWidth = m_pixmap.width();
     Int imageHeight = m_pixmap.height();
-    PlaYUVerPixel sPixelValue;
+    PlaYUVerPixel pixelValue;
 
     QFont font( "Helvetica" );
     font.setPixelSize( 12 );
@@ -508,51 +508,58 @@ Void ViewArea::paintEvent( QPaintEvent* event )
 
         if( frFormat == PlaYUVerPixel::COLOR_YUV )
         {
-          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y() );
+          pixelValue = m_pcCurrFrame->getPixel( pixelTopLeft.x(), pixelTopLeft.y() );
 
-          if( sPixelValue.Y() < m_uiPixelHalfScale )
+          if( pixelValue.Y() < m_uiPixelHalfScale )
             paInter.setPen( QColor( Qt::white ) );
           else
             paInter.setPen( QColor( Qt::black ) );
 
           paInter.drawText( pixelRect, Qt::AlignCenter,
-                            "Y: " + QString::number( sPixelValue.Y() ) + "\n" +
-                                "U: " + QString::number( sPixelValue.Cb() ) + "\n" +
-                                "V: " + QString::number( sPixelValue.Cr() ) );
+                            "Y: " + QString::number( pixelValue.Y() ) + "\n" +
+                                "U: " + QString::number( pixelValue.Cb() ) + "\n" +
+                                "V: " + QString::number( pixelValue.Cr() ) );
         }
         if( frFormat == PlaYUVerPixel::COLOR_GRAY )
         {
-          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y() );
+          pixelValue = m_pcCurrFrame->getPixel( pixelTopLeft.x(), pixelTopLeft.y() );
 
-          if( sPixelValue.Y() < m_uiPixelHalfScale )
+          if( pixelValue.Y() < m_uiPixelHalfScale )
             paInter.setPen( QColor( Qt::white ) );
           else
             paInter.setPen( QColor( Qt::black ) );
 
-          paInter.drawText( pixelRect, Qt::AlignCenter, "Y: " + QString::number( sPixelValue.Y() ) );
+          paInter.drawText( pixelRect, Qt::AlignCenter, "Y: " + QString::number( pixelValue.Y() ) );
         }
 
         if( ( frFormat == PlaYUVerPixel::COLOR_RGB ) )
         {
-          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y() );
+          pixelValue = m_pcCurrFrame->getPixel( pixelTopLeft.x(), pixelTopLeft.y() );
 
-          if( ( sPixelValue.R() + sPixelValue.G() + sPixelValue.B() ) < ( m_uiPixelHalfScale * 3 ) )
+          if( ( pixelValue.R() + pixelValue.G() + pixelValue.B() ) < ( m_uiPixelHalfScale * 3 ) )
             paInter.setPen( QColor( Qt::white ) );
           else
             paInter.setPen( QColor( Qt::black ) );
 
-					paInter.drawText( pixelRect, Qt::AlignCenter, "R: " + QString::number( sPixelValue.R() ) + "\nG: " + QString::number( sPixelValue.G() ) + "\nB: " + QString::number( sPixelValue.B() ) );
+          paInter.drawText( pixelRect, Qt::AlignCenter,
+                            "R: " + QString::number( pixelValue.R() ) +
+                                "\nG: " + QString::number( pixelValue.G() ) +
+                                "\nB: " + QString::number( pixelValue.B() ) );
         }
         if( ( frFormat == PlaYUVerPixel::COLOR_RGBA ) )
         {
-          sPixelValue = m_pcCurrFrame->getPixelValue( pixelTopLeft.x(), pixelTopLeft.y() );
+          pixelValue = m_pcCurrFrame->getPixel( pixelTopLeft.x(), pixelTopLeft.y() );
 
-          if( ( sPixelValue.R() + sPixelValue.G() + sPixelValue.B() ) < ( m_uiPixelHalfScale * 3 ) )
+          if( ( pixelValue.R() + pixelValue.G() + pixelValue.B() ) < ( m_uiPixelHalfScale * 3 ) )
             paInter.setPen( QColor( Qt::white ) );
           else
             paInter.setPen( QColor( Qt::black ) );
 
-					paInter.drawText( pixelRect, Qt::AlignCenter, "R: " + QString::number( sPixelValue.R() ) + "\nG: " + QString::number( sPixelValue.G() ) + "\nB: " + QString::number( sPixelValue.B() ) + "\nA: " + QString::number( sPixelValue.A() ) );
+          paInter.drawText( pixelRect, Qt::AlignCenter,
+                            "R: " + QString::number( pixelValue.R() ) +
+                                "\nG: " + QString::number( pixelValue.G() ) +
+                                "\nB: " + QString::number( pixelValue.B() ) +
+                                "\nA: " + QString::number( pixelValue.A() ) );
         }
       }
     }

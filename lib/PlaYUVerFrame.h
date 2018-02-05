@@ -117,7 +117,7 @@ class PlaYUVerFrame
 {
 public:
   /** ColorSpace Enum
-	 * List of supported pixel formats - do not change order
+	 * List of supported pixel formats
 	 */
   enum PixelFormats
   {
@@ -288,9 +288,9 @@ public:
   UChar* getRGBBuffer() const;
   UChar* getRGBBuffer();
 
-  PlaYUVerPixel getPixelValue( Int xPos, Int yPos );
-  PlaYUVerPixel getPixelValue( Int xPos, Int yPos, PlaYUVerPixel::ColorSpace eColorSpace );
-  Void setPixelValue( Int xPos, Int yPos, PlaYUVerPixel pixel );
+  PlaYUVerPixel getPixel( Int xPos, Int yPos );
+  PlaYUVerPixel getPixel( Int xPos, Int yPos, PlaYUVerPixel::ColorSpace eColorSpace );
+  Void setPixel( Int xPos, Int yPos, PlaYUVerPixel pixel );
 
   Void copyFrom( const PlaYUVerFrame& );
   Void copyFrom( const PlaYUVerFrame* );
@@ -306,18 +306,35 @@ public:
   /**
 	 * Histogram
 	 */
+
+  enum HistogramChannels
+  {
+    HIST_CHAN_ONE = 0,
+    HIST_CHAN_TWO,
+    HIST_CHAN_THREE,
+    HIST_CHAN_FOUR,
+    HIST_LUMA = 10,
+    HIST_CHROMA_U,
+    HIST_CHROMA_V,
+    HIST_COLOR_R = 20,
+    HIST_COLOR_G,
+    HIST_COLOR_B,
+    HIST_COLOR_A,
+    HIST_ALL_CHANNELS = 254,
+    HISTOGRAM_MAX = 255,
+  };
   Void calcHistogram();
 
-  UInt getMin( Int channel );
-  UInt getMax( Int channel );
+  UInt getMinimumPelValue( Int channel );
+  UInt getMaximumPelValue( Int channel );
 
-  UInt getCount( Int channel, UInt start, UInt end );
+  UInt getMaximum( Int channel );
+  UInt getNumPixelsRange( Int channel, UInt start, UInt end );
   Double getMean( Int channel, UInt start, UInt end );
   Int getMedian( Int channel, UInt start, UInt end );
   Double getStdDev( Int channel, UInt start, UInt end );
   Double getHistogramValue( Int channel, UInt bin );
-  Double getMaximum( Int channel );
-  Int getHistogramSegment();
+  Int getNumHistogramSegment();
 
   /**
 	 * Interface with OpenCV lib

@@ -43,34 +43,12 @@ class HistogramWidget : public QWidget
   Q_OBJECT
 
 public:
-  enum HistogramChannel
-  {
-    /** Luminance */
-    // LumaHistogram = 0,
-    /** Channels */
-    FirstChannelHistogram = 0,
-    SecondChannelHistogram,
-    ThirdChannelHistogram,
-    /** Alpha channel */
-    AlphaChannelHistogram,
-    /** All color channels */
-    ColorChannelsHistogram,
-  };
-
   enum HistogramScale
   {
     /** Linear scale */
     LinScaleHistogram = 0,
     /** Logarithmic scale */
     LogScaleHistogram
-  };
-
-  enum HistogramAllColorMode
-  {
-    // Select wich component is shown in foreground
-    FirstChannelColor,
-    SecondChannelColor,
-    ThirdChannelColor,
   };
 
   enum HistogramRendering

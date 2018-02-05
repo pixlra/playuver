@@ -97,11 +97,11 @@ PlaYUVerFrame* FrameMask::process( std::vector<PlaYUVerFrame*> apcFrameList )
   {
     for( UInt x = 0; x < m_pcFrameProcessed->getWidth(); x++ )
     {
-      pixelImg = InputFrame->getPixelValue( x, y );
-      pixelMask = MaskFrame->getPixelValue( x, y );
+      pixelImg = InputFrame->getPixel( x, y );
+      pixelMask = MaskFrame->getPixel( x, y );
       pixelOut = pixelImg * ( 10 - m_iWeight ) + pixelMask * m_iWeight;
       pixelOut = pixelOut * 0.1;
-      m_pcFrameProcessed->setPixelValue( x, y, pixelOut );
+      m_pcFrameProcessed->setPixel( x, y, pixelOut );
     }
   }
   return m_pcFrameProcessed;

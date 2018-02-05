@@ -43,7 +43,7 @@ std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedReadFormats()
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Joint Photographic Experts Group", "jpg,jpeg" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows Bitmap", "bmp" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Tagged Image File Format", "tiff" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, " Graphics Interchange Format", "gif" );
+  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Graphics Interchange Format", "gif" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Audio video interleaved", "avi" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows media video", "wmv" );
   REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "MPEG-4", "mp4" );
@@ -209,8 +209,6 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   }
   if( m_iPixelFormat == PlaYUVerFrame::NO_FMT )
   {
-    Int newPelFmt = PlaYUVerFrame::findPixelFormat( "YUV444p" );
-    m_iPixelFormat = newPelFmt;
     m_bNative = false;
     //throw PlaYUVerFailure( "StreamHandlerLibav", "Cannot open file using FFmpeg libs - unsupported pixel format" );
     //return false;
@@ -252,6 +250,30 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 
   if( !m_bNative )
   {
+    Int newPelFmt = -1;
+    const AVPixFmtDescriptor* ffPelDesc = av_pix_fmt_desc_get( AVPixelFormat( m_ffPixFmt ) );
+    if( ffPelDesc->flags & AV_PIX_FMT_FLAG_PAL )
+    {
+      newPelFmt = PlaYUVerFrame::RGB24;
+    }
+    else if( ffPelDesc->flags & AV_PIX_FMT_FLAG_ALPHA )
+    {
+      newPelFmt = PlaYUVerFrame::RGBA;
+    }
+    else if( ffPelDesc->flags & AV_PIX_FMT_FLAG_RGB )
+    {
+      newPelFmt = PlaYUVerFrame::RGB24;
+    }
+    else if( ffPelDesc->nb_components == 1 )
+    {
+      newPelFmt = PlaYUVerFrame::GRAY;
+    }
+    else
+    {
+      newPelFmt = PlaYUVerFrame::YUV444p;
+    }
+    m_iPixelFormat = newPelFmt;
+
     AVPixelFormat newAvFmt = AVPixelFormat( g_PlaYUVerPixFmtDescriptorsMap.at( m_iPixelFormat ).ffmpegPelFormat );
 
     /* create scaling context */
@@ -267,7 +289,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
     }
 
     if( av_image_alloc( m_cConvertedFrame->data, m_cConvertedFrame->linesize,
-                        m_uiWidth, m_uiHeight, newAvFmt, 1 ) < 0 )
+                        m_uiWidth, m_uiHeight, newAvFmt, 16 ) < 0 )
     {
       closeHandler();
       return false;

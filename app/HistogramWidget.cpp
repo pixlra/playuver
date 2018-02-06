@@ -382,7 +382,19 @@ Void HistogramWidget::stopHistogramComputation()
 Void HistogramWidget::updateData( PlaYUVerFrame* pcFrame, PlaYUVerFrame* pcFrameSelection )
 {
   d->imageBits = pcFrame->getBitsPel();
-  d->imageColorSpace = pcFrame->getColorSpace();
+  switch( pcFrame->getColorSpace() )
+  {
+  case PlaYUVerPixel::COLOR_YUV:
+  case PlaYUVerPixel::COLOR_GRAY:
+    d->imageColorSpace = 0;
+    break;
+  case PlaYUVerPixel::COLOR_RGB:
+  case PlaYUVerPixel::COLOR_RGBA:
+    d->imageColorSpace = 0;
+    break;
+  default:
+    d->imageColorSpace = 0;
+  }
   d->imageChannels = pcFrame->getNumberChannels();
 
   // We are deleting the histogram data,

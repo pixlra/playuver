@@ -57,47 +57,29 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
   Pel* pPelInput;
   Pel* pPelOut;
 
-  UInt xStartOut = m_iShiftHor >= 0 ? m_iShiftHor : 0;
-  UInt xStartIn = m_iShiftHor >= 0 ? 0 : -m_iShiftHor;
-  UInt xEndOut = m_iShiftHor >= 0 ? m_pcProcessedFrame->getWidth() : m_pcProcessedFrame->getWidth() + m_iShiftHor;
-
-  UInt yStartOut = m_iShiftVer >= 0 ? m_iShiftVer : 0;
-  UInt yStartIn = m_iShiftVer >= 0 ? 0 : -m_iShiftVer;
-  UInt yEndOut = m_iShiftVer >= 0 ? m_pcProcessedFrame->getHeight() : m_pcProcessedFrame->getHeight() + m_iShiftVer;
-
   m_pcProcessedFrame->clear();
 
-  for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ )
+  for( UInt ch = 0; ch < m_pcProcessedFrame->getNumberChannels(); ch++ )
   {
-    pPelInput = &( apcFrameList[0]->getPelBufferYUV()[LUMA][yIn][xStartIn] );
-    pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[LUMA][y][xStartOut] );
-    for( UInt x = xStartOut; x < xEndOut; x++ )
-    {
-      *pPelOut = *pPelInput;
-      pPelInput++;
-      pPelOut++;
-    }
-  }
+    UInt uiWidth = m_pcProcessedFrame->getWidth( ch );
+    UInt uiHeight = m_pcProcessedFrame->getHeight( ch );
 
-  Int iShiftHorChroma = CHROMASHIFT( m_iShiftHor, m_pcProcessedFrame->getChromaWidthRatio() );
-  Int iShiftVerChroma = CHROMASHIFT( m_iShiftVer, m_pcProcessedFrame->getChromaHeightRatio() );
+    Int iShiftHor = m_iShiftHor >> ( ch > 0 ? m_pcProcessedFrame->getChromaWidthRatio() : 0 );
+    Int iShiftVer = m_iShiftVer >> ( ch > 0 ? m_pcProcessedFrame->getChromaHeightRatio() : 0 );
 
-  xStartOut = iShiftHorChroma >= 0 ? iShiftHorChroma : 0;
-  xStartIn = iShiftHorChroma >= 0 ? 0 : -iShiftHorChroma;
-  xEndOut = iShiftHorChroma >= 0 ? m_pcProcessedFrame->getChromaWidth() :
-                                   m_pcProcessedFrame->getChromaWidth() + iShiftHorChroma;
+    UInt xStartIn = iShiftHor >= 0 ? 0 : -iShiftHor;
+    UInt yStartIn = iShiftVer >= 0 ? 0 : -iShiftVer;
 
-  yStartOut = iShiftVerChroma >= 0 ? iShiftVerChroma : 0;
-  yStartIn = iShiftVerChroma >= 0 ? 0 : -iShiftVerChroma;
-  yEndOut = iShiftVerChroma >= 0 ? m_pcProcessedFrame->getChromaHeight() :
-                                   m_pcProcessedFrame->getChromaHeight() + iShiftVerChroma;
+    UInt xStartOut = std::max( iShiftHor, 0 );
+    UInt xEndOut = std::min( uiWidth, uiWidth + iShiftHor );
 
-  for( UInt c = 1; c < m_pcProcessedFrame->getNumberChannels(); c++ )
-  {
+    UInt yStartOut = std::max( iShiftVer, 0 );
+    UInt yEndOut = std::min( uiHeight, uiHeight + iShiftVer );
+
     for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ )
     {
-      pPelInput = &( apcFrameList[0]->getPelBufferYUV()[c][yIn][xStartIn] );
-      pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[c][y][xStartOut] );
+      pPelInput = &( apcFrameList[0]->getPelBufferYUV()[ch][yIn][xStartIn] );
+      pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[ch][y][xStartOut] );
       for( UInt x = xStartOut; x < xEndOut; x++ )
       {
         *pPelOut = *pPelInput;

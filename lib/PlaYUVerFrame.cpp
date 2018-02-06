@@ -455,6 +455,13 @@ struct PlaYUVerFramePrivate
     {
       realChannel = channel;
     }
+    else if( m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_GRAY )
+    {
+      if( channel >= 10 && channel < 11 )
+      {
+        realChannel = channel - 10;
+      }
+    }
     else if( m_pcPelFormat->colorSpace == PlaYUVerPixel::COLOR_YUV )
     {
       if( channel >= 10 && channel < 13 )
@@ -473,6 +480,8 @@ struct PlaYUVerFramePrivate
         realChannel = channel - 20;
       }
     }
+    if( realChannel > (Int)m_uiHistoChannels )
+      realChannel = -1;
     return realChannel;
   }
 
@@ -647,23 +656,9 @@ UInt8 PlaYUVerFrame::getChromaHeightRatio() const
   return d->m_pcPelFormat->log2ChromaHeight;
 }
 
-UInt PlaYUVerFrame::getChromaWidth() const
-{
-  if( d->m_pcPelFormat->colorSpace == GRAY )
-    return 0;
-  return CHROMASHIFT( d->m_uiWidth, d->m_pcPelFormat->log2ChromaWidth );
-}
-
-UInt PlaYUVerFrame::getChromaHeight() const
-{
-  if( d->m_pcPelFormat->colorSpace == GRAY )
-    return 0;
-  return CHROMASHIFT( d->m_uiHeight, d->m_pcPelFormat->log2ChromaHeight );
-}
-
 UInt PlaYUVerFrame::getChromaLength() const
 {
-  return getChromaWidth() * getChromaHeight();
+  return getWidth( 1 ) * getHeight( 1 );
 }
 
 UInt PlaYUVerFrame::getBitsPel() const
@@ -727,16 +722,28 @@ UChar* PlaYUVerFrame::getRGBBuffer() const
   }
   return NULL;
 }
-UChar* PlaYUVerFrame::getRGBBuffer()
+//UChar* PlaYUVerFrame::getRGBBuffer()
+//{
+//  if( !d->m_bHasRGBPel )
+//  {
+//    fillRGBBuffer();
+//  }
+//  return d->m_pcARGB32;
+//}
+
+Pel PlaYUVerFrame::operator()( UInt ch, UInt xPos, UInt yPos )
 {
-  if( !d->m_bHasRGBPel )
-  {
-    fillRGBBuffer();
-  }
-  return d->m_pcARGB32;
+  if( ch < d->m_pcPelFormat->numberChannels )
+    return d->m_pppcInputPel[ch][yPos][xPos];
+  return 0;
 }
 
-PlaYUVerPixel PlaYUVerFrame::getPixel( Int xPos, Int yPos )
+PlaYUVerPixel PlaYUVerFrame::operator()( UInt xPos, UInt yPos )
+{
+  return getPixel( xPos, yPos );
+}
+
+PlaYUVerPixel PlaYUVerFrame::getPixel( UInt xPos, UInt yPos )
 {
   PlaYUVerPixel PixelValue( d->m_pcPelFormat->colorSpace );
   for( UInt ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
@@ -748,7 +755,7 @@ PlaYUVerPixel PlaYUVerFrame::getPixel( Int xPos, Int yPos )
   return PixelValue;
 }
 
-PlaYUVerPixel PlaYUVerFrame::getPixel( Int xPos, Int yPos, PlaYUVerPixel::ColorSpace eColorSpace )
+PlaYUVerPixel PlaYUVerFrame::getPixel( UInt xPos, UInt yPos, PlaYUVerPixel::ColorSpace eColorSpace )
 {
   PlaYUVerPixel PixelValue( d->m_pcPelFormat->colorSpace );
   for( UInt ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
@@ -761,7 +768,7 @@ PlaYUVerPixel PlaYUVerFrame::getPixel( Int xPos, Int yPos, PlaYUVerPixel::ColorS
   return PixelValue;
 }
 
-Void PlaYUVerFrame::setPixel( Int xPos, Int yPos, PlaYUVerPixel pixel )
+Void PlaYUVerFrame::setPixel( UInt xPos, UInt yPos, PlaYUVerPixel pixel )
 {
   for( UInt ch = 0; ch < d->m_pcPelFormat->numberChannels; ch++ )
   {
@@ -1552,8 +1559,8 @@ Double PlaYUVerFrame::getSSIM( PlaYUVerFrame* Org, Int component )
   }
   else
   {
-    dSSIM = compute_ssim( d->m_pppcInputPel[component], Org->getPelBufferYUV()[component], getChromaWidth(),
-                          getChromaHeight(), 4, 4, 255, 4 );
+    dSSIM = compute_ssim( d->m_pppcInputPel[component], Org->getPelBufferYUV()[component], getWidth( component ),
+                          getHeight( component ), 4, 4, 255, 4 );
   }
   return dSSIM;
 }

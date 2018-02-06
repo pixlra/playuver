@@ -253,12 +253,23 @@ public:
 	 */
   UInt getPixels( Int channel = 0 ) const;
 
+  /**
+	 * Get chroma width ratio
+	 * @return ratio multiple of 2
+	 */
   UInt8 getChromaWidthRatio() const;
+
+  /**
+	 * Get chroma height ratio
+	 * @return ratio multiple of 2
+	 */
   UInt8 getChromaHeightRatio() const;
-  UInt getChromaWidth() const;
-  UInt getChromaHeight() const;
+
+  /**
+	 * Get number of pixels in each chroma channel
+	 * @return number of pixels
+	 */
   UInt getChromaLength() const;
-  UInt getChromaSize() const;
 
   /**
 	 * Get number of bits per pixel
@@ -285,12 +296,50 @@ public:
 
   Pel*** getPelBufferYUV() const;
   Pel*** getPelBufferYUV();
-  UChar* getRGBBuffer() const;
-  UChar* getRGBBuffer();
 
-  PlaYUVerPixel getPixel( Int xPos, Int yPos );
-  PlaYUVerPixel getPixel( Int xPos, Int yPos, PlaYUVerPixel::ColorSpace eColorSpace );
-  Void setPixel( Int xPos, Int yPos, PlaYUVerPixel pixel );
+  UChar* getRGBBuffer() const;
+
+  /**
+	 * Get pixel value at coordinates
+	 * @param ch frame channel
+	 * @param xPos position in X axis
+	 * @param yPos position in Y axis
+	 * @return pixel value
+	 */
+  Pel operator()( UInt ch, UInt xPos, UInt yPos );
+
+  /**
+	 * Get pixel value at coordinates
+	 * @param xPos position in X axis
+	 * @param yPos position in Y axis
+	 * @return pixel value
+	 */
+  PlaYUVerPixel operator()( UInt xPos, UInt yPos );
+
+  /**
+	 * Get pixel value at coordinates
+	 * @param xPos position in X axis
+	 * @param yPos position in Y axis
+	 * @return pixel value
+	 */
+  PlaYUVerPixel getPixel( UInt xPos, UInt yPos );
+
+  /**
+	 * Get pixel value at coordinates
+	 * in the desired color space
+	 * @param xPos position in X axis
+	 * @param yPos position in Y axis
+	 * @param eColorSpace desired color space
+	 * @return pixel value
+	 */
+  PlaYUVerPixel getPixel( UInt xPos, UInt yPos, PlaYUVerPixel::ColorSpace eColorSpace );
+
+  /**
+	 * Set pixel value at coordinates to a given value
+	 * @param xPos position in X axis
+	 * @param yPos position in Y axis
+	 */
+  Void setPixel( UInt xPos, UInt yPos, PlaYUVerPixel pixel );
 
   Void copyFrom( const PlaYUVerFrame& );
   Void copyFrom( const PlaYUVerFrame* );

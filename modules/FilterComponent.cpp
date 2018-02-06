@@ -90,7 +90,7 @@ Bool FilterComponentChromaU::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   if( apcFrameList[0]->getNumberChannels() > 1 )
   {
-    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(),
+    return createFilter( apcFrameList[0]->getWidth( CHROMA_U ), apcFrameList[0]->getHeight( CHROMA_U ),
                          apcFrameList[0]->getBitsPel() );
   }
   return false;
@@ -113,7 +113,7 @@ Bool FilterComponentChromaV::create( std::vector<PlaYUVerFrame*> apcFrameList )
 {
   if( apcFrameList[0]->getNumberChannels() > 1 )
   {
-    return createFilter( apcFrameList[0]->getChromaWidth(), apcFrameList[0]->getChromaHeight(),
+    return createFilter( apcFrameList[0]->getWidth( CHROMA_V ), apcFrameList[0]->getHeight( CHROMA_V ),
                          apcFrameList[0]->getBitsPel() );
   }
   return false;

@@ -10,24 +10,32 @@ set(PlaYUVer_Lib_SRCS
     LibMemory.h
     PlaYUVerLib.h
     # Frame
+    PlaYUVerFrame.h
     PlaYUVerFrame.cpp
+    PlaYUVerFramePixelFormats.h
     PlaYUVerFramePixelFormats.cpp
     # Stream
-    PlaYUVerStreamHandlerIf.h
+    PlaYUVerStream.h
     PlaYUVerStream.cpp
+    PlaYUVerStreamHandlerIf.h
+    StreamHandlerRaw.h
     StreamHandlerRaw.cpp
+    StreamHandlerPortableMap.h
     StreamHandlerPortableMap.cpp
     # Options Parser
+    PlaYUVerOptions.h
     PlaYUVerOptions.cpp
     # Modules
     PlaYUVerModuleIf.h
 )
 
 IF( USE_FFMPEG )
+  LIST( APPEND PlaYUVer_Lib_SRCS StreamHandlerLibav.h )
   LIST( APPEND PlaYUVer_Lib_SRCS StreamHandlerLibav.cpp )
 ENDIF()
 
 IF( USE_OPENCV )
+  LIST( APPEND PlaYUVer_Lib_SRCS StreamHandlerOpenCV.h )
   LIST( APPEND PlaYUVer_Lib_SRCS StreamHandlerOpenCV.cpp )
 ENDIF()
 

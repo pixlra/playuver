@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -27,13 +27,13 @@
 FrameCrop::FrameCrop()
 {
   /* Module Definition */
-  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_iModuleType = CLP_FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Utilities";
   m_pchModuleLongName = "Crop";
   m_pchModuleName = "FrameCrop";
   m_pchModuleTooltip = "Crop a region of a frame";
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
-  m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS;
+  m_uiNumberOfFrames = 1;
+  m_uiModuleRequirements = CLP_MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions()                                                                   /**/
       ( "xPosition", m_uiXPosition, "X cordinate of the left-top corner of the crop region [0]" ) /**/
@@ -48,7 +48,7 @@ FrameCrop::FrameCrop()
   m_iYSize = -1;
 }
 
-Void FrameCrop::create( PlaYUVerFrame* frame )
+void FrameCrop::create( CalypFrame* frame )
 {
   m_pcCropedFrame = NULL;
   if( m_uiXPosition >= frame->getWidth() )
@@ -59,16 +59,16 @@ Void FrameCrop::create( PlaYUVerFrame* frame )
     m_iXSize = frame->getWidth() - m_uiXPosition;
   if( m_iYSize == -1 || ( m_uiYPosition + m_iYSize ) >= frame->getHeight() )
     m_iYSize = frame->getHeight() - m_uiYPosition;
-  m_pcCropedFrame = new PlaYUVerFrame( m_iXSize, m_iYSize, frame->getPelFormat(), frame->getBitsPel() );
+  m_pcCropedFrame = new CalypFrame( m_iXSize, m_iYSize, frame->getPelFormat(), frame->getBitsPel() );
 }
 
-PlaYUVerFrame* FrameCrop::process( PlaYUVerFrame* frame )
+CalypFrame* FrameCrop::process( CalypFrame* frame )
 {
   m_pcCropedFrame->copyFrom( frame, m_uiXPosition, m_uiYPosition );
   return m_pcCropedFrame;
 }
 
-Void FrameCrop::destroy()
+void FrameCrop::destroy()
 {
   if( m_pcCropedFrame )
     delete m_pcCropedFrame;

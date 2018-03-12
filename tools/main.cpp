@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *
  *                                Luis Lucas      (luisfrlucas@gmail.com)
@@ -23,14 +23,14 @@
  * \brief    main file
  */
 
-#include "PlaYUVerTools.h"
+#include "CalypTools.h"
 
-int main( int argc, Char* argv[] )
+int main( int argc, char* argv[] )
 {
-  Int iRet = 0;
-  PlaYUVerTools PlaYUVerToolsApp;
+  int iRet = 0;
+  CalypTools CalypToolsApp;
 
-  iRet = PlaYUVerToolsApp.Open( argc, argv );
+  iRet = CalypToolsApp.Open( argc, argv );
   if( iRet == 1 )
   {
     return 0;
@@ -41,13 +41,13 @@ int main( int argc, Char* argv[] )
     return 1;
   }
 
-  if( PlaYUVerToolsApp.Process() > 1 )
+  if( CalypToolsApp.Process() > 1 )
   {
     printf( "Exiting with error \n" );
     return 1;
   }
 
-  if( PlaYUVerToolsApp.Close() > 1 )
+  if( CalypToolsApp.Close() > 1 )
   {
     printf( "Exiting with error \n" );
     return 1;

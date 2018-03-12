@@ -1,8 +1,12 @@
 ###
-### CMakeLists for playuver app component
+### CMakeLists for calyp app component
 ###
 
-INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/external )
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}
+                     ${CMAKE_CURRENT_SOURCE_DIR}/external
+                     ${CMAKE_CURRENT_SOURCE_DIR}/dialog
+                     ${CMAKE_CURRENT_SOURCE_DIR}/docks
+                     ${CMAKE_CURRENT_SOURCE_DIR}/widgets )
 
 OPTION( USE_QTDBUS    "Build with QtDBus"         ON  )
 OPTION( USE_FERVOR    "Add Fervor support"        OFF )
@@ -24,50 +28,51 @@ IF( USE_QTDBUS )
   ENDIF()
 ENDIF()
 
-set(plaYUVer_App_SRCS
+set(Calyp_App_SRCS
 # Main
     main.cpp
-    PlaYUVerApp.cpp
-    PlaYUVerSubWindowHandle.cpp
-    PlaYUVerMdiSubWindow.cpp
+    MainWindow.cpp
+# Module SubWindow
+    SubWindowHandle.cpp
+    MdiSubWindow.cpp
     SubWindowAbstract.cpp
 # Module Video
+    VideoHandle.cpp
     VideoSubWindow.cpp
     ViewArea.cpp
-    VideoHandle.cpp
-    FramePropertiesDock.cpp
+    GridManager.cpp
 # Module Quality
     QualityHandle.cpp
-    QualityMeasurementSidebar.cpp
     PlotSubWindow.cpp
     external/qcustomplot/qcustomplot.cpp
 # Module Plugins
     ModulesHandle.cpp
-    ModulesHandleOptDialog.cpp
-    ModuleHandleDock.cpp
-    PlaYUVerAppModuleIf.cpp
-    GridManager.cpp
+    CalypAppModuleIf.cpp
 # Dialogs
-    AboutDialog.cpp
-    ConfigureFormatDialog.cpp
-    DialogSubWindowSelector.cpp
-    ProgressBar.cpp
-    SeekStreamDialog.cpp
+    dialog/AboutDialog.cpp
+    dialog/ConfigureFormatDialog.cpp
+    dialog/SubWindowSelectorDialog.cpp
+    dialog/ProgressBar.cpp
+    dialog/SeekStreamDialog.cpp
+    dialog/ModulesHandleOptDialog.cpp
 # Widgets
-    HistogramWidget.cpp
-    WidgetFrameNumber.cpp
-    WidgetFrameNumber.cpp
+    widgets/HistogramWidget.cpp
+    widgets/FrameNumberWidget.cpp
+# Docks
+    docks/FramePropertiesDock.cpp
+    docks/ModuleHandleDock.cpp
+    docks/QualityMeasurementSidebar.cpp
 )
 
 IF( USE_QTDBUS )
-  LIST( APPEND plaYUVer_App_SRCS  PlaYUVerAppAdaptor.cpp )
+  LIST( APPEND Calyp_App_SRCS  DBusAppAdaptor.cpp )
 ENDIF()
 
 
-set(PlaYUVer_App_UI "" )
+set(Calyp_App_UI "" )
 
-set(PlaYUVer_App_RCC
-  resources/playuver.qrc
+set(Calyp_App_RCC
+  resources/${PROJECT_NAME}.qrc
 )
 
 
@@ -78,7 +83,7 @@ IF( USE_FERVOR )
   IF(EXISTS ${FERVOR_DIR} )
 
     SET( FERVOR_APP_NAME ${PROJECT_NAME} )
-    SET( FERVOR_APP_VERSION ${PLAYUVER_VERSION_STRING} )
+    SET( FERVOR_APP_VERSION ${CALYP_VERSION_STRING} )
 
     ADD_SUBDIRECTORY( ${FERVOR_DIR} )
 
@@ -106,8 +111,8 @@ ENDIF()
 SET_PACKAGE_PROPERTIES(Fervor PROPERTIES URL "https://github.com/pypt/fervor" DESCRIPTION "Fervor lib includes check for updates feature" TYPE OPTIONAL )
 ADD_FEATURE_INFO(Fervor USE_FERVOR "Fervor lib includes check for updates feature.")
 
-QT5_WRAP_UI( PlaYUVer_App_UI_Wrap ${PlaYUVer_App_UI} )
-QT5_ADD_RESOURCES( PlaYUVer_App_RCC ${PlaYUVer_App_RCC} )
+QT5_WRAP_UI( Calyp_App_UI_Wrap ${Calyp_App_UI} )
+QT5_ADD_RESOURCES( Calyp_App_RCC ${Calyp_App_RCC} )
 
 # Instruct CMake to run moc automatically when needed.
 SET( CMAKE_AUTOMOC ON )
@@ -117,27 +122,27 @@ IF( WIN32 )
   set(WINDOWS_RES_FILE ${CMAKE_CURRENT_BINARY_DIR}/resources.obj)
   IF( MSVC )
     add_custom_command(OUTPUT ${WINDOWS_RES_FILE}
-      COMMAND rc.exe /fo ${WINDOWS_RES_FILE} playuver.rc
+      COMMAND rc.exe /fo ${WINDOWS_RES_FILE} ${PROJECT_NAME}.rc
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources
     )
   ELSE()
     add_custom_command(OUTPUT ${WINDOWS_RES_FILE}
-      COMMAND windres.exe playuver.rc ${WINDOWS_RES_FILE}
+      COMMAND windres.exe ${PROJECT_NAME}.rc ${WINDOWS_RES_FILE}
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/resources
     )
   ENDIF()
 ENDIF()
 
 
-ADD_EXECUTABLE( ${PROJECT_NAME} ${plaYUVer_App_SRCS} ${HEADERS_MOC_FILES} ${PlaYUVer_App_UI_Wrap} ${PlaYUVer_App_RCC} ${WINDOWS_RES_FILE} )
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME} PlaYUVerLib PlaYUVerModules ${APP_LINKER_LIBS} ${QT_LINKER_LIBS} QCustomPlotLib )
+ADD_EXECUTABLE( ${PROJECT_NAME} ${Calyp_App_SRCS} ${HEADERS_MOC_FILES} ${Calyp_App_UI_Wrap} ${Calyp_App_RCC} ${WINDOWS_RES_FILE} )
+TARGET_LINK_LIBRARIES( ${PROJECT_NAME} ${PROJECT_LIBRARY} CalypModules ${APP_LINKER_LIBS} ${QT_LINKER_LIBS} QCustomPlotLib )
 
 # QT5_USE_MODULES( ${PROJECT_NAME} ${QT_MODULES} )
 
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION bin )
-INSTALL(FILES resources/playuver.desktop DESTINATION share/applications )
-INSTALL(FILES resources/playuver.png DESTINATION share/pixmaps )
-INSTALL(FILES resources/playuver.xml DESTINATION share/mime/packages )
+INSTALL(FILES resources/calyp.desktop DESTINATION share/applications )
+INSTALL(FILES resources/calyp.png DESTINATION share/pixmaps )
+INSTALL(FILES resources/calyp.xml DESTINATION share/mime/packages )
 
 
 

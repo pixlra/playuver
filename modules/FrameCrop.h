@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -25,26 +25,26 @@
 #ifndef __FRAMECROP_H__
 #define __FRAMECROP_H__
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class FrameCrop : public PlaYUVerModuleIf
+class FrameCrop : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( FrameCrop )
 
 private:
-  PlaYUVerFrame* m_pcCropedFrame;
-  UInt m_uiXPosition;
-  UInt m_uiYPosition;
-  Int m_iXSize;
-  Int m_iYSize;
+  CalypFrame* m_pcCropedFrame;
+  unsigned int m_uiXPosition;
+  unsigned int m_uiYPosition;
+  int m_iXSize;
+  int m_iYSize;
 
 public:
   FrameCrop();
   virtual ~FrameCrop() {}
-  Void create( PlaYUVerFrame* );
-  PlaYUVerFrame* process( PlaYUVerFrame* );
-  Void destroy();
+  void create( CalypFrame* );
+  CalypFrame* process( CalypFrame* );
+  void destroy();
 };
 
 #endif  // __FRAMECROP_H__

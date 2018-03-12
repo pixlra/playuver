@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -25,23 +25,23 @@
 #ifndef __FILTERCOMPONENT_H__
 #define __FILTERCOMPONENT_H__
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class FilterComponentModule : public PlaYUVerModuleIf
+class FilterComponentModule : public CalypModuleIf
 {
 private:
-  PlaYUVerFrame* m_pcFilteredFrame;
+  CalypFrame* m_pcFilteredFrame;
 
 public:
   FilterComponentModule();
   virtual ~FilterComponentModule() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList ) = 0;
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList ) = 0;
-  Void destroy();
+  bool create( std::vector<CalypFrame*> apcFrameList ) = 0;
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList ) = 0;
+  void destroy();
 
-  Bool createFilter( UInt uiWidth, UInt uiHeight, UInt bitsPixel );
-  PlaYUVerFrame* filterComponent( PlaYUVerFrame* InputFrame, Int Component );
+  bool createFilter( unsigned int uiWidth, unsigned int uiHeight, unsigned int bitsPixel );
+  CalypFrame* filterComponent( CalypFrame* InputFrame, int Component );
 };
 
 class FilterComponentLuma : public FilterComponentModule
@@ -50,8 +50,8 @@ class FilterComponentLuma : public FilterComponentModule
 public:
   FilterComponentLuma();
   virtual ~FilterComponentLuma() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
 };
 
 class FilterComponentChromaU : public FilterComponentModule
@@ -60,8 +60,8 @@ class FilterComponentChromaU : public FilterComponentModule
 public:
   FilterComponentChromaU();
   virtual ~FilterComponentChromaU() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
 };
 
 class FilterComponentChromaV : public FilterComponentModule
@@ -70,8 +70,8 @@ class FilterComponentChromaV : public FilterComponentModule
 public:
   FilterComponentChromaV();
   virtual ~FilterComponentChromaV() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
 };
 
 #endif  // __FILTERFRAME_H__

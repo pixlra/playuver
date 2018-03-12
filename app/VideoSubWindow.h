@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -30,46 +30,46 @@
 #include <QRect>
 #include <QString>
 #include <QVector>
-#include "PlaYUVerAppDefs.h"
+#include "CommonDefs.h"
 #include "SubWindowAbstract.h"
 #include "ViewArea.h"
 #include "config.h"
-#include "lib/PlaYUVerStream.h"
+#include "lib/CalypStream.h"
 
 class QScrollArea;
 
 class VideoInformation;
 class VideoSubWindow;
-class PlaYUVerAppModuleIf;
+class CalypAppModuleIf;
 
 typedef struct
 {
   QString m_cFilename;
-  UInt m_uiWidth;
-  UInt m_uiHeight;
-  Int m_iPelFormat;
-  UInt m_uiBitsPelPixel;
-  UInt m_iEndianness;
-  UInt m_uiFrameRate;
-  UInt64 m_uiFileSize;
-} PlaYUVerStreamInfo;
-typedef QVector<PlaYUVerStreamInfo> PlaYUVerStreamInfoVector;
+  unsigned int m_uiWidth;
+  unsigned int m_uiHeight;
+  int m_iPelFormat;
+  unsigned int m_uiBitsPelPixel;
+  unsigned int m_iEndianness;
+  unsigned int m_uiFrameRate;
+  unsigned long long int m_uiFileSize;
+} CalypFileInfo;
+typedef QVector<CalypFileInfo> CalypFileInfoVector;
 
-QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& d );
-QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& d );
-Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename );
+QDataStream& operator<<( QDataStream& out, const CalypFileInfoVector& d );
+QDataStream& operator>>( QDataStream& in, CalypFileInfoVector& d );
+int findCalypStreamInfo( CalypFileInfoVector array, QString filename );
 
 class VideoSubWindow : public SubWindowAbstract
 {
   Q_OBJECT
 
 private:
-  Bool m_bWindowBusy;
+  bool m_bWindowBusy;
 
   QScrollArea* m_pcScrollArea;
   QPoint m_cCurrScroll;
-  Double m_dHorScroll;
-  Double m_dVerScroll;
+  double m_dHorScroll;
+  double m_dVerScroll;
 
   ViewArea* m_cViewArea;
 
@@ -77,29 +77,29 @@ private:
 
   QString m_cFilename;
   QString m_cStreamInformation;
-  PlaYUVerStreamInfo m_sStreamInfo;
-  PlaYUVerStream* m_pCurrStream;
+  CalypFileInfo m_sStreamInfo;
+  CalypStream* m_pCurrStream;
 
-  PlaYUVerFrame* m_pcCurrFrame;
+  CalypFrame* m_pcCurrFrame;
   QRect m_cSelectedArea;
 
-  PlaYUVerAppModuleIf* m_pcCurrentDisplayModule;
-  QList<PlaYUVerAppModuleIf*> m_apcCurrentModule;
+  CalypAppModuleIf* m_pcCurrentDisplayModule;
+  QList<CalypAppModuleIf*> m_apcCurrentModule;
 
   VideoSubWindow* m_pcReferenceSubWindow;
 
   // QString m_cWindowShortName;
   QString m_cCurrFileName;
 
-  Bool m_bIsPlaying;
+  bool m_bIsPlaying;
 
   QTimer* m_pcUpdateTimer;
   /**
    * Threads variables
    * QtConcurrent
    */
-  QFuture<Void> m_cRefreshResult;
-  QFuture<Void> m_cReadResult;
+  QFuture<void> m_cRefreshResult;
+  QFuture<void> m_cReadResult;
 
 public:
   enum VideoSubWindowCategories
@@ -110,34 +110,34 @@ public:
   VideoSubWindow( enum VideoSubWindowCategories category, QWidget* parent = 0 );
   ~VideoSubWindow();
 
-  Bool loadFile( QString cFilename, Bool bForceDialog = false );
-  Bool loadFile( PlaYUVerStreamInfo* streamInfo );
-  Void loadAll();
-  Bool save( QString filename );
-  Bool saveStream( QString filename );
+  bool loadFile( QString cFilename, bool bForceDialog = false );
+  bool loadFile( CalypFileInfo* streamInfo );
+  void loadAll();
+  bool save( QString filename );
+  bool saveStream( QString filename );
 
-  Void refreshSubWindow();
-  Void refreshFrame( Bool bThreaded = false );
+  void refreshSubWindow();
+  void refreshFrame( bool bThreaded = false );
 
-  Bool play();
-  Void pause();
-  Bool playEvent();
-  Void stop();
+  bool play();
+  void pause();
+  bool playEvent();
+  void stop();
 
-  Bool isPlaying() { return m_bIsPlaying; }
-  Void seekAbsoluteEvent( UInt new_frame_num );
-  Void seekRelativeEvent( Bool bIsFoward );
+  bool isPlaying() { return m_bIsPlaying; }
+  void seekAbsoluteEvent( unsigned int new_frame_num );
+  void seekRelativeEvent( bool bIsFoward );
 
-  Void setCurrFrame( PlaYUVerFrame* pcCurrFrame );
+  void setCurrFrame( CalypFrame* pcCurrFrame );
 
   QScrollArea* getScroll() { return m_pcScrollArea; }
-  PlaYUVerStreamInfo getStreamInfo() { return m_sStreamInfo; }
+  CalypFileInfo getStreamInfo() { return m_sStreamInfo; }
   QString getStreamInformation() { return m_cStreamInformation; }
-  PlaYUVerStream* getInputStream() { return m_pCurrStream; }
-  PlaYUVerStream* getCurrStream() { return m_pCurrStream; }
-  PlaYUVerFrame* getCurrFrame() { return m_pcCurrFrame; }
+  CalypStream* getInputStream() { return m_pCurrStream; }
+  CalypStream* getCurrStream() { return m_pCurrStream; }
+  CalypFrame* getCurrFrame() { return m_pcCurrFrame; }
   ViewArea* getViewArea() { return m_cViewArea; }
-  Void setRefSubWindow( VideoSubWindow* subWindow )
+  void setRefSubWindow( VideoSubWindow* subWindow )
   {
     m_pcReferenceSubWindow = NULL;
     if( subWindow )
@@ -150,14 +150,14 @@ public:
    * Functions to enable a module in the
    * current SubWindow
    */
-  Void enableModule( PlaYUVerAppModuleIf* pcModule );
-  Void disableModule( PlaYUVerAppModuleIf* pcModule = NULL );
-  Void associateModule( PlaYUVerAppModuleIf* pcModule );
+  void enableModule( CalypAppModuleIf* pcModule );
+  void disableModule( CalypAppModuleIf* pcModule = NULL );
+  void associateModule( CalypAppModuleIf* pcModule );
 
-  PlaYUVerAppModuleIf* getDisplayModule() { return m_pcCurrentDisplayModule; }
-  QList<PlaYUVerAppModuleIf*> getModuleArray()
+  CalypAppModuleIf* getDisplayModule() { return m_pcCurrentDisplayModule; }
+  QList<CalypAppModuleIf*> getModuleArray()
   {
-    QList<PlaYUVerAppModuleIf*> apcModulesArray;
+    QList<CalypAppModuleIf*> apcModulesArray;
     if( m_pcCurrentDisplayModule )
       apcModulesArray.append( m_pcCurrentDisplayModule );
     apcModulesArray.append( m_apcCurrentModule );
@@ -167,12 +167,12 @@ public:
   /**
    * Virtual functions from SubWindowAbstract
    */
-  Void normalSize();
-  Void zoomToFit();
-  Void scaleView( Double scale, QPoint center = QPoint() );
-  Void zoomToFactor( Double factor, QPoint center = QPoint() );
+  void normalSize();
+  void zoomToFit();
+  void scaleView( double scale, QPoint center = QPoint() );
+  void zoomToFactor( double factor, QPoint center = QPoint() );
 
-  Double getScaleFactor() { return m_cViewArea->getZoomFactor(); }
+  double getScaleFactor() { return m_cViewArea->getZoomFactor(); }
   /**
    * Size related functions
    */
@@ -180,34 +180,34 @@ public:
   QSize sizeHint( const QSize& ) const;
 
   QString getCurrentFileName() { return m_cFilename; }
-  Bool getIsModule() { return getCategory() | SubWindowAbstract::MODULE_SUBWINDOW; }
-  Void clearWindowBusy() { m_bWindowBusy = false; }
-  Void setFillWindow( Bool bFlag );
+  bool getIsModule() { return getCategory() | SubWindowAbstract::MODULE_SUBWINDOW; }
+  void clearWindowBusy() { m_bWindowBusy = false; }
+  void setFillWindow( bool bFlag );
 
-  Void adjustScrollBarToRatio( const Double& horRatio, const Double& verRatio );
+  void adjustScrollBarToRatio( const double& horRatio, const double& verRatio );
 
 private:
-  Void refreshFrameOperation();
-  Bool goToNextFrame( Bool bThreaded = false );
+  void refreshFrameOperation();
+  bool goToNextFrame( bool bThreaded = false );
 
-  static Bool guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPixel,
-                           Int& rEndianness );
+  static bool guessFormat( QString filename, unsigned int& rWidth, unsigned int& rHeight, int& rInputFormat, unsigned int& rBitsPerPixel,
+                           int& rEndianness );
 
-  Bool hasRunningModule();
+  bool hasRunningModule();
 
   /**
    * Private zoom function to handle
    * zoom to fit
    */
-  Void scaleView( const QSize& size, QPoint center = QPoint() );
-  Void updateVideoWindowInfo();
+  void scaleView( const QSize& size, QPoint center = QPoint() );
+  void updateVideoWindowInfo();
 
   QSize getScrollSize();
 
 protected:
-  Void keyPressEvent( QKeyEvent* event );
-  Void resizeEvent( QResizeEvent* event );
-  Void closeEvent( QCloseEvent* event );
+  void keyPressEvent( QKeyEvent* event );
+  void resizeEvent( QResizeEvent* event );
+  void closeEvent( QCloseEvent* event );
 
 public Q_SLOTS:
   void updateWindowOnTimeout();
@@ -218,7 +218,7 @@ public Q_SLOTS:
   void updatePixelValueStatusBar( const QPoint& pos );
 };
 
-Q_DECLARE_METATYPE( PlaYUVerStreamInfo );
-Q_DECLARE_METATYPE( PlaYUVerStreamInfoVector );
+Q_DECLARE_METATYPE( CalypFileInfo );
+Q_DECLARE_METATYPE( CalypFileInfoVector );
 
 #endif  // __VIDEOSUBWINDOW_H__

@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -25,7 +25,7 @@
 #ifndef __VIDEOHANDLE_H__
 #define __VIDEOHANDLE_H__
 
-#include "PlaYUVerAppDefs.h"
+#include "CommonDefs.h"
 #include "config.h"
 
 #include <QMenu>
@@ -43,37 +43,37 @@ class QLabel;
 class QSlider;
 class QElapsedTimer;
 
-class PlaYUVerSubWindowHandle;
+class SubWindowHandle;
 class SubWindowAbstract;
 class VideoSubWindow;
 class FramePropertiesDock;
-class WidgetFrameNumber;
+class FrameNumberWidget;
 
 class VideoHandle : public QObject
 {
   Q_OBJECT
 public:
-  VideoHandle( QWidget*, PlaYUVerSubWindowHandle* );
+  VideoHandle( QWidget*, SubWindowHandle* );
   ~VideoHandle();
 
-  Void createActions();
+  void createActions();
   QMenu* createVideoMenu();
   QMenu* createImageMenu();
   QToolBar* createToolBar();
   QDockWidget* createDock();
   QWidget* createStatusBarMessage();
-  Void updateMenus();
+  void updateMenus();
 
-  Void readSettings();
-  Void writeSettings();
+  void readSettings();
+  void writeSettings();
 
-  Void update( VideoSubWindow* currSubWindow );
+  void update( VideoSubWindow* currSubWindow );
 
-  Void addSubWindow( VideoSubWindow* subWindow );
+  void addSubWindow( VideoSubWindow* subWindow );
 
 private:
   QWidget* m_pcParet;
-  PlaYUVerSubWindowHandle* m_pcMainWindowManager;
+  SubWindowHandle* m_pcMainWindowManager;
   enum
   {
     PLAY_ACT,
@@ -95,12 +95,12 @@ private:
   QSignalMapper* m_mapperVideoSeek;
 
   QSlider* m_pcFrameSlider;
-  WidgetFrameNumber* m_pcFrameNumInfo;
+  FrameNumberWidget* m_pcFrameNumInfo;
 
   // Tools Actions;
   QActionGroup* actionGroupTools;
   QSignalMapper* m_mapperTools;
-  UInt m_uiViewTool;
+  unsigned int m_uiViewTool;
 
   QMenu* m_pcMenuVideo;
   QMenu* m_pcMenuImage;
@@ -116,16 +116,16 @@ private:
   QVector<VideoSubWindow*> m_acPlayingSubWindows;
 
   QTimer* m_pcPlayingTimer;
-  Bool m_bIsPlaying;
+  bool m_bIsPlaying;
 
 #if( _CONTROL_PLAYING_TIME_ == 1 )
-  UInt m_uiNumberPlayedFrames;
+  unsigned int m_uiNumberPlayedFrames;
   Double m_dAverageFps;
   QElapsedTimer* m_pcPlayControlTimer;
 #endif
 
-  UInt64 getMaxFrameNumber();
-  Void setTimerStatus();
+  unsigned long long int getMaxFrameNumber();
+  void setTimerStatus();
 
 Q_SIGNALS:
   void changed();

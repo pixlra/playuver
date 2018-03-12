@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -29,14 +29,14 @@
 WeightedPSNR::WeightedPSNR()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;
-  m_iModuleType = FRAME_MEASUREMENT_MODULE;
+  m_iModuleAPI = CLP_MODULE_API_2;
+  m_iModuleType = CLP_FRAME_MEASUREMENT_MODULE;
   m_pchModuleCategory = "Quality";
   m_pchModuleName = "WeightedPSNR";
   m_pchModuleLongName = "Weighted PSNR";
   m_pchModuleTooltip = "Measure the weighted PSNR between two images";
-  m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS;
-  m_uiNumberOfFrames = MODULE_REQUIRES_THREE_FRAMES;
+  m_uiModuleRequirements = CLP_MODULE_REQUIRES_OPTIONS;
+  m_uiNumberOfFrames = 3;
 
   m_cModuleOptions.addOptions() /**/
       ( "Component", m_uiComponent, "Select the component to compute quality [0]" );
@@ -44,40 +44,40 @@ WeightedPSNR::WeightedPSNR()
   m_uiComponent = 0;
 }
 
-Bool WeightedPSNR::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool WeightedPSNR::create( std::vector<CalypFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
 
-  for( UInt i = 0; i < apcFrameList.size(); i++ )
+  for( unsigned int i = 0; i < apcFrameList.size(); i++ )
   {
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_RESOLUTION ) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], CalypFrame::MATCH_RESOLUTION ) )
       return false;
   }
   if( apcFrameList[0]->getNumberChannels() != 1 )
   {
     return false;
   }
-  for( UInt i = 1; i < apcFrameList.size(); i++ )
+  for( unsigned int i = 1; i < apcFrameList.size(); i++ )
   {
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[1], PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_BITS ) )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[1], CalypFrame::MATCH_COLOR_SPACE | CalypFrame::MATCH_BITS ) )
       return false;
   }
   return true;
 }
 
-Double measureWMSE( Int component, PlaYUVerFrame* Org, PlaYUVerFrame* Rec, PlaYUVerFrame* Mask )
+double measureWMSE( int component, CalypFrame* Org, CalypFrame* Rec, CalypFrame* Mask )
 {
-  Pel* pMaskPelYUV = Mask->getPelBufferYUV()[0][0];
-  Pel* pRecPelYUV = Rec->getPelBufferYUV()[component][0];
-  Pel* pOrgPelYUV = Org->getPelBufferYUV()[component][0];
+  ClpPel* pMaskPelYUV = Mask->getPelBufferYUV()[0][0];
+  ClpPel* pRecPelYUV = Rec->getPelBufferYUV()[component][0];
+  ClpPel* pOrgPelYUV = Org->getPelBufferYUV()[component][0];
 
-  Double aux_pel_1, aux_pel_2, aux_pel_mask;
-  Int diff = 0;
-  Double ssd = 0;
-  UInt count = 0;
+  double aux_pel_1, aux_pel_2, aux_pel_mask;
+  int diff = 0;
+  double ssd = 0;
+  unsigned int count = 0;
 
-  UInt numberOfPixels = 0;
-  if( component == LUMA )
+  unsigned int numberOfPixels = 0;
+  if( component == CLP_LUMA )
   {
     numberOfPixels = Org->getHeight() * Org->getWidth();
   }
@@ -86,7 +86,7 @@ Double measureWMSE( Int component, PlaYUVerFrame* Org, PlaYUVerFrame* Rec, PlaYU
     numberOfPixels = Rec->getChromaLength();
   }
 
-  for( UInt i = 0; i < numberOfPixels; i++ )
+  for( unsigned int i = 0; i < numberOfPixels; i++ )
   {
     aux_pel_mask = *pMaskPelYUV++;
     aux_pel_1 = *pRecPelYUV++;
@@ -99,17 +99,17 @@ Double measureWMSE( Int component, PlaYUVerFrame* Org, PlaYUVerFrame* Rec, PlaYU
   {
     return 0.0;
   }
-  return ssd / Double( count );
+  return ssd / double( count );
 }
 
-Double WeightedPSNR::measure( std::vector<PlaYUVerFrame*> apcFrameList )
+double WeightedPSNR::measure( std::vector<CalypFrame*> apcFrameList )
 {
-  Double dPSNR = 100;
-  Double dMaxValue = ( 1 << apcFrameList[1]->getBitsPel() ) - 1;
-  Double dMSE = measureWMSE( m_uiComponent, apcFrameList[1], apcFrameList[2], apcFrameList[0] );
+  double dPSNR = 100;
+  double dMaxValue = ( 1 << apcFrameList[1]->getBitsPel() ) - 1;
+  double dMSE = measureWMSE( m_uiComponent, apcFrameList[1], apcFrameList[2], apcFrameList[0] );
   if( dMSE != 0 )
     dPSNR = 10 * log10( ( dMaxValue * dMaxValue ) / dMSE );
   return dPSNR;
 }
 
-Void WeightedPSNR::destroy() {}
+void WeightedPSNR::destroy() {}

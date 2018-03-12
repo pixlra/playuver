@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -19,14 +19,13 @@
 
 /**
  * \file     StreamHandlerOpenCV.cpp
- * \brief    Interface with opencv lib
+ * \brief    interface with opencv lib
  */
 
 #include "StreamHandlerOpenCV.h"
 
+#include "CalypFrame.h"
 #include "LibMemory.h"
-#include "PlaYUVerFrame.h"
-#include "PlaYUVerFramePixelFormats.h"
 
 #include <cstdio>
 #include <opencv2/opencv.hpp>
@@ -34,23 +33,23 @@
 using cv::Mat;
 using cv::VideoCapture;
 
-std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedReadFormats()
+std::vector<CalypStreamFormat> StreamHandlerOpenCV::supportedReadFormats()
 {
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
+  INI_REGIST_CALYP_SUPPORTED_FMT;
 #if( CV_MAJOR_VERSION >= 3 )
-  REGIST_PLAYUVER_SUPPORTED_ABSTRACT_FMT( &StreamHandlerOpenCV::Create, "Device", "/dev/video*" );
+  REGIST_CALYP_SUPPORTED_ABSTRACT_FMT( &StreamHandlerOpenCV::Create, "Device", "/dev/video*" );
 #endif
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+  END_REGIST_CALYP_SUPPORTED_FMT;
 }
 
-std::vector<PlaYUVerSupportedFormat> StreamHandlerOpenCV::supportedWriteFormats()
+std::vector<CalypStreamFormat> StreamHandlerOpenCV::supportedWriteFormats()
 {
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Portable PixMap ", "ppm" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Portable Network Graphics", "png" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Joint Photographic Experts Group", "jpg" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Windows Bitmap", "bmp" );
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+  INI_REGIST_CALYP_SUPPORTED_FMT;
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Portable PixMap ", "ppm" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Portable Network Graphics", "png" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Joint Photographic Experts Group", "jpg" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerOpenCV::Create, "Windows Bitmap", "bmp" );
+  END_REGIST_CALYP_SUPPORTED_FMT;
 }
 
 StreamHandlerOpenCV::StreamHandlerOpenCV()
@@ -59,7 +58,7 @@ StreamHandlerOpenCV::StreamHandlerOpenCV()
   pcVideoCapture = NULL;
 }
 
-Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
+bool StreamHandlerOpenCV::openHandler( ClpString strFilename, bool bInput )
 {
   m_cFilename = strFilename;
   if( bInput )
@@ -68,12 +67,12 @@ Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
     /*
      * Special filename to handle webcam input
      */
-    if( m_cFilename.find( "/dev/video" ) != String::npos )
+    if( m_cFilename.find( "/dev/video" ) != ClpString::npos )
     {
-      Int iDeviceId = 0;
-      if( m_cFilename.find( "/dev/video0" ) != String::npos )
+      int iDeviceId = 0;
+      if( m_cFilename.find( "/dev/video0" ) != ClpString::npos )
         iDeviceId = 0;
-      else if( m_cFilename.find( "/dev/video1" ) != String::npos )
+      else if( m_cFilename.find( "/dev/video1" ) != ClpString::npos )
         iDeviceId = 1;
 
       m_strFormatName = "DEV";
@@ -86,14 +85,14 @@ Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
     else
 #endif
     {
-      m_strCodecName = m_strFormatName = uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
+      m_strCodecName = m_strFormatName = clpUppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
       Mat cvMat = cv::imread( m_cFilename );
       m_uiWidth = cvMat.cols;
       m_uiHeight = cvMat.rows;
       m_dFrameRate = 1;
     }
     m_uiBitsPerPixel = 8;
-    m_iPixelFormat = PlaYUVerFrame::findPixelFormat( "BGR" );
+    m_iPixelFormat = CalypFrame::findPixelFormat( "BGR" );
 
     m_uiTotalNumberFrames = 1;
     if( pcVideoCapture )
@@ -105,7 +104,7 @@ Bool StreamHandlerOpenCV::openHandler( String strFilename, Bool bInput )
   return true;
 }
 
-Void StreamHandlerOpenCV::closeHandler()
+void StreamHandlerOpenCV::closeHandler()
 {
   if( pcVideoCapture )
   {
@@ -115,20 +114,20 @@ Void StreamHandlerOpenCV::closeHandler()
   }
 }
 
-Bool StreamHandlerOpenCV::configureBuffer( PlaYUVerFrame* pcFrame )
+bool StreamHandlerOpenCV::configureBuffer( CalypFrame* pcFrame )
 {
   return true;
 }
 
-Bool StreamHandlerOpenCV::seek( UInt64 iFrameNum )
+bool StreamHandlerOpenCV::seek( unsigned long long int iFrameNum )
 {
   // m_uiCurrFrameFileIdx =
   return true;
 }
 
-Bool StreamHandlerOpenCV::read( PlaYUVerFrame* pcFrame )
+bool StreamHandlerOpenCV::read( CalypFrame* pcFrame )
 {
-  Bool bRet = false;
+  bool bRet = false;
   if( pcVideoCapture )
   {
     Mat cvMat;
@@ -146,9 +145,9 @@ Bool StreamHandlerOpenCV::read( PlaYUVerFrame* pcFrame )
   return bRet;
 }
 
-Bool StreamHandlerOpenCV::write( PlaYUVerFrame* pcFrame )
+bool StreamHandlerOpenCV::write( CalypFrame* pcFrame )
 {
-  Bool bRet = false;
+  bool bRet = false;
   Mat cvFrame;
   bRet = pcFrame->toMat( cvFrame );
   if( bRet )

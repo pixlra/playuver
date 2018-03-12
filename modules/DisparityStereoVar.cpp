@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -53,18 +53,18 @@ DisparityStereoVar::DisparityStereoVar()
                        m_cStereoVar.USE_MEDIAN_FILTERING;
 }
 
-Bool DisparityStereoVar::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool DisparityStereoVar::create( std::vector<CalypFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
   m_pcDisparityFrame =
-      new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+      new CalypFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), CalypFrame::GRAY );
   m_cStereoVar.minDisp = -( ( ( apcFrameList[0]->getWidth() / 8 ) + 15 ) & -16 );
   return true;
 }
-PlaYUVerFrame* DisparityStereoVar::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* DisparityStereoVar::process( std::vector<CalypFrame*> apcFrameList )
 {
-  PlaYUVerFrame* InputLeft = apcFrameList[0];
-  PlaYUVerFrame* InputRight = apcFrameList[1];
+  CalypFrame* InputLeft = apcFrameList[0];
+  CalypFrame* InputRight = apcFrameList[1];
 
   cv::Mat* leftImage = InputLeft->getCvMat();
   cv::Mat* rightImage = InputRight->getCvMat();
@@ -77,7 +77,7 @@ PlaYUVerFrame* DisparityStereoVar::process( std::vector<PlaYUVerFrame*> apcFrame
   return m_pcDisparityFrame;
 }
 
-Void DisparityStereoVar::destroy()
+void DisparityStereoVar::destroy()
 {
   if( m_pcDisparityFrame )
     delete m_pcDisparityFrame;

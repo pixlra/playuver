@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -27,35 +27,35 @@
 LumaAverage::LumaAverage()
 {
   /* Module Definition */
-  m_iModuleType = FRAME_MEASUREMENT_MODULE;                      // Apply module to the frames or to
+  m_iModuleType = CLP_FRAME_MEASUREMENT_MODULE;                  // Apply module to the frames or to
                                                                  // the whole sequence.
                                                                  // Currently only support for frame
   m_pchModuleCategory = "Measurements";                          // Category (sub-menu)
   m_pchModuleName = "LumaAverage";                               // Name
   m_pchModuleLongName = "Average";                               // Long name
   m_pchModuleTooltip = "Measure the average of luma component";  // Description
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;                // Number of Frames required
+  m_uiNumberOfFrames = 1;                                        // Number of Frames required
                                                                  // (ONE_FRAME, TWO_FRAMES,
                                                                  // THREE_FRAMES)
-  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;              // Module requirements
+  m_uiModuleRequirements = CLP_MODULE_REQUIRES_NOTHING;          // Module requirements
                                                                  // (check
-                                                                 // PlaYUVerModulesIf.h).
+                                                                 // CalypModulesIf.h).
   // Several requirements should be "or" between each others.
 }
 
-Void LumaAverage::create( PlaYUVerFrame* frame ) {}
+void LumaAverage::create( CalypFrame* frame ) {}
 
-Double LumaAverage::measure( PlaYUVerFrame* frame )
+double LumaAverage::measure( CalypFrame* frame )
 {
-  Double average = 0;
-  Pel* pPel = frame->getPelBufferYUV()[0][0];
-  for( UInt y = 0; y < frame->getHeight(); y++ )
-    for( UInt x = 0; x < frame->getWidth(); x++ )
+  double average = 0;
+  ClpPel* pPel = frame->getPelBufferYUV()[0][0];
+  for( unsigned int y = 0; y < frame->getHeight(); y++ )
+    for( unsigned int x = 0; x < frame->getWidth(); x++ )
     {
       average += *pPel;
       pPel++;
     }
-  return average / Double( frame->getHeight() * frame->getWidth() );
+  return average / double( frame->getHeight() * frame->getWidth() );
 }
 
-Void LumaAverage::destroy() {}
+void LumaAverage::destroy() {}

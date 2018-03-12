@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -29,23 +29,23 @@
 // OpenCV
 #include <opencv2/opencv.hpp>
 
-// PlaYUVerLib
-#include "PlaYUVerModuleIf.h"
+// CalypLib
+#include "CalypModuleIf.h"
 
-class DisparityStereoVar : public PlaYUVerModuleIf
+class DisparityStereoVar : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( DisparityStereoVar )
 
 private:
-  PlaYUVerFrame* m_pcDisparityFrame;
+  CalypFrame* m_pcDisparityFrame;
   cv::StereoVar m_cStereoVar;
 
 public:
   DisparityStereoVar();
   virtual ~DisparityStereoVar() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
-  Void destroy();
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
+  void destroy();
 };
 
 #endif  // __DISPARITYSTEREOVAR_H__

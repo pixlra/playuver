@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -29,32 +29,32 @@
 FilterComponentModule::FilterComponentModule()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;
-  m_iModuleType = FRAME_PROCESSING_MODULE;
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
-  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
+  m_iModuleAPI = CLP_MODULE_API_2;
+  m_iModuleType = CLP_FRAME_PROCESSING_MODULE;
+  m_uiNumberOfFrames = 1;
+  m_uiModuleRequirements = CLP_MODULE_REQUIRES_NOTHING;
   m_pchModuleCategory = "Filtering";
 
   m_pcFilteredFrame = NULL;
 }
 
-Bool FilterComponentModule::createFilter( UInt uiWidth, UInt uiHeight, UInt bitsPixel )
+bool FilterComponentModule::createFilter( unsigned int uiWidth, unsigned int uiHeight, unsigned int bitsPixel )
 {
   m_pcFilteredFrame = NULL;
-  m_pcFilteredFrame = new PlaYUVerFrame( uiWidth, uiHeight, PlaYUVerFrame::GRAY, bitsPixel );
+  m_pcFilteredFrame = new CalypFrame( uiWidth, uiHeight, CLP_GRAY, bitsPixel );
   return true;
 }
 
-PlaYUVerFrame* FilterComponentModule::filterComponent( PlaYUVerFrame* InputFrame, Int Component )
+CalypFrame* FilterComponentModule::filterComponent( CalypFrame* InputFrame, int Component )
 {
-  Pel*** pppOutputPelYUV = m_pcFilteredFrame->getPelBufferYUV();
-  Pel*** pppInputPelYUV = InputFrame->getPelBufferYUV();
-  memcpy( pppOutputPelYUV[LUMA][0], pppInputPelYUV[Component][0],
-          m_pcFilteredFrame->getWidth() * m_pcFilteredFrame->getHeight() * sizeof( Pel ) );
+  ClpPel*** pppOutputPelYUV = m_pcFilteredFrame->getPelBufferYUV();
+  ClpPel*** pppInputPelYUV = InputFrame->getPelBufferYUV();
+  memcpy( pppOutputPelYUV[CLP_LUMA][0], pppInputPelYUV[Component][0],
+          m_pcFilteredFrame->getWidth() * m_pcFilteredFrame->getHeight() * sizeof( ClpPel ) );
   return m_pcFilteredFrame;
 }
 
-Void FilterComponentModule::destroy()
+void FilterComponentModule::destroy()
 {
   if( m_pcFilteredFrame )
     delete m_pcFilteredFrame;
@@ -69,14 +69,14 @@ FilterComponentLuma::FilterComponentLuma()
   m_pchModuleTooltip = "Filter Y matrix of YUV frame";  // Description
 }
 
-Bool FilterComponentLuma::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool FilterComponentLuma::create( std::vector<CalypFrame*> apcFrameList )
 {
   return createFilter( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), apcFrameList[0]->getBitsPel() );
 }
 
-PlaYUVerFrame* FilterComponentLuma::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* FilterComponentLuma::process( std::vector<CalypFrame*> apcFrameList )
 {
-  return filterComponent( apcFrameList[0], LUMA );
+  return filterComponent( apcFrameList[0], CLP_LUMA );
 }
 
 FilterComponentChromaU::FilterComponentChromaU()
@@ -86,19 +86,19 @@ FilterComponentChromaU::FilterComponentChromaU()
   m_pchModuleTooltip = "Filter U matrix of YUV frame";
 }
 
-Bool FilterComponentChromaU::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool FilterComponentChromaU::create( std::vector<CalypFrame*> apcFrameList )
 {
   if( apcFrameList[0]->getNumberChannels() > 1 )
   {
-    return createFilter( apcFrameList[0]->getWidth( CHROMA_U ), apcFrameList[0]->getHeight( CHROMA_U ),
+    return createFilter( apcFrameList[0]->getWidth( CLP_CHROMA_U ), apcFrameList[0]->getHeight( CLP_CHROMA_U ),
                          apcFrameList[0]->getBitsPel() );
   }
   return false;
 }
 
-PlaYUVerFrame* FilterComponentChromaU::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* FilterComponentChromaU::process( std::vector<CalypFrame*> apcFrameList )
 {
-  return filterComponent( apcFrameList[0], CHROMA_U );
+  return filterComponent( apcFrameList[0], CLP_CHROMA_U );
 }
 
 FilterComponentChromaV::FilterComponentChromaV()
@@ -109,17 +109,17 @@ FilterComponentChromaV::FilterComponentChromaV()
   m_pchModuleTooltip = "Filter V matrix of YUV frame";
 }
 
-Bool FilterComponentChromaV::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool FilterComponentChromaV::create( std::vector<CalypFrame*> apcFrameList )
 {
   if( apcFrameList[0]->getNumberChannels() > 1 )
   {
-    return createFilter( apcFrameList[0]->getWidth( CHROMA_V ), apcFrameList[0]->getHeight( CHROMA_V ),
+    return createFilter( apcFrameList[0]->getWidth( CLP_CHROMA_V ), apcFrameList[0]->getHeight( CLP_CHROMA_V ),
                          apcFrameList[0]->getBitsPel() );
   }
   return false;
 }
 
-PlaYUVerFrame* FilterComponentChromaV::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* FilterComponentChromaV::process( std::vector<CalypFrame*> apcFrameList )
 {
-  return filterComponent( apcFrameList[0], CHROMA_V );
+  return filterComponent( apcFrameList[0], CLP_CHROMA_V );
 }

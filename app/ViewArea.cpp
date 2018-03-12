@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -70,7 +70,7 @@ ViewArea::ViewArea( QWidget* parent )
   connect( &m_zoomWinTimer, SIGNAL( timeout() ), this, SLOT( update() ) );
 }
 
-Void ViewArea::setImage( PlaYUVerFrame* pcFrame )
+void ViewArea::setImage( CalypFrame* pcFrame )
 {
   m_pcCurrFrame = pcFrame;
   m_uiPixelHalfScale = 1 << ( m_pcCurrFrame->getBitsPel() - 1 );
@@ -80,7 +80,7 @@ Void ViewArea::setImage( PlaYUVerFrame* pcFrame )
   setImage( QPixmap::fromImage( qimg ) );
 }
 
-Void ViewArea::setImage( const QPixmap& pixmap )
+void ViewArea::setImage( const QPixmap& pixmap )
 {
   m_pixmap = pixmap;
   m_mask = QBitmap( pixmap.width(), pixmap.height() );
@@ -92,7 +92,7 @@ Void ViewArea::setImage( const QPixmap& pixmap )
   initZoomWinRect();
 }
 
-Void ViewArea::clear()
+void ViewArea::clear()
 {
   m_pixmap = QPixmap();
   m_mask = QBitmap();
@@ -102,7 +102,7 @@ Void ViewArea::clear()
   updateGeometry();
 }
 
-Void ViewArea::setTool( UInt view )
+void ViewArea::setTool( unsigned int view )
 {
   switch( view )
   {
@@ -131,13 +131,13 @@ Void ViewArea::setTool( UInt view )
   update();
 }
 
-Void ViewArea::setGridVisible( Bool enable )
+void ViewArea::setGridVisible( bool enable )
 {
   m_bGridVisible = enable;
   update();
 }
 
-Void ViewArea::clearMask()
+void ViewArea::clearMask()
 {
   m_mask.clear();
 }
@@ -145,12 +145,12 @@ Void ViewArea::clearMask()
 /**
  * Zoom related function
  */
-Void ViewArea::startZoomWinTimer()
+void ViewArea::startZoomWinTimer()
 {
   m_zoomWinTimer.start();
 }
 
-Void ViewArea::setZoomFactor( Double f )
+void ViewArea::setZoomFactor( double f )
 {
   m_dZoomFactor = f;
 
@@ -159,11 +159,11 @@ Void ViewArea::setZoomFactor( Double f )
   update();
 }
 
-Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize )
+double ViewArea::scaleZoomFactor( double scale, QPoint center, QSize minimumSize )
 {
-  Double maxZoom = 100.0;
-  Double minZoom = 0.01;  //( 1.0 / m_pixmap.width() );
-  Double new_scale = 1.0;
+  double maxZoom = 100.0;
+  double minZoom = 0.01;  //( 1.0 / m_pixmap.width() );
+  double new_scale = 1.0;
 
   if( ( m_dZoomFactor == minZoom ) && ( scale < 1 ) )
     return new_scale;
@@ -171,19 +171,19 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
   if( ( m_dZoomFactor == maxZoom ) && ( scale > 1 ) )
     return new_scale;
 
-  Double zoomFactor = m_dZoomFactor * scale * 100.0;
+  double zoomFactor = m_dZoomFactor * scale * 100.0;
   zoomFactor = round( zoomFactor );
   zoomFactor = zoomFactor / 100.0;
   scale = zoomFactor / m_dZoomFactor;
 
   if( !minimumSize.isNull() )
   {
-    Double cw = m_pixmap.width() * m_dZoomFactor;
-    Double ch = m_pixmap.height() * m_dZoomFactor;
-    Double fw = m_pixmap.width() * zoomFactor;
-    Double fh = m_pixmap.height() * zoomFactor;
-    Double mw = minimumSize.width();
-    Double mh = minimumSize.height();
+    double cw = m_pixmap.width() * m_dZoomFactor;
+    double ch = m_pixmap.height() * m_dZoomFactor;
+    double fw = m_pixmap.width() * zoomFactor;
+    double fh = m_pixmap.height() * zoomFactor;
+    double mw = minimumSize.width();
+    double mh = minimumSize.height();
 
     if( ( cw < mw ) && ( ch < mh ) && ( scale < 1 ) )
     {
@@ -192,8 +192,8 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
 
     if( ( fw < mw ) && ( fh < mh ) && ( scale < 1 ) )
     {
-      Double wfactor = mw / fw;
-      Double hfactor = mh / fh;
+      double wfactor = mw / fw;
+      double hfactor = mh / fh;
 
       if( wfactor < hfactor )
         scale = wfactor;
@@ -228,7 +228,7 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
   return new_scale;
 }
 
-// Void ViewArea::setMode( Int mode )
+// void ViewArea::setMode( int mode )
 //{
 //  if( m_mode == mode )
 //    return;
@@ -237,56 +237,56 @@ Double ViewArea::scaleZoomFactor( Double scale, QPoint center, QSize minimumSize
 //  update();
 //}
 //
-// Void ViewArea::setNormalMode()
+// void ViewArea::setNormalMode()
 //{
 //  setMode( NormalMode );
 //}
 //
-// Void ViewArea::setMaskMode()
+// void ViewArea::setMaskMode()
 //{
 //  setMode( MaskMode );
 //}
 //
-// Void ViewArea::setMaskColor( const QColor &color )
+// void ViewArea::setMaskColor( const QColor &color )
 //{
 //  m_maskColor = color;
 //  update();
 //}
 //
-// Void ViewArea::setMaskTool()
+// void ViewArea::setMaskTool()
 //{
 //  setMode( MaskMode );
 //  setTool( MaskTool );
 //  m_blockTrackEnable = true;
 //}
 //
-// Void ViewArea::setEraserTool()
+// void ViewArea::setEraserTool()
 //{
 //  setMode( MaskMode );
 //  setTool( EraserTool );
 //  m_blockTrackEnable = true;
 //}
 //
-// Void ViewArea::setSelectionTool()
+// void ViewArea::setSelectionTool()
 //{
 //  setMode( NormalMode );
 //  setTool( SelectionTool );
 //  m_blockTrackEnable = false;
 //}
 //
-// Void ViewArea::setBlockSelectionTool()
+// void ViewArea::setBlockSelectionTool()
 //{
 //  setMode( NormalMode );
 //  setTool( BlockSelectionTool );
 //  m_blockTrackEnable = true;
 //}
 
-Void ViewArea::setSnapToGrid( Bool enable )
+void ViewArea::setSnapToGrid( bool enable )
 {
   m_snapToGrid = enable;
 }
 
-// Void ViewArea::setSelectedArea( QRect &rect )
+// void ViewArea::setSelectedArea( QRect &rect )
 //{
 //  if( rect.isNull() )
 //  {
@@ -312,17 +312,17 @@ Void ViewArea::setSnapToGrid( Bool enable )
 //  update( updateRect.normalized() );
 //}
 
-Void ViewArea::initZoomWinRect()
+void ViewArea::initZoomWinRect()
 {
-  Int iMinX = 80;
-  Int iMinY = 80;
+  int iMinX = 80;
+  int iMinY = 80;
 
-  Int iMaxX = iMinX * 5;
-  Int iMaxY = iMinY * 5;
+  int iMaxX = iMinX * 5;
+  int iMaxY = iMinY * 5;
 
   double dSizeRatio, dWinZoomRatio;
 
-  Int iHorizontalImg = ( m_pixmap.width() > m_pixmap.height() ) ? 1 : 0;
+  int iHorizontalImg = ( m_pixmap.width() > m_pixmap.height() ) ? 1 : 0;
 
   if( iHorizontalImg )
   {
@@ -362,10 +362,10 @@ Void ViewArea::initZoomWinRect()
 ////////////////////////////////////////////////////////////////////////////////
 //                            Geometry Updates
 ////////////////////////////////////////////////////////////////////////////////
-Void ViewArea::updateSize()
+void ViewArea::updateSize()
 {
-  Int w = m_pixmap.width() * m_dZoomFactor;
-  Int h = m_pixmap.height() * m_dZoomFactor;
+  int w = m_pixmap.width() * m_dZoomFactor;
+  int h = m_pixmap.height() * m_dZoomFactor;
   setMinimumSize( w, h );
 
   QWidget* p = parentWidget();
@@ -381,7 +381,7 @@ Void ViewArea::updateSize()
     updateOffset();
 }
 
-Void ViewArea::updateOffset()
+void ViewArea::updateOffset()
 {
   if( width() > m_pixmap.width() * m_dZoomFactor )
   {
@@ -404,7 +404,7 @@ Void ViewArea::updateOffset()
 ////////////////////////////////////////////////////////////////////////////////
 //                              Resize Event
 ////////////////////////////////////////////////////////////////////////////////
-Void ViewArea::resizeEvent( QResizeEvent* event )
+void ViewArea::resizeEvent( QResizeEvent* event )
 {
   if( size().isEmpty() || m_pixmap.isNull() )
     return;
@@ -414,10 +414,10 @@ Void ViewArea::resizeEvent( QResizeEvent* event )
   update();
 }
 ////////////////////////////////////////////////////////////////////////////////
-//                              PaInt Event
+//                              Paint Event
 ////////////////////////////////////////////////////////////////////////////////
 
-Void ViewArea::paintEvent( QPaintEvent* event )
+void ViewArea::paintEvent( QPaintEvent* event )
 {
   QRect winRect = event->rect();
 
@@ -427,31 +427,31 @@ Void ViewArea::paintEvent( QPaintEvent* event )
   if( size().isEmpty() || m_pixmap.isNull() )
     return;
 
-  QPainter paInter( this );
+  QPainter painter( this );
 
-  // Save the actual paInter properties and scales the coordinate system.
-  paInter.save();
-  paInter.translate( m_xOffset, m_yOffset );
-  paInter.scale( m_dZoomFactor, m_dZoomFactor );
+  // Save the actual painter properties and scales the coordinate system.
+  painter.save();
+  painter.translate( m_xOffset, m_yOffset );
+  painter.scale( m_dZoomFactor, m_dZoomFactor );
 
-  // This line is for fast paiting. Only visible area of the image is paInted.
+  // This line is for fast paiting. Only visible area of the image is painted.
   // We take the exposed rect from the event (that gives us scroll/expose
   // optimizations for free – no need
   // to draw the whole pixmap if your widget is only partially exposed), and
-  // reverse map it with the paInter matrix.
+  // reverse map it with the painter matrix.
   // That gives us the part of the pixmap that has actually been exposed.
   // See:
   // http://blog.qt.digia.com/blog/2006/05/13/fast-transformed-pixmapimage-drawing/
-  QRect exposedRect = paInter.worldTransform().inverted().mapRect( event->rect() ).adjusted( -1, -1, 1, 1 );
+  QRect exposedRect = painter.worldTransform().inverted().mapRect( event->rect() ).adjusted( -1, -1, 1, 1 );
   // Draw the pixmap.
-  paInter.drawPixmap( exposedRect, m_pixmap, exposedRect );
+  painter.drawPixmap( exposedRect, m_pixmap, exposedRect );
 
   // Draw the Grid if it's visible.
   if( m_bGridVisible )
   {
     // Do we need to draw the whole grid?
     // To know that, we need to perform a transformation of the rectangle
-    // area that the paInter needs to update - transform the windows
+    // area that the painter needs to update - transform the windows
     // coordinates (origin at the top-left corner of the widget), to the
     // relatives coordinates of the image at it's original size (origin at
     // the top-left corner of the image).
@@ -460,174 +460,145 @@ Void ViewArea::paintEvent( QPaintEvent* event )
     // Now we have the (to update) rectangle area on a coordinates system
     // that has it's origin at the top-left corner of the image. That
     // is, is referenced to the not scaled image.
-    // To know what image area we need to update, just Intersects the
+    // To know what image area we need to update, just intersects the
     // rectangle area with the image area.
     vr &= QRect( 0, 0, m_pixmap.width(), m_pixmap.height() );
 
     // Set up for the grid drawer.
-    paInter.setRenderHint( QPainter::Antialiasing );
+    painter.setRenderHint( QPainter::Antialiasing );
 
     // Draw grid.
-    m_grid.drawGrid( m_pixmap, vr, &paInter );
+    m_grid.drawGrid( m_pixmap, vr, &painter );
   }
 
-  paInter.restore();
+  painter.restore();
 
   // Draw a border around the image.
   /*  if( m_xOffset || m_yOffset )
-   {
-   paInter.setPen( Qt::black );
-   paInter.drawRect( m_xOffset - 1, m_yOffset - 1, m_pixmap.width() *
-   m_dZoomFactor + 1, m_pixmap.height() *
-   m_dZoomFactor + 1 );
-   }*/
+	 {
+	 painter.setPen( Qt::black );
+	 painter.drawRect( m_xOffset - 1, m_yOffset - 1, m_pixmap.width() *
+	 m_dZoomFactor + 1, m_pixmap.height() *
+	 m_dZoomFactor + 1 );
+	 }*/
+
+  int frFormat = m_pcCurrFrame->getColorSpace();
 
   // Draw pixel values in grid
-  if( m_dZoomFactor >= 50.0 )
+  if( m_dZoomFactor >= 60.0 || ( frFormat != CLP_COLOR_RGBA && m_dZoomFactor >= 50.0 ) )
   {
-    Int imageWidth = m_pixmap.width();
-    Int imageHeight = m_pixmap.height();
-    PlaYUVerPixel pixelValue;
+    int imageWidth = m_pixmap.width();
+    int imageHeight = m_pixmap.height();
+    ;
 
     QFont font( "Helvetica" );
     font.setPixelSize( 12 );
-    paInter.setFont( font );
+    painter.setFont( font );
 
     QRect vr = windowToView( winRect );
     vr &= QRect( 0, 0, imageWidth, imageHeight );
 
-    for( Int i = vr.x(); i <= vr.right(); i++ )
+    for( int i = vr.x(); i <= vr.right(); i++ )
     {
-      for( Int j = vr.y(); j <= vr.bottom(); j++ )
+      for( int j = vr.y(); j <= vr.bottom(); j++ )
       {
         QPoint pixelTopLeft( i, j );
 
         QRect pixelRect( viewToWindow( pixelTopLeft ), QSize( m_dZoomFactor, m_dZoomFactor ) );
+        QString pixelValue;
+        CalypPixel pixel = m_pcCurrFrame->getPixel( pixelTopLeft.x(), pixelTopLeft.y() );
 
-        Int frFormat = m_pcCurrFrame->getColorSpace();
-
-        if( frFormat == PlaYUVerPixel::COLOR_YUV )
+        if( frFormat == CLP_COLOR_YUV || frFormat == CLP_COLOR_GRAY )
         {
-          pixelValue = m_pcCurrFrame->getPixel( pixelTopLeft.x(), pixelTopLeft.y() );
-
-          if( pixelValue.Y() < m_uiPixelHalfScale )
-            paInter.setPen( QColor( Qt::white ) );
+          if( pixel[0] < m_uiPixelHalfScale )
+            painter.setPen( QColor( Qt::white ) );
           else
-            paInter.setPen( QColor( Qt::black ) );
+            painter.setPen( QColor( Qt::black ) );
 
-          paInter.drawText( pixelRect, Qt::AlignCenter,
-                            "Y: " + QString::number( pixelValue.Y() ) + "\n" +
-                                "U: " + QString::number( pixelValue.Cb() ) + "\n" +
-                                "V: " + QString::number( pixelValue.Cr() ) );
-        }
-        if( frFormat == PlaYUVerPixel::COLOR_GRAY )
-        {
-          pixelValue = m_pcCurrFrame->getPixel( pixelTopLeft.x(), pixelTopLeft.y() );
-
-          if( pixelValue.Y() < m_uiPixelHalfScale )
-            paInter.setPen( QColor( Qt::white ) );
-          else
-            paInter.setPen( QColor( Qt::black ) );
-
-          paInter.drawText( pixelRect, Qt::AlignCenter, "Y: " + QString::number( pixelValue.Y() ) );
+          pixelValue = QString( "Y: %1" ).arg( pixel[0] );
+          if( frFormat == CLP_COLOR_YUV )
+            pixelValue += QString( "\nU: %1\nV: %2" ).arg( pixel[1] ).arg( pixel[2] );
         }
 
-        if( ( frFormat == PlaYUVerPixel::COLOR_RGB ) )
+        if( frFormat == CLP_COLOR_RGB || frFormat == CLP_COLOR_RGBA )
         {
-          pixelValue = m_pcCurrFrame->getPixel( pixelTopLeft.x(), pixelTopLeft.y() );
-
-          if( ( pixelValue.R() + pixelValue.G() + pixelValue.B() ) < ( m_uiPixelHalfScale * 3 ) )
-            paInter.setPen( QColor( Qt::white ) );
+          if( ( pixel[0] + pixel[1] + pixel[2] ) < ( m_uiPixelHalfScale * 3 ) )
+            painter.setPen( QColor( Qt::white ) );
           else
-            paInter.setPen( QColor( Qt::black ) );
+            painter.setPen( QColor( Qt::black ) );
 
-          paInter.drawText( pixelRect, Qt::AlignCenter,
-                            "R: " + QString::number( pixelValue.R() ) +
-                                "\nG: " + QString::number( pixelValue.G() ) +
-                                "\nB: " + QString::number( pixelValue.B() ) );
+          pixelValue = QString( "R: %1\nG: %2\nB: %3" ).arg( pixel[0] ).arg( pixel[1] ).arg( pixel[2] );
+          if( frFormat == CLP_COLOR_RGBA )
+            pixelValue += QString( "\nA: %1" ).arg( pixel[3] );
         }
-        if( ( frFormat == PlaYUVerPixel::COLOR_RGBA ) )
-        {
-          pixelValue = m_pcCurrFrame->getPixel( pixelTopLeft.x(), pixelTopLeft.y() );
-
-          if( ( pixelValue.R() + pixelValue.G() + pixelValue.B() ) < ( m_uiPixelHalfScale * 3 ) )
-            paInter.setPen( QColor( Qt::white ) );
-          else
-            paInter.setPen( QColor( Qt::black ) );
-
-          paInter.drawText( pixelRect, Qt::AlignCenter,
-                            "R: " + QString::number( pixelValue.R() ) +
-                                "\nG: " + QString::number( pixelValue.G() ) +
-                                "\nB: " + QString::number( pixelValue.B() ) +
-                                "\nA: " + QString::number( pixelValue.A() ) );
-        }
+        painter.drawText( pixelRect, Qt::AlignCenter, pixelValue );
       }
     }
 
     QColor color( Qt::white );
     QPen mainPen = QPen( color, 1, Qt::SolidLine );
-    paInter.setPen( mainPen );
+    painter.setPen( mainPen );
 
     // Draw vertical line
-    for( Int x = vr.x(); x <= ( vr.right() + 1 ); x++ )
+    for( int x = vr.x(); x <= ( vr.right() + 1 ); x++ )
     {
       // Always draw the full line otherwise the line stippling
       // varies with the location of view area and we get glitchy
       // patterns.
-      paInter.drawLine( viewToWindow( QPoint( x, 0 ) ), viewToWindow( QPoint( x, imageHeight ) ) );
+      painter.drawLine( viewToWindow( QPoint( x, 0 ) ), viewToWindow( QPoint( x, imageHeight ) ) );
     }
     // Draw horizontal line
-    for( Int y = vr.y(); y <= ( vr.bottom() + 1 ); y++ )
+    for( int y = vr.y(); y <= ( vr.bottom() + 1 ); y++ )
     {
-      paInter.drawLine( viewToWindow( QPoint( 0, y ) ), viewToWindow( QPoint( imageWidth, y ) ) );
+      painter.drawLine( viewToWindow( QPoint( 0, y ) ), viewToWindow( QPoint( imageWidth, y ) ) );
     }
   }
 
-// VISIBLE ZOOM RECT
+    // VISIBLE ZOOM RECT
 #if 0
-  if( m_visibleZoomRect && m_zoomWinTimer.isActive() )
-  {
-    double dRatio = m_dZoomWinRatio;
+	if( m_visibleZoomRect && m_zoomWinTimer.isActive() )
+	{
+		double dRatio = m_dZoomWinRatio;
 
-    QRect cImg = QRect(0, 0, m_pixmap.width(), m_pixmap.height() );
-    QPoint cZWinRBpos = QPoint(winRect.bottomRight()) - QPoint(15,15);
-    QRect cImgWinRect(0, 0, round((double)cImg.width()/dRatio), round((double)cImg.height()/dRatio) );
-    cImgWinRect.moveBottomRight(cZWinRBpos);
+		QRect cImg = QRect(0, 0, m_pixmap.width(), m_pixmap.height() );
+		QPoint cZWinRBpos = QPoint(winRect.bottomRight()) - QPoint(15,15);
+		QRect cImgWinRect(0, 0, round((double)cImg.width()/dRatio), round((double)cImg.height()/dRatio) );
+		cImgWinRect.moveBottomRight(cZWinRBpos);
 
-    QRect vr = windowToView( winRect );
-    QRect cVisibleImg = vr & cImg;
-    //cVisibleImg.moveTopLeft(vr.topLeft());
-    QRect cVisibleWinRect;
-    cVisibleWinRect.setLeft(floor((double)cVisibleImg.x()/dRatio));
-    cVisibleWinRect.setTop(floor((double)cVisibleImg.y()/dRatio));
-    cVisibleWinRect.setRight(round((double)cVisibleImg.right()/dRatio));
-    cVisibleWinRect.setBottom(round((double)cVisibleImg.bottom()/dRatio));
+		QRect vr = windowToView( winRect );
+		QRect cVisibleImg = vr & cImg;
+		//cVisibleImg.moveTopLeft(vr.topLeft());
+		QRect cVisibleWinRect;
+		cVisibleWinRect.setLeft(floor((double)cVisibleImg.x()/dRatio));
+		cVisibleWinRect.setTop(floor((double)cVisibleImg.y()/dRatio));
+		cVisibleWinRect.setRight(round((double)cVisibleImg.right()/dRatio));
+		cVisibleWinRect.setBottom(round((double)cVisibleImg.bottom()/dRatio));
 
-    paInter.fillRect(cImgWinRect, QBrush(QColor(128, 128, 128, 128)));
-    paInter.setPen(QColor(50, 50, 50, 128));
-    paInter.drawRect(cImgWinRect);
+		painter.fillRect(cImgWinRect, QBrush(QColor(128, 128, 128, 128)));
+		painter.setPen(QColor(50, 50, 50, 128));
+		painter.drawRect(cImgWinRect);
 
-    cVisibleWinRect.moveTopLeft( cImgWinRect.topLeft() + cVisibleWinRect.topLeft() );
+		cVisibleWinRect.moveTopLeft( cImgWinRect.topLeft() + cVisibleWinRect.topLeft() );
 
-    cVisibleWinRect = cVisibleWinRect & cImgWinRect;
+		cVisibleWinRect = cVisibleWinRect & cImgWinRect;
 
-    if(cVisibleWinRect.left()<0)
-    cVisibleWinRect.moveLeft(0);
-    if(cVisibleWinRect.top()<0)
-    cVisibleWinRect.moveTop(0);
+		if(cVisibleWinRect.left()<0)
+			cVisibleWinRect.moveLeft(0);
+		if(cVisibleWinRect.top()<0)
+			cVisibleWinRect.moveTop(0);
 
-    if(cVisibleWinRect.width()<=0)
-    cVisibleWinRect.setWidth(1);
-    if(cVisibleWinRect.height()<=0)
-    cVisibleWinRect.setHeight(1);
+		if(cVisibleWinRect.width()<=0)
+			cVisibleWinRect.setWidth(1);
+		if(cVisibleWinRect.height()<=0)
+			cVisibleWinRect.setHeight(1);
 
-    paInter.fillRect(cVisibleWinRect, QBrush(QColor(200, 200, 200, 128)));
-    paInter.setPen(QColor(255, 255, 255, 128));
-    paInter.drawRect(cVisibleWinRect);
+		painter.fillRect(cVisibleWinRect, QBrush(QColor(200, 200, 200, 128)));
+		painter.setPen(QColor(255, 255, 255, 128));
+		painter.drawRect(cVisibleWinRect);
 
-    //qDebug() << "Debug VisibleZoomRect: " << winRect << vr << cImgWinRect << cVisibleWinRect << cVisibleImg << dRatio;
+		//qDebug() << "Debug VisibleZoomRect: " << winRect << vr << cImgWinRect << cVisibleWinRect << cVisibleImg << dRatio;
 
-  }
+	}
 #endif
 
   QRect sr = viewToWindow( m_selectedArea );
@@ -645,13 +616,13 @@ Void ViewArea::paintEvent( QPaintEvent* event )
       QBrush brush( selectColor );
 
       if( m_blockTrackEnable )
-        paInter.setBrush( Qt::NoBrush );
+        painter.setBrush( Qt::NoBrush );
       else
-        paInter.setBrush( brush );
+        painter.setBrush( brush );
 
-      paInter.setPen( Qt::darkCyan );
+      painter.setPen( Qt::darkCyan );
 
-      //             paInter.drawRect( sr/*m_selectedArea*/ );
+      //             painter.drawRect( sr/*m_selectedArea*/ );
     }
     else
     {
@@ -660,23 +631,23 @@ Void ViewArea::paintEvent( QPaintEvent* event )
       fill.setAlpha( 150 );
 
       QBrush brush( fill );
-      paInter.setBrush( fill );
-      paInter.setPen( Qt::NoPen );
+      painter.setBrush( fill );
+      painter.setPen( Qt::NoPen );
       QPainterPath myPath;
       QRect imgr = viewToWindow( QRect( 0, 0, m_pixmap.width(), m_pixmap.height() ) );
 
       myPath.addRect( imgr );
       myPath.addRect( sr );  // m_selectedArea
-      paInter.drawPath( myPath );
+      painter.drawPath( myPath );
 
       // 2) Draw the selection rectangle
-      paInter.setBrush( Qt::NoBrush );
-      paInter.setPen( Qt::darkCyan );
-      //             paInter.drawRect( sr/*m_selectedArea*/ );
+      painter.setBrush( Qt::NoBrush );
+      painter.setPen( Qt::darkCyan );
+      //             painter.drawRect( sr/*m_selectedArea*/ );
     }
 
     if( !ir.isNull() )
-      paInter.drawRect( sr /*m_selectedArea*/ );
+      painter.drawRect( sr /*m_selectedArea*/ );
   }
 
   // Mask Mode ----------------------------------------------------------
@@ -695,12 +666,12 @@ Void ViewArea::paintEvent( QPaintEvent* event )
     color = imageMaskColor;
 
   color.setAlpha( 120 );
-  paInter.setPen( color );
-  paInter.save();
-  paInter.translate( m_xOffset, m_yOffset );
-  paInter.scale( m_dZoomFactor, m_dZoomFactor );
-  paInter.drawPixmap( QPoint( 0, 0 ), m_mask );
-  paInter.restore();
+  painter.setPen( color );
+  painter.save();
+  painter.translate( m_xOffset, m_yOffset );
+  painter.scale( m_dZoomFactor, m_dZoomFactor );
+  painter.drawPixmap( QPoint( 0, 0 ), m_mask );
+  painter.restore();
 
   if( !m_selectedArea.isNull() )
   {
@@ -730,13 +701,13 @@ Void ViewArea::paintEvent( QPaintEvent* event )
       brush = QBrush( color );
 
       if( m_blockTrackEnable )
-        paInter.setBrush( Qt::NoBrush );
+        painter.setBrush( Qt::NoBrush );
       else
-        paInter.setBrush( brush );
+        painter.setBrush( brush );
 
-      paInter.setPen( color );
+      painter.setPen( color );
       if( !ir.isNull() )
-        paInter.drawRect( sr );
+        painter.drawRect( sr );
     }
   }
 }
@@ -744,10 +715,10 @@ Void ViewArea::paintEvent( QPaintEvent* event )
 ////////////////////////////////////////////////////////////////////////////////
 //                              Mouse Events
 ////////////////////////////////////////////////////////////////////////////////
-Void ViewArea::wheelEvent( QWheelEvent* event )
+void ViewArea::wheelEvent( QWheelEvent* event )
 {
-  Double scale;
-  Double usedScale;
+  double scale;
+  double usedScale;
 
   if( event->modifiers() & Qt::ControlModifier )
   {
@@ -767,7 +738,7 @@ Void ViewArea::wheelEvent( QWheelEvent* event )
   }
 }
 
-Void ViewArea::mousePressEvent( QMouseEvent* event )
+void ViewArea::mousePressEvent( QMouseEvent* event )
 {
   event->accept();
 
@@ -800,12 +771,12 @@ Void ViewArea::mousePressEvent( QMouseEvent* event )
     // If grid tracking
     if( m_snapToGrid )
     {
-      // Find if the cursor is near a grid Intersection
-      Bool isNear = m_grid.isNear( m_lastPos );
+      // Find if the cursor is near a grid intersection
+      bool isNear = m_grid.isNear( m_lastPos );
       isNear = true;
       if( isNear )
       {
-        // The grid 'near Intersection' found when used isNear()
+        // The grid 'near intersection' found when used isNear()
         m_lastPos = m_grid.nearPos();
       }
     }
@@ -833,12 +804,12 @@ Void ViewArea::mousePressEvent( QMouseEvent* event )
   }
 }
 
-Void ViewArea::mouseMoveEvent( QMouseEvent* event )
+void ViewArea::mouseMoveEvent( QMouseEvent* event )
 {
   event->accept();
 
 #ifndef _MSC_VER
-  // Add this code line to aVoid slow navigation with some specific mouses
+  // Add this code line to avoid slow navigation with some specific mouses
   // This seems to always appear on windows
   if( qApp->hasPendingEvents() )
     return;
@@ -855,12 +826,12 @@ Void ViewArea::mouseMoveEvent( QMouseEvent* event )
     // Grid tracking
     if( m_snapToGrid )
     {
-      // Find if the cursor is near a grid Intersection
-      Bool isNear = m_grid.isNear( actualPos );
+      // Find if the cursor is near a grid intersection
+      bool isNear = m_grid.isNear( actualPos );
 
       if( isNear )
       {
-        // Return the last grid near Intersection found
+        // Return the last grid near intersection found
         actualPos = m_grid.nearPos();
       }
     }
@@ -920,21 +891,21 @@ Void ViewArea::mouseMoveEvent( QMouseEvent* event )
       }
     }
     /*    else // if tool() == BlockSelectionTool || MaskTool || EraserTool
-     {
-     m_blockTrackEnable = false;
-     // If cursor is inside the selected area, we most redraw
-     // the selection rect because it may be smaller.
-     if( m_selectedArea.contains( actualPos ) )
-     {
-     m_selectedArea = m_grid.rectContains( m_lastPos );
-     }
+		 {
+		 m_blockTrackEnable = false;
+		 // If cursor is inside the selected area, we most redraw
+		 // the selection rect because it may be smaller.
+		 if( m_selectedArea.contains( actualPos ) )
+		 {
+		 m_selectedArea = m_grid.rectContains( m_lastPos );
+		 }
 
-     m_selectedArea = m_selectedArea.united( m_grid.rectContains( actualPos ) );
-     }
-     */
+		 m_selectedArea = m_selectedArea.united( m_grid.rectContains( actualPos ) );
+		 }
+		 */
     if( tool() == SelectionTool )
     {
-      // Intercept the selected area with the image area to limit the
+      // intercept the selected area with the image area to limit the
       // selection only to the image area, preventing it to come outside
       // the image.
       m_selectedArea &= QRect( 0, 0, m_pixmap.width(), m_pixmap.height() );
@@ -975,7 +946,7 @@ Void ViewArea::mouseMoveEvent( QMouseEvent* event )
   }
 }
 
-Void ViewArea::mouseReleaseEvent( QMouseEvent* event )
+void ViewArea::mouseReleaseEvent( QMouseEvent* event )
 {
   event->accept();
 
@@ -1019,7 +990,7 @@ Void ViewArea::mouseReleaseEvent( QMouseEvent* event )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Bool ViewArea::isPosValid( const QPoint& pos ) const
+bool ViewArea::isPosValid( const QPoint& pos ) const
 {
   if( pos.x() < 0 || pos.y() < 0 || pos.x() >= m_pixmap.width() || pos.y() >= m_pixmap.height() )
     return false;
@@ -1032,8 +1003,8 @@ Bool ViewArea::isPosValid( const QPoint& pos ) const
 QPoint ViewArea::windowToView( const QPoint& pt ) const
 {
   QPoint p;
-  p.setX( static_cast<Int>( ( pt.x() - m_xOffset ) / m_dZoomFactor ) );
-  p.setY( static_cast<Int>( ( pt.y() - m_yOffset ) / m_dZoomFactor ) );
+  p.setX( static_cast<int>( ( pt.x() - m_xOffset ) / m_dZoomFactor ) );
+  p.setY( static_cast<int>( ( pt.y() - m_yOffset ) / m_dZoomFactor ) );
 
   return p;
 }
@@ -1043,11 +1014,11 @@ QRect ViewArea::windowToView( const QRect& rc ) const
   QRect r;
 
   r.setTopLeft( windowToView( rc.topLeft() ) );
-  //     r.setRight ( (Int)( ceil(( rc.right()  - m_xOffset)/m_dZoomFactor  )));
-  //     r.setBottom( (Int)( ceil(( rc.bottom()- m_yOffset)/m_dZoomFactor  )));
-  //     r.setRight ( static_cast<Int>(( rc.right() - m_xOffset ) /
+  //     r.setRight ( (int)( ceil(( rc.right()  - m_xOffset)/m_dZoomFactor  )));
+  //     r.setBottom( (int)( ceil(( rc.bottom()- m_yOffset)/m_dZoomFactor  )));
+  //     r.setRight ( static_cast<int>(( rc.right() - m_xOffset ) /
   //     m_dZoomFactor +1));
-  //     r.setBottom( static_cast<Int>(( rc.bottom() - m_xOffset ) /
+  //     r.setBottom( static_cast<int>(( rc.bottom() - m_xOffset ) /
   //     m_dZoomFactor+1));
   r.setBottomRight( windowToView( rc.bottomRight() ) );
   return r;
@@ -1057,8 +1028,8 @@ QPoint ViewArea::viewToWindow( const QPoint& pt ) const
 {
   QPoint p;
 
-  p.setX( static_cast<Int>( pt.x() * m_dZoomFactor + m_xOffset ) );
-  p.setY( static_cast<Int>( pt.y() * m_dZoomFactor + m_yOffset ) );
+  p.setX( static_cast<int>( pt.x() * m_dZoomFactor + m_xOffset ) );
+  p.setY( static_cast<int>( pt.y() * m_dZoomFactor + m_yOffset ) );
 
   return p;
 }
@@ -1068,18 +1039,18 @@ QRect ViewArea::viewToWindow( const QRect& rc ) const
   QRect r;
 
   r.setTopLeft( viewToWindow( rc.topLeft() ) );
-  //     r.setRight ( (Int)( ceil(( rc.right() +1+m_xOffset )*m_dZoomFactor ) -
+  //     r.setRight ( (int)( ceil(( rc.right() +1+m_xOffset )*m_dZoomFactor ) -
   //     1 ));
-  //     r.setBottom( (Int)( ceil(( rc.bottom()+1+m_yOffset )*m_dZoomFactor ) -
+  //     r.setBottom( (int)( ceil(( rc.bottom()+1+m_yOffset )*m_dZoomFactor ) -
   //     1 ));
-  //     r.setRight ( (Int)( ceil(( rc.right()+0.5)*m_dZoomFactor  )+ m_xOffset
+  //     r.setRight ( (int)( ceil(( rc.right()+0.5)*m_dZoomFactor  )+ m_xOffset
   //     )-1);
-  //     r.setBottom( (Int)( ceil(( rc.bottom()+0.5)*m_dZoomFactor ) +m_yOffset
+  //     r.setBottom( (int)( ceil(( rc.bottom()+0.5)*m_dZoomFactor ) +m_yOffset
   //     )-1);
   // qDebug()<<"Right = "<< r.right();
-  //     r.setRight ( static_cast<Int>(( rc.right()+1) * m_dZoomFactor +
+  //     r.setRight ( static_cast<int>(( rc.right()+1) * m_dZoomFactor +
   //     m_xOffset -1) );
-  //     r.setBottom( static_cast<Int>(( rc.bottom()+1) * m_dZoomFactor +
+  //     r.setBottom( static_cast<int>(( rc.bottom()+1) * m_dZoomFactor +
   //     m_yOffset -1));
   r.setBottomRight( viewToWindow( rc.bottomRight() ) );
 
@@ -1089,28 +1060,28 @@ QRect ViewArea::viewToWindow( const QRect& rc ) const
 ////////////////////////////////////////////////////////////////////////////////
 //                           Masks Management
 ////////////////////////////////////////////////////////////////////////////////
-Void ViewArea::updateMask( const QRect& rect )
+void ViewArea::updateMask( const QRect& rect )
 {
   switch( tool() )
   {
   case MaskTool:
   {
     // Add rect to the mask
-    QPainter paInter( &m_mask );
-    paInter.setBrush( Qt::color1 );
-    paInter.setPen( Qt::NoPen );
-    paInter.drawRect( rect );
-    paInter.end();
+    QPainter painter( &m_mask );
+    painter.setBrush( Qt::color1 );
+    painter.setPen( Qt::NoPen );
+    painter.drawRect( rect );
+    painter.end();
     break;
   }
   case EraserTool:
   {
     // Clears rect area in the mask
-    QPainter paInter( &m_mask );
-    paInter.setBrush( Qt::color0 );
-    paInter.setPen( Qt::NoPen );
-    paInter.drawRect( rect );
-    paInter.end();
+    QPainter painter( &m_mask );
+    painter.setBrush( Qt::color0 );
+    painter.setPen( Qt::NoPen );
+    painter.drawRect( rect );
+    painter.end();
     break;
   }
   default: /* Do Nothing */

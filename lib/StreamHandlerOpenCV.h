@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -19,35 +19,33 @@
 
 /**
  * \file     StreamHandlerOpenCV.h
- * \brief    Interface with opencv lib
+ * \ingroup  CalypStreamGrp
+ * \brief    interface with opencv lib
  */
 
 #ifndef __STREAMHANDLEROPENCV_H__
 #define __STREAMHANDLEROPENCV_H__
 
-#include "PlaYUVerDefs.h"
-#include "PlaYUVerStreamHandlerIf.h"
+#include "CalypStreamHandlerIf.h"
 
 namespace cv
 {
 class VideoCapture;
 }
 
-class PlaYUVerFrame;
-
-class StreamHandlerOpenCV : public PlaYUVerStreamHandlerIf
+class StreamHandlerOpenCV : public CalypStreamHandlerIf
 {
-  REGISTER_STREAM_HANDLER( StreamHandlerOpenCV )
+  REGISTER_CALYP_STREAM_HANDLER( StreamHandlerOpenCV )
 
 public:
   StreamHandlerOpenCV();
   ~StreamHandlerOpenCV() {}
-  Bool openHandler( String strFilename, Bool bInput );
-  Void closeHandler();
-  Bool configureBuffer( PlaYUVerFrame* pcFrame );
-  Bool seek( UInt64 iFrameNum );
-  Bool read( PlaYUVerFrame* pcFrame );
-  Bool write( PlaYUVerFrame* pcFrame );
+  bool openHandler( ClpString strFilename, bool bInput );
+  void closeHandler();
+  bool configureBuffer( CalypFrame* pcFrame );
+  bool seek( unsigned long long int iFrameNum );
+  bool read( CalypFrame* pcFrame );
+  bool write( CalypFrame* pcFrame );
 
 private:
   cv::VideoCapture* pcVideoCapture;

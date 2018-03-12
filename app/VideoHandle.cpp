@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -24,13 +24,13 @@
 
 #include "VideoHandle.h"
 
-#include "DialogSubWindowSelector.h"
+#include "FrameNumberWidget.h"
 #include "FramePropertiesDock.h"
-#include "PlaYUVerApp.h"
-#include "PlaYUVerSubWindowHandle.h"
+#include "MainWindow.h"
 #include "SeekStreamDialog.h"
+#include "SubWindowHandle.h"
+#include "SubWindowSelectorDialog.h"
 #include "VideoSubWindow.h"
-#include "WidgetFrameNumber.h"
 
 #include <QDockWidget>
 #include <QElapsedTimer>
@@ -43,7 +43,7 @@
 #include <QElapsedTimer>
 #endif
 
-VideoHandle::VideoHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManager )
+VideoHandle::VideoHandle( QWidget* parent, SubWindowHandle* windowManager )
     : m_pcParet( parent ), m_pcMainWindowManager( windowManager )
 {
   m_pcCurrentVideoSubWindow = NULL;
@@ -56,7 +56,7 @@ VideoHandle::VideoHandle( QWidget* parent, PlaYUVerSubWindowHandle* windowManage
 
 VideoHandle::~VideoHandle() {}
 
-Void VideoHandle::createActions()
+void VideoHandle::createActions()
 {
   m_arrayActions.resize( TOTAL_ACT );
   m_arrayActions[PLAY_ACT] = new QAction( "Play", this );
@@ -201,7 +201,7 @@ QToolBar* VideoHandle::createToolBar()
   m_toolbarVideo->addWidget( m_pcFrameSlider );
   m_toolbarVideo->addAction( m_arrayActions[VIDEO_FORWARD_ACT] );
   m_toolbarVideo->addWidget( new QLabel );
-  m_pcFrameNumInfo = new WidgetFrameNumber;
+  m_pcFrameNumInfo = new FrameNumberWidget;
   m_toolbarVideo->addWidget( m_pcFrameNumInfo );
 
   return m_toolbarVideo;
@@ -242,10 +242,10 @@ QWidget* VideoHandle::createStatusBarMessage()
   return pcStatusBarWidget;
 }
 
-Void VideoHandle::updateMenus()
+void VideoHandle::updateMenus()
 {
   VideoSubWindow* pcSubWindow = qobject_cast<VideoSubWindow*>( m_pcMainWindowManager->activeSubWindow() );
-  Bool hasSubWindow = pcSubWindow ? true : false;
+  bool hasSubWindow = pcSubWindow ? true : false;
 
   m_arrayActions[PLAY_ACT]->setEnabled( hasSubWindow );
   // m_arrayActions[PAUSE_ACT]->setEnabled( hasSubWindow );
@@ -272,7 +272,7 @@ Void VideoHandle::updateMenus()
   m_arrayActions[SHOW_GRID_ACT]->setEnabled( hasSubWindow );
 }
 
-Void VideoHandle::readSettings()
+void VideoHandle::readSettings()
 {
   QSettings appSettings;
   m_arrayActions[VIDEO_REPEAT_ACT]->setChecked( appSettings.value( "VideoHandle/Repeat", false ).toBool() );
@@ -284,7 +284,7 @@ Void VideoHandle::readSettings()
   setTool( m_uiViewTool );
 }
 
-Void VideoHandle::writeSettings()
+void VideoHandle::writeSettings()
 {
   QSettings appSettings;
   appSettings.setValue( "VideoHandle/Repeat", m_arrayActions[VIDEO_REPEAT_ACT]->isChecked() );
@@ -293,15 +293,15 @@ Void VideoHandle::writeSettings()
   appSettings.setValue( "VideoHandle/SelectedTool", m_uiViewTool );
 }
 
-Void VideoHandle::update()
+void VideoHandle::update()
 {
   if( m_pcCurrentVideoSubWindow )
   {
-    PlaYUVerStream* pcStream = m_pcCurrentVideoSubWindow->getInputStream();
-    PlaYUVerFrame* pcFrame = m_pcCurrentVideoSubWindow->getCurrFrame();
+    CalypStream* pcStream = m_pcCurrentVideoSubWindow->getInputStream();
+    CalypFrame* pcFrame = m_pcCurrentVideoSubWindow->getCurrFrame();
 
-    Int frame_num = 0;
-    UInt64 total_frame_num = 1;
+    int frame_num = 0;
+    unsigned long long int total_frame_num = 1;
 
     m_pcVideoFormatLabel->setText( m_pcCurrentVideoSubWindow->getStreamInformation() );
 
@@ -325,7 +325,7 @@ Void VideoHandle::update()
     }
     if( pcStream && pcFrame->getBitsPel() > 8 )
     {
-      if( pcStream->getEndianess() == PLAYUVER_BIG_ENDIAN )
+      if( pcStream->getEndianess() == CLP_BIG_ENDIAN )
       {
         resolution.append( QStringLiteral( " (BE)" ) );
       }
@@ -367,13 +367,13 @@ Void VideoHandle::update()
   }
 }
 
-Void VideoHandle::update( VideoSubWindow* currSubWindow )
+void VideoHandle::update( VideoSubWindow* currSubWindow )
 {
   m_pcCurrentVideoSubWindow = currSubWindow;
   update();
 }
 
-Void VideoHandle::updateSelectionArea( QRect area )
+void VideoHandle::updateSelectionArea( QRect area )
 {
   if( m_pcCurrentVideoSubWindow )
   {
@@ -381,7 +381,7 @@ Void VideoHandle::updateSelectionArea( QRect area )
   }
 }
 
-Void VideoHandle::addSubWindow( VideoSubWindow* window )
+void VideoHandle::addSubWindow( VideoSubWindow* window )
 {
   window->zoomToFit();
   window->getViewArea()->setTool( m_uiViewTool );
@@ -399,13 +399,13 @@ Void VideoHandle::addSubWindow( VideoSubWindow* window )
   connect( window->getViewArea(), SIGNAL( selectionChanged( QRect ) ), this, SLOT( updateSelectionArea( QRect ) ) );
 }
 
-Void VideoHandle::closeSubWindow( SubWindowAbstract* subWindow )
+void VideoHandle::closeSubWindow( SubWindowAbstract* subWindow )
 {
   VideoSubWindow* videoSubWindow = qobject_cast<VideoSubWindow*>( subWindow );
 
   if( m_acPlayingSubWindows.contains( videoSubWindow ) )
   {
-    Int pos = m_acPlayingSubWindows.indexOf( videoSubWindow );
+    int pos = m_acPlayingSubWindows.indexOf( videoSubWindow );
     m_acPlayingSubWindows.at( pos )->stop();
     m_acPlayingSubWindows.remove( pos );
     if( m_acPlayingSubWindows.size() < 2 )
@@ -415,9 +415,9 @@ Void VideoHandle::closeSubWindow( SubWindowAbstract* subWindow )
   }
 }
 
-Void VideoHandle::zoomToFactorAll( const Double scale, const QPoint center )
+void VideoHandle::zoomToFactorAll( const double scale, const QPoint center )
 {
-  Double factor;
+  double factor;
 
   if( m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() )
   {
@@ -426,7 +426,7 @@ Void VideoHandle::zoomToFactorAll( const Double scale, const QPoint center )
     SubWindowAbstract* subWindow;
     QList<SubWindowAbstract*> subWindowList =
         m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
-    for( Int i = 0; i < subWindowList.size(); i++ )
+    for( int i = 0; i < subWindowList.size(); i++ )
     {
       subWindow = subWindowList.at( i );
       if( m_pcCurrentVideoSubWindow == subWindow )
@@ -440,7 +440,7 @@ Void VideoHandle::zoomToFactorAll( const Double scale, const QPoint center )
 }
 
 #if 0
-Void VideoHandle::moveAllScrollBars( const QPoint& offset )
+void VideoHandle::moveAllScrollBars( const QPoint& offset )
 {
   QPoint newOffset = offset;
   if( m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() && m_pcCurrentVideoSubWindow )
@@ -465,7 +465,7 @@ Void VideoHandle::moveAllScrollBars( const QPoint& offset )
     if( scrollBar->value() == scrollBar->minimum() && offset.y() < 0 )
       newOffset.setY( 0 );
 
-    for( Int i = 0; i < subWindowList.size(); i++ )
+    for( int i = 0; i < subWindowList.size(); i++ )
     {
       videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
       if( m_pcCurrentVideoSubWindow == videoSubWindow )
@@ -478,14 +478,14 @@ Void VideoHandle::moveAllScrollBars( const QPoint& offset )
   }
 }
 #else
-Void VideoHandle::moveAllScrollBars( const double& horRatio, const double& verRatio )
+void VideoHandle::moveAllScrollBars( const double& horRatio, const double& verRatio )
 {
   if( m_arrayActions[VIDEO_ZOOM_LOCK_ACT]->isChecked() && m_pcCurrentVideoSubWindow )
   {
     VideoSubWindow* videoSubWindow;
     QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
 
-    for( Int i = 0; i < subWindowList.size(); i++ )
+    for( int i = 0; i < subWindowList.size(); i++ )
     {
       videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
       if( m_pcCurrentVideoSubWindow == videoSubWindow )
@@ -499,15 +499,15 @@ Void VideoHandle::moveAllScrollBars( const double& horRatio, const double& verRa
 }
 #endif
 
-UInt64 VideoHandle::getMaxFrameNumber()
+unsigned long long int VideoHandle::getMaxFrameNumber()
 {
-  UInt currFrames;
-  UInt64 maxFrames = INT_MAX;
+  unsigned int currFrames;
+  unsigned long long int maxFrames = INT_MAX;
   if( m_pcCurrentVideoSubWindow )
   {
     if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
     {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      for( int i = 0; i < m_acPlayingSubWindows.size(); i++ )
       {
         currFrames = m_acPlayingSubWindows.at( i )->getInputStream()->getFrameNum();
         if( currFrames < maxFrames )
@@ -522,10 +522,10 @@ UInt64 VideoHandle::getMaxFrameNumber()
   return maxFrames;
 }
 
-Void VideoHandle::setTimerStatus()
+void VideoHandle::setTimerStatus()
 {
-  Bool status = false;
-  for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+  bool status = false;
+  for( int i = 0; i < m_acPlayingSubWindows.size(); i++ )
   {
     status |= m_acPlayingSubWindows.at( i )->isPlaying();
   }
@@ -563,7 +563,7 @@ Void VideoHandle::setTimerStatus()
   }
 }
 
-Void VideoHandle::play()
+void VideoHandle::play()
 {
   if( !m_pcCurrentVideoSubWindow )
     return;
@@ -573,11 +573,11 @@ Void VideoHandle::play()
 
   if( !m_pcCurrentVideoSubWindow->isPlaying() )  // Not playing
   {
-    Double frameRate;
-    UInt timeInterval;
+    double frameRate;
+    unsigned int timeinterval;
     if( m_acPlayingSubWindows.size() < 2 )
     {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      for( int i = 0; i < m_acPlayingSubWindows.size(); i++ )
       {
         m_acPlayingSubWindows.at( i )->pause();
       }
@@ -586,20 +586,20 @@ Void VideoHandle::play()
     }
     if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
     {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      for( int i = 0; i < m_acPlayingSubWindows.size(); i++ )
       {
         m_acPlayingSubWindows.at( i )->play();
       }
       frameRate = m_acPlayingSubWindows.at( 0 )->getInputStream()->getFrameRate();
-      timeInterval = ( UInt )( 1000.0 / frameRate + 0.5 );
-      m_pcPlayingTimer->setInterval( timeInterval );
+      timeinterval = (unsigned int)( 1000.0 / frameRate + 0.5 );
+      m_pcPlayingTimer->setInterval( timeinterval );
     }
   }
   else
   {
     if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
     {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      for( int i = 0; i < m_acPlayingSubWindows.size(); i++ )
       {
         m_acPlayingSubWindows.at( i )->pause();
       }
@@ -614,11 +614,11 @@ Void VideoHandle::play()
   // update();
 }
 
-Void VideoHandle::stop()
+void VideoHandle::stop()
 {
   if( m_acPlayingSubWindows.size() > 0 )
   {
-    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+    for( int i = 0; i < m_acPlayingSubWindows.size(); i++ )
     {
       m_acPlayingSubWindows.at( i )->stop();
     }
@@ -636,9 +636,9 @@ Void VideoHandle::stop()
   m_arrayActions[VIDEO_LOCK_ACT]->setVisible( false );
 }
 
-Void VideoHandle::playEvent()
+void VideoHandle::playEvent()
 {
-  Bool bEndOfSequence = false;
+  bool bEndOfSequence = false;
 #if( _CONTROL_PLAYING_TIME_ == 1 )
   m_dAverageFps = Double( m_dAverageFps * m_uiNumberPlayedFrames + m_pcPlayControlTimer->elapsed() ) /
                   Double( m_uiNumberPlayedFrames + 1 );
@@ -647,7 +647,7 @@ Void VideoHandle::playEvent()
 #endif
   try
   {
-    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+    for( int i = 0; i < m_acPlayingSubWindows.size(); i++ )
     {
       bEndOfSequence |= m_acPlayingSubWindows.at( i )->playEvent();
     }
@@ -656,7 +656,7 @@ Void VideoHandle::playEvent()
       if( !m_arrayActions[VIDEO_REPEAT_ACT]->isChecked() )
         stop();
       else
-        for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+        for( int i = 0; i < m_acPlayingSubWindows.size(); i++ )
           m_acPlayingSubWindows.at( i )->seekAbsoluteEvent( 0 );
     }
   }
@@ -673,16 +673,16 @@ Void VideoHandle::playEvent()
   emit changed();
 }
 
-Void VideoHandle::seekEvent( Int direction )
+void VideoHandle::seekEvent( int direction )
 {
   if( m_pcCurrentVideoSubWindow )
   {
     if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
     {
-      if( !( ( UInt )( m_pcCurrentVideoSubWindow->getInputStream()->getCurrFrameNum() + 1 ) >= getMaxFrameNumber() &&
+      if( !( (unsigned int)( m_pcCurrentVideoSubWindow->getInputStream()->getCurrFrameNum() + 1 ) >= getMaxFrameNumber() &&
              direction > 0 ) )
       {
-        for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+        for( int i = 0; i < m_acPlayingSubWindows.size(); i++ )
         {
           m_acPlayingSubWindows.at( i )->seekRelativeEvent( direction > 0 ? true : false );
         }
@@ -697,7 +697,7 @@ Void VideoHandle::seekEvent( Int direction )
   }
 }
 
-Void VideoHandle::seekVideo()
+void VideoHandle::seekVideo()
 {
   if( m_pcCurrentVideoSubWindow )
   {
@@ -705,19 +705,19 @@ Void VideoHandle::seekVideo()
     {
       SeekStreamDialog* dialogSeekVideo =
           new SeekStreamDialog( m_pcCurrentVideoSubWindow->getInputStream(), m_pcParet );
-      Int newFrameNum = dialogSeekVideo->runDialog();
+      int newFrameNum = dialogSeekVideo->runDialog();
       if( newFrameNum >= 0 )
       {
         if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
         {
-          for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+          for( int i = 0; i < m_acPlayingSubWindows.size(); i++ )
           {
-            m_acPlayingSubWindows.at( i )->seekAbsoluteEvent( (UInt)newFrameNum );
+            m_acPlayingSubWindows.at( i )->seekAbsoluteEvent( (unsigned int)newFrameNum );
           }
         }
         else
         {
-          m_pcCurrentVideoSubWindow->seekAbsoluteEvent( (UInt)newFrameNum );
+          m_pcCurrentVideoSubWindow->seekAbsoluteEvent( (unsigned int)newFrameNum );
         }
         emit changed();
       }
@@ -725,26 +725,26 @@ Void VideoHandle::seekVideo()
   }
 }
 
-Void VideoHandle::seekSliderEvent( Int new_frame_num )
+void VideoHandle::seekSliderEvent( int new_frame_num )
 {
   if( m_pcCurrentVideoSubWindow && !m_bIsPlaying )  // TODO: Fix this slot
   {
     if( m_acPlayingSubWindows.contains( m_pcCurrentVideoSubWindow ) )
     {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      for( int i = 0; i < m_acPlayingSubWindows.size(); i++ )
       {
-        m_acPlayingSubWindows.at( i )->seekAbsoluteEvent( (UInt)new_frame_num );
+        m_acPlayingSubWindows.at( i )->seekAbsoluteEvent( (unsigned int)new_frame_num );
       }
     }
     else
     {
-      m_pcCurrentVideoSubWindow->seekAbsoluteEvent( (UInt)new_frame_num );
+      m_pcCurrentVideoSubWindow->seekAbsoluteEvent( (unsigned int)new_frame_num );
     }
     emit changed();
   }
 }
 
-Void VideoHandle::videoSelectionButtonEvent()
+void VideoHandle::videoSelectionButtonEvent()
 {
   VideoSubWindow* videoSubWindow;
 
@@ -753,7 +753,7 @@ Void VideoHandle::videoSelectionButtonEvent()
   {
     QList<SubWindowAbstract*> subWindowList =
         m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
-    for( Int i = 0; i < subWindowList.size(); i++ )
+    for( int i = 0; i < subWindowList.size(); i++ )
     {
       videoSubWindow = qobject_cast<VideoSubWindow*>( subWindowList.at( i ) );
       m_acPlayingSubWindows.append( videoSubWindow );
@@ -761,10 +761,10 @@ Void VideoHandle::videoSelectionButtonEvent()
   }
   else
   {
-    DialogSubWindowSelector dialogWindowsSelection( m_pcParet, m_pcMainWindowManager,
+    SubWindowSelectorDialog dialogWindowsSelection( m_pcParet, m_pcMainWindowManager,
                                                     SubWindowAbstract::VIDEO_STREAM_SUBWINDOW );
     QStringList cWindowListNames;
-    for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+    for( int i = 0; i < m_acPlayingSubWindows.size(); i++ )
     {
       dialogWindowsSelection.selectSubWindow( m_acPlayingSubWindows.at( i ) );
     }
@@ -773,7 +773,7 @@ Void VideoHandle::videoSelectionButtonEvent()
       m_acPlayingSubWindows.clear();
 
       QList<SubWindowAbstract*> selectedSubWindowList = dialogWindowsSelection.getSelectedWindows();
-      for( Int i = 0; i < selectedSubWindowList.size(); i++ )
+      for( int i = 0; i < selectedSubWindowList.size(); i++ )
       {
         videoSubWindow = qobject_cast<VideoSubWindow*>( selectedSubWindowList.at( i ) );
         m_acPlayingSubWindows.append( videoSubWindow );
@@ -794,7 +794,7 @@ Void VideoHandle::videoSelectionButtonEvent()
     }
     if( m_bIsPlaying )
     {
-      for( Int i = 0; i < m_acPlayingSubWindows.size(); i++ )
+      for( int i = 0; i < m_acPlayingSubWindows.size(); i++ )
       {
         m_acPlayingSubWindows.at( i )->play();
       }
@@ -806,21 +806,21 @@ Void VideoHandle::videoSelectionButtonEvent()
   }
 }
 
-Void VideoHandle::setTool( Int tool )
+void VideoHandle::setTool( int tool )
 {
   m_uiViewTool = tool;
   actionGroupTools->actions().at( m_uiViewTool )->setChecked( true );
   QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
-  for( Int i = 0; i < subWindowList.size(); i++ )
+  for( int i = 0; i < subWindowList.size(); i++ )
   {
     qobject_cast<VideoSubWindow*>( subWindowList.at( i ) )->getViewArea()->setTool( m_uiViewTool );
   }
 }
 
-Void VideoHandle::toggleGrid( Bool checked )
+void VideoHandle::toggleGrid( bool checked )
 {
   QList<SubWindowAbstract*> subWindowList = m_pcMainWindowManager->findSubWindow( SubWindowAbstract::VIDEO_SUBWINDOW );
-  for( Int i = 0; i < subWindowList.size(); i++ )
+  for( int i = 0; i < subWindowList.size(); i++ )
   {
     qobject_cast<VideoSubWindow*>( subWindowList.at( i ) )->getViewArea()->setGridVisible( checked );
   }

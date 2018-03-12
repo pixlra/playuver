@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -19,14 +19,14 @@
 
 /**
  * \file     StreamHandlerLibav.cpp
- * \brief    Interface with libav libs
+ * \brief    interface with libav libs
  */
 
 #include "StreamHandlerLibav.h"
 
+#include "CalypFrame.h"
 #include "LibMemory.h"
-#include "PlaYUVerFrame.h"
-#include "PlaYUVerFramePixelFormats.h"
+#include "PixelFormats.h"
 
 #include <cstdio>
 #include <iostream>
@@ -36,27 +36,27 @@
 #define FF_USER_CODEC_PARAM
 #endif
 
-std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedReadFormats()
+std::vector<CalypStreamFormat> StreamHandlerLibav::supportedReadFormats()
 {
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Portable Network Graphics", "png" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Joint Photographic Experts Group", "jpg,jpeg" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows Bitmap", "bmp" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Tagged Image File Format", "tiff" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Graphics Interchange Format", "gif" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Audio video interleaved", "avi" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows media video", "wmv" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "MPEG-4", "mp4" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Matroska Multimedia Container", "mkv" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "H.264 streams", "264,h264" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerLibav::Create, "HEVC streams", "265,hevc" );
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+  INI_REGIST_CALYP_SUPPORTED_FMT;
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Portable Network Graphics", "png" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Joint Photographic Experts Group", "jpg,jpeg" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows Bitmap", "bmp" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Tagged Image File Format", "tiff" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Graphics interchange Format", "gif" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Audio video interleaved", "avi" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Windows media video", "wmv" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerLibav::Create, "MPEG-4", "mp4" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerLibav::Create, "Matroska Multimedia Container", "mkv" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerLibav::Create, "H.264 streams", "264,h264" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerLibav::Create, "HEVC streams", "265,hevc" );
+  END_REGIST_CALYP_SUPPORTED_FMT;
 }
 
-std::vector<PlaYUVerSupportedFormat> StreamHandlerLibav::supportedWriteFormats()
+std::vector<CalypStreamFormat> StreamHandlerLibav::supportedWriteFormats()
 {
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+  INI_REGIST_CALYP_SUPPORTED_FMT;
+  END_REGIST_CALYP_SUPPORTED_FMT;
 }
 
 StreamHandlerLibav::StreamHandlerLibav()
@@ -64,7 +64,7 @@ StreamHandlerLibav::StreamHandlerLibav()
   m_pchHandlerName = "FFmpeg";
 }
 
-Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
+bool StreamHandlerLibav::openHandler( ClpString strFilename, bool bInput )
 {
   const char* filename = strFilename.c_str();
 
@@ -82,8 +82,8 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   //		sprintf( aux_string, "%dx%d", m_uiWidth, m_uiHeight );
   //		av_dict_set( &format_opts, "video_size", aux_string, 0 );
   //	}
-  //	Int ffmpeg_pel_format =
-  // g_PlaYUVerPixFmtDescriptorsList[m_iPixelFormat].ffmpegPelFormat; 	if(
+  //	int ffmpeg_pel_format =
+  // g_CalypPixFmtDescriptorsList[m_iPixelFormat].ffmpegPelFormat; 	if(
   // ffmpeg_pel_format >= 0 )
   //	{
   //		av_dict_set( &format_opts, "pix_fmt", av_get_pix_fmt_name(
@@ -120,9 +120,9 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 
   /* find decoder for the stream */
 #ifdef FF_USER_CODEC_PARAM
-  Int codecId = m_cStream->codecpar->codec_id;
+  int codecId = m_cStream->codecpar->codec_id;
 #else
-  Int codecId = m_cStream->codec->codec_id;
+  int codecId = m_cStream->codec->codec_id;
 #endif
   AVCodec* dec = avcodec_find_decoder( AVCodecID( codecId ) );
   if( !dec )
@@ -165,7 +165,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   m_uiHeight = m_cStream->codec->height;
 
 #endif
-  m_strFormatName = uppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
+  m_strFormatName = clpUppercase( strFilename.substr( strFilename.find_last_of( "." ) + 1 ) );
   const char* name = avcodec_get_name( m_cCodedCtx->codec_id );
   m_strCodecName = name;
 
@@ -175,7 +175,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   /**
 	 * Auxiliar conversation to re-use similar pixfmt
 	 */
-  Int auxPixFmt = m_ffPixFmt;
+  int auxPixFmt = m_ffPixFmt;
   switch( m_ffPixFmt )
   {
   case AV_PIX_FMT_YUVJ420P:
@@ -198,23 +198,23 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
     auxPixFmt = AV_PIX_FMT_GRAY8;
   }
 
-  m_iPixelFormat = PlaYUVerFrame::NO_FMT;
-  for( Int i = 0; i < PlaYUVerFrame::numberOfFormats(); i++ )
+  m_iPixelFormat = CLP_INVALID_FMT;
+  for( int i = 0; i < CalypFrame::numberOfFormats(); i++ )
   {
-    if( g_PlaYUVerPixFmtDescriptorsMap.at( i ).ffmpegPelFormat == auxPixFmt )
+    if( g_CalypPixFmtDescriptorsMap.at( i ).ffmpegPelFormat == auxPixFmt )
     {
       m_iPixelFormat = i;
       break;
     }
   }
-  if( m_iPixelFormat == PlaYUVerFrame::NO_FMT )
+  if( m_iPixelFormat == CLP_INVALID_FMT )
   {
     m_bNative = false;
-    //throw PlaYUVerFailure( "StreamHandlerLibav", "Cannot open file using FFmpeg libs - unsupported pixel format" );
+    //throw CalypFailure( "StreamHandlerLibav", "Cannot open file using FFmpeg libs - unsupported pixel format" );
     //return false;
   }
 
-  Double fr = 30;
+  double fr = 30;
   if( m_cStream->avg_frame_rate.den && m_cStream->avg_frame_rate.num )
     fr = av_q2d( m_cStream->avg_frame_rate );
 #if FF_API_R_FRAME_RATE
@@ -250,31 +250,31 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
 
   if( !m_bNative )
   {
-    Int newPelFmt = -1;
+    int newPelFmt = -1;
     const AVPixFmtDescriptor* ffPelDesc = av_pix_fmt_desc_get( AVPixelFormat( m_ffPixFmt ) );
     if( ffPelDesc->flags & AV_PIX_FMT_FLAG_PAL )
     {
-      newPelFmt = PlaYUVerFrame::RGB24;
+      newPelFmt = CLP_RGB24;
     }
     else if( ffPelDesc->flags & AV_PIX_FMT_FLAG_ALPHA )
     {
-      newPelFmt = PlaYUVerFrame::RGBA;
+      newPelFmt = CLP_RGBA32;
     }
     else if( ffPelDesc->flags & AV_PIX_FMT_FLAG_RGB )
     {
-      newPelFmt = PlaYUVerFrame::RGB24;
+      newPelFmt = CLP_RGB24;
     }
     else if( ffPelDesc->nb_components == 1 )
     {
-      newPelFmt = PlaYUVerFrame::GRAY;
+      newPelFmt = CLP_GRAY;
     }
     else
     {
-      newPelFmt = PlaYUVerFrame::YUV444p;
+      newPelFmt = CLP_YUV444P;
     }
     m_iPixelFormat = newPelFmt;
 
-    AVPixelFormat newAvFmt = AVPixelFormat( g_PlaYUVerPixFmtDescriptorsMap.at( m_iPixelFormat ).ffmpegPelFormat );
+    AVPixelFormat newAvFmt = AVPixelFormat( g_CalypPixFmtDescriptorsMap.at( m_iPixelFormat ).ffmpegPelFormat );
 
     /* create scaling context */
     m_ScalerCtx = sws_getContext( m_uiWidth, m_uiHeight, AVPixelFormat( m_ffPixFmt ),
@@ -310,7 +310,7 @@ Bool StreamHandlerLibav::openHandler( String strFilename, Bool bInput )
   return true;
 }
 
-Void StreamHandlerLibav::closeHandler()
+void StreamHandlerLibav::closeHandler()
 {
   if( m_bHasStream )
   {
@@ -328,21 +328,21 @@ Void StreamHandlerLibav::closeHandler()
     freeMem1D( m_pStreamBuffer );
 }
 
-Bool StreamHandlerLibav::configureBuffer( PlaYUVerFrame* pcFrame )
+bool StreamHandlerLibav::configureBuffer( CalypFrame* pcFrame )
 {
-  return getMem1D<Byte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
+  return getMem1D<ClpByte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
 }
 
-Void StreamHandlerLibav::calculateFrameNumber()
+void StreamHandlerLibav::calculateFrameNumber()
 {
-  UInt64 num_frames;
+  unsigned long long int num_frames;
   if( m_cStream->nb_frames )
   {
     num_frames = m_cStream->nb_frames;
   }
   else if( m_cFmtCtx->duration != AV_NOPTS_VALUE )
   {
-    Int64 duration = m_cFmtCtx->duration + 5000;
+    long long int duration = m_cFmtCtx->duration + 5000;
     m_uiSecs = duration / AV_TIME_BASE;
     num_frames = m_uiSecs * m_dFrameRate;
     m_uiMicroSec = duration % AV_TIME_BASE;
@@ -355,12 +355,12 @@ Void StreamHandlerLibav::calculateFrameNumber()
   m_uiTotalNumberFrames = num_frames;
 }
 
-Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
+bool StreamHandlerLibav::read( CalypFrame* pcFrame )
 {
-  Int bGotFrame = 0;
-  Bool bErrors = false;
-  Bool bReadPkt = false;
-  Int iRet = 0;
+  int bGotFrame = 0;
+  bool bErrors = false;
+  bool bReadPkt = false;
+  int iRet = 0;
 
   while( !bGotFrame && !bErrors )
   {
@@ -427,12 +427,12 @@ Bool StreamHandlerLibav::read( PlaYUVerFrame* pcFrame )
   return false;
 }
 
-Bool StreamHandlerLibav::write( PlaYUVerFrame* pcFrame )
+bool StreamHandlerLibav::write( CalypFrame* pcFrame )
 {
   return false;
 }
 
-Bool StreamHandlerLibav::seek( UInt64 iFrameNum )
+bool StreamHandlerLibav::seek( unsigned long long int iFrameNum )
 {
   if( m_uiTotalNumberFrames == 1 )
     return true;
@@ -440,12 +440,12 @@ Bool StreamHandlerLibav::seek( UInt64 iFrameNum )
   if( m_uiCurrFrameFileIdx == iFrameNum )
     return true;
 
-  Int flags = AVSEEK_FLAG_ANY | AVSEEK_FLAG_FRAME;
+  int flags = AVSEEK_FLAG_ANY | AVSEEK_FLAG_FRAME;
   if( iFrameNum < m_uiCurrFrameFileIdx )
   {
     flags |= AVSEEK_FLAG_BACKWARD;
   }
-  Int iRet = av_seek_frame( m_cFmtCtx, m_iStreamIdx, iFrameNum, flags );
+  int iRet = av_seek_frame( m_cFmtCtx, m_iStreamIdx, iFrameNum, flags );
   if( iRet < 0 )
   {
     return false;

@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -25,22 +25,22 @@
 #ifndef __FRAMEBINARIZATION_APIV1_H__
 #define __FRAMEBINARIZATION_APIV1_H__
 
-#include "PlaYUVerModuleIf.h"
+#include "CalypModuleIf.h"
 
-class FrameBinarization_APIv1 : public PlaYUVerModuleIf
+class FrameBinarization_APIv1 : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( FrameBinarization_APIv1 )
 
- private:
-  PlaYUVerFrame* m_pcBinFrame;
-  UInt m_uiThreshold;
+private:
+  CalypFrame* m_pcBinFrame;
+  unsigned int m_uiThreshold;
 
- public:
-   FrameBinarization_APIv1();
-   virtual ~FrameBinarization_APIv1() {}
-  Void create( PlaYUVerFrame* );
-  PlaYUVerFrame* process( PlaYUVerFrame* );
-  Void destroy();
+public:
+  FrameBinarization_APIv1();
+  virtual ~FrameBinarization_APIv1() {}
+  void create( CalypFrame* );
+  CalypFrame* process( CalypFrame* );
+  void destroy();
 };
 
 #endif  // __FRAMEBINARIZATION_APIV1_H__

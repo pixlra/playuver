@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -25,22 +25,22 @@
 #ifndef __WEIGHTEDPSNR_H__
 #define __WEIGHTEDPSNR_H__
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class WeightedPSNR : public PlaYUVerModuleIf
+class WeightedPSNR : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( WeightedPSNR )
 
 private:
-  UInt m_uiComponent;
+  unsigned int m_uiComponent;
 
 public:
   WeightedPSNR();
   virtual ~WeightedPSNR() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  Double measure( std::vector<PlaYUVerFrame*> apcFrameList );
-  Void destroy();
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  double measure( std::vector<CalypFrame*> apcFrameList );
+  void destroy();
 };
 
 #endif  // __WEIGHTEDPSNR_H__

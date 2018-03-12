@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -22,13 +22,13 @@
  * \brief    main file
  */
 
+#include "CommonDefs.h"
 #include "ConfigureFormatDialog.h"
-#include "PlaYUVerApp.h"
-#include "PlaYUVerAppDefs.h"
+#include "MainWindow.h"
 #include "VideoSubWindow.h"
 #include "config.h"
 #ifdef USE_QTDBUS
-#include "PlaYUVerAppAdaptor.h"
+#include "DBusAppAdaptor.h"
 #endif
 #include <QApplication>
 #ifdef USE_FERVOR
@@ -41,26 +41,26 @@
 
 int main( int argc, char* argv[] )
 {
-  qRegisterMetaType<PlaYUVerStreamInfoVector>();
-  qRegisterMetaTypeStreamOperators<PlaYUVerStreamInfoVector>();
-  qRegisterMetaType<PlaYUVerStdResolutionVector>();
-  qRegisterMetaTypeStreamOperators<PlaYUVerStdResolutionVector>();
+  qRegisterMetaType<CalypFileInfoVector>();
+  qRegisterMetaTypeStreamOperators<CalypFileInfoVector>();
+  qRegisterMetaType<CalypStandardResolutionVector>();
+  qRegisterMetaTypeStreamOperators<CalypStandardResolutionVector>();
 
   QApplication application( argc, argv );
-  QApplication::setApplicationName( "PlaYUVer" );
-  QApplication::setApplicationVersion( PLAYUVER_VERSION_STRING );
+  QApplication::setApplicationName( "Calyp" );
+  QApplication::setApplicationVersion( CALYP_VERSION_STRING );
   QApplication::setOrganizationName( "PixLRA" );
 
 #ifdef USE_QTDBUS
   /**
    * use dbus, if available
-   * allows for resuse of running Kate instances
+   * allows for resuse of running Calyp instances
    */
-  if( QDBusConnectionInterface* const sessionBusInterface = QDBusConnection::sessionBus().interface() )
+  if( QDBusConnectionInterface* const sessionBusinterface = QDBusConnection::sessionBus().interface() )
   {
-    Bool force_new = false;
+    bool force_new = false;
     QStringList filenameList;
-    for( Int i = 1; i < argc; i++ )
+    for( int i = 1; i < argc; i++ )
     {
       filenameList.append( QFileInfo( QString( argv[i] ) ).absoluteFilePath() );
     }
@@ -73,7 +73,7 @@ int main( int argc, char* argv[] )
     bool foundRunningService = false;
     if( !force_new )
     {
-      QDBusReply<bool> there = sessionBusInterface->isServiceRegistered( PLAYUVER_DBUS_SESSION_NAME );
+      QDBusReply<bool> there = sessionBusinterface->isServiceRegistered( CALYP_DBUS_SESSION_NAME );
       foundRunningService = there.isValid() && there.value();
 
       if( foundRunningService )
@@ -82,8 +82,8 @@ int main( int argc, char* argv[] )
 
         // open given session
         QDBusMessage m = QDBusMessage::createMethodCall(
-            PLAYUVER_DBUS_SESSION_NAME, QStringLiteral( PLAYUVER_DBUS_PATH ),
-            QStringLiteral( PLAYUVER_DBUS_SESSION_NAME ), QStringLiteral( "activate" ) );
+            CALYP_DBUS_SESSION_NAME, QStringLiteral( CALYP_DBUS_PATH ),
+            QStringLiteral( CALYP_DBUS_SESSION_NAME ), QStringLiteral( "activate" ) );
 
         QDBusConnection::sessionBus().call( m );
 
@@ -96,8 +96,8 @@ int main( int argc, char* argv[] )
         foreach( const QString& file, filenameList )
         {
           QDBusMessage m = QDBusMessage::createMethodCall(
-              PLAYUVER_DBUS_SESSION_NAME, QStringLiteral( PLAYUVER_DBUS_PATH ),
-              QStringLiteral( PLAYUVER_DBUS_SESSION_NAME ), QStringLiteral( "loadFile" ) );
+              CALYP_DBUS_SESSION_NAME, QStringLiteral( CALYP_DBUS_PATH ),
+              QStringLiteral( CALYP_DBUS_SESSION_NAME ), QStringLiteral( "loadFile" ) );
 
           QList<QVariant> dbusargs;
           dbusargs.append( file );
@@ -128,11 +128,11 @@ int main( int argc, char* argv[] )
   }
 
   /**
-   * if we arrive here, we need to start a new playuver instance!
+   * if we arrive here, we need to start a new calyp instance!
    */
-  QDBusConnection::sessionBus().registerService( PLAYUVER_DBUS_SESSION_NAME );
+  QDBusConnection::sessionBus().registerService( CALYP_DBUS_SESSION_NAME );
 #endif
-  PlaYUVerApp mainwindow;
+  MainWindow mainwindow;
   mainwindow.show();
   if( mainwindow.parseArgs( argc, argv ) )
   {
@@ -140,8 +140,8 @@ int main( int argc, char* argv[] )
   }
 
 #ifdef USE_FERVOR
-  FvUpdater::sharedUpdater()->SetFeedURL( "http://192.168.96.201/share/PlaYUVerProject/"
-                                          "PlaYUVerUpdate-" UPDATE_CHANNEL ".xml" );
+  FvUpdater::sharedUpdater()->SetFeedURL( "http://192.168.96.201/share/CalypProject/"
+                                          "CalypUpdate-" UPDATE_CHANNEL ".xml" );
   FvUpdater::sharedUpdater()->SetDependencies( "ALL" );
 #endif
 

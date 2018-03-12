@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -30,46 +30,46 @@ REGISTER_CLASS_MAKER( AbsoluteFrameDifferenceExample )
 AbsoluteFrameDifferenceExample::AbsoluteFrameDifferenceExample()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;                                // Use API version 2 (recommended).
-                                                              // See this example for details on the functions prototype
-  m_iModuleType = FRAME_PROCESSING_MODULE;                    // Apply module to the frames or to the whole sequence.
-  m_pchModuleCategory = "Measurements";                       // Category (sub-menu)
-  m_pchModuleName = "AbsoluteDifferenceExample";  // Name
-  m_pchModuleLongName = "Absolute Difference Example";  // Name
-  m_pchModuleTooltip =  "Measure the absolute difference "  // Description
-      "between two images (Y plane), e. g., abs( Y1 - Y2 )";
-  m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;  // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
-  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;  // Module requirements (check PlaYUVerModulesIf.h).
-                                                        // Several requirements should be "or" between each others.
+  m_iModuleAPI = CLP_MODULE_API_2;                         // Use API version 2 (recommended).
+                                                           // See this example for details on the functions prototype
+  m_iModuleType = CLP_FRAME_PROCESSING_MODULE;             // Apply module to the frames or to the whole sequence.
+  m_pchModuleCategory = "Measurements";                    // Category (sub-menu)
+  m_pchModuleName = "AbsoluteDifferenceExample";           // Name
+  m_pchModuleLongName = "Absolute Difference Example";     // Name
+  m_pchModuleTooltip = "Measure the absolute difference "  // Description
+                       "between two images (Y plane), e. g., abs( Y1 - Y2 )";
+  m_uiNumberOfFrames = 2;                                   // Number of Frames required (ONE_FRAME, TWO_FRAMES, THREE_FRAMES)
+  m_uiModuleRequirements = CLP_MODULE_REQUIRES_NEW_WINDOW;  // Module requirements (check CalypModulesIf.h).
+                                                            // Several requirements should be "or" between each others.
   m_pcFrameDifference = NULL;
 }
 
-Bool AbsoluteFrameDifferenceExample::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool AbsoluteFrameDifferenceExample::create( std::vector<CalypFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
 
-  for( UInt i = 1; i < apcFrameList.size(); i++ )
-    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], PlaYUVerFrame::MATCH_COLOR_SPACE |
-                                                            PlaYUVerFrame::MATCH_RESOLUTION |
-                                                            PlaYUVerFrame::MATCH_BITS ) )
+  for( unsigned int i = 1; i < apcFrameList.size(); i++ )
+    if( !apcFrameList[i]->haveSameFmt( apcFrameList[0], CalypFrame::MATCH_COLOR_SPACE |
+                                                            CalypFrame::MATCH_RESOLUTION |
+                                                            CalypFrame::MATCH_BITS ) )
       return false;
 
   m_pcFrameDifference =
-      new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+      new CalypFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), CalypFrame::GRAY );
   return true;
 }
 
-PlaYUVerFrame* AbsoluteFrameDifferenceExample::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* AbsoluteFrameDifferenceExample::process( std::vector<CalypFrame*> apcFrameList )
 {
-  PlaYUVerFrame* Input1 = apcFrameList[0];
-  PlaYUVerFrame* Input2 = apcFrameList[1];
-  Pel* pInput1PelYUV = Input1->getPelBufferYUV()[0][0];
-  Pel* pInput2PelYUV = Input2->getPelBufferYUV()[0][0];
-  Pel* pOutputPelYUV = m_pcFrameDifference->getPelBufferYUV()[0][0];
-  Int aux_pel_1, aux_pel_2;
+  CalypFrame* Input1 = apcFrameList[0];
+  CalypFrame* Input2 = apcFrameList[1];
+  ClpPel* pInput1PelYUV = Input1->getPelBufferYUV()[0][0];
+  ClpPel* pInput2PelYUV = Input2->getPelBufferYUV()[0][0];
+  ClpPel* pOutputPelYUV = m_pcFrameDifference->getPelBufferYUV()[0][0];
+  int aux_pel_1, aux_pel_2;
 
-  for( UInt y = 0; y < m_pcFrameDifference->getHeight(); y++ )
-    for( UInt x = 0; x < m_pcFrameDifference->getWidth(); x++ )
+  for( unsigned int y = 0; y < m_pcFrameDifference->getHeight(); y++ )
+    for( unsigned int x = 0; x < m_pcFrameDifference->getWidth(); x++ )
     {
       aux_pel_1 = *pInput1PelYUV++;
       aux_pel_2 = *pInput2PelYUV++;
@@ -78,7 +78,7 @@ PlaYUVerFrame* AbsoluteFrameDifferenceExample::process( std::vector<PlaYUVerFram
   return m_pcFrameDifference;
 }
 
-Void AbsoluteFrameDifferenceExample::destroy()
+void AbsoluteFrameDifferenceExample::destroy()
 {
   if( m_pcFrameDifference )
     delete m_pcFrameDifference;

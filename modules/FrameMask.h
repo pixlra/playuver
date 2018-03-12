@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -25,24 +25,24 @@
 #ifndef __FRAMEMASK_H__
 #define __FRAMEMASK_H__
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class FrameMask : public PlaYUVerModuleIf
+class FrameMask : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( FrameMask )
 
 private:
-  Int m_iWeight;
-  PlaYUVerFrame* m_pcFrameProcessed;
+  int m_iWeight;
+  CalypFrame* m_pcFrameProcessed;
 
 public:
   FrameMask();
   virtual ~FrameMask() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
-  Bool keyPressed( enum Module_Key_Supported value );
-  Void destroy();
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
+  bool keyPressed( enum Module_Key_Supported value );
+  void destroy();
 };
 
 #endif  // __FRAMEMASK_H__

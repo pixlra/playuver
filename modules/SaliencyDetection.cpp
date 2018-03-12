@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -35,25 +35,25 @@ using namespace cv::saliency;
 SaliencyDetectionModule::SaliencyDetectionModule()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;
-  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_iModuleAPI = CLP_MODULE_API_2;
+  m_iModuleType = CLP_FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Saliency";
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
-  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW;
+  m_uiNumberOfFrames = 1;
+  m_uiModuleRequirements = CLP_MODULE_REQUIRES_NEW_WINDOW;
 
   m_pcSaliencyFrame = NULL;
 }
 
-Bool SaliencyDetectionModule::commonCreate( std::vector<PlaYUVerFrame*> apcFrameList )
+bool SaliencyDetectionModule::commonCreate( std::vector<CalypFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
 
-  m_pcSaliencyFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+  m_pcSaliencyFrame = new CalypFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), CLP_GRAY );
 
   return true;
 }
 
-Bool SaliencyDetectionModule::commonProcess( std::vector<PlaYUVerFrame*> apcFrameList )
+bool SaliencyDetectionModule::commonProcess( std::vector<CalypFrame*> apcFrameList )
 {
   Mat cvFrame;
   if( !apcFrameList[0]->toMat( cvFrame, true ) )
@@ -64,7 +64,7 @@ Bool SaliencyDetectionModule::commonProcess( std::vector<PlaYUVerFrame*> apcFram
   return m_ptrSaliencyAlgorithm->computeSaliency( cvFrame, m_matSaliency );
 }
 
-Void SaliencyDetectionModule::destroy()
+void SaliencyDetectionModule::destroy()
 {
   if( m_pcSaliencyFrame )
     delete m_pcSaliencyFrame;
@@ -77,7 +77,7 @@ SaliencyDetectionSpectral::SaliencyDetectionSpectral()
   m_pchModuleLongName = "Spectral residual";
   m_pchModuleTooltip = "Measure saliency using spectral residual method";
 
-  m_uiModuleRequirements = m_uiModuleRequirements | MODULE_REQUIRES_OPTIONS;
+  m_uiModuleRequirements = m_uiModuleRequirements | CLP_MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions() /**/
       ( "Binary map", m_bBinaryMap, "Measure a binary saliency map [false]" );
@@ -85,9 +85,9 @@ SaliencyDetectionSpectral::SaliencyDetectionSpectral()
   m_bBinaryMap = false;
 }
 
-Bool SaliencyDetectionSpectral::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool SaliencyDetectionSpectral::create( std::vector<CalypFrame*> apcFrameList )
 {
-  Bool bRet = commonCreate( apcFrameList );
+  bool bRet = commonCreate( apcFrameList );
   if( !bRet )
     return bRet;
 
@@ -96,7 +96,7 @@ Bool SaliencyDetectionSpectral::create( std::vector<PlaYUVerFrame*> apcFrameList
   return true;
 }
 
-PlaYUVerFrame* SaliencyDetectionSpectral::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* SaliencyDetectionSpectral::process( std::vector<CalypFrame*> apcFrameList )
 {
   if( commonProcess( apcFrameList ) )
   {
@@ -125,16 +125,16 @@ SaliencyDetectionFineGrained::SaliencyDetectionFineGrained()
   m_pchModuleTooltip = "Measure saliency using fine grained method";
 }
 
-Bool SaliencyDetectionFineGrained::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool SaliencyDetectionFineGrained::create( std::vector<CalypFrame*> apcFrameList )
 {
-  Bool bRet = commonCreate( apcFrameList );
+  bool bRet = commonCreate( apcFrameList );
   if( !bRet )
     return bRet;
   m_ptrSaliencyAlgorithm = cv::saliency::StaticSaliencyFineGrained::create();
   return true;
 }
 
-PlaYUVerFrame* SaliencyDetectionFineGrained::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* SaliencyDetectionFineGrained::process( std::vector<CalypFrame*> apcFrameList )
 {
   if( commonProcess( apcFrameList ) )
     m_pcSaliencyFrame->fromMat( m_matSaliency );
@@ -149,9 +149,9 @@ SaliencyDetectionBinWangApr2014::SaliencyDetectionBinWangApr2014()
   m_pchModuleTooltip = "Measure saliency using a fast self-tuning background subtraction algorithm";
 }
 
-Bool SaliencyDetectionBinWangApr2014::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool SaliencyDetectionBinWangApr2014::create( std::vector<CalypFrame*> apcFrameList )
 {
-  Bool bRet = commonCreate( apcFrameList );
+  bool bRet = commonCreate( apcFrameList );
   if( !bRet )
     return bRet;
   m_ptrSaliencyAlgorithm = MotionSaliencyBinWangApr2014::create();
@@ -160,7 +160,7 @@ Bool SaliencyDetectionBinWangApr2014::create( std::vector<PlaYUVerFrame*> apcFra
   return true;
 }
 
-PlaYUVerFrame* SaliencyDetectionBinWangApr2014::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* SaliencyDetectionBinWangApr2014::process( std::vector<CalypFrame*> apcFrameList )
 {
   if( commonProcess( apcFrameList ) )
   {

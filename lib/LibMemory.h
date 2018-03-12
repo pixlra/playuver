@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -19,7 +19,7 @@
 
 /**
  * \file     LibMemory.cpp
- * \ingroup  PlaYUVerLib
+ * \ingroup  CalypLib
  * \brief    Memory allocation functions
  */
 
@@ -29,23 +29,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-
-typedef void Void;
-typedef char Char;
-typedef int Int;
-typedef size_t SizeT;
-
-#ifdef _MSC_VER
-typedef __int64 Int64;
-#if _MSC_VER <= 1200     // MS VC6
-typedef __int64 UInt64;  // MS VC6 does not support unsigned __int64 to double conversion
-#else
-typedef unsigned __int64 UInt64;
-#endif
-#else
-typedef long long Int64;
-typedef unsigned long long UInt64;
-#endif
 
 #define DATA_ALIGN 1  ///< use 32-bit aligned malloc/free
 #if DATA_ALIGN && _WIN32 && ( _MSC_VER > 1300 )
@@ -57,9 +40,9 @@ typedef unsigned long long UInt64;
 #endif
 #define xMemSet( type, len, ptr ) memset( ptr, 0, ( len ) * sizeof( type ) )
 
-static inline Void* xMallocMem( SizeT nitems )
+static inline void* xMallocMem( size_t nitems )
 {
-  Void* d;
+  void* d;
   if( ( d = xMalloc( nitems ) ) == NULL )
   {
     printf( "malloc failed.\n" );
@@ -68,16 +51,16 @@ static inline Void* xMallocMem( SizeT nitems )
   return d;
 }
 
-static inline Void* xCallocMem( SizeT nitems, SizeT size )
+static inline void* xCallocMem( size_t nitems, size_t size )
 {
   size_t padded_size = nitems * size;
-  Void* d = xMallocMem( padded_size );
+  void* d = xMallocMem( padded_size );
   memset( d, 0, (int)padded_size );
   return d;
 }
 
 template <typename T>
-Int getMem1D( T** array1D, Int dim0 )
+int getMem1D( T** array1D, int dim0 )
 {
   if( ( *array1D = (T*)xCallocMem( dim0, sizeof( T ) ) ) == NULL )
     return 0;
@@ -86,9 +69,9 @@ Int getMem1D( T** array1D, Int dim0 )
 }
 
 template <typename T>
-Int getMem2D( T*** array2D, Int dim0, Int dim1 )
+int getMem2D( T*** array2D, int dim0, int dim1 )
 {
-  Int i;
+  int i;
 
   if( ( *array2D = (T**)xMallocMem( dim0 * sizeof( T* ) ) ) == NULL )
     printf( "get_mem2Dint: array2D" );
@@ -102,9 +85,9 @@ Int getMem2D( T*** array2D, Int dim0, Int dim1 )
 }
 
 template <typename T>
-Int getMem3D( T**** array3D, Int dim0, Int dim1, Int dim2 )
+int getMem3D( T**** array3D, int dim0, int dim1, int dim2 )
 {
-  Int i, mem_size = dim0 * sizeof( T** );
+  int i, mem_size = dim0 * sizeof( T** );
 
   if( ( ( *array3D ) = (T***)xMallocMem( dim0 * sizeof( T** ) ) ) == NULL )
     printf( "get_mem3Dint: array3D" );
@@ -118,7 +101,7 @@ Int getMem3D( T**** array3D, Int dim0, Int dim1, Int dim2 )
 }
 
 template <typename T>
-Void freeMem1D( T*& array1D )
+void freeMem1D( T*& array1D )
 {
   if( array1D )
   {
@@ -128,7 +111,7 @@ Void freeMem1D( T*& array1D )
 }
 
 template <typename T>
-Void freeMem2D( T**& array2D )
+void freeMem2D( T**& array2D )
 {
   if( *array2D )
   {
@@ -147,7 +130,7 @@ Void freeMem2D( T**& array2D )
 }
 
 template <typename T>
-Void freeMem3D( T***& array3D )
+void freeMem3D( T***& array3D )
 {
   if( array3D )
   {

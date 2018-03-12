@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -28,15 +28,15 @@
 DisparityStereoBM::DisparityStereoBM()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;
-  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_iModuleAPI = CLP_MODULE_API_2;
+  m_iModuleType = CLP_FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Stereo";
   m_pchModuleName = "Disparity-BM";
   m_pchModuleLongName = "Block macth based disparity";
   m_pchModuleTooltip = "Measure the disparity between two images using the "
                        "Stereo BM method (OpenCV)";
-  m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
-  m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
+  m_uiNumberOfFrames = 2;
+  m_uiModuleRequirements = CLP_MODULE_REQUIRES_SKIP_WHILE_PLAY | CLP_MODULE_REQUIRES_NEW_WINDOW | CLP_MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions() /**/
       ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [9]" );
@@ -45,11 +45,11 @@ DisparityStereoBM::DisparityStereoBM()
   m_uiBlockSize = 9;
 }
 
-Bool DisparityStereoBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool DisparityStereoBM::create( std::vector<CalypFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
   m_pcDisparityFrame =
-      new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+      new CalypFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), CLP_GRAY );
   if( ( m_uiBlockSize % 2 ) == 0 )
   {
     m_uiBlockSize++;
@@ -80,10 +80,10 @@ Bool DisparityStereoBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
 #endif
   return true;
 }
-PlaYUVerFrame* DisparityStereoBM::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* DisparityStereoBM::process( std::vector<CalypFrame*> apcFrameList )
 {
-  PlaYUVerFrame* InputLeft = apcFrameList[0];
-  PlaYUVerFrame* InputRight = apcFrameList[1];
+  CalypFrame* InputLeft = apcFrameList[0];
+  CalypFrame* InputRight = apcFrameList[1];
 
   cv::Mat leftImage, rightImage;
   if( !InputLeft->toMat( leftImage, true ) || !InputRight->toMat( rightImage, true ) )
@@ -104,7 +104,7 @@ PlaYUVerFrame* DisparityStereoBM::process( std::vector<PlaYUVerFrame*> apcFrameL
   return m_pcDisparityFrame;
 }
 
-Void DisparityStereoBM::destroy()
+void DisparityStereoBM::destroy()
 {
   if( m_pcDisparityFrame )
     delete m_pcDisparityFrame;

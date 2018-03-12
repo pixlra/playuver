@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -24,30 +24,29 @@
 
 #include "StreamHandlerPortableMap.h"
 
+#include "CalypFrame.h"
 #include "LibMemory.h"
-#include "PlaYUVerFrame.h"
-#include "PlaYUVerFramePixelFormats.h"
 
 #include <cmath>
 #include <cstdio>
 
-std::vector<PlaYUVerSupportedFormat> StreamHandlerPortableMap::supportedReadFormats()
+std::vector<CalypStreamFormat> StreamHandlerPortableMap::supportedReadFormats()
 {
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  //REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable PixMap ", "ppm" );
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+  INI_REGIST_CALYP_SUPPORTED_FMT;
+  //REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable BitMap ", "pbm" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable PixMap ", "ppm" );
+  END_REGIST_CALYP_SUPPORTED_FMT;
 }
 
-std::vector<PlaYUVerSupportedFormat> StreamHandlerPortableMap::supportedWriteFormats()
+std::vector<CalypStreamFormat> StreamHandlerPortableMap::supportedWriteFormats()
 {
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+  INI_REGIST_CALYP_SUPPORTED_FMT;
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerPortableMap::Create, "Portable GrayMap ", "pgm" );
+  END_REGIST_CALYP_SUPPORTED_FMT;
 }
 
-Bool StreamHandlerPortableMap::openHandler( String strFilename, Bool bInput )
+bool StreamHandlerPortableMap::openHandler( ClpString strFilename, bool bInput )
 {
   m_bIsInput = bInput;
   m_pFile = NULL;
@@ -72,7 +71,7 @@ Bool StreamHandlerPortableMap::openHandler( String strFilename, Bool bInput )
     {
       m_uiBitsPerPixel = 1;
       m_iMaxValue = 1;
-      m_iPixelFormat = PlaYUVerFrame::GRAY;
+      m_iPixelFormat = CLP_GRAY;
     }
     else
     {
@@ -80,7 +79,7 @@ Bool StreamHandlerPortableMap::openHandler( String strFilename, Bool bInput )
         ;
       sscanf( line, "%d", &m_iMaxValue );
       m_uiBitsPerPixel = log( m_iMaxValue + 1 ) / log( 2 );
-      m_iPixelFormat = m_iMagicNumber == 2 || m_iMagicNumber == 5 ? PlaYUVerFrame::GRAY : PlaYUVerFrame::RGB24;
+      m_iPixelFormat = m_iMagicNumber == 2 || m_iMagicNumber == 5 ? CLP_GRAY : CLP_RGB24;
     }
   }
   else
@@ -90,11 +89,11 @@ Bool StreamHandlerPortableMap::openHandler( String strFilename, Bool bInput )
     {
       m_iMagicNumber = 4;
     }
-    else if( m_iPixelFormat == PlaYUVerFrame::GRAY )
+    else if( m_iPixelFormat == CLP_GRAY )
     {
       m_iMagicNumber = 5;
     }
-    else if( m_iPixelFormat == PlaYUVerFrame::RGB24 )
+    else if( m_iPixelFormat == CLP_RGB24 )
     {
       m_iMagicNumber = 6;
     }
@@ -110,7 +109,7 @@ Bool StreamHandlerPortableMap::openHandler( String strFilename, Bool bInput )
   return true;
 }
 
-Void StreamHandlerPortableMap::closeHandler()
+void StreamHandlerPortableMap::closeHandler()
 {
   if( m_pFile )
     fclose( m_pFile );
@@ -119,28 +118,28 @@ Void StreamHandlerPortableMap::closeHandler()
     freeMem1D( m_pStreamBuffer );
 }
 
-Bool StreamHandlerPortableMap::configureBuffer( PlaYUVerFrame* pcFrame )
+bool StreamHandlerPortableMap::configureBuffer( CalypFrame* pcFrame )
 {
-  return getMem1D<Byte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
+  return getMem1D<ClpByte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
 }
 
-Bool StreamHandlerPortableMap::seek( UInt64 iFrameNum )
+bool StreamHandlerPortableMap::seek( unsigned long long int iFrameNum )
 {
   // m_uiCurrFrameFileIdx =
   return true;
 }
 
-Bool StreamHandlerPortableMap::read( PlaYUVerFrame* pcFrame )
+bool StreamHandlerPortableMap::read( CalypFrame* pcFrame )
 {
-  UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
+  unsigned long long int processed_bytes = fread( m_pStreamBuffer, sizeof( ClpByte ), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
-  pcFrame->frameFromBuffer( m_pStreamBuffer, PLAYUVER_BIG_ENDIAN );
+  pcFrame->frameFromBuffer( m_pStreamBuffer, CLP_BIG_ENDIAN );
   m_uiCurrFrameFileIdx++;
   return true;
 }
 
-Bool StreamHandlerPortableMap::write( PlaYUVerFrame* pcFrame )
+bool StreamHandlerPortableMap::write( CalypFrame* pcFrame )
 {
   fseek( m_pFile, 0, SEEK_SET );
   fprintf( m_pFile, "P%d\n%d %d\n", m_iMagicNumber, m_uiWidth, m_uiHeight );
@@ -148,8 +147,8 @@ Bool StreamHandlerPortableMap::write( PlaYUVerFrame* pcFrame )
   {
     fprintf( m_pFile, "%d\n", m_iMaxValue );
   }
-  pcFrame->frameToBuffer( m_pStreamBuffer, PLAYUVER_BIG_ENDIAN );
-  UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
+  pcFrame->frameToBuffer( m_pStreamBuffer, CLP_BIG_ENDIAN );
+  unsigned long long int processed_bytes = fwrite( m_pStreamBuffer, sizeof( ClpByte ), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
   return true;

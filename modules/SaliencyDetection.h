@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -29,36 +29,36 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/saliency.hpp>
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
 /**
- * \ingroup  PlaYUVer_Modules
- * @defgroup PlaYUVer_Modules_Saliency Saliency
+ * \ingroup  Calyp_Modules
+ * @defgroup Calyp_Modules_Saliency Saliency
  * @{
  * Frame processing modules for saliency detection
  * @}
  */
 
-class SaliencyDetectionModule : public PlaYUVerModuleIf
+class SaliencyDetectionModule : public CalypModuleIf
 {
 protected:
-  PlaYUVerFrame* m_pcSaliencyFrame;
+  CalypFrame* m_pcSaliencyFrame;
 
   cv::Ptr<cv::saliency::Saliency> m_ptrSaliencyAlgorithm;
   cv::Mat m_matSaliency;
 
-  Bool commonCreate( std::vector<PlaYUVerFrame*> apcFrameList );
-  Bool commonProcess( std::vector<PlaYUVerFrame*> apcFrameList );
+  bool commonCreate( std::vector<CalypFrame*> apcFrameList );
+  bool commonProcess( std::vector<CalypFrame*> apcFrameList );
 
 public:
   SaliencyDetectionModule();
   virtual ~SaliencyDetectionModule() {}
-  Void destroy();
+  void destroy();
 };
 
 /**
- * \ingroup  PlaYUVer_Modules_Saliency
+ * \ingroup  Calyp_Modules_Saliency
  * \class    SaliencyDetectionSpectral
  * \brief    Starting from the principle of natural image statistics,
  *  this method simulate the behavior of pre-attentive visual search.
@@ -73,17 +73,17 @@ class SaliencyDetectionSpectral : public SaliencyDetectionModule
 {
   REGISTER_CLASS_FACTORY( SaliencyDetectionSpectral )
 private:
-  Bool m_bBinaryMap;
+  bool m_bBinaryMap;
 
 public:
   SaliencyDetectionSpectral();
   virtual ~SaliencyDetectionSpectral() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
 };
 
 /**
- * \ingroup  PlaYUVer_Modules_Saliency
+ * \ingroup  Calyp_Modules_Saliency
  * \class    SaliencyDetectionFineGrained
  * \brief    This method calculates saliency based on center-surround
  * differences. High resolution saliency maps are generated in real
@@ -98,12 +98,12 @@ class SaliencyDetectionFineGrained : public SaliencyDetectionModule
 public:
   SaliencyDetectionFineGrained();
   virtual ~SaliencyDetectionFineGrained() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
 };
 
 /**
- * \ingroup  PlaYUVer_Modules_Saliency
+ * \ingroup  Calyp_Modules_Saliency
  * \class    SaliencyDetectionBinWangApr2014
  * \brief    Fast Self-tuning Background Subtraction Algorithm based on the work
  *					 Wang and P. Dudek “A Fast Self-tuning Background Subtraction Algorithm”,
@@ -115,8 +115,8 @@ class SaliencyDetectionBinWangApr2014 : public SaliencyDetectionModule
 public:
   SaliencyDetectionBinWangApr2014();
   virtual ~SaliencyDetectionBinWangApr2014() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
 };
 
 #endif  // __SALIENCYDETECTION_H__

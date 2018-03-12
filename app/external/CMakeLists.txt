@@ -1,5 +1,5 @@
 ###
-### CMakeLists for playuver app external component
+### CMakeLists for calyp external components
 ###
 
 ADD_SUBDIRECTORY( qcustomplot )

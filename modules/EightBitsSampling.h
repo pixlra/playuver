@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -25,22 +25,22 @@
 #ifndef __EIGHTBITSSAMPLING_H__
 #define __EIGHTBITSSAMPLING_H__
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class EightBitsSampling : public PlaYUVerModuleIf
+class EightBitsSampling : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( EightBitsSampling )
 
 private:
-  PlaYUVerFrame* m_pcSubSampledFrame;
+  CalypFrame* m_pcSubSampledFrame;
 
 public:
   EightBitsSampling();
   virtual ~EightBitsSampling() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
-  Void destroy();
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
+  void destroy();
 };
 
 #endif  // __EIGHTBITSSAMPLING_H__

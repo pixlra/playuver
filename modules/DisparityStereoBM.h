@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -29,17 +29,17 @@
 // OpenCV
 #include <opencv2/opencv.hpp>
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class DisparityStereoBM : public PlaYUVerModuleIf
+class DisparityStereoBM : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( DisparityStereoBM )
 
 private:
-  PlaYUVerFrame* m_pcDisparityFrame;
-  Int m_uiNumberOfDisparities;
-  UInt m_uiBlockSize;
+  CalypFrame* m_pcDisparityFrame;
+  int m_uiNumberOfDisparities;
+  unsigned int m_uiBlockSize;
 #if( CV_MAJOR_VERSION == 2 )
   cv::StereoBM m_cStereoBM;
 #else
@@ -49,9 +49,9 @@ private:
 public:
   DisparityStereoBM();
   virtual ~DisparityStereoBM() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
-  Void destroy();
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
+  void destroy();
 };
 
 #endif  // __DISPARITYSTEREOBM_H__

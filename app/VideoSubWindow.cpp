@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -36,11 +36,11 @@
  * \brief Functions to control data stream from stream information
  */
 
-QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array )
+QDataStream& operator<<( QDataStream& out, const CalypFileInfoVector& array )
 {
-  PlaYUVerStreamInfo d;
+  CalypFileInfo d;
   out << array.size();
-  for( Int i = 0; i < array.size(); i++ )
+  for( int i = 0; i < array.size(); i++ )
   {
     d = array.at( i );
     out << d.m_cFilename << d.m_uiWidth << d.m_uiHeight << d.m_iPelFormat << d.m_uiBitsPelPixel << d.m_iEndianness
@@ -49,12 +49,12 @@ QDataStream& operator<<( QDataStream& out, const PlaYUVerStreamInfoVector& array
   return out;
 }
 
-QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& array )
+QDataStream& operator>>( QDataStream& in, CalypFileInfoVector& array )
 {
-  PlaYUVerStreamInfo d;
-  Int array_size;
+  CalypFileInfo d;
+  int array_size;
   in >> array_size;
-  for( Int i = 0; i < array_size; i++ )
+  for( int i = 0; i < array_size; i++ )
   {
     in >> d.m_cFilename;
     in >> d.m_uiWidth;
@@ -69,9 +69,9 @@ QDataStream& operator>>( QDataStream& in, PlaYUVerStreamInfoVector& array )
   return in;
 }
 
-Int findPlaYUVerStreamInfo( PlaYUVerStreamInfoVector array, QString filename )
+int findCalypStreamInfo( CalypFileInfoVector array, QString filename )
 {
-  for( Int i = 0; i < array.size(); i++ )
+  for( int i = 0; i < array.size(); i++ )
     if( array.at( i ).m_cFilename == filename )
       return i;
   return -1;
@@ -88,7 +88,7 @@ private:
   QList<QStaticText> m_cTopLeftTextList;
   QFont m_cTopLeftTextFont;
   QFont m_cCenterTextFont;
-  Bool m_bBusyWindow;
+  bool m_bBusyWindow;
 
 public:
   VideoInformation( QWidget* parent )
@@ -99,15 +99,15 @@ public:
     m_cTopLeftTextFont.setPointSize( 8 );
     m_cCenterTextFont.setPointSize( 12 );
   }
-  Void setInformationTopLeft( const QStringList& textLines )
+  void setInformationTopLeft( const QStringList& textLines )
   {
     m_cTopLeftTextList.clear();
-    for( Int i = 0; i < textLines.size(); i++ )
+    for( int i = 0; i < textLines.size(); i++ )
     {
       m_cTopLeftTextList.append( QStaticText( textLines.at( i ) ) );
     }
   }
-  Void setBusyWindow( Bool bFlag ) { m_bBusyWindow = bFlag; }
+  void setBusyWindow( bool bFlag ) { m_bBusyWindow = bFlag; }
 
 protected:
   void paintEvent( QPaintEvent* event )
@@ -117,7 +117,7 @@ protected:
     if( !m_cTopLeftTextList.isEmpty() && size().width() > 300 )
     {
       QPoint topLeftCorner( 10, 10 );
-      for( Int i = 0; i < m_cTopLeftTextList.size(); i++ )
+      for( int i = 0; i < m_cTopLeftTextList.size(); i++ )
       {
         painter.drawStaticText( topLeftCorner, m_cTopLeftTextList.at( i ) );
         topLeftCorner += QPoint( 0, 15 );
@@ -196,19 +196,19 @@ VideoSubWindow::~VideoSubWindow()
  * Events handlers
  */
 
-Void VideoSubWindow::closeEvent( QCloseEvent* event )
+void VideoSubWindow::closeEvent( QCloseEvent* event )
 {
   stop();
   SubWindowAbstract::closeEvent( event );
 }
 
-Void VideoSubWindow::keyPressEvent( QKeyEvent* event )
+void VideoSubWindow::keyPressEvent( QKeyEvent* event )
 {
   if( m_pcCurrentDisplayModule )
   {
-    if( m_pcCurrentDisplayModule->getModuleRequirements() & MODULE_USES_KEYS )
+    if( m_pcCurrentDisplayModule->getModuleRequirements() & CLP_MODULE_USES_KEYS )
     {
-      Bool bRet = false;
+      bool bRet = false;
       switch( event->key() )
       {
       case Qt::Key_A:
@@ -234,7 +234,7 @@ Void VideoSubWindow::keyPressEvent( QKeyEvent* event )
   QWidget::keyPressEvent( event );
 }
 
-Void VideoSubWindow::resizeEvent( QResizeEvent* event )
+void VideoSubWindow::resizeEvent( QResizeEvent* event )
 {
   m_pcVideoInfo->resize( event->size() );
 }
@@ -276,12 +276,12 @@ QSize VideoSubWindow::sizeHint( const QSize& maxSize ) const
   return isize;
 }
 
-Void VideoSubWindow::updateWindowOnTimeout()
+void VideoSubWindow::updateWindowOnTimeout()
 {
   m_pcVideoInfo->update();
 }
 
-Void VideoSubWindow::loadAll()
+void VideoSubWindow::loadAll()
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
   m_pCurrStream->loadAll();
@@ -289,7 +289,7 @@ Void VideoSubWindow::loadAll()
   QApplication::restoreOverrideCursor();
 }
 
-Void VideoSubWindow::refreshSubWindow()
+void VideoSubWindow::refreshSubWindow()
 {
   if( getCategory() & SubWindowAbstract::VIDEO_STREAM_SUBWINDOW )
   {
@@ -304,24 +304,24 @@ Void VideoSubWindow::refreshSubWindow()
   refreshFrame();
 }
 
-Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
+bool VideoSubWindow::loadFile( QString cFilename, bool bForceDialog )
 {
   ConfigureFormatDialog formatDialog( this );
-  UInt Width = 0, Height = 0, BitsPel = 8, FrameRate = 30;
-  Int Endianness = PLAYUVER_BIG_ENDIAN;
-  Int InputFormat = PlaYUVerFrame::YUV420p;
+  unsigned int Width = 0, Height = 0, BitsPel = 8, FrameRate = 30;
+  int Endianness = CLP_BIG_ENDIAN;
+  int InputFormat = CLP_YUV420P;
 
   if( m_pCurrStream )
     m_pCurrStream->getFormat( Width, Height, InputFormat, BitsPel, Endianness, FrameRate );
 
   if( !m_pCurrStream )
   {
-    m_pCurrStream = new PlaYUVerStream;
+    m_pCurrStream = new CalypStream;
   }
 
-  Bool bConfig = guessFormat( cFilename, Width, Height, InputFormat, BitsPel, Endianness ) || bForceDialog;
-  Bool bRet = false;
-  for( Int iPass = 0; iPass < 2 && !bRet; iPass++ )
+  bool bConfig = guessFormat( cFilename, Width, Height, InputFormat, BitsPel, Endianness ) || bForceDialog;
+  bool bRet = false;
+  for( int iPass = 0; iPass < 2 && !bRet; iPass++ )
   {
     if( iPass || bConfig )
     {
@@ -355,11 +355,11 @@ Bool VideoSubWindow::loadFile( QString cFilename, Bool bForceDialog )
   return true;
 }
 
-Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
+bool VideoSubWindow::loadFile( CalypFileInfo* streamInfo )
 {
   if( !m_pCurrStream )
   {
-    m_pCurrStream = new PlaYUVerStream;
+    m_pCurrStream = new CalypStream;
   }
 
   if( !m_pCurrStream->open( streamInfo->m_cFilename.toStdString(), streamInfo->m_uiWidth, streamInfo->m_uiHeight,
@@ -381,7 +381,7 @@ Bool VideoSubWindow::loadFile( PlaYUVerStreamInfo* streamInfo )
   return true;
 }
 
-Void VideoSubWindow::updateVideoWindowInfo()
+void VideoSubWindow::updateVideoWindowInfo()
 {
   m_cStreamInformation = "";
   if( m_pcCurrentDisplayModule )
@@ -391,7 +391,7 @@ Void VideoSubWindow::updateVideoWindowInfo()
     QStringList sourceWindowList;
     if( arraySubWindows.size() > 0 )
     {
-      for( Int i = 0; i < arraySubWindows.size(); i++ )
+      for( int i = 0; i < arraySubWindows.size(); i++ )
       {
         if( arraySubWindows.at( i )->getWindowName() != getWindowName() )
         {
@@ -427,12 +427,12 @@ Void VideoSubWindow::updateVideoWindowInfo()
   }
 }
 
-Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight, Int& rInputFormat, UInt& rBitsPerPixel,
-                                  Int& rEndianness )
+bool VideoSubWindow::guessFormat( QString filename, unsigned int& rWidth, unsigned int& rHeight, int& rInputFormat, unsigned int& rBitsPerPixel,
+                                  int& rEndianness )
 {
-  std::vector<PlaYUVerStdResolution> stdResList = PlaYUVerStream::stdResolutionSizes();
-  Bool bGuessed = true;
-  Bool bGuessedByFilesize = false;
+  std::vector<CalypStandardResolution> stdResList = CalypStream::stdResolutionSizes();
+  bool bGuessed = true;
+  bool bGuessedByFilesize = false;
   QString FilenameShort = QFileInfo( filename ).fileName();
   QString fileExtension = QFileInfo( filename ).suffix();
 
@@ -445,8 +445,8 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
   {
     bGuessed = false;
     // Guess pixel format
-    QVector<String> formats_list = QVector<String>::fromStdVector( PlaYUVerFrame::supportedPixelFormatListNames() );
-    for( Int i = 0; i < formats_list.size(); i++ )
+    QVector<ClpString> formats_list = QVector<ClpString>::fromStdVector( CalypFrame::supportedPixelFormatListNames() );
+    for( int i = 0; i < formats_list.size(); i++ )
     {
       if( FilenameShort.contains( formats_list.at( i ).c_str(), Qt::CaseInsensitive ) )
       {
@@ -458,8 +458,8 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
     if( rWidth == 0 || rHeight == 0 )
     {
       // Guess resolution - match  resolution name
-      Int iMatch = -1;
-      for( UInt i = 0; i < stdResList.size(); i++ )
+      int iMatch = -1;
+      for( unsigned int i = 0; i < stdResList.size(); i++ )
       {
         if( FilenameShort.contains( QString::fromStdString( stdResList[i].shortName ) ) )
         {
@@ -497,14 +497,14 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
       if( pF )
       {
         fseek( pF, 0, SEEK_END );
-        UInt64 uiFileSize = ftell( pF );
+        unsigned long long int uiFileSize = ftell( pF );
         fclose( pF );
 
-        Int count = 0, module, frame_bytes, match;
-        for( UInt i = 0; i < stdResList.size(); i++ )
+        int count = 0, module, frame_bytes, match;
+        for( unsigned int i = 0; i < stdResList.size(); i++ )
         {
           frame_bytes =
-              PlaYUVerFrame::getBytesPerFrame( stdResList[i].uiWidth, stdResList[i].uiHeight, rInputFormat, 8 );
+              CalypFrame::getBytesPerFrame( stdResList[i].uiWidth, stdResList[i].uiHeight, rInputFormat, 8 );
           module = uiFileSize % frame_bytes;
           if( module == 0 )
           {
@@ -538,11 +538,11 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
     // Guess Endianness
     if( FilenameShort.contains( QStringLiteral( "be" ), Qt::CaseInsensitive ) )
     {
-      rEndianness = PLAYUVER_BIG_ENDIAN;
+      rEndianness = CLP_BIG_ENDIAN;
     }
     if( FilenameShort.contains( QStringLiteral( "le" ), Qt::CaseInsensitive ) )
     {
-      rEndianness = PLAYUVER_LITTLE_ENDIAN;
+      rEndianness = CLP_LITTLE_ENDIAN;
     }
 
     if( rWidth > 0 && rHeight > 0 && rInputFormat >= 0 )
@@ -551,7 +551,7 @@ Bool VideoSubWindow::guessFormat( QString filename, UInt& rWidth, UInt& rHeight,
   return !bGuessed;
 }
 
-Void VideoSubWindow::updateSelectedArea( QRect area )
+void VideoSubWindow::updateSelectedArea( QRect area )
 {
   m_cSelectedArea = area;
 }
@@ -560,7 +560,7 @@ Void VideoSubWindow::updateSelectedArea( QRect area )
  * Functions to enable a module in the
  * current SubWindow
  */
-Void VideoSubWindow::enableModule( PlaYUVerAppModuleIf* pcModule )
+void VideoSubWindow::enableModule( CalypAppModuleIf* pcModule )
 {
   if( m_pcCurrentDisplayModule )
   {
@@ -570,12 +570,12 @@ Void VideoSubWindow::enableModule( PlaYUVerAppModuleIf* pcModule )
   updateVideoWindowInfo();
 }
 
-Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
+void VideoSubWindow::disableModule( CalypAppModuleIf* pcModule )
 {
-  Bool bRefresh = false;
+  bool bRefresh = false;
   if( pcModule )
   {
-    Int modIdx = m_apcCurrentModule.indexOf( pcModule );
+    int modIdx = m_apcCurrentModule.indexOf( pcModule );
     if( modIdx != -1 )
     {
       m_apcCurrentModule.removeAt( modIdx );
@@ -593,8 +593,8 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
   }
   else
   {
-    QList<PlaYUVerAppModuleIf*> apcCurrentModule = m_apcCurrentModule;
-    for( Int i = 0; i < apcCurrentModule.size(); i++ )
+    QList<CalypAppModuleIf*> apcCurrentModule = m_apcCurrentModule;
+    for( int i = 0; i < apcCurrentModule.size(); i++ )
     {
       m_apcCurrentModule.removeOne( apcCurrentModule.at( i ) );
       ModulesHandle::destroyModuleIf( apcCurrentModule.at( i ) );
@@ -617,39 +617,39 @@ Void VideoSubWindow::disableModule( PlaYUVerAppModuleIf* pcModule )
   }
 }
 
-Void VideoSubWindow::associateModule( PlaYUVerAppModuleIf* pcModule )
+void VideoSubWindow::associateModule( CalypAppModuleIf* pcModule )
 {
   m_apcCurrentModule.append( pcModule );
 }
 
-Bool VideoSubWindow::hasRunningModule()
+bool VideoSubWindow::hasRunningModule()
 {
-  Bool bRet = false;
+  bool bRet = false;
   if( m_pcCurrentDisplayModule )
   {
     bRet |= m_pcCurrentDisplayModule->isRunning();
   }
-  for( Int i = 0; i < m_apcCurrentModule.size() && !bRet; i++ )
+  for( int i = 0; i < m_apcCurrentModule.size() && !bRet; i++ )
   {
     bRet |= m_apcCurrentModule.at( i )->isRunning();
   }
   return bRet;
 }
 
-Void VideoSubWindow::setFillWindow( Bool bFlag )
+void VideoSubWindow::setFillWindow( bool bFlag )
 {
   m_pcVideoInfo->setBusyWindow( bFlag );
 }
 
-Void VideoSubWindow::setCurrFrame( PlaYUVerFrame* pcCurrFrame )
+void VideoSubWindow::setCurrFrame( CalypFrame* pcCurrFrame )
 {
   m_pcCurrFrame = pcCurrFrame;
   m_cViewArea->setImage( m_pcCurrFrame );
 }
 
-Void VideoSubWindow::refreshFrameOperation()
+void VideoSubWindow::refreshFrameOperation()
 {
-  Bool bSetFrame = false;
+  bool bSetFrame = false;
   if( m_pCurrStream )
   {
     m_pcCurrFrame = m_pCurrStream->getCurrFrame();
@@ -665,13 +665,13 @@ Void VideoSubWindow::refreshFrameOperation()
   {
     m_cViewArea->setImage( m_pcCurrFrame );
   }
-  for( Int i = 0; i < m_apcCurrentModule.size(); i++ )
+  for( int i = 0; i < m_apcCurrentModule.size(); i++ )
   {
     m_apcCurrentModule.at( i )->update();
   }
 }
 
-Void VideoSubWindow::refreshFrame( Bool bThreaded )
+void VideoSubWindow::refreshFrame( bool bThreaded )
 {
 #ifndef QT_NO_CONCURRENT
   m_cRefreshResult.waitForFinished();
@@ -686,13 +686,13 @@ Void VideoSubWindow::refreshFrame( Bool bThreaded )
   }
 }
 
-Bool VideoSubWindow::goToNextFrame( Bool bThreaded )
+bool VideoSubWindow::goToNextFrame( bool bThreaded )
 {
 #ifndef QT_NO_CONCURRENT
   m_cRefreshResult.waitForFinished();
   m_cReadResult.waitForFinished();
 #endif
-  Bool bEndOfSeq = m_pCurrStream->setNextFrame();
+  bool bEndOfSeq = m_pCurrStream->setNextFrame();
   if( !bEndOfSeq )
   {
 #ifndef QT_NO_CONCURRENT
@@ -700,7 +700,7 @@ Bool VideoSubWindow::goToNextFrame( Bool bThreaded )
     if( bThreaded )
     {
       refreshFrame();
-      m_cReadResult = QtConcurrent::run( m_pCurrStream, &PlaYUVerStream::readNextFrameFillRGBBuffer );
+      m_cReadResult = QtConcurrent::run( m_pCurrStream, &CalypStream::readNextFrameFillRGBBuffer );
     }
     else
 #endif
@@ -712,29 +712,29 @@ Bool VideoSubWindow::goToNextFrame( Bool bThreaded )
   return bEndOfSeq;
 }
 
-Bool VideoSubWindow::save( QString filename )
+bool VideoSubWindow::save( QString filename )
 {
-  Bool iRet = false;
+  bool iRet = false;
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  PlaYUVerFrame* saveFrame = m_pcCurrFrame;
+  CalypFrame* saveFrame = m_pcCurrFrame;
   if( m_cSelectedArea.isValid() )
   {
-    saveFrame = new PlaYUVerFrame( m_pcCurrFrame, m_cSelectedArea.x(), m_cSelectedArea.y(), m_cSelectedArea.width(),
-                                   m_cSelectedArea.height() );
+    saveFrame = new CalypFrame( m_pcCurrFrame, m_cSelectedArea.x(), m_cSelectedArea.y(), m_cSelectedArea.width(),
+                                m_cSelectedArea.height() );
   }
   if( !saveFrame )
   {
     return false;
   }
-  iRet = PlaYUVerStream::saveFrame( filename.toStdString(), saveFrame );
+  iRet = CalypStream::saveFrame( filename.toStdString(), saveFrame );
   QApplication::restoreOverrideCursor();
   return iRet;
 }
 
-Bool VideoSubWindow::saveStream( QString filename )
+bool VideoSubWindow::saveStream( QString filename )
 {
-  Bool iRet = false;
+  bool iRet = false;
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   // TODO: implement this
@@ -742,7 +742,7 @@ Bool VideoSubWindow::saveStream( QString filename )
   return iRet;
 }
 
-Bool VideoSubWindow::play()
+bool VideoSubWindow::play()
 {
   if( m_pCurrStream && m_pCurrStream->getFrameNum() > 1 )
   {
@@ -755,9 +755,9 @@ Bool VideoSubWindow::play()
   return m_bIsPlaying;
 }
 
-Bool VideoSubWindow::playEvent()
+bool VideoSubWindow::playEvent()
 {
-  Bool bEndOfSeq = false;
+  bool bEndOfSeq = false;
   if( m_pCurrStream && m_bIsPlaying )
   {
     bEndOfSeq = goToNextFrame( true );
@@ -765,22 +765,22 @@ Bool VideoSubWindow::playEvent()
   return bEndOfSeq;
 }
 
-Void VideoSubWindow::pause()
+void VideoSubWindow::pause()
 {
   m_bIsPlaying = false;
   refreshFrame();
 }
 
-Void VideoSubWindow::seekAbsoluteEvent( UInt new_frame_num )
+void VideoSubWindow::seekAbsoluteEvent( unsigned int new_frame_num )
 {
   if( m_pCurrStream )
     if( m_pCurrStream->seekInput( new_frame_num ) )
       refreshFrame();
 }
 
-Void VideoSubWindow::seekRelativeEvent( Bool bIsFoward )
+void VideoSubWindow::seekRelativeEvent( bool bIsFoward )
 {
-  Bool bRefresh = false;
+  bool bRefresh = false;
   if( m_pCurrStream )
   {
     if( bIsFoward )
@@ -798,7 +798,7 @@ Void VideoSubWindow::seekRelativeEvent( Bool bIsFoward )
   }
 }
 
-Void VideoSubWindow::stop()
+void VideoSubWindow::stop()
 {
 #ifndef QT_NO_CONCURRENT
   m_cRefreshResult.waitForFinished();
@@ -814,7 +814,7 @@ QSize VideoSubWindow::getScrollSize()
   return QSize( m_pcScrollArea->viewport()->size().width() - 5, m_pcScrollArea->viewport()->size().height() - 5 );
 }
 
-Void VideoSubWindow::adjustScrollBarToRatio( const Double& horRatio, const Double& verRatio )
+void VideoSubWindow::adjustScrollBarToRatio( const double& horRatio, const double& verRatio )
 {
   QScrollBar* scrollBarH = m_pcScrollArea->horizontalScrollBar();
   QScrollBar* scrollBarV = m_pcScrollArea->verticalScrollBar();
@@ -823,14 +823,14 @@ Void VideoSubWindow::adjustScrollBarToRatio( const Double& horRatio, const Doubl
   updateScrollValues();
 }
 
-Void VideoSubWindow::adjustScrollBarByOffset( QPoint Offset )
+void VideoSubWindow::adjustScrollBarByOffset( QPoint Offset )
 {
   QPoint cLastScroll = m_cCurrScroll;
   QScrollBar* scrollBarH = m_pcScrollArea->horizontalScrollBar();
   QScrollBar* scrollBarV = m_pcScrollArea->verticalScrollBar();
 
-  Int valueX = int( cLastScroll.x() + Offset.x() );
-  Int valueY = int( cLastScroll.y() + Offset.y() );
+  int valueX = int( cLastScroll.x() + Offset.x() );
+  int valueY = int( cLastScroll.y() + Offset.y() );
 
   scrollBarH->setValue( valueX );
   scrollBarV->setValue( valueY );
@@ -842,7 +842,7 @@ Void VideoSubWindow::adjustScrollBarByOffset( QPoint Offset )
 
 // This function was developed with help of the schematics presented in
 // http://stackoverflow.com/questions/13155382/jscrollpane-zoom-relative-to-mouse-position
-Void VideoSubWindow::adjustScrollBarByScale( Double scale, QPoint center )
+void VideoSubWindow::adjustScrollBarByScale( double scale, QPoint center )
 {
   QPoint cLastScroll = m_cCurrScroll;
   QScrollBar* scrollBarH = m_pcScrollArea->horizontalScrollBar();
@@ -855,13 +855,13 @@ Void VideoSubWindow::adjustScrollBarByScale( Double scale, QPoint center )
   }
   else
   {
-    Int value;
+    int value;
 
-    Int x = center.x() - cLastScroll.x();
+    int x = center.x() - cLastScroll.x();
     value = int( scale * cLastScroll.x() + ( ( scale - 1 ) * x ) );
     m_cCurrScroll.setX( value );
 
-    Int y = center.y() - cLastScroll.y();
+    int y = center.y() - cLastScroll.y();
     value = int( scale * cLastScroll.y() + ( ( scale - 1 ) * y ) );
     m_cCurrScroll.setY( value );
   }
@@ -875,10 +875,10 @@ Void VideoSubWindow::adjustScrollBarByScale( Double scale, QPoint center )
   scrollBarMoved( m_dHorScroll, m_dVerScroll );
 }
 
-Void VideoSubWindow::updateScrollValues()
+void VideoSubWindow::updateScrollValues()
 {
-  Double xPos = m_pcScrollArea->horizontalScrollBar()->value();
-  Double yPos = m_pcScrollArea->verticalScrollBar()->value();
+  double xPos = m_pcScrollArea->horizontalScrollBar()->value();
+  double yPos = m_pcScrollArea->verticalScrollBar()->value();
 
   m_cCurrScroll.setX( xPos );
   m_cCurrScroll.setY( yPos );
@@ -886,13 +886,13 @@ Void VideoSubWindow::updateScrollValues()
   m_dHorScroll = m_dVerScroll = 0;
 
   if( xPos )
-    m_dHorScroll = xPos / Double( m_pcScrollArea->horizontalScrollBar()->maximum() );
+    m_dHorScroll = xPos / double( m_pcScrollArea->horizontalScrollBar()->maximum() );
 
   if( yPos )
-    m_dVerScroll = yPos / Double( m_pcScrollArea->verticalScrollBar()->maximum() );
+    m_dVerScroll = yPos / double( m_pcScrollArea->verticalScrollBar()->maximum() );
 }
 
-//Void VideoSubWindow::setCurScrollValues()
+//void VideoSubWindow::setCurScrollValues()
 //{
 //  QScrollBar* scrollBar = m_pcScrollArea->horizontalScrollBar();
 //  scrollBar->setValue( m_cCurrScroll.x() );
@@ -900,48 +900,48 @@ Void VideoSubWindow::updateScrollValues()
 //  scrollBar->setValue( m_cCurrScroll.y() );
 //}
 
-Void VideoSubWindow::normalSize()
+void VideoSubWindow::normalSize()
 {
-  Double factor = 1.0;
-  Double curFactor = getScaleFactor();
+  double factor = 1.0;
+  double curFactor = getScaleFactor();
   if( factor != curFactor )
   {
-    Double usedScale;
+    double usedScale;
     usedScale = m_cViewArea->scaleZoomFactor( factor / curFactor, QPoint(), QSize() );
     adjustScrollBarByScale( usedScale, QPoint() );
   }
 }
 
-Void VideoSubWindow::zoomToFit()
+void VideoSubWindow::zoomToFit()
 {
   // Scale to a smaller size that the real to a nicer look
   scaleView( getScrollSize() );
 }
 
-Void VideoSubWindow::zoomToFactor( Double factor, QPoint center )
+void VideoSubWindow::zoomToFactor( double factor, QPoint center )
 {
-  Double curFactor;
+  double curFactor;
   curFactor = getScaleFactor();
   if( factor != curFactor )
   {
-    Double usedScale;
+    double usedScale;
     usedScale = m_cViewArea->scaleZoomFactor( factor / curFactor, center, QSize() );
     adjustScrollBarByScale( usedScale, center );
   }
 }
 
-Void VideoSubWindow::scaleView( Double scale, QPoint center )
+void VideoSubWindow::scaleView( double scale, QPoint center )
 {
   Q_ASSERT( !m_cViewArea->image().isNull() );
   if( scale != 1.0 )
   {
-    Double usedScale;
+    double usedScale;
     usedScale = m_cViewArea->scaleZoomFactor( scale, center, getScrollSize() );
     adjustScrollBarByScale( usedScale, center );
   }
 }
 
-Void VideoSubWindow::scaleView( const QSize& size, QPoint center )
+void VideoSubWindow::scaleView( const QSize& size, QPoint center )
 {
   QSize imgViewSize;
   if( m_pcCurrFrame )
@@ -952,34 +952,34 @@ Void VideoSubWindow::scaleView( const QSize& size, QPoint center )
   newSize.scale( size, Qt::KeepAspectRatio );
 
   // Calc the zoom factor
-  Double wfactor = 1;
-  Double hfactor = 1;
-  Double factor;
+  double wfactor = 1;
+  double hfactor = 1;
+  double factor;
 
-  wfactor = (Double)newSize.width() / imgViewSize.width();
-  hfactor = (Double)newSize.height() / imgViewSize.height();
+  wfactor = (double)newSize.width() / imgViewSize.width();
+  hfactor = (double)newSize.height() / imgViewSize.height();
 
   if( wfactor < hfactor )
     factor = wfactor;
   else
     factor = hfactor;
 
-  Double curFactor = getScaleFactor();
+  double curFactor = getScaleFactor();
   if( factor != curFactor )
   {
-    Double usedScale;
+    double usedScale;
     usedScale = m_cViewArea->scaleZoomFactor( factor / curFactor, center, getScrollSize() );
     adjustScrollBarByScale( usedScale, center );
   }
 }
 
-Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
+void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
 {
   if( m_pcCurrFrame )
   {
-    Int iWidth, iHeight;
-    Int posX = pos.x();
-    Int posY = pos.y();
+    int iWidth, iHeight;
+    int posX = pos.x();
+    int posY = pos.y();
     QString strStatus;
 
     iWidth = m_pcCurrFrame->getWidth();
@@ -989,31 +989,31 @@ Void VideoSubWindow::updatePixelValueStatusBar( const QPoint& pos )
     {
       strStatus = QString( "(%1,%2)   " ).arg( posX ).arg( posY );
 
-      Int colorSpace = m_pcCurrFrame->getColorSpace();
-      PlaYUVerPixel pixelValue = m_pcCurrFrame->getPixel( pos.x(), pos.y() );
+      int colorSpace = m_pcCurrFrame->getColorSpace();
+      CalypPixel pixelValue = m_pcCurrFrame->getPixel( pos.x(), pos.y() );
       switch( colorSpace )
       {
-      case PlaYUVerPixel::COLOR_GRAY:
-        strStatus.append( QString( "Y: %1" ).arg( pixelValue.Y() ) );
+      case CLP_COLOR_GRAY:
+        strStatus.append( QString( "Y: %1" ).arg( pixelValue[0] ) );
         break;
-      case PlaYUVerPixel::COLOR_YUV:
+      case CLP_COLOR_YUV:
         strStatus.append( QString( "Y: %1   U: %2   V: %3" )
-                              .arg( pixelValue.Y() )
-                              .arg( pixelValue.Cb() )
-                              .arg( pixelValue.Cr() ) );
+                              .arg( pixelValue[0] )
+                              .arg( pixelValue[1] )
+                              .arg( pixelValue[2] ) );
         break;
-      case PlaYUVerPixel::COLOR_RGB:
+      case CLP_COLOR_RGB:
         strStatus.append( QString( "R: %1   G: %2   B: %3" )
-                              .arg( pixelValue.R() )
-                              .arg( pixelValue.G() )
-                              .arg( pixelValue.B() ) );
+                              .arg( pixelValue[0] )
+                              .arg( pixelValue[1] )
+                              .arg( pixelValue[2] ) );
         break;
-      case PlaYUVerPixel::COLOR_RGBA:
+      case CLP_COLOR_RGBA:
         strStatus.append( QString( "R: %1   G: %2   B: %3   A: %4" )
-                              .arg( pixelValue.R() )
-                              .arg( pixelValue.G() )
-                              .arg( pixelValue.B() )
-                              .arg( pixelValue.A() ) );
+                              .arg( pixelValue[0] )
+                              .arg( pixelValue[1] )
+                              .arg( pixelValue[2] )
+                              .arg( pixelValue[3] ) );
 
         break;
       }

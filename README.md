@@ -1,4 +1,4 @@
-# PlaYUVer
+# Calyp
 ## Enhanced YUV video player based on Qt focusing on image/video analysis
 
 
@@ -11,16 +11,16 @@
 - Synchronized zoom across several videos (perfect for comparison operations)
 - Useful information in status bar, *e.g.*, pixel information
     Useful sidebars with frame information, *e.g.*, frame histogram
-- Constant growing libs for stream and frame processing (PlaYUVerStream and PlaYUVerFrame)
+- Constant growing libs for stream and frame processing (CalypStream and CalypFrame)
 - Advanced API for frame/video processing algorithms
-- Frame level quality measurement API based on the PlaYUVerFrame class
+- Frame level quality measurement API based on the CalypFrame class
 - Powefull command-line tool for quality and frame processing algorithms (uses the referred APIs)
 
 ## Modules
-- PlaYUVerLib: Low level library
-- PlaYUVerModules: Abstract interface for frame processing modules
-- PlaYUVerApp: High level graphical interface
-- PlaYUVerTools: High level command line interface
+- CalypLib: Low level library
+- CalypModules: Abstract interface for frame processing modules
+- Calyp: High level graphical interface
+- CalypTools: High level command line interface
 
 ##  Supported Quality Metrics
 - PSNR

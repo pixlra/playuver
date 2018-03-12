@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -19,34 +19,33 @@
 
 /**
  * \file     StreamHandlerRaw.cpp
- * \brief    Interface for raw (yuv) streams
+ * \brief    interface for raw (yuv) streams
  */
 
 #include "StreamHandlerRaw.h"
 
+#include "CalypFrame.h"
 #include "LibMemory.h"
-#include "PlaYUVerFrame.h"
-#include "PlaYUVerFramePixelFormats.h"
 
 #include <cstdio>
 
-std::vector<PlaYUVerSupportedFormat> StreamHandlerRaw::supportedReadFormats()
+std::vector<CalypStreamFormat> StreamHandlerRaw::supportedReadFormats()
 {
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw YUV Video", "yuv" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Gray Video", "gray" );
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw RGB Video", "rgb" );
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+  INI_REGIST_CALYP_SUPPORTED_FMT;
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw YUV Video", "yuv" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Gray Video", "gray" );
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw RGB Video", "rgb" );
+  END_REGIST_CALYP_SUPPORTED_FMT;
 }
 
-std::vector<PlaYUVerSupportedFormat> StreamHandlerRaw::supportedWriteFormats()
+std::vector<CalypStreamFormat> StreamHandlerRaw::supportedWriteFormats()
 {
-  INI_REGIST_PLAYUVER_SUPPORTED_FMT;
-  REGIST_PLAYUVER_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Video", "yuv" );
-  END_REGIST_PLAYUVER_SUPPORTED_FMT;
+  INI_REGIST_CALYP_SUPPORTED_FMT;
+  REGIST_CALYP_SUPPORTED_FMT( &StreamHandlerRaw::Create, "Raw Video", "yuv" );
+  END_REGIST_CALYP_SUPPORTED_FMT;
 }
 
-Bool StreamHandlerRaw::openHandler( String strFilename, Bool bInput )
+bool StreamHandlerRaw::openHandler( ClpString strFilename, bool bInput )
 {
   m_bIsInput = bInput;
   m_pFile = NULL;
@@ -61,7 +60,7 @@ Bool StreamHandlerRaw::openHandler( String strFilename, Bool bInput )
   return true;
 }
 
-Void StreamHandlerRaw::closeHandler()
+void StreamHandlerRaw::closeHandler()
 {
   if( m_pFile )
     fclose( m_pFile );
@@ -69,23 +68,23 @@ Void StreamHandlerRaw::closeHandler()
     freeMem1D( m_pStreamBuffer );
 }
 
-Bool StreamHandlerRaw::configureBuffer( PlaYUVerFrame* pcFrame )
+bool StreamHandlerRaw::configureBuffer( CalypFrame* pcFrame )
 {
-  return getMem1D<Byte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
+  return getMem1D<ClpByte>( &m_pStreamBuffer, pcFrame->getBytesPerFrame() );
 }
 
-Void StreamHandlerRaw::calculateFrameNumber()
+void StreamHandlerRaw::calculateFrameNumber()
 {
   if( m_pFile && m_uiNBytesPerFrame > 0 )
   {
     fseek( m_pFile, 0, SEEK_END );
-    UInt64 fileSize = ftell( m_pFile );
+    unsigned long long int fileSize = ftell( m_pFile );
     fseek( m_pFile, 0, SEEK_SET );
     m_uiTotalNumberFrames = fileSize / m_uiNBytesPerFrame;
   }
 }
 
-Bool StreamHandlerRaw::seek( UInt64 iFrameNum )
+bool StreamHandlerRaw::seek( unsigned long long int iFrameNum )
 {
   if( m_bIsInput && m_pFile )
   {
@@ -96,11 +95,11 @@ Bool StreamHandlerRaw::seek( UInt64 iFrameNum )
   return false;
 }
 
-Bool StreamHandlerRaw::read( PlaYUVerFrame* pcFrame )
+bool StreamHandlerRaw::read( CalypFrame* pcFrame )
 {
   if( !m_pFile || !m_pStreamBuffer || m_uiNBytesPerFrame == 0 )
     return false;
-  UInt64 processed_bytes = fread( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
+  unsigned long long int processed_bytes = fread( m_pStreamBuffer, sizeof( ClpByte ), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
   m_uiCurrFrameFileIdx++;
@@ -108,10 +107,10 @@ Bool StreamHandlerRaw::read( PlaYUVerFrame* pcFrame )
   return true;
 }
 
-Bool StreamHandlerRaw::write( PlaYUVerFrame* pcFrame )
+bool StreamHandlerRaw::write( CalypFrame* pcFrame )
 {
   pcFrame->frameToBuffer( m_pStreamBuffer, m_iEndianness );
-  UInt64 processed_bytes = fwrite( m_pStreamBuffer, sizeof( Byte ), m_uiNBytesPerFrame, m_pFile );
+  unsigned long long int processed_bytes = fwrite( m_pStreamBuffer, sizeof( ClpByte ), m_uiNBytesPerFrame, m_pFile );
   if( processed_bytes != m_uiNBytesPerFrame )
     return false;
   return true;

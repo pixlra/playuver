@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -25,25 +25,25 @@
 #ifndef __FRAMESHIFT_H__
 #define __FRAMESHIFT_H__
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class FrameShift : public PlaYUVerModuleIf
+class FrameShift : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( FrameShift )
 
 private:
-  PlaYUVerFrame* m_pcProcessedFrame;
-  Int m_iShiftHor;
-  Int m_iShiftVer;
+  CalypFrame* m_pcProcessedFrame;
+  int m_iShiftHor;
+  int m_iShiftVer;
 
 public:
   FrameShift();
   virtual ~FrameShift() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
-  Bool keyPressed( enum Module_Key_Supported value );
-  Void destroy();
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
+  bool keyPressed( enum Module_Key_Supported value );
+  void destroy();
 };
 
 #endif  // __FrameShift_H__

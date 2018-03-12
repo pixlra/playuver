@@ -1,0 +1,37 @@
+<RCC>
+    <qresource>
+        <file alias="logos/calyp-logo.png">calyp-logo.png</file>
+        <file alias="logos/calyp-icon.png">calyp.png</file>
+
+        <file alias="images/open.png">icons/open.png</file>
+        <file alias="images/save.png">icons/save.png</file>
+        <file alias="images/close.png">icons/close.png</file>
+        <file alias="images/exit.png">icons/exit.png</file>
+        <file alias="images/configuredialog.png">icons/configuredialog.png</file>
+
+        <file alias="images/windowstile.png">icons/windowstile.png</file>
+        <file alias="images/windowscascade.png">icons/windowscascade.png</file>
+
+        <file alias="images/zoomin.png">icons/zoomin.png</file>
+        <file alias="images/zoomout.png">icons/zoomout.png</file>
+        <file alias="images/zoomtonormal.png">icons/zoomtonormal.png</file>
+        <file alias="images/fittowindow.png">icons/fittowindow.png</file>
+
+        <file alias="images/histogram-log.png">icons/histogram-log.png</file>
+        <file alias="images/histogram-lin.png">icons/histogram-lin.png</file>
+        <file alias="images/image-selection.png">icons/image-selection.png</file>
+        <file alias="images/image-full.png">icons/image-full.png</file>
+        <file alias="images/channel-alpha.png">icons/channel-alpha-16.png</file>
+        <file alias="images/channel-luma.png">icons/channel-luma-16.png</file>
+        <file alias="images/channel-red.png">icons/channel-red-16.png</file>
+        <file alias="images/channel-green.png">icons/channel-green-16.png</file>
+        <file alias="images/channel-blue.png">icons/channel-blue-16.png</file>
+        <file alias="images/channel-all.png">icons/channel-all-16.png</file>
+
+        <file alias="images/copy.png">icons/copy.png</file>
+        <file alias="images/paste.png">icons/paste.png</file>
+        <file alias="images/saveas.png">icons/saveas.png</file>
+        <file alias="images/qt.png">icons/qt.png</file>
+
+    </qresource>
+</RCC>

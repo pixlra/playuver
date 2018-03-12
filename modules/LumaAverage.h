@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -25,10 +25,10 @@
 #ifndef __LUMAAVERAGE_H__
 #define __LUMAAVERAGE_H__
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class LumaAverage : public PlaYUVerModuleIf
+class LumaAverage : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( LumaAverage )
 
@@ -36,9 +36,9 @@ private:
 public:
   LumaAverage();
   virtual ~LumaAverage() {}
-  Void create( PlaYUVerFrame* );
-  Double measure( PlaYUVerFrame* );
-  Void destroy();
+  void create( CalypFrame* );
+  double measure( CalypFrame* );
+  void destroy();
 };
 
 #endif  // __LUMAAVERAGE_H__

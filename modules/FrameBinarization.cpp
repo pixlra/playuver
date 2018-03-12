@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -27,13 +27,13 @@
 FrameBinarization::FrameBinarization()
 {
   /* Module Definition */
-  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_iModuleType = CLP_FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Utilities";
   m_pchModuleLongName = "Binarization";
   m_pchModuleName = "FrameBinarization";
   m_pchModuleTooltip = "Binarize frame";
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
-  m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS;
+  m_uiNumberOfFrames = 1;
+  m_uiModuleRequirements = CLP_MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions() /**/
       ( "threshold", m_uiThreshold, "Threshold level for binarization (0-255) [128]" );
@@ -42,25 +42,25 @@ FrameBinarization::FrameBinarization()
   m_uiThreshold = 128;
 }
 
-Void FrameBinarization::create( PlaYUVerFrame* frame )
+void FrameBinarization::create( CalypFrame* frame )
 {
   m_pcBinFrame = NULL;
-  m_pcBinFrame = new PlaYUVerFrame( frame->getWidth(), frame->getHeight(), PlaYUVerFrame::GRAY, 8 );
+  m_pcBinFrame = new CalypFrame( frame->getWidth(), frame->getHeight(), CLP_GRAY, 8 );
 }
 
-PlaYUVerFrame* FrameBinarization::process( PlaYUVerFrame* frame )
+CalypFrame* FrameBinarization::process( CalypFrame* frame )
 {
-  Pel* pPelInput = frame->getPelBufferYUV()[0][0];
-  Pel* pPelBin = m_pcBinFrame->getPelBufferYUV()[0][0];
-  for( UInt y = 0; y < frame->getHeight(); y++ )
-    for( UInt x = 0; x < frame->getWidth(); x++ )
+  ClpPel* pPelInput = frame->getPelBufferYUV()[0][0];
+  ClpPel* pPelBin = m_pcBinFrame->getPelBufferYUV()[0][0];
+  for( unsigned int y = 0; y < frame->getHeight(); y++ )
+    for( unsigned int x = 0; x < frame->getWidth(); x++ )
     {
       *pPelBin++ = *pPelInput++ >= m_uiThreshold ? 255 : 0;
     }
   return m_pcBinFrame;
 }
 
-Void FrameBinarization::destroy()
+void FrameBinarization::destroy()
 {
   if( m_pcBinFrame )
     delete m_pcBinFrame;

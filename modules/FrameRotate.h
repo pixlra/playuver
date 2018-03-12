@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -25,23 +25,23 @@
 #ifndef __FRAMEROTATE_H__
 #define __FRAMEROTATE_H__
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class FrameRotate : public PlaYUVerModuleIf
+class FrameRotate : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( FrameRotate )
 
 private:
-  Int m_iAngle;
-  PlaYUVerFrame* m_pcFrameProcessed;
+  int m_iAngle;
+  CalypFrame* m_pcFrameProcessed;
 
 public:
   FrameRotate();
   virtual ~FrameRotate() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
-  Void destroy();
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
+  void destroy();
 };
 
 #endif  // __FRAMEROTATE_H__

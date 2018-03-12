@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -28,15 +28,15 @@
 DisparityStereoSGBM::DisparityStereoSGBM()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;
-  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_iModuleAPI = CLP_MODULE_API_2;
+  m_iModuleType = CLP_FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Stereo";
   m_pchModuleName = "Disparity-SGBM";
   m_pchModuleName = "SGBM based disparity";
   m_pchModuleTooltip = "Measure the disparity between two images using the "
                        "Stereo SGBM method (OpenCV)";
-  m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
-  m_uiModuleRequirements = MODULE_REQUIRES_SKIP_WHILE_PLAY | MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
+  m_uiNumberOfFrames = 2;
+  m_uiModuleRequirements = CLP_MODULE_REQUIRES_SKIP_WHILE_PLAY | CLP_MODULE_REQUIRES_NEW_WINDOW | CLP_MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions() /**/
       ( "block_size", m_uiBlockSize, "Block Size (positive odd number) [3]" )( "HHAlgorithm", m_bUseHH,
@@ -47,17 +47,17 @@ DisparityStereoSGBM::DisparityStereoSGBM()
   m_uiNumberOfDisparities = 0;
 }
 
-Bool DisparityStereoSGBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool DisparityStereoSGBM::create( std::vector<CalypFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
   m_pcDisparityFrame =
-      new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), PlaYUVerFrame::GRAY );
+      new CalypFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(), CLP_GRAY );
   if( ( m_uiBlockSize % 2 ) == 0 )
   {
     m_uiBlockSize++;
   }
   m_uiNumberOfDisparities = ( ( apcFrameList[0]->getWidth() / 8 ) + 15 ) & -16;
-  Int cn = apcFrameList[0]->getNumberChannels();
+  int cn = apcFrameList[0]->getNumberChannels();
 #if( CV_MAJOR_VERSION == 3 )
   m_cStereoMatch = cv::StereoSGBM::create( 0, 16, m_uiBlockSize );
   m_cStereoMatch->setPreFilterCap( 63 );
@@ -89,10 +89,10 @@ Bool DisparityStereoSGBM::create( std::vector<PlaYUVerFrame*> apcFrameList )
   return true;
 }
 
-PlaYUVerFrame* DisparityStereoSGBM::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* DisparityStereoSGBM::process( std::vector<CalypFrame*> apcFrameList )
 {
-  PlaYUVerFrame* InputLeft = apcFrameList[0];
-  PlaYUVerFrame* InputRight = apcFrameList[1];
+  CalypFrame* InputLeft = apcFrameList[0];
+  CalypFrame* InputRight = apcFrameList[1];
   cv::Mat leftImage, rightImage;
   if( !InputLeft->toMat( leftImage, true ) || !InputRight->toMat( rightImage, true ) )
   {
@@ -109,7 +109,7 @@ PlaYUVerFrame* DisparityStereoSGBM::process( std::vector<PlaYUVerFrame*> apcFram
   return m_pcDisparityFrame;
 }
 
-Void DisparityStereoSGBM::destroy()
+void DisparityStereoSGBM::destroy()
 {
   if( m_pcDisparityFrame )
     delete m_pcDisparityFrame;

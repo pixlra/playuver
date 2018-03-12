@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -25,7 +25,7 @@
 #ifndef __PLOTWINDOWHANDLE_H__
 #define __PLOTWINDOWHANDLE_H__
 
-#include "PlaYUVerAppDefs.h"
+#include "CommonDefs.h"
 #include "SubWindowAbstract.h"
 #include "config.h"
 
@@ -48,40 +48,40 @@ private:
     HORIZONTAL,
     VERTICAL,
   };
-  Double m_aAxisRange[2][2];
-  Double m_dScaleFactor;
-  Int m_iNumberPlots;
+  double m_aAxisRange[2][2];
+  double m_dScaleFactor;
+  int m_iNumberPlots;
 
 public:
   PlotSubWindow( const QString& windowTitle, QWidget* parent = NULL );
   ~PlotSubWindow();
 
-  Void definePlotColors();
+  void definePlotColors();
 
-  Void refreshSubWindow() {}
+  void refreshSubWindow() {}
   /**
    * Virtual functions from SubWindowAbstract
    */
-  Void normalSize();
-  Void zoomToFit();
-  Void zoomToFactor( Double factor, QPoint center = QPoint() );
-  Void scaleView( Double scale, QPoint center = QPoint() );
+  void normalSize();
+  void zoomToFit();
+  void zoomToFactor( double factor, QPoint center = QPoint() );
+  void scaleView( double scale, QPoint center = QPoint() );
 
-  Double getScaleFactor() { return m_dScaleFactor; }
+  double getScaleFactor() { return m_dScaleFactor; }
   /**
    * Size related functions
    */
   QSize sizeHint() const;
   QSize sizeHint( const QSize& ) const;
 
-  Void setAxisName( const QString& nameAxisX, const QString& nameAxisY );
+  void setAxisName( const QString& nameAxisX, const QString& nameAxisY );
 
-  Void setAxisRange( const QLine& axisLimits );
-  Void setAxisRange( PlotSubWindow::Axis eAxis, const Int& axisStart, const Int& axisEnd );
+  void setAxisRange( const QLine& axisLimits );
+  void setAxisRange( PlotSubWindow::Axis eAxis, const int& axisStart, const int& axisEnd );
 
-  Void setKey( const QString& key );
+  void setKey( const QString& key );
 
-  Void addPlot( const QVector<Double>& arrayX, const QVector<Double>& arrayY, const QString& key = QString() );
+  void addPlot( const QVector<double>& arrayX, const QVector<double>& arrayY, const QString& key = QString() );
 };
 
 #endif  // __PLOTWINDOWHANDLE_H__

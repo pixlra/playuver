@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -19,22 +19,22 @@
 
 /**
  * \file     StreamHandlerRaw.h
+ * \ingroup  CalypStreamGrp
  * \brief    Abstract class for stream handling
  */
 
 #ifndef __STREAMHANDLERRAW_H__
 #define __STREAMHANDLERRAW_H__
 
-#include "PlaYUVerDefs.h"
-#include "PlaYUVerStreamHandlerIf.h"
+#include "CalypStreamHandlerIf.h"
 
 /**
  * \class StreamHandlerRaw
  * \brief    Class to handle raw video format
  */
-class StreamHandlerRaw : public PlaYUVerStreamHandlerIf
+class StreamHandlerRaw : public CalypStreamHandlerIf
 {
-  REGISTER_STREAM_HANDLER( StreamHandlerRaw )
+  REGISTER_CALYP_STREAM_HANDLER( StreamHandlerRaw )
 
 private:
   FILE* m_pFile; /**< The input file pointer >*/
@@ -42,13 +42,13 @@ private:
 public:
   StreamHandlerRaw() { m_pchHandlerName = "RawVideo"; }
   ~StreamHandlerRaw() {}
-  Bool openHandler( String strFilename, Bool bInput );
-  Void closeHandler();
-  Bool configureBuffer( PlaYUVerFrame* pcFrame );
-  Void calculateFrameNumber();
-  Bool seek( UInt64 iFrameNum );
-  Bool read( PlaYUVerFrame* pcFrame );
-  Bool write( PlaYUVerFrame* pcFrame );
+  bool openHandler( ClpString strFilename, bool bInput );
+  void closeHandler();
+  bool configureBuffer( CalypFrame* pcFrame );
+  void calculateFrameNumber();
+  bool seek( unsigned long long int iFrameNum );
+  bool read( CalypFrame* pcFrame );
+  bool write( CalypFrame* pcFrame );
 };
 
 #endif  // __STREAMHANDLERRAW_H__

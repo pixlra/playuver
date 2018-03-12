@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -19,14 +19,14 @@
 
 /**
  * \file     SubWindowAbstract.h
- * \ingroup  PlaYUVerApp PlaYUVerApp_Subwindow
+ * \ingroup  CalypApp CalypApp_Subwindow
  * \brief    Abstract class to handle subwindows
  *
- * @defgroup PlaYUVerApp_Subwindow SubWindow definition
+ * @defgroup CalypApp_Subwindow SubWindow definition
  * @{
- * \ingroup PlaYUVerApp
+ * \ingroup CalypApp
  *
- * Different SubWindow may be found in the PlaYUVerApp
+ * Different SubWindow may be found in the CalypApp
  * Each one provide different functionality and serve
  * different purposes, ( e.g., displaying a video stream
  * or displaying a quality plot)
@@ -41,14 +41,14 @@
 #include <QSize>
 #include <QString>
 #include <QWidget>
-#include "PlaYUVerAppDefs.h"
+#include "CommonDefs.h"
 #include "config.h"
 
 class QHBoxLayout;
 class QFocusEvent;
 class QCloseEvent;
 
-class PlaYUVerMdiSubWindow;
+class MdiSubWindow;
 
 class SubWindowAbstract : public QWidget
 {
@@ -56,10 +56,10 @@ class SubWindowAbstract : public QWidget
 
 private:
   QHBoxLayout* m_pcLayout;
-  UInt m_uiCategory;
+  unsigned int m_uiCategory;
   QString m_cWindowName;
 
-  PlaYUVerMdiSubWindow* m_cSubWindow;
+  MdiSubWindow* m_cSubWindow;
 
 public:
   enum SubWindowCategory
@@ -72,35 +72,35 @@ public:
   };
   Q_DECLARE_FLAGS( SubWindowCategories, SubWindowCategory )
 
-  SubWindowAbstract( QWidget*, UInt );
+  SubWindowAbstract( QWidget*, unsigned int );
   ~SubWindowAbstract();
 
   /**
    * Show the image at its original size
    */
-  virtual Void refreshSubWindow() = 0;
+  virtual void refreshSubWindow() = 0;
 
   /**
    * Show the image at its original size
    */
-  virtual Void normalSize() = 0;
+  virtual void normalSize() = 0;
   /**
    * Scale the image (zoomed in or out) to fit on the window.
    */
-  virtual Void zoomToFit() = 0;
+  virtual void zoomToFit() = 0;
   /**
    * Scale the image (zoomed in or out) to speficied absolute zoom value (1.0 =
    * original size).
    */
-  virtual Void zoomToFactor( Double factor, QPoint center = QPoint() ) = 0;
+  virtual void zoomToFactor( double factor, QPoint center = QPoint() ) = 0;
   /**
    * Scale the image by a given factor
    * @param factor factor of scale. Ex: 1.2 scale the image up by 20% and
    *        0.8 scale the image down by 25%
    */
-  virtual Void scaleView( Double, QPoint center = QPoint() ) = 0;
+  virtual void scaleView( double, QPoint center = QPoint() ) = 0;
 
-  virtual Double getScaleFactor() = 0;
+  virtual double getScaleFactor() = 0;
 
   /**
    * Size related functions
@@ -112,10 +112,10 @@ public:
    * Window name
    */
 
-  Void setWindowName( QString );
+  void setWindowName( QString );
   QString getWindowName();
 
-  virtual Bool mayClose();
+  virtual bool mayClose();
 
   /**
    * Get category of the SubWindow
@@ -123,22 +123,22 @@ public:
    * @note This function should be used with enum SubWindowCategories
    *        with an & operation and it may belong to several categories
    */
-  UInt getCategory() { return m_uiCategory; }
+  unsigned int getCategory() { return m_uiCategory; }
   /**
    * Check category of the SubWindow
    * @param checkCateory SubWindow category to check against;
    *        it should be enum SubWindowCategories type
    * @return true when SubWindow belong to checkCateory
    */
-  Bool checkCategory( UInt checkCateory ) { return m_uiCategory & checkCateory; }
-  Void setSubWindow( PlaYUVerMdiSubWindow* subWindow ) { m_cSubWindow = subWindow; }
-  Void closeSubWindow();
+  bool checkCategory( unsigned int checkCateory ) { return m_uiCategory & checkCateory; }
+  void setSubWindow( MdiSubWindow* subWindow ) { m_cSubWindow = subWindow; }
+  void closeSubWindow();
 
 protected:
   void focusInEvent( QFocusEvent* event );
   virtual void closeEvent( QCloseEvent* event );
 
-  Void setWidget( QWidget* widget );
+  void setWidget( QWidget* widget );
 
 Q_SIGNALS:
   /**

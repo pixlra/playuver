@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -25,22 +25,22 @@
 #ifndef __ABSOLUTEFRAMEDIFFERENCE_H__
 #define __ABSOLUTEFRAMEDIFFERENCE_H__
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class AbsoluteFrameDifference : public PlaYUVerModuleIf
+class AbsoluteFrameDifference : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( AbsoluteFrameDifference )
 
 private:
-  PlaYUVerFrame* m_pcFrameDifference;
+  CalypFrame* m_pcFrameDifference;
 
 public:
   AbsoluteFrameDifference();
   virtual ~AbsoluteFrameDifference() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
-  Void destroy();
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
+  void destroy();
 };
 
 #endif  // __FRAMEDIFFERENCE_H__

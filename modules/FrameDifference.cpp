@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -27,15 +27,15 @@
 FrameDifference::FrameDifference()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;
-  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_iModuleAPI = CLP_MODULE_API_2;
+  m_iModuleType = CLP_FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Measurements";
   m_pchModuleName = "FrameDifference";
   m_pchModuleName = "Difference";
   m_pchModuleTooltip = "Measure the difference between two images (Y plane),  "
                        "Y1 - Y2, with max absolute diff of 128";
-  m_uiModuleRequirements = MODULE_REQUIRES_NEW_WINDOW | MODULE_REQUIRES_OPTIONS;
-  m_uiNumberOfFrames = MODULE_REQUIRES_TWO_FRAMES;
+  m_uiModuleRequirements = CLP_MODULE_REQUIRES_NEW_WINDOW | CLP_MODULE_REQUIRES_OPTIONS;
+  m_uiNumberOfFrames = 2;
 
   m_cModuleOptions.addOptions() /**/
       ( "Bits per pixel", m_uiBitsPixel, "Bits per pixel (use zero to avoid scaling) [0]" );
@@ -45,15 +45,15 @@ FrameDifference::FrameDifference()
   m_pcFrameDifference = NULL;
 }
 
-Bool FrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool FrameDifference::create( std::vector<CalypFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
 
-  UInt uiMaxBitsPixel = 0;
-  for( UInt i = 0; i < apcFrameList.size(); i++ )
+  unsigned int uiMaxBitsPixel = 0;
+  for( unsigned int i = 0; i < apcFrameList.size(); i++ )
   {
     if( !apcFrameList[i]->haveSameFmt( apcFrameList[0],
-                                       PlaYUVerFrame::MATCH_COLOR_SPACE | PlaYUVerFrame::MATCH_RESOLUTION ) )
+                                       CalypFrame::MATCH_COLOR_SPACE | CalypFrame::MATCH_RESOLUTION ) )
       return false;
     if( apcFrameList[i]->getBitsPel() > uiMaxBitsPixel )
     {
@@ -69,21 +69,21 @@ Bool FrameDifference::create( std::vector<PlaYUVerFrame*> apcFrameList )
   m_iDiffBitShift = ( uiMaxBitsPixel + 1 ) - m_uiBitsPixel;
   m_iMaxDiffValue = ( 1 << ( m_uiBitsPixel - 1 ) );
 
-  m_pcFrameDifference = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
-                                           PlaYUVerFrame::GRAY, m_uiBitsPixel );
+  m_pcFrameDifference = new CalypFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
+                                        CLP_GRAY, m_uiBitsPixel );
   return true;
 }
 
-PlaYUVerFrame* FrameDifference::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* FrameDifference::process( std::vector<CalypFrame*> apcFrameList )
 {
-  Pel* pInput1PelYUV = apcFrameList[0]->getPelBufferYUV()[0][0];
-  Pel* pInput2PelYUV = apcFrameList[1]->getPelBufferYUV()[0][0];
-  Pel* pOutputPelYUV = m_pcFrameDifference->getPelBufferYUV()[0][0];
-  Int aux_pel_1, aux_pel_2;
-  Int diff = 0;
+  ClpPel* pInput1PelYUV = apcFrameList[0]->getPelBufferYUV()[0][0];
+  ClpPel* pInput2PelYUV = apcFrameList[1]->getPelBufferYUV()[0][0];
+  ClpPel* pOutputPelYUV = m_pcFrameDifference->getPelBufferYUV()[0][0];
+  int aux_pel_1, aux_pel_2;
+  int diff = 0;
 
-  for( UInt y = 0; y < m_pcFrameDifference->getHeight(); y++ )
-    for( UInt x = 0; x < m_pcFrameDifference->getWidth(); x++ )
+  for( unsigned int y = 0; y < m_pcFrameDifference->getHeight(); y++ )
+    for( unsigned int x = 0; x < m_pcFrameDifference->getWidth(); x++ )
     {
       aux_pel_1 = *pInput1PelYUV++;
       aux_pel_2 = *pInput2PelYUV++;
@@ -98,7 +98,7 @@ PlaYUVerFrame* FrameDifference::process( std::vector<PlaYUVerFrame*> apcFrameLis
   return m_pcFrameDifference;
 }
 
-Void FrameDifference::destroy()
+void FrameDifference::destroy()
 {
   if( m_pcFrameDifference )
     delete m_pcFrameDifference;

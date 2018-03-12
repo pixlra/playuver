@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -27,34 +27,34 @@
 
 #include <QtCore>
 #include <QtWidgets>
-#include "PlaYUVerAppDefs.h"
+#include "CommonDefs.h"
 #include "QFuture"
 #include "QualityMeasurementSidebar.h"
 #include "config.h"
 
-class PlaYUVerSubWindowHandle;
+class SubWindowHandle;
 class VideoSubWindow;
 
 class QualityHandle : public QWidget
 {
   Q_OBJECT
 public:
-  QualityHandle( QWidget*, PlaYUVerSubWindowHandle* );
+  QualityHandle( QWidget*, SubWindowHandle* );
   ~QualityHandle();
 
-  Void createActions();
+  void createActions();
   QMenu* createMenu();
   QDockWidget* createDock();
-  Void updateMenus();
+  void updateMenus();
 
-  Void readSettings();
-  Void writeSettings();
+  void readSettings();
+  void writeSettings();
 
-  Void update( VideoSubWindow* currSubWindow );
+  void update( VideoSubWindow* currSubWindow );
 
 private:
   QWidget* m_pcParet;
-  PlaYUVerSubWindowHandle* m_pcMainWindowManager;
+  SubWindowHandle* m_pcMainWindowManager;
 
   enum
   {
@@ -66,7 +66,7 @@ private:
   QVector<QAction*> m_arrayActions;
   QActionGroup* m_actionGroupQualityMetric;
   QSignalMapper* m_mapperQualityMetric;
-  Int m_iQualityMetricIdx;
+  int m_iQualityMetricIdx;
 
   QMenu* m_pcMenuQuality;
   QMenu* m_pcSubMenuQualityMetrics;
@@ -74,8 +74,8 @@ private:
   QDockWidget* m_pcQualityHandleDock;
   QualityMeasurementSidebar* m_pcQualityHandleSideBar;
 
-  QFuture<Void> m_cMeasurementResult;
-  Void measureQuality( QVector<VideoSubWindow*> apcWindowList );
+  QFuture<void> m_cMeasurementResult;
+  void measureQuality( QVector<VideoSubWindow*> apcWindowList );
 
 Q_SIGNALS:
   void changed();

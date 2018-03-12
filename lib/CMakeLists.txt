@@ -1,79 +1,91 @@
 ###
-### CMakeLists for playuver lib component
+### CMakeLists for calyp lib component
 ###
 
 INCLUDE(GNUInstallDirs)
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} )
 
-set(PlaYUVer_Lib_SRCS
+set(Calyp_Lib_SRCS
     LibMemory.h
-    PlaYUVerLib.h
+    CalypLib.h
+    CalypDefs.h
     # Frame
-    PlaYUVerFrame.h
-    PlaYUVerFrame.cpp
-    PlaYUVerFramePixelFormats.h
-    PlaYUVerFramePixelFormats.cpp
+    CalypFrame.h
+    CalypFrame.cpp
+    CalypPixel.cpp
+    PixelFormats.h
+    PixelFormats.cpp
     # Stream
-    PlaYUVerStream.h
-    PlaYUVerStream.cpp
-    PlaYUVerStreamHandlerIf.h
+    CalypStream.h
+    CalypStream.cpp
+    CalypStreamHandlerIf.h
     StreamHandlerRaw.h
     StreamHandlerRaw.cpp
     StreamHandlerPortableMap.h
     StreamHandlerPortableMap.cpp
     # Options Parser
-    PlaYUVerOptions.h
-    PlaYUVerOptions.cpp
+    CalypOptions.h
+    CalypOptions.cpp
     # Modules
-    PlaYUVerModuleIf.h
+    CalypModuleIf.h
 )
 
+LIST(APPEND CMAKE_CFG_LINKER_LIBSS ${PROJECT_LIBRARY} )
+LIST(APPEND CMAKE_CFG_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR} )
+
+
 IF( USE_FFMPEG )
-  LIST( APPEND PlaYUVer_Lib_SRCS StreamHandlerLibav.h )
-  LIST( APPEND PlaYUVer_Lib_SRCS StreamHandlerLibav.cpp )
+  LIST( APPEND Calyp_Lib_SRCS StreamHandlerLibav.h )
+  LIST( APPEND Calyp_Lib_SRCS StreamHandlerLibav.cpp )
+
+  LIST(APPEND CMAKE_CFG_LINKER_LIBSS ${FFMPEG_LIBRARIES} )
+  LIST(APPEND CMAKE_CFG_INCLUDE_DIRS ${FFMPEG_INCLUDE_DIRS} )
 ENDIF()
 
 IF( USE_OPENCV )
-  LIST( APPEND PlaYUVer_Lib_SRCS StreamHandlerOpenCV.h )
-  LIST( APPEND PlaYUVer_Lib_SRCS StreamHandlerOpenCV.cpp )
+  LIST( APPEND Calyp_Lib_SRCS StreamHandlerOpenCV.h )
+  LIST( APPEND Calyp_Lib_SRCS StreamHandlerOpenCV.cpp )
+
+  LIST(APPEND CMAKE_CFG_LINKER_LIBSS ${OpenCV_LIBRARIES} )
+  LIST(APPEND CMAKE_CFG_INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS} )
 ENDIF()
 
-set(PlaYUVer_Lib_HEADERS
-    PlaYUVerDefs.h
-    PlaYUVerFrame.h
-    PlaYUVerStream.h
-    PlaYUVerOptions.h
-    PlaYUVerModuleIf.h
+set(Calyp_Lib_HEADERS
+    CalypDefs.h
+    CalypFrame.h
+    CalypStream.h
+    CalypOptions.h
+    CalypModuleIf.h
 )
 
-CONFIGURE_FILE( PlaYUVerConfig.cmake.in PlaYUVerConfig.cmake @ONLY)
+CONFIGURE_FILE( CalypConfig.cmake.in CalypConfig.cmake @ONLY)
 
 INCLUDE_DIRECTORIES( ${FFMPEG_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS} )
 
 IF( USE_STATIC )
-  ADD_LIBRARY( PlaYUVerLib STATIC ${PlaYUVer_Lib_SRCS} )
+  ADD_LIBRARY( ${PROJECT_LIBRARY} STATIC ${Calyp_Lib_SRCS} )
 ELSE()
-  ADD_LIBRARY( PlaYUVerLib SHARED ${PlaYUVer_Lib_SRCS} )
+  ADD_LIBRARY( ${PROJECT_LIBRARY} SHARED ${Calyp_Lib_SRCS} )
 ENDIF()
 
 
-TARGET_LINK_LIBRARIES( PlaYUVerLib
+TARGET_LINK_LIBRARIES( ${PROJECT_LIBRARY}
     ${FFMPEG_LIBRARIES}
     ${OpenCV_LIBRARIES}
 )
 
-SET_TARGET_PROPERTIES( PlaYUVerLib
-   PROPERTIES VERSION ${PLAYUVER_VERSION}
-   SOVERSION ${PLAYUVER_VERSION_MAJOR}
+SET_TARGET_PROPERTIES( ${PROJECT_LIBRARY}
+   PROPERTIES VERSION ${CALYP_VERSION}
+   SOVERSION ${CALYP_VERSION_MAJOR}
 )
 
 IF( NOT USE_STATIC )
-  INSTALL( TARGETS PlaYUVerLib
+  INSTALL( TARGETS ${PROJECT_LIBRARY}
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
   )
-  INSTALL(FILES ${PlaYUVer_Lib_HEADERS} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" )
-  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/PlaYUVerConfig.cmake DESTINATION share/playuver )
+  INSTALL(FILES ${Calyp_Lib_HEADERS} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" )
+  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/CalypConfig.cmake DESTINATION share/calyp )
 ENDIF()

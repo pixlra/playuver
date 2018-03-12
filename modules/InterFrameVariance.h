@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -18,30 +18,30 @@
  */
 
 /**
- * \file     InterFrameVariance.h
+ * \file     interFrameVariance.h
  * \brief    Absolute Frame Difference module
  */
 
 #ifndef __INTERFRAMEVARIANCE_H__
 #define __INTERFRAMEVARIANCE_H__
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class InterFrameVariance : public PlaYUVerModuleIf
+class InterFrameVariance : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( InterFrameVariance )
 
 private:
-  PlaYUVerFrame* m_pcFrameVariance;
-  Double** m_pVariance;
+  CalypFrame* m_pcFrameVariance;
+  double** m_pVariance;
 
 public:
   InterFrameVariance();
   virtual ~InterFrameVariance() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
-  Void destroy();
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
+  void destroy();
 };
 
 #endif  // __INTERFRAMEVARIANCE_H__

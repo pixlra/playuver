@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -18,7 +18,7 @@
  */
 /**
  * \file     ModulesHandle.h
- * \brief    PlaYUVer modules handle
+ * \brief    Calyp modules handle
  */
 
 #ifndef __MODULESHANDLE_H__
@@ -31,38 +31,38 @@
 
 #include <QtCore>
 #include <QtWidgets>
-#include "PlaYUVerAppDefs.h"
-#include "PlaYUVerAppModuleIf.h"
-#include "lib/PlaYUVerFrame.h"
+#include "CalypAppModuleIf.h"
+#include "CommonDefs.h"
+#include "lib/CalypFrame.h"
 
 class VideoHandle;
-class PlaYUVerSubWindowHandle;
-class PlaYUVerAppModuleIf;
+class SubWindowHandle;
+class CalypAppModuleIf;
 class SubWindowHandle;
 
 class ModulesHandle : public QWidget
 {
   Q_OBJECT
 public:
-  ModulesHandle( QWidget*, PlaYUVerSubWindowHandle*, VideoHandle* );
+  ModulesHandle( QWidget*, SubWindowHandle*, VideoHandle* );
   ~ModulesHandle();
 
-  Void createActions();
+  void createActions();
   QMenu* createMenu();
   // QDockWidget* createDock();
-  Void buildMenu();
-  Void updateMenus();
+  void buildMenu();
+  void updateMenus();
 
-  Void readSettings();
-  Void writeSettings();
+  void readSettings();
+  void writeSettings();
 
-  static Void destroyModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
-  static Void applyModuleIf( QList<PlaYUVerAppModuleIf*> pcCurrModuleIfList, Bool isPlaying = false,
-                             Bool disableThreads = false );
+  static void destroyModuleIf( CalypAppModuleIf* pcCurrModuleIf );
+  static void applyModuleIf( QList<CalypAppModuleIf*> pcCurrModuleIfList, bool isPlaying = false,
+                             bool disableThreads = false );
 
 private:
   QWidget* m_pcParent;
-  PlaYUVerSubWindowHandle* m_pcMainWindowManager;
+  SubWindowHandle* m_pcMainWindowManager;
   VideoHandle* m_appModuleVideo;
 
   enum
@@ -74,7 +74,7 @@ private:
 
   QMenu* m_pcModulesMenu;
   QList<QMenu*> m_pcModulesSubMenuList;
-  QList<PlaYUVerAppModuleIf*> m_pcPlaYUVerAppModuleIfList;
+  QList<CalypAppModuleIf*> m_pcCalypAppModuleIfList;
 
   QVector<QAction*> m_arrayModulesActions;
 
@@ -92,11 +92,11 @@ private:
   QVector<QAction*> m_arrayActions;
   QSignalMapper* m_pcActionMapper;
 
-  Void enableModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
-  Void applyAllModuleIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
-  Void swapModulesWindowsIf( PlaYUVerAppModuleIf* pcCurrModuleIf );
+  void enableModuleIf( CalypAppModuleIf* pcCurrModuleIf );
+  void applyAllModuleIf( CalypAppModuleIf* pcCurrModuleIf );
+  void swapModulesWindowsIf( CalypAppModuleIf* pcCurrModuleIf );
 
-  Void customEvent( QEvent* event );
+  void customEvent( QEvent* event );
 
 Q_SIGNALS:
   void changed();

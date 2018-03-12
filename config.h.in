@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -17,21 +17,20 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
- /**
+/**
  * \file     config.h.in
  * \brief    definition of the building options
  */
 
-
-#ifndef __CONFIG_PLAYUVER_H__
-#define __CONFIG_PLAYUVER_H__
+#ifndef __CONFIG_CALYP_H__
+#define __CONFIG_CALYP_H__
 
 /* Version definition */
-#define PLAYUVER_VERSION_MAJOR @PLAYUVER_VERSION_MAJOR@
-#define PLAYUVER_VERSION_MINOR @PLAYUVER_VERSION_MINOR@
-#define PLAYUVER_VERSION_PATCH @PLAYUVER_VERSION_PATCH@
-#define PLAYUVER_VERSION @PLAYUVER_VERSION@
-#define PLAYUVER_VERSION_STRING "@PLAYUVER_VERSION_STRING@"
+#define CALYP_VERSION_MAJOR @CALYP_VERSION_MAJOR @
+#define CALYP_VERSION_MINOR @CALYP_VERSION_MINOR @
+#define CALYP_VERSION_PATCH @CALYP_VERSION_PATCH @
+#define CALYP_VERSION @CALYP_VERSION @
+#define CALYP_VERSION_STRING "@CALYP_VERSION_STRING@"
 
 #define UPDATE_CHANNEL "@UPDATE_CHANNEL@"
 
@@ -45,7 +44,7 @@
 #cmakedefine USE_DYNLOAD
 
 /* Use modules in a different thread */
-#cmakedefine PLAYUVER_THREADED_MODULES
+#cmakedefine CALYP_THREADED_MODULES
 
 /* OpenCV */
 #cmakedefine USE_OPENCV
@@ -56,5 +55,4 @@
 /* Fervor update lib */
 #cmakedefine USE_FERVOR
 
-
-#endif // __CONFIG_PLAYUVER_H__
+#endif  // __CONFIG_CALYP_H__

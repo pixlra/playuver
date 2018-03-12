@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -28,31 +28,31 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/video/video.hpp>
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class MeasureOpticalFlowDualTVL1 : public PlaYUVerModuleIf
+class MeasureOpticalFlowDualTVL1 : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( MeasureOpticalFlowDualTVL1 )
 
 private:
-  Bool m_bShowReconstruction;
-  Int m_iStep;
+  bool m_bShowReconstruction;
+  int m_iStep;
   cv::Ptr<cv::DenseOpticalFlow> m_cTvl1;
   cv::Mat_<cv::Point2f> m_cvFlow;
-  PlaYUVerFrame* m_pcFramePrev;
-  PlaYUVerFrame* m_pcFrameAfter;
-  PlaYUVerFrame* m_pcOutputFrame;
+  CalypFrame* m_pcFramePrev;
+  CalypFrame* m_pcFrameAfter;
+  CalypFrame* m_pcOutputFrame;
 
-  Void drawFlow();
-  Void compensateFlow();
+  void drawFlow();
+  void compensateFlow();
 
 public:
   MeasureOpticalFlowDualTVL1();
   virtual ~MeasureOpticalFlowDualTVL1() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
-  Void destroy();
+  bool create( std::vector<CalypFrame*> apcFrameList );
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
+  void destroy();
 };
 
 #endif  // __MeasureOpticalFlowDualTVL1_H__

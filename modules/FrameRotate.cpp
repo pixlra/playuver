@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -27,14 +27,14 @@
 FrameRotate::FrameRotate()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;
-  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_iModuleAPI = CLP_MODULE_API_2;
+  m_iModuleType = CLP_FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Utilities";
   m_pchModuleLongName = "Rotation";
   m_pchModuleName = "FrameRotate";
   m_pchModuleTooltip = "Rotates frame";
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
-  m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS;
+  m_uiNumberOfFrames = 1;
+  m_uiModuleRequirements = CLP_MODULE_REQUIRES_OPTIONS;
 
   m_cModuleOptions.addOptions() /**/
       ( "Angle", m_iAngle, "Angle to rotate (0, 90, 180, 270)" );
@@ -44,12 +44,12 @@ FrameRotate::FrameRotate()
   m_pcFrameProcessed = NULL;
 }
 
-Bool FrameRotate::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool FrameRotate::create( std::vector<CalypFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
 
-  UInt iWidth;
-  UInt iHeight;
+  unsigned int iWidth;
+  unsigned int iHeight;
 
   switch( m_iAngle )
   {
@@ -67,23 +67,23 @@ Bool FrameRotate::create( std::vector<PlaYUVerFrame*> apcFrameList )
     return false;
   }
 
-  m_pcFrameProcessed = new PlaYUVerFrame( iWidth, iHeight, apcFrameList[0]->getPelFormat(),
-                                          apcFrameList[0]->getBitsPel() );
+  m_pcFrameProcessed = new CalypFrame( iWidth, iHeight, apcFrameList[0]->getPelFormat(),
+                                       apcFrameList[0]->getBitsPel() );
   return true;
 }
 
-PlaYUVerFrame* FrameRotate::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* FrameRotate::process( std::vector<CalypFrame*> apcFrameList )
 {
-  PlaYUVerFrame* InputFrame = apcFrameList[0];
-  UInt inWidht = InputFrame->getWidth();
-  UInt inHeight = InputFrame->getHeight();
-  PlaYUVerPixel pixel;
-  UInt inX;
-  UInt inY;
+  CalypFrame* InputFrame = apcFrameList[0];
+  unsigned int inWidht = InputFrame->getWidth();
+  unsigned int inHeight = InputFrame->getHeight();
+  CalypPixel pixel;
+  unsigned int inX;
+  unsigned int inY;
 
-  for( UInt y = 0; y < m_pcFrameProcessed->getHeight(); y++ )
+  for( unsigned int y = 0; y < m_pcFrameProcessed->getHeight(); y++ )
   {
-    for( UInt x = 0; x < m_pcFrameProcessed->getWidth(); x++ )
+    for( unsigned int x = 0; x < m_pcFrameProcessed->getWidth(); x++ )
     {
       inX = x;
       inY = y;
@@ -109,7 +109,7 @@ PlaYUVerFrame* FrameRotate::process( std::vector<PlaYUVerFrame*> apcFrameList )
   return m_pcFrameProcessed;
 }
 
-Void FrameRotate::destroy()
+void FrameRotate::destroy()
 {
   if( m_pcFrameProcessed )
   {

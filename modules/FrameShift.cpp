@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -27,14 +27,14 @@
 FrameShift::FrameShift()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;
-  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_iModuleAPI = CLP_MODULE_API_2;
+  m_iModuleType = CLP_FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Utilities";
   m_pchModuleLongName = "Pixel Shift";
   m_pchModuleName = "FrameShift";
   m_pchModuleTooltip = "Shift frame horizontal and vertical";
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
-  m_uiModuleRequirements = MODULE_REQUIRES_OPTIONS | MODULE_USES_KEYS;
+  m_uiNumberOfFrames = 1;
+  m_uiModuleRequirements = CLP_MODULE_REQUIRES_OPTIONS | CLP_MODULE_USES_KEYS;
 
   m_cModuleOptions.addOptions()                                                               /**/
       ( "ShiftHorizontal", m_iShiftHor, "Amount of pixels to shift in horizontal direction" ) /**/
@@ -45,42 +45,42 @@ FrameShift::FrameShift()
   m_iShiftVer = 0;
 }
 
-Bool FrameShift::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool FrameShift::create( std::vector<CalypFrame*> apcFrameList )
 {
   _BASIC_MODULE_API_2_CHECK_
-  m_pcProcessedFrame = new PlaYUVerFrame( apcFrameList[0] );
+  m_pcProcessedFrame = new CalypFrame( apcFrameList[0] );
   return true;
 }
 
-PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* FrameShift::process( std::vector<CalypFrame*> apcFrameList )
 {
-  Pel* pPelInput;
-  Pel* pPelOut;
+  ClpPel* pPelInput;
+  ClpPel* pPelOut;
 
-  m_pcProcessedFrame->clear();
+  m_pcProcessedFrame->reset();
 
-  for( UInt ch = 0; ch < m_pcProcessedFrame->getNumberChannels(); ch++ )
+  for( unsigned int ch = 0; ch < m_pcProcessedFrame->getNumberChannels(); ch++ )
   {
-    UInt uiWidth = m_pcProcessedFrame->getWidth( ch );
-    UInt uiHeight = m_pcProcessedFrame->getHeight( ch );
+    unsigned int uiWidth = m_pcProcessedFrame->getWidth( ch );
+    unsigned int uiHeight = m_pcProcessedFrame->getHeight( ch );
 
-    Int iShiftHor = m_iShiftHor >> ( ch > 0 ? m_pcProcessedFrame->getChromaWidthRatio() : 0 );
-    Int iShiftVer = m_iShiftVer >> ( ch > 0 ? m_pcProcessedFrame->getChromaHeightRatio() : 0 );
+    int iShiftHor = m_iShiftHor >> ( ch > 0 ? m_pcProcessedFrame->getChromaWidthRatio() : 0 );
+    int iShiftVer = m_iShiftVer >> ( ch > 0 ? m_pcProcessedFrame->getChromaHeightRatio() : 0 );
 
-    UInt xStartIn = iShiftHor >= 0 ? 0 : -iShiftHor;
-    UInt yStartIn = iShiftVer >= 0 ? 0 : -iShiftVer;
+    unsigned int xStartIn = iShiftHor >= 0 ? 0 : -iShiftHor;
+    unsigned int yStartIn = iShiftVer >= 0 ? 0 : -iShiftVer;
 
-    UInt xStartOut = std::max( iShiftHor, 0 );
-    UInt xEndOut = std::min( uiWidth, uiWidth + iShiftHor );
+    unsigned int xStartOut = std::max( iShiftHor, 0 );
+    unsigned int xEndOut = std::min( uiWidth, uiWidth + iShiftHor );
 
-    UInt yStartOut = std::max( iShiftVer, 0 );
-    UInt yEndOut = std::min( uiHeight, uiHeight + iShiftVer );
+    unsigned int yStartOut = std::max( iShiftVer, 0 );
+    unsigned int yEndOut = std::min( uiHeight, uiHeight + iShiftVer );
 
-    for( UInt y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ )
+    for( unsigned int y = yStartOut, yIn = yStartIn; y < yEndOut; y++, yIn++ )
     {
       pPelInput = &( apcFrameList[0]->getPelBufferYUV()[ch][yIn][xStartIn] );
       pPelOut = &( m_pcProcessedFrame->getPelBufferYUV()[ch][y][xStartOut] );
-      for( UInt x = xStartOut; x < xEndOut; x++ )
+      for( unsigned int x = xStartOut; x < xEndOut; x++ )
       {
         *pPelOut = *pPelInput;
         pPelInput++;
@@ -91,7 +91,7 @@ PlaYUVerFrame* FrameShift::process( std::vector<PlaYUVerFrame*> apcFrameList )
   return m_pcProcessedFrame;
 }
 
-Bool FrameShift::keyPressed( enum Module_Key_Supported value )
+bool FrameShift::keyPressed( enum Module_Key_Supported value )
 {
   if( value == MODULE_KEY_LEFT )
   {
@@ -117,7 +117,7 @@ Bool FrameShift::keyPressed( enum Module_Key_Supported value )
   return false;
 }
 
-Void FrameShift::destroy()
+void FrameShift::destroy()
 {
   if( m_pcProcessedFrame )
     delete m_pcProcessedFrame;

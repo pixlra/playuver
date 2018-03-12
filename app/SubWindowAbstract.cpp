@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -24,7 +24,7 @@
 
 #include "SubWindowAbstract.h"
 
-#include "PlaYUVerMdiSubWindow.h"
+#include "MdiSubWindow.h"
 
 #include <QCloseEvent>
 #include <QFocusEvent>
@@ -32,7 +32,7 @@
 #include <QIcon>
 #include <QScrollBar>
 
-SubWindowAbstract::SubWindowAbstract( QWidget* parent, UInt category )
+SubWindowAbstract::SubWindowAbstract( QWidget* parent, unsigned int category )
     : QWidget( parent ), m_cSubWindow( NULL )
 {
   setParent( parent );
@@ -42,7 +42,7 @@ SubWindowAbstract::SubWindowAbstract( QWidget* parent, UInt category )
   setAttribute( Qt::WA_DeleteOnClose );
   setBackgroundRole( QPalette::Background );
 
-  setWindowIcon( QIcon( ":/images/playuver.png" ) );
+  setWindowIcon( QIcon( ":/logos/calyp-icon.png" ) );
 
   // setWidgetResizable( true );
   m_pcLayout = NULL;
@@ -57,7 +57,7 @@ SubWindowAbstract::~SubWindowAbstract()
   return;
 }
 
-Void SubWindowAbstract::setWidget( QWidget* widget )
+void SubWindowAbstract::setWidget( QWidget* widget )
 {
   QGridLayout* layout = new QGridLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -69,7 +69,7 @@ void SubWindowAbstract::onDestroyed()
   return;
 }
 
-Void SubWindowAbstract::setWindowName( QString name )
+void SubWindowAbstract::setWindowName( QString name )
 {
   m_cWindowName = name;
   setWindowTitle( m_cWindowName );
@@ -80,7 +80,7 @@ QString SubWindowAbstract::getWindowName()
   return m_cWindowName;
 }
 
-Bool SubWindowAbstract::mayClose()
+bool SubWindowAbstract::mayClose()
 {
   return true;
 }
@@ -95,18 +95,18 @@ QSize SubWindowAbstract::sizeHint( const QSize& ) const
   return QSize();
 }
 
-Void SubWindowAbstract::focusInEvent( QFocusEvent* event )
+void SubWindowAbstract::focusInEvent( QFocusEvent* event )
 {
   emit aboutToActivate( this );
 }
 
-Void SubWindowAbstract::closeEvent( QCloseEvent* event )
+void SubWindowAbstract::closeEvent( QCloseEvent* event )
 {
   emit aboutToClose( this );
   event->accept();
 }
 
-Void SubWindowAbstract::closeSubWindow()
+void SubWindowAbstract::closeSubWindow()
 {
   close();
   if( m_cSubWindow )

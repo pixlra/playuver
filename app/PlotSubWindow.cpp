@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -27,7 +27,7 @@
 #include "qcustomplot.h"
 //#include "external/qcustomplot/qcustomplot.h"
 
-Void PlotSubWindow::definePlotColors()
+void PlotSubWindow::definePlotColors()
 {
   m_arrayColorList.append( Qt::blue );
   m_arrayColorList.append( Qt::red );
@@ -121,7 +121,7 @@ PlotSubWindow::~PlotSubWindow()
   delete m_cPlotArea;
 }
 
-Void PlotSubWindow::normalSize()
+void PlotSubWindow::normalSize()
 {
   m_cPlotArea->xAxis->setRange( m_aAxisRange[HORIZONTAL][0], m_aAxisRange[HORIZONTAL][1] );
   m_cPlotArea->yAxis->setRange( m_aAxisRange[VERTICAL][0], m_aAxisRange[VERTICAL][1] );
@@ -129,14 +129,14 @@ Void PlotSubWindow::normalSize()
   m_dScaleFactor = 1;
 }
 
-Void PlotSubWindow::zoomToFit()
+void PlotSubWindow::zoomToFit()
 {
   normalSize();
 }
 
-Void PlotSubWindow::zoomToFactor( Double factor, QPoint center ) {}
+void PlotSubWindow::zoomToFactor( double factor, QPoint center ) {}
 
-Void PlotSubWindow::scaleView( Double scale, QPoint center )
+void PlotSubWindow::scaleView( double scale, QPoint center )
 {
   scale -= 1;
   scale /= 10;
@@ -144,9 +144,9 @@ Void PlotSubWindow::scaleView( Double scale, QPoint center )
 
   m_dScaleFactor *= scale;
   //
-  //  UInt aNewAxisRange[2][2];
-  //  for( UInt axis = 0; axis < 2; axis++ )
-  //    for( UInt dim = 0; dim < 2; dim++ )
+  //  unsigned int aNewAxisRange[2][2];
+  //  for( unsigned int axis = 0; axis < 2; axis++ )
+  //    for( unsigned int dim = 0; dim < 2; dim++ )
   //      aNewAxisRange[axis][dim] = m_aAxisRange[axis][dim] / m_dScaleFactor;
   //
   //  m_cPlotArea->xAxis->setRange( aNewAxisRange[HORIZONTAL][0],
@@ -179,19 +179,19 @@ QSize PlotSubWindow::sizeHint( const QSize& maxSize ) const
   return maxSize * 2 / 3;
 }
 
-Void PlotSubWindow::setAxisName( const QString& nameAxisX, const QString& nameAxisY )
+void PlotSubWindow::setAxisName( const QString& nameAxisX, const QString& nameAxisY )
 {
   m_cPlotArea->xAxis->setLabel( nameAxisX );
   m_cPlotArea->yAxis->setLabel( nameAxisY );
 }
 
-Void PlotSubWindow::setAxisRange( const QLine& axisLimits )
+void PlotSubWindow::setAxisRange( const QLine& axisLimits )
 {
   setAxisRange( HORIZONTAL, axisLimits.x1(), axisLimits.x2() );
   setAxisRange( VERTICAL, axisLimits.y1(), axisLimits.y2() );
 }
 
-Void PlotSubWindow::setAxisRange( PlotSubWindow::Axis eAxis, const Int& axisStart, const Int& axisEnd )
+void PlotSubWindow::setAxisRange( PlotSubWindow::Axis eAxis, const int& axisStart, const int& axisEnd )
 {
   if( eAxis == HORIZONTAL )
   {
@@ -210,7 +210,7 @@ Void PlotSubWindow::setAxisRange( PlotSubWindow::Axis eAxis, const Int& axisStar
   m_cPlotArea->replot();
 }
 
-Void PlotSubWindow::addPlot( const QVector<Double>& arrayX, const QVector<Double>& arrayY, const QString& key )
+void PlotSubWindow::addPlot( const QVector<double>& arrayX, const QVector<double>& arrayY, const QString& key )
 {
   QCPGraph* newPlot = m_cPlotArea->addGraph();
   QColor plotColor = m_arrayColorList.at( 0 );

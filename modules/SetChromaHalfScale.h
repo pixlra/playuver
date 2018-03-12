@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -25,22 +25,22 @@
 #ifndef _SETCHROMAHALFSCALE_H_
 #define _SETCHROMAHALFSCALE_H_
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class SetChromaHalfScale : public PlaYUVerModuleIf
+class SetChromaHalfScale : public CalypModuleIf
 {
   REGISTER_CLASS_FACTORY( SetChromaHalfScale )
 
 private:
-  PlaYUVerFrame* m_pcProcessedFrame;
+  CalypFrame* m_pcProcessedFrame;
 
 public:
   SetChromaHalfScale();
   virtual ~SetChromaHalfScale() {}
-  Void create( PlaYUVerFrame* );
-  PlaYUVerFrame* process( PlaYUVerFrame* );
-  Void destroy();
+  void create( CalypFrame* );
+  CalypFrame* process( CalypFrame* );
+  void destroy();
 };
 
 #endif  // _SETCHROMAHALFSCALE_H_

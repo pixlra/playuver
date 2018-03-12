@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -19,7 +19,8 @@
 
 /**
  * \file     StreamHandlerLibav.h
- * \brief    Interface with libav libs
+ * \ingroup  CalypStreamGrp
+ * \brief    interface with libav libs
  */
 
 #ifndef __STREAMHANDLERLIBAV_H__
@@ -45,9 +46,8 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
-#include "PlaYUVerDefs.h"
-#include "PlaYUVerStream.h"
-#include "PlaYUVerStreamHandlerIf.h"
+#include "CalypStream.h"
+#include "CalypStreamHandlerIf.h"
 
 struct AVFormatContext;
 struct AVCodecContext;
@@ -55,43 +55,43 @@ struct AVStream;
 struct AVStream;
 struct AVPacket;
 
-class StreamHandlerLibav : public PlaYUVerStreamHandlerIf
+class StreamHandlerLibav : public CalypStreamHandlerIf
 {
-  REGISTER_STREAM_HANDLER( StreamHandlerLibav )
+  REGISTER_CALYP_STREAM_HANDLER( StreamHandlerLibav )
 
 public:
   StreamHandlerLibav();
   ~StreamHandlerLibav() {}
-  Bool openHandler( String strFilename, Bool bInput );
-  Void closeHandler();
-  Bool configureBuffer( PlaYUVerFrame* pcFrame );
-  Void calculateFrameNumber();
-  Bool seek( UInt64 iFrameNum );
-  Bool read( PlaYUVerFrame* pcFrame );
-  Bool write( PlaYUVerFrame* pcFrame );
+  bool openHandler( ClpString strFilename, bool bInput );
+  void closeHandler();
+  bool configureBuffer( CalypFrame* pcFrame );
+  void calculateFrameNumber();
+  bool seek( unsigned long long int iFrameNum );
+  bool read( CalypFrame* pcFrame );
+  bool write( CalypFrame* pcFrame );
 
-  UInt getStreamDuration() { return m_uiSecs; }
-  UChar* m_pchFrameBuffer;
-  UInt64 m_uiFrameBufferSize;
+  unsigned int getStreamDuration() { return m_uiSecs; }
+  unsigned char* m_pchFrameBuffer;
+  unsigned long long int m_uiFrameBufferSize;
 
 private:
   AVFormatContext* m_cFmtCtx;
   AVStream* m_cStream;
-  Int m_iStreamIdx;
+  int m_iStreamIdx;
 
   struct SwsContext* m_ScalerCtx;
 
   AVCodecContext* m_cCodedCtx;
 
-  Int m_ffPixFmt;
+  int m_ffPixFmt;
   AVFrame* m_cFrame;
   AVPacket m_cOrgPacket;
   AVPacket m_cPacket;
 
-  Bool m_bHasStream;
+  bool m_bHasStream;
 
-  UInt64 m_uiSecs;
-  UInt64 m_uiMicroSec;
+  unsigned long long int m_uiSecs;
+  unsigned long long int m_uiMicroSec;
 
   AVFrame* m_cConvertedFrame;
 };

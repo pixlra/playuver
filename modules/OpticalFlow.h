@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -29,28 +29,28 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/video/video.hpp>
 
-// PlaYUVerLib
-#include "lib/PlaYUVerModuleIf.h"
+// CalypLib
+#include "lib/CalypModuleIf.h"
 
-class OpticalFlowModule : public PlaYUVerModuleIf
+class OpticalFlowModule : public CalypModuleIf
 {
 protected:
-  Bool m_bShowReconstruction;
-  Int m_iStep;
+  bool m_bShowReconstruction;
+  int m_iStep;
   cv::Ptr<cv::DenseOpticalFlow> m_cOpticalFlow;
   cv::Mat_<cv::Point2f> m_cvFlow;
-  PlaYUVerFrame* m_pcFramePrev;
-  PlaYUVerFrame* m_pcFrameAfter;
-  PlaYUVerFrame* m_pcOutputFrame;
-  Void drawFlow();
-  Void compensateFlow();
-  Bool commonCreate( std::vector<PlaYUVerFrame*> apcFrameList );
+  CalypFrame* m_pcFramePrev;
+  CalypFrame* m_pcFrameAfter;
+  CalypFrame* m_pcOutputFrame;
+  void drawFlow();
+  void compensateFlow();
+  bool commonCreate( std::vector<CalypFrame*> apcFrameList );
 
 public:
   OpticalFlowModule();
   virtual ~OpticalFlowModule() {}
-  PlaYUVerFrame* process( std::vector<PlaYUVerFrame*> apcFrameList );
-  Void destroy();
+  CalypFrame* process( std::vector<CalypFrame*> apcFrameList );
+  void destroy();
 };
 
 class OpticalFlowDualTVL1 : public OpticalFlowModule
@@ -59,7 +59,7 @@ class OpticalFlowDualTVL1 : public OpticalFlowModule
 public:
   OpticalFlowDualTVL1();
   virtual ~OpticalFlowDualTVL1() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+  bool create( std::vector<CalypFrame*> apcFrameList );
 };
 
 class OpticalFlowSparseToDense : public OpticalFlowModule
@@ -68,7 +68,7 @@ class OpticalFlowSparseToDense : public OpticalFlowModule
 public:
   OpticalFlowSparseToDense();
   virtual ~OpticalFlowSparseToDense() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+  bool create( std::vector<CalypFrame*> apcFrameList );
 };
 
 class OpticalFlowFarneback : public OpticalFlowModule
@@ -77,7 +77,7 @@ class OpticalFlowFarneback : public OpticalFlowModule
 public:
   OpticalFlowFarneback();
   virtual ~OpticalFlowFarneback() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+  bool create( std::vector<CalypFrame*> apcFrameList );
 };
 
 class OpticalDeepFlow : public OpticalFlowModule
@@ -86,7 +86,7 @@ class OpticalDeepFlow : public OpticalFlowModule
 public:
   OpticalDeepFlow();
   virtual ~OpticalDeepFlow() {}
-  Bool create( std::vector<PlaYUVerFrame*> apcFrameList );
+  bool create( std::vector<CalypFrame*> apcFrameList );
 };
 
 #endif  // __OPTICALFLOW_H__

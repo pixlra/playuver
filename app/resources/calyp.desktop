@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Name=Calyp
+Exec=calyp %U
+Icon=calyp
+Terminal=false
+MimeType=video/x-raw;image/jpeg;image/png;image/bmp;image/x-portable-bitmap;image/x-portable-graymap;image/x-portable-pixmap
+Categories=AudioVideo;Video;Player;
+GenericName=raw video player

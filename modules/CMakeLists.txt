@@ -1,13 +1,13 @@
 ###
-### CMakeLists for playuver modules component
+### CMakeLists for calyp modules component
 ###
 
-OPTION( MODULE_THREADED_MODULES "Use threads for modules"  OFF )
+OPTION( CALYP_THREADED_MODULES "Use threads for modules"  OFF )
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} )
 
-set(plaYUver_Mod_SRCS
-  PlaYUVerModuleFactory.cpp
+set(Calyp_Mod_SRCS
+  CalypModulesFactory.cpp
 )
 
 #
@@ -36,9 +36,9 @@ ADD_MODULE_USE_OPENCV( OpticalFlowDualTVL1 "OpticalFlow" VERSION  3.1.0 MODULES 
 ADD_MODULE_USE_OPENCV( OpticalFlowSparseToDense "OpticalFlow" VERSION  3.1.0 MODULES optflow )
 ADD_MODULE_USE_OPENCV( OpticalFlowFarneback "OpticalFlow" VERSION 3.1.0 MODULES video optflow )
 ADD_MODULE_USE_OPENCV( OpticalDeepFlow "OpticalFlow" VERSION 3.1.0 MODULES video optflow )
-ADD_MODULE_USE_OPENCV( SaliencyDetectionSpectral "SaliencyDetection" VERSION 3.1.0 MODULES saliency )
-ADD_MODULE_USE_OPENCV( SaliencyDetectionFineGrained "SaliencyDetection" VERSION 3.1.0 MODULES saliency )
-ADD_MODULE_USE_OPENCV( SaliencyDetectionBinWangApr2014 "SaliencyDetection" VERSION 3.1.0 MODULES saliency )
+ADD_MODULE_USE_OPENCV( SaliencyDetectionSpectral "SaliencyDetection" VERSION 3.3.0 MODULES saliency )
+ADD_MODULE_USE_OPENCV( SaliencyDetectionFineGrained "SaliencyDetection" VERSION 3.3.0 MODULES saliency )
+ADD_MODULE_USE_OPENCV( SaliencyDetectionBinWangApr2014 "SaliencyDetection" VERSION 3.3.0 MODULES saliency )
 
 
 #
@@ -46,8 +46,8 @@ ADD_MODULE_USE_OPENCV( SaliencyDetectionBinWangApr2014 "SaliencyDetection" VERSI
 #
 CREATE_MODULE_MACROS()
 INCLUDE_DIRECTORIES( ${OpenCV_INCLUDE_DIRS} )
-ADD_LIBRARY( PlaYUVerModules ${plaYUver_Mod_SRCS} )
-TARGET_LINK_LIBRARIES( PlaYUVerModules PlaYUVerLib  ${OpenCV_LIBRARIES} )
+ADD_LIBRARY( CalypModules ${Calyp_Mod_SRCS} )
+TARGET_LINK_LIBRARIES( CalypModules ${PROJECT_LIBRARY}  ${OpenCV_LIBRARIES} )
 IF( USE_DYNLOAD )
-  TARGET_LINK_LIBRARIES( PlaYUVerModules -ldl )
+  TARGET_LINK_LIBRARIES( CalypModules -ldl )
 ENDIF()

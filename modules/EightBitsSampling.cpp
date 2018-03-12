@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -27,45 +27,45 @@
 EightBitsSampling::EightBitsSampling()
 {
   /* Module Definition */
-  m_iModuleAPI = MODULE_API_2;
-  m_iModuleType = FRAME_PROCESSING_MODULE;
+  m_iModuleAPI = CLP_MODULE_API_2;
+  m_iModuleType = CLP_FRAME_PROCESSING_MODULE;
   m_pchModuleCategory = "Conversions";
   m_pchModuleName = "EightBitsSampling";
   m_pchModuleLongName = "8 bit sub-sampling";
   m_pchModuleTooltip = "Sub-sampling frame to 8bpp";
-  m_uiNumberOfFrames = MODULE_REQUIRES_ONE_FRAME;
-  m_uiModuleRequirements = MODULE_REQUIRES_NOTHING;
+  m_uiNumberOfFrames = 1;
+  m_uiModuleRequirements = CLP_MODULE_REQUIRES_NOTHING;
 
   m_pcSubSampledFrame = NULL;
 }
 
-Bool EightBitsSampling::create( std::vector<PlaYUVerFrame*> apcFrameList )
+bool EightBitsSampling::create( std::vector<CalypFrame*> apcFrameList )
 {
   if( apcFrameList[0]->getBitsPel() > 8 )
   {
     m_pcSubSampledFrame = NULL;
-    m_pcSubSampledFrame = new PlaYUVerFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
-                                             apcFrameList[0]->getPelFormat(), 8 );
+    m_pcSubSampledFrame = new CalypFrame( apcFrameList[0]->getWidth(), apcFrameList[0]->getHeight(),
+                                          apcFrameList[0]->getPelFormat(), 8 );
     return true;
   }
   return false;
 }
 
-PlaYUVerFrame* EightBitsSampling::process( std::vector<PlaYUVerFrame*> apcFrameList )
+CalypFrame* EightBitsSampling::process( std::vector<CalypFrame*> apcFrameList )
 {
-  PlaYUVerFrame* pcFrame = apcFrameList[0];
-  UInt uiShiftBits = pcFrame->getBitsPel() - 8;
-  Pel* pPelInput = pcFrame->getPelBufferYUV()[0][0];
-  Pel* pPelSubSampled = m_pcSubSampledFrame->getPelBufferYUV()[0][0];
-  Pel pelValue;
+  CalypFrame* pcFrame = apcFrameList[0];
+  unsigned int uiShiftBits = pcFrame->getBitsPel() - 8;
+  ClpPel* pPelInput = pcFrame->getPelBufferYUV()[0][0];
+  ClpPel* pPelSubSampled = m_pcSubSampledFrame->getPelBufferYUV()[0][0];
+  ClpPel pelValue;
 
-  for( UInt i = 0; i < pcFrame->getHeight() * pcFrame->getWidth(); i++ )
+  for( unsigned int i = 0; i < pcFrame->getHeight() * pcFrame->getWidth(); i++ )
   {
     pelValue = *pPelInput++;
     pelValue = pelValue >> uiShiftBits;
     *pPelSubSampled++ = pelValue;
   }
-  for( UInt i = 0; i < pcFrame->getChromaLength() * 2; i++ )
+  for( unsigned int i = 0; i < pcFrame->getChromaLength() * 2; i++ )
   {
     pelValue = *pPelInput++;
     pelValue = pelValue >> uiShiftBits;
@@ -74,7 +74,7 @@ PlaYUVerFrame* EightBitsSampling::process( std::vector<PlaYUVerFrame*> apcFrameL
   return m_pcSubSampledFrame;
 }
 
-Void EightBitsSampling::destroy()
+void EightBitsSampling::destroy()
 {
   if( m_pcSubSampledFrame )
     delete m_pcSubSampledFrame;

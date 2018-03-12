@@ -1,4 +1,4 @@
-/*    This file is a part of PlaYUVer project
+/*    This file is a part of Calyp project
  *    Copyright (C) 2014-2018  by Joao Carreira   (jfmcarreira@gmail.com)
  *                                Luis Lucas      (luisfrlucas@gmail.com)
  *
@@ -29,7 +29,7 @@
 #include <QColor>
 #include <QPen>
 #include <QRect>
-#include "PlaYUVerAppDefs.h"
+#include "CommonDefs.h"
 #include "config.h"
 
 class QPoint;
@@ -44,8 +44,8 @@ class GridManager
 public:
   enum Style
   {
-    IntersectionDot = 0,
-    IntersectionCross,
+    intersectionDot = 0,
+    intersectionCross,
     Dashed,
     Solid
   };
@@ -93,8 +93,8 @@ public:
   QPoint nearPos( int x = -1, int y = -1 );
 
 private:
-  UInt m_uiHSpace;
-  UInt m_uiVSpace;
+  unsigned int m_uiHSpace;
+  unsigned int m_uiVSpace;
   QColor m_cGridColor;
   Style m_eGridStyle;
   QPoint m_nearPos;

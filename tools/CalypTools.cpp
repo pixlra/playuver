@@ -138,6 +138,12 @@ int CalypTools::Open( int argc, char* argv[] )
 {
   int iRet = 0;
 
+  // check requirements
+  if( CalypPixel::getMaxNumberOfComponents() > MAX_NUMBER_CHANNELS )
+  {
+      log( CLP_LOG_ERROR, "Cannot parse the maximum number of components!" );
+      return 1;
+  }
   if( ( iRet = parseToolsArgs( argc, argv ) ) > 0 )
   {
     return iRet;
@@ -424,7 +430,7 @@ int CalypTools::QualityOperation()
   const char* pchQualityMetricName = CalypFrame::supportedQualityMetricsList()[m_uiQualityMetric].c_str();
   CalypFrame* apcCurrFrame[MAX_NUMBER_INPUTS];
   bool abEOF[MAX_NUMBER_INPUTS];
-  double adAverageQuality[MAX_NUMBER_INPUTS - 1][CalypPixel::getMaxNumberOfComponents()];
+  double adAverageQuality[MAX_NUMBER_INPUTS - 1][MAX_NUMBER_CHANNELS];
   double dQuality;
 
   ClpString metric_fmt = " ";

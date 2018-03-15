@@ -53,6 +53,7 @@ class CalypStream;
 class CalypModuleIf;
 
 #define MAX_NUMBER_INPUTS 10
+#define MAX_NUMBER_CHANNELS 4
 
 class CalypTools : public CalypToolsCmdParser
 {
